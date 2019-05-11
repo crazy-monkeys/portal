@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Mirrored from www.jq22.com/demo/css3Signin201809181038/ by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 11 Apr 2019 13:40:34 GMT -->
+<head>
+	<meta charset="utf-8">
+	<title>Loging</title>
+	<meta name="description" content="particles.js is a lightweight JavaScript library for creating particles.">
+	<meta name="author" content="Vincent Garreau" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<link rel="stylesheet" media="screen" href="${request.contextPath}/static/login/www.jq22.com/demo/css3Signin201809181038/css/style.css">
+	<link rel="stylesheet" type="text/css" href="${request.contextPath}/static/login/www.jq22.com/demo/css3Signin201809181038/css/reset.css" />
+</head>
+<body>
+<div id="particles-js">
+	<div class="login">
+		<div class="login-top">
+			Login
+		</div>
+		<form id="form1" action="#" method="post">
+			<div class="login-center clearfix">
+				<div class="login-center-img"><img src="${request.contextPath}/static/login/www.jq22.com/demo/css3Signin201809181038/img/name.png" /></div>
+				<div class="login-center-input">
+					<input type="text" name="j_username" value="" placeholder="Please enter your login name" onfocus="this.placeholder=''" onblur="this.placeholder='Please enter your login name'" />
+					<div class="login-center-input-text">Login Name</div>
+				</div>
+			</div>
+			<div class="login-center clearfix">
+				<div class="login-center-img"><img src="${request.contextPath}/static/login/www.jq22.com/demo/css3Signin201809181038/img/password.png" /></div>
+				<div class="login-center-input">
+					<input type="password" name="j_password" value="" placeholder="please enter your password" onfocus="this.placeholder=''" onblur="this.placeholder='Please enter your password'" />
+					<div class="login-center-input-text">Password</div>
+				</div>
+			</div>
+			<div class="login-button">
+				Lgoin
+			</div>
+		</form>
+
+	</div>
+	<div class="sk-rotating-plane"></div>
+</div>
+
+<script src="${request.contextPath}/static/login/www.jq22.com/demo/css3Signin201809181038/js/particles.min.js"></script>
+<script src="${request.contextPath}/static/login/www.jq22.com/demo/css3Signin201809181038/js/app.js"></script>
+<script src='${request.contextPath}/static/jquery/jquery-2.1.4.min.js'></script>
+<script type="text/javascript">
+    var basePath = '${request.contextPath}';
+</script>
+<script type="text/javascript">
+    function hasClass(elem, cls) {
+        cls = cls || '';
+        if (cls.replace(/\s/g, '').length == 0) return false; //当cls没有参数时，返回false
+        return new RegExp(' ' + cls + ' ').test(' ' + elem.className + ' ');
+    }
+
+    function addClass(ele, cls) {
+        if (!hasClass(ele, cls)) {
+            ele.className = ele.className == '' ? cls : ele.className + ' ' + cls;
+        }
+    }
+
+    function removeClass(ele, cls) {
+        if (hasClass(ele, cls)) {
+            var newClass = ' ' + ele.className.replace(/[\t\r\n]/g, '') + ' ';
+            while (newClass.indexOf(' ' + cls + ' ') >= 0) {
+                newClass = newClass.replace(' ' + cls + ' ', ' ');
+            }
+            ele.className = newClass.replace(/^\s+|\s+$/g, '');
+        }
+    }
+    document.querySelector(".login-button").onclick = function(){
+        addClass(document.querySelector(".login"), "active")
+        setTimeout(function(){
+            addClass(document.querySelector(".sk-rotating-plane"), "active")
+            document.querySelector(".login").style.display = "none"
+        },800);
+
+        login();
+
+//		setTimeout(function(){
+//            removeClass(document.querySelector(".login"), "active")
+//            removeClass(document.querySelector(".sk-rotating-plane"), "active")
+//            document.querySelector(".login").style.display = "block"
+//        },5000)
+    }
+
+    function login(){
+        var login = $('input[name="j_username"]').val();
+        var pwd = $('input[name="j_password"]').val();
+        $.ajax({
+            url : basePath+"/user/login",
+            type : "post",
+            dataType : "json",
+            data : JSON.stringify({
+                'loginName' : login,
+                'loginPwd' : pwd
+            }),
+            success : function(data) {
+                console.log(data);
+                if (!!data && !!data.data.token) {
+                    debugger;
+                    window.location.href = basePath + '/main?roleName='
+						+data.data.roleName+"&userStatus="+data.data.userInfo.userStatus
+					    +"&currentUser="+data.data.userInfo.loginName;
+                } else {
+					alert("error");
+                }
+            }
+        });
+	}
+</script>
+</body>
+
+<!-- Mirrored from www.jq22.com/demo/css3Signin201809181038/ by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 11 Apr 2019 13:40:36 GMT -->
+</html>

@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.crazy.portal.dao.company.TContactInformationVOMapper">
+  <resultMap id="BaseResultMap" type="com.crazy.portal.entity.company.TContactInformationVO">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="company_id" jdbcType="VARCHAR" property="companyId" />
+    <result column="contact_code" jdbcType="VARCHAR" property="contactCode" />
+    <result column="is_default" jdbcType="SMALLINT" property="isDefault" />
+    <result column="last_name" jdbcType="VARCHAR" property="lastName" />
+    <result column="first_name" jdbcType="VARCHAR" property="firstName" />
+    <result column="job_title" jdbcType="VARCHAR" property="jobTitle" />
+    <result column="office_phone" jdbcType="VARCHAR" property="officePhone" />
+    <result column="postal_code" jdbcType="VARCHAR" property="postalCode" />
+    <result column="country_code" jdbcType="VARCHAR" property="countryCode" />
+    <result column="state_number" jdbcType="VARCHAR" property="stateNumber" />
+    <result column="phone_number" jdbcType="VARCHAR" property="phoneNumber" />
+    <result column="extension" jdbcType="VARCHAR" property="extension" />
+    <result column="work_email" jdbcType="VARCHAR" property="workEmail" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_user_id" jdbcType="INTEGER" property="createUserId" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_user_id" jdbcType="INTEGER" property="updateUserId" />
+    <result column="active" jdbcType="SMALLINT" property="active" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, contact_code, is_default, last_name, first_name, job_title, office_phone, postal_code, 
+    country_code, state_number, phone_number, extension, work_email, create_time, create_user_id, 
+    update_time, update_user_id, active
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_contact_information
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_contact_information
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.crazy.portal.entity.company.TContactInformationVO">
+    insert into t_contact_information (id, contact_code, is_default, 
+      last_name, first_name, job_title, 
+      office_phone, postal_code, country_code, 
+      state_number, phone_number, extension, 
+      work_email, create_time, create_user_id, 
+      update_time, update_user_id, active
+      )
+    values (#{id,jdbcType=INTEGER}, #{contactCode,jdbcType=VARCHAR}, #{isDefault,jdbcType=SMALLINT}, 
+      #{lastName,jdbcType=VARCHAR}, #{firstName,jdbcType=VARCHAR}, #{jobTitle,jdbcType=VARCHAR}, 
+      #{officePhone,jdbcType=VARCHAR}, #{postalCode,jdbcType=VARCHAR}, #{countryCode,jdbcType=VARCHAR}, 
+      #{stateNumber,jdbcType=VARCHAR}, #{phoneNumber,jdbcType=VARCHAR}, #{extension,jdbcType=VARCHAR}, 
+      #{workEmail,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{createUserId,jdbcType=INTEGER}, 
+      #{updateTime,jdbcType=TIMESTAMP}, #{updateUserId,jdbcType=INTEGER}, #{active,jdbcType=SMALLINT}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.crazy.portal.entity.company.TContactInformationVO">
+    insert into t_contact_information
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="companyId != null">
+        company_id,
+      </if>
+      <if test="contactCode != null">
+        contact_code,
+      </if>
+      <if test="isDefault != null">
+        is_default,
+      </if>
+      <if test="lastName != null">
+        last_name,
+      </if>
+      <if test="firstName != null">
+        first_name,
+      </if>
+      <if test="jobTitle != null">
+        job_title,
+      </if>
+      <if test="officePhone != null">
+        office_phone,
+      </if>
+      <if test="postalCode != null">
+        postal_code,
+      </if>
+      <if test="countryCode != null">
+        country_code,
+      </if>
+      <if test="stateNumber != null">
+        state_number,
+      </if>
+      <if test="phoneNumber != null">
+        phone_number,
+      </if>
+      <if test="extension != null">
+        extension,
+      </if>
+      <if test="workEmail != null">
+        work_email,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="createUserId != null">
+        create_user_id,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="updateUserId != null">
+        update_user_id,
+      </if>
+      <if test="active != null">
+        active,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="companyId != null">
+        #{companyId,jdbcType=INTEGER},
+      </if>
+      <if test="contactCode != null">
+        #{contactCode,jdbcType=VARCHAR},
+      </if>
+      <if test="isDefault != null">
+        #{isDefault,jdbcType=SMALLINT},
+      </if>
+      <if test="lastName != null">
+        #{lastName,jdbcType=VARCHAR},
+      </if>
+      <if test="firstName != null">
+        #{firstName,jdbcType=VARCHAR},
+      </if>
+      <if test="jobTitle != null">
+        #{jobTitle,jdbcType=VARCHAR},
+      </if>
+      <if test="officePhone != null">
+        #{officePhone,jdbcType=VARCHAR},
+      </if>
+      <if test="postalCode != null">
+        #{postalCode,jdbcType=VARCHAR},
+      </if>
+      <if test="countryCode != null">
+        #{countryCode,jdbcType=VARCHAR},
+      </if>
+      <if test="stateNumber != null">
+        #{stateNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="phoneNumber != null">
+        #{phoneNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="extension != null">
+        #{extension,jdbcType=VARCHAR},
+      </if>
+      <if test="workEmail != null">
+        #{workEmail,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUserId != null">
+        #{createUserId,jdbcType=INTEGER},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUserId != null">
+        #{updateUserId,jdbcType=INTEGER},
+      </if>
+      <if test="active != null">
+        #{active,jdbcType=SMALLINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.crazy.portal.entity.company.TContactInformationVO">
+    update t_contact_information
+    <set>
+      <if test="contactCode != null">
+        contact_code = #{contactCode,jdbcType=VARCHAR},
+      </if>
+      <if test="isDefault != null">
+        is_default = #{isDefault,jdbcType=SMALLINT},
+      </if>
+      <if test="lastName != null">
+        last_name = #{lastName,jdbcType=VARCHAR},
+      </if>
+      <if test="firstName != null">
+        first_name = #{firstName,jdbcType=VARCHAR},
+      </if>
+      <if test="jobTitle != null">
+        job_title = #{jobTitle,jdbcType=VARCHAR},
+      </if>
+      <if test="officePhone != null">
+        office_phone = #{officePhone,jdbcType=VARCHAR},
+      </if>
+      <if test="postalCode != null">
+        postal_code = #{postalCode,jdbcType=VARCHAR},
+      </if>
+      <if test="countryCode != null">
+        country_code = #{countryCode,jdbcType=VARCHAR},
+      </if>
+      <if test="stateNumber != null">
+        state_number = #{stateNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="phoneNumber != null">
+        phone_number = #{phoneNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="extension != null">
+        extension = #{extension,jdbcType=VARCHAR},
+      </if>
+      <if test="workEmail != null">
+        work_email = #{workEmail,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUserId != null">
+        create_user_id = #{createUserId,jdbcType=INTEGER},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUserId != null">
+        update_user_id = #{updateUserId,jdbcType=INTEGER},
+      </if>
+      <if test="active != null">
+        active = #{active,jdbcType=SMALLINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.crazy.portal.entity.company.TContactInformationVO">
+    update t_contact_information
+    set contact_code = #{contactCode,jdbcType=VARCHAR},
+      is_default = #{isDefault,jdbcType=SMALLINT},
+      last_name = #{lastName,jdbcType=VARCHAR},
+      first_name = #{firstName,jdbcType=VARCHAR},
+      job_title = #{jobTitle,jdbcType=VARCHAR},
+      office_phone = #{officePhone,jdbcType=VARCHAR},
+      postal_code = #{postalCode,jdbcType=VARCHAR},
+      country_code = #{countryCode,jdbcType=VARCHAR},
+      state_number = #{stateNumber,jdbcType=VARCHAR},
+      phone_number = #{phoneNumber,jdbcType=VARCHAR},
+      extension = #{extension,jdbcType=VARCHAR},
+      work_email = #{workEmail,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      create_user_id = #{createUserId,jdbcType=INTEGER},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      update_user_id = #{updateUserId,jdbcType=INTEGER},
+      active = #{active,jdbcType=SMALLINT}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

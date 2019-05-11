@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.crazy.portal.dao.customer.TCustomerProjectMapper">
+  <resultMap id="BaseResultMap" type="com.crazy.portal.entity.customer.TCustomerProject">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="region_id" jdbcType="INTEGER" property="regionId" />
+    <result column="project_name" jdbcType="VARCHAR" property="projectName" />
+    <result column="material_name" jdbcType="VARCHAR" property="materialName" />
+    <result column="competitor" jdbcType="VARCHAR" property="competitor" />
+    <result column="competitor_material_name" jdbcType="VARCHAR" property="competitorMaterialName" />
+    <result column="expected_volume" jdbcType="BIGINT" property="expectedVolume" />
+    <result column="estimated_production_time" jdbcType="TIMESTAMP" property="estimatedProductionTime" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_user_id" jdbcType="INTEGER" property="createUserId" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_user_id" jdbcType="INTEGER" property="updateUserId" />
+    <result column="active" jdbcType="SMALLINT" property="active" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, region_id, project_name, material_name, competitor, competitor_material_name, 
+    expected_volume, estimated_production_time, create_time, create_user_id, update_time, 
+    update_user_id, active
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_customer_project
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_customer_project
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.crazy.portal.entity.customer.TCustomerProject">
+    insert into t_customer_project (id, region_id, project_name, 
+      material_name, competitor, competitor_material_name, 
+      expected_volume, estimated_production_time, 
+      create_time, create_user_id, update_time, 
+      update_user_id, active)
+    values (#{id,jdbcType=INTEGER}, #{regionId,jdbcType=INTEGER}, #{projectName,jdbcType=VARCHAR}, 
+      #{materialName,jdbcType=VARCHAR}, #{competitor,jdbcType=VARCHAR}, #{competitorMaterialName,jdbcType=VARCHAR}, 
+      #{expectedVolume,jdbcType=BIGINT}, #{estimatedProductionTime,jdbcType=TIMESTAMP}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{createUserId,jdbcType=INTEGER}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{updateUserId,jdbcType=INTEGER}, #{active,jdbcType=SMALLINT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.crazy.portal.entity.customer.TCustomerProject">
+    insert into t_customer_project
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="regionId != null">
+        region_id,
+      </if>
+      <if test="projectName != null">
+        project_name,
+      </if>
+      <if test="materialName != null">
+        material_name,
+      </if>
+      <if test="competitor != null">
+        competitor,
+      </if>
+      <if test="competitorMaterialName != null">
+        competitor_material_name,
+      </if>
+      <if test="expectedVolume != null">
+        expected_volume,
+      </if>
+      <if test="estimatedProductionTime != null">
+        estimated_production_time,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="createUserId != null">
+        create_user_id,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="updateUserId != null">
+        update_user_id,
+      </if>
+      <if test="active != null">
+        active,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="regionId != null">
+        #{regionId,jdbcType=INTEGER},
+      </if>
+      <if test="projectName != null">
+        #{projectName,jdbcType=VARCHAR},
+      </if>
+      <if test="materialName != null">
+        #{materialName,jdbcType=VARCHAR},
+      </if>
+      <if test="competitor != null">
+        #{competitor,jdbcType=VARCHAR},
+      </if>
+      <if test="competitorMaterialName != null">
+        #{competitorMaterialName,jdbcType=VARCHAR},
+      </if>
+      <if test="expectedVolume != null">
+        #{expectedVolume,jdbcType=BIGINT},
+      </if>
+      <if test="estimatedProductionTime != null">
+        #{estimatedProductionTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUserId != null">
+        #{createUserId,jdbcType=INTEGER},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUserId != null">
+        #{updateUserId,jdbcType=INTEGER},
+      </if>
+      <if test="active != null">
+        #{active,jdbcType=SMALLINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.crazy.portal.entity.customer.TCustomerProject">
+    update t_customer_project
+    <set>
+      <if test="regionId != null">
+        region_id = #{regionId,jdbcType=INTEGER},
+      </if>
+      <if test="projectName != null">
+        project_name = #{projectName,jdbcType=VARCHAR},
+      </if>
+      <if test="materialName != null">
+        material_name = #{materialName,jdbcType=VARCHAR},
+      </if>
+      <if test="competitor != null">
+        competitor = #{competitor,jdbcType=VARCHAR},
+      </if>
+      <if test="competitorMaterialName != null">
+        competitor_material_name = #{competitorMaterialName,jdbcType=VARCHAR},
+      </if>
+      <if test="expectedVolume != null">
+        expected_volume = #{expectedVolume,jdbcType=BIGINT},
+      </if>
+      <if test="estimatedProductionTime != null">
+        estimated_production_time = #{estimatedProductionTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUserId != null">
+        create_user_id = #{createUserId,jdbcType=INTEGER},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUserId != null">
+        update_user_id = #{updateUserId,jdbcType=INTEGER},
+      </if>
+      <if test="active != null">
+        active = #{active,jdbcType=SMALLINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.crazy.portal.entity.customer.TCustomerProject">
+    update t_customer_project
+    set region_id = #{regionId,jdbcType=INTEGER},
+      project_name = #{projectName,jdbcType=VARCHAR},
+      material_name = #{materialName,jdbcType=VARCHAR},
+      competitor = #{competitor,jdbcType=VARCHAR},
+      competitor_material_name = #{competitorMaterialName,jdbcType=VARCHAR},
+      expected_volume = #{expectedVolume,jdbcType=BIGINT},
+      estimated_production_time = #{estimatedProductionTime,jdbcType=TIMESTAMP},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      create_user_id = #{createUserId,jdbcType=INTEGER},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      update_user_id = #{updateUserId,jdbcType=INTEGER},
+      active = #{active,jdbcType=SMALLINT}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

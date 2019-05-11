@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.crazy.portal.dao.company.TSolutionInfoVOMapper">
+  <resultMap id="BaseResultMap" type="com.crazy.portal.entity.company.TSolutionInfoVO">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="company_id" jdbcType="VARCHAR" property="companyId" />
+    <result column="one_industry" jdbcType="VARCHAR" property="oneIndustry" />
+    <result column="two_industry" jdbcType="VARCHAR" property="twoIndustry" />
+    <result column="recommended_user" jdbcType="VARCHAR" property="recommendedUser" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_user_id" jdbcType="INTEGER" property="createUserId" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_user_id" jdbcType="INTEGER" property="updateUserId" />
+    <result column="active" jdbcType="SMALLINT" property="active" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, one_industry, two_industry, recommended_user, create_time, create_user_id, update_time, 
+    update_user_id, active
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_solution_info
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_solution_info
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.crazy.portal.entity.company.TSolutionInfoVO">
+    insert into t_solution_info (id, one_industry, two_industry, 
+      recommended_user, create_time, create_user_id, 
+      update_time, update_user_id, active
+      )
+    values (#{id,jdbcType=INTEGER}, #{oneIndustry,jdbcType=VARCHAR}, #{twoIndustry,jdbcType=VARCHAR}, 
+      #{recommendedUser,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{createUserId,jdbcType=INTEGER}, 
+      #{updateTime,jdbcType=TIMESTAMP}, #{updateUserId,jdbcType=INTEGER}, #{active,jdbcType=SMALLINT}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.crazy.portal.entity.company.TSolutionInfoVO">
+    insert into t_solution_info
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="companyId != null">
+        company_id,
+      </if>
+      <if test="oneIndustry != null">
+        one_industry,
+      </if>
+      <if test="twoIndustry != null">
+        two_industry,
+      </if>
+      <if test="recommendedUser != null">
+        recommended_user,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="createUserId != null">
+        create_user_id,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="updateUserId != null">
+        update_user_id,
+      </if>
+      <if test="active != null">
+        active,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="companyId != null">
+        #{companyId,jdbcType=INTEGER},
+      </if>
+      <if test="oneIndustry != null">
+        #{oneIndustry,jdbcType=VARCHAR},
+      </if>
+      <if test="twoIndustry != null">
+        #{twoIndustry,jdbcType=VARCHAR},
+      </if>
+      <if test="recommendedUser != null">
+        #{recommendedUser,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUserId != null">
+        #{createUserId,jdbcType=INTEGER},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUserId != null">
+        #{updateUserId,jdbcType=INTEGER},
+      </if>
+      <if test="active != null">
+        #{active,jdbcType=SMALLINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.crazy.portal.entity.company.TSolutionInfoVO">
+    update t_solution_info
+    <set>
+      <if test="oneIndustry != null">
+        one_industry = #{oneIndustry,jdbcType=VARCHAR},
+      </if>
+      <if test="twoIndustry != null">
+        two_industry = #{twoIndustry,jdbcType=VARCHAR},
+      </if>
+      <if test="recommendedUser != null">
+        recommended_user = #{recommendedUser,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUserId != null">
+        create_user_id = #{createUserId,jdbcType=INTEGER},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUserId != null">
+        update_user_id = #{updateUserId,jdbcType=INTEGER},
+      </if>
+      <if test="active != null">
+        active = #{active,jdbcType=SMALLINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.crazy.portal.entity.company.TSolutionInfoVO">
+    update t_solution_info
+    set one_industry = #{oneIndustry,jdbcType=VARCHAR},
+      two_industry = #{twoIndustry,jdbcType=VARCHAR},
+      recommended_user = #{recommendedUser,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      create_user_id = #{createUserId,jdbcType=INTEGER},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      update_user_id = #{updateUserId,jdbcType=INTEGER},
+      active = #{active,jdbcType=SMALLINT}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

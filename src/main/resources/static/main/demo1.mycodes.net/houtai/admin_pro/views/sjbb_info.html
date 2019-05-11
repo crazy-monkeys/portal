@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<!-- Mirrored from demo1.mycodes.net/houtai/admin_pro/views/users.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 11 Apr 2019 13:28:51 GMT -->
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="../assets/css/layui.css">
+    <link rel="stylesheet" href="../assets/css/view.css"/>
+    <link rel="icon" href="http://demo1.mycodes.net/favicon.ico">
+    <title>管理后台</title>
+    <script src='../../../../../jquery/jquery-2.1.4.min.js'></script>
+</head>
+<body class="layui-view-body">
+    <div class="layui-content">
+        <div class="layui-row">
+            <div class="layui-card">
+                <div class="layui-card-body">
+                    <div class="form-box">
+                        <div class="layui-form layui-form-item">
+                            <div class="layui-inline">
+                                <div class="layui-form-mid">Customer Code:</div>
+                                <div class="layui-input-inline" style="width: 150px;margin-right: 30px;">
+                                    <input type="text" autocomplete="off" class="layui-input" id="customerCode">
+                                </div>
+
+                                <div class="layui-form-mid">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Customer Name:</div>
+                                <div class="layui-input-inline" style="width: 150px;margin-right: 30px;">
+                                    <input type="text" autocomplete="off" class="layui-input" id="customerName">
+                                </div>
+                                <div class="layui-form-mid">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Product line:</div>
+                                <div class="layui-input-inline" style="width: 150px;margin-right: 30px;" >
+                                    <select name="sex" id="productLine">
+                                        <option value="LED">LED</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="layui-inline">
+                                <div class="layui-form-mid">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Region:</div>
+                                <div class="layui-input-inline" style="width: 150px;margin-right: 30px;">
+                                    <input type="text" autocomplete="off" class="layui-input" id="region">
+                                </div>
+                                <div class="layui-form-mid">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Tax File Number:</div>
+                                <div class="layui-input-inline" style="width: 150px;margin-right: 30px;">
+                                    <input type="text" autocomplete="off" class="layui-input" id="taxCode">
+                                </div>
+                                <div class="layui-form-mid">Parent Cunstomer Name:</div>
+                                <div class="layui-input-inline" style="width: 150px;margin-right: 30px;">
+                                    <select id="parentCustomer">
+                                        <option value="1">Parent Cunstomer</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="layui-row">
+            <div class="layui-col-sm12 layui-col-md12">
+                <div class="layui-card">
+                    <div class="layui-tab layui-tab-brief">
+                        <ul class="layui-tab-title">
+                            <li class="layui-this">Address</li>
+                            <li>Contact Person</li>
+                            <li>Project</li>
+                        </ul>
+                        <div class="layui-tab-content">
+                            <div class="layui-tab-item layui-show">
+                                <table id="addressTable"></table>
+                            </div>
+                            <div class="layui-tab-item">
+                                <table id="personTable"></table>
+                            </div>
+                            <div class="layui-tab-item">
+                                <table id="projectTable"></table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="../assets/layui.all.js"></script>
+    <script type="text/javascript">
+        var basePath = '${request.contextPath}';
+    </script>
+    <script>
+      var element = layui.element;
+      var table = layui.table;
+      var form = layui.form;
+  
+      //地址
+      window.onload = function() {
+          var url = location.search; //获取url中"?"符后的字串
+          var theRequest = new Object();
+          if (url.indexOf("?") != -1) {
+              var str = url.substr(1);
+              strs = str.split("&");
+              for (var i = 0; i < strs.length; i++) {
+                  theRequest[strs[i].split("=")[0]] = unescape(strs[i].split("=")[1]);
+              }
+          }
+          var registId = theRequest['registId'];
+          console.log(registId);
+          load(registId);
+      }
+
+      function load(registId) {
+          $.get("/portal/customer/CustomerInfo?registId="+registId, function (result) {
+              console.log(result);
+              $("#customerCode").val(result.customerCode);
+              $("#customerName").val(result.customerName);
+              $("#productLine").val(result.productLine);
+              $("#region").val(result.region);
+              $("#taxCode").val(result.taxCode);
+              $("#parentCustomer").val(result.parentCustomer);
+
+              loadTable(result);
+          });
+      }
+
+      function loadTable(data) {
+          $.each(data.address, function(i, item){
+              data.address[i]['c1'] = "LED";
+          });
+          $.each(data.contacts, function(i, item){
+              data.contacts[i]['c1'] = "LED";
+          });
+          $.each(data.project, function(i, item){
+              data.project[i]['c1'] = "LED";
+          });
+          $.each(data.address, function(i, item){
+              if(data.address[i]['isDefault']==0){
+                  data.address[i]['isDefault'] = "false";
+              }else{
+                  data.address[i]['isDefault'] = "true";
+              }
+          });
+          //地址
+          table.render({
+              elem: '#addressTable'
+              ,cols: [[ //标题栏
+                  {field: 'id', title: 'ID', minWidth: 80, sort: true}
+                  ,{field: 'c1', title: 'Product line', minWidth: 80, edit: 'text'}
+                  ,{field: 'province', title: 'Province', minWidth: 80, edit: 'text'}
+                  ,{field: 'city', title: 'City', minWidth: 80, edit: 'text'}
+                  ,{field: 'address', title: 'Address', minWidth: 80, edit: 'text'}
+                  ,{field: 'isDefault', title: 'is Default', minWidth: 80, edit: 'text'}
+                  ,{field: 'remark', title: 'Remark', minWidth: 80, edit: 'text'}
+                  ,{field: 'c8', title: 'Operate', minWidth: 80}
+              ]]
+              ,data: data.address
+              ,skin: 'line' //表格风格
+              ,even: true
+              ,page: false //是否显示分页
+              ,limits: [5, 7, 10]
+              ,limit: 100 //每页默认显示的数量
+          });
+
+          //联系人
+          table.render({
+              elem: '#personTable'
+              ,cols: [[ //标题栏
+                  {field: 'id', title: 'ID', minWidth: 80, sort: true}
+                  ,{field: 'c1', title: 'Product line', minWidth: 80, edit: 'text'}
+                  ,{field: 'position', title: 'Position', minWidth: 80, edit: 'text'}
+                  ,{field: 'realName', title: 'Name', minWidth: 80, edit: 'text'}
+                  ,{field: 'mobile', title: 'Mobile', minWidth: 80, edit: 'text'}
+                  ,{field: 'phone', title: 'Phone', minWidth: 80, edit: 'text'}
+                  ,{field: 'emial', title: 'Email', minWidth: 80, edit: 'text'}
+                  ,{field: 'eventMobile', title: 'Phone #', minWidth: 80, edit: 'text'}
+                  ,{field: 'remark', title: 'Remark', minWidth: 80, edit: 'text'}
+                  ,{field: 'c9', title: 'Operate', minWidth: 80}
+              ]]
+              ,data: data.contacts
+              ,skin: 'line' //表格风格
+              ,even: true
+              ,page: false //是否显示分页
+              ,limits: [5, 7, 10]
+              ,limit: 100 //每页默认显示的数量
+          });
+
+
+          table.render({
+              elem: '#projectTable'
+              ,cols: [[ //标题栏
+                  {field: 'id', title: 'ID', minWidth: 80, sort: true}
+                  ,{field: 'c1', title: 'Product line', minWidth: 80, edit: 'text'}
+                  ,{field: 'projectName', title: 'Project Name', minWidth: 80, edit: 'text'}
+                  ,{field: 'materialName', title: 'Material Name', minWidth: 80, edit: 'text'}
+                  ,{field: 'competitor', title: 'Competitor', minWidth: 80, edit: 'text'}
+                  ,{field: 'competitorMaterialName', title: 'Competitor Material Name', minWidth: 80, edit: 'text'}
+                  ,{field: 'expectedVolume', title: 'Expected volume', minWidth: 80, edit: 'text'}
+                  ,{field: 'estimatedProductionTime', title: 'Estimated production time', minWidth: 80, edit: 'text'}
+                  ,{field: 'c9', title: 'Operate', minWidth: 80}
+              ]]
+              ,data: data.project
+              ,skin: 'line' //表格风格
+              ,even: true
+              ,page: false //是否显示分页
+              ,limits: [5, 7, 10]
+              ,limit: 100 //每页默认显示的数量
+          });
+      }
+
+    </script>
+<script type="text/javascript"  src="../../../../idm-su.baidu.com/su.js"></script>
+</body>
+
+<!-- Mirrored from demo1.mycodes.net/houtai/admin_pro/views/users.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 11 Apr 2019 13:28:51 GMT -->
+</html>
