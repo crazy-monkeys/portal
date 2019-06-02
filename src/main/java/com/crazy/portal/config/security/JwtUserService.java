@@ -8,6 +8,7 @@ import com.crazy.portal.dao.system.UserRoleDOMapper;
 import com.crazy.portal.entity.system.RoleDO;
 import com.crazy.portal.entity.system.UserDO;
 import com.crazy.portal.entity.system.UserRoleDO;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -37,16 +38,18 @@ public class JwtUserService implements UserDetailsService {
     }
 
     @Override
-    public JwtUser loadUserByUsername(String username) throws UsernameNotFoundException {
+    public JwtUser loadUserByUsername(String username) throws UsernameNotFoundException,LockedException {
         UserDO user = userDOMapper.findByLoginName(username);
         if (user == null) {
             throw new UsernameNotFoundException(String.format("No user found with username '%s'.", username));
-        } else {
-            UserRoleDO userRoleDO = userRoleDOMapper.selectByUserId(user.getId());
-            RoleDO roleDO = roleDOMapper.selectByPrimaryKey(userRoleDO.getRoleId());
-            return new JwtUser(user,user.getLoginName(),user.getLoginPwd(),
-                    Collections.singleton(new SimpleGrantedAuthority(roleDO.getRoleName())));
         }
+        if(user.getUserStatus().equals(0)){
+            throw new LockedException("locked");
+        }
+        UserRoleDO userRoleDO = userRoleDOMapper.selectByUserId(user.getId());
+        RoleDO roleDO = roleDOMapper.selectByPrimaryKey(userRoleDO.getRoleId());
+        return new JwtUser(user,user.getLoginName(),user.getLoginPwd(),
+                Collections.singleton(new SimpleGrantedAuthority(roleDO.getRoleName())));
     }
 
     /**

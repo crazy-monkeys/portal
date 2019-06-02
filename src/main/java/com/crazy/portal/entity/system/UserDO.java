@@ -34,6 +34,7 @@ public class UserDO {
 
     private Date regTime;
 
+    /** 正常1 冻结0**/
     private Integer userStatus;
 
     private Integer userType;

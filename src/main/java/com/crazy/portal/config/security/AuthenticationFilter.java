@@ -46,6 +46,7 @@ public class AuthenticationFilter extends AbstractAuthenticationProcessingFilter
         //封装到token中提交
         UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(
                 loginName, loginPwd);
+
         return this.getAuthenticationManager().authenticate(authRequest);
     }
 

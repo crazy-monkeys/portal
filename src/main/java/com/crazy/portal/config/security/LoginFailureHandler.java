@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.www.NonceExpiredException;
@@ -31,7 +32,11 @@ public class LoginFailureHandler implements AuthenticationFailureHandler{
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
         response.setContentType("application/json;charset=utf-8");
         PrintWriter out = response.getWriter();
-        out.write("{\"status\":\"error\",\"msg\":\""+e.getMessage()+"\"})");
+        if(e.getCause() instanceof LockedException){
+            out.write("{\"status\":\"error\",\"msg\":\"locked\"}");
+        }else{
+            out.write("{\"status\":\"error\",\"msg\":\""+e.getMessage()+"\"}");
+        }
         out.flush();
         out.close();
     }

@@ -33,6 +33,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
     @Resource
     private RoleDOMapper roleDOMapper;
 
+    private static final String[] permissiveUrl = new String[]{"/user/register","/user/login"};
+
     @Override
     public void configure(WebSecurity web) throws Exception {
         web.ignoring().antMatchers("/static/**");
@@ -41,36 +43,30 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.authorizeRequests()
-                .antMatchers("/user/register").permitAll()
-                .antMatchers("/user/login").permitAll()
-                .antMatchers("/login").permitAll()
-                .antMatchers("/admin/**").hasAnyRole("ADMIN")
                 .anyRequest().authenticated()
                 .and()
-                .csrf().disable()
                 .sessionManagement().disable()
+                .csrf().disable()
                 .cors()
                 .and()
                 .headers().addHeaderWriter(new StaticHeadersWriter(Arrays.asList(
                         new Header("Access-control-Allow-Origin","*"),
                         new Header("Access-Control-Expose-Headers","Authorization"))))
-                .and() //拦截OPTIONS请求，直接返回header
+                .and()
+                //拦截OPTIONS请求，直接返回header
                 .addFilterAfter(new OptionsRequestFilter(), CorsFilter.class)
-
                 //添加登录filter
                 .apply(new LoginConfigurer<>()).loginSuccessHandler(loginSuccessHandler())
                 .and()
                 //添加token的filter
                 .apply(new JwtLoginConfigurer<>())
                         .tokenValidSuccessHandler(jwtRefreshSuccessHandler())
-                        .permissiveRequestUrls("/logout")
+                        .permissiveRequestUrls(permissiveUrl)
                 .and()
                 //使用默认的logoutFilter
                 .logout()
                 .addLogoutHandler(tokenClearLogoutHandler())  //logout时清除token
-                .logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler()) //logout成功后返回200
-                .and()
-                .sessionManagement().disable();
+                .logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler()); //logout成功后返回200
     }
 
 
