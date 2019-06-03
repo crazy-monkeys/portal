@@ -25,7 +25,6 @@ public class PortalApplication extends SpringBootServletInitializer {
 	public void onStartup(ServletContext servletContext) throws ServletException {
 		super.onStartup(servletContext);
 
-
 		//start-up system
 	}
 
