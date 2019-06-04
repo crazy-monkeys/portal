@@ -41,11 +41,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.authorizeRequests()
-                .antMatchers("/user/register").permitAll()
-                .antMatchers("/user/login").permitAll()
-                .antMatchers("/login").permitAll()
-                .antMatchers("/admin/**").hasAnyRole("ADMIN")
-                .anyRequest().authenticated()
+//                .antMatchers("/user/register").permitAll()
+//                .antMatchers("/user/login").permitAll()
+//                .antMatchers("/login").permitAll()
+//                .antMatchers("/admin/**").hasAnyRole("ADMIN")
+//                .anyRequest().authenticated()
+                .anyRequest().permitAll()
                 .and()
                 .csrf().disable()
                 .sessionManagement().disable()
@@ -55,20 +56,20 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                         new Header("Access-control-Allow-Origin","*"),
                         new Header("Access-Control-Expose-Headers","Authorization"))))
                 .and() //拦截OPTIONS请求，直接返回header
-                .addFilterAfter(new OptionsRequestFilter(), CorsFilter.class)
+//                .addFilterAfter(new OptionsRequestFilter(), CorsFilter.class)
 
                 //添加登录filter
-                .apply(new LoginConfigurer<>()).loginSuccessHandler(loginSuccessHandler())
-                .and()
+//                .apply(new LoginConfigurer<>()).loginSuccessHandler(loginSuccessHandler())
+//                .and()
                 //添加token的filter
-                .apply(new JwtLoginConfigurer<>())
-                        .tokenValidSuccessHandler(jwtRefreshSuccessHandler())
-                        .permissiveRequestUrls("/logout")
-                .and()
+//                .apply(new JwtLoginConfigurer<>())
+//                        .tokenValidSuccessHandler(jwtRefreshSuccessHandler())
+//                        .permissiveRequestUrls("/logout")
+//                .and()
                 //使用默认的logoutFilter
                 .logout()
-                .addLogoutHandler(tokenClearLogoutHandler())  //logout时清除token
-                .logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler()) //logout成功后返回200
+//                .addLogoutHandler(tokenClearLogoutHandler())  //logout时清除token
+//                .logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler()) //logout成功后返回200
                 .and()
                 .sessionManagement().disable();
     }
@@ -80,6 +81,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
     }
 
     @Bean
+    @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
     }

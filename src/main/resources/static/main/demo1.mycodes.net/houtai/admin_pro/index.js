@@ -29,7 +29,7 @@
     })();
 
     layui.config({
-        base: '/portal/static/main/demo1.mycodes.net/houtai/admin_pro/assets/lay/modules/'
+        base: '/static/main/demo1.mycodes.net/houtai/admin_pro/assets/lay/modules/'
     }).extend(app).use(entry || 'home');
 
 })();
