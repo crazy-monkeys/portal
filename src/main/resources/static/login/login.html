@@ -4,29 +4,29 @@
 <!-- Mirrored from www.jq22.com/demo/css3Signin201809181038/ by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 11 Apr 2019 13:40:34 GMT -->
 <head>
 	<meta charset="utf-8">
-	<title>Loging</title>
+	<title>紫光展锐</title>
 	<meta name="description" content="particles.js is a lightweight JavaScript library for creating particles.">
 	<meta name="author" content="Vincent Garreau" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
-	<link rel="stylesheet" media="screen" href="${request.contextPath}/static/login/www.jq22.com/demo/css3Signin201809181038/css/style.css">
-	<link rel="stylesheet" type="text/css" href="${request.contextPath}/static/login/www.jq22.com/demo/css3Signin201809181038/css/reset.css" />
+	<link rel="stylesheet" media="screen" href="/static/login/www.jq22.com/demo/css3Signin201809181038/css/style.css">
+	<link rel="stylesheet" type="text/css" href="/static/login/www.jq22.com/demo/css3Signin201809181038/css/reset.css" />
 </head>
 <body>
 <div id="particles-js">
 	<div class="login">
 		<div class="login-top">
-			Login
+			紫光展锐
 		</div>
 		<form id="form1" action="#" method="post">
 			<div class="login-center clearfix">
-				<div class="login-center-img"><img src="${request.contextPath}/static/login/www.jq22.com/demo/css3Signin201809181038/img/name.png" /></div>
+				<div class="login-center-img"><img src="/static/login/www.jq22.com/demo/css3Signin201809181038/img/name.png" /></div>
 				<div class="login-center-input">
 					<input type="text" name="j_username" value="" placeholder="Please enter your login name" onfocus="this.placeholder=''" onblur="this.placeholder='Please enter your login name'" />
 					<div class="login-center-input-text">Login Name</div>
 				</div>
 			</div>
 			<div class="login-center clearfix">
-				<div class="login-center-img"><img src="${request.contextPath}/static/login/www.jq22.com/demo/css3Signin201809181038/img/password.png" /></div>
+				<div class="login-center-img"><img src="/static/login/www.jq22.com/demo/css3Signin201809181038/img/password.png" /></div>
 				<div class="login-center-input">
 					<input type="password" name="j_password" value="" placeholder="please enter your password" onfocus="this.placeholder=''" onblur="this.placeholder='Please enter your password'" />
 					<div class="login-center-input-text">Password</div>
@@ -41,9 +41,9 @@
 	<div class="sk-rotating-plane"></div>
 </div>
 
-<script src="${request.contextPath}/static/login/www.jq22.com/demo/css3Signin201809181038/js/particles.min.js"></script>
-<script src="${request.contextPath}/static/login/www.jq22.com/demo/css3Signin201809181038/js/app.js"></script>
-<script src='${request.contextPath}/static/jquery/jquery-2.1.4.min.js'></script>
+<script src="/static/login/www.jq22.com/demo/css3Signin201809181038/js/particles.min.js"></script>
+<script src="/static/login/www.jq22.com/demo/css3Signin201809181038/js/app.js"></script>
+<script src='/static/jquery/jquery-2.1.4.min.js'></script>
 <script type="text/javascript">
     var basePath = '${request.contextPath}';
 </script>
@@ -70,10 +70,10 @@
         }
     }
     document.querySelector(".login-button").onclick = function(){
-        addClass(document.querySelector(".login"), "active")
+        addClass(document.querySelector(".static.login.login"), "active")
         setTimeout(function(){
             addClass(document.querySelector(".sk-rotating-plane"), "active")
-            document.querySelector(".login").style.display = "none"
+            document.querySelector(".static.login.login").style.display = "none"
         },800);
 
         login();
