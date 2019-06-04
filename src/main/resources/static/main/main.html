@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<!-- Mirrored from demo1.mycodes.net/houtai/admin_pro/ by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 11 Apr 2019 13:28:41 GMT -->
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<link rel="stylesheet" href="/static/main/demo1.mycodes.net/houtai/admin_pro/assets/css/layui.css">
+	<link rel="stylesheet" href="/static/main/demo1.mycodes.net/houtai/admin_pro/assets/css/admin.css">
+	<link rel="icon" href="http://demo1.mycodes.net/favicon.ico">
+	<title>紫光展锐</title>
+</head>
+<body class="layui-layout-body">
+<div class="layui-layout layui-layout-admin">
+	<div class="layui-header custom-header">
+
+		<ul class="layui-nav layui-layout-left">
+			<li class="layui-nav-item slide-sidebar" lay-unselect>
+				<a href="javascript:;" class="icon-font"><i class="ai ai-menufold"></i></a>
+			</li>
+		</ul>
+
+		<ul class="layui-nav layui-layout-right">
+			<li class="layui-nav-item">
+				<a href="javascript:;"><span id="currentUser">admin</span></a>
+				<dl class="layui-nav-child">
+					<dd><a href="#">Help center</a></dd>
+					<dd><a href="/logout">Sign out</a></dd>
+				</dl>
+			</li>
+		</ul>
+	</div>
+
+	<div class="layui-side custom-admin">
+		<div class="layui-side-scroll">
+
+			<div class="custom-logo">
+				<h1>&nbsp;&nbsp;</h1>
+				<img src="/static/main/demo1.mycodes.net/houtai/admin_pro/assets/images/logo.png" alt=""/>
+			</div>
+			<ul id="Nav" class="layui-nav layui-nav-tree" >
+				<li id="customer" class="layui-nav-item" >
+					<a href="javascript:;">
+						<i class="layui-icon">&#xe609;</i>
+						<em>Customer management</em>
+					</a>
+					<dl class="layui-nav-child">
+						<dd><a href="/static/main/demo1.mycodes.net/houtai/admin_pro/views/sjbb_query.html">Check Registration Status</a></dd>
+					</dl>
+					<dl class="layui-nav-child">
+						<dd><a href="/static/main/demo1.mycodes.net/houtai/admin_pro/views/sjbb_add.html">Register New Customer</a></dd>
+					</dl>
+				</li>
+				<li id="system" class="layui-nav-item" >
+					<a href="javascript:;">
+						<i class="layui-icon">&#xe609;</i>
+						<em>System management</em>
+					</a>
+					<dl class="layui-nav-child">
+						<dd><a href="/static/main/demo1.mycodes.net/houtai/admin_pro/views/sjbb_approval.html">Approval Customer</a></dd>
+					</dl>
+					<dl class="layui-nav-child">
+						<dd><a href="/static/main/demo1.mycodes.net/houtai/admin_pro/views/users.html">User management</a></dd>
+					</dl>
+				</li>
+			</ul>
+		</div>
+	</div>
+
+
+	<div class="layui-body">
+		<div class="layui-tab app-container" lay-allowClose="true" lay-filter="tabs">
+			<ul id="appTabs" class="layui-tab-title custom-tab"></ul>
+			<div id="appTabPage" class="layui-tab-content"></div>
+		</div>
+	</div>
+
+	<div class="layui-footer">
+		<p>© 2019</p>
+	</div>
+
+	<div class="mobile-mask"></div>
+</div>
+
+<script type="text/javascript">
+    window.onload = function(){
+//        var url = location.search; //获取url中"?"符后的字串
+//        var theRequest = new Object();
+//        if (url.indexOf("?") != -1) {
+//            var str = url.substr(1);
+//            strs = str.split("&");
+//            for(var i = 0; i < strs.length; i ++) {
+//                theRequest[strs[i].split("=")[0]] = unescape(strs[i].split("=")[1]);
+//            }
+//        }
+//        var roleName = theRequest['roleName'];
+//        var userStatus = theRequest['userStatus'];
+//        var currentUser = theRequest['currentUser'];
+//        document.getElementById("currentUser").innerHTML = currentUser;
+
+    };
+</script>
+<script src="/static/main/demo1.mycodes.net/houtai/admin_pro/assets/layui.js"></script>
+<script src="/static/main/demo1.mycodes.net/houtai/admin_pro/index.js" ></script>
+<script src="/static/main/demo1.mycodes.net/houtai/admin_pro/home.js" ></script>
+<script type="text/javascript"  src="/static/main/idm-su.baidu.com/su.js"></script>
+</body>
+
+<!-- Mirrored from demo1.mycodes.net/houtai/admin_pro/ by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 11 Apr 2019 13:28:43 GMT -->
+</html>
