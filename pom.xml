@@ -78,6 +78,13 @@
 			<scope>test</scope>
 		</dependency>
 
+		<!-- page plugin -->
+		<dependency>
+			<groupId>com.github.pagehelper</groupId>
+			<artifactId>pagehelper</artifactId>
+			<version>4.0.0</version>
+		</dependency>
+
 		<!--freemarker-->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

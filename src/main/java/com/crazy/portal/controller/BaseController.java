@@ -1,5 +1,6 @@
 package com.crazy.portal.controller;
 
+import com.crazy.portal.bean.BaseResponse;
 import com.crazy.portal.config.security.JwtUser;
 import com.crazy.portal.entity.system.UserDO;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -21,4 +22,17 @@ public class BaseController {
                 .getPrincipal())
                 .getUserDO();
     }
+
+    protected BaseResponse successResult() {
+        BaseResponse response = new BaseResponse();
+        response.success();
+        return response;
+    }
+
+    protected BaseResponse successResult(Object data) {
+        BaseResponse response = new BaseResponse();
+        response.success(data);
+        return response;
+    }
+
 }
