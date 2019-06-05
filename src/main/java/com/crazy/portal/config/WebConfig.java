@@ -27,10 +27,14 @@ public class WebConfig extends WebMvcConfigurationSupport {
 
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
-        registry.addViewController("/").setViewName("/login/login");
-        registry.addViewController("/login").setViewName("/login/login");
-        registry.addViewController("/main").setViewName("/main/main");
+        registry.addViewController("/").setViewName("login");
+        registry.addViewController("/login").setViewName("login");
+        registry.addViewController("/main").setViewName("main");
         registry.addViewController("/loginError").setViewName("error/500");
+        registry.addViewController("/system/users").setViewName("system/users");
+        registry.addViewController("/system/authority").setViewName("system/authority");
+        registry.addViewController("/system/announcement").setViewName("system/announcement");
+        registry.addViewController("/system/document").setViewName("system/document");
     }
 
     @Override
