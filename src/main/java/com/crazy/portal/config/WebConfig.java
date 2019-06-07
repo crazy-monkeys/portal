@@ -35,6 +35,7 @@ public class WebConfig extends WebMvcConfigurationSupport {
         registry.addViewController("/system/authority").setViewName("system/authority");
         registry.addViewController("/system/announcement").setViewName("system/announcement");
         registry.addViewController("/system/document").setViewName("system/document");
+        registry.addViewController("/system/document_edit").setViewName("system/document_edit");
     }
 
     @Override
