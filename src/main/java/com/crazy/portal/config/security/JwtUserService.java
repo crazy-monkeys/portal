@@ -58,7 +58,7 @@ public class JwtUserService implements UserDetailsService {
      * @return
      */
     public String saveUserLoginInfo(UserDetails user) {
-        String salt = "123456ef";
+        String salt = "ioiuffkII#022";
         Algorithm algorithm = Algorithm.HMAC256(salt);
         //设置15分钟过期
         Date date = new Date(System.currentTimeMillis()+1000*60*15);
