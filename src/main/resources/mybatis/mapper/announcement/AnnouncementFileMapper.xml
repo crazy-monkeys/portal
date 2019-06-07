@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.crazy.portal.dao.announcement.AnnouncementFileMapper">
+  <resultMap id="BaseResultMap" type="com.crazy.portal.entity.announcement.AnnouncementFile">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="announcement_id" jdbcType="INTEGER" property="announcementId" />
+    <result column="file_name" jdbcType="VARCHAR" property="fileName" />
+    <result column="file_storage_path" jdbcType="VARCHAR" property="fileStoragePath" />
+    <result column="active" jdbcType="VARCHAR" property="active" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, announcement_id, file_name, file_storage_path, active
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_announcement_file
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_announcement_file
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.crazy.portal.entity.announcement.AnnouncementFile">
+    insert into t_announcement_file (id, announcement_id, file_name, 
+      file_storage_path, active)
+    values (#{id,jdbcType=INTEGER}, #{announcementId,jdbcType=INTEGER}, #{fileName,jdbcType=VARCHAR}, 
+      #{fileStoragePath,jdbcType=VARCHAR}, #{active,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.crazy.portal.entity.announcement.AnnouncementFile">
+    insert into t_announcement_file
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="announcementId != null">
+        announcement_id,
+      </if>
+      <if test="fileName != null">
+        file_name,
+      </if>
+      <if test="fileStoragePath != null">
+        file_storage_path,
+      </if>
+      <if test="active != null">
+        active,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="announcementId != null">
+        #{announcementId,jdbcType=INTEGER},
+      </if>
+      <if test="fileName != null">
+        #{fileName,jdbcType=VARCHAR},
+      </if>
+      <if test="fileStoragePath != null">
+        #{fileStoragePath,jdbcType=VARCHAR},
+      </if>
+      <if test="active != null">
+        #{active,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.crazy.portal.entity.announcement.AnnouncementFile">
+    update t_announcement_file
+    <set>
+      <if test="announcementId != null">
+        announcement_id = #{announcementId,jdbcType=INTEGER},
+      </if>
+      <if test="fileName != null">
+        file_name = #{fileName,jdbcType=VARCHAR},
+      </if>
+      <if test="fileStoragePath != null">
+        file_storage_path = #{fileStoragePath,jdbcType=VARCHAR},
+      </if>
+      <if test="active != null">
+        active = #{active,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.crazy.portal.entity.announcement.AnnouncementFile">
+    update t_announcement_file
+    set announcement_id = #{announcementId,jdbcType=INTEGER},
+      file_name = #{fileName,jdbcType=VARCHAR},
+      file_storage_path = #{fileStoragePath,jdbcType=VARCHAR},
+      active = #{active,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <select id="selectByAnnouncementId" resultMap="BaseResultMap" >
+    select
+    <include refid="Base_Column_List" />
+    from t_announcement_file
+    where announcement_id = #{announcementId}
+  </select>
+
+</mapper>

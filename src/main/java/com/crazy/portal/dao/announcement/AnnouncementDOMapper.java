@@ -1,6 +1,7 @@
 package com.crazy.portal.dao.announcement;
 
-import com.crazy.portal.entity.announcement.AnnouncementDO;
+import com.crazy.portal.entity.announcement.Announcement;
+import com.github.pagehelper.Page;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -8,19 +9,19 @@ import java.util.List;
 public interface AnnouncementDOMapper {
     int deleteByPrimaryKey(Integer id);
 
-    int insert(AnnouncementDO record);
+    int insert(Announcement record);
 
-    int insertSelective(AnnouncementDO record);
+    int insertSelective(Announcement record);
 
-    AnnouncementDO selectByPrimaryKey(Integer id);
+    Announcement selectByPrimaryKey(Integer id);
 
-    int updateByPrimaryKeySelective(AnnouncementDO record);
+    int updateByPrimaryKeySelective(Announcement record);
 
-    int updateByPrimaryKeyWithBLOBs(AnnouncementDO record);
+    int updateByPrimaryKeyWithBLOBs(Announcement record);
 
-    int updateByPrimaryKey(AnnouncementDO record);
+    int updateByPrimaryKey(Announcement record);
 
-    List<AnnouncementDO> selectPageListData(@Param(value = "title") String title,
-                                            @Param(value = "releaseStartTime") String releaseStartTime,
-                                            @Param(value = "releaseEndTime") String releaseEndTime);
+    Page<Announcement> selectPageListData(@Param(value = "title") String title,
+                                          @Param(value = "releaseStartTime") String releaseStartTime,
+                                          @Param(value = "releaseEndTime") String releaseEndTime);
 }
