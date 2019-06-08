@@ -2,25 +2,19 @@ package com.crazy.portal.config.security;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.crazy.portal.dao.system.RoleDOMapper;
-import com.crazy.portal.dao.system.UserDOMapper;
-import com.crazy.portal.dao.system.UserRoleDOMapper;
+import com.crazy.portal.dao.system.RoleMapper;
+import com.crazy.portal.dao.system.UserMapper;
+import com.crazy.portal.dao.system.UserRoleMapper;
 import com.crazy.portal.entity.system.Role;
 import com.crazy.portal.entity.system.User;
 import com.crazy.portal.entity.system.UserRole;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.LockedException;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @Desc:
@@ -28,44 +22,36 @@ import java.util.stream.Collectors;
  * @Date: created in 00:02 2019/4/20
  * @Modified by:
  */
-@Slf4j
 public class JwtUserService implements UserDetailsService {
+
+    private UserMapper userMapper;
+    private UserRoleMapper userRoleMapper;
+    private RoleMapper roleMapper;
 
     private final static String secret = "ioiuffkII#022";
 
-    private UserDOMapper userDOMapper;
-    private UserRoleDOMapper userRoleDOMapper;
-    private RoleDOMapper roleDOMapper;
+    public JwtUserService(UserMapper userMapper,
+                          UserRoleMapper userRoleMapper,
+                          RoleMapper roleMapper) {
 
-    public JwtUserService(UserDOMapper userDOMapper,
-                          UserRoleDOMapper userRoleDOMapper,
-                          RoleDOMapper roleDOMapper) {
-
-        this.userDOMapper = userDOMapper;
-        this.userRoleDOMapper = userRoleDOMapper;
-        this.roleDOMapper = roleDOMapper;
+        this.userMapper = userMapper;
+        this.userRoleMapper = userRoleMapper;
+        this.roleMapper = roleMapper;
     }
 
-
-
     @Override
-    public JwtUser loadUserByUsername(String username) {
-        User user = userDOMapper.findByLoginName(username);
+    public JwtUser loadUserByUsername(String username) throws UsernameNotFoundException,LockedException {
+        User user = userMapper.findByLoginName(username);
         if (user == null) {
-            log.error("用户名[{}]不存在",username);
             throw new UsernameNotFoundException(String.format("No user found with username '%s'.", username));
         }
         if(user.getUserStatus().equals(0)){
-            throw new LockedException(user.getLoginName()+">>>"+"locked");
+            throw new LockedException("locked");
         }
-        List<Integer> roleIds = userRoleDOMapper.selectUserRoleByUserId(user.getId());
-
-        Collection<? extends GrantedAuthority> roleNames = roleIds.stream().map(x->{
-            Role role = roleDOMapper.selectByPrimaryKey(x);
-            return  new SimpleGrantedAuthority(role.getRoleName());
-        }).collect(Collectors.toList());
-
-        return new JwtUser(user,user.getLoginName(),user.getLoginPwd(),roleNames);
+        UserRole userRole = userRoleMapper.selectByUserId(user.getId());
+        Role role = roleMapper.selectByPrimaryKey(userRole.getRoleId());
+        return new JwtUser(user,user.getLoginName(),user.getLoginPwd(),
+                Collections.singleton(new SimpleGrantedAuthority(role.getRoleName())));
     }
 
     /**
@@ -75,8 +61,8 @@ public class JwtUserService implements UserDetailsService {
      */
     public String saveUserLoginInfo(UserDetails user) {
         Algorithm algorithm = Algorithm.HMAC256(secret);
-        //设置15分钟过期 TODO 暂时延长1000倍
-        Date date = new Date(System.currentTimeMillis()+1000*60*15*1000);
+        //设置15分钟过期
+        Date date = new Date(System.currentTimeMillis()+1000*60*15);
         return JWT.create()
                 .withSubject(user.getUsername())
                 .withExpiresAt(date)
@@ -91,7 +77,7 @@ public class JwtUserService implements UserDetailsService {
 
     }
 
-    public UserDetails getUserLoginInfo(String username) throws UsernameNotFoundException,LockedException{
+    public UserDetails getUserLoginInfo(String username) {
         JwtUser user = loadUserByUsername(username);
         //暂时仅支持一用户一角色
         return JwtUser.builder()
