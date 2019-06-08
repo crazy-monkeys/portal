@@ -12,6 +12,10 @@
         td{
             padding:5px;
         }
+        a{
+            cursor: pointer;
+            color:#0055DB;
+        }
     </style>
 </head>
 <body class="layui-view-body">
@@ -24,13 +28,13 @@
                         <div class="layui-inline">
                             <div class="layui-form-mid">标题:</div>
                             <div class="layui-input-inline" style="width: 150px;">
-                                <input type="text" autocomplete="off" class="layui-input">
+                                <input type="text" autocomplete="off" class="layui-input" id="title">
                             </div>
                             <div class="layui-form-mid">发布日期:</div>
                             <div class="layui-input-inline" style="width: 150px;">
-                                <input type="text" class="layui-input" id="test1" placeholder="yyyy-mm-dd">
+                                <input type="text" class="layui-input" id="time1" placeholder="yyyy-mm-dd" id="releaseStartTime">
                             </div>
-                            <button class="layui-btn layui-btn-blue">查询</button>
+                            <button class="layui-btn layui-btn-blue" onclick="loadTable()">查询</button>
                         </div>
                     </div>
                     <table id="table" lay-filter="table-filter"></table>
@@ -45,30 +49,34 @@
                         <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="cancel">撤销</a>
                     </script>
                     <div id="addDiv" style="width:650px;height:300px;display: none;">
-                        <form class="layui-form" action="">
+                        <form id="editForm" class="layui-form" action="" lay-filter="editForm">
+                            <input type="hidden" name="id" />
                             <table border="0" style="width:100%;height:100%;">
                                 <tr>
                                     <td style="width:60px;height:60px;text-align: right;">标题：</td>
-                                    <td style="width:220px;"><input type="text" autocomplete="off" class="layui-input"></td>
+                                    <td style="width:220px;"><input type="text" autocomplete="off" name="title" class="layui-input" placeholder="请输入标题"></td>
                                     <td >
-                                        <input type="checkbox" name="like1[write]" lay-skin="primary" title="置顶" checked="">
+                                        <input type="checkbox" name="topmost" lay-skin="primary" title="置顶" value="1" checked="">
                                     </td>
-                                    <td>权重:</td>
-                                    <td>
-                                        <select name="aaa" >
-                                            <option value="1">默认</option>
-                                        </select>
-                                    </td>
+                                    <td></td>
+                                    <td></td>
                                 </tr>
                                 <tr>
                                     <td style="height:100px;text-align: right;vertical-align: top;">内容：</td>
-                                    <td colspan="4"><textarea placeholder="请输入内容" class="layui-textarea" name="desc"></textarea></td>
+                                    <td colspan="4"><textarea placeholder="请输入内容" class="layui-textarea" name="content"></textarea></td>
                                 </tr>
                                 <tr>
                                     <td style="height:50px;text-align: right;">附件：</td>
                                     <td colspan="4">
                                         <div class="layui-upload">
-                                            <button type="button" class="layui-btn layui-btn-normal" id="test12">上传图片</button>
+                                            <button type="button" class="layui-btn layui-btn-normal" id="file">选择文件</button>
+                                            &nbsp;&nbsp;
+                                            <a id="editFormSelectFileName">
+
+                                            </a>
+                                            <input type="hidden" name="fileList[0].id"/>
+                                            <input type="hidden" name="fileList[0].fileName"/>
+                                            <input type="hidden" name="fileList[0].fileStoragePath"/>
                                         </div>
                                     </td>
                                 </tr>
@@ -76,15 +84,13 @@
                         </form>
                     </div>
                     <div id="previewDiv" style="width:780px;height:430px;display: none;padding:10px;">
-                        <div style="width:100%;height:36px;text-align: center;font-size: 20px;">
-                            标题
+                        <div id="previewTitle" style="width:100%;height:36px;text-align: center;font-size: 20px;">
                         </div>
-                        <div style="border: 1px solid #ccc;width:100%;height:300px;padding:5px;">
-                            aaa
+                        <div id="previewContent" style="border: 1px solid #ccc;width:100%;height:300px;padding:5px;overflow-y: auto;">
                         </div>
                         <div style="border: 1px solid #ccc;width:100%;height:50px;margin-top:10px;padding:5px;">
                             <div style="height:100%;width: 50%;float: left;vertical-align: middle;line-height: 50px;">
-                                附件：<span>文件名.xsml</span>
+                                附件：<a id="previewFilename" href="#"></a>
                             </div>
                             <div style="height:100%;width:48%;float:left;text-align: right;line-height: 50px;">
                                 <button type="button" class="layui-btn layui-btn-primary layui-btn-sm">预览</button>
@@ -100,88 +106,95 @@
 <script src="../../static/layui/layui.all.js"></script>
 <script src='../../static/jquery/jquery-2.1.4.min.js'></script>
 <script type="text/javascript"  src="../../static/main/assets/js/su.js"></script>
+<script type="text/javascript"  src="../../static/main/assets/js/formUtil.js"></script>
 <script>
+    var element = layui.element;
+    var table = layui.table;
+    var form = layui.form;
+    var laydate = layui.laydate;
+    var upload = layui.upload;
     $(function() {
-        load();
-    });
-    layui.use(['laydate','upload'], function() {
-        var laydate = layui.laydate;
-        var upload = layui.upload;
+        loadTable();
         laydate.render({
-            elem: '#test1'
+            elem: '#time1'
         });
-        //普通图片上传
+        //文件上传
         var uploadInst = upload.render({
-            elem: '#test12'
-            ,url: '/upload/'
+            elem: '#file'
+            , accept: 'file'
+            ,url: '/announcement/file'
+            ,field:'files'
+            ,multiple:true
             ,before: function(obj){
 
             }
             ,done: function(res){
-
+                if(res.code === 1) {
+                    $('#editFormSelectFileName').html(res.data[0].fileName);
+                    $('input[name="fileList[0].id"]').val(res.data[0].id);
+                    $('input[name="fileList[0].fileName"]').val(res.data[0].fileName);
+                    $('input[name="fileList[0].fileStoragePath"]').val(res.data[0].fileStoragePath);
+                }else{
+                    alert(res.msg);
+                }
             }
             ,error: function(){
 
             }
         });
     });
-    var element = layui.element;
-    var table = layui.table;
-    var form = layui.form;
-    var $ = layui.jquery;
-    function load() {
-//        $.get("/portal/customer/approvalList", function (result) {
-//            $.each(result, function (i, item) {
-//                if (item['registStatus'] == 0) {
-//                    item['registStatus'] = "To be processed";
-//                }
-//                item['opration'] = "<a href="+item['registId']+"'../../static/main/demo1.mycodes.net/houtai/admin_pro/views/sjbb_info.html?registId='>Detail</a>         <a href='javascript:approval(\""+item['registId']+"\")'>Application Pass</a>";
-//            });
-//            loadTable(result);
-//        });
-        var data = [
-            {
-                title:'第一届人大代表',
-                content:'aaa',
-                createTime:'bbb',
-                releaseTime:'ccc',
-                releasePerson:'ddd',
-                status:'eee'
-            }
-        ];
-        loadTable(data);
-    }
-
-    function loadTable(data) {
+    function loadTable() {
         //展示已知数据
         table.render({
             elem: '#table'
-            , data: data
+            , url: '/announcement'
+            , method: 'get'
+            , request: {pageName: 'pageNum', limitName: 'pageSize'}
+            , where: {title: $('#title').val(), releaseStartTime: $('#releaseStartTime').val()}
+            , parseData: function(res){
+                console.log(res.data.total);
+                return {
+                    "code": res.code == 1 ? 0 : res.code,
+                    "msg": res.msg,
+                    "count": res.data.total,
+                    "data": res.data.list
+                };
+            }
             , skin: 'line' //表格风格
             , even: true
-            , page: false //是否显示分页
-            , limits: [5, 7, 10]
-            , limit: 5 //每页默认显示的数量
+            , page: true
+            , limits: [10, 20, 30]
+            , limit: 10
             , toolbar: '#toolbar'
-            , cols: [[ //标题栏
-                {field: 'title', title: '标题', minWidth: 30, display:true}
-                ,{field: 'content', title: '内容', minWidth: 80,hidden:true}
-                , {field: 'createTime', title: '创建时间', sort: true, minWidth: 80}
-                , {field: 'releaseTime', title: '发布时间', sort: true, minWidth: 80}
-                , {field: 'releasePerson', title: "发布人", minWidth: 80}
-                , {field: 'status', title: '状态', minWidth: 80}
+            , text: {
+                none: '无数据'
+            }
+            , cols: [[
+                  {field: 'id', title: 'ID', minWidth: 30, hide:true}
+                , {field: 'title', title: '标题', minWidth: 30}
+                , {field: 'content', title: '内容', minWidth: 80}
+                , {field: 'createTimeStr', title: '创建时间', sort: true, minWidth: 80}
+                , {field: 'releaseTimeStr', title: '发布时间', sort: true, minWidth: 80}
+                , {field: 'createUserName', title: "发布人", minWidth: 80}
+                , {field: 'status', title: '状态', minWidth: 80, templet: function(e){
+                    if(e.status == 0){
+                        return "未发布";
+                    }else if(e.status == 1){
+                        return "已发布";
+                    }else{
+                        return "已撤销";
+                    }
+                }}
                 , {field: 'oprate', title: '操作', minWidth: 80, toolbar: '#tableOprate'}
             ]]
             ,done: function () {
-//                $("[data-field='registId']").css('display','none');
-//                $("[data-field='customerId']").css('display','none');
+//                $("[data-field='id']").css('display','none');
             }
-
         });
         //头工具栏事件
         table.on('toolbar(table-filter)', function(obj){
             if(obj.event === 'create'){
-                showAddDialog();
+                showEditDialog();
             }
         });
         //监听行工具事件
@@ -190,41 +203,29 @@
                 ,layEvent = obj.event; //获得 lay-event 对应的值
             if(layEvent === 'preview'){
                 showPreviewDialog();
+                toPreview(data.id);
             } else if(layEvent === 'edit'){
-                layer.msg('修改操作');
+                showEditDialog();
+                toEdit(data.id);
             } else if(layEvent === 'cancel'){
-                layer.confirm('确定撤销吗', function(index){
-                    layer.close(index);
-                    //向服务端发送撤销指令
-                });
+                sureCancel(data.id);
             }
         });
     }
 
-    function approval(registId){
-        $.post(
-            "/portal/customer/approval",
-            {registId:registId},
-            function(result){
-                alert("Successful operation");
-                load();
-            }
-        );
-    }
-
-    function showAddDialog(){
+    function showEditDialog(){
         layer.open({
             title: '公告编辑',
             type: 1,
             area: ['700px', '400px'],
             content: $("#addDiv"),
-            btn : [ '保存', '取消' ],
+            btn : [ '发布', '取消' ],
             btnAlign: 'c',
             success : function(layero, index) {
-
+                $("#editForm")[0].reset();
             },
             yes : function(index, layero) {
-                layer.closeAll();
+                submitEditForm();
             },
             btn2 : function(index, layero) {
                 layer.closeAll();
@@ -250,8 +251,87 @@
             }
         });
     }
-</script>
 
+    function toEdit(id){
+        $.get("/announcement/preview/"+ id, null,
+            function(res){
+                if(res.code === 1){
+                    form.val("editForm", res.data)
+                    console.log(res);
+                    $('#editFormSelectFileName').html(res.data.fileList[0].fileName);
+                    $('input[name="fileList[0].id"]').val(res.data.fileList[0].id);
+                    $('input[name="fileList[0].fileName"]').val(res.data.fileList[0].fileName);
+                    $('input[name="fileList[0].fileStoragePath"]').val(res.data.fileList[0].fileStoragePath);
+                }else{
+                    layer.msg(res.msg);
+                }
+            }
+        );
+    }
+    function toPreview(id){
+        $.get("/announcement/preview/"+ id, null,
+            function(res){
+                if(res.code === 1){
+                    $('#previewTitle').html(res.data.title);
+                    $('#previewContent').html(res.data.content);
+                    $('#previewFilename').html(res.data.fileList[0].fileName);
+                    $('#previewFilename').attr("href", res.data.fileList[0].fileStoragePath);
+                }else{
+                    layer.msg(res.msg);
+                }
+            }
+        );
+    }
+    function sureCancel(id){
+        layer.confirm('确定撤销吗', function(index){
+            $.get("/announcement/revoke/"+ id, null,
+                function(res){
+                    if(res.code === 1){
+                        loadTable();
+                        layer.close(index);
+                    }else{
+                        layer.msg(res.msg);
+                    }
+                }
+            );
+        });
+    }
+    function submitEditForm(){
+        var json = $("#editForm").serializeJson();
+        if(!json['topmost']){
+            json['topmost'] = 0;
+        }
+        $.ajax({
+            url : "/announcement",
+            type : "post",
+            contentType:'application/json',
+            data : JSON.stringify(json),
+            success : function(res) {
+                if(res.code === 1){
+                    release(42);
+                } else {
+                    layer.msg(res.msg);
+                }
+            }
+        });
+    }
+    function release(id){
+        $.ajax({
+            url : "/announcement/release/" + id,
+            type : "get",
+            success : function(res) {
+                if(res.code === 1){
+                    layer.closeAll();
+                    $("#addDiv").hide();
+                    loadTable();
+                    layer.msg(res.msg);
+                } else {
+                    layer.msg(res.msg);
+                }
+            }
+        });
+    }
+</script>
 </body>
 
 </html>
