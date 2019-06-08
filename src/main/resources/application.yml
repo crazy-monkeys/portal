@@ -4,7 +4,7 @@ spring:
     username: root
     password: bill
     url: jdbc:mysql://localhost:3306/portal?useUnicode=true&characterEncoding=utf8&rewriteBatchedStatements=true&serverTimezone=UTC
-    driver-class-name: com.mysql.jdbc.Driver
+    driver-class-name: com.mysql.cj.jdbc.Driver
     type: com.alibaba.druid.pool.DruidDataSource
     #监控统计拦截的filters
     filters: stat,wall,slf4j
