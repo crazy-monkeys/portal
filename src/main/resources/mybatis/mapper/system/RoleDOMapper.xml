@@ -133,7 +133,7 @@
     FROM t_role where active = 1
   </select>
 
-  <select id="findRolesByUserId" resultMap="BaseResultMap" parameterType="java.lang.Long">
+  <select id="findRolesByUserId" resultMap="BaseResultMap" parameterType="java.lang.Integer">
     SELECT
     <include refid="Base_Column_List" />
     FROM t_role a inner join t_user_role b on a.role_id = b.role_id where b.user_id = #{userId,jdbcType=INTEGER}
@@ -142,6 +142,11 @@
   <select id="countByRoleName" resultType="int">
     select count(1) from t_role
     where role_name =#{roleName}
+  </select>
+
+  <select id="findRolesByResourceId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" />
+    from t_role a inner join t_role_resource b on a.role_id = b.role_id where b.resource_id = #{resourceId}
   </select>
 
 </mapper>

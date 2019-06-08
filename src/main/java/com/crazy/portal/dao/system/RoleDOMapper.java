@@ -29,7 +29,7 @@ public interface RoleDOMapper {
      * @param userId
      * @return
      */
-    List<Role> findRolesByUserId(Long userId);
+    List<Role> findRolesByUserId(Integer userId);
 
 
     /**
@@ -38,4 +38,6 @@ public interface RoleDOMapper {
      * @return
      */
     int countByRoleName(String roleName);
+
+    List<Role> findRolesByResourceId(Integer resourceId);
 }

@@ -1,5 +1,6 @@
 package com.crazy.portal.dao.system;
 
+import com.crazy.portal.entity.system.Role;
 import com.crazy.portal.entity.system.RoleResource;
 
 import java.util.List;

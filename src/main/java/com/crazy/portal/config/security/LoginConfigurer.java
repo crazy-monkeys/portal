@@ -26,7 +26,7 @@ public class LoginConfigurer<T extends LoginConfigurer<T, B>, B extends HttpSecu
         //设置Filter使用的AuthenticationManager,这里取公共的即可
         authFilter.setAuthenticationManager(http.getSharedObject(AuthenticationManager.class));
         //设置失败的Handler
-        authFilter.setAuthenticationFailureHandler(new LoginFailureHandler());
+        authFilter.setAuthenticationFailureHandler(new AuthenticationFailHandler());
         //不将认证后的context放入session
         authFilter.setSessionAuthenticationStrategy(new NullAuthenticatedSessionStrategy());
 

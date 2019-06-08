@@ -17,7 +17,7 @@ import java.util.List;
  */
 @Service
 @Slf4j
-public class ResourceService {
+public class PermissionService {
 
     @javax.annotation.Resource
     private UserRoleDOMapper userRoleDOMapper;
@@ -31,7 +31,7 @@ public class ResourceService {
      * @param userId
      * @return
      */
-    public List<Resource> findAllResourceByUserId(Integer userId){
+    public List<Resource> findAllPerMissionByUserId(Integer userId){
         if(userId == null) return null;
 
         List<Integer> roleIds = userRoleDOMapper.selectUserRoleByUserId(userId);
@@ -47,4 +47,9 @@ public class ResourceService {
 
         return resourceDOMapper.selectResourceByIds(resourceIds);
     }
+
+    public List<Resource> findAll(){
+        return resourceDOMapper.findAll();
+    }
+
 }

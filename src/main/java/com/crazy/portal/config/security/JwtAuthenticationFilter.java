@@ -66,42 +66,40 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
             filterChain.doFilter(request, response);
             return;
         }
-        Authentication authResult;
-        AuthenticationException failed = null;
         try {
             String token = getJwtToken(request);
             if(StringUtils.isEmpty(token)){
-                failed = new InsufficientAuthenticationException("JWT is Empty");
+                unsuccessfulAuthentication(request, response,new InsufficientAuthenticationException("JWT is Empty"));
+                return;
             }
             else {
                 JwtAuthenticationToken authToken = new JwtAuthenticationToken(JWT.decode(token));
-                authResult = this.getAuthenticationManager().authenticate(authToken);
-                if(authResult != null){
-                    successfulAuthentication(request, response, filterChain, authResult);
+                Authentication authResult = this.getAuthenticationManager().authenticate(authToken);
+                if(authResult == null){
+                    unsuccessfulAuthentication(request, response,
+                            new InsufficientAuthenticationException("authResult is null"));
                     return;
                 }
+                if(!authRequest(request)){
+                    unsuccessfulAuthentication(request, response,
+                            new InsufficientAuthenticationException("权限不足"));
+                    return;
+                }
+                successfulAuthentication(request, response, filterChain, authResult);
+                filterChain.doFilter(request, response);
             }
         } catch(JWTDecodeException e) {
             logger.error("JWT format error", e);
-            failed = new InsufficientAuthenticationException("JWT format error", failed);
-        }catch (InternalAuthenticationServiceException e) {
-            logger.error("An internal error occurred while trying to authenticate the user.",
-                    failed);
-            failed = e;
-        }catch (AuthenticationException e) {
-            logger.error("token认证失败",failed);
-            failed = e;
+            unsuccessfulAuthentication(request, response,
+                    new InsufficientAuthenticationException("JWT format error", e));
+            return;
         }
-        if(!permissiveRequest(request)){
-            unsuccessfulAuthentication(request, response, failed);
-        }
-
-        filterChain.doFilter(request, response);
     }
 
     protected void unsuccessfulAuthentication(HttpServletRequest request,
                                               HttpServletResponse response, AuthenticationException failed)
             throws IOException, ServletException {
+
         SecurityContextHolder.clearContext();
         failureHandler.onAuthenticationFailure(request, response, failed);
     }
@@ -126,13 +124,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
         return requiresAuthenticationRequestMatcher.matches(request);
     }
 
-    protected boolean permissiveRequest(HttpServletRequest request) {
-        if(permissiveRequestMatchers == null)
-            return false;
-        for(RequestMatcher permissiveMatcher : permissiveRequestMatchers) {
-            if(permissiveMatcher.matches(request))
-                return true;
+    protected boolean authRequest(HttpServletRequest request) {
+        //可以忽略权限的url
+        if(permissiveRequestMatchers != null && !permissiveRequestMatchers.isEmpty()){
+            for(RequestMatcher permissiveMatcher : permissiveRequestMatchers) {
+                if(permissiveMatcher.matches(request)){
+                    return true;
+                }
+
+            }
         }
+        //用户本身的权限
+
         return false;
     }
 

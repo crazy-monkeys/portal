@@ -26,6 +26,15 @@
     from t_resource
     where id = #{id,jdbcType=INTEGER}
   </select>
+
+  <select id="findAll" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_resource
+    where active = 1
+  </select>
+
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from t_resource
     where id = #{id,jdbcType=INTEGER}

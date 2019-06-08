@@ -34,6 +34,8 @@ public interface ResourceDOMapper {
      */
     List<Resource> queryResourceByResourId(Integer resourceOrder);
 
+    List<Resource> findAll();
+
     /**
      * 查询所有菜单总合
      * @return

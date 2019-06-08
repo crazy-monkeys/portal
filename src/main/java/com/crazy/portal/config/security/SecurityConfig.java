@@ -3,6 +3,7 @@ package com.crazy.portal.config.security;
 import com.crazy.portal.dao.system.RoleDOMapper;
 import com.crazy.portal.dao.system.UserDOMapper;
 import com.crazy.portal.dao.system.UserRoleDOMapper;
+import com.crazy.portal.service.system.PermissionService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.access.AccessDecisionManager;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -47,15 +48,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.authorizeRequests()
-//                .withObjectPostProcessor(new ObjectPostProcessor<FilterSecurityInterceptor>() {
-//                    @Override
-//                    public <O extends FilterSecurityInterceptor> O postProcess(O o) {
-////                        o.setSecurityMetadataSource(urlFilterInvocationSecurityMetadataSource());
-//                        o.setAccessDecisionManager(urlAccessDecisionManager());
-//                        return o;
-//                    }
-//                })
-                .anyRequest().authenticated()
+                .anyRequest()
+                .authenticated()
                 .and()
                 .sessionManagement().disable()
                 .csrf().disable()
@@ -103,16 +97,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
         DaoAuthenticationProvider daoProvider = new DaoAuthenticationProvider();
         daoProvider.setUserDetailsService(userDetailsService());
         return daoProvider;
-    }
-
-    @Bean
-    protected AccessDecisionManager urlAccessDecisionManager(){
-        return new UrlAccessDecisionManager();
-    }
-
-    @Bean
-    protected FilterInvocationSecurityMetadataSource urlFilterInvocationSecurityMetadataSource(){
-        return new UrlFilterInvocationSecurityMetadataSource(jwtUserService());
     }
 
     @Override
