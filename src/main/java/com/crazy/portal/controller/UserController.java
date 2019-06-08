@@ -1,7 +1,7 @@
 package com.crazy.portal.controller;
 
 import com.alibaba.fastjson.JSON;
-import com.crazy.portal.entity.system.UserDO;
+import com.crazy.portal.entity.system.User;
 import com.crazy.portal.service.system.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -32,7 +32,7 @@ public class UserController extends BaseController {
      * @param user
      */
     @RequestMapping("/register")
-    public Boolean createUser(@RequestBody UserDO user){
+    public Boolean createUser(@RequestBody User user){
         try{
             userService.register(user);
         }catch (Exception e){
@@ -43,7 +43,7 @@ public class UserController extends BaseController {
     }
 
     @RequestMapping("/list")
-    public List<UserDO> selectAllUsers(){
+    public List<User> selectAllUsers(){
         System.out.println(JSON.toJSONString(super.getCurrentUser()));
         return userService.selectAllUser();
     }

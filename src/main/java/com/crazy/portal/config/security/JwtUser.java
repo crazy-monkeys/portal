@@ -1,16 +1,12 @@
 package com.crazy.portal.config.security;
 
-import com.crazy.portal.entity.system.UserDO;
+import com.crazy.portal.entity.system.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.AuthorityUtils;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.util.Assert;
 
 import java.util.*;
-import java.util.function.Function;
 
 /**
  * @Desc:
@@ -20,20 +16,20 @@ import java.util.function.Function;
  */
 public class JwtUser implements UserDetails {
 
-    private UserDO userDO;
+    private User user;
     private String username;
     private String password;
     private Collection<? extends GrantedAuthority> authorities;
 
-    public JwtUser(UserDO userDO,String username,String password,Collection<? extends GrantedAuthority> authorities) {
-        this.userDO = userDO;
+    public JwtUser(User user, String username, String password, Collection<? extends GrantedAuthority> authorities) {
+        this.user = user;
         this.username = username;
         this.password = password;
         this.authorities = authorities;
     }
 
-    public UserDO getUserDO() {
-        return userDO;
+    public User getUser() {
+        return user;
     }
 
     @Override
@@ -81,16 +77,16 @@ public class JwtUser implements UserDetails {
     }
 
     public static class UserBuilder {
-        private UserDO userDO;
+        private User user;
         private String username;
         private String password;
         private List<GrantedAuthority> authorities;
 
         private UserBuilder() {}
 
-        public JwtUser.UserBuilder userDO(UserDO userDO) {
-            Assert.notNull(userDO, "username cannot be null");
-            this.userDO = userDO;
+        public JwtUser.UserBuilder userDO(User user) {
+            Assert.notNull(user, "username cannot be null");
+            this.user = user;
             return this;
         }
 
@@ -109,7 +105,7 @@ public class JwtUser implements UserDetails {
             return this;
         }
         public UserDetails build() {
-            return new JwtUser(userDO,username,password,authorities);
+            return new JwtUser(user,username,password,authorities);
         }
     }
 }

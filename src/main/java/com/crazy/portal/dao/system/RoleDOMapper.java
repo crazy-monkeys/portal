@@ -1,17 +1,41 @@
 package com.crazy.portal.dao.system;
 
-import com.crazy.portal.entity.system.RoleDO;
+import com.crazy.portal.entity.system.Role;
+
+import java.util.List;
 
 public interface RoleDOMapper {
     int deleteByPrimaryKey(Integer id);
 
-    int insert(RoleDO record);
+    int insert(Role record);
 
-    int insertSelective(RoleDO record);
+    int insertSelective(Role record);
 
-    RoleDO selectByPrimaryKey(Integer id);
+    Role selectByPrimaryKey(Integer id);
 
-    int updateByPrimaryKeySelective(RoleDO record);
+    int updateByPrimaryKeySelective(Role record);
 
-    int updateByPrimaryKey(RoleDO record);
+    int updateByPrimaryKey(Role record);
+
+
+    /**
+     * 查询角色列表
+     * @return
+     */
+    List<Role> queryRoleList();
+
+    /**
+     * 查询用户所属的角色
+     * @param userId
+     * @return
+     */
+    List<Role> findRolesByUserId(Long userId);
+
+
+    /**
+     * roleName是否存在
+     * @param roleName
+     * @return
+     */
+    int countByRoleName(String roleName);
 }

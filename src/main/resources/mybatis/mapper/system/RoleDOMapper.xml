@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.crazy.portal.dao.system.RoleDOMapper">
-  <resultMap id="BaseResultMap" type="com.crazy.portal.entity.system.RoleDO">
+  <resultMap id="BaseResultMap" type="com.crazy.portal.entity.system.Role">
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="active" jdbcType="SMALLINT" property="active" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
@@ -24,7 +24,7 @@
     delete from t_role
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.crazy.portal.entity.system.RoleDO">
+  <insert id="insert" parameterType="com.crazy.portal.entity.system.Role">
     insert into t_role (id, active, create_time, 
       create_user_id, role_desc, role_name, 
       update_time, update_user_id)
@@ -32,7 +32,7 @@
       #{createUserId,jdbcType=INTEGER}, #{roleDesc,jdbcType=VARCHAR}, #{roleName,jdbcType=VARCHAR}, 
       #{updateTime,jdbcType=TIMESTAMP}, #{updateUserId,jdbcType=INTEGER})
   </insert>
-  <insert id="insertSelective" parameterType="com.crazy.portal.entity.system.RoleDO">
+  <insert id="insertSelective" parameterType="com.crazy.portal.entity.system.Role">
     insert into t_role
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -87,7 +87,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.crazy.portal.entity.system.RoleDO">
+  <update id="updateByPrimaryKeySelective" parameterType="com.crazy.portal.entity.system.Role">
     update t_role
     <set>
       <if test="active != null">
@@ -114,7 +114,7 @@
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.crazy.portal.entity.system.RoleDO">
+  <update id="updateByPrimaryKey" parameterType="com.crazy.portal.entity.system.Role">
     update t_role
     set active = #{active,jdbcType=SMALLINT},
       create_time = #{createTime,jdbcType=TIMESTAMP},
@@ -125,4 +125,23 @@
       update_user_id = #{updateUserId,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+
+  <select id="queryRoleList" resultMap="BaseResultMap" parameterType="com.crazy.portal.entity.system.Role">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM t_role where active = 1
+  </select>
+
+  <select id="findRolesByUserId" resultMap="BaseResultMap" parameterType="java.lang.Long">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM t_role a inner join t_user_role b on a.role_id = b.role_id where b.user_id = #{userId,jdbcType=INTEGER}
+  </select>
+
+  <select id="countByRoleName" resultType="int">
+    select count(1) from t_role
+    where role_name =#{roleName}
+  </select>
+
 </mapper>

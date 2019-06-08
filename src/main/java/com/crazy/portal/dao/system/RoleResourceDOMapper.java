@@ -1,17 +1,21 @@
 package com.crazy.portal.dao.system;
 
-import com.crazy.portal.entity.system.RoleResourceDO;
+import com.crazy.portal.entity.system.RoleResource;
+
+import java.util.List;
 
 public interface RoleResourceDOMapper {
     int deleteByPrimaryKey(Integer id);
 
-    int insert(RoleResourceDO record);
+    int insert(RoleResource record);
 
-    int insertSelective(RoleResourceDO record);
+    int insertSelective(RoleResource record);
 
-    RoleResourceDO selectByPrimaryKey(Integer id);
+    RoleResource selectByPrimaryKey(Integer id);
 
-    int updateByPrimaryKeySelective(RoleResourceDO record);
+    int updateByPrimaryKeySelective(RoleResource record);
 
-    int updateByPrimaryKey(RoleResourceDO record);
+    int updateByPrimaryKey(RoleResource record);
+
+    List<Integer> selectRoleResourceByRoleIds(List<Integer> roleIds);
 }

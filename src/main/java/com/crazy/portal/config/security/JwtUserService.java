@@ -5,16 +5,21 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.crazy.portal.dao.system.RoleDOMapper;
 import com.crazy.portal.dao.system.UserDOMapper;
 import com.crazy.portal.dao.system.UserRoleDOMapper;
-import com.crazy.portal.entity.system.RoleDO;
-import com.crazy.portal.entity.system.UserDO;
-import com.crazy.portal.entity.system.UserRoleDO;
+import com.crazy.portal.entity.system.Role;
+import com.crazy.portal.entity.system.User;
+import com.crazy.portal.entity.system.UserRole;
 import org.springframework.security.authentication.LockedException;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @Desc:
@@ -23,6 +28,8 @@ import java.util.Date;
  * @Modified by:
  */
 public class JwtUserService implements UserDetailsService {
+
+    private final static String secret = "ioiuffkII#022";
 
     private UserDOMapper userDOMapper;
     private UserRoleDOMapper userRoleDOMapper;
@@ -37,19 +44,25 @@ public class JwtUserService implements UserDetailsService {
         this.roleDOMapper = roleDOMapper;
     }
 
+
+
     @Override
     public JwtUser loadUserByUsername(String username) throws UsernameNotFoundException,LockedException {
-        UserDO user = userDOMapper.findByLoginName(username);
+        User user = userDOMapper.findByLoginName(username);
         if (user == null) {
             throw new UsernameNotFoundException(String.format("No user found with username '%s'.", username));
         }
         if(user.getUserStatus().equals(0)){
-            throw new LockedException("locked");
+            throw new LockedException(user.getLoginName()+">>>"+"locked");
         }
-        UserRoleDO userRoleDO = userRoleDOMapper.selectByUserId(user.getId());
-        RoleDO roleDO = roleDOMapper.selectByPrimaryKey(userRoleDO.getRoleId());
-        return new JwtUser(user,user.getLoginName(),user.getLoginPwd(),
-                Collections.singleton(new SimpleGrantedAuthority(roleDO.getRoleName())));
+        List<Integer> roleIds = userRoleDOMapper.selectUserRoleByUserId(user.getId());
+
+        Collection<? extends GrantedAuthority> roleNames = roleIds.stream().map(x->{
+            Role role = roleDOMapper.selectByPrimaryKey(x);
+            return  new SimpleGrantedAuthority(role.getRoleName());
+        }).collect(Collectors.toList());
+
+        return new JwtUser(user,user.getLoginName(),user.getLoginPwd(),roleNames);
     }
 
     /**
@@ -58,8 +71,7 @@ public class JwtUserService implements UserDetailsService {
      * @return
      */
     public String saveUserLoginInfo(UserDetails user) {
-        String salt = "ioiuffkII#022";
-        Algorithm algorithm = Algorithm.HMAC256(salt);
+        Algorithm algorithm = Algorithm.HMAC256(secret);
         //设置15分钟过期
         Date date = new Date(System.currentTimeMillis()+1000*60*15);
         return JWT.create()
@@ -77,13 +89,12 @@ public class JwtUserService implements UserDetailsService {
     }
 
     public UserDetails getUserLoginInfo(String username) {
-        String salt = "123456ef";
         JwtUser user = loadUserByUsername(username);
         //暂时仅支持一用户一角色
         return JwtUser.builder()
-                .userDO(user.getUserDO())
+                .userDO(user.getUser())
                 .username(user.getUsername())
-                .password(salt)
+                .password(secret)
                 .authorities(user.getAuthorities())
                 .build();
     }

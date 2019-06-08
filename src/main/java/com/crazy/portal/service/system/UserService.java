@@ -2,13 +2,11 @@ package com.crazy.portal.service.system;
 
 import com.crazy.portal.dao.system.UserDOMapper;
 import com.crazy.portal.dao.system.UserRoleDOMapper;
-import com.crazy.portal.entity.system.UserDO;
-import com.crazy.portal.entity.system.UserRoleDO;
+import com.crazy.portal.entity.system.User;
+import com.crazy.portal.entity.system.UserRole;
 import com.crazy.portal.util.DateUtil;
 import com.crazy.portal.util.Enums;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -28,10 +26,6 @@ import java.util.List;
 public class UserService {
 
     @Resource
-    private AuthenticationManager authenticationManager;
-    @Resource
-    private UserDetailsService userDetailsService;
-    @Resource
     private UserDOMapper userDOMapper;
     @Resource
     private UserRoleDOMapper userRoleDOMapper;
@@ -39,21 +33,21 @@ public class UserService {
     private PasswordEncoder passwordEncoder =
             PasswordEncoderFactories.createDelegatingPasswordEncoder();
 
-    public List<UserDO> selectAllUser(){
+    public List<User> selectAllUser(){
         return userDOMapper.selectAllUser();
     }
 
     public Boolean approvalUser(String userName, int status){
         try{
-            UserDO userDO = userDOMapper.findByLoginName(userName);
-            if(userDO.getUserStatus()==0){
-                userDO.setUserStatus(Enums.USER_STATUS.init.getCode());
-            }else if(userDO.getUserStatus()==3){
-                userDO.setUserStatus(Enums.USER_STATUS.normal.getCode());
+            User user = userDOMapper.findByLoginName(userName);
+            if(user.getUserStatus()==0){
+                user.setUserStatus(Enums.USER_STATUS.init.getCode());
+            }else if(user.getUserStatus()==3){
+                user.setUserStatus(Enums.USER_STATUS.normal.getCode());
             }
-            userDO.setUpdateTime(new Date());
+            user.setUpdateTime(new Date());
             //user.setUpdateUserId();
-            userDOMapper.insertSelective(userDO);
+            userDOMapper.insertSelective(user);
         }catch (Exception e){
             log.error("审批异常！",e);
             return false;
@@ -62,7 +56,7 @@ public class UserService {
     }
 
     @Transactional
-    public String register(UserDO user) {
+    public String register(User user) {
         String username = user.getLoginName();
         if (userDOMapper.findByLoginName(username) != null) {
             return "用户已存在";
@@ -85,12 +79,12 @@ public class UserService {
         user.setCreateTime(new Date());
         user.setActive((short)1);
         userDOMapper.insertSelective(user);
-        UserRoleDO userRoleDO = new UserRoleDO();
-        userRoleDO.setUserId(user.getId());
-        userRoleDO.setRoleId(2);
-        userRoleDO.setCreateTime(new Date());
-        userRoleDO.setCreateId(1);
-        userRoleDOMapper.insertSelective(userRoleDO);
+        UserRole userRole = new UserRole();
+        userRole.setUserId(user.getId());
+        userRole.setRoleId(2);
+        userRole.setCreateTime(new Date());
+        userRole.setCreateId(1);
+        userRoleDOMapper.insertSelective(userRole);
         return "success";
     }
 }

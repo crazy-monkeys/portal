@@ -2,7 +2,7 @@ package com.crazy.portal.entity.system;
 
 import java.util.Date;
 
-public class RoleDO {
+public class Role {
     private Integer id;
 
     private Short active;

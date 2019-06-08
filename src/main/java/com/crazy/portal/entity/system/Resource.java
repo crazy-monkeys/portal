@@ -2,7 +2,7 @@ package com.crazy.portal.entity.system;
 
 import java.util.Date;
 
-public class ResourceDO {
+public class Resource {
     private Integer id;
 
     private Short active;

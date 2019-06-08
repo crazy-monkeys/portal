@@ -2,7 +2,7 @@ package com.crazy.portal.entity.system;
 
 import java.util.Date;
 
-public class RoleResourceDO {
+public class RoleResource {
     private Integer id;
 
     private Integer roleId;

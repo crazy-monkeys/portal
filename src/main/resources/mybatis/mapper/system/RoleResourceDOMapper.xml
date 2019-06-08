@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.crazy.portal.dao.system.RoleResourceDOMapper">
-  <resultMap id="BaseResultMap" type="com.crazy.portal.entity.system.RoleResourceDO">
+  <resultMap id="BaseResultMap" type="com.crazy.portal.entity.system.RoleResource">
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="role_id" jdbcType="INTEGER" property="roleId" />
     <result column="resource_id" jdbcType="INTEGER" property="resourceId" />
@@ -19,11 +19,22 @@
     from t_role_resource
     where id = #{id,jdbcType=INTEGER}
   </select>
+
+
+  <select id="findAll" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_role_resource
+  </select>
+
+
+
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from t_role_resource
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.crazy.portal.entity.system.RoleResourceDO">
+  <insert id="insert" parameterType="com.crazy.portal.entity.system.RoleResource">
     insert into t_role_resource (id, role_id, resource_id, 
       create_time, create_id, update_time, 
       update_id)
@@ -31,7 +42,7 @@
       #{createTime,jdbcType=TIMESTAMP}, #{createId,jdbcType=INTEGER}, #{updateTime,jdbcType=TIMESTAMP}, 
       #{updateId,jdbcType=INTEGER})
   </insert>
-  <insert id="insertSelective" parameterType="com.crazy.portal.entity.system.RoleResourceDO">
+  <insert id="insertSelective" parameterType="com.crazy.portal.entity.system.RoleResource">
     insert into t_role_resource
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -80,7 +91,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.crazy.portal.entity.system.RoleResourceDO">
+  <update id="updateByPrimaryKeySelective" parameterType="com.crazy.portal.entity.system.RoleResource">
     update t_role_resource
     <set>
       <if test="roleId != null">
@@ -104,7 +115,7 @@
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.crazy.portal.entity.system.RoleResourceDO">
+  <update id="updateByPrimaryKey" parameterType="com.crazy.portal.entity.system.RoleResource">
     update t_role_resource
     set role_id = #{roleId,jdbcType=INTEGER},
       resource_id = #{resourceId,jdbcType=INTEGER},
@@ -114,4 +125,13 @@
       update_id = #{updateId,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <!-- 查询角色资源 -->
+  <select id="selectRoleResourceByRoleIds" resultType="java.lang.Integer">
+    SELECT RESOURCE_ID FROM t_role_resource WHERE ROLE_ID IN
+    <foreach item="item" index="index" collection="roleIds" open="("
+             separator="," close=")">
+      #{item}
+    </foreach>
+  </select>
 </mapper>

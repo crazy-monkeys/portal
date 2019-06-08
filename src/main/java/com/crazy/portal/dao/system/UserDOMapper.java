@@ -1,18 +1,18 @@
 package com.crazy.portal.dao.system;
 
-import com.crazy.portal.entity.system.UserDO;
+import com.crazy.portal.entity.system.User;
 
 import java.util.List;
 
 public interface UserDOMapper {
 
-    UserDO selectById(Integer id);
+    User selectById(Integer id);
 
-    int insertSelective(UserDO record);
+    int insertSelective(User record);
 
-    int updateByPrimaryKeySelective(UserDO record);
+    int updateByPrimaryKeySelective(User record);
 
-    UserDO findByLoginName(String loginName);
+    User findByLoginName(String loginName);
 
-    List<UserDO> selectAllUser();
+    List<User> selectAllUser();
 }

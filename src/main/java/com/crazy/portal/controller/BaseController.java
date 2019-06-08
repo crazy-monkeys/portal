@@ -1,7 +1,7 @@
 package com.crazy.portal.controller;
 
 import com.crazy.portal.config.security.JwtUser;
-import com.crazy.portal.entity.system.UserDO;
+import com.crazy.portal.entity.system.User;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
@@ -14,11 +14,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class BaseController {
 
-    public UserDO getCurrentUser(){
+    public User getCurrentUser(){
         return ((JwtUser) SecurityContextHolder
                 .getContext()
                 .getAuthentication()
                 .getPrincipal())
-                .getUserDO();
+                .getUser();
     }
 }

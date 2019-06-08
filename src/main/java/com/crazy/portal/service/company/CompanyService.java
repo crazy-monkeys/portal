@@ -4,12 +4,11 @@ import com.crazy.portal.bean.BaseResponse;
 import com.crazy.portal.dao.company.*;
 import com.crazy.portal.dao.system.UserDOMapper;
 import com.crazy.portal.entity.company.*;
-import com.crazy.portal.entity.system.UserDO;
+import com.crazy.portal.entity.system.User;
 import com.crazy.portal.util.OssUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.annotation.Resource;
 import java.net.URL;
@@ -55,7 +54,7 @@ public class CompanyService {
         companyBean.setActive((short)1);
         tCompanyInfoVOMapper.insertSelective(companyBean);
 
-        UserDO user = userDOMapper.selectById(companyBean.getUserId());
+        User user = userDOMapper.selectById(companyBean.getUserId());
         user.setUserStatus(3);
         userDOMapper.updateByPrimaryKeySelective(user);
 

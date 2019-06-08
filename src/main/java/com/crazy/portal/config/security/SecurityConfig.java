@@ -4,15 +4,19 @@ import com.crazy.portal.dao.system.RoleDOMapper;
 import com.crazy.portal.dao.system.UserDOMapper;
 import com.crazy.portal.dao.system.UserRoleDOMapper;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.access.AccessDecisionManager;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.ObjectPostProcessor;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.web.access.intercept.FilterInvocationSecurityMetadataSource;
+import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
 import org.springframework.security.web.header.Header;
 import org.springframework.security.web.header.writers.StaticHeadersWriter;
@@ -43,6 +47,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.authorizeRequests()
+//                .withObjectPostProcessor(new ObjectPostProcessor<FilterSecurityInterceptor>() {
+//                    @Override
+//                    public <O extends FilterSecurityInterceptor> O postProcess(O o) {
+////                        o.setSecurityMetadataSource(urlFilterInvocationSecurityMetadataSource());
+//                        o.setAccessDecisionManager(urlAccessDecisionManager());
+//                        return o;
+//                    }
+//                })
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement().disable()
@@ -80,12 +92,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
         return super.authenticationManagerBean();
     }
 
-    @Bean("jwtAuthenticationProvider")
+    @Bean
     protected AuthenticationProvider jwtAuthenticationProvider() {
         return new JwtAuthenticationProvider(jwtUserService());
     }
 
-    @Bean("daoAuthenticationProvider")
+    @Bean
     protected AuthenticationProvider daoAuthenticationProvider() throws Exception{
         //这里会默认使用BCryptPasswordEncoder比对加密后的密码，注意要跟createUser时保持一致
         DaoAuthenticationProvider daoProvider = new DaoAuthenticationProvider();
@@ -93,12 +105,22 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
         return daoProvider;
     }
 
+    @Bean
+    protected AccessDecisionManager urlAccessDecisionManager(){
+        return new UrlAccessDecisionManager();
+    }
+
+    @Bean
+    protected FilterInvocationSecurityMetadataSource urlFilterInvocationSecurityMetadataSource(){
+        return new UrlFilterInvocationSecurityMetadataSource(jwtUserService());
+    }
+
     @Override
     protected UserDetailsService userDetailsService() {
         return new JwtUserService(userDOMapper,userRoleDOMapper,roleDOMapper);
     }
 
-    @Bean("jwtUserService")
+    @Bean
     protected JwtUserService jwtUserService() {
         return new JwtUserService(userDOMapper,userRoleDOMapper,roleDOMapper);
     }

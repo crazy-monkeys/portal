@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.crazy.portal.dao.system.ResourceDOMapper">
-  <resultMap id="BaseResultMap" type="com.crazy.portal.entity.system.ResourceDO">
+  <resultMap id="BaseResultMap" type="com.crazy.portal.entity.system.Resource">
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="active" jdbcType="SMALLINT" property="active" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
@@ -30,7 +30,7 @@
     delete from t_resource
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.crazy.portal.entity.system.ResourceDO">
+  <insert id="insert" parameterType="com.crazy.portal.entity.system.Resource">
     insert into t_resource (id, active, create_time, 
       create_user_id, icon_class, parent_id, 
       resource_desc, resource_name, resource_order, 
@@ -42,7 +42,7 @@
       #{resourceType,jdbcType=VARCHAR}, #{resourceUrl,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, 
       #{updateUserId,jdbcType=INTEGER})
   </insert>
-  <insert id="insertSelective" parameterType="com.crazy.portal.entity.system.ResourceDO">
+  <insert id="insertSelective" parameterType="com.crazy.portal.entity.system.Resource">
     insert into t_resource
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -127,7 +127,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.crazy.portal.entity.system.ResourceDO">
+  <update id="updateByPrimaryKeySelective" parameterType="com.crazy.portal.entity.system.Resource">
     update t_resource
     <set>
       <if test="active != null">
@@ -169,7 +169,7 @@
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.crazy.portal.entity.system.ResourceDO">
+  <update id="updateByPrimaryKey" parameterType="com.crazy.portal.entity.system.Resource">
     update t_resource
     set active = #{active,jdbcType=SMALLINT},
       create_time = #{createTime,jdbcType=TIMESTAMP},
@@ -185,4 +185,55 @@
       update_user_id = #{updateUserId,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+
+  <select id="queryResourceList" resultMap="BaseResultMap" >
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM t_resource
+    ORDER BY RESOURCE_ORDER
+  </select>
+
+  <select id="queryResourceByParentId" resultMap="BaseResultMap" parameterType="java.lang.Long">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM t_resource
+    WHERE 1=1
+    AND PARENT_ID=#{parentId,jdbcType=DECIMAL}
+    ORDER BY RESOURCE_ORDER
+  </select>
+
+  <select id="queryResourceByResourId" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM t_resource
+    WHERE 1=1
+    <if test="resourceOrder !=null">
+      <![CDATA[ AND RESOURCE_ORDER  > #{resourceOrder,jdbcType=DECIMAL}   ]]>
+    </if>
+    AND RESOURCE_ORDER IS NOT NULL
+    ORDER BY RESOURCE_ORDER
+  </select>
+
+  <select id="countOrder" resultType="int">
+    SELECT
+    COUNT(*)
+    FROM t_resource
+    WHERE 1=1
+    AND  RESOURCE_ORDER IS NOT NULL
+
+  </select>
+  <!-- 查询资源列表 -->
+  <select id="selectResourceByIds" resultMap="BaseResultMap">
+    SELECT * FROM t_resource WHERE RESOURCE_ID IN
+    <foreach item="item" index="index" collection="ids" open="("
+             separator="," close=")">
+      #{item}
+    </foreach>
+    ORDER BY RESOURCE_ORDER
+  </select>
+
+  <select id="getRoleCountByResourceId" resultType="int">
+    SELECT count(1) FROM t_role_resource WHERE resource_id= #{resourceId}
+  </select>
 </mapper>

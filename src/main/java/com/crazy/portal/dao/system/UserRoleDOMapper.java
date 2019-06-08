@@ -1,19 +1,28 @@
 package com.crazy.portal.dao.system;
 
-import com.crazy.portal.entity.system.UserRoleDO;
+import com.crazy.portal.entity.system.UserRole;
+
+import java.util.List;
 
 public interface UserRoleDOMapper {
     int deleteByPrimaryKey(Integer id);
 
-    int insert(UserRoleDO record);
+    int insert(UserRole record);
 
-    int insertSelective(UserRoleDO record);
+    int insertSelective(UserRole record);
 
-    UserRoleDO selectByUserId(Integer userId);
+    UserRole selectByUserId(Integer userId);
 
-    int updateByPrimaryKeySelective(UserRoleDO record);
+    int updateByPrimaryKeySelective(UserRole record);
 
-    int updateByPrimaryKey(UserRoleDO record);
+    int updateByPrimaryKey(UserRole record);
 
 
+    int deleteByUserId(Integer userId);
+    /**
+     * 查询用户角色关系
+     * @param userId 用户ID
+     * @return List<String>  roleId集合
+     */
+    List<Integer> selectUserRoleByUserId(Integer userId);
 }

@@ -6,7 +6,7 @@ import lombok.Data;
 import java.util.Date;
 
 @Data
-public class UserDO {
+public class User {
     private Integer id;
 
     private Short active;
