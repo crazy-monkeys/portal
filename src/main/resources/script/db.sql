@@ -66,7 +66,7 @@ CREATE TABLE `t_user` (
 --  Records of `t_user`
 -- ----------------------------
 BEGIN;
-INSERT INTO `t_user` VALUES ('1', '1', 'cn', '2019-04-19 13:21:43', '1', 'biao.chenit@qq.com', null, '2019-04-19 13:21:43', null, 'admin', '$2a$10$JaF6BmgmUOQE15tuNUI1oeWFcXDeyd9025GSl4EP5zE6wjavYnmZ2', '15800942734', '2020-04-18 13:21:43', 'jack', '2019-04-19 13:21:43', null, null, '2', '0');
+INSERT INTO `t_user` VALUES ('1', '1', 'cn', '2019-04-19 13:21:43', '1', 'biao.chenit@qq.com', null, '2019-04-19 13:21:43', null, 'admin', '{bcrypt}$2a$10$sAycmDA/E4Gk69evAZflxO.GxSlY0acO.X.sp1pRZG4i2F74/SdsC', '15800942734', '2020-04-18 13:21:43', 'jack', '2019-04-19 13:21:43', null, null, '2', '0');
 COMMIT;
 
 
