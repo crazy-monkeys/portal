@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="../../static/layui/css/layui.css">
+    <link rel="stylesheet" href="../../static/main/assets/css/view.css"/>
+    <title>Portal</title>
+    <style>
+        td{
+            padding:5px;
+        }
+    </style>
+</head>
+<body class="layui-view-body">
+<div class="layui-content">
+    <div class="layui-row">
+        <div class="layui-card">
+            <div class="layui-card-body">
+                <div class="form-box">
+                    <div class="layui-form layui-form-item">
+                        <div class="layui-inline">
+                            <div class="layui-form-mid">标题:</div>
+                            <div class="layui-input-inline" style="width: 150px;">
+                                <input type="text" autocomplete="off" class="layui-input">
+                            </div>
+                            <div class="layui-form-mid">发布日期:</div>
+                            <div class="layui-input-inline" style="width: 150px;">
+                                <input type="text" class="layui-input" id="test1" placeholder="yyyy-mm-dd">
+                            </div>
+                            <button class="layui-btn layui-btn-blue">查询</button>
+                        </div>
+                    </div>
+                    <table id="table" lay-filter="table-filter"></table>
+                    <script type="text/html" id="toolbar">
+                        <div class="layui-btn-container">
+                            <button class="layui-btn layui-btn-sm layui-btn-primary" lay-event="create">创建公告</button>
+                        </div>
+                    </script>
+                    <script type="text/html" id="tableOprate">
+                        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="preview">预览</a>
+                        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit">修改</a>
+                        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="cancel">撤销</a>
+                    </script>
+                    <div id="addDiv" style="width:650px;height:300px;display: none;">
+                        <form class="layui-form" action="">
+                            <table border="0" style="width:100%;height:100%;">
+                                <tr>
+                                    <td style="width:60px;height:60px;text-align: right;">标题：</td>
+                                    <td style="width:220px;"><input type="text" autocomplete="off" class="layui-input"></td>
+                                    <td >
+                                        <input type="checkbox" name="like1[write]" lay-skin="primary" title="置顶" checked="">
+                                    </td>
+                                    <td>权重:</td>
+                                    <td>
+                                        <select name="aaa" >
+                                            <option value="1">默认</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="height:100px;text-align: right;vertical-align: top;">内容：</td>
+                                    <td colspan="4"><textarea placeholder="请输入内容" class="layui-textarea" name="desc"></textarea></td>
+                                </tr>
+                                <tr>
+                                    <td style="height:50px;text-align: right;">附件：</td>
+                                    <td colspan="4">
+                                        <div class="layui-upload">
+                                            <button type="button" class="layui-btn layui-btn-normal" id="test12">上传图片</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </form>
+                    </div>
+                    <div id="previewDiv" style="width:780px;height:430px;display: none;padding:10px;">
+                        <div style="width:100%;height:36px;text-align: center;font-size: 20px;">
+                            标题
+                        </div>
+                        <div style="border: 1px solid #ccc;width:100%;height:300px;padding:5px;">
+                            aaa
+                        </div>
+                        <div style="border: 1px solid #ccc;width:100%;height:50px;margin-top:10px;padding:5px;">
+                            <div style="height:100%;width: 50%;float: left;vertical-align: middle;line-height: 50px;">
+                                附件：<span>文件名.xsml</span>
+                            </div>
+                            <div style="height:100%;width:48%;float:left;text-align: right;line-height: 50px;">
+                                <button type="button" class="layui-btn layui-btn-primary layui-btn-sm">预览</button>
+                                <button type="button" class="layui-btn layui-btn-primary layui-btn-sm">下载</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="../../static/layui/layui.all.js"></script>
+<script src='../../static/jquery/jquery-2.1.4.min.js'></script>
+<script type="text/javascript"  src="../../static/main/assets/js/su.js"></script>
+<script>
+    $(function() {
+        load();
+    });
+    layui.use(['laydate','upload'], function() {
+        var laydate = layui.laydate;
+        var upload = layui.upload;
+        laydate.render({
+            elem: '#test1'
+        });
+        //普通图片上传
+        var uploadInst = upload.render({
+            elem: '#test12'
+            ,url: '/upload/'
+            ,before: function(obj){
+
+            }
+            ,done: function(res){
+
+            }
+            ,error: function(){
+
+            }
+        });
+    });
+    var element = layui.element;
+    var table = layui.table;
+    var form = layui.form;
+    var $ = layui.jquery;
+    function load() {
+//        $.get("/portal/customer/approvalList", function (result) {
+//            $.each(result, function (i, item) {
+//                if (item['registStatus'] == 0) {
+//                    item['registStatus'] = "To be processed";
+//                }
+//                item['opration'] = "<a href="+item['registId']+"'../../static/main/demo1.mycodes.net/houtai/admin_pro/views/sjbb_info.html?registId='>Detail</a>         <a href='javascript:approval(\""+item['registId']+"\")'>Application Pass</a>";
+//            });
+//            loadTable(result);
+//        });
+        var data = [
+            {
+                title:'第一届人大代表',
+                content:'aaa',
+                createTime:'bbb',
+                releaseTime:'ccc',
+                releasePerson:'ddd',
+                status:'eee'
+            }
+        ];
+        loadTable(data);
+    }
+
+    function loadTable(data) {
+        //展示已知数据
+        table.render({
+            elem: '#table'
+            , data: data
+            , skin: 'line' //表格风格
+            , even: true
+            , page: false //是否显示分页
+            , limits: [5, 7, 10]
+            , limit: 5 //每页默认显示的数量
+            , toolbar: '#toolbar'
+            , cols: [[ //标题栏
+                {field: 'title', title: '标题', minWidth: 30, display:true}
+                ,{field: 'content', title: '内容', minWidth: 80,hidden:true}
+                , {field: 'createTime', title: '创建时间', sort: true, minWidth: 80}
+                , {field: 'releaseTime', title: '发布时间', sort: true, minWidth: 80}
+                , {field: 'releasePerson', title: "发布人", minWidth: 80}
+                , {field: 'status', title: '状态', minWidth: 80}
+                , {field: 'oprate', title: '操作', minWidth: 80, toolbar: '#tableOprate'}
+            ]]
+            ,done: function () {
+//                $("[data-field='registId']").css('display','none');
+//                $("[data-field='customerId']").css('display','none');
+            }
+
+        });
+        //头工具栏事件
+        table.on('toolbar(table-filter)', function(obj){
+            if(obj.event === 'create'){
+                showAddDialog();
+            }
+        });
+        //监听行工具事件
+        table.on('tool(table-filter)', function(obj){
+            var data = obj.data //获得当前行数据
+                ,layEvent = obj.event; //获得 lay-event 对应的值
+            if(layEvent === 'preview'){
+                showPreviewDialog();
+            } else if(layEvent === 'edit'){
+                layer.msg('修改操作');
+            } else if(layEvent === 'cancel'){
+                layer.confirm('确定撤销吗', function(index){
+                    layer.close(index);
+                    //向服务端发送撤销指令
+                });
+            }
+        });
+    }
+
+    function approval(registId){
+        $.post(
+            "/portal/customer/approval",
+            {registId:registId},
+            function(result){
+                alert("Successful operation");
+                load();
+            }
+        );
+    }
+
+    function showAddDialog(){
+        layer.open({
+            title: '公告编辑',
+            type: 1,
+            area: ['700px', '400px'],
+            content: $("#addDiv"),
+            btn : [ '保存', '取消' ],
+            btnAlign: 'c',
+            success : function(layero, index) {
+
+            },
+            yes : function(index, layero) {
+                layer.closeAll();
+            },
+            btn2 : function(index, layero) {
+                layer.closeAll();
+                $("#addDiv").hide();
+            },
+            cancel: function(index, layero){
+                $("#addDiv").hide();
+            }
+        });
+    }
+    function showPreviewDialog(){
+        layer.open({
+            title: '预览',
+            type: 1,
+            area: ['810px', '500px'],
+            content: $("#previewDiv"),
+            btnAlign: 'c',
+            success : function(layero, index) {
+
+            },
+            cancel: function(index, layero){
+                $("#previewDiv").hide();
+            }
+        });
+    }
+</script>
+
+</body>
+
+</html>

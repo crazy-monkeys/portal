@@ -63,15 +63,15 @@
 	  }
 	}
 		document.querySelector(".login-button").onclick = function(){
-				addClass(document.querySelector(".login"), "active")
+				addClass(document.querySelector(".static.login.login"), "active")
 				setTimeout(function(){
 					addClass(document.querySelector(".sk-rotating-plane"), "active")
-					document.querySelector(".login").style.display = "none"
+					document.querySelector(".static.login.login").style.display = "none"
 				},800)
 				setTimeout(function(){
-					removeClass(document.querySelector(".login"), "active")
+					removeClass(document.querySelector(".static.login.login"), "active")
 					removeClass(document.querySelector(".sk-rotating-plane"), "active")
-					document.querySelector(".login").style.display = "block"
+					document.querySelector(".static.login.login").style.display = "block"
 					alert("Success")
 					
 				},5000)

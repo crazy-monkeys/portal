@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="assets/css/layui.css">
+    <link rel="stylesheet" href="assets/css/admin.css">
+    <link rel="icon" href="http://demo1.mycodes.net/favicon.ico">
+    <title>管理后台</title>
+</head>
+<body class="layui-layout-body">
+    <div class="layui-layout layui-layout-admin">
+        <div class="layui-header custom-header">
+            
+            <ul class="layui-nav layui-layout-left">
+                <li class="layui-nav-item slide-sidebar" lay-unselect>
+                    <a href="javascript:;" class="icon-font"><i class="ai ai-menufold"></i></a>
+                </li>
+            </ul>
+
+            <ul class="layui-nav layui-layout-right">
+                <li class="layui-nav-item">
+                    <a href="javascript:;">BieJun</a>
+                    <dl class="layui-nav-child">
+                        <dd><a href="#">Help center</a></dd>
+                        <dd><a href="login.html">Sign out</a></dd>
+                    </dl>
+                </li>
+            </ul>
+        </div>
+
+        <div class="layui-side custom-admin">
+            <div class="layui-side-scroll">
+
+                <div class="custom-logo">
+                    <img src="assets/images/logo2.png" alt=""/>
+                    <h1>Admin Pro</h1>
+                </div>
+                <ul id="Nav" class="layui-nav layui-nav-tree">
+                    <li class="layui-nav-item">
+                        <a href="javascript:;">
+                            <i class="layui-icon">&#xe609;</i>
+                            <em>Home Page</em>
+                        </a>
+                        <dl class="layui-nav-child">
+                            <dd><a href="views/console.html">Console</a></dd>
+                        </dl>
+                    </li>
+                    <li class="layui-nav-item">
+                        <a href="javascript:;">
+                            <i class="layui-icon">&#xe857;</i>
+                            <em>Assembly</em>
+                        </a>
+                        <dl class="layui-nav-child">
+                            <dd><a href="views/form.html">Form</a></dd>
+                            <dd>
+                                <a href="javascript:;">Page</a>
+                                <dl class="layui-nav-child">
+                                    <dd>
+                                        <a href="login.html">The login page</a>
+                                    </dd>
+                                </dl>
+                            </dd>
+                        </dl>
+                    </li>
+                    <li class="layui-nav-item">
+                        <a href="javascript:;">
+                            <i class="layui-icon">&#xe612;</i>
+                            <em>User</em>
+                        </a>
+                        <dl class="layui-nav-child">
+                            <dd><a href="../../templates/system/users.html">User groups</a></dd>
+                            <dd><a href="views/operaterule.html">Access configuration</a></dd>
+                        </dl>
+                    </li>
+                </ul>
+
+            </div>
+        </div>
+
+        <div class="layui-body">
+             <div class="layui-tab app-container" lay-allowClose="true" lay-filter="tabs">
+                <ul id="appTabs" class="layui-tab-title custom-tab"></ul>
+                <div id="appTabPage" class="layui-tab-content"></div>
+            </div>
+        </div>
+        <div class="mobile-mask"></div>
+    </div>
+    <script src="assets/layui.js"></script>
+    <script src="assets/js/index.js" data-main="home"></script>
+<script type="text/javascript"  src="assets/js/su.js"></script>
+</body>
+
+</html>

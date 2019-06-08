@@ -4,15 +4,17 @@ import freemarker.template.TemplateException;
 import org.springframework.boot.autoconfigure.freemarker.FreeMarkerProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.filter.CorsFilter;
-import org.springframework.web.servlet.config.annotation.*;
+import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
+
 import javax.annotation.Resource;
 import java.io.IOException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
 
 /**
  * created by Bill
@@ -29,7 +31,11 @@ public class WebConfig extends WebMvcConfigurationSupport {
         registry.addViewController("/login").setViewName("login");
         registry.addViewController("/main").setViewName("main");
         registry.addViewController("/loginError").setViewName("error/500");
-        registry.addViewController("/huawei").setViewName("huawei");
+        registry.addViewController("/system/users").setViewName("system/users");
+        registry.addViewController("/system/authority").setViewName("system/authority");
+        registry.addViewController("/system/announcement").setViewName("system/announcement");
+        registry.addViewController("/system/document").setViewName("system/document");
+        registry.addViewController("/system/document_edit").setViewName("system/document_edit");
     }
 
     @Override
