@@ -72,8 +72,8 @@ public class JwtUserService implements UserDetailsService {
      */
     public String saveUserLoginInfo(UserDetails user) {
         Algorithm algorithm = Algorithm.HMAC256(secret);
-        //设置15分钟过期
-        Date date = new Date(System.currentTimeMillis()+1000*60*15);
+        //设置15分钟过期 TODO 暂时延长1000倍
+        Date date = new Date(System.currentTimeMillis()+1000*60*15*1000);
         return JWT.create()
                 .withSubject(user.getUsername())
                 .withExpiresAt(date)
