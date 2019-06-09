@@ -308,7 +308,7 @@
             data : JSON.stringify(json),
             success : function(res) {
                 if(res.code === 1){
-                    release(42);
+                    release(res.data);
                 } else {
                     layer.msg(res.msg);
                 }
