@@ -13,6 +13,9 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Component;
+
+import javax.annotation.Resource;
 import java.util.Collections;
 import java.util.Date;
 
@@ -22,10 +25,14 @@ import java.util.Date;
  * @Date: created in 00:02 2019/4/20
  * @Modified by:
  */
+@Component
 public class JwtUserService implements UserDetailsService {
 
+    @Resource
     private UserMapper userMapper;
+    @Resource
     private UserRoleMapper userRoleMapper;
+    @Resource
     private RoleMapper roleMapper;
 
     private final static String secret = "ioiuffkII#022";
@@ -61,8 +68,8 @@ public class JwtUserService implements UserDetailsService {
      */
     public String saveUserLoginInfo(UserDetails user) {
         Algorithm algorithm = Algorithm.HMAC256(secret);
-        //设置15分钟过期
-        Date date = new Date(System.currentTimeMillis()+1000*60*15);
+        //设置15分钟过期 TODO 暂时设置永久过期
+        Date date = new Date(System.currentTimeMillis()+1000*60*15*99999);
         return JWT.create()
                 .withSubject(user.getUsername())
                 .withExpiresAt(date)
@@ -71,7 +78,7 @@ public class JwtUserService implements UserDetailsService {
     }
 
     /**
-     * @todo 清除数据库或者缓存中登录salt
+     * 清除数据库或者缓存中登录secret
      */
     public void deleteUserLoginInfo(String username) {
 

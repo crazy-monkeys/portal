@@ -4,7 +4,7 @@ import com.crazy.portal.entity.system.User;
 
 import java.util.List;
 
-public interface UserDOMapper {
+public interface UserMapper {
 
     User selectById(Integer id);
 

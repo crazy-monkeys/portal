@@ -5,7 +5,7 @@ import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
-public interface ResourceDOMapper {
+public interface ResourceMapper {
     int deleteByPrimaryKey(Integer id);
 
     int insert(Resource record);

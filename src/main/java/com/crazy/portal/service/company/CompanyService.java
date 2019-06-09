@@ -2,7 +2,7 @@ package com.crazy.portal.service.company;
 
 import com.crazy.portal.bean.BaseResponse;
 import com.crazy.portal.dao.company.*;
-import com.crazy.portal.dao.system.UserDOMapper;
+import com.crazy.portal.dao.system.UserMapper;
 import com.crazy.portal.entity.company.*;
 import com.crazy.portal.entity.system.User;
 import com.crazy.portal.util.OssUtil;
@@ -34,7 +34,7 @@ public class CompanyService {
     @Resource
     private TUserCompanyMapper tUserCompanyMapper;
     @Resource
-    private UserDOMapper userDOMapper;
+    private UserMapper userMapper;
 
 
     public TCompanyInfoVO getUserCompany(Integer userId){
@@ -54,9 +54,9 @@ public class CompanyService {
         companyBean.setActive((short)1);
         tCompanyInfoVOMapper.insertSelective(companyBean);
 
-        User user = userDOMapper.selectById(companyBean.getUserId());
+        User user = userMapper.selectById(companyBean.getUserId());
         user.setUserStatus(3);
-        userDOMapper.updateByPrimaryKeySelective(user);
+        userMapper.updateByPrimaryKeySelective(user);
 
         TUserCompany userCompany = new TUserCompany();
         userCompany.setUserId(companyBean.getUserId());

@@ -1,8 +1,5 @@
 package com.crazy.portal.config.security;
 
-import com.crazy.portal.dao.system.RoleDOMapper;
-import com.crazy.portal.dao.system.UserDOMapper;
-import com.crazy.portal.dao.system.UserRoleDOMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -13,7 +10,6 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
 import org.springframework.security.web.header.Header;
 import org.springframework.security.web.header.writers.StaticHeadersWriter;
@@ -28,14 +24,48 @@ import java.util.Arrays;
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
-    @Resource
-    private UserDOMapper userDOMapper;
-    @Resource
-    private UserRoleDOMapper userRoleDOMapper;
-    @Resource
-    private RoleDOMapper roleDOMapper;
-
     private static final String[] permissiveUrl = new String[]{"/user/register","/user/login"};
+
+    @Resource
+    private LoginSuccessHandler loginSuccessHandler;
+    @Resource
+    private JwtUserService jwtUserService;
+    @Resource
+    private JwtAuthenticationProvider jwtAuthenticationProvider;
+    @Resource
+    private JwtRefreshSuccessHandler jwtRefreshSuccessHandler;
+    @Resource
+    private TokenClearLogoutHandler tokenClearLogoutHandler;
+
+
+    @Bean
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
+    }
+    @Bean
+    protected AuthenticationProvider jwtAuthenticationProvider() {
+        return new JwtAuthenticationProvider(jwtUserService);
+    }
+
+    @Bean
+    protected AuthenticationProvider daoAuthenticationProvider() throws Exception{
+        //这里会默认使用BCryptPasswordEncoder比对加密后的密码，注意要跟createUser时保持一致
+        DaoAuthenticationProvider daoProvider = new DaoAuthenticationProvider();
+        daoProvider.setUserDetailsService(userDetailsService());
+        return daoProvider;
+    }
+
+    @Bean
+    protected CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(Arrays.asList("*"));
+        configuration.setAllowedMethods(Arrays.asList("GET","POST","HEAD", "OPTION"));
+        configuration.setAllowedHeaders(Arrays.asList("*"));
+        configuration.addExposedHeader("Authorization");
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
 
     @Override
     public void configure(WebSecurity web) throws Exception {
@@ -59,77 +89,32 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                 //拦截OPTIONS请求，直接返回header
                 .addFilterAfter(new OptionsRequestFilter(), CorsFilter.class)
                 //添加登录filter
-                .apply(new LoginConfigurer<>()).loginSuccessHandler(loginSuccessHandler())
+                .apply(new LoginConfigurer<>()).loginSuccessHandler(loginSuccessHandler)
                 .and()
                 //添加token的filter
                 .apply(new JwtLoginConfigurer<>())
-                        .tokenValidSuccessHandler(jwtRefreshSuccessHandler())
+                        .tokenValidSuccessHandler(jwtRefreshSuccessHandler)
                         .permissiveRequestUrls(permissiveUrl)
                 .and()
                 //使用默认的logoutFilter
                 .logout()
-                .addLogoutHandler(tokenClearLogoutHandler())  //logout时清除token
-                .logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler()); //logout成功后返回200
+                //logout时清除token
+                .addLogoutHandler(tokenClearLogoutHandler)
+                //logout成功后返回200
+                .logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler());
     }
 
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.authenticationProvider(daoAuthenticationProvider()).authenticationProvider(jwtAuthenticationProvider());
+        auth.authenticationProvider(daoAuthenticationProvider())
+                .authenticationProvider(jwtAuthenticationProvider);
     }
 
-    @Bean
-    public AuthenticationManager authenticationManagerBean() throws Exception {
-        return super.authenticationManagerBean();
-    }
-
-    @Bean
-    protected AuthenticationProvider jwtAuthenticationProvider() {
-        return new JwtAuthenticationProvider(jwtUserService());
-    }
-
-    @Bean
-    protected AuthenticationProvider daoAuthenticationProvider() throws Exception{
-        //这里会默认使用BCryptPasswordEncoder比对加密后的密码，注意要跟createUser时保持一致
-        DaoAuthenticationProvider daoProvider = new DaoAuthenticationProvider();
-        daoProvider.setUserDetailsService(userDetailsService());
-        return daoProvider;
-    }
 
     @Override
     protected UserDetailsService userDetailsService() {
-        return new JwtUserService(userDOMapper,userRoleDOMapper,roleDOMapper);
+        return jwtUserService;
     }
 
-    @Bean
-    protected JwtUserService jwtUserService() {
-        return new JwtUserService(userDOMapper,userRoleDOMapper,roleDOMapper);
-    }
-
-    @Bean
-    protected LoginSuccessHandler loginSuccessHandler() {
-        return new LoginSuccessHandler(jwtUserService());
-    }
-
-    @Bean
-    protected JwtRefreshSuccessHandler jwtRefreshSuccessHandler() {
-        return new JwtRefreshSuccessHandler(jwtUserService());
-    }
-
-    @Bean
-    protected TokenClearLogoutHandler tokenClearLogoutHandler() {
-        return new TokenClearLogoutHandler(jwtUserService());
-    }
-
-    @Bean
-    protected CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("*"));
-        configuration.setAllowedMethods(Arrays.asList("GET","POST","HEAD", "OPTION"));
-        configuration.setAllowedHeaders(Arrays.asList("*"));
-        configuration.addExposedHeader("Authorization");
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
-    }
 }

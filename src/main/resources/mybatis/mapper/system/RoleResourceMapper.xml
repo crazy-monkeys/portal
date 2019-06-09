@@ -1,47 +1,58 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.crazy.portal.dao.system.UserRoleDOMapper">
-  <resultMap id="BaseResultMap" type="com.crazy.portal.entity.system.UserRole">
+<mapper namespace="com.crazy.portal.dao.system.RoleResourceMapper">
+  <resultMap id="BaseResultMap" type="com.crazy.portal.entity.system.RoleResource">
     <id column="id" jdbcType="INTEGER" property="id" />
-    <result column="user_id" jdbcType="INTEGER" property="userId" />
     <result column="role_id" jdbcType="INTEGER" property="roleId" />
+    <result column="resource_id" jdbcType="INTEGER" property="resourceId" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="create_id" jdbcType="INTEGER" property="createId" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="update_id" jdbcType="INTEGER" property="updateId" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, user_id, role_id, create_time, create_id, update_time, update_id
+    id, role_id, resource_id, create_time, create_id, update_time, update_id
   </sql>
-  <select id="selectByUserId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from t_user_role
-    where user_id = #{userId,jdbcType=INTEGER}
+    from t_role_resource
+    where id = #{id,jdbcType=INTEGER}
   </select>
+
+
+  <select id="findAll" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_role_resource
+  </select>
+
+
+
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from t_user_role
+    delete from t_role_resource
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.crazy.portal.entity.system.UserRole">
-    insert into t_user_role (id, user_id, role_id, 
+  <insert id="insert" parameterType="com.crazy.portal.entity.system.RoleResource">
+    insert into t_role_resource (id, role_id, resource_id, 
       create_time, create_id, update_time, 
       update_id)
-    values (#{id,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{roleId,jdbcType=INTEGER}, 
+    values (#{id,jdbcType=INTEGER}, #{roleId,jdbcType=INTEGER}, #{resourceId,jdbcType=INTEGER}, 
       #{createTime,jdbcType=TIMESTAMP}, #{createId,jdbcType=INTEGER}, #{updateTime,jdbcType=TIMESTAMP}, 
       #{updateId,jdbcType=INTEGER})
   </insert>
-  <insert id="insertSelective" parameterType="com.crazy.portal.entity.system.UserRole">
-    insert into t_user_role
+  <insert id="insertSelective" parameterType="com.crazy.portal.entity.system.RoleResource">
+    insert into t_role_resource
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
       </if>
-      <if test="userId != null">
-        user_id,
-      </if>
       <if test="roleId != null">
         role_id,
+      </if>
+      <if test="resourceId != null">
+        resource_id,
       </if>
       <if test="createTime != null">
         create_time,
@@ -60,11 +71,11 @@
       <if test="id != null">
         #{id,jdbcType=INTEGER},
       </if>
-      <if test="userId != null">
-        #{userId,jdbcType=INTEGER},
-      </if>
       <if test="roleId != null">
         #{roleId,jdbcType=INTEGER},
+      </if>
+      <if test="resourceId != null">
+        #{resourceId,jdbcType=INTEGER},
       </if>
       <if test="createTime != null">
         #{createTime,jdbcType=TIMESTAMP},
@@ -80,14 +91,14 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.crazy.portal.entity.system.UserRole">
-    update t_user_role
+  <update id="updateByPrimaryKeySelective" parameterType="com.crazy.portal.entity.system.RoleResource">
+    update t_role_resource
     <set>
-      <if test="userId != null">
-        user_id = #{userId,jdbcType=INTEGER},
-      </if>
       <if test="roleId != null">
         role_id = #{roleId,jdbcType=INTEGER},
+      </if>
+      <if test="resourceId != null">
+        resource_id = #{resourceId,jdbcType=INTEGER},
       </if>
       <if test="createTime != null">
         create_time = #{createTime,jdbcType=TIMESTAMP},
@@ -104,10 +115,10 @@
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.crazy.portal.entity.system.UserRole">
-    update t_user_role
-    set user_id = #{userId,jdbcType=INTEGER},
-      role_id = #{roleId,jdbcType=INTEGER},
+  <update id="updateByPrimaryKey" parameterType="com.crazy.portal.entity.system.RoleResource">
+    update t_role_resource
+    set role_id = #{roleId,jdbcType=INTEGER},
+      resource_id = #{resourceId,jdbcType=INTEGER},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       create_id = #{createId,jdbcType=INTEGER},
       update_time = #{updateTime,jdbcType=TIMESTAMP},
@@ -115,15 +126,12 @@
     where id = #{id,jdbcType=INTEGER}
   </update>
 
-
-  <!-- 查询用户角色关系 -->
-  <select id="selectUserRoleByUserId" resultType="java.lang.Integer">
-    SELECT role_id FROM t_user_role WHERE user_id = #{userId}
+  <!-- 查询角色资源 -->
+  <select id="selectRoleResourceByRoleIds" resultType="java.lang.Integer">
+    SELECT RESOURCE_ID FROM t_role_resource WHERE ROLE_ID IN
+    <foreach item="item" index="index" collection="roleIds" open="("
+             separator="," close=")">
+      #{item}
+    </foreach>
   </select>
-
-  <delete id="deleteByUserId" parameterType="java.lang.Integer" >
-    delete from t_user_role
-    where user_id = #{userId,jdbcType=VARCHAR}
-  </delete>
-
 </mapper>

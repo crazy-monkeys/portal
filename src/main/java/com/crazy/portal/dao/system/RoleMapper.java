@@ -4,7 +4,7 @@ import com.crazy.portal.entity.system.Role;
 
 import java.util.List;
 
-public interface RoleDOMapper {
+public interface RoleMapper {
     int deleteByPrimaryKey(Integer id);
 
     int insert(Role record);

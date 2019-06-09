@@ -3,7 +3,9 @@ package com.crazy.portal.config.security;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
+import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -13,8 +15,10 @@ import javax.servlet.http.HttpServletResponse;
  * @Date: created in 20:54 2019/4/20
  * @Modified by:
  */
+@Component
 public class TokenClearLogoutHandler implements LogoutHandler{
 
+    @Resource
     private JwtUserService jwtUserService;
 
     public TokenClearLogoutHandler(JwtUserService jwtUserService) {

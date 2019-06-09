@@ -1,7 +1,7 @@
 package com.crazy.portal.service.system;
 
-import com.crazy.portal.dao.system.UserDOMapper;
-import com.crazy.portal.dao.system.UserRoleDOMapper;
+import com.crazy.portal.dao.system.UserMapper;
+import com.crazy.portal.dao.system.UserRoleMapper;
 import com.crazy.portal.entity.system.User;
 import com.crazy.portal.entity.system.UserRole;
 import com.crazy.portal.util.DateUtil;
@@ -26,20 +26,20 @@ import java.util.List;
 public class UserService {
 
     @Resource
-    private UserDOMapper userDOMapper;
+    private UserMapper userMapper;
     @Resource
-    private UserRoleDOMapper userRoleDOMapper;
+    private UserRoleMapper userRoleMapper;
 
     private PasswordEncoder passwordEncoder =
             PasswordEncoderFactories.createDelegatingPasswordEncoder();
 
     public List<User> selectAllUser(){
-        return userDOMapper.selectAllUser();
+        return userMapper.selectAllUser();
     }
 
     public Boolean approvalUser(String userName, int status){
         try{
-            User user = userDOMapper.findByLoginName(userName);
+            User user = userMapper.findByLoginName(userName);
             if(user.getUserStatus()==0){
                 user.setUserStatus(Enums.USER_STATUS.init.getCode());
             }else if(user.getUserStatus()==3){
@@ -47,7 +47,7 @@ public class UserService {
             }
             user.setUpdateTime(new Date());
             //user.setUpdateUserId();
-            userDOMapper.insertSelective(user);
+            userMapper.insertSelective(user);
         }catch (Exception e){
             log.error("审批异常！",e);
             return false;
@@ -58,7 +58,7 @@ public class UserService {
     @Transactional
     public String register(User user) {
         String username = user.getLoginName();
-        if (userDOMapper.findByLoginName(username) != null) {
+        if (userMapper.findByLoginName(username) != null) {
             return "用户已存在";
         }
         String rawPassword = user.getLoginPwd();
@@ -78,13 +78,13 @@ public class UserService {
         user.setCreateUserId(1);
         user.setCreateTime(new Date());
         user.setActive((short)1);
-        userDOMapper.insertSelective(user);
+        userMapper.insertSelective(user);
         UserRole userRole = new UserRole();
         userRole.setUserId(user.getId());
         userRole.setRoleId(2);
         userRole.setCreateTime(new Date());
         userRole.setCreateId(1);
-        userRoleDOMapper.insertSelective(userRole);
+        userRoleMapper.insertSelective(userRole);
         return "success";
     }
 }

@@ -1,8 +1,8 @@
 package com.crazy.portal.service.system;
 
-import com.crazy.portal.dao.system.ResourceDOMapper;
-import com.crazy.portal.dao.system.RoleResourceDOMapper;
-import com.crazy.portal.dao.system.UserRoleDOMapper;
+import com.crazy.portal.dao.system.ResourceMapper;
+import com.crazy.portal.dao.system.RoleResourceMapper;
+import com.crazy.portal.dao.system.UserRoleMapper;
 import com.crazy.portal.entity.system.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -20,11 +20,11 @@ import java.util.List;
 public class PermissionService {
 
     @javax.annotation.Resource
-    private UserRoleDOMapper userRoleDOMapper;
+    private UserRoleMapper userRoleMapper;
     @javax.annotation.Resource
-    private RoleResourceDOMapper roleResourceDOMapper;
+    private RoleResourceMapper roleResourceMapper;
     @javax.annotation.Resource
-    private ResourceDOMapper resourceDOMapper;
+    private ResourceMapper resourceMapper;
 
     /**
      * 获取用户所有可访问的资源,可缓存至redis
@@ -34,22 +34,22 @@ public class PermissionService {
     public List<Resource> findAllPerMissionByUserId(Integer userId){
         if(userId == null) return null;
 
-        List<Integer> roleIds = userRoleDOMapper.selectUserRoleByUserId(userId);
+        List<Integer> roleIds = userRoleMapper.selectUserRoleByUserId(userId);
         if(roleIds.isEmpty()){
             log.warn("用户没有分配角色");
             return null;
         }
-        List<Integer> resourceIds = roleResourceDOMapper.selectRoleResourceByRoleIds(roleIds);
+        List<Integer> resourceIds = roleResourceMapper.selectRoleResourceByRoleIds(roleIds);
         if(resourceIds.isEmpty()){
             log.warn("用户没有分配访问权限");
             return null;
         }
 
-        return resourceDOMapper.selectResourceByIds(resourceIds);
+        return resourceMapper.selectResourceByIds(resourceIds);
     }
 
     public List<Resource> findAll(){
-        return resourceDOMapper.findAll();
+        return resourceMapper.findAll();
     }
 
 }

@@ -5,7 +5,7 @@ import com.crazy.portal.entity.system.RoleResource;
 
 import java.util.List;
 
-public interface RoleResourceDOMapper {
+public interface RoleResourceMapper {
     int deleteByPrimaryKey(Integer id);
 
     int insert(RoleResource record);
