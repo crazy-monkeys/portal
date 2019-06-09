@@ -22,9 +22,9 @@ import java.nio.charset.Charset;
  * @Date: created in 19:16 2019/4/20
  * @Modified by:
  */
-public class AuthenticationFilter extends AbstractAuthenticationProcessingFilter{
+public class LoginAuthenticationFilter extends AbstractAuthenticationProcessingFilter{
 
-    public AuthenticationFilter() {
+    public LoginAuthenticationFilter() {
         //拦截url为 "/login" 的POST请求
         super(new AntPathRequestMatcher("/user/login", "POST"));
     }

@@ -1,6 +1,6 @@
 package com.crazy.portal.config.security;
 
-import com.crazy.portal.config.security.filter.AuthenticationFilter;
+import com.crazy.portal.config.security.filter.LoginAuthenticationFilter;
 import com.crazy.portal.config.security.handler.AuthenticationFailHandler;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.HttpSecurityBuilder;
@@ -17,10 +17,10 @@ import org.springframework.security.web.authentication.session.NullAuthenticated
  */
 public class LoginConfigurer<T extends LoginConfigurer<T, B>, B extends HttpSecurityBuilder<B>> extends AbstractHttpConfigurer<T, B> {
 
-    private AuthenticationFilter authFilter;
+    private LoginAuthenticationFilter authFilter;
 
     public LoginConfigurer() {
-        this.authFilter = new AuthenticationFilter();
+        this.authFilter = new LoginAuthenticationFilter();
     }
 
     @Override
@@ -32,7 +32,7 @@ public class LoginConfigurer<T extends LoginConfigurer<T, B>, B extends HttpSecu
         //不将认证后的context放入session
         authFilter.setSessionAuthenticationStrategy(new NullAuthenticatedSessionStrategy());
 
-        AuthenticationFilter filter = postProcess(authFilter);
+        LoginAuthenticationFilter filter = postProcess(authFilter);
         //指定Filter的位置
         http.addFilterAfter(filter, LogoutFilter.class);
     }

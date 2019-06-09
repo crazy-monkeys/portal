@@ -34,7 +34,9 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * @Desc:
+ * 资源访问过滤器
+ * 1.token认证
+ * 2.url鉴权
  * @Author: Bill
  * @Date: created in 20:03 2019/4/20
  * @Modified by:
