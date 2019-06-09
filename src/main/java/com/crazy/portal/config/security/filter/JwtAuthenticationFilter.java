@@ -86,8 +86,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
             else {
                 JwtAuthenticationToken authToken = new JwtAuthenticationToken(JWT.decode(token));
                 Authentication authResult = this.getAuthenticationManager().authenticate(authToken);
+                //token认证不成功，或者不具有访问url的权限
                 if(authResult == null || !authRequest(request,authResult)){
-                    authenticationFailure(request, response,
+                    this.authenticationFailure(request, response,
                             new InsufficientAuthenticationException("Insufficient permissions"));
                     return;
                 }
