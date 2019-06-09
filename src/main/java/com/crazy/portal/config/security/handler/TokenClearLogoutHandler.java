@@ -1,5 +1,6 @@
-package com.crazy.portal.config.security;
+package com.crazy.portal.config.security.handler;
 
+import com.crazy.portal.config.security.JwtUserService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.logout.LogoutHandler;

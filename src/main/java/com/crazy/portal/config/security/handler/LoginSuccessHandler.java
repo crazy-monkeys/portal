@@ -1,7 +1,8 @@
-package com.crazy.portal.config.security;
+package com.crazy.portal.config.security.handler;
 
 import com.alibaba.fastjson.JSON;
 import com.crazy.portal.bean.BaseResponse;
+import com.crazy.portal.config.security.JwtUserService;
 import com.crazy.portal.entity.system.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;

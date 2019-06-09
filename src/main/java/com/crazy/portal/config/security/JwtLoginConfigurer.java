@@ -1,5 +1,7 @@
 package com.crazy.portal.config.security;
 
+import com.crazy.portal.config.security.filter.JwtAuthenticationFilter;
+import com.crazy.portal.config.security.handler.AuthenticationFailHandler;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.HttpSecurityBuilder;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;

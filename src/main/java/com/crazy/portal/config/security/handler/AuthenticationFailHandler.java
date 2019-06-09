@@ -1,4 +1,4 @@
-package com.crazy.portal.config.security;
+package com.crazy.portal.config.security.handler;
 
 import com.alibaba.fastjson.JSON;
 import com.crazy.portal.bean.BaseResponse;
