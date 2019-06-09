@@ -35,12 +35,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
     @Resource
     private JwtUserService jwtUserService;
     @Resource
-    private JwtAuthenticationProvider jwtAuthenticationProvider;
-    @Resource
     private JwtRefreshSuccessHandler jwtRefreshSuccessHandler;
     @Resource
     private TokenClearLogoutHandler tokenClearLogoutHandler;
-
 
     @Bean
     public AuthenticationManager authenticationManagerBean() throws Exception {
@@ -112,7 +109,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.authenticationProvider(daoAuthenticationProvider())
-                .authenticationProvider(jwtAuthenticationProvider);
+                .authenticationProvider(jwtAuthenticationProvider());
     }
 
 

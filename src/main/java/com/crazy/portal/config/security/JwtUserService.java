@@ -14,7 +14,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
-
 import javax.annotation.Resource;
 import java.util.Collections;
 import java.util.Date;
@@ -68,8 +67,8 @@ public class JwtUserService implements UserDetailsService {
      */
     public String saveUserLoginInfo(UserDetails user) {
         Algorithm algorithm = Algorithm.HMAC256(secret);
-        //设置15分钟过期 TODO 暂时设置永久过期
-        Date date = new Date(System.currentTimeMillis()+1000*60*15*99999);
+        //设置15分钟过期 TODO 暂时设置10天过期
+        Date date = new Date(System.currentTimeMillis()+1000*60*15*1000);
         return JWT.create()
                 .withSubject(user.getUsername())
                 .withExpiresAt(date)

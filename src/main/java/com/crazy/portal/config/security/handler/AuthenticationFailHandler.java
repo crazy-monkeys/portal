@@ -2,6 +2,7 @@ package com.crazy.portal.config.security.handler;
 
 import com.alibaba.fastjson.JSON;
 import com.crazy.portal.bean.BaseResponse;
+import com.crazy.portal.util.ResponseCode.CommonEnum;
 import com.crazy.portal.util.ResponseCode.SystemManagerEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -10,6 +11,9 @@ import org.springframework.security.authentication.InsufficientAuthenticationExc
 import org.springframework.security.authentication.LockedException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.security.web.authentication.www.NonceExpiredException;
+import org.springframework.stereotype.Component;
+
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
@@ -23,6 +27,7 @@ import java.io.IOException;
  * @Modified by:
  */
 @Slf4j
+@Component
 public class AuthenticationFailHandler implements AuthenticationFailureHandler{
 
 
@@ -32,41 +37,27 @@ public class AuthenticationFailHandler implements AuthenticationFailureHandler{
                                         HttpServletResponse response,
                                         AuthenticationException e) throws IOException, ServletException {
 
-
-        log.error(e.getCause() +"");
-        ServletOutputStream os = null;
-        BaseResponse baseResponse = new BaseResponse();
-        try {
-            response.reset();
+        BaseResponse baseResponse;
+        try(ServletOutputStream os = response.getOutputStream()){
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             response.setContentType("application/json;charset=utf-8");
-            os = response.getOutputStream();
-
-            if(e instanceof BadCredentialsException){
-                baseResponse.setCode(SystemManagerEnum.ACCOUNT_ERROR.getCode());
-                baseResponse.setMsg(SystemManagerEnum.ACCOUNT_ERROR.getZhMsg());
-                os.write(JSON.toJSONString(baseResponse).getBytes());
-                return;
+            if(e.getCause() instanceof NonceExpiredException){
+                baseResponse = new BaseResponse(SystemManagerEnum.TOKEN_INVALID.getCode(),
+                        SystemManagerEnum.TOKEN_INVALID.getZhMsg());
+            } else if(e instanceof BadCredentialsException || e.getCause() instanceof BadCredentialsException){
+                baseResponse = new BaseResponse(SystemManagerEnum.ACCOUNT_ERROR.getCode(),
+                        SystemManagerEnum.ACCOUNT_ERROR.getZhMsg());
+            } else if(e.getCause() instanceof LockedException){
+                baseResponse = new BaseResponse(SystemManagerEnum.LOCKED.getCode(),
+                        SystemManagerEnum.LOCKED.getZhMsg());
+            }else if(e instanceof InsufficientAuthenticationException){
+                baseResponse = new BaseResponse(SystemManagerEnum.AUTH_ERROR.getCode(),
+                        SystemManagerEnum.AUTH_ERROR.getZhMsg());
+            }else {
+                baseResponse = new BaseResponse(CommonEnum.SYSTEM_EXCEPTION.getCode(),
+                        CommonEnum.SYSTEM_EXCEPTION.getZhMsg());
             }
-            if(e.getCause() instanceof LockedException){
-                baseResponse.setCode(SystemManagerEnum.LOCKED.getCode());
-                baseResponse.setMsg(SystemManagerEnum.LOCKED.getZhMsg());
-                os.write(JSON.toJSONString(baseResponse).getBytes());
-                return;
-            }
-            if(e instanceof InsufficientAuthenticationException){
-                baseResponse.setCode(SystemManagerEnum.AUTH_ERROR.getCode());
-                baseResponse.setMsg(SystemManagerEnum.AUTH_ERROR.getZhMsg());
-                os.write(JSON.toJSONString(baseResponse).getBytes());
-                return;
-            }
-            String result = "{\"status\":\"error\",\"msg\":\""+e.getMessage()+"\"}";
-            os.write(result.getBytes());
-        } catch (IOException e1) {
-            e1.printStackTrace();
-        }finally {
-            os.flush();
-            os.close();
+            os.write(JSON.toJSONString(baseResponse).getBytes());
         }
     }
 }

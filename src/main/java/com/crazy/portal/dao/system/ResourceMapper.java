@@ -23,7 +23,7 @@ public interface ResourceMapper {
      */
     List<Resource> queryResourceList();
 
-    List<Resource> selectResourceByIds(List<Integer> ids);
+    List<Resource> selectResourceByIds(@Param("ids") List<Integer> ids);
 
     int deleteResourceByResourceId(Long resourceId);
 

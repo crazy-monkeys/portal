@@ -4,15 +4,16 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.www.NonceExpiredException;
-import org.springframework.util.Assert;
 
-import java.util.Calendar;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * @Desc:
@@ -20,9 +21,16 @@ import java.util.Calendar;
  * @Date: created in 20:07 2019/4/20
  * @Modified by:
  */
+@Slf4j
 public class JwtAuthenticationProvider implements AuthenticationProvider {
 
     private JwtUserService userService;
+
+    private static final ThreadLocal threadLocal = new ThreadLocal() {
+        protected synchronized Object initialValue() {
+            return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        }
+    };
 
     public JwtAuthenticationProvider(JwtUserService userService) {
         this.userService = userService;
@@ -32,7 +40,10 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         DecodedJWT jwt = ((JwtAuthenticationToken)authentication).getToken();
 
-        if(jwt.getExpiresAt().before(Calendar.getInstance().getTime())){
+        Date now = new Date();
+        if(jwt.getExpiresAt().before(now)){
+            log.debug("jwt中设置的过期时间是{}",((SimpleDateFormat)threadLocal.get()).format(jwt.getExpiresAt()));
+            log.debug("当前时间是{}",((SimpleDateFormat)threadLocal.get()).format(now));
             throw new NonceExpiredException("Token expires");
         }
         String username = jwt.getSubject();

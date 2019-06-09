@@ -234,7 +234,7 @@
   </select>
   <!-- 查询资源列表 -->
   <select id="selectResourceByIds" resultMap="BaseResultMap">
-    SELECT * FROM t_resource WHERE RESOURCE_ID IN
+    SELECT * FROM t_resource WHERE id IN
     <foreach item="item" index="index" collection="ids" open="("
              separator="," close=")">
       #{item}
@@ -243,6 +243,6 @@
   </select>
 
   <select id="getRoleCountByResourceId" resultType="int">
-    SELECT count(1) FROM t_role_resource WHERE resource_id= #{resourceId}
+    SELECT count(1) FROM t_role_resource WHERE id = #{resourceId}
   </select>
 </mapper>

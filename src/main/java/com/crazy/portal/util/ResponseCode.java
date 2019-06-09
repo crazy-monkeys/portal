@@ -44,7 +44,8 @@ public class ResponseCode {
         ACCOUNT_ERROR(10001,"用户名或密码错误",""),
         LOCKED(10002,"账户锁定",""),
         INVALID(10003,"账户失效",""),
-        AUTH_ERROR(10004,"权限不足","");
+        AUTH_ERROR(10004,"权限不足",""),
+        TOKEN_INVALID(10005,"TOKEN 失效","");
 
 
         private final int code;
