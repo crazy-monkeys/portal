@@ -80,11 +80,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
                             new InsufficientAuthenticationException("authResult is null"));
                     return;
                 }
-//                if(!authRequest(request)){
-//                    unsuccessfulAuthentication(request, response,
-//                            new InsufficientAuthenticationException("权限不足"));
-//                    return;
-//                }
+                if(!authRequest(request)){
+                    unsuccessfulAuthentication(request, response,
+                            new InsufficientAuthenticationException("权限不足"));
+                    return;
+                }
                 successfulAuthentication(request, response, filterChain, authResult);
                 filterChain.doFilter(request, response);
             }
@@ -131,11 +131,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
                 if(permissiveMatcher.matches(request)){
                     return true;
                 }
-
             }
         }
         //用户本身的权限
-
         return false;
     }
 

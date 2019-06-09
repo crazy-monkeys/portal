@@ -5,10 +5,10 @@ import com.crazy.portal.bean.BaseResponse;
 import com.crazy.portal.util.ResponseCode.SystemManagerEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
@@ -32,6 +32,8 @@ public class AuthenticationFailHandler implements AuthenticationFailureHandler{
                                         HttpServletResponse response,
                                         AuthenticationException e) throws IOException, ServletException {
 
+
+        log.error(e.getCause() +"");
         ServletOutputStream os = null;
         BaseResponse baseResponse = new BaseResponse();
         try {
@@ -40,7 +42,7 @@ public class AuthenticationFailHandler implements AuthenticationFailureHandler{
             response.setContentType("application/json;charset=utf-8");
             os = response.getOutputStream();
 
-            if(e.getCause() instanceof UsernameNotFoundException){
+            if(e instanceof BadCredentialsException){
                 baseResponse.setCode(SystemManagerEnum.ACCOUNT_ERROR.getCode());
                 baseResponse.setMsg(SystemManagerEnum.ACCOUNT_ERROR.getZhMsg());
                 os.write(JSON.toJSONString(baseResponse).getBytes());

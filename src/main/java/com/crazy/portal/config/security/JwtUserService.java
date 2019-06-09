@@ -8,6 +8,7 @@ import com.crazy.portal.dao.system.UserRoleDOMapper;
 import com.crazy.portal.entity.system.Role;
 import com.crazy.portal.entity.system.User;
 import com.crazy.portal.entity.system.UserRole;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -27,6 +28,7 @@ import java.util.stream.Collectors;
  * @Date: created in 00:02 2019/4/20
  * @Modified by:
  */
+@Slf4j
 public class JwtUserService implements UserDetailsService {
 
     private final static String secret = "ioiuffkII#022";
@@ -47,9 +49,10 @@ public class JwtUserService implements UserDetailsService {
 
 
     @Override
-    public JwtUser loadUserByUsername(String username) throws UsernameNotFoundException,LockedException {
+    public JwtUser loadUserByUsername(String username) {
         User user = userDOMapper.findByLoginName(username);
         if (user == null) {
+            log.error("用户名[{}]不存在",username);
             throw new UsernameNotFoundException(String.format("No user found with username '%s'.", username));
         }
         if(user.getUserStatus().equals(0)){
@@ -88,7 +91,7 @@ public class JwtUserService implements UserDetailsService {
 
     }
 
-    public UserDetails getUserLoginInfo(String username) {
+    public UserDetails getUserLoginInfo(String username) throws UsernameNotFoundException,LockedException{
         JwtUser user = loadUserByUsername(username);
         //暂时仅支持一用户一角色
         return JwtUser.builder()
