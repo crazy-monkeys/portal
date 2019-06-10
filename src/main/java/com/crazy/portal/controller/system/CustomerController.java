@@ -1,4 +1,4 @@
-package com.crazy.portal.controller;
+package com.crazy.portal.controller.system;
 
 import com.crazy.portal.bean.customer.SaveCustomerVO;
 import com.crazy.portal.entity.customer.TCustomerAddress;

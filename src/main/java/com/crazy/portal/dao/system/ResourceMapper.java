@@ -42,5 +42,5 @@ public interface ResourceMapper {
      */
     int countOrder();
 
-    int getRoleCountByResourceId(Long resourceId);
+    int getRoleCountByResourceId(Integer resourceId);
 }

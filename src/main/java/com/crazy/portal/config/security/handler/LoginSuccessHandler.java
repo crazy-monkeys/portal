@@ -3,11 +3,9 @@ package com.crazy.portal.config.security.handler;
 import com.alibaba.fastjson.JSON;
 import com.crazy.portal.bean.BaseResponse;
 import com.crazy.portal.config.security.JwtUserService;
-import com.crazy.portal.entity.system.User;
 import com.crazy.portal.service.system.PermissionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
@@ -17,10 +15,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.PrintWriter;
 import java.util.HashMap;
 
-import com.crazy.portal.util.ResponseCode.CommonEnum;
 import org.springframework.stereotype.Component;
 
 /**

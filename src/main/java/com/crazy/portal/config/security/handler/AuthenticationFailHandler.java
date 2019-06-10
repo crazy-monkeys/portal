@@ -2,8 +2,8 @@ package com.crazy.portal.config.security.handler;
 
 import com.alibaba.fastjson.JSON;
 import com.crazy.portal.bean.BaseResponse;
-import com.crazy.portal.util.ResponseCode.CommonEnum;
-import com.crazy.portal.util.ResponseCode.SystemManagerEnum;
+import com.crazy.portal.util.ErrorCodes.CommonEnum;
+import com.crazy.portal.util.ErrorCodes.SystemManagerEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;

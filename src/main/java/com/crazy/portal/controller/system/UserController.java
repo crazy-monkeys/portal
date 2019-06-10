@@ -1,6 +1,7 @@
-package com.crazy.portal.controller;
+package com.crazy.portal.controller.system;
 
 import com.alibaba.fastjson.JSON;
+import com.crazy.portal.controller.BaseController;
 import com.crazy.portal.entity.system.User;
 import com.crazy.portal.service.system.UserService;
 import lombok.extern.slf4j.Slf4j;

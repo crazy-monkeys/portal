@@ -6,7 +6,7 @@ package com.crazy.portal.util;
  * @Date: created in 17:15 2019/6/8
  * @Modified by:
  */
-public class ResponseCode {
+public class ErrorCodes {
 
     public enum CommonEnum {
         SYSTEM_EXCEPTION(-1,"系统异常","system error"),
@@ -45,7 +45,21 @@ public class ResponseCode {
         LOCKED(10002,"账户锁定",""),
         PASSWORD_INVALID(10003,"密码过期",""),
         AUTH_ERROR(10004,"权限不足",""),
-        TOKEN_INVALID(10005,"TOKEN 失效","");
+        TOKEN_INVALID(10005,"TOKEN 失效",""),
+
+
+        ROLE_EXISTS(10020,"角色已经存在",""),
+        ROLE_NOT_EXIST(10021,"角色不存在",""),
+        ROLE_EMPTY_NAME(10022,"角色名不能为空",""),
+        ROLE_EMPTY_CODE(10023,"角色编码不能为空",""),
+        ROLE_EMPTY_ID(10024,"角色ID不能为空",""),
+        ROLE_SAVE_FAILED(10025,"角色保存失败",""),
+
+        PERMISSION_ILLEGAL(10040,"资源必填项不能为空",""),
+        PERMISSION_NOT_EXIST(10041,"(父级/当前)资源ID不存在",""),
+        PERMISSION_EMPTY_AND_ROLE(10042,"添加/移除 列表不能同时为空",""),
+        PERMISSION_USED(10043,"该权限已配置角色，请先删除该权限的角色信息",""),
+        PERMISSION_UN_TYPE_OPTIONAL(10044,"类型不存在","");
 
 
         private final int code;

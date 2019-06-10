@@ -64,15 +64,15 @@ public class PermissionService {
      * @return
      */
     public List<Resource> queryResourceList(){
-        return null;
+        return resourceMapper.findAll();
     }
 
     /**
      * 查询资源id绑定的角色
      * @return
      */
-    public int getRoleCountByResourceId(Integer id){
-        return 0;
+    public int getRoleCountByResourceId(Integer resourceId){
+        return resourceMapper.getRoleCountByResourceId(resourceId);
     }
 
     /**
@@ -81,9 +81,17 @@ public class PermissionService {
      * @return
      */
     public Resource findResource(Integer resId){
-        return null;
+        return resourceMapper.selectByPrimaryKey(resId);
     }
 
+    /**
+     * 根据角色id获取拥有的权限
+     * @param roleIds
+     * @return
+     */
+    public List<Integer> findPermissionIds(List<Integer> roleIds){
+        return roleResourceMapper.selectRoleResourceByRoleIds(roleIds);
+    }
     /**
      * 添加/修改资源
      * @param resource

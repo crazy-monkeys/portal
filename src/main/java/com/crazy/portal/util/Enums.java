@@ -1,5 +1,8 @@
 package com.crazy.portal.util;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @Desc:
  * @Author: Bill
@@ -36,7 +39,24 @@ public class Enums {
     /**
      * 资源类型: 菜单、按钮、接口api
      */
-    public enum RESOURCE_TYPE{
-        menu,button,api
+    public enum RESOURCE_TYPE_ENUM{
+        MENU(1),BUTTON(2),API(3);
+
+        private final int type;
+
+        RESOURCE_TYPE_ENUM(int type){
+            this.type = type;
+        }
+        public int getType() {
+            return type;
+        }
+
+        public static List<Integer> getResourceTypes(){
+            List<Integer> types = new ArrayList<>();
+            for(RESOURCE_TYPE_ENUM type : RESOURCE_TYPE_ENUM.values()){
+                types.add(type.getType());
+            }
+            return types;
+        }
     }
 }
