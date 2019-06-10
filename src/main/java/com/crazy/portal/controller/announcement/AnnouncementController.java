@@ -42,9 +42,7 @@ public class AnnouncementController extends BaseController {
      */
     @PostMapping(value = "/announcement")
     public BaseResponse editByInfo(@Valid @RequestBody Announcement param) {
-//        announcementService.editByInfo(param, super.getCurrentUser().getId());
-        announcementService.editByInfo(param, 1);
-        return super.successResult();
+        return super.successResult(announcementService.editByInfo(param, super.getCurrentUser().getId()));
     }
 
     /**
@@ -52,8 +50,7 @@ public class AnnouncementController extends BaseController {
      */
     @GetMapping(value = "/announcement/release/{id}")
     public BaseResponse releaseById(@PathVariable Integer id) {
-//        announcementService.releaseById(id, super.getCurrentUser().getId());
-        announcementService.releaseById(id, 1);
+        announcementService.releaseById(id, super.getCurrentUser().getId());
         return super.successResult();
     }
 
@@ -62,8 +59,7 @@ public class AnnouncementController extends BaseController {
      */
     @GetMapping(value = "/announcement/revoke/{id}")
     public BaseResponse revokeById(@PathVariable Integer id) {
-//        announcementService.revokeById(id, super.getCurrentUser().getId());
-        announcementService.revokeById(id, 1);
+        announcementService.revokeById(id, super.getCurrentUser().getId());
         return super.successResult();
     }
 

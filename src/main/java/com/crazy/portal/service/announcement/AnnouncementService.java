@@ -11,6 +11,7 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -62,7 +63,8 @@ public class AnnouncementService {
      * @param reqRecord 公告信息
      * @param userId 操作用户ID
      */
-    public void editByInfo(Announcement reqRecord, Integer userId) {
+    @Transactional
+    public Integer editByInfo(Announcement reqRecord, Integer userId) {
         Announcement dbRecord = announcementDOMapper.selectByPrimaryKey(reqRecord.getId());
         if(log.isDebugEnabled()){
             log.debug("No relevant record information was found by id, {}", reqRecord.getId());
@@ -75,6 +77,7 @@ public class AnnouncementService {
         int num = isExists ? saveAnnouncementInfo(reqRecord, userId) : updateAnnouncementInfo(dbRecord, reqRecord, userId);
         editFile(reqRecord.getFileList(), reqRecord.getId());
         log.info("Announcement information edit completion, num:{}", num);
+        return isExists ? reqRecord.getId() : dbRecord.getId();
     }
 
     /**
@@ -82,6 +85,7 @@ public class AnnouncementService {
      * @param id    公告ID
      * @param userId    操作用户ID
      */
+    @Transactional
     public void releaseById(Integer id, Integer userId) {
         Announcement dbRecord = announcementDOMapper.selectByPrimaryKey(id);
         Assert.notNull(dbRecord, "No relevant record information was found by id");
@@ -97,6 +101,7 @@ public class AnnouncementService {
      * @param id    公告ID
      * @param userId    操作用户ID
      */
+    @Transactional
     public void revokeById(Integer id, Integer userId) {
         Announcement dbRecord = announcementDOMapper.selectByPrimaryKey(id);
         Assert.notNull(dbRecord, "No relevant record information was found by id");
