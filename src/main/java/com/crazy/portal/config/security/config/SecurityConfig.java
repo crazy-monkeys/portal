@@ -1,5 +1,7 @@
-package com.crazy.portal.config.security;
+package com.crazy.portal.config.security.config;
 
+import com.crazy.portal.config.security.JwtAuthenticationProvider;
+import com.crazy.portal.config.security.JwtUserService;
 import com.crazy.portal.config.security.filter.OptionsRequestFilter;
 import com.crazy.portal.config.security.handler.JwtRefreshSuccessHandler;
 import com.crazy.portal.config.security.handler.LoginSuccessHandler;

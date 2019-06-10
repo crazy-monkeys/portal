@@ -39,6 +39,7 @@ public class AuthenticationFailHandler implements AuthenticationFailureHandler{
 
         BaseResponse baseResponse;
         try(ServletOutputStream os = response.getOutputStream()){
+            response.reset();
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             response.setContentType("application/json;charset=utf-8");
             if(e.getCause() instanceof NonceExpiredException){
@@ -48,8 +49,13 @@ public class AuthenticationFailHandler implements AuthenticationFailureHandler{
                 baseResponse = new BaseResponse(SystemManagerEnum.ACCOUNT_ERROR.getCode(),
                         SystemManagerEnum.ACCOUNT_ERROR.getZhMsg());
             } else if(e.getCause() instanceof LockedException){
-                baseResponse = new BaseResponse(SystemManagerEnum.LOCKED.getCode(),
-                        SystemManagerEnum.LOCKED.getZhMsg());
+                if(e.getMessage().equals("password expiration")){
+                    baseResponse = new BaseResponse(SystemManagerEnum.PASSWORD_INVALID.getCode(),
+                            SystemManagerEnum.PASSWORD_INVALID.getZhMsg());
+                }else{
+                    baseResponse = new BaseResponse(SystemManagerEnum.LOCKED.getCode(),
+                            SystemManagerEnum.LOCKED.getZhMsg());
+                }
             }else if(e instanceof InsufficientAuthenticationException){
                 baseResponse = new BaseResponse(SystemManagerEnum.AUTH_ERROR.getCode(),
                         SystemManagerEnum.AUTH_ERROR.getZhMsg());

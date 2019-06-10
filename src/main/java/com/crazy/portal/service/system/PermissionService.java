@@ -33,6 +33,7 @@ public class PermissionService {
     @javax.annotation.Resource
     private ResourceMapper resourceMapper;
 
+
     /**
      * 获取用户所有可访问的资源,可缓存至redis
      * @param userName
@@ -58,8 +59,66 @@ public class PermissionService {
         return resourceMapper.selectResourceByIds(resourceIds);
     }
 
-    public List<Resource> findAll(){
-        return resourceMapper.findAll();
+    /**
+     * 获取所有权限
+     * @return
+     */
+    public List<Resource> queryResourceList(){
+        return null;
     }
 
+    /**
+     * 查询资源id绑定的角色
+     * @return
+     */
+    public int getRoleCountByResourceId(Integer id){
+        return 0;
+    }
+
+    /**
+     * 获取资源详情
+     * @param resId
+     * @return
+     */
+    public Resource findResource(Integer resId){
+        return null;
+    }
+
+    /**
+     * 添加/修改资源
+     * @param resource
+     * @return
+     */
+    public int saveResource(Resource resource){
+        return 0;
+    }
+
+    /**
+     * 删除资源
+     * @param id
+     * @return
+     */
+    public int deleteResource(Integer id){
+        return 0;
+    }
+
+    /**
+     * 根据角色获取拥有的权限id
+     * @param roleId
+     * @return
+     */
+    public List<Integer> findPermission(Integer roleId){
+        return null;
+    }
+
+
+    /**
+     * 分配权限
+     * @param addResIds
+     * @param deleteResIds
+     * @return
+     */
+    public boolean savePermission(List<Integer> addResIds,List<Integer> deleteResIds){
+        return true;
+    }
 }

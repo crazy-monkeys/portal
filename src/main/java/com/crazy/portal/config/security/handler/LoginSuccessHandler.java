@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.crazy.portal.bean.BaseResponse;
 import com.crazy.portal.config.security.JwtUserService;
 import com.crazy.portal.entity.system.User;
+import com.crazy.portal.service.system.PermissionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -34,6 +35,8 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
 
     @Resource
     private JwtUserService jwtUserService;
+    @Resource
+    private PermissionService permissionService;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,

@@ -1,4 +1,4 @@
-package com.crazy.portal.config.security;
+package com.crazy.portal.config.security.config;
 
 import com.crazy.portal.config.security.filter.LoginAuthenticationFilter;
 import com.crazy.portal.config.security.handler.AuthenticationFailHandler;
