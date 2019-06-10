@@ -9,7 +9,7 @@ import com.crazy.portal.util.ErrorCodes.SystemManagerEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
-import java.util.ArrayList;
+
 import java.util.Date;
 import java.util.List;
 
@@ -52,7 +52,7 @@ public class PermissionController extends BaseController{
             return super.successResult(list);
         }
         //获取树形结构
-        List<Resource> resources = this.initialResource(list,true);
+        List<Resource> resources = permissionService.resourceTree(list);
         //追加一个root节点
         Resource root = new Resource();
         root.setId(0);
@@ -156,31 +156,5 @@ public class PermissionController extends BaseController{
         resource.setCreateUserId(super.getCurrentUser().getId());
         permissionService.saveResource(resource);
         return super.successResult();
-    }
-
-    private List<Resource> initialResource(List<Resource> menuList, boolean isAllRes){
-        List<Resource> menuResources = new ArrayList<>();
-        for (Resource tCrmResourceDO : menuList) {
-            if (tCrmResourceDO.getParentId().equals(0L) && tCrmResourceDO.getResourceType().equals((short) 1)) {
-                Resource crmResourceDO = this.deepFindResouce(tCrmResourceDO,menuList,isAllRes);
-                menuResources.add(crmResourceDO);
-            }
-        }
-        return menuResources;
-    }
-
-    private Resource deepFindResouce(Resource tCrmResourceDO,List<Resource> menuList,boolean isAllRes){
-        for(Resource currResource : menuList){
-            if(currResource.getParentId().equals(tCrmResourceDO.getId())
-                    &&  (isAllRes || currResource.getResourceType().equals((short) 1))){
-
-                List<Resource> childrenResource = tCrmResourceDO.getChildren();
-                childrenResource.add(currResource);
-                tCrmResourceDO.setChildren(childrenResource);
-                //递归寻找
-                this.deepFindResouce(currResource,menuList,isAllRes);
-            }
-        }
-        return tCrmResourceDO;
     }
 }

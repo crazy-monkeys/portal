@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -39,7 +40,7 @@ public class PermissionService {
      * @param userName
      * @return
      */
-    public List<Resource> findAllPerMissionByUserId(String userName) throws Exception{
+    public List<Resource> findAllPerMissionByUserId(String userName){
         if(StringUtil.isEmpty(userName)){
             return null;
         }
@@ -91,6 +92,37 @@ public class PermissionService {
      */
     public List<Integer> findPermissionIds(List<Integer> roleIds){
         return roleResourceMapper.selectRoleResourceByRoleIds(roleIds);
+    }
+
+    /**
+     * 将list转为tree结构
+     * @param menuList
+     * @return
+     */
+    public List<Resource> resourceTree(List<Resource> menuList){
+        List<Resource> menuResources = new ArrayList<>();
+        for (Resource tCrmResourceDO : menuList) {
+            if (tCrmResourceDO.getParentId().equals(0) && tCrmResourceDO.getResourceType().equals(1)) {
+                Resource crmResourceDO = this.deepFindResouce(tCrmResourceDO,menuList);
+                menuResources.add(crmResourceDO);
+            }
+        }
+        return menuResources;
+    }
+
+    private Resource deepFindResouce(Resource tCrmResourceDO,List<Resource> menuList){
+        for(Resource currResource : menuList){
+            if(currResource.getParentId().equals(tCrmResourceDO.getId())
+                    &&  currResource.getResourceType().equals(1)){
+
+                List<Resource> childrenResource = tCrmResourceDO.getChildren();
+                childrenResource.add(currResource);
+                tCrmResourceDO.setChildren(childrenResource);
+                //递归寻找
+                this.deepFindResouce(currResource,menuList);
+            }
+        }
+        return tCrmResourceDO;
     }
     /**
      * 添加/修改资源

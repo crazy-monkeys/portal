@@ -244,8 +244,4 @@
     </foreach>
     ORDER BY RESOURCE_ORDER
   </select>
-
-  <select id="getRoleCountByResourceId" resultType="int">
-    SELECT count(1) FROM t_role_resource WHERE id = #{resourceId}
-  </select>
 </mapper>

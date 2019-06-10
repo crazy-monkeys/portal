@@ -3,19 +3,20 @@ package com.crazy.portal.config.security.handler;
 import com.alibaba.fastjson.JSON;
 import com.crazy.portal.bean.BaseResponse;
 import com.crazy.portal.config.security.JwtUserService;
+import com.crazy.portal.entity.system.Resource;
 import com.crazy.portal.service.system.PermissionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
-import javax.annotation.Resource;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.HashMap;
+import java.util.List;
 
 import org.springframework.stereotype.Component;
 
@@ -29,9 +30,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class LoginSuccessHandler implements AuthenticationSuccessHandler {
 
-    @Resource
+    @javax.annotation.Resource
     private JwtUserService jwtUserService;
-    @Resource
+    @javax.annotation.Resource
     private PermissionService permissionService;
 
     @Override
@@ -42,20 +43,24 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
         UserDetails userDetails = (UserDetails)authentication.getPrincipal();
         //生成token，并把token加密相关信息缓存，具体请看实现类
         String token = jwtUserService.saveUserLoginInfo(userDetails);
+        response.reset();
         response.setHeader("Authorization", token);
         response.setContentType("application/json;charset=utf-8");
         BaseResponse baseResponse = new BaseResponse();
         //获取权限资源
-        baseResponse.success(new HashMap<>());
-        OutputStream out = null;
+        OutputStream out = response.getOutputStream();
         try {
-            out = response.getOutputStream();
+            List<Resource> permissions = permissionService.findAllPerMissionByUserId(userDetails.getUsername());
+            baseResponse.success(permissionService.resourceTree(permissions));
             out.write(JSON.toJSONString(baseResponse).getBytes());
-        } catch (IOException e) {
-           log.error("序列化失败");
+        } catch (Exception e) {
+            log.error("",e);
+            baseResponse.systemException();
+            out.write(JSON.toJSONString(baseResponse).getBytes());
         }finally {
             out.flush();
             out.close();
         }
+
     }
 }
