@@ -95,6 +95,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
                 //放行
                 this.successfulAuthentication(request, response, filterChain, authResult);
                 filterChain.doFilter(request, response);
+                return;
             }
         } catch(JWTDecodeException e) {
             logger.error("JWT format error!", e);
