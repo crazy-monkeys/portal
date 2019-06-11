@@ -71,10 +71,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
-
-
         String url = request.getRequestURI();
         if (url.contains("/login") || url.equals("/")) {
+            //放行
             filterChain.doFilter(request, response);
             return;
         }
@@ -82,7 +81,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
         try {
             String token = getJwtToken(request);
             if(StringUtils.isEmpty(token)){
-                authenticationFailure(request, response,new InsufficientAuthenticationException("JWT is Empty"));
+                this.authenticationFailure(request, response,new InsufficientAuthenticationException("JWT is Empty"));
                 return;
             }
             else {

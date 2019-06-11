@@ -30,7 +30,7 @@ import java.util.Arrays;
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
-    private static final String[] permissiveUrl = new String[]{"/user/register","/user/login","/logout"};
+    private static final String[] permissiveUrl = new String[]{"/logout"};
 
     @Resource
     private LoginSuccessHandler loginSuccessHandler;
@@ -79,6 +79,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.authorizeRequests()
+                .antMatchers("/anonymous/**").hasRole("ANONYMOUS")
                 .antMatchers("/login","/").permitAll()
                 .anyRequest().authenticated()
                 .and()
@@ -121,5 +122,4 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
     protected UserDetailsService userDetailsService() {
         return jwtUserService;
     }
-
 }
