@@ -1,5 +1,7 @@
 package com.crazy.portal.util;
 
+import com.crazy.portal.config.exception.ErrorInfo;
+
 /**
  * @Desc:
  * @Author: Bill
@@ -8,7 +10,7 @@ package com.crazy.portal.util;
  */
 public class ErrorCodes {
 
-    public enum CommonEnum {
+    public enum CommonEnum implements ErrorInfo {
         SYSTEM_EXCEPTION(-1,"系统异常","system error"),
         SYSTEM_TIMEOUT(0,"系统超时","system timeout"),
         SUCCESS(1,"操作成功","operate successfully"),
@@ -40,7 +42,7 @@ public class ErrorCodes {
     /**
      * 系统管理状态码
      */
-    public enum SystemManagerEnum {
+    public enum SystemManagerEnum implements ErrorInfo {
         ACCOUNT_ERROR(10001,"用户名或密码错误",""),
         LOCKED(10002,"账户锁定",""),
         PASSWORD_INVALID(10003,"密码过期",""),
