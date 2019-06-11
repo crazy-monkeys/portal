@@ -12,9 +12,7 @@ import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
 
 import javax.annotation.Resource;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
 /**
  * created by Bill
@@ -27,21 +25,13 @@ public class WebConfig extends WebMvcConfigurationSupport {
 
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
-        registry.addViewController("/").setViewName("login");
-        registry.addViewController("/login").setViewName("login");
-        registry.addViewController("/main").setViewName("main");
-        registry.addViewController("/loginError").setViewName("error/500");
-        registry.addViewController("/system/users").setViewName("system/users");
-        registry.addViewController("/system/authority").setViewName("system/authority");
-        registry.addViewController("/system/announcement").setViewName("system/announcement");
-        registry.addViewController("/system/document").setViewName("system/document");
-        registry.addViewController("/system/document_edit").setViewName("system/document_edit");
+        registry.addViewController("/").setViewName("/login");
     }
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/static/**")
-                .addResourceLocations("classpath:/static/");
+        registry.addResourceHandler("/static/**").addResourceLocations("classpath:/static/");
+        registry.addResourceHandler("/view/**").addResourceLocations("classpath:/view/");
         super.addResourceHandlers(registry);
     }
 
