@@ -23,14 +23,13 @@ import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.Assert;
 import org.springframework.web.filter.OncePerRequestFilter;
-
 import javax.annotation.Resource;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -183,13 +182,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
     }
 
     public void setPermissiveUrl(String... urls) {
-        if(permissiveRequestMatchers == null){
-            permissiveRequestMatchers = Collections.EMPTY_LIST;
-            return;
-        }
-        for(String url : urls){
-            permissiveRequestMatchers.add(new AntPathRequestMatcher(url));
-        }
+        if(permissiveRequestMatchers == null)
+            permissiveRequestMatchers = new ArrayList<>();
+        for(String url : urls)
+            permissiveRequestMatchers .add(new AntPathRequestMatcher(url));
     }
 
     public void setAuthenticationSuccessHandler(
