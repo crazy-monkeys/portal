@@ -30,43 +30,6 @@ public class PermissionController extends BaseController{
 
 
     /**
-     * 赋权
-     * @return
-     */
-    @PostMapping(value = "/savePermission")
-    public BaseResponse empowerment(@RequestBody PermissionBean permissionBean) {
-        if(permissionBean.getRoleId() == null){
-            return new BaseResponse(SystemManagerEnum.ROLE_EMPTY_ID.getCode(),
-                    SystemManagerEnum.ROLE_EMPTY_ID.getZhMsg());
-        }
-        List<Integer> addResourcesIds = permissionBean.getAddPermissionIds();
-        List<Integer> rmResourcesIds = permissionBean.getRmPermissionIds();
-        if((addResourcesIds == null || addResourcesIds.isEmpty())
-                && (rmResourcesIds == null || rmResourcesIds.isEmpty())){
-
-            return new BaseResponse(SystemManagerEnum.PERMISSION_EMPTY_AND_ROLE.getCode(),
-                    SystemManagerEnum.PERMISSION_EMPTY_AND_ROLE.getZhMsg());
-        }
-        permissionService.savePermission(permissionBean,super.getCurrentUser().getId());
-        return super.successResult();
-    }
-
-    /**
-     * 获取角色对应的资源id
-     * @param roleIds
-     * @return
-     */
-    @GetMapping(value = "/findPermission")
-    public BaseResponse findPermission(@RequestParam List<Integer> roleIds) {
-        if(roleIds == null){
-            return new BaseResponse(SystemManagerEnum.ROLE_EMPTY_ID.getCode(),
-                    SystemManagerEnum.ROLE_EMPTY_ID.getZhMsg());
-        }
-        List<Integer> resourceIds = permissionService.findPermissionIds(roleIds);
-        return super.successResult(resourceIds);
-    }
-
-    /**
      * 获取所有资源
      * @return
      */
@@ -88,6 +51,72 @@ public class PermissionController extends BaseController{
         return super.successResult(root);
     }
 
+    /**
+     * 获取角色对应的资源id
+     * @param roleIds
+     * @return
+     */
+    @GetMapping(value = "/findPermission")
+    public BaseResponse findPermission(@RequestParam List<Integer> roleIds) {
+        if(roleIds == null){
+            return new BaseResponse(SystemManagerEnum.ROLE_EMPTY_ID.getCode(),
+                    SystemManagerEnum.ROLE_EMPTY_ID.getZhMsg());
+        }
+        List<Integer> resourceIds = permissionService.findPermissionIds(roleIds);
+        return super.successResult(resourceIds);
+    }
+
+    /**
+     * 赋权
+     * @return
+     */
+    @PostMapping(value = "/savePermission")
+    public BaseResponse empowerment(@RequestBody PermissionBean permissionBean) {
+        if(permissionBean.getRoleId() == null){
+            return new BaseResponse(SystemManagerEnum.ROLE_EMPTY_ID.getCode(),
+                    SystemManagerEnum.ROLE_EMPTY_ID.getZhMsg());
+        }
+        List<Integer> addResourcesIds = permissionBean.getAddPermissionIds();
+        List<Integer> rmResourcesIds = permissionBean.getRmPermissionIds();
+        if((addResourcesIds == null || addResourcesIds.isEmpty())
+                && (rmResourcesIds == null || rmResourcesIds.isEmpty())){
+
+            return new BaseResponse(SystemManagerEnum.PERMISSION_EMPTY_AND_ROLE.getCode(),
+                    SystemManagerEnum.PERMISSION_EMPTY_AND_ROLE.getZhMsg());
+        }
+        permissionService.savePermission(permissionBean,super.getCurrentUser().getId());
+        return super.successResult();
+    }
+
+
+    /**
+     * 添加资源信息
+     * @return
+     */
+    @PostMapping(value="/add")
+    public BaseResponse addResource(@RequestBody Resource resource){
+        if(resource.getParentId() == null
+                || StringUtils.isEmpty(resource.getResourceName())
+                || StringUtils.isEmpty(resource.getResourceUrl())
+                || resource.getResourceType() == null){
+
+            return new BaseResponse(SystemManagerEnum.PERMISSION_ILLEGAL.getCode(),
+                    SystemManagerEnum.PERMISSION_ILLEGAL.getZhMsg());
+        }
+        if(!Enums.RESOURCE_TYPE_ENUM.getResourceTypes().contains(resource.getResourceType().intValue())){
+            return new BaseResponse(SystemManagerEnum.PERMISSION_UN_TYPE_OPTIONAL.getCode(),
+                    SystemManagerEnum.PERMISSION_UN_TYPE_OPTIONAL.getZhMsg());
+        }
+        if(permissionService.findResource(resource.getParentId()) == null){
+            return new BaseResponse(SystemManagerEnum.PERMISSION_NOT_EXIST.getCode(),
+                    SystemManagerEnum.PERMISSION_NOT_EXIST.getZhMsg());
+        }
+        resource.setActive((short)1);
+        resource.setCreateTime(new Date());
+        resource.setCreateUserId(super.getCurrentUser().getId());
+        permissionService.saveResource(resource);
+        return super.successResult();
+    }
 
     /**
      * 准备数据
@@ -153,35 +182,6 @@ public class PermissionController extends BaseController{
                     SystemManagerEnum.PERMISSION_USED.getZhMsg());
         }
         permissionService.deleteResource(resourceId);
-        return super.successResult();
-    }
-
-    /**
-     * 添加资源信息
-     * @return
-     */
-    @PostMapping(value="/add")
-    public BaseResponse addResource(@RequestBody Resource resource){
-        if(resource.getParentId() == null
-                || StringUtils.isEmpty(resource.getResourceName())
-                || StringUtils.isEmpty(resource.getResourceUrl())
-                || resource.getResourceType() == null){
-
-            return new BaseResponse(SystemManagerEnum.PERMISSION_ILLEGAL.getCode(),
-                    SystemManagerEnum.PERMISSION_ILLEGAL.getZhMsg());
-        }
-        if(!Enums.RESOURCE_TYPE_ENUM.getResourceTypes().contains(resource.getResourceType().intValue())){
-            return new BaseResponse(SystemManagerEnum.PERMISSION_UN_TYPE_OPTIONAL.getCode(),
-                    SystemManagerEnum.PERMISSION_UN_TYPE_OPTIONAL.getZhMsg());
-        }
-        if(permissionService.findResource(resource.getParentId()) == null){
-            return new BaseResponse(SystemManagerEnum.PERMISSION_NOT_EXIST.getCode(),
-                    SystemManagerEnum.PERMISSION_NOT_EXIST.getZhMsg());
-        }
-        resource.setActive((short)1);
-        resource.setCreateTime(new Date());
-        resource.setCreateUserId(super.getCurrentUser().getId());
-        permissionService.saveResource(resource);
         return super.successResult();
     }
 }
