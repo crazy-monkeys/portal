@@ -60,6 +60,10 @@ public class PermissionService {
         return resourceMapper.selectResourceByIds(resourceIds);
     }
 
+    public void empowerment(){
+
+    }
+
     /**
      * 获取所有权限
      * @return

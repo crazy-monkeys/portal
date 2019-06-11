@@ -59,7 +59,7 @@ public class ErrorCodes {
 
         PERMISSION_ILLEGAL(10040,"资源必填项不能为空",""),
         PERMISSION_NOT_EXIST(10041,"(父级/当前)资源ID不存在",""),
-        PERMISSION_EMPTY_AND_ROLE(10042,"添加/移除 列表不能同时为空",""),
+        PERMISSION_EMPTY_AND_ROLE(10042,"添加/移除权限ID不能同时为空",""),
         PERMISSION_USED(10043,"该权限已配置角色，请先删除该权限的角色信息",""),
         PERMISSION_UN_TYPE_OPTIONAL(10044,"类型不存在","");
 
