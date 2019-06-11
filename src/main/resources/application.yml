@@ -1,3 +1,4 @@
+
 spring:
   profiles:
     active: dev
@@ -40,7 +41,7 @@ spring:
         expose-spring-macro-helpers: false
         request-context-attribute: request
         suffix: .html
-        template-loader-path: classpath:/templates
+        template-loader-path: classpath:/view
   session:
       cookie:
         name: portal

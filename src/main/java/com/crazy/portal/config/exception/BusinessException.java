@@ -32,6 +32,11 @@ public class BusinessException extends RuntimeException {
         this.args = args;
     }
 
+    public BusinessException(ErrorInfo errorInfo) {
+        this.errorCode = errorInfo.getCode();
+        this.message = errorInfo.getZhMsg();
+    }
+
     public BusinessException(int errorCode, String message) {
         this.errorCode = errorCode;
         this.message = message;

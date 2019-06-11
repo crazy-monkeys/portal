@@ -73,12 +73,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
     @Override
     public void configure(WebSecurity web) throws Exception {
         web.ignoring().antMatchers("/static/**");
+        web.ignoring().antMatchers("/view/**");
     }
 
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.authorizeRequests()
                 .antMatchers("/login","/").permitAll()
+                .anyRequest().authenticated()
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement().disable()
@@ -88,6 +90,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                 .headers().addHeaderWriter(new StaticHeadersWriter(Arrays.asList(
                         new Header("Access-control-Allow-Origin","*"),
                         new Header("Access-Control-Expose-Headers","Authorization"))))
+                .frameOptions().disable()
                 .and()
                 //拦截OPTIONS请求，直接返回header
                 .addFilterAfter(new OptionsRequestFilter(), CorsFilter.class)

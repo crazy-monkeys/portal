@@ -71,8 +71,7 @@ public class RoleService {
             }
         } catch (Exception e) {
             log.error("",e);
-            throw new BusinessException(ErrorCodes.SystemManagerEnum.ROLE_SAVE_FAILED.getCode(),
-                    ErrorCodes.SystemManagerEnum.ROLE_SAVE_FAILED.getZhMsg());
+            throw new BusinessException(ErrorCodes.SystemManagerEnum.ROLE_SAVE_FAILED);
         }
         return 0;
     }
