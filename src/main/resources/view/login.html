@@ -75,14 +75,9 @@
     }
     document.querySelector(".login-button").onclick = function(){
         addClass(document.querySelector(".login"), "active")
-        setTimeout(function(){
-            addClass(document.querySelector(".sk-rotating-plane"), "active")
-            document.querySelector('.login').style.display = "none";
-        },800);
-
         login();
     }
-
+	var error = 0;
     function login(){
         var login = $('input[name="j_username"]').val();
         var pwd = $('input[name="j_password"]').val();
@@ -94,18 +89,30 @@
                 'loginName' : login,
                 'loginPwd' : pwd
             }),
-			success:function(data, textStatus, request){
-                if(request.status == 401){
-                    reset();
-                    layer.msg(res.msg);
-				}
-                if (data && data.code === 1) {
+            complete:function(xhr, textStatus){
+                if(error != 1) {
+                    setTimeout(function () {
+                        addClass(document.querySelector(".sk-rotating-plane"), "active")
+                        document.querySelector('.login').style.display = "none";
+                    }, 800);
+                }
+			},
+			success:function(res, textStatus, request){
+                if (res && res.code === 1) {
                     localStorage.setItem("authorization", request.getResponseHeader("authorization"));
+                    localStorage.setItem("menu", res.data);
                     window.location.href = '/view/main.html';
                 } else {
-                    alert(data.msg);
+                    layer.msg(data.msg);
                 }
-			}
+			},
+			error : function(xhr,textStatus,errorThrown){
+                if (xhr.status == 401) {
+                    error = 1;
+                    layer.msg("登录失败，请检查用户名与密码");
+                    reset();
+                }
+            }
         });
 	}
 	function reset(){

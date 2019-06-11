@@ -103,10 +103,10 @@
         </div>
     </div>
 </div>
-<script src="../../static/layui/layui.all.js"></script>
 <script src='../../static/jquery/jquery-2.1.4.min.js'></script>
+<script type="text/javascript"  src="../../static/util/util.js"></script>
+<script src="../../static/layui/layui.all.js"></script>
 <script type="text/javascript"  src="../../static/main/assets/js/su.js"></script>
-<script type="text/javascript"  src="../../static/main/assets/js/formUtil.js"></script>
 <script>
     var element = layui.element;
     var table = layui.table;
@@ -253,83 +253,49 @@
     }
 
     function toEdit(id){
-        $.get("/announcement/preview/"+ id, null,
-            function(res){
-                if(res.code === 1){
-                    form.val("editForm", res.data)
-                    console.log(res);
-                    $('#editFormSelectFileName').html(res.data.fileList[0].fileName);
-                    $('input[name="fileList[0].id"]').val(res.data.fileList[0].id);
-                    $('input[name="fileList[0].fileName"]').val(res.data.fileList[0].fileName);
-                    $('input[name="fileList[0].fileStoragePath"]').val(res.data.fileList[0].fileStoragePath);
-                }else{
-                    layer.msg(res.msg);
-                }
+        $.getJson("/announcement/preview/"+ id, function(data){
+                    form.val("editForm", data)
+                    console.log(data);
+                    $('#editFormSelectFileName').html(data.fileList[0].fileName);
+                    $('input[name="fileList[0].id"]').val(data.fileList[0].id);
+                    $('input[name="fileList[0].fileName"]').val(data.fileList[0].fileName);
+                    $('input[name="fileList[0].fileStoragePath"]').val(data.fileList[0].fileStoragePath);
             }
         );
     }
     function toPreview(id){
-        $.get("/announcement/preview/"+ id, null,
-            function(res){
-                if(res.code === 1){
-                    $('#previewTitle').html(res.data.title);
-                    $('#previewContent').html(res.data.content);
-                    $('#previewFilename').html(res.data.fileList[0].fileName);
-                    $('#previewFilename').attr("href", res.data.fileList[0].fileStoragePath);
-                }else{
-                    layer.msg(res.msg);
-                }
+        $.getJson("/announcement/preview/"+ id, function(data){
+                    $('#previewTitle').html(data.title);
+                    $('#previewContent').html(data.content);
+                    $('#previewFilename').html(data.fileList[0].fileName);
+                    $('#previewFilename').attr("href", data.fileList[0].fileStoragePath);
             }
         );
     }
     function sureCancel(id){
         layer.confirm('确定撤销吗', function(index){
-            $.get("/announcement/revoke/"+ id, null,
-                function(res){
-                    if(res.code === 1){
+            $.getJson("/announcement/revoke/"+ id, function(){
                         loadTable();
                         layer.close(index);
-                    }else{
-                        layer.msg(res.msg);
-                    }
                 }
             );
         });
     }
     function submitEditForm(){
         var json = $("#editForm").serializeJson();
-        if(!json['topmost']){
-            json['topmost'] = 0;
-        }
-        $.ajax({
-            url : "/announcement",
-            type : "post",
-            contentType:'application/json',
-            data : JSON.stringify(json),
-            success : function(res) {
-                if(res.code === 1){
-                    release(res.data);
-                } else {
-                    layer.msg(res.msg);
-                }
-            }
+        json['topmost'] = json['topmost'] || 0;
+        $.postJson("/announcement", json, function(data){
+            release(data);
         });
     }
     function release(id){
-        $.ajax({
-            url : "/announcement/release/" + id,
-            type : "get",
-            success : function(res) {
-                if(res.code === 1){
+        $.getJson("/announcement/release/" + id, function() {
                     layer.closeAll();
                     $("#addDiv").hide();
                     loadTable();
                     layer.msg(res.msg);
-                } else {
-                    layer.msg(res.msg);
-                }
             }
-        });
+        );
     }
 </script>
 </body>
