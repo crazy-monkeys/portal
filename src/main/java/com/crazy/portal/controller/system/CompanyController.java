@@ -22,6 +22,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("/company")
+@Deprecated
 public class CompanyController {
     @Resource
     private CompanyService companyService;

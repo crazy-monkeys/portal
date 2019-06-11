@@ -23,6 +23,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("/customer")
+@Deprecated
 public class CustomerController {
     @Resource
     private CustomerService customerService;
