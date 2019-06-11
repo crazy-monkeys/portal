@@ -30,43 +30,26 @@ public class PermissionController extends BaseController{
 
 
     /**
-     * 进入权限修改
+     * 赋权
      * @return
      */
-//    @PostMapping(value = "/empowerment")
-//    public BaseResponse empowerment(@RequestBody PermissionBean permissionBean) {
-//        try {
-//            if(permissionBean.getRoleId() == null){
-//                return new BaseResponse(SystemManagerEnum.ROLE_EMPTY_ID.getCode(),
-//                        SystemManagerEnum.ROLE_EMPTY_ID.getZhMsg());
-//            }
-//            List<Long> addResourcesIds = permissionBean.getAddPermissionIds();
-//            List<Long> rmResourcesIds = permissionBean.getRmPermissionIds();
-//            if((addResourcesIds == null || addResourcesIds.isEmpty())
-//                    && (rmResourcesIds == null || rmResourcesIds.isEmpty())){
-//
-//                return new BaseResponse(SystemManagerEnum.PERMISSION_EMPTY_AND_ROLE.getCode(),
-//                        SystemManagerEnum.PERMISSION_EMPTY_AND_ROLE.getZhMsg());
-//            }
-//            permissionService.saveResourcePermission(addResourcesIds,rmResourcesIds,
-//                    permissionBean.getRoleId(),super.getCurrentUser().getUserId());
-//        } catch (IllegalArgumentException e) {
-//            log.error("",e);
-//            if(e.getMessage().contains("ERROR_ROLE")){
-//                return new BaseResponse(SystemManagerEnum.ROLE_NOT_EXIST.getCode(),
-//                        SystemManagerEnum.ROLE_NOT_EXIST.getZhMsg());
-//            }
-//            if(e.getMessage().contains("ERROR_RESOURCE")){
-//                return new BaseResponse(SystemManagerEnum.RESOURCEID_NOT_EXIST.getCode(),
-//                        SystemManagerEnum.RESOURCEID_NOT_EXIST.getZhMsg());
-//            }
-//            return super.systemError();
-//        } catch(Exception e){
-//            log.error("权限增加异常",e);
-//            return super.systemError();
-//        }
-//        return super.success();
-//    }
+    @PostMapping(value = "/savePermission")
+    public BaseResponse empowerment(@RequestBody PermissionBean permissionBean) {
+        if(permissionBean.getRoleId() == null){
+            return new BaseResponse(SystemManagerEnum.ROLE_EMPTY_ID.getCode(),
+                    SystemManagerEnum.ROLE_EMPTY_ID.getZhMsg());
+        }
+        List<Integer> addResourcesIds = permissionBean.getAddPermissionIds();
+        List<Integer> rmResourcesIds = permissionBean.getRmPermissionIds();
+        if((addResourcesIds == null || addResourcesIds.isEmpty())
+                && (rmResourcesIds == null || rmResourcesIds.isEmpty())){
+
+            return new BaseResponse(SystemManagerEnum.PERMISSION_EMPTY_AND_ROLE.getCode(),
+                    SystemManagerEnum.PERMISSION_EMPTY_AND_ROLE.getZhMsg());
+        }
+        permissionService.savePermission(permissionBean,super.getCurrentUser().getId());
+        return super.successResult();
+    }
 
     /**
      * 获取角色对应的资源id
@@ -157,10 +140,12 @@ public class PermissionController extends BaseController{
      */
     @DeleteMapping(value="/del/{resourceId}")
     public BaseResponse deleteResource(@PathVariable Integer resourceId){
-        if(permissionService.findResource(resourceId) == null){
+        Resource resource = permissionService.findResource(resourceId);
+        if(resource == null){
             return new BaseResponse(SystemManagerEnum.PERMISSION_NOT_EXIST.getCode(),
                     SystemManagerEnum.PERMISSION_NOT_EXIST.getZhMsg());
         }
+        log.info("user {} delete the resource {}",super.getCurrentUser().getId(),resourceId);
         int result = permissionService.getRoleCountByResourceId(resourceId);
         if(result > 0){
             log.warn("该权限已配置角色，请先删除该权限的角色信息!");

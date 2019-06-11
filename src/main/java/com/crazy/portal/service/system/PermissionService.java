@@ -1,11 +1,13 @@
 package com.crazy.portal.service.system;
 
-import com.crazy.portal.dao.system.ResourceMapper;
-import com.crazy.portal.dao.system.RoleResourceMapper;
-import com.crazy.portal.dao.system.UserMapper;
-import com.crazy.portal.dao.system.UserRoleMapper;
+import com.crazy.portal.bean.system.PermissionBean;
+import com.crazy.portal.config.exception.BusinessException;
+import com.crazy.portal.dao.system.*;
 import com.crazy.portal.entity.system.Resource;
+import com.crazy.portal.entity.system.Role;
+import com.crazy.portal.entity.system.RoleResource;
 import com.crazy.portal.entity.system.User;
+import com.crazy.portal.util.ErrorCodes;
 import com.crazy.portal.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -13,6 +15,7 @@ import org.springframework.util.Assert;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -29,6 +32,8 @@ public class PermissionService {
     private UserRoleMapper userRoleMapper;
     @javax.annotation.Resource
     private UserMapper userMapper;
+    @javax.annotation.Resource
+    private RoleMapper roleMapper;
     @javax.annotation.Resource
     private RoleResourceMapper roleResourceMapper;
     @javax.annotation.Resource
@@ -60,16 +65,12 @@ public class PermissionService {
         return resourceMapper.selectResourceByIds(resourceIds);
     }
 
-    public void empowerment(){
-
-    }
-
     /**
      * 获取所有权限
      * @return
      */
     public List<Resource> queryResourceList(){
-        return resourceMapper.findAll();
+        return resourceMapper.findActiveList();
     }
 
     /**
@@ -134,7 +135,24 @@ public class PermissionService {
      * @return
      */
     public int saveResource(Resource resource){
-        return 0;
+        if(resource.getParentId() == 0L){
+            int num = resourceMapper.countOrder();
+            resource.setResourceOrder(num + 1);
+        }else{
+            Resource resourceDO = new Resource();
+            resourceDO.setId(resource.getParentId());
+            Resource res = resourceMapper.selectByPrimaryKey(resource.getId());
+            resource.setResourceOrder(res.getResourceOrder()+1);
+            List<Resource> rlist = resourceMapper.queryResourceByResourId(res.getResourceOrder());
+            for (Resource r1 : rlist) {
+                int orderId = new Long(r1.getResourceOrder()).intValue();
+                orderId = orderId + 1;
+                r1.setResourceOrder(orderId);
+                resourceMapper.updateByPrimaryKeySelective(r1);
+            }
+        }
+        int num = resourceMapper.insertSelective(resource);
+        return num > 0 ? 1 : -1;
     }
 
     /**
@@ -143,26 +161,74 @@ public class PermissionService {
      * @return
      */
     public int deleteResource(Integer id){
-        return 0;
-    }
-
-    /**
-     * 根据角色获取拥有的权限id
-     * @param roleId
-     * @return
-     */
-    public List<Integer> findPermission(Integer roleId){
-        return null;
+        Resource resource = resourceMapper.selectByPrimaryKey(id);
+        if (null != resource) {
+            List<Resource> list = resourceMapper.queryResourceByResourId(resource.getResourceOrder());
+            //TODO 如果不减 ztree能不能正常显示？理论可以
+            for (Resource r1 : list) {
+                int orderId = r1.getResourceOrder();
+                orderId = orderId - 1;
+                r1.setResourceOrder(orderId);
+                resourceMapper.updateByPrimaryKeySelective(r1);
+            }
+        }
+        int num = resourceMapper.deleteByPrimaryKey(id);
+        return num>0?1:-1;
     }
 
 
     /**
      * 分配权限
-     * @param addResIds
-     * @param deleteResIds
+     * @param permissionBean
+     * @param userId
      * @return
      */
-    public boolean savePermission(List<Integer> addResIds,List<Integer> deleteResIds){
+    public boolean savePermission(PermissionBean permissionBean, Integer userId){
+        Integer roleId = permissionBean.getRoleId();
+        List<Integer> addPermissionIds = permissionBean.getAddPermissionIds();
+        List<Integer> rmPermissionIds = permissionBean.getRmPermissionIds();
+        synchronized (this){
+            Role roleDO = roleMapper.selectByPrimaryKey(roleId);
+            if(roleDO == null){
+                throw new BusinessException(ErrorCodes.SystemManagerEnum.ROLE_NOT_EXIST.getCode(),
+                        ErrorCodes.SystemManagerEnum.ROLE_NOT_EXIST.getZhMsg());
+            }
+            if(addPermissionIds != null && !addPermissionIds.isEmpty()){
+                this.saveResouece(addPermissionIds, roleId,true,userId);
+            }
+            if(rmPermissionIds != null && !rmPermissionIds.isEmpty()){
+                this.saveResouece(rmPermissionIds, roleId,false,userId);
+            }
+        }
         return true;
+    }
+
+    private void saveResouece(List<Integer> resourcesIds, Integer roleId, boolean isAdd, Integer userId) {
+        if(resourcesIds != null && !resourcesIds.isEmpty()){
+            for(Integer resourceId : resourcesIds){
+                Resource crmResourceDO = resourceMapper.selectByPrimaryKey(resourceId);
+                if(crmResourceDO == null){
+                    throw new BusinessException(ErrorCodes.SystemManagerEnum.PERMISSION_NOT_EXIST.getCode(),
+                            ErrorCodes.SystemManagerEnum.PERMISSION_NOT_EXIST.getZhMsg());
+                }
+                RoleResource roleResourceDO = roleResourceMapper.selectByRoleResource(roleId,resourceId);
+                if(isAdd){
+                    if(roleResourceDO != null){
+                        continue;
+                    }
+                    RoleResource roleRes = new RoleResource();
+                    roleRes.setRoleId(roleId);
+                    roleRes.setResourceId(resourceId);
+                    roleRes.setCreateTime(new Date());
+                    roleRes.setCreateId(userId);
+                    roleResourceMapper.insertSelective(roleRes);
+                }else{
+                    if(roleResourceDO == null){
+                        throw new IllegalArgumentException("ERROR_RESOURCE->"+resourceId);
+                    }
+                    roleResourceMapper.deleteByPrimaryKey(roleResourceDO.getId());
+                }
+            }
+        }
     }
 }

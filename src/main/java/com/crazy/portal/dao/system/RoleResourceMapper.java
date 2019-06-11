@@ -1,6 +1,5 @@
 package com.crazy.portal.dao.system;
 
-import com.crazy.portal.entity.system.Role;
 import com.crazy.portal.entity.system.RoleResource;
 import org.apache.ibatis.annotations.Param;
 
@@ -20,4 +19,6 @@ public interface RoleResourceMapper {
     int updateByPrimaryKey(RoleResource record);
 
     List<Integer> selectRoleResourceByRoleIds(@Param("roleIds") List<Integer> roleIds);
+
+    RoleResource selectByRoleResource(@Param("roleId") Integer roleId,@Param("resourceId") Integer resourceId);
 }

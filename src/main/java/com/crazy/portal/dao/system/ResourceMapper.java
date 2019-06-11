@@ -18,14 +18,7 @@ public interface ResourceMapper {
 
     int updateByPrimaryKey(Resource record);
 
-    /**
-     * 查询用户的资源列表
-     */
-    List<Resource> queryResourceList();
-
     List<Resource> selectResourceByIds(@Param("ids") List<Integer> ids);
-
-    int deleteResourceByResourceId(Long resourceId);
 
     /**
      * 根据排序号查询不为空的菜单
@@ -34,7 +27,7 @@ public interface ResourceMapper {
      */
     List<Resource> queryResourceByResourId(Integer resourceOrder);
 
-    List<Resource> findAll();
+    List<Resource> findActiveList();
 
     /**
      * 查询所有菜单总合

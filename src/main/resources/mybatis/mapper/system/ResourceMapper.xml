@@ -27,7 +27,7 @@
     where id = #{id,jdbcType=INTEGER}
   </select>
 
-  <select id="findAll" resultMap="BaseResultMap">
+  <select id="findActiveList" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from t_resource
