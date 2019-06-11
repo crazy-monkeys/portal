@@ -1,7 +1,6 @@
 package com.crazy.portal.controller.system;
 
 import com.crazy.portal.bean.BaseResponse;
-import com.crazy.portal.bean.system.PermissionBean;
 import com.crazy.portal.controller.BaseController;
 import com.crazy.portal.entity.system.Resource;
 import com.crazy.portal.service.system.PermissionService;
