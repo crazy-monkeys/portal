@@ -30,7 +30,7 @@ import java.util.Arrays;
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
-    private static final String[] permissiveUrl = new String[]{"/user/register","/user/login"};
+    private static final String[] permissiveUrl = new String[]{"/user/register","/user/login","/logout"};
 
     @Resource
     private LoginSuccessHandler loginSuccessHandler;
@@ -79,7 +79,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.authorizeRequests()
-                .antMatchers("/login","/","/logout").permitAll()
+                .antMatchers("/login","/").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement().disable()

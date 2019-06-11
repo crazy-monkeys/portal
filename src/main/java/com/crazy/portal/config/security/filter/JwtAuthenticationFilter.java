@@ -73,8 +73,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
             throws ServletException, IOException {
 
 
+
         String url = request.getRequestURI();
-        if (url.equals("/login") || url.equals("/logout") || url.equals("/")) {
+        if (url.contains("/login") || url.equals("/")) {
             filterChain.doFilter(request, response);
             return;
         }
