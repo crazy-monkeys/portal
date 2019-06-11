@@ -25,7 +25,7 @@ import java.nio.charset.Charset;
 public class LoginAuthenticationFilter extends AbstractAuthenticationProcessingFilter{
 
     public LoginAuthenticationFilter() {
-        //拦截url为 "/login" 的POST请求
+        //拦截url为 "/user/login" 的POST请求
         super(new AntPathRequestMatcher("/user/login", "POST"));
     }
 
