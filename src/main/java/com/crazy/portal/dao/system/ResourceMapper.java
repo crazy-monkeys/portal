@@ -16,8 +16,6 @@ public interface ResourceMapper {
 
     int updateByPrimaryKeySelective(Resource record);
 
-    int updateByPrimaryKey(Resource record);
-
     List<Resource> selectResourceByIds(@Param("ids") List<Integer> ids);
 
     /**

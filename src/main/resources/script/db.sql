@@ -13,15 +13,9 @@ CREATE TABLE `t_resource` (
   `resource_url` varchar(255) COLLATE utf8_bin NOT NULL,
   `update_time` datetime NOT NULL,
   `update_user_id` int(11) NOT NULL,
+  `permission_prefix_url` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-
--- ----------------------------
---  Records of `t_resource`
--- ----------------------------
-BEGIN;
-INSERT INTO `t_resource` VALUES ('1', '1', '2019-06-09 23:08:07', '1', '#', '0', '用户管理', '用户管理', '1', '1', '/user/**', '2019-06-09 23:10:00', '1'), ('2', '1', '2019-06-11 00:34:56', '1', '#', '1', '二级菜单', '二级菜单', '1', '1', '/user/**', '2019-06-11 00:35:29', '1');
-COMMIT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 -- ----------------------------
 --  Table structure for `t_role`
@@ -37,14 +31,7 @@ CREATE TABLE `t_role` (
   `update_time` datetime DEFAULT NULL,
   `update_user_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-
--- ----------------------------
---  Records of `t_role`
--- ----------------------------
-BEGIN;
-INSERT INTO `t_role` VALUES ('1', '1', '2019-04-20 05:11:45', '1', null, 'ADMIN', null, null), ('2', '2', '2019-04-20 05:11:45', '1', null, 'USER', null, null);
-COMMIT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 -- ----------------------------
 --  Table structure for `t_role_resource`
@@ -60,13 +47,6 @@ CREATE TABLE `t_role_resource` (
   `update_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
-
--- ----------------------------
---  Records of `t_role_resource`
--- ----------------------------
-BEGIN;
-INSERT INTO `t_role_resource` VALUES ('1', '1', '1', '2019-06-09 23:10:19', null, null, null), ('2', '1', '2', '2019-06-11 00:37:01', null, null, null);
-COMMIT;
 
 -- ----------------------------
 --  Table structure for `t_user`
@@ -93,14 +73,7 @@ CREATE TABLE `t_user` (
   `user_status` int(11) DEFAULT NULL,
   `user_type` int(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-
--- ----------------------------
---  Records of `t_user`
--- ----------------------------
-BEGIN;
-INSERT INTO `t_user` VALUES ('4', '1', null, '2019-04-20 13:58:14', '1', null, null, '2019-04-20 13:58:14', null, 'admin', '{bcrypt}$2a$10$HA8c7xXfB/flekytcElwy.AEaqvbzvR4mZvEGEtbwJ7Yo8y.WN.t6', null, '2020-04-19 13:58:14', 'admin', '2019-04-20 13:58:14', null, null, '1', '0');
-COMMIT;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 -- ----------------------------
 --  Table structure for `t_user_role`
@@ -117,12 +90,6 @@ CREATE TABLE `t_user_role` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 
--- ----------------------------
---  Records of `t_user_role`
--- ----------------------------
-BEGIN;
-INSERT INTO `t_user_role` VALUES ('4', '4', '1', '2019-04-20 13:58:14', '1', null, null);
-COMMIT;
 
 
 DROP TABLE IF EXISTS `t_company_file`;

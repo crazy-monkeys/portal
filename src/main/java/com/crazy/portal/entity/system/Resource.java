@@ -27,6 +27,8 @@ public class Resource {
 
     private String resourceUrl;
 
+    private String permissionPrefixUrl;
+
     @JsonIgnore
     @JSONField(serialize=false)
     private Date createTime;

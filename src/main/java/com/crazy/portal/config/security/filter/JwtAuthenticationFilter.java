@@ -141,7 +141,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
             List<com.crazy.portal.entity.system.Resource> resources = permissionService.findAllPerMissionByUserId(userDetails.getUsername());
             String requestUrl = request.getRequestURI();
             for(com.crazy.portal.entity.system.Resource resource : resources){
-                if(antPathMatcher.match(resource.getResourceUrl(),requestUrl)){
+                if(antPathMatcher.match(resource.getPermissionPrefixUrl(),requestUrl)){
                     return true;
                 }
             }

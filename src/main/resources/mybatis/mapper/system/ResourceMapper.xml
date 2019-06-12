@@ -13,12 +13,13 @@
     <result column="resource_order" jdbcType="INTEGER" property="resourceOrder" />
     <result column="resource_type" jdbcType="INTEGER" property="resourceType" />
     <result column="resource_url" jdbcType="VARCHAR" property="resourceUrl" />
+    <result column="permission_prefix_url" jdbcType="VARCHAR" property="permissionPrefixUrl" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="update_user_id" jdbcType="INTEGER" property="updateUserId" />
   </resultMap>
   <sql id="Base_Column_List">
     id, active, create_time, create_user_id, icon_class, parent_id, resource_desc, resource_name, 
-    resource_order, resource_type, resource_url, update_time, update_user_id
+    resource_order, resource_type, resource_url,permission_prefix_url, update_time, update_user_id
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -42,16 +43,18 @@
     delete from t_resource
     where id = #{id,jdbcType=INTEGER}
   </delete>
+
   <insert id="insert" parameterType="com.crazy.portal.entity.system.Resource">
     insert into t_resource (id, active, create_time, 
       create_user_id, icon_class, parent_id, 
       resource_desc, resource_name, resource_order, 
-      resource_type, resource_url, update_time, 
+      resource_type, resource_url, permission_prefix_url,update_time,
       update_user_id)
     values (#{id,jdbcType=INTEGER}, #{active,jdbcType=SMALLINT}, #{createTime,jdbcType=TIMESTAMP}, 
       #{createUserId,jdbcType=INTEGER}, #{iconClass,jdbcType=VARCHAR}, #{parentId,jdbcType=INTEGER}, 
       #{resourceDesc,jdbcType=VARCHAR}, #{resourceName,jdbcType=VARCHAR}, #{resourceOrder,jdbcType=INTEGER}, 
-      #{resourceType,jdbcType=INTEGER}, #{resourceUrl,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP},
+      #{resourceType,jdbcType=INTEGER}, #{resourceUrl,jdbcType=VARCHAR},
+      #{permissionPrefixUrl,jdbcType=VARCHAR},#{updateTime,jdbcType=TIMESTAMP},
       #{updateUserId,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="com.crazy.portal.entity.system.Resource">
@@ -89,6 +92,9 @@
       </if>
       <if test="resourceUrl != null">
         resource_url,
+      </if>
+      <if test="permissionPrefixUrl != null">
+        permission_prefix_url,
       </if>
       <if test="updateTime != null">
         update_time,
@@ -131,6 +137,9 @@
       <if test="resourceUrl != null">
         #{resourceUrl,jdbcType=VARCHAR},
       </if>
+      <if test="permissionPrefixUrl != null">
+        #{permissionPrefixUrl,jdbcType=VARCHAR},
+      </if>
       <if test="updateTime != null">
         #{updateTime,jdbcType=TIMESTAMP},
       </if>
@@ -172,6 +181,9 @@
       <if test="resourceUrl != null">
         resource_url = #{resourceUrl,jdbcType=VARCHAR},
       </if>
+      <if test="permissionPrefixUrl != null">
+        permission_prefix_url = #{permissionPrefixUrl,jdbcType=VARCHAR},
+      </if>
       <if test="updateTime != null">
         update_time = #{updateTime,jdbcType=TIMESTAMP},
       </if>
@@ -181,23 +193,6 @@
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.crazy.portal.entity.system.Resource">
-    update t_resource
-    set active = #{active,jdbcType=SMALLINT},
-      create_time = #{createTime,jdbcType=TIMESTAMP},
-      create_user_id = #{createUserId,jdbcType=INTEGER},
-      icon_class = #{iconClass,jdbcType=VARCHAR},
-      parent_id = #{parentId,jdbcType=INTEGER},
-      resource_desc = #{resourceDesc,jdbcType=VARCHAR},
-      resource_name = #{resourceName,jdbcType=VARCHAR},
-      resource_order = #{resourceOrder,jdbcType=INTEGER},
-      resource_type = #{resourceType,jdbcType=INTEGER},
-      resource_url = #{resourceUrl,jdbcType=VARCHAR},
-      update_time = #{updateTime,jdbcType=TIMESTAMP},
-      update_user_id = #{updateUserId,jdbcType=INTEGER}
-    where id = #{id,jdbcType=INTEGER}
-  </update>
-
 
   <select id="queryResourceList" resultMap="BaseResultMap" >
     SELECT
