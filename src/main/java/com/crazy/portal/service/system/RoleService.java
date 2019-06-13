@@ -43,9 +43,9 @@ public class RoleService {
     public PageInfo<Role> queryRoleListPag(int pageNum,int pageSize){
         PortalUtil.defaultStartPage(pageNum,pageSize);
         List<Role> roleList = roleMapper.queryRoleList();
-        Page<Role> page = new Page<>();
-        page.addAll(roleList);
-        return new PageInfo<>(page);
+//        Page<Role> page = new Page<>();
+//        page.addAll(roleList);
+        return new PageInfo<>(roleList);
     }
 
     public boolean roleExist(String roleName){
@@ -82,7 +82,7 @@ public class RoleService {
      * @return
      */
     public Role findRole(Integer roleId){
-        return null;
+        return roleMapper.selectByPrimaryKey(roleId);
     }
 
 

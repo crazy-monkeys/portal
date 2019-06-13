@@ -41,39 +41,43 @@
                         <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit">修改</a>
                     </script>
                     <div  id="addDiv" style="width:700px;height:500px;display: none;">
-                        <table border="0" style="width:100%;height:100%;">
-                            <tr>
-                                <td style="width:100px;height:60px;text-align: right;">角色：</td>
-                                <td ><input type="text" autocomplete="off" class="layui-input"></td>
-                                <td rowspan="3" style="width: 260px;vertical-align: top;">
-                                    <div style="border:1px solid #ccc;height:100%;overflow-y:auto;">
-                                        <div id="tree1" class="demo-tree demo-tree-box"></div>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td style="height:100px;text-align: right;vertical-align: top;">职位描述：</td>
-                                <td><textarea placeholder="请输入内容" class="layui-textarea" name="desc"></textarea></td>
-                            </tr>
-                            <tr>
-                                <td>
-                                </td>
-                                <td>
-                                </td>
-                            </tr>
-                        </table>
+                        <form id="roleEditForm" class="layui-form" action="" lay-filter="roleEditForm">
+                            <input type="hidden" name="id" />
+                            <table border="0" style="width:100%;height:100%;">
+                                <tr>
+                                    <td style="width:100px;height:60px;text-align: right;">角色：</td>
+                                    <td ><input type="text" autocomplete="off" class="layui-input" name="roleName"></td>
+                                    <td rowspan="3" style="width: 260px;vertical-align: top;">
+                                        <div style="border:1px solid #ccc;height:100%;overflow-y:auto;">
+                                            <div id="tree1" class="demo-tree demo-tree-box"></div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="height:100px;text-align: right;vertical-align: top;">职位描述：</td>
+                                    <td><textarea placeholder="请输入内容" class="layui-textarea" name="roleDesc"></textarea></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                    </td>
+                                    <td>
+                                    </td>
+                                </tr>
+                            </table>
+                        </form>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-<script src="../../static/layui/layui.all.js"></script>
 <script src='../../static/jquery/jquery-2.1.4.min.js'></script>
+<script src="../../static/util/util.js" type="text/javascript" ></script>
+<script src="../../static/layui/layui.all.js"></script>
 <script src="../../static/main/assets/js/su.js" type="text/javascript"></script>
 <script>
     $(function() {
-        load();
+        loadTable();
     });
     var element = layui.element;
     var table = layui.table;
@@ -107,39 +111,37 @@
             }
         });
     });
-    function load() {
-//        $.get("/portal/customer/approvalList", function (result) {
-//            $.each(result, function (i, item) {
-//                if (item['registStatus'] == 0) {
-//                    item['registStatus'] = "To be processed";
-//                }
-//                item['opration'] = "<a href="+item['registId']+"'../../static/main/demo1.mycodes.net/houtai/admin_pro/views/sjbb_info.html?registId='>Detail</a>         <a href='javascript:approval(\""+item['registId']+"\")'>Application Pass</a>";
-//            });
-//            loadTable(result);
-//        });
-        var data = [
-            {
-                role:'系统管理员',
-                desc:'反正就是很强'
-            }
-        ];
-        loadTable(data);
-    }
 
-    function loadTable(data) {
+    function loadTable() {
         //展示已知数据
         table.render({
             elem: '#table'
-            , data: data
+            , url: '/permission/roleInfo'
+            , method: 'get'
+            , request: {pageName: 'pageNum', limitName: 'pageSize'}
+            , where: {title: $('#title').val(), releaseStartTime: $('#releaseStartTime').val()}
+            , parseData: function(res){
+                console.log(res);
+                return {
+                    "code": res.code == 1 ? 0 : res.code,
+                    "msg": res.msg,
+                    "count": res.data.total,
+                    "data": res.data.list
+                };
+            }
             , skin: 'line' //表格风格
             , even: true
-            , page: false //是否显示分页
-            , limits: [5, 7, 10]
-            , limit: 5 //每页默认显示的数量
+            , page: true
+            , limits: [10, 20, 30]
+            , limit: 10
             , toolbar: '#toolbar'
+            , text: {
+                none: '无数据'
+            }
             , cols: [[ //标题栏
-                {field: 'role', title: '角色', minWidth: 30, display:true}
-                ,{field: 'desc', title: '职位描述', minWidth: 80,hidden:true}
+                {field: 'id', title: 'ID', minWidth: 30, hide:true}
+                , {field: 'roleName', title: '角色', minWidth: 30, display:true}
+                , {field: 'roleDesc', title: '职位描述', minWidth: 80,hidden:true}
                 , {field: 'oprate', title: '操作', minWidth: 80, toolbar: '#tableOprate'}
             ]]
             ,done: function () {
@@ -160,6 +162,7 @@
                 ,layEvent = obj.event; //获得 lay-event 对应的值
             if(layEvent === 'edit'){
                 showAddDialog();
+                toEdit(data.id);
             }
         });
     }
@@ -172,9 +175,11 @@
             btn : [ '保存', '取消' ],
             btnAlign: 'c',
             success : function(layero, index) {
-
+                $("#roleEditForm")[0].reset();
+                $("#roleEditForm").find("input[name='id']").val("");
             },
             yes : function(index, layero) {
+                saveRole();
                 layer.closeAll();
             },
             btn2 : function(index, layero) {
@@ -185,6 +190,24 @@
                 $("#addDiv").hide();
             }
         });
+    }
+    function saveRole(){
+        var json = $("#roleEditForm").serializeJson();
+        var url = '/permission/saveRole';
+        if(json.id){
+            url = '/permission/updateRole';
+        }
+        $.postJson(url, json, function(data){
+            loadTable();
+            layer.msg(data.msg);
+        });
+    }
+    function toEdit(id){
+        $.getJson("/permission/findRole/"+ id, function(data){
+                form.val("roleEditForm", data);
+                console.log(data);
+            }
+        );
     }
 </script>
 

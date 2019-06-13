@@ -1,6 +1,6 @@
 DROP TABLE IF EXISTS `t_resource`;
 CREATE TABLE `t_resource` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `active` smallint(6) NOT NULL,
   `create_time` datetime NOT NULL,
   `create_user_id` int(11) NOT NULL,
@@ -22,7 +22,7 @@ CREATE TABLE `t_resource` (
 -- ----------------------------
 DROP TABLE IF EXISTS `t_role`;
 CREATE TABLE `t_role` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `active` smallint(6) NOT NULL,
   `create_time` datetime NOT NULL,
   `create_user_id` int(11) NOT NULL,

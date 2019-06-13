@@ -20,7 +20,7 @@ import java.util.Date;
  */
 @RestController
 @Slf4j
-@RequestMapping("/role")
+@RequestMapping("/permission")
 public class RoleController extends BaseController {
 
     @Resource
@@ -32,9 +32,8 @@ public class RoleController extends BaseController {
      * @param pageSize
      * @return
      */
-    @GetMapping(value = "/roleInfo/{pageNum}/{pageSize}")
-    public BaseResponse userSetting(@PathVariable Integer pageNum,
-                                    @PathVariable Integer pageSize) {
+    @GetMapping(value = "/roleInfo")
+    public BaseResponse userSetting(Integer pageNum, Integer pageSize) {
 
         PageInfo<Role> pager = roleService.queryRoleListPag(pageNum,pageSize);
         return super.successResult(pager);
