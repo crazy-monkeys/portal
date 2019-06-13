@@ -27,6 +27,8 @@ public class Resource {
 
     private String resourceUrl;
 
+    @JsonIgnore
+    @JSONField(serialize=false)
     private String permissionPrefixUrl;
 
     @JsonIgnore
