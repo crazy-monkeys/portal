@@ -16,6 +16,7 @@ import javax.validation.Valid;
 
 @Slf4j
 @RestController
+@RequestMapping("/announcement")
 public class AnnouncementController extends BaseController {
 
     @Resource
@@ -24,7 +25,7 @@ public class AnnouncementController extends BaseController {
     /**
      * 列表分页
      */
-    @GetMapping(value = "/announcement")
+    @GetMapping(value = "/list")
     public BaseResponse getPageList(String title, String releaseStartTime, String releaseEndTime, Integer pageNum, Integer pageSize) {
          return super.successResult(announcementService.getPageListByTitleOrTime(title, releaseStartTime, releaseEndTime, pageNum, pageSize));
     }
@@ -32,7 +33,7 @@ public class AnnouncementController extends BaseController {
     /**
      * 单个公告预览
      */
-    @GetMapping(value = "/announcement/preview/{id}")
+    @GetMapping(value = "/preview/{id}")
     public BaseResponse previewById(@PathVariable Integer id) {
         return super.successResult(announcementService.previewById(id));
     }
@@ -40,7 +41,7 @@ public class AnnouncementController extends BaseController {
     /**
      * 新增/编辑公告
      */
-    @PostMapping(value = "/announcement")
+    @PostMapping(value = "/info")
     public BaseResponse editByInfo(@Valid @RequestBody Announcement param) {
         return super.successResult(announcementService.editByInfo(param, super.getCurrentUser().getId()));
     }
@@ -48,7 +49,7 @@ public class AnnouncementController extends BaseController {
     /**
      * 单个公告发布
      */
-    @GetMapping(value = "/announcement/release/{id}")
+    @GetMapping(value = "/release/{id}")
     public BaseResponse releaseById(@PathVariable Integer id) {
         announcementService.releaseById(id, super.getCurrentUser().getId());
         return super.successResult();
@@ -57,13 +58,13 @@ public class AnnouncementController extends BaseController {
     /**
      * 单个公告撤销
      */
-    @GetMapping(value = "/announcement/revoke/{id}")
+    @GetMapping(value = "/revoke/{id}")
     public BaseResponse revokeById(@PathVariable Integer id) {
         announcementService.revokeById(id, super.getCurrentUser().getId());
         return super.successResult();
     }
 
-    @PostMapping(value = "/announcement/file")
+    @PostMapping(value = "/file")
     public BaseResponse pushFile(MultipartFile[] files) {
         return super.successResult(announcementService.pushFile());
     }

@@ -16,6 +16,7 @@ import javax.validation.Valid;
 
 @Slf4j
 @RestController
+@RequestMapping("/archive")
 public class ArchiveController extends BaseController {
 
     @Resource
@@ -24,12 +25,12 @@ public class ArchiveController extends BaseController {
     /**
      * 分页列表
      */
-    @GetMapping(value = "/archive")
+    @GetMapping(value = "/list")
     public BaseResponse getListByPage(String thirdFileName, String version, Integer pageNum, Integer pageSize){
         return super.successResult(archiveService.getListByPage(thirdFileName, version, pageNum, pageSize));
     }
 
-    @GetMapping(value = "/archive/{id}")
+    @GetMapping(value = "/{id}")
     public BaseResponse getDetailInfoById(@PathVariable Integer id) {
         return super.successResult(archiveService.getDetailInfoById(id));
     }
@@ -37,7 +38,7 @@ public class ArchiveController extends BaseController {
     /**
      * 文档发布，既将文档授权给相关角色或用户
      */
-    @PostMapping(value = "/archive/authorize")
+    @PostMapping(value = "/authorize")
     public BaseResponse authorize(@Valid @RequestBody Archive param){
         archiveService.authorizeArchiveToUser(param, super.getCurrentUser().getId());
         return super.successResult();
@@ -46,7 +47,7 @@ public class ArchiveController extends BaseController {
     /**
      * 撤销已经发布的文档
      */
-    @GetMapping(value = "/archive/revoke/{id}")
+    @GetMapping(value = "/revoke/{id}")
     public BaseResponse revokeById(@PathVariable Integer id) {
         archiveService.revokeById(id, super.getCurrentUser().getId());
         return super.successResult();

@@ -147,7 +147,7 @@
         //展示已知数据
         table.render({
             elem: '#table'
-            , url: '/announcement'
+            , url: '/announcement/list'
             , method: 'get'
             , request: {pageName: 'pageNum', limitName: 'pageSize'}
             , where: {title: $('#title').val(), releaseStartTime: $('#releaseStartTime').val()}
@@ -284,7 +284,7 @@
     function submitEditForm(){
         var json = $("#editForm").serializeJson();
         json['topmost'] = json['topmost'] || 0;
-        $.postJson("/announcement", json, function(data){
+        $.postJson("/announcement/info", json, function(data){
             release(data);
         });
     }
