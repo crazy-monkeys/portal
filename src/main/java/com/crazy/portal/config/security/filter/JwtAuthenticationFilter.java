@@ -72,7 +72,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
             throws ServletException, IOException {
 
         String url = request.getRequestURI();
-        if (url.contains("/login") || url.equals("/")) {
+        if (url.contains("/login") || url.equals("/") || url.contains(".html")) {
             //放行
             filterChain.doFilter(request, response);
             return;
@@ -80,7 +80,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
         Throwable throwable;
         try {
             String token = getJwtToken(request);
-            if(!url.contains(".html") && StringUtils.isEmpty(token)){
+            if(StringUtils.isEmpty(token)){
                 this.authenticationFailure(request, response,new InsufficientAuthenticationException("JWT is Empty"));
                 return;
             }
