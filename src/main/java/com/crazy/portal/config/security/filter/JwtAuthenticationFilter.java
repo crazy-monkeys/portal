@@ -80,7 +80,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
         Throwable throwable;
         try {
             String token = getJwtToken(request);
-            if(StringUtils.isEmpty(token)){
+            if(!url.contains(".html") && StringUtils.isEmpty(token)){
                 this.authenticationFailure(request, response,new InsufficientAuthenticationException("JWT is Empty"));
                 return;
             }
