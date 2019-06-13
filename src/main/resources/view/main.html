@@ -45,24 +45,7 @@
 				<img src="../static/main/assets/images/logo.png" alt=""/>
 			</div>
 			<ul id="Nav" class="layui-nav layui-nav-tree" >
-				<li id="system" class="layui-nav-item" >
-					<a href="javascript:;">
-						<i class="layui-icon">&#xe609;</i>
-						<em>系统管理</em>
-					</a>
-					<dl class="layui-nav-child">
-						<dd><a href="system/users.html">账号管理</a></dd>
-					</dl>
-					<dl class="layui-nav-child">
-						<dd><a href="system/authority.html">权限管理</a></dd>
-					</dl>
-					<dl class="layui-nav-child">
-						<dd><a href="system/announcement.html">公告管理</a></dd>
-					</dl>
-					<dl class="layui-nav-child">
-						<dd><a href="system/document.html">文档管理</a></dd>
-					</dl>
-				</li>
+
 			</ul>
 		</div>
 	</div>
@@ -81,41 +64,39 @@
 
 	<div class="mobile-mask"></div>
 </div>
+<script src='../static/jquery/jquery-2.1.4.min.js'></script>
+<script src="../static/util/util.js" type="text/javascript"  ></script>
 <script src="../static/layui/layui.all.js"></script>
 <script src="../static/main/assets/js/index.js" data-main="home"></script>
 <script src="../static/main/assets/js/su.js" type="text/javascript"  ></script>
-<script src='../static/jquery/jquery-2.1.4.min.js'></script>
-<script type="text/javascript"  src="../../static/util/formUtil.js"></script>
 <script type="text/javascript">
-    window.onload = function(){
-//        var url = location.search; //获取url中"?"符后的字串
-//        var theRequest = new Object();
-//        if (url.indexOf("?") != -1) {
-//            var str = url.substr(1);
-//            strs = str.split("&");
-//            for(var i = 0; i < strs.length; i ++) {
-//                theRequest[strs[i].split("=")[0]] = unescape(strs[i].split("=")[1]);
-//            }
-//        }
-//        var roleName = theRequest['roleName'];
-//        var userStatus = theRequest['userStatus'];
-//        var currentUser = theRequest['currentUser'];
-//        document.getElementById("currentUser").innerHTML = currentUser;
-
-    };
-    function logout(){
-        $.ajax({
-            url : "/logout",
-            type : "get",
-            success : function(res, textStatus, request) {
-                if(request.status === 200){
-                    localStorage.removeItem("authorization");
-                    window.location.href = "/view/login.html";
-                } else {
-                    layer.msg(res.msg);
-                }
-            }
+    $(function() {
+        var menu = JSON.parse(localStorage.getItem("menu"));
+        console.log(localStorage.getItem("menu"));
+        $.each(menu, function(i, oneMenu){
+            if(oneMenu.parentId === 0){
+				var twoMenus = oneMenu.children;
+                var html = '<li id="system" class="layui-nav-item" >'+
+								'<a href="javascript:;">'+
+								'<i class="layui-icon">&#xe609;</i>'+
+							'<em>'+oneMenu.resourceName+'</em>'+
+							'</a>';
+				$.each(twoMenus, function(i, twoMenu){
+                    html += '<dl class="layui-nav-child">'+
+								'<dd><a href="'+twoMenu.resourceUrl+'">'+twoMenu.resourceName+'</a></dd>'+
+							'</dl>';
+                });
+				html += '</li>';
+                $("#Nav").append(html);
+			}
         });
+
+    });
+    function logout(){
+        $.getJson("/logout", function () {
+            localStorage.removeItem("authorization");
+            window.location.href = "/view/login.html";
+        })
 	}
 </script>
 

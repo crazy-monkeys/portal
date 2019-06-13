@@ -100,7 +100,7 @@
 			success:function(res, textStatus, request){
                 if (res && res.code === 1) {
                     localStorage.setItem("authorization", request.getResponseHeader("authorization"));
-                    localStorage.setItem("menu", res.data);
+                    localStorage.setItem("menu", JSON.stringify(res.data));
                     window.location.href = '/view/main.html';
                 } else {
                     layer.msg(data.msg);
