@@ -79,7 +79,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.authorizeRequests()
-                .antMatchers("/static/**","/view/**","/login","/").permitAll()
+                .antMatchers("/login","/").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement().disable()
