@@ -24,15 +24,15 @@
     delete from t_role
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.crazy.portal.entity.system.Role">
-    insert into t_role (id, active, create_time, 
+  <insert id="insert" parameterType="com.crazy.portal.entity.system.Role" keyProperty="id" useGeneratedKeys="true">
+    insert into t_role (active, create_time,
       create_user_id, role_desc, role_name, 
       update_time, update_user_id)
-    values (#{id,jdbcType=INTEGER}, #{active,jdbcType=SMALLINT}, #{createTime,jdbcType=TIMESTAMP}, 
+    values (#{active,jdbcType=SMALLINT}, #{createTime,jdbcType=TIMESTAMP},
       #{createUserId,jdbcType=INTEGER}, #{roleDesc,jdbcType=VARCHAR}, #{roleName,jdbcType=VARCHAR}, 
       #{updateTime,jdbcType=TIMESTAMP}, #{updateUserId,jdbcType=INTEGER})
   </insert>
-  <insert id="insertSelective" parameterType="com.crazy.portal.entity.system.Role">
+  <insert id="insertSelective" parameterType="com.crazy.portal.entity.system.Role" keyProperty="id">
     insert into t_role
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -131,6 +131,9 @@
     SELECT
     <include refid="Base_Column_List" />
     FROM t_role where active = 1
+    <if test="roleName != null">
+      and role_name like concat('%',#{roleName},'%')
+    </if>
   </select>
 
   <select id="findRolesByUserId" resultMap="BaseResultMap" parameterType="java.lang.Integer">

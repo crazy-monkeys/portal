@@ -33,6 +33,7 @@ public class WebConfig extends WebMvcConfigurationSupport {
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/static/**").addResourceLocations("classpath:/static/");
         registry.addResourceHandler("/view/**").addResourceLocations("classpath:/view/");
+        registry.addResourceHandler("/favicon.ico").addResourceLocations("classpath:/favicon.ico");
         super.addResourceHandlers(registry);
     }
 

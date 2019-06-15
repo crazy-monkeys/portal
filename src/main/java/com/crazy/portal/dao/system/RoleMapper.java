@@ -1,6 +1,7 @@
 package com.crazy.portal.dao.system;
 
 import com.crazy.portal.entity.system.Role;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -22,7 +23,7 @@ public interface RoleMapper {
      * 查询角色列表
      * @return
      */
-    List<Role> queryRoleList();
+    List<Role> queryRoleList(@Param("roleName") String roleName);
 
     /**
      * 查询用户所属的角色

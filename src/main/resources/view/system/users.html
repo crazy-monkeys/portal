@@ -112,12 +112,12 @@
         table.render({
             elem: '#demo'
             , cols: [[ //标题栏
-                {field: 'id', title: '用户ID', minWidth: 80, sort: true}
-                , {field: 'realName', title: '用户名', minWidth: 80}
-                , {field: 'email', title: '身份', minWidth: 80}
-                , {field: 'phone', title: "角色", minWidth: 80}
-                , {field: 'country', title: '状态', minWidth: 80}
-                , {field: 'userStatus', title: '操作', minWidth: 80}
+                {field: 'id', title: '用户ID', minWidth: 80, sort: true, unresize:true}
+                , {field: 'realName', title: '用户名', minWidth: 80, unresize:true}
+                , {field: 'email', title: '身份', minWidth: 80, unresize:true}
+                , {field: 'phone', title: "角色", minWidth: 80, unresize:true}
+                , {field: 'country', title: '状态', minWidth: 80, unresize:true}
+                , {field: 'userStatus', title: '操作', minWidth: 80, unresize:true}
             ]]
             , data: data
             , skin: 'line' //表格风格

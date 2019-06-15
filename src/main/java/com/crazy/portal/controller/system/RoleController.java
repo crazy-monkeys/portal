@@ -33,9 +33,8 @@ public class RoleController extends BaseController {
      * @return
      */
     @GetMapping(value = "/roleInfo")
-    public BaseResponse userSetting(Integer pageNum, Integer pageSize) {
-
-        PageInfo<Role> pager = roleService.queryRoleListPag(pageNum,pageSize);
+    public BaseResponse userSetting(String roleName, Integer pageNum, Integer pageSize) {
+        PageInfo<Role> pager = roleService.queryRoleListPag(roleName, pageNum,pageSize);
         return super.successResult(pager);
     }
 
@@ -59,7 +58,7 @@ public class RoleController extends BaseController {
         role.setCreateTime(new Date());
         role.setCreateUserId(super.getCurrentUser().getId());
         roleService.saveRole(role);
-        return super.successResult();
+        return super.successResult(role.getId());
     }
 
     /**
@@ -104,6 +103,6 @@ public class RoleController extends BaseController {
         role.setUpdateTime(new Date());
         role.setUpdateUserId(super.getCurrentUser().getId());
         roleService.saveRole(role);
-        return super.successResult();
+        return super.successResult(role.getId());
     }
 }

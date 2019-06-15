@@ -23,7 +23,7 @@ public interface ResourceMapper {
      * @param resourceOrder
      * @return
      */
-    List<Resource> queryResourceByResourId(Integer resourceOrder);
+    List<Resource> queryResourceByResourId(@Param("resourceOrder") Integer resourceOrder);
 
     List<Resource> findActiveList();
 

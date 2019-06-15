@@ -80,11 +80,11 @@
             , limit: 5 //每页默认显示的数量
             , toolbar: true
             , cols: [[ //标题栏
-                {field: 'fileName', title: '文件名', minWidth: 30, sort: true, display:true}
-                ,{field: 'version', title: '版本', minWidth: 80,hidden:true}
-                , {field: 'releaseTime', title: '发布时间', minWidth: 80}
-                , {field: 'status', title: '状态', minWidth: 80}
-                , {field: 'oprate', title: '操作', minWidth: 80, toolbar: '#tableOprate'}
+                {field: 'fileName', title: '文件名', minWidth: 30, sort: true, unresize:true}
+                ,{field: 'version', title: '版本', minWidth: 80, unresize:true}
+                , {field: 'releaseTime', title: '发布时间', minWidth: 80, unresize:true}
+                , {field: 'status', title: '状态', minWidth: 80, unresize:true}
+                , {field: 'oprate', title: '操作', minWidth: 80, toolbar: '#tableOprate', unresize:true}
             ]]
             ,done: function () {
 //                $("[data-field='registId']").css('display','none');

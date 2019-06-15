@@ -41,21 +41,29 @@
     };
 
     $.getJson = function(url, back){
-        getAjax(url, back);
+        getAjax(url, {}, back);
+    };
+    $.getJsonParam = function(url, param, back){
+        getAjax(url, param, back);
     };
     $.postForm = function(url, fromId, back){
-        var json = $("#fromId").serializeJson();
+        var json = $("#"+fromId).serializeJson();
         postAjax(url, json, back);
     }
     $.postJson = function(url, json, back){
         postAjax(url, json, back);
     }
-    function getAjax(url, back){
+    $.delJson = function(url, back){
+        delAjax(url, {}, back);
+    }
+
+    function getAjax(url, param, back){
         $.ajax({
             url : url,
             type : "get",
+            data : param,
             success : function(res) {
-                if(res.code === 1){
+                if(!res || (res && res.code === 1)){
                     back(res.data);
                 } else {
                     layer.msg(res.msg);
@@ -74,6 +82,23 @@
             data : JSON.stringify(json),
             success : function(res) {
                 if(res.code === 1){
+                    back(res.data);
+                } else {
+                    layer.msg(res.msg);
+                }
+            },
+            error : function(xhr,textStatus,errorThrown){
+                permissionInvalid(xhr);
+            }
+        });
+    }
+    function delAjax(url, param, back){
+        $.ajax({
+            url : url,
+            type : "delete",
+            data : param,
+            success : function(res) {
+                if(!res || (res && res.code === 1)){
                     back(res.data);
                 } else {
                     layer.msg(res.msg);

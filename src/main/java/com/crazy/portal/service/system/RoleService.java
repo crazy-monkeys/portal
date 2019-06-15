@@ -40,9 +40,9 @@ public class RoleService {
      * @param pageSize
      * @return
      */
-    public PageInfo<Role> queryRoleListPag(int pageNum,int pageSize){
+    public PageInfo<Role> queryRoleListPag(String roleName, int pageNum,int pageSize){
         PortalUtil.defaultStartPage(pageNum,pageSize);
-        List<Role> roleList = roleMapper.queryRoleList();
+        List<Role> roleList = roleMapper.queryRoleList(roleName);
 //        Page<Role> page = new Page<>();
 //        page.addAll(roleList);
         return new PageInfo<>(roleList);

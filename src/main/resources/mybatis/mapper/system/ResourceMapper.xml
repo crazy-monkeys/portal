@@ -36,7 +36,7 @@
   </select>
 
   <select id="getRoleCountByResourceId" resultType="int">
-    SELECT COUNT(1) FROM t_role_resource WHERE id = #{id}
+    SELECT COUNT(1) FROM t_role_resource WHERE resource_id = #{id}
   </select>
 
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
@@ -215,8 +215,8 @@
     <include refid="Base_Column_List" />
     FROM t_resource
     WHERE 1=1
-    <if test="resourceOrder !=null">
-      <![CDATA[ AND RESOURCE_ORDER  > #{resourceOrder,jdbcType=DECIMAL}   ]]>
+    <if test="resourceOrder != null">
+      <![CDATA[ AND RESOURCE_ORDER  > #{resourceOrder}   ]]>
     </if>
     AND RESOURCE_ORDER IS NOT NULL
     ORDER BY RESOURCE_ORDER

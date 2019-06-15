@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -41,28 +42,21 @@ public class PermissionController extends BaseController{
         }
         //获取树形结构
         List<Resource> resources = permissionService.resourceTree(list);
-        //追加一个root节点
-        Resource root = new Resource();
-        root.setId(0);
-        root.setParentId(-1);
-        root.setResourceType(1);
-        root.setResourceName("root");
-        root.setChildren(resources);
-        return super.successResult(root);
+        return super.successResult(resources);
     }
 
     /**
      * 获取角色对应的资源id
-     * @param roleIds
+     * @param roleId
      * @return
      */
-    @GetMapping(value = "/findPermission")
-    public BaseResponse findPermission(@RequestParam List<Integer> roleIds) {
-        if(roleIds == null){
+    @GetMapping(value = "/findPermission/{roleId}")
+    public BaseResponse findPermission(@PathVariable Integer roleId) {
+        if(roleId == null){
             return new BaseResponse(SystemManagerEnum.ROLE_EMPTY_ID.getCode(),
                     SystemManagerEnum.ROLE_EMPTY_ID.getZhMsg());
         }
-        List<Integer> resourceIds = permissionService.findPermissionIds(roleIds);
+        List<Integer> resourceIds = permissionService.findPermissionIds(Collections.singletonList(roleId));
         return super.successResult(resourceIds);
     }
 
@@ -93,7 +87,7 @@ public class PermissionController extends BaseController{
      * 添加资源信息
      * @return
      */
-    @PostMapping(value="/add")
+    @PostMapping(value="/addResource")
     public BaseResponse addResource(@RequestBody Resource resource){
         if(resource.getParentId() == null
                 || StringUtils.isEmpty(resource.getResourceName())
@@ -107,7 +101,7 @@ public class PermissionController extends BaseController{
             return new BaseResponse(SystemManagerEnum.PERMISSION_UN_TYPE_OPTIONAL.getCode(),
                     SystemManagerEnum.PERMISSION_UN_TYPE_OPTIONAL.getZhMsg());
         }
-        if(permissionService.findResource(resource.getParentId()) == null){
+        if(permissionService.findResource(resource.getParentId()) == null && 0 != resource.getParentId()){
             return new BaseResponse(SystemManagerEnum.PERMISSION_NOT_EXIST.getCode(),
                     SystemManagerEnum.PERMISSION_NOT_EXIST.getZhMsg());
         }
@@ -122,7 +116,7 @@ public class PermissionController extends BaseController{
      * 准备数据
      * @return
      */
-    @GetMapping(value="/preEdit/{resourceId}")
+    @GetMapping(value="/preEditResource/{resourceId}")
     public BaseResponse preEdit(@PathVariable Integer resourceId){
         Resource resource = permissionService.findResource(resourceId);
         if(resource == null){
@@ -136,7 +130,7 @@ public class PermissionController extends BaseController{
      * 修改资源信息
      * @return
      */
-    @PostMapping(value="/edit")
+    @PostMapping(value="/editResource")
     public BaseResponse editResource(@RequestBody Resource resource){
         if(resource.getResourceType() == null
                 || StringUtils.isEmpty(resource.getResourceName())
@@ -167,7 +161,7 @@ public class PermissionController extends BaseController{
      * 删除资源信息
      * @return
      */
-    @DeleteMapping(value="/del/{resourceId}")
+    @DeleteMapping(value="/delResource/{resourceId}")
     public BaseResponse deleteResource(@PathVariable Integer resourceId){
         Resource resource = permissionService.findResource(resourceId);
         if(resource == null){

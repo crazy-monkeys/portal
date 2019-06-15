@@ -26,9 +26,9 @@
                         <div class="layui-inline">
                             <div class="layui-form-mid">角色:</div>
                             <div class="layui-input-inline" style="width: 150px;">
-                                <input type="text" autocomplete="off" class="layui-input">
+                                <input type="text" autocomplete="off" class="layui-input" id="roleName" />
                             </div>
-                            <button class="layui-btn layui-btn-blue">查询</button>
+                            <button class="layui-btn layui-btn-blue" onclick="loadTable()">查询</button>
                         </div>
                     </div>
                     <table id="table" lay-filter="table-filter"></table>
@@ -40,27 +40,71 @@
                     <script type="text/html" id="tableOprate">
                         <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit">修改</a>
                     </script>
-                    <div  id="addDiv" style="width:700px;height:500px;display: none;">
+                    <div id="addRoleDiv" style="width:600px;height:330px;display: none;">
                         <form id="roleEditForm" class="layui-form" action="" lay-filter="roleEditForm">
                             <input type="hidden" name="id" />
                             <table border="0" style="width:100%;height:100%;">
                                 <tr>
                                     <td style="width:100px;height:60px;text-align: right;">角色：</td>
-                                    <td ><input type="text" autocomplete="off" class="layui-input" name="roleName"></td>
-                                    <td rowspan="3" style="width: 260px;vertical-align: top;">
-                                        <div style="border:1px solid #ccc;height:100%;overflow-y:auto;">
+                                    <td ><input type="text" autocomplete="off" class="layui-input" name="roleName" placeholder="请输入角色名" /></td>
+                                    <td rowspan="3" style="width: 200px;vertical-align: top;">
+                                        <div style="border:1px solid #ccc;height:325px;overflow-y:auto;">
+                                            &nbsp;&nbsp;
+                                            <button onclick="showEditResourceDialog(0)" type="button" class="layui-btn layui-btn-primary layui-btn-xs">
+                                                添加目录
+                                            </button>
                                             <div id="tree1" class="demo-tree demo-tree-box"></div>
                                         </div>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td style="height:100px;text-align: right;vertical-align: top;">职位描述：</td>
-                                    <td><textarea placeholder="请输入内容" class="layui-textarea" name="roleDesc"></textarea></td>
+                                    <td><textarea placeholder="请输入职位描述" class="layui-textarea" name="roleDesc"></textarea></td>
                                 </tr>
                                 <tr>
                                     <td>
                                     </td>
                                     <td>
+                                    </td>
+                                </tr>
+                            </table>
+                        </form>
+                    </div>
+                    <div id="addResourceDiv" style="width:600px;height:330px;display: none;">
+                        <form id="resourceEditForm" class="layui-form" action="" lay-filter="resourceEditForm">
+                            <input type="hidden" name="id" />
+                            <input type="hidden" name="parentId" />
+                            <input type="hidden" name="resourceType" value="1"/>
+                            <input type="hidden" name="resourceOrder" value="99"/>
+                            <table style="width:90%;height: 100%;">
+                                <tr>
+                                    <td style="text-align: right;">资源名称：</td>
+                                    <td>
+                                        <input type="text" autocomplete="off" class="layui-input" name="resourceName" placeholder="请输入资源名称" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: right;">资源URL：</td>
+                                    <td>
+                                        <input type="text" autocomplete="off" class="layui-input" name="resourceUrl" placeholder="例：/view/user.html" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: right;">资源权限：</td>
+                                    <td>
+                                        <input type="text" autocomplete="off" class="layui-input" name="permissionPrefixUrl" placeholder="例：/user/**" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: right;">资源图标：</td>
+                                    <td>
+                                        <input type="text" autocomplete="off" class="layui-input" name="iconClass" placeholder="请输入资源图标" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: right;vertical-align: top;">资源描述：</td>
+                                    <td>
+                                        <textarea placeholder="请输入资源描述" class="layui-textarea" name="resourceDesc"></textarea>
                                     </td>
                                 </tr>
                             </table>
@@ -78,40 +122,169 @@
 <script>
     $(function() {
         loadTable();
+        loadResource(loadTree);
+        $("#roleName").bind("keydown",function(e){
+             if(e.which==13){
+                 loadTable();
+             }
+        });
     });
     var element = layui.element;
     var table = layui.table;
     var form = layui.form;
-    layui.use(['tree', 'util'], function() {
-        var tree = layui.tree
-            , layer = layui.layer
-            , util = layui.util;
-
+    var tree = layui.tree;
+    var layer = layui.layer;
+    var addResourceList = [];
+    var delResourceList = [];
+    var resource_list = [];
+    function loadResource(fn,fn2){
+        resource_list = [];
+        $.getJson("/permission/getAll", function(data){
+            if(data){
+                $.each(data, function (j, c){
+                    var one = {
+                        title:c.resourceName,
+                        id:c.id,
+                        parentId:c.parentId,
+                        spread:true
+                    };
+                    if(c.children){
+                        var oneChildren = [];
+                        $.each(c.children, function (z, w){
+                            var two = {
+                                title:w.resourceName,
+                                id:w.id,
+                                parentId:w.parentId,
+                                spread:true
+                            };
+                            oneChildren.push(two);
+                        });
+                        one['children'] = oneChildren;
+                    }
+                    resource_list.push(one);
+                });
+            }
+            fn(resource_list);
+            if(fn2) {
+                fn2(resource_list);
+            }
+        });
+    }
+    function loadTree(data){
         tree.render({
             elem: '#tree1'
             , showCheckbox:true
             , id:'tree1'
-            , isJump: true
-            , data:
-                [{
-                    title:"网站",
-                    id:3,
-                    checked:true,
-                    spread:true,
-                    children:[
-                        {
-                            title:"网站2",
-                            id:2
-                        }
-                    ]
-                }]
+            , edit: ['add', 'del']
+            , data: data
             ,click: function(obj){
-                var data = obj.data;  //获取当前点击的节点数据
-                layer.msg('状态：'+ obj.state + '<br>节点数据：' + JSON.stringify(data));
+                toEditResource(obj.data.id);
+                showEditResourceDialog();
+            }
+            ,oncheck: function(obj){
+                if(obj.data.children) {
+                    if(obj.checked){
+                        addResourceListPush(obj.data.id);
+                    }else{
+                        delResourceListPush(obj.data.id);
+                    }
+                    $.each(obj.data.children, function (i, item) {
+                        if(obj.checked){
+                            addResourceListPush(item.id);
+                        }else{
+                            delResourceListPush(item.id);
+                        }
+                    });
+                    console.log("addResourceList:" + addResourceList);
+                    console.log("delResourceList:" + delResourceList);
+                }else{
+                    if(obj.checked){
+                        addResourceListPush(obj.data.id);
+                        addResourceListPush(obj.data.parentId);
+                        console.log(addResourceList);
+                    }else{
+                        delResourceListPush(obj.data.id);
+                        var ncnids = getNoChildrenNodeId(obj.data.parentId);
+                        if(ncnids){
+                            delResourceListPush(ncnids);
+                        }
+                        console.log(delResourceList);
+                    }
+                }
+            }
+            ,operate: function(obj){
+                var type = obj.type; //得到操作类型：add、edit、del
+                var data = obj.data; //得到当前节点的数据
+                var elem = obj.elem; //得到当前节点元素
+                console.log(obj);
+                //Ajax 操作
+                if(type === 'add'){ //增加节点
+                    showEditResourceDialog(data.id);
+                    return 999;
+                }else if(type === 'del'){
+                    sureDeleteResource(elem[0].dataset.id);
+                }
             }
         });
-    });
-
+    }
+    function getNoChildrenNodeId(parentId){
+        var checkedData = tree.getChecked('tree1');
+        var isExistsChildren = false;
+        $.each(checkedData, function (i, item) {
+            if(item.id == parentId){
+                isExistsChildren = true;
+            }
+        });
+        return !isExistsChildren ? parentId : null;
+    }
+    function addResourceListPush(id){
+        var exists = false;
+        $.each(addResourceList, function(i, item){
+            if(item == id){
+                exists = true;
+                return false;
+            }
+        });
+        if(!exists) {
+            addResourceList.push(id);
+        }
+        var isDel = false;
+        var delIndex = 0;
+        $.each(delResourceList, function(i, item){
+            if(item == id){
+                isDel = true;
+                delIndex = i;
+                return false;
+            }
+        });
+        if(isDel){
+            delResourceList.splice(delIndex, 1);
+        }
+    }
+    function delResourceListPush(id){
+        var exists = false;
+        $.each(delResourceList, function(i, item){
+            if(item == id){
+                exists = true;
+                return false;
+            }
+        });
+        if(!exists) {
+            delResourceList.push(id);
+        }
+        var isDel = false;
+        var delIndex = 0;
+        $.each(addResourceList, function(i, item){
+            if(item == id){
+                isDel = true;
+                delIndex = i;
+                return false;
+            }
+        });
+        if(isDel){
+            addResourceList.splice(delIndex, 1);
+        }
+    }
     function loadTable() {
         //展示已知数据
         table.render({
@@ -119,9 +292,8 @@
             , url: '/permission/roleInfo'
             , method: 'get'
             , request: {pageName: 'pageNum', limitName: 'pageSize'}
-            , where: {title: $('#title').val(), releaseStartTime: $('#releaseStartTime').val()}
+            , where: {roleName: $('#roleName').val()}
             , parseData: function(res){
-                console.log(res);
                 return {
                     "code": res.code == 1 ? 0 : res.code,
                     "msg": res.msg,
@@ -140,9 +312,9 @@
             }
             , cols: [[ //标题栏
                 {field: 'id', title: 'ID', minWidth: 30, hide:true}
-                , {field: 'roleName', title: '角色', minWidth: 30, display:true}
-                , {field: 'roleDesc', title: '职位描述', minWidth: 80,hidden:true}
-                , {field: 'oprate', title: '操作', minWidth: 80, toolbar: '#tableOprate'}
+                , {field: 'roleName', title: '角色', minWidth: 30, unresize:true}
+                , {field: 'roleDesc', title: '职位描述', minWidth: 80,unresize:true}
+                , {field: 'oprate', title: '操作', minWidth: 80, toolbar: '#tableOprate', unresize:true}
             ]]
             ,done: function () {
 //                $("[data-field='registId']").css('display','none');
@@ -153,7 +325,7 @@
         //头工具栏事件
         table.on('toolbar(table-filter)', function(obj){
             if(obj.event === 'create'){
-                showAddDialog();
+                showEditRoleDialog();
             }
         });
         //监听行工具事件
@@ -161,53 +333,158 @@
             var data = obj.data //获得当前行数据
                 ,layEvent = obj.event; //获得 lay-event 对应的值
             if(layEvent === 'edit'){
-                showAddDialog();
-                toEdit(data.id);
+                toEditRole(data.id);
+                showEditRoleDialog();
             }
         });
     }
-    function showAddDialog(){
+    function showEditRoleDialog(){
         layer.open({
             title: '权限配置',
             type: 1,
-            area: ['700px', '600px'], //宽高
-            content: $("#addDiv"),
+            area: ['600px', '440px'], //宽高
+            content: $("#addRoleDiv"),
             btn : [ '保存', '取消' ],
             btnAlign: 'c',
             success : function(layero, index) {
                 $("#roleEditForm")[0].reset();
                 $("#roleEditForm").find("input[name='id']").val("");
+                addResourceList = [];
+                delResourceList = [];
             },
             yes : function(index, layero) {
-                saveRole();
-                layer.closeAll();
+                saveRole(function(){
+                    layer.close(index);
+                });
             },
             btn2 : function(index, layero) {
-                layer.closeAll();
-                $("#addDiv").hide();
+                layer.close(index);
+                $("#addRoleDiv").hide();
             },
             cancel: function(index, layero){
-                $("#addDiv").hide();
+                $("#addRoleDiv").hide();
             }
         });
     }
-    function saveRole(){
-        var json = $("#roleEditForm").serializeJson();
+    function saveRole(fn){
+        var roleInfo = $("#roleEditForm").serializeJson();
         var url = '/permission/saveRole';
-        if(json.id){
+        if(roleInfo.id){
             url = '/permission/updateRole';
         }
-        $.postJson(url, json, function(data){
-            loadTable();
-            layer.msg(data.msg);
+        $.postJson(url, roleInfo, function(data){
+            if(addResourceList.length > 0 || delResourceList.length > 0) {
+                var resourceInfo = {
+                    roleId: data,
+                    addPermissionIds: addResourceList,
+                    rmPermissionIds: delResourceList
+                };
+                $.postJson("/permission/savePermission", resourceInfo, function (data) {
+                    loadTable();
+                    fn();
+                });
+            }else{
+                loadTable();
+                fn();
+            }
         });
+
     }
-    function toEdit(id){
+    function toEditRole(id){
+        //查询角色信息
         $.getJson("/permission/findRole/"+ id, function(data){
                 form.val("roleEditForm", data);
-                console.log(data);
+        });
+        //查询角色的资源信息，填充
+        fullResourceTree(id);
+    }
+    function fullResourceTree(id){
+        $.getJson("/permission/findPermission/"+id, function(data){
+            tree.setChecked('tree1', excludeFolderResource(data));
+            addResourceList = [];
+            delResourceList = [];
+        });
+    }
+    function excludeFolderResource(data){
+        var result = [];
+        var allResourceOne = [];
+        $.each(resource_list, function (i, item) {
+            allResourceOne.push(item.id);
+        });
+        $.each(data, function (i, item) {
+            if($.inArray(item, allResourceOne) == -1){
+                result.push(item);
             }
-        );
+        });
+        return result;
+    }
+    function showEditResourceDialog(parentId){
+        layer.open({
+            title: '资源配置',
+            type: 1,
+            area: ['600px', '440px'], //宽高
+            content: $("#addResourceDiv"),
+            btn : [ '保存', '取消' ],
+            btnAlign: 'c',
+            success : function(layero, index) {
+                $("#resourceEditForm")[0].reset();
+                $("#resourceEditForm").find("input[name='id']").val("");
+                $("#resourceEditForm").find("input[name='parentId']").val(parentId || 0);
+            },
+            yes : function(index, layero) {
+                saveResource(index);
+                refreshResourceTree();
+            },
+            btn2 : function(index, layero) {
+                layer.close(index);
+                $("#addResourceDiv").hide();
+                refreshResourceTree();
+            },
+            cancel: function(index, layero){
+                $("#addResourceDiv").hide();
+                refreshResourceTree();
+            }
+        });
+    }
+    function saveResource(index){
+        var resourceInfo = $("#resourceEditForm").serializeJson();
+        var url = '/permission/addResource';
+        if(resourceInfo.id){
+            url = '/permission/editResource';
+        }
+        $.postJson(url, resourceInfo, function(data){
+            refreshResourceTree();
+            layer.close(index);
+        });
+    }
+    function toEditResource(id){
+        //查询资源信息
+        $.getJson("/permission/preEditResource/"+ id, function(data){
+            form.val("resourceEditForm", data);
+        });
+    }
+    function sureDeleteResource(id){
+        layer.confirm('确定删除该资源吗',{
+            cancel: function(){
+                refreshResourceTree();
+            }
+        }, function(index){
+            $.delJson("/permission/delResource/"+ id, function(){
+                layer.close(index);
+                refreshResourceTree();
+            });
+        },function(index){
+            layer.close(index);
+            refreshResourceTree();
+        });
+    }
+    function refreshResourceTree(){
+        loadResource(loadTree, function(data){
+            var roleId = $("#roleEditForm").find("input[name='id']").val();
+            if(roleId) {
+                fullResourceTree(roleId);
+            }
+        });
     }
 </script>
 

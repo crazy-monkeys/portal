@@ -7,6 +7,7 @@ import com.crazy.portal.entity.system.Resource;
 import com.crazy.portal.entity.system.Role;
 import com.crazy.portal.entity.system.RoleResource;
 import com.crazy.portal.entity.system.User;
+import com.crazy.portal.util.DateUtil;
 import com.crazy.portal.util.ErrorCodes;
 import com.crazy.portal.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -135,6 +136,7 @@ public class PermissionService {
      * @return
      */
     public int saveResource(Resource resource){
+
         if(resource.getParentId() == 0L){
             int num = resourceMapper.countOrder();
             resource.setResourceOrder(num + 1);
@@ -142,16 +144,28 @@ public class PermissionService {
             Resource resourceDO = new Resource();
             resourceDO.setId(resource.getParentId());
             Resource res = resourceMapper.selectByPrimaryKey(resource.getId());
-            resource.setResourceOrder(res.getResourceOrder()+1);
-            List<Resource> rlist = resourceMapper.queryResourceByResourId(res.getResourceOrder());
-            for (Resource r1 : rlist) {
-                int orderId = new Long(r1.getResourceOrder()).intValue();
-                orderId = orderId + 1;
-                r1.setResourceOrder(orderId);
-                resourceMapper.updateByPrimaryKeySelective(r1);
+            if(res != null) {
+                resource.setResourceOrder(res.getResourceOrder() + 1);
+                List<Resource> rlist = resourceMapper.queryResourceByResourId(res.getResourceOrder());
+                for (Resource r1 : rlist) {
+                    int orderId = new Long(r1.getResourceOrder()).intValue();
+                    orderId = orderId + 1;
+                    r1.setResourceOrder(orderId);
+                    resourceMapper.updateByPrimaryKeySelective(r1);
+                }
             }
         }
-        int num = resourceMapper.insertSelective(resource);
+        int num = 0;
+        if(resource.getId() == null) {
+            resource.setActive((short)1);
+            resource.setCreateUserId(1);
+            resource.setCreateTime(DateUtil.getCurrentTS());
+            resource.setUpdateUserId(1);
+            resource.setUpdateTime(DateUtil.getCurrentTS());
+            num = resourceMapper.insertSelective(resource);
+        }else{
+            num = resourceMapper.updateByPrimaryKeySelective(resource);
+        }
         return num > 0 ? 1 : -1;
     }
 
@@ -206,6 +220,9 @@ public class PermissionService {
     private void saveResouece(List<Integer> resourcesIds, Integer roleId, boolean isAdd, Integer userId) {
         if(resourcesIds != null && !resourcesIds.isEmpty()){
             for(Integer resourceId : resourcesIds){
+                if(resourceId == null){
+                    continue;
+                }
                 Resource crmResourceDO = resourceMapper.selectByPrimaryKey(resourceId);
                 if(crmResourceDO == null){
                     throw new BusinessException(ErrorCodes.SystemManagerEnum.PERMISSION_NOT_EXIST.getCode(),
@@ -223,10 +240,9 @@ public class PermissionService {
                     roleRes.setCreateId(userId);
                     roleResourceMapper.insertSelective(roleRes);
                 }else{
-                    if(roleResourceDO == null){
-                        throw new IllegalArgumentException("ERROR_RESOURCE->"+resourceId);
+                    if(roleResourceDO != null){
+                        roleResourceMapper.deleteByPrimaryKey(roleResourceDO.getId());
                     }
-                    roleResourceMapper.deleteByPrimaryKey(roleResourceDO.getId());
                 }
             }
         }

@@ -71,8 +71,12 @@
 <script src="../static/main/assets/js/su.js" type="text/javascript"  ></script>
 <script type="text/javascript">
     $(function() {
+        $("#currentUser").html(localStorage.getItem("userName"));
+
         var menu = JSON.parse(localStorage.getItem("menu"));
-        console.log(localStorage.getItem("menu"));
+        if(!menu){
+			window.location.href = "/";
+		}
         $.each(menu, function(i, oneMenu){
             if(oneMenu.parentId === 0){
 				var twoMenus = oneMenu.children;
@@ -96,7 +100,7 @@
         $.getJson("/logout", function () {
             localStorage.removeItem("authorization");
             window.location.href = "/view/login.html";
-        })
+        });
 	}
 </script>
 
