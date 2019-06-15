@@ -368,6 +368,14 @@
     }
     function saveRole(fn){
         var roleInfo = $("#roleEditForm").serializeJson();
+        if(!roleInfo.roleName){
+            layer.msg("角色名称不能为空");
+            return false;
+        }
+        if(!roleInfo.id && addResourceList.length == 0 && delResourceList.length == 0){
+            layer.msg("请选择对应的菜单资源");
+            return false;
+        }
         var url = '/permission/saveRole';
         if(roleInfo.id){
             url = '/permission/updateRole';
@@ -448,6 +456,19 @@
     }
     function saveResource(index){
         var resourceInfo = $("#resourceEditForm").serializeJson();
+        if(!resourceInfo.resourceName){
+            layer.msg("请填写资源名称");
+            return false;
+        }
+        if(!resourceInfo.resourceUrl){
+            layer.msg("请填写资源Url");
+            return false;
+        }
+        if(!resourceInfo.permissionPrefixUrl){
+            layer.msg("请填写资源权限");
+            return false;
+        }
+
         var url = '/permission/addResource';
         if(resourceInfo.id){
             url = '/permission/editResource';
