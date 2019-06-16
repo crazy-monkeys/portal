@@ -4,6 +4,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.crazy.portal.config.security.JwtAuthenticationToken;
 import com.crazy.portal.service.system.PermissionService;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -23,6 +24,7 @@ import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.Assert;
 import org.springframework.web.filter.OncePerRequestFilter;
+
 import javax.annotation.Resource;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -40,6 +42,7 @@ import java.util.List;
  * @Date: created in 20:03 2019/4/20
  * @Modified by:
  */
+@Slf4j
 public class JwtAuthenticationFilter extends OncePerRequestFilter{
 
     private List<RequestMatcher> permissiveRequestMatchers;
@@ -81,6 +84,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
         try {
             String token = getJwtToken(request);
             if(StringUtils.isEmpty(token)){
+                log.warn("url {} token is null",url);
                 this.authenticationFailure(request, response,new InsufficientAuthenticationException("JWT is Empty"));
                 return;
             }
@@ -145,7 +149,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
                     return true;
                 }
             }
-            logger.warn("权限不足!");
+            logger.warn(String.format("用户 %s 访问 %s 权限不足!",userDetails.getUsername(),request.getRequestURI()));
             return false;
         } catch (Exception e) {
             throw new RuntimeException("查询用户权限发生异常",e);
