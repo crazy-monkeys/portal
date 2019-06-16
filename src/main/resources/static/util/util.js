@@ -111,14 +111,16 @@
     }
     function permissionInvalid(xhr){
         if (xhr.status == 401) {
-            if(self != top) {
-                parent.window.location.href = "/";
-            }else{
-                window.location.href = "/";
-            }
+            redirectToLogin();
         }
     }
-
+    function redirectToLogin(){
+        if(self != top) {
+            parent.window.location.href = "/";
+        }else{
+            window.location.href = "/";
+        }
+    }
     //备份jquery的ajax方法
     var _ajax=$.ajax;
 
@@ -146,11 +148,49 @@
                     fn.error(XMLHttpRequest, textStatus, errorThrown);
                 }
             },
-            success:function(data, textStatus){
-                fn.success(data, textStatus);
+            success:function(response, textStatus, xhr){
+                if(checkUserStatus(response, xhr)){
+                    fn.success(response, textStatus, xhr);
+                }
             }
         });
         _ajax(_opt);
     };
+    function refreshToken(xhr){
+        var newToken = xhr.getResponseHeader("authorization");
+        var oldToken = localStorage.getItem("authorization");
+        if(newToken && newToken != oldToken){
+            console.log("old:" + oldToken);
+            console.log("old:" + newToken);
+            console.log("token 已刷新");
+            localStorage.setItem("authorization", newToken);
+        }
+    }
+    function checkUserStatus(response, xhr){
+        refreshToken(xhr);
+        if(!response){
+            return true;
+        }
+        if(response.code === 10002){
+            layer.msg("账户锁定");
+            return false;
+        }
+        if(response.code === 10004){
+            layer.msg("权限不足");
+            return false;
+        }
+        if(response.code === 10005){
+            layer.msg("Token 失效");
+            redirectToLogin();
+        }
+        return true;
+    }
 
+    $.getQueryString = function (name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+        var r = window.location.search.substr(1).match(reg);
+        if (r != null) return unescape(r[2]);
+        return null;
+    }
 })(jQuery);
+
