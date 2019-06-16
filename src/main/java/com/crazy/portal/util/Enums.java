@@ -13,10 +13,20 @@ public class Enums {
 
     /**
      * 用户类型，不同用户需要不同密码强度
-     * 一般的，高级的
+     * 1.代理商 2.直供客户 3.销售客户
      */
     public enum USER_TYPE{
-        general,advanced
+        agent(1),straight(2),sales(3);
+
+        private final int code;
+
+        USER_TYPE(int code){
+            this.code = code;
+        }
+
+        public int getCode() {
+            return code;
+        }
     }
 
     /**

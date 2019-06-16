@@ -34,11 +34,24 @@ public class UserService {
     private PasswordEncoder passwordEncoder =
             PasswordEncoderFactories.createDelegatingPasswordEncoder();
 
+
+    /**
+     * 分页获取用户信息
+     * @param user
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
     public PageInfo<User> selectUserWithPage(User user,Integer pageNum, Integer pageSize){
         PortalUtil.defaultStartPage(pageNum, pageSize);
         return new PageInfo<>(userMapper.selectUserWithPage(user));
     }
 
+    /**
+     * 根据用户名查找详细信息
+     * @param userName
+     * @return
+     */
     public User findUser(String userName){
         if(StringUtil.isEmpty(userName)){
             throw new BusinessException(ErrorCodes.SystemManagerEnum.USER_EMPTY_USER_NAME.getCode(),
@@ -47,9 +60,13 @@ public class UserService {
         return userMapper.findByLoginName(userName);
     }
 
+    /**
+     * 更改用户信息
+     * @param user
+     * @return
+     */
     @Transactional
     public int updateUser(User user){
-        user.setUpdateTime(new Date());
         return userMapper.updateByPrimaryKeySelective(user);
     }
 
@@ -65,26 +82,23 @@ public class UserService {
             throw new BusinessException(ErrorCodes.SystemManagerEnum.USER_EXISTS.getCode(),
                     ErrorCodes.SystemManagerEnum.USER_EXISTS.getZhMsg());
         }
-        String rawPassword = user.getLoginPwd();
-        user.setLoginName(user.getLoginName());
-        user.setEmail(user.getEmail());
-        user.setLoginPwd(passwordEncoder.encode(rawPassword));
-        user.setFirstName(user.getFirstName());
-        user.setLastName(user.getLastName());
-        user.setRealName(user.getRealName());
-        user.setPhone(user.getPhone());
-        user.setCountry(user.getCountry());
-        user.setUserStatus(0);
-        user.setUserType(Enums.USER_STATUS.freeze.getCode());
+        user.setLoginPwd(passwordEncoder.encode(user.getLoginPwd()));
+        user.setUserStatus(Enums.USER_STATUS.freeze.getCode());
+        user.setUserType(Enums.USER_TYPE.agent.getCode());
         user.setRegTime(new Date());
-        user.setLastLoginTime(new Date());
-        user.setPwdInvalidTime(DateUtil.addDays(new Date(),365));
-        user.setCreateUserId(1);
+        user.setCreateUserId(-1);
         user.setCreateTime(new Date());
+        user.setPwdInvalidTime(DateUtil.addDays(new Date(),365));
         user.setActive((short)1);
         return userMapper.insertSelective(user);
     }
 
+    /**
+     *
+     * @param userName
+     * @param status
+     * @return
+     */
     @Deprecated
     public Boolean approvalUser(String userName, int status){
         try{

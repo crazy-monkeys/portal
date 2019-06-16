@@ -8,11 +8,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.Date;
 
 
 /**
  * @Desc:
- * @Author: bill
+ * @Author:
  * @Date:
  */
 @Slf4j
@@ -28,7 +29,6 @@ public class UserController extends BaseController {
      */
     @PostMapping("/register")
     public BaseResponse createUser(@RequestBody User user){
-        //todo 参数校验
         userService.register(user);
         return super.successResult();
     }
@@ -52,6 +52,8 @@ public class UserController extends BaseController {
 
     @PostMapping("/update")
     public BaseResponse updateUser(@RequestBody User user){
+        user.setUpdateTime(new Date());
+        user.setUpdateUserId(super.getCurrentUser().getId());
         return super.successResult(userService.updateUser(user));
     }
 }
