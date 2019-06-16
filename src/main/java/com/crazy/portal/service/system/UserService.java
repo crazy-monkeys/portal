@@ -78,13 +78,6 @@ public class UserService {
         user.setCreateUserId(1);
         user.setCreateTime(new Date());
         user.setActive((short)1);
-        userMapper.insertSelective(user);
-        UserRole userRole = new UserRole();
-        userRole.setUserId(user.getId());
-        userRole.setRoleId(2);
-        userRole.setCreateTime(new Date());
-        userRole.setCreateId(1);
-        userRoleMapper.insertSelective(userRole);
         return "success";
     }
 }

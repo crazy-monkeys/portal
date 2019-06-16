@@ -3,22 +3,23 @@ package com.crazy.portal.config.security.handler;
 import com.alibaba.fastjson.JSON;
 import com.crazy.portal.bean.BaseResponse;
 import com.crazy.portal.config.security.JwtUserService;
+import com.crazy.portal.dao.system.UserMapper;
 import com.crazy.portal.entity.system.Resource;
+import com.crazy.portal.entity.system.User;
 import com.crazy.portal.service.system.PermissionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.HashMap;
+import java.util.Date;
 import java.util.List;
-
-import org.springframework.stereotype.Component;
 
 /**
  * @Desc:
@@ -34,6 +35,8 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
     private JwtUserService jwtUserService;
     @javax.annotation.Resource
     private PermissionService permissionService;
+    @javax.annotation.Resource
+    private UserMapper userMapper;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
@@ -41,6 +44,10 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
 
         //获取当前登录用户
         UserDetails userDetails = (UserDetails)authentication.getPrincipal();
+        //登录修改最后登录时间
+        User user = userMapper.findByLoginName(userDetails.getUsername());
+        user.setLastLoginTime(new Date());
+        userMapper.updateByPrimaryKeySelective(user);
         //生成token，并把token加密相关信息缓存，具体请看实现类
         String token = jwtUserService.saveUserLoginInfo(userDetails);
         response.reset();

@@ -30,7 +30,7 @@ public class JwtRefreshSuccessHandler implements AuthenticationSuccessHandler{
     private JwtUserService jwtUserService;
 
     //刷新间隔15分钟
-    private static final int tokenRefreshInterval = 60 * 15;
+    private static final int tokenRefreshInterval = 60 * 10;
 
     public JwtRefreshSuccessHandler(JwtUserService jwtUserService) {
         this.jwtUserService = jwtUserService;
