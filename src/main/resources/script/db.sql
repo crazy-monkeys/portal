@@ -17,6 +17,15 @@ CREATE TABLE `t_resource` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
+INSERT INTO `t_resource` (`id`, `active`, `create_time`, `create_user_id`, `icon_class`, `parent_id`, `resource_desc`, `resource_name`, `resource_order`, `resource_type`, `resource_url`, `update_time`, `update_user_id`, `permission_prefix_url`) VALUES ('1', '1', '2019-06-09 23:08:07', '1', '#', '0', '', '系统管理', '1', '1', '#', '2019-06-09 23:10:00', '1', '/');
+INSERT INTO `t_resource` (`id`, `active`, `create_time`, `create_user_id`, `icon_class`, `parent_id`, `resource_desc`, `resource_name`, `resource_order`, `resource_type`, `resource_url`, `update_time`, `update_user_id`, `permission_prefix_url`) VALUES ('2', '1', '2019-06-11 00:34:56', '1', '#', '1', '用户管理', '用户管理', '1', '1', '/view/system/users.html', '2019-06-11 00:35:29', '1', '/user/**');
+INSERT INTO `t_resource` (`id`, `active`, `create_time`, `create_user_id`, `icon_class`, `parent_id`, `resource_desc`, `resource_name`, `resource_order`, `resource_type`, `resource_url`, `update_time`, `update_user_id`, `permission_prefix_url`) VALUES ('3', '1', '2019-06-13 20:16:10', '1', '#', '1', '权限管理', '权限管理', '1', '1', '/view/system/authority.html', '2019-06-13 20:17:08', '1', '/permission/**');
+INSERT INTO `t_resource` (`id`, `active`, `create_time`, `create_user_id`, `icon_class`, `parent_id`, `resource_desc`, `resource_name`, `resource_order`, `resource_type`, `resource_url`, `update_time`, `update_user_id`, `permission_prefix_url`) VALUES ('4', '1', '2019-06-13 20:18:18', '1', '#', '1', '公告管理', '公告管理', '6', '1', '/view/system/announcement.html', '2019-06-15 13:25:16', '1', '/announcement/**');
+INSERT INTO `t_resource` (`id`, `active`, `create_time`, `create_user_id`, `icon_class`, `parent_id`, `resource_desc`, `resource_name`, `resource_order`, `resource_type`, `resource_url`, `update_time`, `update_user_id`, `permission_prefix_url`) VALUES ('13', '1', '2019-06-15 13:25:54', '1', '#', '12', '#', '客户查询', '6', '1', '#', '2019-06-15 13:25:54', '1', '#');
+INSERT INTO `t_resource` (`id`, `active`, `create_time`, `create_user_id`, `icon_class`, `parent_id`, `resource_desc`, `resource_name`, `resource_order`, `resource_type`, `resource_url`, `update_time`, `update_user_id`, `permission_prefix_url`) VALUES ('14', '1', '2019-06-15 13:26:07', '1', '#', '12', '#', '客户报备', '6', '1', '#', '2019-06-15 13:26:07', '1', '#');
+INSERT INTO `t_resource` (`id`, `active`, `create_time`, `create_user_id`, `icon_class`, `parent_id`, `resource_desc`, `resource_name`, `resource_order`, `resource_type`, `resource_url`, `update_time`, `update_user_id`, `permission_prefix_url`) VALUES ('12', '1', '2019-06-15 13:25:40', '1', '#', '0', '#', '客户管理', '5', '1', '#', '2019-06-15 13:25:40', '1', '#');
+INSERT INTO `t_resource` (`id`, `active`, `create_time`, `create_user_id`, `icon_class`, `parent_id`, `resource_desc`, `resource_name`, `resource_order`, `resource_type`, `resource_url`, `update_time`, `update_user_id`, `permission_prefix_url`) VALUES ('15', '1', '2019-06-16 12:56:50', '1', 'icon1', '1', '', '文档管理', '99', '1', '/view/system/document.html', '2019-06-16 12:56:50', '1', '/archive/**');
+
 -- ----------------------------
 --  Table structure for `t_role`
 -- ----------------------------
@@ -33,6 +42,8 @@ CREATE TABLE `t_role` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
+INSERT INTO `t_role` (`id`, `active`, `create_time`, `create_user_id`, `role_desc`, `role_name`, `update_time`, `update_user_id`) VALUES ('1', '1', '2019-04-20 05:11:45', '1', '', '系统管理员', '2019-06-16 12:56:53', '1');
+
 -- ----------------------------
 --  Table structure for `t_role_resource`
 -- ----------------------------
@@ -47,6 +58,15 @@ CREATE TABLE `t_role_resource` (
   `update_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+
+INSERT INTO `t_role_resource` (`id`, `role_id`, `resource_id`, `create_time`, `create_id`, `update_time`, `update_id`) VALUES ('1', '1', '1', '2019-06-13 20:23:31', '1', '2019-06-15 16:44:20', NULL);
+INSERT INTO `t_role_resource` (`id`, `role_id`, `resource_id`, `create_time`, `create_id`, `update_time`, `update_id`) VALUES ('2', '1', '3', '2019-06-15 17:26:32', NULL, NULL, NULL);
+INSERT INTO `t_role_resource` (`id`, `role_id`, `resource_id`, `create_time`, `create_id`, `update_time`, `update_id`) VALUES ('20', '1', '12', '2019-06-15 14:21:26', '1', NULL, NULL);
+INSERT INTO `t_role_resource` (`id`, `role_id`, `resource_id`, `create_time`, `create_id`, `update_time`, `update_id`) VALUES ('21', '1', '13', '2019-06-15 14:21:26', '1', NULL, NULL);
+INSERT INTO `t_role_resource` (`id`, `role_id`, `resource_id`, `create_time`, `create_id`, `update_time`, `update_id`) VALUES ('23', '1', '14', '2019-06-15 14:25:33', '1', NULL, NULL);
+INSERT INTO `t_role_resource` (`id`, `role_id`, `resource_id`, `create_time`, `create_id`, `update_time`, `update_id`) VALUES ('24', '1', '2', '2019-06-15 14:25:37', '1', NULL, NULL);
+INSERT INTO `t_role_resource` (`id`, `role_id`, `resource_id`, `create_time`, `create_id`, `update_time`, `update_id`) VALUES ('29', '1', '4', '2019-06-16 12:55:49', '1', NULL, NULL);
+INSERT INTO `t_role_resource` (`id`, `role_id`, `resource_id`, `create_time`, `create_id`, `update_time`, `update_id`) VALUES ('30', '1', '15', '2019-06-16 12:56:53', '1', NULL, NULL);
 
 -- ----------------------------
 --  Table structure for `t_user`
