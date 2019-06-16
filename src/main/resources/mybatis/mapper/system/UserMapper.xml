@@ -21,7 +21,12 @@
     <result column="update_user_id" jdbcType="INTEGER" property="updateUserId" />
     <result column="user_status" jdbcType="INTEGER" property="userStatus" />
     <result column="user_type" jdbcType="INTEGER" property="userType" />
+
+    <collection property="roles" javaType="java.util.List" ofType="com.crazy.portal.entity.system.Role">
+      <result column="role_name" property="roleName" jdbcType="VARCHAR" />
+    </collection>
   </resultMap>
+  
   <sql id="Base_Column_List">
     id, active, country, create_time, create_user_id, email, first_name, last_login_time, 
     last_name, login_name, login_pwd, phone, pwd_invalid_time, real_name, reg_time, update_time, 
@@ -225,14 +230,16 @@
   </update>
 
   <select id="selectUserWithPage" resultMap="BaseResultMap">
-    select <include refid="Base_Column_List" />
-    from t_user
+    select a.id,a.country,a.login_name,a.user_status,a.user_type,c.role_name
+    from t_user a
+    inner join t_user_role b on a.id = b.user_id
+    inner join t_role c on b.role_id = c.id
     <where>
       <if test="loginName != null">
-        login_name = #{loginName,jdbcType=VARCHAR},
+        a.login_name = #{loginName,jdbcType=VARCHAR}
       </if>
       <if test="userType != null">
-        user_type = #{userType,jdbcType=INTEGER},
+        a.user_type = #{userType,jdbcType=INTEGER}
       </if>
     </where>
   </select>

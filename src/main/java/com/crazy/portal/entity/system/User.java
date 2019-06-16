@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.List;
 
 @Data
 public class User {
@@ -12,7 +13,6 @@ public class User {
     /**1正常 0逻辑删除**/
     private Short active;
 
-    @JsonIgnore
     private String country;
 
     private String email;
@@ -54,4 +54,7 @@ public class User {
 
     @JsonIgnore
     private Integer createUserId;
+
+    /** ext **/
+    private List<Role> roles;
 }

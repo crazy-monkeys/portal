@@ -1,22 +1,25 @@
 package com.crazy.portal.entity.system;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.Date;
 
 public class Role {
     private Integer id;
 
+    @JsonIgnore
     private Short active;
-
+    @JsonIgnore
     private Date createTime;
-
+    @JsonIgnore
     private Integer createUserId;
 
     private String roleDesc;
 
     private String roleName;
-
+    @JsonIgnore
     private Date updateTime;
-
+    @JsonIgnore
     private Integer updateUserId;
 
     public Integer getId() {
