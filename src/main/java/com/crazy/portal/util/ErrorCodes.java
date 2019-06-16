@@ -49,6 +49,9 @@ public class ErrorCodes {
         AUTH_ERROR(10004,"权限不足",""),
         TOKEN_INVALID(10005,"TOKEN 失效",""),
 
+        USER_EXISTS(10010,"用户已经存在",""),
+        USER_EMPTY_USER_NAME(10011,"用户名不能为空",""),
+
 
         ROLE_EXISTS(10020,"角色已经存在",""),
         ROLE_NOT_EXIST(10021,"角色不存在",""),

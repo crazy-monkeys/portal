@@ -224,7 +224,16 @@
     where id = #{id,jdbcType=INTEGER}
   </update>
 
-  <select id="selectAllUser" resultMap="BaseResultMap">
-    select id,real_name,email,phone,first_name,last_name,country,user_status from `t_user`
+  <select id="selectUserWithPage" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" />
+    from t_user
+    <where>
+      <if test="loginName != null">
+        login_name = #{loginName,jdbcType=VARCHAR},
+      </if>
+      <if test="userType != null">
+        user_type = #{userType,jdbcType=INTEGER},
+      </if>
+    </where>
   </select>
 </mapper>

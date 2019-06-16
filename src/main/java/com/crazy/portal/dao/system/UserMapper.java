@@ -1,6 +1,7 @@
 package com.crazy.portal.dao.system;
 
 import com.crazy.portal.entity.system.User;
+import com.github.pagehelper.Page;
 
 import java.util.List;
 
@@ -14,5 +15,5 @@ public interface UserMapper {
 
     User findByLoginName(String loginName);
 
-    List<User> selectAllUser();
+    Page<User> selectUserWithPage(User user);
 }
