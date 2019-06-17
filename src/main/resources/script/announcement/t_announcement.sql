@@ -26,7 +26,7 @@ CREATE TABLE `t_announcement` (
   `title` varchar(255) DEFAULT NULL,
   `content` text,
   `topmost` int(11) DEFAULT NULL COMMENT '是否置顶 0:否 1:是',
-  `type` int(11) DEFAULT NULL COMMENT '公告分类',
+  `type_id` int(11) DEFAULT NULL COMMENT '公告分类ID',
   `status` int(11) DEFAULT NULL COMMENT '状态 0:未发布 1:已发布 -1:已撤销',
   `create_user_id` int(11) DEFAULT NULL,
   `create_time` datetime DEFAULT NULL,
