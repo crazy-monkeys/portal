@@ -40,9 +40,9 @@ public class AnnouncementService {
      * @return
      */
     public PageInfo<Announcement> getPageListByTitleOrTime(String title, String releaseStartTime, String releaseEndTime,
-                                                           Integer pageNum, Integer pageSize){
+                                                           Integer pageNum, Integer pageSize, Integer typeId){
         PortalUtil.defaultStartPage(pageNum,pageSize);
-        Page<Announcement> result = announcementDOMapper.selectPageListData(title, releaseStartTime, releaseEndTime);
+        Page<Announcement> result = announcementDOMapper.selectPageListData(title, releaseStartTime, releaseEndTime, typeId);
         return new PageInfo<>(result);
     }
 
@@ -142,6 +142,7 @@ public class AnnouncementService {
         dbRecord.setContent(reqRecord.getContent());
         dbRecord.setTopmost(reqRecord.getTopmost());
         dbRecord.setUpdateTime(DateUtil.getCurrentTS());
+        dbRecord.setTypeId(reqRecord.getTypeId());
         return announcementDOMapper.updateByPrimaryKeySelective(dbRecord);
     }
 

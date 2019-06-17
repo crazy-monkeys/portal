@@ -23,5 +23,6 @@ public interface AnnouncementDOMapper {
 
     Page<Announcement> selectPageListData(@Param(value = "title") String title,
                                           @Param(value = "releaseStartTime") String releaseStartTime,
-                                          @Param(value = "releaseEndTime") String releaseEndTime);
+                                          @Param(value = "releaseEndTime") String releaseEndTime,
+                                          @Param(value = "typeId") Integer typeId);
 }

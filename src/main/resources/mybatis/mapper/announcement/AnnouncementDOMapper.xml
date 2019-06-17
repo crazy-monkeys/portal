@@ -5,7 +5,7 @@
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="title" jdbcType="VARCHAR" property="title" />
     <result column="topmost" jdbcType="INTEGER" property="topmost" />
-    <result column="type" jdbcType="INTEGER" property="type" />
+    <result column="type_id" jdbcType="INTEGER" property="typeId" />
     <result column="status" jdbcType="INTEGER" property="status" />
     <result column="create_user_id" jdbcType="INTEGER" property="createUserId" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
@@ -29,7 +29,7 @@
   </resultMap>
 
   <sql id="Base_Column_List">
-    id, title, topmost, type, status, create_user_id, create_time, release_time, update_time
+    id, title, topmost, type_id, status, create_user_id, create_time, release_time, update_time
   </sql>
   <sql id="Blob_Column_List">
     content
@@ -51,11 +51,11 @@
   </delete>
   <insert id="insert" parameterType="com.crazy.portal.entity.announcement.Announcement">
     insert into t_announcement (id, title, topmost, 
-      type, status, create_user_id, 
+      type_id, status, create_user_id,
       create_time, release_time, update_time, 
       content)
     values (#{id,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, #{topmost,jdbcType=INTEGER}, 
-      #{type,jdbcType=INTEGER}, #{status,jdbcType=INTEGER}, #{createUserId,jdbcType=INTEGER}, 
+      #{typeId,jdbcType=INTEGER}, #{status,jdbcType=INTEGER}, #{createUserId,jdbcType=INTEGER},
       #{createTime,jdbcType=TIMESTAMP}, #{releaseTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
       #{content,jdbcType=LONGVARCHAR})
   </insert>
@@ -71,8 +71,8 @@
       <if test="topmost != null">
         topmost,
       </if>
-      <if test="type != null">
-        type,
+      <if test="typeId != null">
+        type_id,
       </if>
       <if test="status != null">
         status,
@@ -103,8 +103,8 @@
       <if test="topmost != null">
         #{topmost,jdbcType=INTEGER},
       </if>
-      <if test="type != null">
-        #{type,jdbcType=INTEGER},
+      <if test="typeId != null">
+        #{typeId,jdbcType=INTEGER},
       </if>
       <if test="status != null">
         #{status,jdbcType=INTEGER},
@@ -135,8 +135,8 @@
       <if test="topmost != null">
         topmost = #{topmost,jdbcType=INTEGER},
       </if>
-      <if test="type != null">
-        type = #{type,jdbcType=INTEGER},
+      <if test="typeId != null">
+        type_id = #{typeId,jdbcType=INTEGER},
       </if>
       <if test="status != null">
         status = #{status,jdbcType=INTEGER},
@@ -163,7 +163,7 @@
     update t_announcement
     set title = #{title,jdbcType=VARCHAR},
       topmost = #{topmost,jdbcType=INTEGER},
-      type = #{type,jdbcType=INTEGER},
+      type_id = #{typeId,jdbcType=INTEGER},
       status = #{status,jdbcType=INTEGER},
       create_user_id = #{createUserId,jdbcType=INTEGER},
       create_time = #{createTime,jdbcType=TIMESTAMP},
@@ -176,7 +176,7 @@
     update t_announcement
     set title = #{title,jdbcType=VARCHAR},
       topmost = #{topmost,jdbcType=INTEGER},
-      type = #{type,jdbcType=INTEGER},
+      type_id = #{typeId,jdbcType=INTEGER},
       status = #{status,jdbcType=INTEGER},
       create_user_id = #{createUserId,jdbcType=INTEGER},
       create_time = #{createTime,jdbcType=TIMESTAMP},
@@ -206,7 +206,7 @@
   </select>-->
 
   <select id="selectPageListData" resultMap="ResultMapWithBLOBs" >
-    select t.id,t.title,t.content,t.topmost,t.status,
+    select t.id,t.title,t.content,t.topmost,t.status,t.type_id,
     t.create_user_id,
     date_format(t.create_time,'%Y-%m-%d %H:%i:%s') create_time_str,
     date_format(t.release_time,'%Y-%m-%d %H:%i:%s') release_time_str
@@ -217,6 +217,9 @@
     </if>
     <if test="releaseStartTime != null and releaseStartTime != '' and releaseEndTime != null and releaseEndTime != ''" >
       and t.release_time between #{releaseStartTime} and #{releaseEndTime}
+    </if>
+    <if test="typeId != null" >
+      and t.type_id = #{typeId}
     </if>
     order by t.topmost desc,t.release_time asc
   </select>

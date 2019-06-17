@@ -19,8 +19,8 @@ public class Announcement {
     @NotNull(message = "请选择是否置顶此公告topmost:[0,1]")
     @Range(max = 1, min = 0, message = "请输入有效的参数值topmost:[0,1]")
     private Integer topmost;
-
-    private Integer type;
+    @NotNull(message = "请选择公告类型")
+    private Integer typeId;
 
     private Integer status;
     @JsonIgnore

@@ -26,8 +26,10 @@ public class AnnouncementController extends BaseController {
      * 列表分页
      */
     @GetMapping(value = "/list")
-    public BaseResponse getPageList(String title, String releaseStartTime, String releaseEndTime, Integer pageNum, Integer pageSize) {
-         return super.successResult(announcementService.getPageListByTitleOrTime(title, releaseStartTime, releaseEndTime, pageNum, pageSize));
+    public BaseResponse getPageList(String title, String releaseStartTime, String releaseEndTime,
+                                    Integer pageNum, Integer pageSize, Integer typeId) {
+         return super.successResult(announcementService.getPageListByTitleOrTime(title, releaseStartTime, releaseEndTime,
+                 pageNum, pageSize, typeId));
     }
 
     /**
