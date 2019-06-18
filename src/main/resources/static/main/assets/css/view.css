@@ -19,7 +19,7 @@
 .layui-breadcrumb a:hover,
 .layui-laypage a:hover,
 .layui-tab-brief>.layui-tab-title .layui-this{
-    color: #177ce3!important;
+    color: #901482!important;
 }
 
 .layui-btn-primary:hover,
@@ -29,7 +29,7 @@
 .layui-form-checked, .layui-form-checked:hover,
 .layui-tab-brief>.layui-tab-more li.layui-this:after,
 .layui-tab-brief>.layui-tab-title .layui-this:after{
-    border-color: #177ce3;
+    border-color: #901482;
 }
 
 .layui-checkbox-disbaled[lay-skin=primary]:hover i {
@@ -41,15 +41,15 @@
 .layui-form-select dl dd.layui-this,
 .layui-laypage .layui-laypage-curr .layui-laypage-em,
 .layui-form-checked span, .layui-form-checked:hover span{
-    background-color: #177ce3;
+    background-color: #901482;
 }
 .layui-btn-blue{
-    background-color: #177ce3;
+    background-color: #901482;
     background-repeat: repeat-y;
-    background-image: -moz-linear-gradient(left,#29adeb,#177ce3);
-    background-image: -webkit-linear-gradient(left,#29adeb,#177ce3);
-    background-image: -o-linear-gradient(left,#29adeb,#177ce3);
-    background-image: linear-gradient(left,#29adeb,#177ce3);
+    background-image: -moz-linear-gradient(left,#D026E7,#901482);
+    background-image: -webkit-linear-gradient(left,#D026E7,#901482);
+    background-image: -o-linear-gradient(left,#D026E7,#901482);
+    background-image: linear-gradient(left,#D026E7,#901482);
 }
 
 .layui-form-checkbox[lay-skin=primary]:hover span{

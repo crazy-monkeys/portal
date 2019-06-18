@@ -44,20 +44,34 @@
 .layui-nav,
 .custom-admin .layui-nav-tree .layui-nav-item.layui-nav-itemed > a,
 .layui-nav-tree .layui-nav-item a:hover{
-    background-color: #001529;
+    /*background-color: #001529;*/
+    /** MAKE **/
+    background-color: #35014B;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-image: url(../images/back.jpg);
 }
 
 .custom-admin .layui-nav-child,
 .custom-admin .layui-nav-child a{
-    background-color: #000c17!important;
+    /*background-color: #000c17!important;*/
+    /** MAKE **/
+    background-color: #35014B!important;
 }
 .custom-admin .layui-nav-child dd.layui-this a{
-    background-color: #177ce3;
+    /*background-color: #177ce3;*/
+    /*background-repeat: repeat-y;*/
+    /*background-image: -moz-linear-gradient(left,#29adeb,#177ce3);*/
+    /*background-image: -webkit-linear-gradient(left,#29adeb,#177ce3);*/
+    /*background-image: -o-linear-gradient(left,#29adeb,#177ce3);*/
+    /*background-image: linear-gradient(left,#29adeb,#177ce3);*/
+    /** MAKE **/
+    background-color: #35014B;
     background-repeat: repeat-y;
-    background-image: -moz-linear-gradient(left,#29adeb,#177ce3);
-    background-image: -webkit-linear-gradient(left,#29adeb,#177ce3);
-    background-image: -o-linear-gradient(left,#29adeb,#177ce3);
-    background-image: linear-gradient(left,#29adeb,#177ce3);
+    background-image: -moz-linear-gradient(left,#35014B,#35014B);
+    background-image: -webkit-linear-gradient(left,#35014B,#35014B);
+    background-image: -o-linear-gradient(left,#35014B,#35014B);
+    background-image: linear-gradient(left,#35014B,#35014B);
 }
 
 .custom-header .layui-nav,
@@ -174,12 +188,19 @@ html, body , .app-container{
 .layui-tab-title.custom-tab .layui-this:after{
     border: none;
     height: 3px;
-    background-color: #177ce3;
+    /*background-color: #177ce3;*/
+    /*background-repeat: repeat-y;*/
+    /*background-image: -moz-linear-gradient(left,#29adeb,#177ce3);*/
+    /*background-image: -webkit-linear-gradient(left,#29adeb,#177ce3);*/
+    /*background-image: -o-linear-gradient(left,#29adeb,#177ce3);*/
+    /*background-image: linear-gradient(left,#29adeb,#177ce3);*/
+    /** MAKE **/
+    background-color: #35014B;
     background-repeat: repeat-y;
-    background-image: -moz-linear-gradient(left,#29adeb,#177ce3);
-    background-image: -webkit-linear-gradient(left,#29adeb,#177ce3);
-    background-image: -o-linear-gradient(left,#29adeb,#177ce3);
-    background-image: linear-gradient(left,#29adeb,#177ce3);
+    background-image: -moz-linear-gradient(left,#35014B,#35014B);
+    background-image: -webkit-linear-gradient(left,#35014B,#35014B);
+    background-image: -o-linear-gradient(left,#35014B,#35014B);
+    background-image: linear-gradient(left,#35014B,#35014B);
 }
 
 .layui-layout-admin .layui-side.custom-admin,
@@ -314,7 +335,9 @@ html, body , .app-container{
     height: 50px;
     line-height: 50px;
     color: #fff;
-    background-color: #002140;
+    /*background-color: #002140;*/
+    /** MAKE **/
+    background-color: #35014B;
     vertical-align: middle;
 }
 .custom-logo img{
@@ -331,12 +354,19 @@ html, body , .app-container{
 
 .layui-nav-bar{
     height: 3px;
-    background-color: #177ce3;
+    /*background-color: #177ce3;*/
+    /*background-repeat: repeat-y;*/
+    /*background-image: -moz-linear-gradient(left,#29adeb,#177ce3);*/
+    /*background-image: -webkit-linear-gradient(left,#29adeb,#177ce3);*/
+    /*background-image: -o-linear-gradient(left,#29adeb,#177ce3);*/
+    /*background-image: linear-gradient(left,#29adeb,#177ce3);*/
+    /** MAKE **/
+    background-color: #35014B;
     background-repeat: repeat-y;
-    background-image: -moz-linear-gradient(left,#29adeb,#177ce3);
-    background-image: -webkit-linear-gradient(left,#29adeb,#177ce3);
-    background-image: -o-linear-gradient(left,#29adeb,#177ce3);
-    background-image: linear-gradient(left,#29adeb,#177ce3);
+    background-image: -moz-linear-gradient(left,#35014B,#35014B);
+    background-image: -webkit-linear-gradient(left,#35014B,#35014B);
+    background-image: -o-linear-gradient(left,#35014B,#35014B);
+    background-image: linear-gradient(left,#35014B,#35014B);
 }
 
 .custom-header .layui-nav-bar{
