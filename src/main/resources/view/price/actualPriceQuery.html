@@ -150,6 +150,7 @@
 //                    "data": res.data.list
 //                };
 //            }
+            , data:[]
             , skin: 'line' //表格风格
             , even: true
             , page: true
@@ -160,8 +161,7 @@
                 none: '无数据'
             }
             , cols: [[
-                {field: 'id', title: 'BU', minWidth: 30, hide:true}
-                , {field: 'title', title: 'PDT', minWidth: 30, unresize:true}
+                {field: 'title', title: 'PDT', minWidth: 30, unresize:true}
                 , {field: 'content', title: '产品型号', minWidth: 80, unresize:true}
                 , {field: 'createTimeStr', title: '状态', sort: true, minWidth: 80, unresize:true}
                 , {field: 'releaseTimeStr', title: '客户名称', sort: true, minWidth: 80, unresize:true}

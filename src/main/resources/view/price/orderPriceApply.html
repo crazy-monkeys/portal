@@ -139,6 +139,7 @@
 //                    "data": res.data.list
 //                };
 //            }
+            , data:[]
             , skin: 'line' //表格风格
             , even: true
             , page: true
@@ -149,8 +150,7 @@
                 none: '无数据'
             }
             , cols: [[
-                {field: 'id', title: 'id', minWidth: 30, hide:true}
-                , {field: 'title', title: '申请时间', minWidth: 30, unresize:true}
+                {field: 'title', title: '申请时间', minWidth: 30, unresize:true}
                 , {field: 'content', title: '审批状态', minWidth: 80, unresize:true}
                 , {field: 'createTimeStr', title: '审批意见', sort: true, minWidth: 80, unresize:true}
                 , {field: 'releaseTimeStr', title: 'BU', sort: true, minWidth: 80, unresize:true}

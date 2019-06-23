@@ -145,6 +145,7 @@
 //                    "data": res.data.list
 //                };
 //            }
+            , data:[]
             , skin: 'line' //表格风格
             , even: true
             , page: true
@@ -155,8 +156,7 @@
                 none: '无数据'
             }
             , cols: [[
-                {field: 'id', title: 'ID', minWidth: 30, hide:true}
-                , {field: 'title', title: 'BU', minWidth: 30, unresize:true}
+                {field: 'title', title: 'BU', minWidth: 30, unresize:true}
                 , {field: 'content', title: 'POT', minWidth: 80, unresize:true}
                 , {field: 'createTimeStr', title: 'Product Type', sort: true, minWidth: 80, unresize:true}
                 , {field: 'releaseTimeStr', title: '平台', sort: true, minWidth: 80, unresize:true}
