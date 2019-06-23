@@ -59,19 +59,26 @@
                             <input type="hidden" name="id" />
                             <table border="0" style="width:100%;height:100%;">
                                 <tr>
-                                    <td style="width:100px;height:60px;text-align: right;">角色：</td>
+                                    <td style="width:20%;height:60px;text-align: right;">角色：</td>
                                     <td ><input type="text" autocomplete="off" class="layui-input" name="roleName" placeholder="请输入角色名" /></td>
-
                                 </tr>
                                 <tr>
-                                    <td style="height:100px;text-align: right;vertical-align: top;">职位描述：</td>
-                                    <td><textarea placeholder="请输入职位描述" class="layui-textarea" name="roleDesc"></textarea></td>
+                                    <td style="text-align: right;">是否父级角色：</td>
+                                    <td style="width: 60px;">
+                                        <div style="float:left;">
+                                            <input type="radio" name="sex" value="是" title="是" checked>
+                                            <input type="radio" name="sex" value="否" title="否" >
+                                        </div>
+                                        <div style="float: left;">
+                                            <select>
+                                                <option selected>系统管理员</option>
+                                            </select>
+                                        </div>
+                                    </td>
                                 </tr>
                                 <tr>
-                                    <td>
-                                    </td>
-                                    <td>
-                                    </td>
+                                    <td style="height:100px;text-align: right;vertical-align: top;">角色简介：</td>
+                                    <td ><textarea placeholder="请输入职位描述" class="layui-textarea" name="roleDesc"></textarea></td>
                                 </tr>
                             </table>
                         </form>
