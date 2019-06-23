@@ -51,10 +51,21 @@
                     <table id="table" lay-filter="table-filter"></table>
                     <script type="text/html" id="toolbar">
                         <div class="layui-btn-container">
-                            <button class="layui-btn layui-btn-sm layui-btn-primary" lay-event="create">查询</button>
-                            <button class="layui-btn layui-btn-sm layui-btn-primary" lay-event="create">审批</button>
+                            <button class="layui-btn layui-btn-sm layui-btn-primary" lay-event="query">查询</button>
+                            <button class="layui-btn layui-btn-sm layui-btn-primary" lay-event="approval">审批</button>
                         </div>
                     </script>
+                    <div id="addDiv" style="width:550px;height:300px;display: none;">
+                        <form id="editForm" class="layui-form" action="" lay-filter="editForm">
+                            <input type="hidden" name="id" />
+                            <table border="0" style="width:100%;height:100%;">
+                                <tr>
+                                    <td style="width:100px;height:100px;text-align: right;vertical-align: top;">审批意见：</td>
+                                    <td ><textarea placeholder="请输入说明" class="layui-textarea" name="content"></textarea></td>
+                                </tr>
+                            </table>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
@@ -126,7 +137,7 @@
         });
         //头工具栏事件
         table.on('toolbar(table-filter)', function(obj){
-            if(obj.event === 'create'){
+            if(obj.event === 'approval'){
                 showEditDialog();
             }
         });
@@ -134,14 +145,31 @@
         table.on('tool(table-filter)', function(obj){
             var data = obj.data //获得当前行数据
                 ,layEvent = obj.event; //获得 lay-event 对应的值
-            if(layEvent === 'preview'){
-                showPreviewDialog();
-                toPreview(data.id);
-            } else if(layEvent === 'edit'){
+            if(layEvent === 'approval'){
                 showEditDialog();
-                toEdit(data.id);
-            } else if(layEvent === 'cancel'){
-                sureCancel(data.id);
+            }
+        });
+    }
+    function showEditDialog(){
+        layer.open({
+            title: '审批',
+            type: 1,
+            area: ['600px', '400px'],
+            content: $("#addDiv"),
+            btn : [ '通过', '驳回' ],
+            btnAlign: 'c',
+            success : function(layero, index) {
+                $("#editForm")[0].reset();
+            },
+            yes : function(index, layero) {
+                submitEditForm();
+            },
+            btn2 : function(index, layero) {
+                layer.closeAll();
+                $("#addDiv").hide();
+            },
+            cancel: function(index, layero){
+                $("#addDiv").hide();
             }
         });
     }

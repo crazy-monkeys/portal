@@ -22,24 +22,38 @@
         <div class="layui-card">
             <div class="layui-card-body">
                 <div class="form-box">
-                    <div class="layui-form layui-form-item">
-                        <div class="layui-inline">
-                            <div class="layui-form-mid">角色:</div>
-                            <div class="layui-input-inline" style="width: 150px;">
-                                <input type="text" autocomplete="off" class="layui-input" id="roleName" />
+                    <div style="width:100%;height:600px;">
+                        <div style="width:70%;float:left;">
+                            <div class="layui-form layui-form-item">
+                                <div class="layui-inline">
+                                    <div class="layui-form-mid">角色:</div>
+                                    <div class="layui-input-inline" style="width: 150px;">
+                                        <input type="text" autocomplete="off" class="layui-input" id="roleName" />
+                                    </div>
+                                    <button class="layui-btn layui-btn-blue" onclick="loadTable()">查询</button>
+                                </div>
                             </div>
-                            <button class="layui-btn layui-btn-blue" onclick="loadTable()">查询</button>
+                            <table id="table" lay-filter="table-filter"></table>
+                            <script type="text/html" id="toolbar">
+                                <div class="layui-btn-container">
+                                    <button class="layui-btn layui-btn-sm layui-btn-primary" lay-event="create">创建角色</button>
+                                </div>
+                            </script>
+                            <script type="text/html" id="tableOprate">
+                                <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit">修改</a>
+                                <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="anthority">权限设置</a>
+                            </script>
+                        </div>
+                        <div style="width:29%;float:left;margin-left:1%;">
+                            <div style="border:1px solid #ccc;height:600px;overflow-y:auto;">
+                                &nbsp;&nbsp;
+                                <button onclick="showEditResourceDialog(0)" type="button" class="layui-btn layui-btn-primary layui-btn-xs">
+                                    添加目录
+                                </button>
+                                <div id="tree1" class="demo-tree demo-tree-box"></div>
+                            </div>
                         </div>
                     </div>
-                    <table id="table" lay-filter="table-filter"></table>
-                    <script type="text/html" id="toolbar">
-                        <div class="layui-btn-container">
-                            <button class="layui-btn layui-btn-sm layui-btn-primary" lay-event="create">创建角色</button>
-                        </div>
-                    </script>
-                    <script type="text/html" id="tableOprate">
-                        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit">修改</a>
-                    </script>
                     <div id="addRoleDiv" style="width:600px;height:330px;display: none;">
                         <form id="roleEditForm" class="layui-form" action="" lay-filter="roleEditForm">
                             <input type="hidden" name="id" />
@@ -47,15 +61,7 @@
                                 <tr>
                                     <td style="width:100px;height:60px;text-align: right;">角色：</td>
                                     <td ><input type="text" autocomplete="off" class="layui-input" name="roleName" placeholder="请输入角色名" /></td>
-                                    <td rowspan="3" style="width: 200px;vertical-align: top;">
-                                        <div style="border:1px solid #ccc;height:325px;overflow-y:auto;">
-                                            &nbsp;&nbsp;
-                                            <button onclick="showEditResourceDialog(0)" type="button" class="layui-btn layui-btn-primary layui-btn-xs">
-                                                添加目录
-                                            </button>
-                                            <div id="tree1" class="demo-tree demo-tree-box"></div>
-                                        </div>
-                                    </td>
+
                                 </tr>
                                 <tr>
                                     <td style="height:100px;text-align: right;vertical-align: top;">职位描述：</td>
@@ -137,6 +143,7 @@
     var addResourceList = [];
     var delResourceList = [];
     var resource_list = [];
+    var globalRoleId;
     function loadResource(fn,fn2){
         resource_list = [];
         $.getJson("/permission/getAll", function(data){
@@ -211,6 +218,7 @@
                         console.log(delResourceList);
                     }
                 }
+                savePermission();
             }
             ,operate: function(obj){
                 var type = obj.type; //得到操作类型：add、edit、del
@@ -335,6 +343,10 @@
             if(layEvent === 'edit'){
                 toEditRole(data.id);
                 showEditRoleDialog();
+            }else if(layEvent === 'anthority'){
+                //查询角色的资源信息，填充
+                fullResourceTree(data.id);
+                globalRoleId = data.id;
             }
         });
     }
@@ -372,29 +384,13 @@
             layer.msg("角色名称不能为空");
             return false;
         }
-        if(!roleInfo.id && addResourceList.length == 0 && delResourceList.length == 0){
-            layer.msg("请选择对应的菜单资源");
-            return false;
-        }
         var url = '/permission/saveRole';
         if(roleInfo.id){
             url = '/permission/updateRole';
         }
         $.postJson(url, roleInfo, function(data){
-            if(addResourceList.length > 0 || delResourceList.length > 0) {
-                var resourceInfo = {
-                    roleId: data,
-                    addPermissionIds: addResourceList,
-                    rmPermissionIds: delResourceList
-                };
-                $.postJson("/permission/savePermission", resourceInfo, function (data) {
-                    loadTable();
-                    fn();
-                });
-            }else{
-                loadTable();
-                fn();
-            }
+            loadTable();
+            fn();
         });
 
     }
@@ -403,10 +399,10 @@
         $.getJson("/permission/findRole/"+ id, function(data){
                 form.val("roleEditForm", data);
         });
-        //查询角色的资源信息，填充
-        fullResourceTree(id);
+
     }
     function fullResourceTree(id){
+        loadTree(resource_list);
         $.getJson("/permission/findPermission/"+id, function(data){
             tree.setChecked('tree1', excludeFolderResource(data));
             addResourceList = [];
@@ -506,6 +502,18 @@
                 fullResourceTree(roleId);
             }
         });
+    }
+    function savePermission(){
+        if(addResourceList.length > 0 || delResourceList.length > 0) {
+            var resourceInfo = {
+                roleId: globalRoleId,
+                addPermissionIds: addResourceList,
+                rmPermissionIds: delResourceList
+            };
+            $.postJson("/permission/savePermission", resourceInfo, function (data) {
+
+            });
+        }
     }
 </script>
 
