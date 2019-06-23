@@ -99,7 +99,7 @@
 			},
 			success:function(res, textStatus, request){
                 if (res && res.code === 1) {
-                    localStorage.setItem("authorization", request.getResponseHeader("authorization"));
+                    localStorage.setItem("Authorization", request.getResponseHeader("authorization"));
                     localStorage.setItem("menu", JSON.stringify(res.data));
                     localStorage.setItem("userName", login);
                     window.location.href = '/view/main.html';
