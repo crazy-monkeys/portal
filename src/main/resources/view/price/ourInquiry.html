@@ -97,11 +97,6 @@
                             <button class="layui-btn layui-btn-sm layui-btn-primary" lay-event="create">修改</button>
                         </div>
                     </script>
-                    <script type="text/html" id="tableOprate">
-                        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="preview">预览</a>
-                        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit">修改</a>
-                        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="cancel">撤销</a>
-                    </script>
                 </div>
             </div>
         </div>
@@ -140,7 +135,7 @@
 //                    "data": res.data.list
 //                };
 //            }
-            , data:[]
+            , data:[{id:"1"}]
             , skin: 'line' //表格风格
             , even: true
             , page: true
@@ -151,20 +146,21 @@
                 none: '无数据'
             }
             , cols: [[
-                {field: 'title', title: '申请时间', minWidth: 30, unresize:true}
-                , {field: 'content', title: '审批状态', minWidth: 80, unresize:true}
-                , {field: 'createTimeStr', title: '审批意见', sort: true, minWidth: 80, unresize:true}
-                , {field: 'releaseTimeStr', title: 'BU', sort: true, minWidth: 80, unresize:true}
-                , {field: 'createUserName', title: "PDT", minWidth: 80, unresize:true}
-                , {field: 'status', title: '产品型号', minWidth: 80, unresize:true}
-                , {field: '1', title: '平台', minWidth: 80, toolbar: '#tableOprate', unresize:true}
-                , {field: '2', title: '产品状态', minWidth: 80, toolbar: '#tableOprate', unresize:true}
-                , {field: '3', title: '产品归属', minWidth: 80, toolbar: '#tableOprate', unresize:true}
-                , {field: '4', title: '数量上限', minWidth: 80, toolbar: '#tableOprate', unresize:true}
-                , {field: '5', title: '数量下限', minWidth: 80, toolbar: '#tableOprate', unresize:true}
-                , {field: '6', title: '标准价', minWidth: 80, toolbar: '#tableOprate', unresize:true}
-                , {field: '7', title: '生效时间', minWidth: 80, toolbar: '#tableOprate', unresize:true}
-                , {field: '8', title: '失效时间', minWidth: 80, toolbar: '#tableOprate', unresize:true}
+                {field: 'id', title: 'id', minWidth: 30, unresize:true,hide:true}
+                ,{field: 'title', title: '申请时间', minWidth: 100, unresize:true}
+                , {field: 'content', title: '审批状态', minWidth: 100, unresize:true}
+                , {field: 'createTimeStr', title: '审批意见', sort: true, minWidth: 100, unresize:true}
+                , {field: 'releaseTimeStr', title: 'BU', sort: true, minWidth: 100, unresize:true}
+                , {field: 'createUserName', title: "PDT", minWidth: 100, unresize:true}
+                , {field: 'status', title: '产品型号', minWidth: 100, unresize:true}
+                , {field: '1', title: '平台', minWidth: 100, toolbar: '#tableOprate', unresize:true}
+                , {field: '2', title: '产品状态', minWidth: 100, toolbar: '#tableOprate', unresize:true}
+                , {field: '3', title: '产品归属', minWidth: 100, toolbar: '#tableOprate', unresize:true}
+                , {field: '4', title: '数量上限', minWidth: 100, toolbar: '#tableOprate', unresize:true}
+                , {field: '5', title: '数量下限', minWidth: 100, toolbar: '#tableOprate', unresize:true}
+                , {field: '6', title: '标准价', minWidth: 100, toolbar: '#tableOprate', unresize:true}
+                , {field: '7', title: '生效时间', minWidth: 100, toolbar: '#tableOprate', unresize:true}
+                , {field: '8', title: '失效时间', minWidth: 100, toolbar: '#tableOprate', unresize:true}
             ]]
             ,done: function () {
 //                $("[data-field='id']").css('display','none');

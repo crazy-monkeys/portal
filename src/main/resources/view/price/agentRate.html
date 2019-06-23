@@ -43,11 +43,6 @@
                             <button class="layui-btn layui-btn-sm layui-btn-primary" lay-event="create">上传结果</button>
                         </div>
                     </script>
-                    <script type="text/html" id="tableOprate">
-                        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="preview">预览</a>
-                        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit">修改</a>
-                        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="cancel">撤销</a>
-                    </script>
                 </div>
             </div>
         </div>
@@ -86,7 +81,7 @@
 //                    "data": res.data.list
 //                };
 //            }
-            , data:[]
+            , data:[{id:"1"}]
             , skin: 'line' //表格风格
             , even: true
             , page: true
@@ -97,14 +92,16 @@
                 none: '无数据'
             }
             , cols: [[
-                {field: 'title', title: '客户分类', minWidth: 30, unresize:true}
-                , {field: 'content', title: '产品线', minWidth: 80, unresize:true}
-                , {field: 'createTimeStr', title: '产品层次一', sort: true, minWidth: 80, unresize:true}
-                , {field: 'releaseTimeStr', title: '产品层次二', sort: true, minWidth: 80, unresize:true}
-                , {field: 'createUserName', title: "产品层次三", minWidth: 80, unresize:true}
-                , {field: 'status', title: '基本代理费率（%）', minWidth: 80, unresize:true}
-                , {field: '1', title: '浮动代理费率（%）', minWidth: 80, toolbar: '#tableOprate', unresize:true}
-                , {field: '2', title: '开始日期', minWidth: 80, toolbar: '#tableOprate', unresize:true}
+                {field: 'id', title: 'id', minWidth: 30, unresize:true,hide:true}
+                ,{field: 'title', title: '客户分类', minWidth: 100, unresize:true}
+                ,{field: 'title', title: '客户分类', minWidth: 100, unresize:true}
+                , {field: 'content', title: '产品线', minWidth: 100, unresize:true}
+                , {field: 'createTimeStr', title: '产品层次一', sort: true, minWidth: 120, unresize:true}
+                , {field: 'releaseTimeStr', title: '产品层次二', sort: true, minWidth: 120, unresize:true}
+                , {field: 'createUserName', title: "产品层次三", minWidth: 120, unresize:true}
+                , {field: 'status', title: '基本代理费率（%）', minWidth: 160, unresize:true}
+                , {field: '1', title: '浮动代理费率（%）', minWidth: 160, toolbar: '#tableOprate', unresize:true}
+                , {field: '2', title: '开始日期', minWidth: 100, toolbar: '#tableOprate', unresize:true}
             ]]
             ,done: function () {
 //                $("[data-field='id']").css('display','none');

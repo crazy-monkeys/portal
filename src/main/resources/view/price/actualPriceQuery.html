@@ -107,11 +107,6 @@
                             <button class="layui-btn layui-btn-sm layui-btn-primary" lay-event="create">查询</button>
                         </div>
                     </script>
-                    <script type="text/html" id="tableOprate">
-                        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="preview">预览</a>
-                        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit">修改</a>
-                        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="cancel">撤销</a>
-                    </script>
                 </div>
             </div>
         </div>
@@ -150,7 +145,7 @@
 //                    "data": res.data.list
 //                };
 //            }
-            , data:[]
+            , data:[{id:'1'}]
             , skin: 'line' //表格风格
             , even: true
             , page: true
@@ -161,20 +156,21 @@
                 none: '无数据'
             }
             , cols: [[
-                {field: 'title', title: 'PDT', minWidth: 30, unresize:true}
-                , {field: 'content', title: '产品型号', minWidth: 80, unresize:true}
-                , {field: 'createTimeStr', title: '状态', sort: true, minWidth: 80, unresize:true}
-                , {field: 'releaseTimeStr', title: '客户名称', sort: true, minWidth: 80, unresize:true}
-                , {field: 'createUserName', title: "客户简称", minWidth: 80, unresize:true}
-                , {field: 'status', title: '实际价格', minWidth: 80, unresize:true}
-                , {field: '1', title: '销售下限(K)', minWidth: 80, toolbar: '#tableOprate', unresize:true}
-                , {field: '2', title: '销售上限(K)', minWidth: 80, toolbar: '#tableOprate', unresize:true}
-                , {field: '3', title: '核算类型', minWidth: 80, toolbar: '#tableOprate', unresize:true}
-                , {field: '4', title: '关联公司', minWidth: 80, toolbar: '#tableOprate', unresize:true}
-                , {field: '5', title: '关联产品', minWidth: 80, toolbar: '#tableOprate', unresize:true}
-                , {field: '6', title: '申请人', minWidth: 80, toolbar: '#tableOprate', unresize:true}
-                , {field: '7', title: '生效时间', minWidth: 80, toolbar: '#tableOprate', unresize:true}
-                , {field: '8', title: '失效时间', minWidth: 80, toolbar: '#tableOprate', unresize:true}
+                 {field: 'id', title: 'id', minWidth: 30, unresize:true,hide:true}
+                , {field: 'title', title: 'PDT', minWidth: 100, unresize:true}
+                , {field: 'content', title: '产品型号', minWidth: 100, unresize:true}
+                , {field: 'createTimeStr', title: '状态', sort: true, minWidth: 100, unresize:true}
+                , {field: 'releaseTimeStr', title: '客户名称', sort: true, minWidth: 100, unresize:true}
+                , {field: 'createUserName', title: "客户简称", minWidth: 100, unresize:true}
+                , {field: 'status', title: '实际价格', minWidth: 100, unresize:true}
+                , {field: '1', title: '销售下限(K)', minWidth: 110, toolbar: '#tableOprate', unresize:true}
+                , {field: '2', title: '销售上限(K)', minWidth: 110, toolbar: '#tableOprate', unresize:true}
+                , {field: '3', title: '核算类型', minWidth: 100, toolbar: '#tableOprate', unresize:true}
+                , {field: '4', title: '关联公司', minWidth: 100, toolbar: '#tableOprate', unresize:true}
+                , {field: '5', title: '关联产品', minWidth: 100, toolbar: '#tableOprate', unresize:true}
+                , {field: '6', title: '申请人', minWidth: 100, toolbar: '#tableOprate', unresize:true}
+                , {field: '7', title: '生效时间', minWidth: 100, toolbar: '#tableOprate', unresize:true}
+                , {field: '8', title: '失效时间', minWidth: 100, toolbar: '#tableOprate', unresize:true}
             ]]
             ,done: function () {
 //                $("[data-field='id']").css('display','none');
