@@ -28,38 +28,45 @@
                                 <td class="right">状态:</td>
                                 <td>
                                     <div class="layui-input-inline" style="width: 150px;">
-                                        <input type="text" autocomplete="off" class="layui-input">
+                                        <input type="text" autocomplete="off" class="layui-input" id="title">
                                     </div>
                                 </td>
-                                <td class="right">客户类型:</td>
+                                <td class="right">发货公司:</td>
                                 <td>
                                     <div class="layui-input-inline" style="width: 150px;">
                                         <input type="text" class="layui-input" >
                                     </div>
                                 </td>
-                                <td class="right">客户名称:</td>
+                                <td class="right">年月:</td>
                                 <td>
                                     <div class="layui-input-inline" style="width: 150px;">
-                                        <input type="text" class="layui-input" >
+                                        <input type="text" autocomplete="off" class="layui-input" >
                                     </div>
                                 </td>
                             </tr>
                             <tr>
-                                <td class="right">客户Code:</td>
+                                <td class="right">上传日期:</td>
                                 <td>
                                     <div class="layui-input-inline" style="width: 150px;">
-                                        <input type="text" autocomplete="off" class="layui-input">
+                                        <input type="text" class="layui-input" id="time1" placeholder="Start Time">
+                                    </div>
+                                    <div class="layui-input-inline" style="width: 150px;">
+                                        <input type="text" class="layui-input" id="time2" placeholder="End Time">
                                     </div>
                                 </td>
-                                <td class="right">申请时间:</td>
+                                <td class="right">提货日期:</td>
                                 <td>
                                     <div class="layui-input-inline" style="width: 150px;">
-                                        <input type="text" class="layui-input" placeholder="yyyy-mm-dd">
+                                        <input type="text" class="layui-input" id="time3" placeholder="Start Time">
+                                    </div>
+                                    <div class="layui-input-inline" style="width: 150px;">
+                                        <input type="text" class="layui-input" id="time4" placeholder="End Time">
                                     </div>
                                 </td>
-                                <td class="right"><button class="layui-btn layui-btn-blue" onclick="loadTable()">查询</button></td>
+                            </tr>
+                            <tr>
                                 <td>
-
+                                    <button class="layui-btn layui-btn-blue" onclick="loadTable()">查询</button>
                                 </td>
                             </tr>
                         </table>
@@ -67,15 +74,14 @@
                     <table id="table" lay-filter="table-filter"></table>
                     <script type="text/html" id="toolbar">
                         <div class="layui-btn-container">
-                            <button class="layui-btn layui-btn-sm layui-btn-primary" lay-event="create">新建</button>
-                            <button class="layui-btn layui-btn-sm layui-btn-primary" lay-event="update">修改</button>
-                            <button class="layui-btn layui-btn-sm layui-btn-primary" lay-event="delete">删除</button>
+                            <button class="layui-btn layui-btn-sm layui-btn-primary" lay-event="create">下载模版</button>
+                            <button class="layui-btn layui-btn-sm layui-btn-primary" lay-event="create">上传数据</button>
+                            <button class="layui-btn layui-btn-sm layui-btn-primary" lay-event="create">校验</button>
+                            <button class="layui-btn layui-btn-sm layui-btn-primary" lay-event="create">保存</button>
+                            <button class="layui-btn layui-btn-sm layui-btn-primary" lay-event="create">提交</button>
+                            <button class="layui-btn layui-btn-sm layui-btn-primary" lay-event="create">新增</button>
+                            <button class="layui-btn layui-btn-sm layui-btn-primary" lay-event="create">删除</button>
                         </div>
-                    </script>
-                    <script type="text/html" id="tableOprate">
-                        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="preview">预览</a>
-                        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit">修改</a>
-                        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="cancel">撤销</a>
                     </script>
                 </div>
             </div>
@@ -96,6 +102,9 @@
         loadTable();
         laydate.render({
             elem: '#time1'
+            ,elem: '#time2'
+            ,elem: '#time3'
+            ,elem: '#time4'
         });
     });
     function loadTable() {
@@ -115,7 +124,7 @@
 //                    "data": res.data.list
 //                };
 //            }
-            , data:[{id:1}]
+            ,data:[{id:1}]
             , skin: 'line' //表格风格
             , even: true
             , page: true
@@ -127,12 +136,20 @@
             }
             , cols: [[
                 {field: 'id', title: 'ID', minWidth: 30, hide:true}
-                , {field: 'title', title: '状态', minWidth: 30, unresize:true}
-                , {field: 'content', title: '原额度', minWidth: 80, unresize:true}
-                , {field: 'createTimeStr', title: '申请额度',  minWidth: 80, unresize:true}
-                , {field: 'releaseTimeStr', title: '提交时间', minWidth: 80, unresize:true}
-                , {field: 'createUserName', title: "审批时间", minWidth: 80, unresize:true}
-                , {field: 'createUserName2', title: "审批意见", minWidth: 80, unresize:true}
+                , {field: 'createUserName', title: "状态", minWidth: 80, unresize:true}
+                , {field: 'createUserName', title: "错误信息", minWidth: 100, toolbar: '#tableOprate', unresize:true}
+                , {field: 'createUserName', title: "提货时间", minWidth: 100, toolbar: '#tableOprate', unresize:true}
+                , {field: 'createTimeStr', title: '年月', minWidth: 80, toolbar: '#tableOprate', unresize:true}
+                , {field: 'oprate', title: '产品型号', minWidth: 100, toolbar: '#tableOprate', unresize:true}
+                , {field: 'oprate', title: 'BU', minWidth: 80, toolbar: '#tableOprate', unresize:true}
+                , {field: 'status', title: '提货数量', minWidth: 100, toolbar: '#tableOprate', unresize:true}
+                , {field: 'oprate', title: 'PO Price', minWidth: 80, toolbar: '#tableOprate', unresize:true}
+                , {field: 'oprate', title: '金额', minWidth: 80, toolbar: '#tableOprate', unresize:true}
+                , {field: 'oprate', title: '发票号', minWidth: 100, toolbar: '#tableOprate', unresize:true}
+                , {field: 'releaseTimeStr', title: '库存类别',  minWidth: 100,toolbar: '#tableOprate',  unresize:true}
+                , {field: 'createUserName', title: "发货公司", minWidth: 100,toolbar: '#tableOprate',  unresize:true}
+                , {field: 'status', title: '仓储地', minWidth: 100,toolbar: '#tableOprate',  unresize:true}
+                , {field: 'oprate', title: '备注', minWidth: 80, toolbar: '#tableOprate', unresize:true}
             ]]
             ,done: function () {
 //                $("[data-field='id']").css('display','none');
@@ -141,7 +158,7 @@
         //头工具栏事件
         table.on('toolbar(table-filter)', function(obj){
             if(obj.event === 'create'){
-                window.location.href = '/view/credit/applyCs.html';
+                showEditDialog();
             }
         });
         //监听行工具事件

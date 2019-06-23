@@ -31,16 +31,16 @@
                                         <input type="text" autocomplete="off" class="layui-input" id="title">
                                     </div>
                                 </td>
-                                <td class="right">英文名称:</td>
+                                <td class="right">客户Code:</td>
                                 <td>
                                     <div class="layui-input-inline" style="width: 150px;">
                                         <input type="text" class="layui-input" >
                                     </div>
                                 </td>
-                                <td class="right">客户号:</td>
+                                <td class="right">订单号:</td>
                                 <td>
                                     <div class="layui-input-inline" style="width: 150px;">
-                                        <input type="text" class="layui-input" >
+                                        <input type="text" autocomplete="off" class="layui-input" >
                                     </div>
                                 </td>
                             </tr>
@@ -51,29 +51,32 @@
                                         <input type="text" autocomplete="off" class="layui-input" >
                                     </div>
                                 </td>
-                                <td class="right">报备日期:</td>
+                                <td class="right">销售:</td>
                                 <td>
                                     <div class="layui-input-inline" style="width: 150px;">
-                                        <input type="text" class="layui-input" id="time1" placeholder="yyyy-mm-dd">
+                                        <input type="text" class="layui-input">
                                     </div>
                                 </td>
-                                <td class="right">客户类别:</td>
+                                <td class="right">订单月份:</td>
                                 <td>
                                     <div class="layui-input-inline" style="width: 150px;">
-                                        <input type="text" class="layui-input" >
+                                        <input type="text" class="layui-input">
                                     </div>
                                 </td>
                             </tr>
                             <tr>
-                                <td class="right">销售:</td>
+                                <td class="right">上传日期:</td>
                                 <td>
-                                    <div class="layui-input-inline" style="width: 150px;">
-                                        <input type="text" class="layui-input" >
+                                    <div class="layui-input-inline" style="width: 100px;">
+                                        <input type="text" class="layui-input" id="time1" placeholder="Start Time">
+                                    </div>
+                                    <div class="layui-form-mid">-</div>
+                                    <div class="layui-input-inline" style="width: 100px;">
+                                        <input type="text" class="layui-input" id="time2" placeholder="End Time">
                                     </div>
                                 </td>
-                                <td>
-
-                                </td>
+                            </tr>
+                            <tr>
                                 <td>
                                     <button class="layui-btn layui-btn-blue" onclick="loadTable()">查询</button>
                                 </td>
@@ -83,17 +86,70 @@
                     <table id="table" lay-filter="table-filter"></table>
                     <script type="text/html" id="toolbar">
                         <div class="layui-btn-container">
-                            <button class="layui-btn layui-btn-sm layui-btn-primary" lay-event="detail">Open</button>
-                            <button class="layui-btn layui-btn-sm layui-btn-primary" lay-event="export">转移</button>
-                            <button class="layui-btn layui-btn-sm layui-btn-primary" lay-event="export">类型变更</button>
+                            <button class="layui-btn layui-btn-sm layui-btn-primary" lay-event="detail" onclick="showDetail()">明细</button>
                         </div>
                     </script>
-                    <script type="text/html" id="tableOprate">
-                        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="preview">预览</a>
-                        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit">修改</a>
-                        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="cancel">撤销</a>
-                    </script>
                 </div>
+            </div>
+        </div>
+    </div>
+
+<!--销售预测明细-->
+    <div id="addRoleDiv" style="width:600px;height:330px;display: none;">
+        <ul class="layui-tab-title">
+            <li class="layui-this">月份一</li>
+            <li>月份二</li>
+            <li>月份三</li>
+            <li>月份四</li>
+            <li>月份五</li>
+            <li>月份六</li>
+        </ul>
+        <div class="layui-tab-content" style="">
+            <div class="layui-tab-item layui-show">
+                <table class="layui-table" style="padding-top: 20px;width: 100%;">
+                    <colgroup>
+                        <col width="60">
+                        <col width="20">
+                        <col>
+                    </colgroup>
+                    <thead>
+                    <tr>
+                        <th width="50px;">上次</th>
+                        <th width="50px;">本次</th>
+                        <th width="50px;">备注</th>
+                        <th width="80px;">队长调整</th>
+                        <th width="80px;">队长备注</th>
+                        <th width="80px;">首代调整</th>
+                        <th width="80px;">首代备注</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>
+                            12
+                        </td>
+                        <td>
+                           22
+                        </td>
+                        <td>
+                            12
+                        </td>
+                        <td>
+                            12
+                        </td>
+                        <td>
+                            12
+                        </td>
+                        <td>
+                            12
+                        </td>
+                        <td>
+                            12
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
             </div>
         </div>
     </div>
@@ -131,7 +187,8 @@
 //                    "data": res.data.list
 //                };
 //            }
-            , data:[{id:1}]
+            , data:[{id:1
+            }]
             , skin: 'line' //表格风格
             , even: true
             , page: true
@@ -142,13 +199,21 @@
                 none: '无数据'
             }
             , cols: [[
-                {field: 'id', title: 'ID', minWidth: 30, hide:true}
-                , {field: 'download', title: '选择', minWidth: 40, unresize:true, type: 'checkbox'}
-                , {field: 'title', title: '客户状态', minWidth: 30, unresize:true}
-                , {field: 'content', title: '经销商', minWidth: 80, unresize:true}
-                , {field: 'createTimeStr', title: '客户名称',  minWidth: 80, unresize:true}
-                , {field: 'releaseTimeStr', title: '报备有效期', minWidth: 80, unresize:true}
-                , {field: 'createUserName', title: "客户地址", minWidth: 80, unresize:true}
+                {field: 'id', title: 'ID',  hide:true}
+                 ,{field: 'name', title: '代理商', toolbar: '#tableOprate',minWidth: 90, unresize:true}
+                , {field: 'content', title: '上传日期', toolbar: '#tableOprate',minWidth: 90, unresize:true}
+                , {field: 'oprate', title: '月份', minWidth: 90, toolbar: '#tableOprate',unresize:true}
+                , {field: 'createTimeStr', title: '客户全称',  toolbar: '#tableOprate',minWidth: 90, unresize:true}
+                , {field: 'releaseTimeStr', title: '客户Code',  toolbar: '#tableOprate',minWidth: 100, unresize:true}
+                , {field: 'releaseTimeStr', title: '客户类别',  toolbar: '#tableOprate',minWidth: 90, unresize:true}
+                , {field: 'releaseTimeStr', title: '阿米巴队长',  toolbar: '#tableOprate',minWidth: 110, unresize:true}
+                , {field: 'createUserName', title: "销售", toolbar: '#tableOprate',minWidth: 90, unresize:true}
+                , {field: 'status', title: '产品型号', toolbar: '#tableOprate',minWidth: 90, unresize:true}
+                , {field: 'oprate', title: '产品类型', toolbar: '#tableOprate',minWidth: 90, unresize:true}
+                , {field: 'createUserName', title: "Platform", toolbar: '#tableOprate',minWidth: 90, unresize:true}
+                , {field: 'status', title: 'Product Type', toolbar: '#tableOprate',minWidth: 110, unresize:true}
+                , {field: 'oprate', title: '截止日期', toolbar: '#tableOprate',minWidth: 90, unresize:true}
+                , {field: 'oprate', title: '未完成专货库存',toolbar: '#tableOprate', minWidth: 120, unresize:true}
             ]]
             ,done: function () {
 //                $("[data-field='id']").css('display','none');
@@ -157,7 +222,7 @@
         //头工具栏事件
         table.on('toolbar(table-filter)', function(obj){
             if(obj.event === 'detail'){
-                window.location.href = '/view/customer/customerDetail.html';
+                showDetail();
             }
         });
         //监听行工具事件
@@ -174,6 +239,24 @@
                 sureCancel(data.id);
             }
         });
+
+        function showDetail(){
+            layer.open({
+                title: '销售预测明细',
+                type: 1,
+                area: ['600px', '440px'], //宽高
+                content: $("#addRoleDiv"),
+                btn : [ '保存', '取消' ],
+                btnAlign: 'c',
+                btn2 : function(index, layero) {
+                    layer.close(index);
+                    $("#addRoleDiv").hide();
+                },
+                cancel: function(index, layero){
+                    $("#addRoleDiv").hide();
+                }
+            });
+        }
     }
 </script>
 </body>

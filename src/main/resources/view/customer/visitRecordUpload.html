@@ -25,18 +25,16 @@
                     <div class="layui-form layui-form-item">
                         <table style="width:100%;">
                             <tr>
-                                <td >
-                                        客户名称:
-                                        <input type="text" autocomplete="off" class="layui-input">
-                                        项目名称:
-                                        <input type="text" class="layui-input" >
-
+                                <td >客户名称:</td>
+                                <td>
+                                    <input type="text" autocomplete="off" class="layui-input">
                                 </td>
+                                <td>项目名称:</td>
+                                <td><input type="text" class="layui-input" ></td>
                             </tr>
                             <tr>
-                                <td >备注:
-                                    <textarea placeholder="" class="layui-textarea"></textarea>
-                                </td>
+                                <td >备注:</td>
+                                <td scope="3"><textarea placeholder="" class="layui-textarea"></textarea></td>
                             </tr>
                         </table>
                     </div>
@@ -90,7 +88,7 @@
 //                    "data": res.data.list
 //                };
 //            }
-            , data:[]
+            , data:[{id:1}]
             , skin: 'line' //表格风格
             , even: true
             , page: true

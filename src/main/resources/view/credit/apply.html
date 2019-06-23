@@ -33,52 +33,52 @@
                                 <td>
                                         <input type="text" class="layui-input" >
                                 </td>
-                            </tr>
-                            <tr>
-                                <td class="right">地址:</td>
+                                <td class="right">邮箱:</td>
                                 <td>
-                                    <select style="width: 150px;">
-                                        <option>省</option>
-                                    </select>
-                                </td>
-                                <td>
-                                    <select style="width: 150px;">
-                                        <option>市</option>
-                                    </select>
-                                </td>
-                                <td>
-                                    <select style="width: 150px;">
-                                        <option>区</option>
-                                    </select>
-
+                                    <input type="text" class="layui-input" >
                                 </td>
                             </tr>
                             <tr>
+                                <td class="right">年月:</td>
                                 <td>
-
-                                </td>
-                                <td colspan="3">
-                                    <input type="text" class="layui-input" placeholder="详细地址" >
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="right">交易年月:</td>
-                                <td>
-                                        <input type="text" autocomplete="off" class="layui-input" id="title">
+                                    <input type="text" autocomplete="off" class="layui-input" id="title">
                                 </td>
                                 <td class="right">出货量:</td>
                                 <td>
-                                        <input type="text" class="layui-input" >
+                                    <input type="text" class="layui-input" >
                                 </td>
-                            </tr>
-                            <tr>
                                 <td class="right">预测销售额:</td>
                                 <td>
                                     <input type="text" autocomplete="off" class="layui-input" id="title">
                                 </td>
-                                <td class="right"></td>
-                                <td>
-
+                            </tr>
+                            <tr>
+                                <td class="right">地址:</td>
+                                <td colspan="5">
+                                    <div class="layui-input-inline" style="width: 100%;">
+                                        <table>
+                                            <tr>
+                                                <td style="width: 100px;">
+                                                    <select >
+                                                        <option>省</option>
+                                                    </select>
+                                                </td>
+                                                <td style="width: 100px;">
+                                                    <select>
+                                                        <option>市</option>
+                                                    </select>
+                                                </td >
+                                                <td style="width: 100px;">
+                                                    <select>
+                                                        <option>区</option>
+                                                    </select>
+                                                </td>
+                                                <td style="width:660px;">
+                                                    <input type="text" class="layui-input" placeholder="详细地址"  >
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>
                                 </td>
                             </tr>
                         </table>
@@ -88,19 +88,29 @@
                                 <table style="width:100%;">
                                     <tr>
                                         <td class="right">币种:</td>
-                                        <td>
-                                            <input type="text" autocomplete="off" class="layui-input" >
-
-                                        </td>
-                                        <td>当前RMB-USD汇率：6</td>
-                                        <td>
-
-                                        </td>
+                                            <td >
+                                                 <table>
+                                                     <tr>
+                                                         <td>
+                                                             <div style="width: 162px;">
+                                                             <select class="layui-input">
+                                                                 <option>RMB</option>
+                                                                 <option>CUD</option>
+                                                             </select>
+                                                             </div>
+                                                         </td>
+                                                         <td>当前RMB-USD汇率：6</td>
+                                                     </tr>
+                                                 </table>
+                                            </td>
+                                        <td></td>
                                     </tr>
                                     <tr>
-                                        <td class="right">现额度:</td>
+                                        <td class="right">原额度:</td>
                                         <td>
-                                            <input type="text" autocomplete="off" class="layui-input" >
+                                           <div style="width: 162px;">
+                                               <input type="text" autocomplete="off" class="layui-input" >
+                                           </div>
                                         </td>
                                         <td class="right">
                                            原付款期限：
@@ -112,8 +122,17 @@
                                     <tr>
                                         <td class="right">申请额度:</td>
                                         <td>
-                                                <input type="text" autocomplete="off" class="layui-input">
+                                            <div>
+                                                <table>
+                                                    <tr>
+                                                        <td><input type="text" autocomplete="off" class="layui-input"></td>
+                                                        <td>USD</td>
+                                                        <td><input type="text" autocomplete="off" class="layui-input"></td>
+                                                    </tr>
+                                                </table>
+                                            </div>
                                         </td>
+
                                         <td class="right">申请付款期限:</td>
                                         <td>
                                                 <input type="text" class="layui-input" >

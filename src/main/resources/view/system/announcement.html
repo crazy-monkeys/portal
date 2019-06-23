@@ -30,10 +30,21 @@
                             <div class="layui-input-inline" style="width: 150px;">
                                 <input type="text" autocomplete="off" class="layui-input" id="title">
                             </div>
-                            <div class="layui-form-mid">发布日期:</div>
+                            <div class="layui-form-mid">类型:</div>
                             <div class="layui-input-inline" style="width: 150px;">
-                                <input type="text" class="layui-input" id="time1" placeholder="yyyy-mm-dd" id="releaseStartTime">
+                                <select>
+                                    <option>系统公告</option>
+                                    <option>维护公告</option>
+                                </select>
                             </div>
+                            <div class="layui-form-mid">发布日期:</div>
+                                <div class="layui-input-inline" style="width: 100px;">
+                                    <input type="text" class="layui-input" id="time1" placeholder="Start Time">
+                                </div>
+                                <div class="layui-form-mid">-</div>
+                                <div class="layui-input-inline" style="width: 100px;">
+                                    <input type="text" class="layui-input" id="time2" placeholder="End Time">
+                                </div>
                             <button class="layui-btn layui-btn-blue" onclick="loadTable()">查询</button>
                         </div>
                     </div>
@@ -54,12 +65,17 @@
                             <table border="0" style="width:100%;height:100%;">
                                 <tr>
                                     <td style="width:60px;height:60px;text-align: right;">标题：</td>
-                                    <td style="width:220px;"><input type="text" autocomplete="off" name="title" class="layui-input" placeholder="请输入标题"></td>
+                                    <td style="width:180px;"><input type="text" autocomplete="off" name="title" class="layui-input" placeholder="请输入标题"></td>
                                     <td >
                                         <input type="checkbox" name="topmost" lay-skin="primary" title="置顶" value="1" checked="">
                                     </td>
-                                    <td></td>
-                                    <td></td>
+                                    <td style="width:60px;height:60px;text-align: left;">类型：</td>
+                                    <td>
+                                        <select>
+                                            <option>系统公告</option>
+                                            <option>维护公告</option>
+                                        </select>
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td style="height:100px;text-align: right;vertical-align: top;">内容：</td>
@@ -173,6 +189,7 @@
                   {field: 'id', title: 'ID', minWidth: 30, hide:true}
                 , {field: 'title', title: '标题', minWidth: 30, unresize:true}
                 , {field: 'content', title: '内容', minWidth: 80, unresize:true}
+                , {field: 'content', title: '类型', minWidth: 80, unresize:true}
                 , {field: 'createTimeStr', title: '创建时间', sort: true, minWidth: 80, unresize:true}
                 , {field: 'releaseTimeStr', title: '发布时间', sort: true, minWidth: 80, unresize:true}
                 , {field: 'createUserName', title: "发布人", minWidth: 80, unresize:true}
