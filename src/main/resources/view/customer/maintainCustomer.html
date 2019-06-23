@@ -51,13 +51,17 @@
                                         <input type="text" autocomplete="off" class="layui-input" >
                                     </div>
                                 </td>
-                                <td class="right">报备日期:</td>
+                                <td class="right">客户类别:</td>
                                 <td>
                                     <div class="layui-input-inline" style="width: 150px;">
-                                        <input type="text" class="layui-input" id="time1" placeholder="yyyy-mm-dd">
+                                        <select>
+                                            <option>
+                                                Account Market
+                                            </option>
+                                        </select>
                                     </div>
                                 </td>
-                                <td class="right">客户类别:</td>
+                                <td class="right">销售:</td>
                                 <td>
                                     <div class="layui-input-inline" style="width: 150px;">
                                         <input type="text" class="layui-input" >
@@ -65,6 +69,18 @@
                                 </td>
                             </tr>
                             <tr>
+                                <td class="right">报备状态:</td>
+                                <td>
+                                    <div class="layui-input-inline" style="width: 150px;">
+                                        <input type="text" class="layui-input" >
+                                    </div>
+                                </td>
+                                <td class="right">报备时间:</td>
+                                <td>
+                                    <div class="layui-input-inline" style="width: 150px;">
+                                        <input type="text" class="layui-input" placeholder="yyyy-mm-dd">
+                                    </div>
+                                </td>
                                 <td>
 
                                 </td>
@@ -77,8 +93,7 @@
                     <table id="table" lay-filter="table-filter"></table>
                     <script type="text/html" id="toolbar">
                         <div class="layui-btn-container">
-                            <button class="layui-btn layui-btn-sm layui-btn-primary" lay-event="detail">明细</button>
-                            <button class="layui-btn layui-btn-sm layui-btn-primary" lay-event="export">导出</button>
+                            <button class="layui-btn layui-btn-sm layui-btn-primary" lay-event="export">修改</button>
                         </div>
                     </script>
                     <script type="text/html" id="tableOprate">
@@ -138,11 +153,10 @@
                 {field: 'id', title: 'ID', minWidth: 30, hide:true}
                 , {field: 'title', title: '客户中文名', minWidth: 30, unresize:true}
                 , {field: 'content', title: '客户英文名', minWidth: 80, unresize:true}
-                , {field: 'createTimeStr', title: '客户号', sort: true, minWidth: 80, unresize:true}
-                , {field: 'releaseTimeStr', title: '代理商', sort: true, minWidth: 80, unresize:true}
+                , {field: 'createTimeStr', title: '客户号',  minWidth: 80, unresize:true}
+                , {field: 'releaseTimeStr', title: '代理商', minWidth: 80, unresize:true}
                 , {field: 'createUserName', title: "客户类别", minWidth: 80, unresize:true}
-                , {field: 'status', title: '客户状态', minWidth: 80, unresize:true}
-                , {field: 'oprate', title: '操作', minWidth: 80, toolbar: '#tableOprate', unresize:true}
+                , {field: 'createUserName2', title: "客户状态", minWidth: 80, unresize:true}
             ]]
             ,done: function () {
 //                $("[data-field='id']").css('display','none');

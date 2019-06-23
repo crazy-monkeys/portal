@@ -129,6 +129,7 @@
 //                    "data": res.data.list
 //                };
 //            }
+            , data:[]
             , skin: 'line' //表格风格
             , even: true
             , page: true
@@ -155,7 +156,7 @@
         //头工具栏事件
         table.on('toolbar(table-filter)', function(obj){
             if(obj.event === 'create'){
-                showEditDialog();
+                window.location.href = "/view/customer/agentCustomerReport.html";
             }
         });
         //监听行工具事件

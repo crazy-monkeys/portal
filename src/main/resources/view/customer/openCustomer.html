@@ -65,6 +65,12 @@
                                 </td>
                             </tr>
                             <tr>
+                                <td class="right">销售:</td>
+                                <td>
+                                    <div class="layui-input-inline" style="width: 150px;">
+                                        <input type="text" class="layui-input" >
+                                    </div>
+                                </td>
                                 <td>
 
                                 </td>
@@ -77,8 +83,9 @@
                     <table id="table" lay-filter="table-filter"></table>
                     <script type="text/html" id="toolbar">
                         <div class="layui-btn-container">
-                            <button class="layui-btn layui-btn-sm layui-btn-primary" lay-event="detail">明细</button>
-                            <button class="layui-btn layui-btn-sm layui-btn-primary" lay-event="export">导出</button>
+                            <button class="layui-btn layui-btn-sm layui-btn-primary" lay-event="detail">Open</button>
+                            <button class="layui-btn layui-btn-sm layui-btn-primary" lay-event="export">转移</button>
+                            <button class="layui-btn layui-btn-sm layui-btn-primary" lay-event="export">类型变更</button>
                         </div>
                     </script>
                     <script type="text/html" id="tableOprate">
@@ -136,13 +143,12 @@
             }
             , cols: [[
                 {field: 'id', title: 'ID', minWidth: 30, hide:true}
-                , {field: 'title', title: '客户中文名', minWidth: 30, unresize:true}
-                , {field: 'content', title: '客户英文名', minWidth: 80, unresize:true}
-                , {field: 'createTimeStr', title: '客户号', sort: true, minWidth: 80, unresize:true}
-                , {field: 'releaseTimeStr', title: '代理商', sort: true, minWidth: 80, unresize:true}
-                , {field: 'createUserName', title: "客户类别", minWidth: 80, unresize:true}
-                , {field: 'status', title: '客户状态', minWidth: 80, unresize:true}
-                , {field: 'oprate', title: '操作', minWidth: 80, toolbar: '#tableOprate', unresize:true}
+                , {field: 'download', title: '选择', minWidth: 40, unresize:true, type: 'checkbox'}
+                , {field: 'title', title: '客户状态', minWidth: 30, unresize:true}
+                , {field: 'content', title: '经销商', minWidth: 80, unresize:true}
+                , {field: 'createTimeStr', title: '客户名称',  minWidth: 80, unresize:true}
+                , {field: 'releaseTimeStr', title: '报备有效期', minWidth: 80, unresize:true}
+                , {field: 'createUserName', title: "客户地址", minWidth: 80, unresize:true}
             ]]
             ,done: function () {
 //                $("[data-field='id']").css('display','none');

@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="../../static/layui/css/layui.css">
+    <link rel="stylesheet" href="../../static/main/assets/css/view.css"/>
+    <title>Portal</title>
+    <style>
+        .right{
+            text-align: right;
+        }
+        td{
+            padding:5px;
+        }
+    </style>
+</head>
+<body class="layui-view-body">
+<div class="layui-content">
+    <div class="layui-row">
+        <div class="layui-card">
+            <div class="layui-card-body">
+                <div class="form-box">
+                    <div class="layui-tab layui-tab-card">
+                        <ul class="layui-tab-title">
+                            <li class="layui-this">客户信息</li>
+                            <li>主要开户行信息</li>
+                            <li>股权结构</li>
+                            <li>管理层及主要联系人</li>
+                            <li>业务往来信息</li>
+                            <li>代理商拜访记录</li>
+                        </ul>
+                        <div class="layui-tab-content" style="">
+                            <div class="layui-tab-item layui-show">
+                                <div class="layui-form layui-form-item">
+                                    <table style="width:100%;">
+                                        <tr>
+                                            <td class="right">客户号:</td>
+                                            <td>
+                                                <div class="layui-input-inline" style="width: 150px;">
+                                                    <input type="text" autocomplete="off" class="layui-input">
+                                                </div>
+                                            </td>
+                                            <td class="right">公司名称:</td>
+                                            <td>
+                                                <div class="layui-input-inline" style="width: 150px;">
+                                                    <input type="text" class="layui-input" >
+                                                </div>
+                                            </td>
+                                            <td class="right">英文名:</td>
+                                            <td>
+                                                <div class="layui-input-inline" style="width: 150px;">
+                                                    <input type="text" class="layui-input" >
+                                                </div>
+                                            </td>
+                                            <td class="right">客户类型:</td>
+                                            <td>
+                                                <div class="layui-input-inline" style="width: 150px;">
+                                                    <input type="text" class="layui-input" >
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="right">销售:</td>
+                                            <td>
+                                                <div class="layui-input-inline" style="width: 150px;">
+                                                    <input type="text" autocomplete="off" class="layui-input" >
+                                                </div>
+                                            </td>
+                                            <td class="right">阿米巴:</td>
+                                            <td>
+                                                <div class="layui-input-inline" style="width: 150px;">
+                                                    <input type="text" class="layui-input" placeholder="yyyy-mm-dd">
+                                                </div>
+                                            </td>
+                                            <td class="right">公司资产:</td>
+                                            <td>
+                                                <div class="layui-input-inline" style="width: 150px;">
+                                                    <input type="text" class="layui-input" >
+                                                </div>
+                                            </td>
+                                            <td class="right">员工人数:</td>
+                                            <td>
+                                                <div class="layui-input-inline" style="width: 150px;">
+                                                    <input type="text" class="layui-input" >
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="right">注册日期:</td>
+                                            <td>
+                                                <div class="layui-input-inline" style="width: 150px;">
+                                                    <input type="text" autocomplete="off" class="layui-input" >
+                                                </div>
+                                            </td>
+                                            <td class="right">注册地址:</td>
+                                            <td>
+                                                <div class="layui-input-inline" style="width: 150px;">
+                                                    <input type="text" class="layui-input" placeholder="yyyy-mm-dd">
+                                                </div>
+                                            </td>
+                                            <td class="right">办公地址:</td>
+                                            <td>
+                                                <div class="layui-input-inline" style="width: 150px;">
+                                                    <input type="text" class="layui-input" >
+                                                </div>
+                                            </td>
+                                            <td class="right">公司总机:</td>
+                                            <td>
+                                                <div class="layui-input-inline" style="width: 150px;">
+                                                    <input type="text" class="layui-input" >
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="right">传真:</td>
+                                            <td>
+                                                <div class="layui-input-inline" style="width: 150px;">
+                                                    <input type="text" class="layui-input" >
+                                                </div>
+                                            </td>
+                                            <td class="right">母公司:</td>
+                                            <td>
+                                                <div class="layui-input-inline" style="width: 150px;">
+                                                    <input type="text" class="layui-input" >
+                                                </div>
+                                            </td>
+                                            <td></td><td></td><td></td><td></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="right">业务介绍:</td>
+                                            <td colspan="7">
+                                                <div class="layui-input-inline" style="width: 100%;">
+                                                    <textarea placeholder="" class="layui-textarea"></textarea>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="layui-tab-item">
+                                <table id="table" lay-filter="table-filter"></table>
+                            </div>
+                            <div class="layui-tab-item">
+                                <table id="table2" lay-filter="table-filter"></table>
+                            </div>
+                            <div class="layui-tab-item">
+                                <table id="table3" lay-filter="table-filter"></table>
+                            </div>
+                            <div class="layui-tab-item">
+                                <table>
+                                    <tr>
+                                        <td>主要供应商：</td> <td><input type="text" class="layui-input" style="width:150px;"></td> <td><input type="text" class="layui-input" style="width:150px;"></td>
+
+                                    </tr>
+                                    <tr>
+                                        <td>主要客户：</td> <td><input type="text" class="layui-input" style="width:150px;"></td> <td><input type="text" class="layui-input" style="width:150px;"></td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="layui-tab-item">
+                                <table id="table4" lay-filter="table-filter"></table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src='../../static/jquery/jquery-2.1.4.min.js'></script>
+<script type="text/javascript"  src="../../static/util/util.js"></script>
+<script src="../../static/layui/layui.all.js"></script>
+<script type="text/javascript"  src="../../static/main/assets/js/su.js"></script>
+<script>
+    var element = layui.element;
+    var table = layui.table;
+    var form = layui.form;
+    var laydate = layui.laydate;
+    var upload = layui.upload;
+    $(function() {
+        loadTable();
+        loadTable2();
+        loadTable3();
+        loadTable4();
+    });
+    function loadTable() {
+        //展示已知数据
+        table.render({
+            elem: '#table'
+//            , url: '/announcement/list'
+//            , method: 'get'
+//            , request: {pageName: 'pageNum', limitName: 'pageSize'}
+//            , where: {title: $('#title').val(), releaseStartTime: $('#releaseStartTime').val()}
+//            , parseData: function(res){
+//                console.log(res.data.total);
+//                return {
+//                    "code": res.code == 1 ? 0 : res.code,
+//                    "msg": res.msg,
+//                    "count": res.data.total,
+//                    "data": res.data.list
+//                };
+//            }
+            , data:[]
+            , skin: 'line' //表格风格
+            , even: true
+            , page: true
+            , limits: [10, 20, 30]
+            , limit: 10
+            , text: {
+                none: '无数据'
+            }
+            , cols: [[
+                {field: 'id', title: 'ID', minWidth: 30, hide:true}
+                , {field: 'title', title: '银行名称', minWidth: 30, unresize:true}
+                , {field: 'content', title: '银行地址', minWidth: 80, unresize:true}
+                , {field: 'createTimeStr', title: '账号', minWidth: 80, unresize:true}
+                , {field: 'releaseTimeStr', title: '银行识别码', minWidth: 80, unresize:true}
+            ]]
+            ,done: function () {
+//                $("[data-field='id']").css('display','none');
+            }
+        });
+    }
+    function loadTable2() {
+        //展示已知数据
+        table.render({
+            elem: '#table2'
+//            , url: '/announcement/list'
+//            , method: 'get'
+//            , request: {pageName: 'pageNum', limitName: 'pageSize'}
+//            , where: {title: $('#title').val(), releaseStartTime: $('#releaseStartTime').val()}
+//            , parseData: function(res){
+//                console.log(res.data.total);
+//                return {
+//                    "code": res.code == 1 ? 0 : res.code,
+//                    "msg": res.msg,
+//                    "count": res.data.total,
+//                    "data": res.data.list
+//                };
+//            }
+            , data:[]
+            , skin: 'line' //表格风格
+            , even: true
+            , page: true
+            , limits: [10, 20, 30]
+            , limit: 10
+            , text: {
+                none: '无数据'
+            }
+            , cols: [[
+                {field: 'id', title: 'ID', minWidth: 30, hide:true}
+                , {field: 'title', title: '股东', minWidth: 30, unresize:true}
+                , {field: 'content', title: '占比', minWidth: 80, unresize:true}
+            ]]
+            ,done: function () {
+//                $("[data-field='id']").css('display','none');
+            }
+        });
+    }
+    function loadTable3() {
+        //展示已知数据
+        table.render({
+            elem: '#table3'
+//            , url: '/announcement/list'
+//            , method: 'get'
+//            , request: {pageName: 'pageNum', limitName: 'pageSize'}
+//            , where: {title: $('#title').val(), releaseStartTime: $('#releaseStartTime').val()}
+//            , parseData: function(res){
+//                console.log(res.data.total);
+//                return {
+//                    "code": res.code == 1 ? 0 : res.code,
+//                    "msg": res.msg,
+//                    "count": res.data.total,
+//                    "data": res.data.list
+//                };
+//            }
+            , data:[]
+            , skin: 'line' //表格风格
+            , even: true
+            , page: true
+            , limits: [10, 20, 30]
+            , limit: 10
+            , text: {
+                none: '无数据'
+            }
+            , cols: [[
+                {field: 'id', title: 'ID', minWidth: 30, hide:true}
+                , {field: 'title', title: '部门', minWidth: 30, unresize:true}
+                , {field: 'content', title: '姓名', minWidth: 80, unresize:true}
+                , {field: 'content', title: '职位', minWidth: 80, unresize:true}
+                , {field: 'content', title: '电话号码', minWidth: 80, unresize:true}
+                , {field: 'content', title: '电子邮件', minWidth: 80, unresize:true}
+                , {field: 'content', title: '备注', minWidth: 80, unresize:true}
+            ]]
+            ,done: function () {
+//                $("[data-field='id']").css('display','none');
+            }
+        });
+    }
+    function loadTable4() {
+        //展示已知数据
+        table.render({
+            elem: '#table4'
+//            , url: '/announcement/list'
+//            , method: 'get'
+//            , request: {pageName: 'pageNum', limitName: 'pageSize'}
+//            , where: {title: $('#title').val(), releaseStartTime: $('#releaseStartTime').val()}
+//            , parseData: function(res){
+//                console.log(res.data.total);
+//                return {
+//                    "code": res.code == 1 ? 0 : res.code,
+//                    "msg": res.msg,
+//                    "count": res.data.total,
+//                    "data": res.data.list
+//                };
+//            }
+            , data:[]
+            , skin: 'line' //表格风格
+            , even: true
+            , page: true
+            , limits: [10, 20, 30]
+            , limit: 10
+            , text: {
+                none: '无数据'
+            }
+            , cols: [[
+                {field: 'id', title: 'ID', minWidth: 30, hide:true}
+                , {field: 'title', title: '客户名', minWidth: 30, unresize:true}
+                , {field: 'content', title: '项目地址', minWidth: 80, unresize:true}
+                , {field: 'content', title: '备注', minWidth: 80, unresize:true}
+                , {field: 'content', title: '附件', minWidth: 80, unresize:true}
+            ]]
+            ,done: function () {
+//                $("[data-field='id']").css('display','none');
+            }
+        });
+    }
+</script>
+</body>
+
+</html>
