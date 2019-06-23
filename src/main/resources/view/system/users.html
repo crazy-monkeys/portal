@@ -91,44 +91,48 @@
 
     <script>
       var element = layui.element;
-  var table = layui.table;
-  var form = layui.form;
-  function load() {
-//      $.get("/portal/user/list", function (result) {
-//          $.each(result, function (i, item) {
-//              if (item['userStatus'] == 0) {
-//                  item['userStatus'] = "To be processed";
-//                  item['opration'] = "<a href='javascript:approval(\""+item['id']+"\", 1)'>Application Pass</a>";
-//              }
-//              if (item['userStatus'] == 1) {
-//                  item['userStatus'] = "init";
-//              }
-//              if (item['userStatus'] == 2) {
-//                  item['userStatus'] = "normal";
-//              }
-//              if (item['userStatus'] == 3) {
-//                  item['userStatus'] = "Qualification audit";
-//                  item['opration'] = "<a href="+item['id']+"'../../static/main/demo1.mycodes.net/houtai/admin_pro/views/user_info.html?userId='>Detail</a>";
-//              }
-//
-//
-//          });
-//          console.log(result);
-//          loadTable(result);
-//      });
-      loadTable([]);
-  }
+      var table = layui.table;
+      var form = layui.form;
+      function load() {
+          $.ajax({
+              type: 'POST',
+              url: '/user/list?pageNum=1&pageSize=10',
+              dataType:'json',
+              headers:{
+                  Authorization:localStorage.getItem("Authorization")
+              },
+              }).done(function(result){
+                  $.each(result.data.list, function (i, item) {
+                      if (item['userStatus'] == 0) {
+                          item['userStatus'] = "To be processed";
+                          item['opration'] = "<a href='javascript:approval(\""+item['id']+"\", 1)'>Application Pass</a>";
+                      }
+                      if (item['userStatus'] == 1) {
+                          item['userStatus'] = "init";
+                      }
+                      if (item['userStatus'] == 2) {
+                          item['userStatus'] = "normal";
+                      }
+                      if (item['userStatus'] == 3) {
+                          item['userStatus'] = "Qualification audit";
+                          item['opration'] = "<a href="+item['id']+"'../../static/main/demo1.mycodes.net/houtai/admin_pro/views/user_info.html?userId='>Detail</a>";
+                      }
+                  });
+                  loadTable(result.data.list);
+          });
+      }
     function loadTable(data) {
         //展示已知数据
         table.render({
             elem: '#demo'
             , cols: [[ //标题栏
                 {field: 'id', title: '用户ID', minWidth: 80, sort: true, unresize:true}
-                , {field: 'realName', title: '用户名', minWidth: 80, unresize:true}
+                , {field: 'loginName', title: '用户名', minWidth: 80, unresize:true}
                 , {field: 'email', title: '身份', minWidth: 80, unresize:true}
-                , {field: 'phone', title: "角色", minWidth: 80, unresize:true}
-                , {field: 'country', title: '状态', minWidth: 80, unresize:true}
-                , {field: 'userStatus', title: '操作', minWidth: 80, unresize:true}
+                , {field: 'roleName', title: "角色", minWidth: 80, unresize:true}
+                , {field: 'country', title: '地区', minWidth: 80, unresize:true}
+                , {field: 'userStatus', title: '状态', minWidth: 80, unresize:true}
+                , {field: 'opeation', title: '操作 ', minWidth: 80, unresize:true}
             ]]
             , data: data
             , skin: 'line' //表格风格
@@ -149,8 +153,6 @@
         );
     }
     var p0;
-    var p1;
-    var p2;
     function showZGSH(id, userName, status){
         this.p0 = id;
         this.p1 = userName;

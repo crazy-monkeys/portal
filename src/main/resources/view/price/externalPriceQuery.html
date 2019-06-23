@@ -37,7 +37,7 @@
                                         <input type="text" class="layui-input" >
                                     </div>
                                 </td>
-                                <td class="right">Product Type:</td>
+                                <td class="right">产品类型:</td>
                                 <td>
                                     <div class="layui-input-inline" style="width: 150px;">
                                         <input type="text" class="layui-input" >
@@ -79,17 +79,13 @@
                                 </td>
                                 <td class="right">生效时间:</td>
                                 <td>
-                                    <div class="layui-input-inline" style="width: 150px;">
-                                        <input type="text" class="layui-input" id="time1" placeholder="yyyy-mm-dd">
+                                    <div class="layui-input-inline" style="width: 120px;">
+                                        <input type="text" class="layui-input" placeholder="开始时间">
                                     </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-
-                                </td>
-                                <td>
-                                    <button class="layui-btn layui-btn-blue" onclick="loadTable()">查询</button>
+                                    <span style="float:left;padding-right:10px";>-</span>
+                                    <div class="layui-input-inline" style="width: 120px;">
+                                        <input type="text" class="layui-input" placeholder="结束时间">
+                                    </div>
                                 </td>
                             </tr>
                         </table>
@@ -97,14 +93,8 @@
                     <table id="table" lay-filter="table-filter"></table>
                     <script type="text/html" id="toolbar">
                         <div class="layui-btn-container">
-                            <button class="layui-btn layui-btn-sm layui-btn-primary" lay-event="create">明细</button>
-                            <button class="layui-btn layui-btn-sm layui-btn-primary" lay-event="create">导出</button>
+                            <button class="layui-btn layui-btn-sm layui-btn-primary" lay-event="create">查询</button>
                         </div>
-                    </script>
-                    <script type="text/html" id="tableOprate">
-                        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="preview">预览</a>
-                        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit">修改</a>
-                        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="cancel">撤销</a>
                     </script>
                 </div>
             </div>
@@ -144,7 +134,7 @@
 //                    "data": res.data.list
 //                };
 //            }
-            , data:[]
+            , data:[{id:"1"}]
             , skin: 'line' //表格风格
             , even: true
             , page: true
@@ -157,17 +147,17 @@
             , cols: [[
                 {field: 'title', title: 'BU', minWidth: 30, unresize:true}
                 , {field: 'content', title: 'POT', minWidth: 80, unresize:true}
-                , {field: 'createTimeStr', title: 'Product Type', sort: true, minWidth: 80, unresize:true}
+                , {field: 'createTimeStr', title: '平台型号', sort: true, minWidth: 100, unresize:true}
                 , {field: 'releaseTimeStr', title: '平台', sort: true, minWidth: 80, unresize:true}
-                , {field: 'createUserName', title: "产品状态", minWidth: 80, unresize:true}
-                , {field: 'status', title: '产品归属', minWidth: 80, unresize:true}
-                , {field: 'oprate', title: '产品型号', minWidth: 80, toolbar: '#tableOprate', unresize:true}
-                , {field: 'content', title: '数量下限', minWidth: 80, unresize:true}
-                , {field: 'createTimeStr', title: '数量上限', sort: true, minWidth: 80, unresize:true}
-                , {field: 'releaseTimeStr', title: '标准价', sort: true, minWidth: 80, unresize:true}
-                , {field: 'createUserName', title: "生效时间", minWidth: 80, unresize:true}
-                , {field: 'status', title: '失效时间', minWidth: 80, unresize:true}
-                , {field: 'oprate', title: '更新时间', minWidth: 80, toolbar: '#tableOprate', unresize:true}
+                , {field: 'createUserName', title: "产品状态", minWidth: 100, unresize:true}
+                , {field: 'status', title: '产品归属', minWidth: 100, unresize:true}
+                , {field: 'oprate', title: '产品型号', minWidth: 100, toolbar: '#tableOprate', unresize:true}
+                , {field: 'content', title: '数量下限', minWidth: 100, unresize:true}
+                , {field: 'createTimeStr', title: '数量上限', sort: true, minWidth: 100, unresize:true}
+                , {field: 'releaseTimeStr', title: '标准价', sort: true, minWidth: 100, unresize:true}
+                , {field: 'createUserName', title: "生效时间", minWidth: 100, unresize:true}
+                , {field: 'status', title: '失效时间', minWidth: 100, unresize:true}
+                , {field: 'oprate', title: '更新时间', minWidth: 100, toolbar: '#tableOprate', unresize:true}
             ]]
             ,done: function () {
 //                $("[data-field='id']").css('display','none');

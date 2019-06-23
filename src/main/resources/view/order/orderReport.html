@@ -28,7 +28,7 @@
                                 <td class="right">甲方单位(章):</td>
                                 <td>
                                     <div class="layui-input-inline" style="width: 150px;">
-                                        <input type="text" autocomplete="off" class="layui-input" id="title">
+                                        <input type="text" autocomplete="off" class="layui-input">
                                     </div>
                                 </td>
                                 <td class="right">授权委托代表人:</td>
@@ -108,7 +108,7 @@
                                 <td class="right">发票传递:</td>
                                 <td>
                                     <div class="layui-input-inline" style="width: 150px;">
-                                        <input type="text" autocomplete="off" class="layui-input" id="title">
+                                        <input type="text" autocomplete="off" class="layui-input">
                                     </div>
                                 </td>
                                 <td class="right">随货:</td>
@@ -127,6 +127,11 @@
                         </table>
                     </div>
                     <table id="table" lay-filter="table-filter"></table>
+                    <script type="text/html" id="toolbar">
+                        <div class="layui-btn-container">
+                            <button class="layui-btn layui-btn-sm layui-btn-primary" lay-event="create">订单信息</button>
+                        </div>
+                    </script>
                 </div>
             </div>
         </div>
@@ -165,6 +170,7 @@
 //                    "data": res.data.list
 //                };
 //            }
+            , data:[{id:"1"}]
             , skin: 'line' //表格风格
             , even: true
             , page: true
