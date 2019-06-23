@@ -46,7 +46,7 @@
 .layui-nav-tree .layui-nav-item a:hover{
     /*background-color: #001529;*/
     /** MAKE **/
-    background-color: #35014B;
+    background-color: #b534e1;
     background-size: cover;
     background-repeat: no-repeat;
     background-image: url(../images/back.jpg);
@@ -56,7 +56,7 @@
 .custom-admin .layui-nav-child a{
     /*background-color: #000c17!important;*/
     /** MAKE **/
-    background-color: #35014B!important;
+    background-color: #35014B !important;
 }
 .custom-admin .layui-nav-child dd.layui-this a{
     /*background-color: #177ce3;*/
