@@ -37,24 +37,32 @@
                                         <input type="text" class="layui-input" >
                                     </div>
                                 </td>
-                            </tr>
-                            <tr>
                                 <td class="right">订单状态:</td>
                                 <td>
                                     <div class="layui-input-inline" style="width: 150px;">
                                         <input type="text" autocomplete="off" class="layui-input" >
                                     </div>
                                 </td>
+                            </tr>
+                            <tr>
                                 <td class="right">下单日期:</td>
                                 <td>
-                                    <div class="layui-input-inline" style="width: 150px;">
-                                        <input type="text" class="layui-input" id="time3" placeholder="yyyy-mm-dd">
+                                    <div class="layui-input-inline" style="width: 120px;">
+                                        <input type="text" class="layui-input" placeholder="开始时间">
+                                    </div>
+                                    <span style="float:left;padding-right:10px";>-</span>
+                                    <div class="layui-input-inline" style="width: 120px;">
+                                        <input type="text" class="layui-input" placeholder="结束时间">
                                     </div>
                                 </td>
                                 <td class="right">交货日期:</td>
                                 <td>
-                                    <div class="layui-input-inline" style="width: 150px;">
-                                        <input type="text" class="layui-input" id="time1" placeholder="yyyy-mm-dd">
+                                    <div class="layui-input-inline" style="width: 120px;">
+                                        <input type="text" class="layui-input" placeholder="开始时间">
+                                    </div>
+                                    <span style="float:left;padding-right:10px";>-</span>
+                                    <div class="layui-input-inline" style="width: 120px;">
+                                        <input type="text" class="layui-input" placeholder="结束时间">
                                     </div>
                                 </td>
                             </tr>
@@ -110,6 +118,7 @@
 //                    "data": res.data.list
 //                };
 //            }
+            , data: [{id:"1"}]
             , skin: 'line' //表格风格
             , even: true
             , page: true
@@ -120,22 +129,22 @@
                 none: '无数据'
             }
             , cols: [[
-                {field: 'id', title: 'ID', minWidth: 30, hide:true}
-                , {field: 'title', title: '订单号', minWidth: 30, unresize:true}
+                {field: 'id', title: 'id', minWidth: 30, hide:true}
+                , {field: 'title', title: '订单号', minWidth: 100, unresize:true}
                 , {field: 'content', title: '状态', minWidth: 80, unresize:true}
-                , {field: 'createTimeStr', title: '下单人', sort: true, minWidth: 80, unresize:true}
-                , {field: 'releaseTimeStr', title: '总金额', sort: true, minWidth: 80, unresize:true}
-                , {field: 'createUserName', title: "开户银行", minWidth: 80, unresize:true}
+                , {field: 'createTimeStr', title: '下单人', sort: true, minWidth: 100, unresize:true}
+                , {field: 'releaseTimeStr', title: '总金额', sort: true, minWidth: 100, unresize:true}
+                , {field: 'createUserName', title: "开户银行", minWidth: 100, unresize:true}
                 , {field: 'status', title: '账号', minWidth: 80, unresize:true}
                 , {field: 'oprate', title: '付款方式', minWidth: 80, toolbar: '#tableOprate', unresize:true}
-                , {field: 'createUserName', title: "发票种类", minWidth: 80, unresize:true}
-                , {field: 'status', title: '委托代表人', minWidth: 80, unresize:true}
-                , {field: 'oprate', title: '业务联系人', minWidth: 80, toolbar: '#tableOprate', unresize:true}
+                , {field: 'createUserName', title: "发票种类", minWidth: 100, unresize:true}
+                , {field: 'status', title: '委托代表人', minWidth: 120, unresize:true}
+                , {field: 'oprate', title: '业务联系人', minWidth: 120, toolbar: '#tableOprate', unresize:true}
                 , {field: 'oprate', title: '电话', minWidth: 80, toolbar: '#tableOprate', unresize:true}
                 , {field: 'oprate', title: '传真', minWidth: 80, toolbar: '#tableOprate', unresize:true}
-                , {field: 'oprate', title: 'Swift Code', minWidth: 80, toolbar: '#tableOprate', unresize:true}
-                , {field: 'oprate', title: '下单日期', minWidth: 80, toolbar: '#tableOprate', unresize:true}
-                , {field: 'oprate', title: '交货日期', minWidth: 80, toolbar: '#tableOprate', unresize:true}
+                , {field: 'oprate', title: 'Swift Code', minWidth: 100, toolbar: '#tableOprate', unresize:true}
+                , {field: 'oprate', title: '下单日期', minWidth: 100, toolbar: '#tableOprate', unresize:true}
+                , {field: 'oprate', title: '交货日期', minWidth: 100, toolbar: '#tableOprate', unresize:true}
             ]]
             ,done: function () {
 //                $("[data-field='id']").css('display','none');
