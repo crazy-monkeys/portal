@@ -88,7 +88,7 @@
               url: '/user/list?pageNum=1&pageSize=10',
               dataType:'json',
               headers:{
-                  Authorization:localStorage.getItem("Authorization")
+                  Authorization:localStorage.getItem("authorization")
               },
               }).done(function(result){
                   $.each(result.data.list, function (i, item) {
