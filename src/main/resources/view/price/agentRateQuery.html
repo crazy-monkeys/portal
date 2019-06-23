@@ -74,13 +74,8 @@
                     <table id="table" lay-filter="table-filter"></table>
                     <script type="text/html" id="toolbar">
                         <div class="layui-btn-container">
-                            <button class="layui-btn layui-btn-sm layui-btn-primary" lay-event="create">查询</button>
+                            <button class="layui-btn layui-btn-sm layui-btn-primary" lay-event="create">上传结果</button>
                         </div>
-                    </script>
-                    <script type="text/html" id="tableOprate">
-                        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="preview">预览</a>
-                        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit">修改</a>
-                        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="cancel">撤销</a>
                     </script>
                 </div>
             </div>
@@ -120,7 +115,7 @@
 //                    "data": res.data.list
 //                };
 //            }
-            , data:[]
+            , data:[{id:"1"}]
             , skin: 'line' //表格风格
             , even: true
             , page: true
@@ -131,7 +126,8 @@
                 none: '无数据'
             }
             , cols: [[
-                {field: 'title', title: '客户分类', minWidth: 30, unresize:true}
+                 {field: 'id', title: 'id', minWidth: 30, unresize:true,hide:true}
+                ,{field: 'title', title: '客户分类', minWidth: 30, unresize:true}
                 , {field: 'content', title: '产品线', minWidth: 80, unresize:true}
                 , {field: 'createTimeStr', title: '产品层次一', sort: true, minWidth: 80, unresize:true}
                 , {field: 'releaseTimeStr', title: '产品层次二', sort: true, minWidth: 80, unresize:true}
