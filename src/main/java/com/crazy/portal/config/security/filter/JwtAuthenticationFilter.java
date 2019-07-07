@@ -74,7 +74,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
-        String url = request.getRequestURI();
+        //获取资源路径
+        String url = request.getServletPath();
         if (url.contains("/login") || url.equals("/")) {
             //放行
             filterChain.doFilter(request, response);
@@ -143,7 +144,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
             //用户在系统的权限
             UserDetails userDetails = (UserDetails)authResult.getPrincipal();
             List<com.crazy.portal.entity.system.Resource> resources = permissionService.findAllPerMissionByUserId(userDetails.getUsername());
-            String requestUrl = request.getRequestURI();
+            String requestUrl = request.getServletPath();
             for(com.crazy.portal.entity.system.Resource resource : resources){
                 if(antPathMatcher.match(resource.getPermissionPrefixUrl(),requestUrl)){
                     return true;
