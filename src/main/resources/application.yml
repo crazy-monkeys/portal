@@ -30,6 +30,3 @@ spring:
         stat:
           mergeSql: true
           slowSqlMillis: 5000
-  session:
-      cookie:
-        name: portal

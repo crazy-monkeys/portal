@@ -18,30 +18,6 @@
 		<java.version>1.8</java.version>
 	</properties>
 
-
-	<profiles>
-		<profile>
-			<id>dev</id>
-			<properties>
-				<profiles.active>dev</profiles.active>
-			</properties>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-			</activation>
-		</profile>
-		<profile>
-			<id>uat</id>
-			<properties>
-				<profiles.active>uat</profiles.active>
-			</properties>
-		</profile>
-		<profile>
-			<id>pro</id>
-			<properties>
-				<profiles.active>pro</profiles.active>
-			</properties>
-		</profile>
-	</profiles>
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
