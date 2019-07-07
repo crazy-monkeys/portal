@@ -1,18 +1,18 @@
 package com.crazy.portal.config;
 
-import freemarker.template.TemplateException;
-import org.springframework.boot.autoconfigure.freemarker.FreeMarkerProperties;
+import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.alibaba.fastjson.support.config.FastJsonConfig;
+import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter;
+import org.springframework.boot.autoconfigure.http.HttpMessageConverters;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.MediaType;
+import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
-import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
 
-import javax.annotation.Resource;
-import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * created by Bill
@@ -20,22 +20,6 @@ import java.util.*;
 @Configuration
 public class WebConfig extends WebMvcConfigurationSupport {
 
-    @Resource
-    private FreeMarkerProperties properties;
-
-    @Override
-    public void addViewControllers(ViewControllerRegistry registry) {
-        registry.addViewController("/login").setViewName("login");
-        registry.addViewController("/").setViewName("redirect:/login");
-    }
-
-    @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/static/**").addResourceLocations("classpath:/static/");
-        registry.addResourceHandler("/view/**").addResourceLocations("classpath:/view/");
-        registry.addResourceHandler("/favicon.ico").addResourceLocations("classpath:/favicon.ico");
-        super.addResourceHandlers(registry);
-    }
 
     @Override
     public void configureContentNegotiation(
@@ -44,31 +28,40 @@ public class WebConfig extends WebMvcConfigurationSupport {
     }
 
     @Bean
-    public FreeMarkerConfigurer freeMarkerConfigurer() {
-        FreeMarkerConfigurer factory = new FreeMarkerConfigurer();
-        writerProperties(factory);
-
-        freemarker.template.Configuration configuration = null;
-        try {
-            configuration = factory.createConfiguration();
-            Map<String,String> map = new HashMap<>();
-            map.put("ui","macro/base-layout.ftl");
-            configuration.setAutoImports(map);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (TemplateException e) {
-            e.printStackTrace();
-        }
-        factory.setConfiguration(configuration);
-        return factory;
+    public HttpMessageConverters fastJsonHttpMessageConverters() {
+        // 1.定义一个converters转换消息的对象
+        FastJsonHttpMessageConverter fastConverter = new FastJsonHttpMessageConverter();
+        // 2.添加fastjson的配置信息，比如: 是否需要格式化返回的json数据
+        FastJsonConfig fastJsonConfig = new FastJsonConfig();
+        fastJsonConfig.setSerializerFeatures(SerializerFeature.PrettyFormat);
+        // 3.在converter中添加配置信息
+        fastConverter.setFastJsonConfig(fastJsonConfig);
+        // 4.将converter赋值给HttpMessageConverter
+        HttpMessageConverter<?> converter = fastConverter;
+        fastConverter.setSupportedMediaTypes(this.getMediaTypes());
+        // 5.返回HttpMessageConverters对象
+        return new HttpMessageConverters(converter);
     }
 
-    private void writerProperties(FreeMarkerConfigurer factory){
-        factory.setTemplateLoaderPaths(this.properties.getTemplateLoaderPath());
-        factory.setPreferFileSystemAccess(this.properties.isPreferFileSystemAccess());
-        factory.setDefaultEncoding(this.properties.getCharsetName());
-        Properties settings = new Properties();
-        settings.putAll(this.properties.getSettings());
-        factory.setFreemarkerSettings(settings);
+    private List<MediaType> getMediaTypes() {
+        List<MediaType> supportedMediaTypes = new ArrayList<>();
+        supportedMediaTypes.add(MediaType.APPLICATION_JSON);
+        supportedMediaTypes.add(MediaType.APPLICATION_JSON_UTF8);
+        supportedMediaTypes.add(MediaType.APPLICATION_ATOM_XML);
+        supportedMediaTypes.add(MediaType.APPLICATION_FORM_URLENCODED);
+        supportedMediaTypes.add(MediaType.APPLICATION_OCTET_STREAM);
+        supportedMediaTypes.add(MediaType.APPLICATION_PDF);
+        supportedMediaTypes.add(MediaType.APPLICATION_RSS_XML);
+        supportedMediaTypes.add(MediaType.APPLICATION_XHTML_XML);
+        supportedMediaTypes.add(MediaType.APPLICATION_XML);
+        supportedMediaTypes.add(MediaType.IMAGE_GIF);
+        supportedMediaTypes.add(MediaType.IMAGE_JPEG);
+        supportedMediaTypes.add(MediaType.IMAGE_PNG);
+        supportedMediaTypes.add(MediaType.TEXT_EVENT_STREAM);
+        supportedMediaTypes.add(MediaType.TEXT_HTML);
+        supportedMediaTypes.add(MediaType.TEXT_MARKDOWN);
+        supportedMediaTypes.add(MediaType.TEXT_PLAIN);
+        supportedMediaTypes.add(MediaType.TEXT_XML);
+        return supportedMediaTypes;
     }
 }

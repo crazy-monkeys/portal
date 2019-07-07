@@ -19,7 +19,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Desc:
@@ -57,8 +59,11 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
         //获取权限资源
         OutputStream out = response.getOutputStream();
         try {
+            Map<String,Object> map = new HashMap<>();
             List<Resource> permissions = permissionService.findAllPerMissionByUserId(userDetails.getUsername());
-            baseResponse.success(permissionService.resourceTree(permissions));
+            map.put("permissions",permissionService.resourceTree(permissions));
+            map.put("user",user);
+            baseResponse.success(map);
             out.write(JSON.toJSONString(baseResponse).getBytes());
         } catch (Exception e) {
             log.error("",e);

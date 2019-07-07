@@ -1,8 +1,8 @@
 package com.crazy.portal.entity.system;
 
 import com.alibaba.fastjson.annotation.JSONField;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -29,16 +29,12 @@ public class Resource {
 
     private String permissionPrefixUrl;
 
-    @JsonIgnore
     @JSONField(serialize=false)
     private Date createTime;
-    @JsonIgnore
     @JSONField(serialize=false)
     private Integer createUserId;
-    @JsonIgnore
     @JSONField(serialize=false)
     private Date updateTime;
-    @JsonIgnore
     @JSONField(serialize=false)
     private Integer updateUserId;
 

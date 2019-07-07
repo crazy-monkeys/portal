@@ -1,6 +1,6 @@
 package com.crazy.portal.entity.system;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
 
 import java.util.Date;
@@ -16,26 +16,26 @@ public class User {
     private String country;
 
     private String email;
-    @JsonIgnore
+    @JSONField(serialize=false)
     private String firstName;
 
     private Date lastLoginTime;
-    @JsonIgnore
+    @JSONField(serialize=false)
     private String lastName;
 
     private String loginName;
 
-    @JsonIgnore
+    @JSONField(serialize=false)
     private String loginPwd;
 
-    @JsonIgnore
+    @JSONField(serialize=false)
     private String phone;
 
     private Date pwdInvalidTime;
 
-    @JsonIgnore
+    @JSONField(serialize=false)
     private String realName;
-    @JsonIgnore
+    @JSONField(serialize=false)
     private Date regTime;
 
     /** 正常1 冻结0**/
@@ -44,15 +44,15 @@ public class User {
     /**1.代理商 2.直供客户 3.销售客户**/
     private Integer userType;
 
-    @JsonIgnore
+    @JSONField(serialize=false)
     private Date updateTime;
 
-    @JsonIgnore
+    @JSONField(serialize=false)
     private Integer updateUserId;
-    @JsonIgnore
+    @JSONField(serialize=false)
     private Date createTime;
 
-    @JsonIgnore
+    @JSONField(serialize=false)
     private Integer createUserId;
 
     /** ext **/
