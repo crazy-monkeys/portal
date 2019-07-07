@@ -16,10 +16,13 @@ public class User {
     private String country;
 
     private String email;
+
     @JSONField(serialize=false)
     private String firstName;
 
+    @JSONField(format="yyyy-MM-dd HH:mm:ss")
     private Date lastLoginTime;
+
     @JSONField(serialize=false)
     private String lastName;
 
@@ -31,11 +34,11 @@ public class User {
     @JSONField(serialize=false)
     private String phone;
 
+    @JSONField(format="yyyy-MM-dd HH:mm:ss")
     private Date pwdInvalidTime;
 
-    @JSONField(serialize=false)
     private String realName;
-    @JSONField(serialize=false)
+    @JSONField(format="yyyy-MM-dd HH:mm:ss")
     private Date regTime;
 
     /** 正常1 冻结0**/

@@ -83,7 +83,7 @@
 
     <!-- 日志输出级别 -->
     <root level="info">
-<!--        <appender-ref ref="CONSOLE" />-->
+        <appender-ref ref="CONSOLE" />
         <appender-ref ref="INFO"/>
         <appender-ref ref="WARN"/>
         <appender-ref ref="ERROR"/>

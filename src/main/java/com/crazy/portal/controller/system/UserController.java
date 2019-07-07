@@ -45,7 +45,8 @@ public class UserController extends BaseController {
                                        @RequestParam(required = false,defaultValue = "1") Integer pageNum,
                                        @RequestParam(required = false,defaultValue = "10") Integer pageSize){
 
-        return super.successResult(userService.selectUserWithPage(user,pageNum,pageSize));
+        PageInfo<User> users = userService.selectUserWithPage(user,pageNum,pageSize);
+        return super.successResult(users);
     }
 
     @GetMapping("/find/{loginName}")

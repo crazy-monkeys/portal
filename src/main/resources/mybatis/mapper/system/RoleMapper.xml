@@ -132,7 +132,7 @@
     <include refid="Base_Column_List" />
     FROM t_role where active = 1
     <if test="roleName != null">
-      and role_name like concat('%',#{roleName},'%')
+      and role_name = #{roleName}
     </if>
   </select>
 

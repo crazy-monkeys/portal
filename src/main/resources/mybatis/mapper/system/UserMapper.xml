@@ -230,7 +230,9 @@
   </update>
 
   <select id="selectUserWithPage" resultMap="BaseResultMap">
-    select a.id,a.country,a.login_name,a.user_status,a.user_type,c.role_name
+    select
+    a.*,
+    c.role_name
     from t_user a
     inner join t_user_role b on a.id = b.user_id
     inner join t_role c on b.role_id = c.id
