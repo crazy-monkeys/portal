@@ -2,7 +2,7 @@ package com.crazy.portal.config.security.config;
 
 import com.crazy.portal.config.security.JwtAuthenticationProvider;
 import com.crazy.portal.config.security.JwtUserService;
-import com.crazy.portal.config.security.filter.OptionsRequestFilter;
+import com.crazy.portal.config.security.filter.RequestFilter;
 import com.crazy.portal.config.security.handler.JwtRefreshSuccessHandler;
 import com.crazy.portal.config.security.handler.LoginSuccessHandler;
 import com.crazy.portal.config.security.handler.TokenClearLogoutHandler;
@@ -12,6 +12,7 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -47,11 +48,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
     }
 
     @Bean
-    protected AuthenticationProvider daoAuthenticationProvider(){
+    protected AuthenticationProvider daoAuthenticationProvider() throws Exception{
         //这里会默认使用BCryptPasswordEncoder比对加密后的密码，注意要跟createUser时保持一致
         DaoAuthenticationProvider daoProvider = new DaoAuthenticationProvider();
         daoProvider.setUserDetailsService(userDetailsService());
         return daoProvider;
+    }
+
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+        web.ignoring().antMatchers("/static/**");
+        web.ignoring().antMatchers("/view/**");
+        web.ignoring().antMatchers("/favicon.ico");
     }
 
     @Override
@@ -65,19 +73,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                 .cors()
                 .and()
                 .headers().addHeaderWriter(new StaticHeadersWriter(Arrays.asList(
-                        new Header("Access-Control-Allow-Origin","*"),
-                        new Header("Access-Control-Expose-Headers","Authorization"))))
+                    new Header("Access-control-Allow-Origin","*"),
+                    new Header("Access-Control-Expose-Headers","Authorization"))))
                 .frameOptions().disable()
                 .and()
                 //拦截OPTIONS请求，直接返回header
-                .addFilterAfter(new OptionsRequestFilter(), CorsFilter.class)
+                .addFilterAfter(new RequestFilter(), CorsFilter.class)
                 //添加登录filter
                 .apply(new LoginConfigurer<>()).loginSuccessHandler(loginSuccessHandler)
                 .and()
                 //添加token的filter
                 .apply(new JwtLoginConfigurer<>())
-                        .tokenValidSuccessHandler(jwtRefreshSuccessHandler)
-                        .permissiveRequestUrls(permissiveUrl)
+                .tokenValidSuccessHandler(jwtRefreshSuccessHandler)
+                .permissiveRequestUrls(permissiveUrl)
                 .and()
                 //使用默认的logoutFilter
                 .logout()
@@ -89,7 +97,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
 
     @Override
-    protected void configure(AuthenticationManagerBuilder auth){
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.authenticationProvider(daoAuthenticationProvider())
                 .authenticationProvider(jwtAuthenticationProvider());
     }

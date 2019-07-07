@@ -30,3 +30,7 @@ spring:
         stat:
           mergeSql: true
           slowSqlMillis: 5000
+server:
+  port: 8080
+  servlet:
+    context-path: /portal-api

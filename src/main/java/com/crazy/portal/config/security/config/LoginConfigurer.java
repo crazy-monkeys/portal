@@ -24,7 +24,7 @@ public class LoginConfigurer<T extends LoginConfigurer<T, B>, B extends HttpSecu
     }
 
     @Override
-    public void configure(B http) throws Exception {
+    public void configure(B http){
         //设置Filter使用的AuthenticationManager,这里取公共的即可
         authFilter.setAuthenticationManager(http.getSharedObject(AuthenticationManager.class));
         //设置失败的Handler
