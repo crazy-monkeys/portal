@@ -40,7 +40,7 @@ public class RoleController extends BaseController {
         return super.successResult(pager);
     }
 
-    /**Authorization
+    /**
      * 新增角色
      * @return
      */
@@ -60,7 +60,7 @@ public class RoleController extends BaseController {
         role.setCreateTime(new Date());
         role.setCreateUserId(super.getCurrentUser().getId());
         roleService.saveRole(role);
-        return super.successResult(role.getId());
+        return super.successResult();
     }
 
     /**
@@ -105,6 +105,6 @@ public class RoleController extends BaseController {
         role.setUpdateTime(new Date());
         role.setUpdateUserId(super.getCurrentUser().getId());
         roleService.saveRole(role);
-        return super.successResult(role.getId());
+        return super.successResult();
     }
 }

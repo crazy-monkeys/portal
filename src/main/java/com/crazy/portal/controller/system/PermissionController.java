@@ -116,7 +116,7 @@ public class PermissionController extends BaseController{
      * 准备数据
      * @return
      */
-    @GetMapping(value="/preEditResource/{resourceId}")
+    @GetMapping(value="/findRes/{resourceId}")
     public BaseResponse preEdit(@PathVariable Integer resourceId){
         Resource resource = permissionService.findResource(resourceId);
         if(resource == null){

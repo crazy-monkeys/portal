@@ -35,7 +35,7 @@ public class AuthenticationFailHandler implements AuthenticationFailureHandler{
     @Override
     public void onAuthenticationFailure(HttpServletRequest request,
                                         HttpServletResponse response,
-                                        AuthenticationException e) throws IOException, ServletException {
+                                        AuthenticationException e) throws IOException {
 
         BaseResponse baseResponse;
         try(ServletOutputStream os = response.getOutputStream()){
