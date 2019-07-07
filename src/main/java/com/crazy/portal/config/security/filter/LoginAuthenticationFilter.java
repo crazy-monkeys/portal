@@ -31,7 +31,7 @@ public class LoginAuthenticationFilter extends AbstractAuthenticationProcessingF
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
-            throws AuthenticationException, IOException, ServletException {
+            throws AuthenticationException, IOException {
         //从json中获取username和password
         String body = StreamUtils.copyToString(request.getInputStream(), Charset.forName("UTF-8"));
         String loginName = "", loginPwd = "";

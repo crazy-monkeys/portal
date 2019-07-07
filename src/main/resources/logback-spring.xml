@@ -15,11 +15,14 @@
     <springProfile name="dev">
         <property name="LOG_HOME" value="/Users/Bill/Documents/work/other/portal/logs" />
     </springProfile>
+    <springProfile name="sit">
+        <property name="LOG_HOME" value="/service/webapps/logs" />
+    </springProfile>
     <springProfile name="uat">
-        <property name="LOG_HOME" value="/service/...." />
+        <property name="LOG_HOME" value="/service/webapps/logs" />
     </springProfile>
     <springProfile name="pro">
-        <property name="LOG_HOME" value="/service/...." />
+        <property name="LOG_HOME" value="../" />
     </springProfile>
 
     <!--输出到控制台-->
@@ -92,8 +95,11 @@
     <!-- 日志输出级别 -->
     <root level="debug">
         <appender-ref ref="CONSOLE" />
-        <appender-ref ref="INFO"/>
-        <appender-ref ref="WARN"/>
-        <appender-ref ref="ERROR"/>
+        <springProfile name="dev">
+            <appender-ref ref="INFO"/>
+            <appender-ref ref="WARN"/>
+            <appender-ref ref="ERROR"/>
+        </springProfile>
+
     </root>
 </configuration>
