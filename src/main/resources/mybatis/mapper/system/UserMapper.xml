@@ -22,9 +22,7 @@
     <result column="user_status" jdbcType="INTEGER" property="userStatus" />
     <result column="user_type" jdbcType="INTEGER" property="userType" />
 
-    <collection property="roles" javaType="java.util.List" ofType="com.crazy.portal.entity.system.Role">
-      <result column="role_name" property="roleName" jdbcType="VARCHAR" />
-    </collection>
+    <result column="role_name" property="roleName" jdbcType="VARCHAR" />
   </resultMap>
 
   <sql id="Base_Column_List">
@@ -232,19 +230,25 @@
   <select id="selectUserWithPage" resultMap="BaseResultMap">
     select
     a.*,
-    c.role_name
+    ro.role_name
     from t_user a
     inner join t_user_role b on a.id = b.user_id
-    inner join t_role c on b.role_id = c.id
+    inner join t_role ro on b.role_id = ro.id
     <where>
       <if test="loginName != null and loginName != ''">
-        a.login_name = #{loginName,jdbcType=VARCHAR}
+        and a.login_name = #{loginName,jdbcType=VARCHAR}
       </if>
       <if test="userType != null">
-        a.user_type = #{userType,jdbcType=INTEGER}
+        and a.user_type = #{userType,jdbcType=INTEGER}
       </if>
       <if test="regStartTime != null and regEndTime != null">
-        a.reg_time &gt;= #{regStartTime} and a.reg_time &lt;= #{regEndTime}
+        and a.reg_time &gt;= #{regStartTime} and a.reg_time &lt;= #{regEndTime}
+      </if>
+      <if test="realName != null and realName != ''">
+        and a.real_name = #{real_name}
+      </if>
+      <if test="roleName != null and roleName != ''">
+        and ro.role_name = #{roleName}
       </if>
     </where>
   </select>

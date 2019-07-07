@@ -58,8 +58,10 @@ public class User {
     private Integer createUserId;
 
     /** ext **/
-    private List<Role> roles;
+    private String roleName;
 
+    @JSONField(serialize=false)
     private Date regStartTime;
+    @JSONField(serialize=false)
     private Date regEndTime;
 }
