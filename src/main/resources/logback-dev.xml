@@ -12,18 +12,8 @@
     <!--多环境的日志输出-->
     <!--根据不同环境（prod:生产环境，test:测试环境，dev:开发环境）来定义不同的日志输出，-->
     <!--在 logback-spring.xml中使用 springProfile 节点来定义，方法如下：-->
-    <springProfile name="dev">
-        <property name="LOG_HOME" value="/Users/Bill/Documents/work/other/portal/logs" />
-    </springProfile>
-    <springProfile name="sit">
-        <property name="LOG_HOME" value="/service/webapps/logs" />
-    </springProfile>
-    <springProfile name="uat">
-        <property name="LOG_HOME" value="/service/webapps/logs" />
-    </springProfile>
-    <springProfile name="pro">
-        <property name="LOG_HOME" value="../" />
-    </springProfile>
+    <!--<property name="LOG_HOME" value="/Users/Bill/Documents/work/other/portal/logs" />-->
+
 
     <!--输出到控制台-->
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
@@ -93,10 +83,10 @@
     </appender>
 
     <!-- 日志输出级别 -->
-    <root level="info">
+    <root level="debug">
         <appender-ref ref="CONSOLE" />
-        <appender-ref ref="INFO"/>
-        <appender-ref ref="WARN"/>
-        <appender-ref ref="ERROR"/>
+<!--        <appender-ref ref="INFO"/>-->
+<!--        <appender-ref ref="WARN"/>-->
+<!--        <appender-ref ref="ERROR"/>-->
     </root>
 </configuration>
