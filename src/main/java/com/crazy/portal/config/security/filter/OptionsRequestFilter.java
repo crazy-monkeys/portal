@@ -18,8 +18,10 @@ public class OptionsRequestFilter extends OncePerRequestFilter{
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
+
         if(request.getMethod().equals("OPTIONS")) {
-            response.setHeader("Access-Control-Allow-Headers", response.getHeader("Access-Control-Request-Headers"));
+            response.setHeader("Access-Control-Allow-Methods", "DELETE,GET,POST,OPTIONS");
+            response.setHeader("Access-Control-Allow-Headers", "Content-Type,Authorization");
             return;
         }
         filterChain.doFilter(request, response);
