@@ -31,7 +31,6 @@ public class User {
     @JSONField(serialize=false)
     private String loginPwd;
 
-    @JSONField(serialize=false)
     private String phone;
 
     @JSONField(format="yyyy-MM-dd HH:mm:ss")
@@ -60,4 +59,7 @@ public class User {
 
     /** ext **/
     private List<Role> roles;
+
+    private Date regStartTime;
+    private Date regEndTime;
 }

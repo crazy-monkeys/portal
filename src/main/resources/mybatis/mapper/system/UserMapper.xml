@@ -243,6 +243,9 @@
       <if test="userType != null">
         a.user_type = #{userType,jdbcType=INTEGER}
       </if>
+      <if test="regStartTime != null and regEndTime != null">
+        a.reg_time &gt;= #{regStartTime} and a.reg_time &lt;= #{regEndTime}
+      </if>
     </where>
   </select>
 </mapper>
