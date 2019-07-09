@@ -30,6 +30,19 @@ spring:
         stat:
           mergeSql: true
           slowSqlMillis: 5000
+
+  # mail config
+  mail:
+    host: smtp.qq.com
+    port: 587
+#    username: CRM.Admin@UniSoC.com
+#    password: caCA$617
+    username: biao.chenit@qq.com
+    password: uafakvvkdhtibeii
+    protocol: smtp
+    default-encoding: UTF-8
+
+
 server:
   port: 8080
   servlet:

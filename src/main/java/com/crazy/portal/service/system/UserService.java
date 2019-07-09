@@ -1,22 +1,20 @@
 package com.crazy.portal.service.system;
 
+import com.crazy.portal.bean.system.MailBean;
+import com.crazy.portal.config.email.EmailHelper;
 import com.crazy.portal.config.exception.BusinessException;
 import com.crazy.portal.dao.system.UserMapper;
-import com.crazy.portal.dao.system.UserRoleMapper;
-import com.crazy.portal.entity.archive.Archive;
 import com.crazy.portal.entity.system.User;
-import com.crazy.portal.entity.system.UserRole;
 import com.crazy.portal.util.*;
-import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import javax.annotation.Resource;
 import java.util.Date;
-import java.util.List;
 
 /**
  * @Desc:
@@ -30,10 +28,11 @@ public class UserService {
 
     @Resource
     private UserMapper userMapper;
+    @Resource
+    private EmailHelper emailHelper;
 
     private PasswordEncoder passwordEncoder =
             PasswordEncoderFactories.createDelegatingPasswordEncoder();
-
 
     /**
      * 分页获取用户信息
@@ -93,28 +92,65 @@ public class UserService {
         return userMapper.insertSelective(user);
     }
 
+    @Transactional
+    public void resetUserPwd(String loginName,User currentUser){
+        User user = this.findUser(loginName);
+        if(user == null){
+            throw new BusinessException(ErrorCodes.SystemManagerEnum.USER_NOT_EXISTS.getCode(),
+                    ErrorCodes.SystemManagerEnum.USER_NOT_EXISTS.getZhMsg());
+        }
+        user.setUpdateTime(new Date());
+        user.setUpdateUserId(currentUser.getId());
+        String newPasswod = this.generateRandomPassword();
+        user.setLoginPwd(passwordEncoder.encode(newPasswod));
+        userMapper.updateByPrimaryKeySelective(user);
+
+        //发送邮件
+        MailBean mailBean = new MailBean();
+        mailBean.setTos(user.getEmail());
+        mailBean.setSubject("密码重置邮件");
+        mailBean.setTemplateName(EmailHelper.MAIL_TEMPLATE.RESET_PWD.getTemplateName());
+        emailHelper.sendHtmlMail(mailBean);
+    }
+
+    @Transactional
+    public void modifyPwd(String loginName,String oldPwd,String newPwd,Integer userId){
+        User user = this.findUser(loginName);
+        if(user == null){
+            throw new BusinessException(ErrorCodes.SystemManagerEnum.USER_NOT_EXISTS.getCode(),
+                    ErrorCodes.SystemManagerEnum.USER_NOT_EXISTS.getZhMsg());
+        }
+        if(!passwordEncoder.matches(oldPwd,user.getLoginPwd())){
+            throw new BusinessException(ErrorCodes.SystemManagerEnum.USER_INVALID_PASSWORD.getCode(),
+                    ErrorCodes.SystemManagerEnum.USER_INVALID_PASSWORD.getZhMsg());
+        }
+        user.setLoginPwd(passwordEncoder.encode(newPwd));
+        user.setUpdateTime(new Date());
+        user.setUpdateUserId(userId);
+        userMapper.updateByPrimaryKeySelective(user);
+    }
+
     /**
-     *
-     * @param userName
-     * @param status
+     * 重置密码随机生成10位密码数
      * @return
      */
-    @Deprecated
-    public Boolean approvalUser(String userName, int status){
-        try{
-            User user = userMapper.findByLoginName(userName);
-            if(user.getUserStatus()==0){
-                user.setUserStatus(Enums.USER_STATUS.init.getCode());
-            }else if(user.getUserStatus()==3){
-                user.setUserStatus(Enums.USER_STATUS.normal.getCode());
-            }
-            user.setUpdateTime(new Date());
-            //user.setUpdateUserId();
-            userMapper.insertSelective(user);
-        }catch (Exception e){
-            log.error("审批异常！",e);
-            return false;
+    private static String generateRandomPassword() {
+        int length = 10;
+        char[] ss = new char[10];
+        int[] flag = { 0, 0, 0 }; // A-Z, a-z, 0-9
+        int i = 0;
+        while (flag[0] == 0 || flag[1] == 0 || flag[2] == 0 || i < length) {
+            i = i % length;
+            int f = (int) (Math.random() * 3 % 3);
+            if (f == 0)
+                ss[i] = (char) ('A' + Math.random() * 26);
+            else if (f == 1)
+                ss[i] = (char) ('a' + Math.random() * 26);
+            else
+                ss[i] = (char) ('0' + Math.random() * 10);
+            flag[f] = 1;
+            i++;
         }
-        return true;
+        return new String(ss) + "$";
     }
 }

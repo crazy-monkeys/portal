@@ -51,6 +51,8 @@ public class ErrorCodes {
 
         USER_EXISTS(10010,"用户已经存在",""),
         USER_EMPTY_USER_NAME(10011,"用户名不能为空",""),
+        USER_NOT_EXISTS(10012,"用户不存在",""),
+        USER_INVALID_PASSWORD(10013,"原密码不正确",""),
 
 
         ROLE_EXISTS(10020,"角色已经存在",""),

@@ -37,6 +37,12 @@ public class GlobalExceptionHandler {
             response.fail(-1, exception.getMessage());
             return response;
         }
+        if(exception instanceof BusinessException){
+            BusinessException ex = (BusinessException)exception;
+            response.setCode(ex.getErrorCode());
+            response.setMsg(ex.getMessage());
+            return response;
+        }
         response.systemException();
         log.error(exception.getMessage(), exception);
         return response;

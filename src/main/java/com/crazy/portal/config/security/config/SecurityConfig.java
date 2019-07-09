@@ -1,6 +1,6 @@
 package com.crazy.portal.config.security.config;
 
-import com.crazy.portal.config.security.JwtAuthenticationProvider;
+import com.crazy.portal.config.security.filter.JwtAuthenticationProvider;
 import com.crazy.portal.config.security.JwtUserService;
 import com.crazy.portal.config.security.filter.RequestFilter;
 import com.crazy.portal.config.security.handler.JwtRefreshSuccessHandler;
@@ -12,7 +12,6 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -48,18 +47,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
     }
 
     @Bean
-    protected AuthenticationProvider daoAuthenticationProvider() throws Exception{
+    protected AuthenticationProvider daoAuthenticationProvider(){
         //这里会默认使用BCryptPasswordEncoder比对加密后的密码，注意要跟createUser时保持一致
         DaoAuthenticationProvider daoProvider = new DaoAuthenticationProvider();
         daoProvider.setUserDetailsService(userDetailsService());
         return daoProvider;
-    }
-
-    @Override
-    public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/static/**");
-        web.ignoring().antMatchers("/view/**");
-        web.ignoring().antMatchers("/favicon.ico");
     }
 
     @Override
@@ -97,7 +89,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
 
     @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+    protected void configure(AuthenticationManagerBuilder auth) {
         auth.authenticationProvider(daoAuthenticationProvider())
                 .authenticationProvider(jwtAuthenticationProvider());
     }
