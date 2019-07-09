@@ -4,7 +4,6 @@
   <resultMap id="BaseResultMap" type="com.crazy.portal.entity.system.User">
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="active" jdbcType="SMALLINT" property="active" />
-    <result column="country" jdbcType="VARCHAR" property="country" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="create_user_id" jdbcType="INTEGER" property="createUserId" />
     <result column="email" jdbcType="VARCHAR" property="email" />
@@ -13,21 +12,22 @@
     <result column="last_name" jdbcType="VARCHAR" property="lastName" />
     <result column="login_name" jdbcType="VARCHAR" property="loginName" />
     <result column="login_pwd" jdbcType="VARCHAR" property="loginPwd" />
-    <result column="phone" jdbcType="VARCHAR" property="phone" />
+    <result column="mobile" jdbcType="VARCHAR" property="mobile" />
     <result column="pwd_invalid_time" jdbcType="TIMESTAMP" property="pwdInvalidTime" />
-    <result column="real_name" jdbcType="VARCHAR" property="realName" />
+    <result column="customer_name" jdbcType="VARCHAR" property="customerName" />
     <result column="reg_time" jdbcType="TIMESTAMP" property="regTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="update_user_id" jdbcType="INTEGER" property="updateUserId" />
     <result column="user_status" jdbcType="INTEGER" property="userStatus" />
     <result column="user_type" jdbcType="INTEGER" property="userType" />
 
+    <!-- EXT -->
     <result column="role_name" property="roleName" jdbcType="VARCHAR" />
   </resultMap>
 
   <sql id="Base_Column_List">
     id, active, country, create_time, create_user_id, email, first_name, last_login_time, 
-    last_name, login_name, login_pwd, phone, pwd_invalid_time, real_name, reg_time, update_time, 
+    last_name, login_name, login_pwd, mobile, pwd_invalid_time, customer_name, reg_time, update_time,
     update_user_id, user_status, user_type
   </sql>
 
@@ -54,9 +54,6 @@
       <if test="active != null">
         active,
       </if>
-      <if test="country != null">
-        country,
-      </if>
       <if test="createTime != null">
         create_time,
       </if>
@@ -81,14 +78,14 @@
       <if test="loginPwd != null">
         login_pwd,
       </if>
-      <if test="phone != null">
-        phone,
+      <if test="mobile != null">
+        mobile,
       </if>
       <if test="pwdInvalidTime != null">
         pwd_invalid_time,
       </if>
-      <if test="realName != null">
-        real_name,
+      <if test="customerName != null">
+        customer_name,
       </if>
       <if test="regTime != null">
         reg_time,
@@ -112,9 +109,6 @@
       </if>
       <if test="active != null">
         #{active,jdbcType=SMALLINT},
-      </if>
-      <if test="country != null">
-        #{country,jdbcType=VARCHAR},
       </if>
       <if test="createTime != null">
         #{createTime,jdbcType=TIMESTAMP},
@@ -140,14 +134,14 @@
       <if test="loginPwd != null">
         #{loginPwd,jdbcType=VARCHAR},
       </if>
-      <if test="phone != null">
-        #{phone,jdbcType=VARCHAR},
+      <if test="mobile != null">
+        #{mobile,jdbcType=VARCHAR},
       </if>
       <if test="pwdInvalidTime != null">
         #{pwdInvalidTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="realName != null">
-        #{realName,jdbcType=VARCHAR},
+      <if test="customerName != null">
+        #{customerName,jdbcType=VARCHAR},
       </if>
       <if test="regTime != null">
         #{regTime,jdbcType=TIMESTAMP},
@@ -171,9 +165,6 @@
     <set>
       <if test="active != null">
         active = #{active,jdbcType=SMALLINT},
-      </if>
-      <if test="country != null">
-        country = #{country,jdbcType=VARCHAR},
       </if>
       <if test="createTime != null">
         create_time = #{createTime,jdbcType=TIMESTAMP},
@@ -199,14 +190,14 @@
       <if test="loginPwd != null">
         login_pwd = #{loginPwd,jdbcType=VARCHAR},
       </if>
-      <if test="phone != null">
-        phone = #{phone,jdbcType=VARCHAR},
+      <if test="mobile != null">
+        mobile = #{mobile,jdbcType=VARCHAR},
       </if>
       <if test="pwdInvalidTime != null">
         pwd_invalid_time = #{pwdInvalidTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="realName != null">
-        real_name = #{realName,jdbcType=VARCHAR},
+      <if test="customerName != null">
+        customer_name = #{customerName,jdbcType=VARCHAR},
       </if>
       <if test="regTime != null">
         reg_time = #{regTime,jdbcType=TIMESTAMP},
@@ -244,8 +235,8 @@
       <if test="regStartTime != null and regEndTime != null">
         and a.reg_time &gt;= #{regStartTime} and a.reg_time &lt;= #{regEndTime}
       </if>
-      <if test="realName != null and realName != ''">
-        and a.real_name = #{real_name}
+      <if test="customerName != null and customerName != ''">
+        and a.customer_name = #{customer_name}
       </if>
       <if test="roleName != null and roleName != ''">
         and ro.role_name = #{roleName}

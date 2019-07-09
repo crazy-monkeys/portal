@@ -1,6 +1,7 @@
 package com.crazy.portal.service.system;
 
 import com.crazy.portal.bean.system.MailBean;
+import com.crazy.portal.bean.system.UserBasicInfo;
 import com.crazy.portal.config.email.EmailHelper;
 import com.crazy.portal.config.exception.BusinessException;
 import com.crazy.portal.dao.system.UserMapper;
@@ -61,35 +62,39 @@ public class UserService {
 
     /**
      * 更改用户信息
-     * @param user
+     * @param basicInfo
      * @return
      */
     @Transactional
-    public int updateUser(User user){
+    public int updateChildUser(UserBasicInfo basicInfo){
+        User user = this.findUser(basicInfo.getLoginName());
         return userMapper.updateByPrimaryKeySelective(user);
     }
 
     /**
-     * 注册
-     * @param user
+     * 子账号注册
+     * @param subAgentUser
+     * @parm currentUser
      * @return
      */
     @Transactional
-    public int register(User user) {
-        String username = user.getLoginName();
+    public int register(User subAgentUser,User currentUser) {
+        String username = subAgentUser.getLoginName();
         if (userMapper.findByLoginName(username) != null) {
             throw new BusinessException(ErrorCodes.SystemManagerEnum.USER_EXISTS.getCode(),
                     ErrorCodes.SystemManagerEnum.USER_EXISTS.getZhMsg());
         }
-        user.setLoginPwd(passwordEncoder.encode(user.getLoginPwd()));
-        user.setUserStatus(Enums.USER_STATUS.freeze.getCode());
-        user.setUserType(Enums.USER_TYPE.agent.getCode());
-        user.setRegTime(new Date());
-        user.setCreateUserId(-1);
-        user.setCreateTime(new Date());
-        user.setPwdInvalidTime(DateUtil.addDays(new Date(),365));
-        user.setActive((short)1);
-        return userMapper.insertSelective(user);
+        subAgentUser.setLoginPwd(passwordEncoder.encode(subAgentUser.getLoginPwd()));
+        subAgentUser.setUserStatus(Enums.USER_STATUS.freeze.getCode());
+        //只允许子账号注册
+        subAgentUser.setUserType(Enums.USER_TYPE.subAgent.toString());
+        subAgentUser.setRegTime(new Date());
+        subAgentUser.setCreateUserId(currentUser.getCreateUserId());
+        subAgentUser.setCreateTime(new Date());
+        subAgentUser.setPwdInvalidTime(DateUtil.addDays(new Date(),365));
+        subAgentUser.setActive((short)1);
+        subAgentUser.setUserStatus(1);
+        return userMapper.insertSelective(subAgentUser);
     }
 
     @Transactional

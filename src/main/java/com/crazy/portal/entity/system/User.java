@@ -10,52 +10,60 @@ import java.util.List;
 public class User {
     private Integer id;
 
-    /**1正常 0逻辑删除**/
-    private Short active;
-
-    private String country;
-
     private String email;
-
-    @JSONField(serialize=false)
-    private String firstName;
 
     @JSONField(format="yyyy-MM-dd HH:mm:ss")
     private Date lastLoginTime;
-
-    @JSONField(serialize=false)
-    private String lastName;
 
     private String loginName;
 
     @JSONField(serialize=false)
     private String loginPwd;
 
-    private String phone;
+    private String mobile;
 
     @JSONField(format="yyyy-MM-dd HH:mm:ss")
     private Date pwdInvalidTime;
 
-    private String realName;
+    /**
+     * 客户姓名
+     */
+    private String customerName;
+    /**
+     * 注册时间
+     */
     @JSONField(format="yyyy-MM-dd HH:mm:ss")
     private Date regTime;
 
-    /** 正常1 冻结0**/
+    /**
+     * 用户状态
+     * 正常:1 冻结:0
+     */
     private Integer userStatus;
 
-    /**1.代理商 2.直供客户 3.销售客户**/
-    private Integer userType;
+    /**
+     * 用户类型
+     * @link Enums.USER_TYPE
+     */
+    private String userType;
+
+    /**
+     * 是否有效
+     * 正常:1 逻辑删除:0
+     */
+    private Short active;
 
     @JSONField(serialize=false)
-    private Date updateTime;
+    private Integer createUserId;
 
-    @JSONField(serialize=false)
-    private Integer updateUserId;
     @JSONField(serialize=false)
     private Date createTime;
 
     @JSONField(serialize=false)
-    private Integer createUserId;
+    private Integer updateUserId;
+
+    @JSONField(serialize=false)
+    private Date updateTime;
 
     /** ext **/
     private String roleName;
@@ -64,4 +72,5 @@ public class User {
     private Date regStartTime;
     @JSONField(serialize=false)
     private Date regEndTime;
+
 }

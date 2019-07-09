@@ -1,6 +1,7 @@
 package com.crazy.portal.controller.system;
 
 import com.crazy.portal.bean.BaseResponse;
+import com.crazy.portal.bean.system.UserBasicInfo;
 import com.crazy.portal.controller.BaseController;
 import com.crazy.portal.entity.system.User;
 import com.crazy.portal.service.system.UserService;
@@ -32,7 +33,7 @@ public class UserController extends BaseController {
      */
     @PostMapping("/register")
     public BaseResponse createUser(@RequestBody User user){
-        userService.register(user);
+        userService.register(user,super.getCurrentUser());
         return super.successResult();
     }
 
@@ -54,17 +55,16 @@ public class UserController extends BaseController {
         return super.successResult(userService.findUser(loginName));
     }
 
-//    /**
-//     * 修改密码
-//     * @param user
-//     * @return
-//     */
-//    @PostMapping("/update")
-//    public BaseResponse updateUser(@RequestBody User user){
-//        user.setUpdateTime(new Date());
-//        user.setUpdateUserId(super.getCurrentUser().getId());
-//        return super.successResult(userService.updateUser(user));
-//    }
+    /**
+     * 修改子账号基本信息
+     * @param userBasicInfo
+     * @return
+     */
+    @PostMapping("/update")
+    public BaseResponse updateUser(@RequestBody UserBasicInfo userBasicInfo){
+        userService.updateChildUser(userBasicInfo);
+        return super.successResult();
+    }
 
     /**
      * 登录名称是否可用
