@@ -7,7 +7,6 @@
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="create_user_id" jdbcType="INTEGER" property="createUserId" />
     <result column="email" jdbcType="VARCHAR" property="email" />
-    <result column="first_name" jdbcType="VARCHAR" property="firstName" />
     <result column="last_login_time" jdbcType="TIMESTAMP" property="lastLoginTime" />
     <result column="last_name" jdbcType="VARCHAR" property="lastName" />
     <result column="login_name" jdbcType="VARCHAR" property="loginName" />
@@ -63,9 +62,6 @@
       <if test="email != null">
         email,
       </if>
-      <if test="firstName != null">
-        first_name,
-      </if>
       <if test="lastLoginTime != null">
         last_login_time,
       </if>
@@ -119,9 +115,6 @@
       <if test="email != null">
         #{email,jdbcType=VARCHAR},
       </if>
-      <if test="firstName != null">
-        #{firstName,jdbcType=VARCHAR},
-      </if>
       <if test="lastLoginTime != null">
         #{lastLoginTime,jdbcType=TIMESTAMP},
       </if>
@@ -174,9 +167,6 @@
       </if>
       <if test="email != null">
         email = #{email,jdbcType=VARCHAR},
-      </if>
-      <if test="firstName != null">
-        first_name = #{firstName,jdbcType=VARCHAR},
       </if>
       <if test="lastLoginTime != null">
         last_login_time = #{lastLoginTime,jdbcType=TIMESTAMP},
