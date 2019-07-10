@@ -8,7 +8,6 @@
     <result column="create_user_id" jdbcType="INTEGER" property="createUserId" />
     <result column="email" jdbcType="VARCHAR" property="email" />
     <result column="last_login_time" jdbcType="TIMESTAMP" property="lastLoginTime" />
-    <result column="last_name" jdbcType="VARCHAR" property="lastName" />
     <result column="login_name" jdbcType="VARCHAR" property="loginName" />
     <result column="login_pwd" jdbcType="VARCHAR" property="loginPwd" />
     <result column="mobile" jdbcType="VARCHAR" property="mobile" />
@@ -25,8 +24,7 @@
   </resultMap>
 
   <sql id="Base_Column_List">
-    id, active, create_time, create_user_id, email, last_login_time,
-    last_name, login_name, login_pwd, mobile, pwd_invalid_time, customer_name, reg_time, update_time,
+    id, active, create_time, create_user_id, email, last_login_time,login_name, login_pwd, mobile, pwd_invalid_time, customer_name, reg_time, update_time,
     update_user_id, user_status, user_type
   </sql>
 
@@ -64,9 +62,6 @@
       </if>
       <if test="lastLoginTime != null">
         last_login_time,
-      </if>
-      <if test="lastName != null">
-        last_name,
       </if>
       <if test="loginName != null">
         login_name,
@@ -118,9 +113,6 @@
       <if test="lastLoginTime != null">
         #{lastLoginTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="lastName != null">
-        #{lastName,jdbcType=VARCHAR},
-      </if>
       <if test="loginName != null">
         #{loginName,jdbcType=VARCHAR},
       </if>
@@ -170,9 +162,6 @@
       </if>
       <if test="lastLoginTime != null">
         last_login_time = #{lastLoginTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="lastName != null">
-        last_name = #{lastName,jdbcType=VARCHAR},
       </if>
       <if test="loginName != null">
         login_name = #{loginName,jdbcType=VARCHAR},
