@@ -6,5 +6,5 @@ spring:
   datasource:
     username: crmportalqa
     password: Crm$20%My99
-    url: jdbc:mysql://10.29.60.170:3306/portal?useUnicode=true&characterEncoding=utf8&rewriteBatchedStatements=true&serverTimezone=UTC
+    url: jdbc:mysql://10.29.60.170:3306/crmportalqa?useUnicode=true&characterEncoding=utf8&rewriteBatchedStatements=true&serverTimezone=UTC
     driver-class-name: com.mysql.cj.jdbc.Driver
