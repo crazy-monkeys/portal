@@ -108,7 +108,7 @@ public class UserService {
         user.setUpdateUserId(currentUser.getId());
         String newPasswod = this.generateRandomPassword();
         user.setLoginPwd(passwordEncoder.encode(newPasswod));
-        userMapper.updateByPrimaryKeySelective(user);
+//        userMapper.updateByPrimaryKeySelective(user);
 
         //发送邮件
         MailBean mailBean = new MailBean();
