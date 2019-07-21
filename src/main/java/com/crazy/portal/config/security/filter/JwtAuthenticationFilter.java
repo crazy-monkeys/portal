@@ -76,10 +76,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
 
         //获取资源路径
         String url = request.getServletPath();
-        if (url.contains("/login") || url.equals("/")) {
-            //放行
-            filterChain.doFilter(request, response);
-            return;
+        //可以忽略权限的url
+        if(permissiveRequestMatchers != null && !permissiveRequestMatchers.isEmpty()){
+            for(RequestMatcher permissiveMatcher : permissiveRequestMatchers) {
+                if(permissiveMatcher.matches(request)){
+                    //放行
+                    filterChain.doFilter(request, response);
+                    return;
+                }
+            }
         }
         Throwable throwable;
         try {
@@ -131,14 +136,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
     protected boolean authRequest(HttpServletRequest request,Authentication authResult) {
         if(authResult == null){
             return false;
-        }
-        //可以忽略权限的url
-        if(permissiveRequestMatchers != null && !permissiveRequestMatchers.isEmpty()){
-            for(RequestMatcher permissiveMatcher : permissiveRequestMatchers) {
-                if(permissiveMatcher.matches(request)){
-                    return true;
-                }
-            }
         }
         try {
             //用户在系统的权限

@@ -1,12 +1,15 @@
 package com.crazy.portal.config.security.config;
 
-import com.crazy.portal.config.security.filter.JwtAuthenticationProvider;
 import com.crazy.portal.config.security.JwtUserService;
+import com.crazy.portal.config.security.filter.JwtAuthenticationProvider;
 import com.crazy.portal.config.security.filter.RequestFilter;
 import com.crazy.portal.config.security.handler.JwtRefreshSuccessHandler;
 import com.crazy.portal.config.security.handler.LoginSuccessHandler;
 import com.crazy.portal.config.security.handler.TokenClearLogoutHandler;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -15,7 +18,14 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.kerberos.authentication.KerberosAuthenticationProvider;
+import org.springframework.security.kerberos.authentication.KerberosServiceAuthenticationProvider;
+import org.springframework.security.kerberos.authentication.sun.SunJaasKerberosClient;
+import org.springframework.security.kerberos.authentication.sun.SunJaasKerberosTicketValidator;
+import org.springframework.security.kerberos.web.authentication.SpnegoAuthenticationProcessingFilter;
+import org.springframework.security.kerberos.web.authentication.SpnegoEntryPoint;
 import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.header.Header;
 import org.springframework.security.web.header.writers.StaticHeadersWriter;
 import org.springframework.web.filter.CorsFilter;
@@ -24,9 +34,16 @@ import javax.annotation.Resource;
 import java.util.Arrays;
 
 @EnableWebSecurity
+@Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
-    private static final String[] permissiveUrl = new String[]{"/logout"};
+    private static final String[] permissiveUrl = new String[]{"/user/login","/logout","/home","/login","/"};
+
+    @Value("${app.service-principal}")
+    private String servicePrincipal;
+
+    @Value("${app.keytab-location}")
+    private String keytabLocation;
 
     @Resource
     private LoginSuccessHandler loginSuccessHandler;
@@ -41,6 +58,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
     }
+
     @Bean
     protected AuthenticationProvider jwtAuthenticationProvider() {
         return new JwtAuthenticationProvider(jwtUserService);
@@ -48,7 +66,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
     @Bean
     protected AuthenticationProvider daoAuthenticationProvider(){
-        //这里会默认使用BCryptPasswordEncoder比对加密后的密码，注意要跟createUser时保持一致
         DaoAuthenticationProvider daoProvider = new DaoAuthenticationProvider();
         daoProvider.setUserDetailsService(userDetailsService());
         return daoProvider;
@@ -56,8 +73,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.authorizeRequests()
-                .antMatchers("/login","/").permitAll()
+        httpSecurity
+                .exceptionHandling().authenticationEntryPoint(spnegoEntryPoint())
+                .and()
+                .authorizeRequests()
+                .antMatchers(permissiveUrl).permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement().disable()
@@ -69,14 +89,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                     new Header("Access-Control-Expose-Headers","Authorization"))))
                 .frameOptions().disable()
                 .and()
+                .addFilterBefore(spnegoAuthenticationProcessingFilter(authenticationManagerBean()),BasicAuthenticationFilter.class)
                 //拦截OPTIONS请求，直接返回header
                 .addFilterAfter(new RequestFilter(), CorsFilter.class)
                 //添加登录filter
                 .apply(new LoginConfigurer<>()).loginSuccessHandler(loginSuccessHandler)
                 .and()
                 //添加token的filter
-                .apply(new JwtLoginConfigurer<>())
-                .tokenValidSuccessHandler(jwtRefreshSuccessHandler)
+                .apply(new JwtLoginConfigurer<>()).tokenValidSuccessHandler(jwtRefreshSuccessHandler)
                 .permissiveRequestUrls(permissiveUrl)
                 .and()
                 //使用默认的logoutFilter
@@ -90,13 +110,63 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) {
-        auth.authenticationProvider(daoAuthenticationProvider())
-                .authenticationProvider(jwtAuthenticationProvider());
+        auth
+            .authenticationProvider(kerberosAuthenticationProvider())
+            .authenticationProvider(kerberosServiceAuthenticationProvider())
+            .authenticationProvider(daoAuthenticationProvider())
+            .authenticationProvider(jwtAuthenticationProvider())
+        ;
     }
 
 
     @Override
     protected UserDetailsService userDetailsService() {
         return jwtUserService;
+    }
+
+
+    /**
+     *
+     *
+     * @return
+     */
+    @Bean
+    public KerberosAuthenticationProvider kerberosAuthenticationProvider() {
+        KerberosAuthenticationProvider provider = new KerberosAuthenticationProvider();
+        SunJaasKerberosClient client = new SunJaasKerberosClient();
+        client.setDebug(true);
+        provider.setKerberosClient(client);
+        provider.setUserDetailsService(userDetailsService());
+        return provider;
+    }
+
+    @Bean
+    public KerberosServiceAuthenticationProvider kerberosServiceAuthenticationProvider() {
+        KerberosServiceAuthenticationProvider provider = new KerberosServiceAuthenticationProvider();
+        provider.setTicketValidator(sunJaasKerberosTicketValidator());
+        provider.setUserDetailsService(userDetailsService());
+        return provider;
+    }
+
+    @Bean
+    public SunJaasKerberosTicketValidator sunJaasKerberosTicketValidator() {
+        SunJaasKerberosTicketValidator ticketValidator = new SunJaasKerberosTicketValidator();
+        ticketValidator.setServicePrincipal(servicePrincipal);
+        ticketValidator.setKeyTabLocation(new FileSystemResource(keytabLocation));
+        ticketValidator.setDebug(true);
+        return ticketValidator;
+    }
+
+    @Bean
+    public SpnegoAuthenticationProcessingFilter spnegoAuthenticationProcessingFilter(
+            AuthenticationManager authenticationManager) {
+        SpnegoAuthenticationProcessingFilter filter = new SpnegoAuthenticationProcessingFilter();
+        filter.setAuthenticationManager(authenticationManager);
+        return filter;
+    }
+
+    @Bean
+    public SpnegoEntryPoint spnegoEntryPoint() {
+        return new SpnegoEntryPoint("/user/login");
     }
 }

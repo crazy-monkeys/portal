@@ -6,7 +6,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.codec.Base64;
+import org.springframework.security.kerberos.authentication.KerberosServiceRequestToken;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.util.StreamUtils;
 import org.springframework.util.StringUtils;
@@ -33,6 +38,11 @@ public class LoginAuthenticationFilter extends AbstractAuthenticationProcessingF
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
             throws AuthenticationException, IOException {
+
+        String header = request.getHeader("Authorization");
+        if (header != null && (header.startsWith("Negotiate ") || header.startsWith("Kerberos "))) {
+            System.out.println("kerberos 登录");
+        }
         //从json中获取username和password
         String body = StreamUtils.copyToString(request.getInputStream(), Charset.forName("UTF-8"));
         String loginName = "", loginPwd = "";

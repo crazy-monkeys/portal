@@ -4813,7 +4813,7 @@ public class StringUtil {
 	 * @param size
 	 * @return
 	 */
-	public String creatRandom(int size) {
+	public static String creatRandom(int size) {
 
 		if (size <= 0) {
 			size = 1;
