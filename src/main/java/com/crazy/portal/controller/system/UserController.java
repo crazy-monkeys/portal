@@ -43,8 +43,8 @@ public class UserController extends BaseController {
      */
     @PostMapping("/list")
     public BaseResponse selectAllUsers(@RequestBody(required = false) User user,
-                                       @RequestParam(required = false,defaultValue = "1") Integer pageNum,
-                                       @RequestParam(required = false,defaultValue = "10") Integer pageSize){
+                                       @RequestParam Integer pageNum,
+                                       @RequestParam Integer pageSize){
 
         PageInfo<User> users = userService.selectUserWithPage(user,pageNum,pageSize);
         return super.successResult(users);
