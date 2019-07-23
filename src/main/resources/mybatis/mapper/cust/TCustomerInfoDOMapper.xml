@@ -1,0 +1,415 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.crazy.portal.dao.cust.TCustomerInfoDOMapper">
+  <resultMap id="BaseResultMap" type="com.crazy.portal.entity.cust.TCustomerInfoDO">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="cust_type" jdbcType="INTEGER" property="custType" />
+    <result column="cust_role" jdbcType="INTEGER" property="custRole" />
+    <result column="cust_in_code" jdbcType="VARCHAR" property="custInCode" />
+    <result column="cust_out_code" jdbcType="VARCHAR" property="custOutCode" />
+    <result column="cust_zh_name" jdbcType="VARCHAR" property="custZhName" />
+    <result column="cust_en_name" jdbcType="VARCHAR" property="custEnName" />
+    <result column="cust_abbreviation" jdbcType="VARCHAR" property="custAbbreviation" />
+    <result column="cust_mobile" jdbcType="VARCHAR" property="custMobile" />
+    <result column="cust_phone_no" jdbcType="VARCHAR" property="custPhoneNo" />
+    <result column="cust_fax" jdbcType="VARCHAR" property="custFax" />
+    <result column="cust_email" jdbcType="VARCHAR" property="custEmail" />
+    <result column="cust_web" jdbcType="VARCHAR" property="custWeb" />
+    <result column="corporate_assets" jdbcType="DECIMAL" property="corporateAssets" />
+    <result column="corporate_number" jdbcType="INTEGER" property="corporateNumber" />
+    <result column="corporate_parents" jdbcType="VARCHAR" property="corporateParents" />
+    <result column="credit_inital_value" jdbcType="DECIMAL" property="creditInitalValue" />
+    <result column="credit_engaged_value" jdbcType="DECIMAL" property="creditEngagedValue" />
+    <result column="credit_surplus" jdbcType="DECIMAL" property="creditSurplus" />
+    <result column="is_white_list" jdbcType="INTEGER" property="isWhiteList" />
+    <result column="dealer_status" jdbcType="INTEGER" property="dealerStatus" />
+    <result column="create_user" jdbcType="INTEGER" property="createUser" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_user" jdbcType="INTEGER" property="updateUser" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="active" jdbcType="INTEGER" property="active" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.crazy.portal.entity.cust.TCustomerInfoDOWithBLOBs">
+    <result column="advantage_value" jdbcType="LONGVARCHAR" property="advantageValue" />
+    <result column="advantage_introduction" jdbcType="LONGVARCHAR" property="advantageIntroduction" />
+    <result column="business_introduction" jdbcType="LONGVARCHAR" property="businessIntroduction" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, cust_type, cust_role, cust_in_code, cust_out_code, cust_zh_name, cust_en_name, 
+    cust_abbreviation, cust_mobile, cust_phone_no, cust_fax, cust_email, cust_web, corporate_assets, 
+    corporate_number, corporate_parents, credit_inital_value, credit_engaged_value, credit_surplus, 
+    is_white_list, dealer_status, create_user, create_time, update_user, update_time, 
+    active
+  </sql>
+  <sql id="Blob_Column_List">
+    advantage_value, advantage_introduction, business_introduction
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from t_customer_info
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_customer_info
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.crazy.portal.entity.cust.TCustomerInfoDOWithBLOBs">
+    insert into t_customer_info (id, cust_type, cust_role, 
+      cust_in_code, cust_out_code, cust_zh_name, 
+      cust_en_name, cust_abbreviation, cust_mobile, 
+      cust_phone_no, cust_fax, cust_email, 
+      cust_web, corporate_assets, corporate_number, 
+      corporate_parents, credit_inital_value, credit_engaged_value, 
+      credit_surplus, is_white_list, dealer_status, 
+      create_user, create_time, update_user, 
+      update_time, active, advantage_value, 
+      advantage_introduction, business_introduction
+      )
+    values (#{id,jdbcType=INTEGER}, #{custType,jdbcType=INTEGER}, #{custRole,jdbcType=INTEGER}, 
+      #{custInCode,jdbcType=VARCHAR}, #{custOutCode,jdbcType=VARCHAR}, #{custZhName,jdbcType=VARCHAR}, 
+      #{custEnName,jdbcType=VARCHAR}, #{custAbbreviation,jdbcType=VARCHAR}, #{custMobile,jdbcType=VARCHAR}, 
+      #{custPhoneNo,jdbcType=VARCHAR}, #{custFax,jdbcType=VARCHAR}, #{custEmail,jdbcType=VARCHAR}, 
+      #{custWeb,jdbcType=VARCHAR}, #{corporateAssets,jdbcType=DECIMAL}, #{corporateNumber,jdbcType=INTEGER}, 
+      #{corporateParents,jdbcType=VARCHAR}, #{creditInitalValue,jdbcType=DECIMAL}, #{creditEngagedValue,jdbcType=DECIMAL}, 
+      #{creditSurplus,jdbcType=DECIMAL}, #{isWhiteList,jdbcType=INTEGER}, #{dealerStatus,jdbcType=INTEGER}, 
+      #{createUser,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{updateUser,jdbcType=INTEGER}, 
+      #{updateTime,jdbcType=TIMESTAMP}, #{active,jdbcType=INTEGER}, #{advantageValue,jdbcType=LONGVARCHAR}, 
+      #{advantageIntroduction,jdbcType=LONGVARCHAR}, #{businessIntroduction,jdbcType=LONGVARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.crazy.portal.entity.cust.TCustomerInfoDOWithBLOBs">
+    insert into t_customer_info
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="custType != null">
+        cust_type,
+      </if>
+      <if test="custRole != null">
+        cust_role,
+      </if>
+      <if test="custInCode != null">
+        cust_in_code,
+      </if>
+      <if test="custOutCode != null">
+        cust_out_code,
+      </if>
+      <if test="custZhName != null">
+        cust_zh_name,
+      </if>
+      <if test="custEnName != null">
+        cust_en_name,
+      </if>
+      <if test="custAbbreviation != null">
+        cust_abbreviation,
+      </if>
+      <if test="custMobile != null">
+        cust_mobile,
+      </if>
+      <if test="custPhoneNo != null">
+        cust_phone_no,
+      </if>
+      <if test="custFax != null">
+        cust_fax,
+      </if>
+      <if test="custEmail != null">
+        cust_email,
+      </if>
+      <if test="custWeb != null">
+        cust_web,
+      </if>
+      <if test="corporateAssets != null">
+        corporate_assets,
+      </if>
+      <if test="corporateNumber != null">
+        corporate_number,
+      </if>
+      <if test="corporateParents != null">
+        corporate_parents,
+      </if>
+      <if test="creditInitalValue != null">
+        credit_inital_value,
+      </if>
+      <if test="creditEngagedValue != null">
+        credit_engaged_value,
+      </if>
+      <if test="creditSurplus != null">
+        credit_surplus,
+      </if>
+      <if test="isWhiteList != null">
+        is_white_list,
+      </if>
+      <if test="dealerStatus != null">
+        dealer_status,
+      </if>
+      <if test="createUser != null">
+        create_user,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateUser != null">
+        update_user,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="active != null">
+        active,
+      </if>
+      <if test="advantageValue != null">
+        advantage_value,
+      </if>
+      <if test="advantageIntroduction != null">
+        advantage_introduction,
+      </if>
+      <if test="businessIntroduction != null">
+        business_introduction,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="custType != null">
+        #{custType,jdbcType=INTEGER},
+      </if>
+      <if test="custRole != null">
+        #{custRole,jdbcType=INTEGER},
+      </if>
+      <if test="custInCode != null">
+        #{custInCode,jdbcType=VARCHAR},
+      </if>
+      <if test="custOutCode != null">
+        #{custOutCode,jdbcType=VARCHAR},
+      </if>
+      <if test="custZhName != null">
+        #{custZhName,jdbcType=VARCHAR},
+      </if>
+      <if test="custEnName != null">
+        #{custEnName,jdbcType=VARCHAR},
+      </if>
+      <if test="custAbbreviation != null">
+        #{custAbbreviation,jdbcType=VARCHAR},
+      </if>
+      <if test="custMobile != null">
+        #{custMobile,jdbcType=VARCHAR},
+      </if>
+      <if test="custPhoneNo != null">
+        #{custPhoneNo,jdbcType=VARCHAR},
+      </if>
+      <if test="custFax != null">
+        #{custFax,jdbcType=VARCHAR},
+      </if>
+      <if test="custEmail != null">
+        #{custEmail,jdbcType=VARCHAR},
+      </if>
+      <if test="custWeb != null">
+        #{custWeb,jdbcType=VARCHAR},
+      </if>
+      <if test="corporateAssets != null">
+        #{corporateAssets,jdbcType=DECIMAL},
+      </if>
+      <if test="corporateNumber != null">
+        #{corporateNumber,jdbcType=INTEGER},
+      </if>
+      <if test="corporateParents != null">
+        #{corporateParents,jdbcType=VARCHAR},
+      </if>
+      <if test="creditInitalValue != null">
+        #{creditInitalValue,jdbcType=DECIMAL},
+      </if>
+      <if test="creditEngagedValue != null">
+        #{creditEngagedValue,jdbcType=DECIMAL},
+      </if>
+      <if test="creditSurplus != null">
+        #{creditSurplus,jdbcType=DECIMAL},
+      </if>
+      <if test="isWhiteList != null">
+        #{isWhiteList,jdbcType=INTEGER},
+      </if>
+      <if test="dealerStatus != null">
+        #{dealerStatus,jdbcType=INTEGER},
+      </if>
+      <if test="createUser != null">
+        #{createUser,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null">
+        #{updateUser,jdbcType=INTEGER},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="active != null">
+        #{active,jdbcType=INTEGER},
+      </if>
+      <if test="advantageValue != null">
+        #{advantageValue,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="advantageIntroduction != null">
+        #{advantageIntroduction,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="businessIntroduction != null">
+        #{businessIntroduction,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.crazy.portal.entity.cust.TCustomerInfoDOWithBLOBs">
+    update t_customer_info
+    <set>
+      <if test="custType != null">
+        cust_type = #{custType,jdbcType=INTEGER},
+      </if>
+      <if test="custRole != null">
+        cust_role = #{custRole,jdbcType=INTEGER},
+      </if>
+      <if test="custInCode != null">
+        cust_in_code = #{custInCode,jdbcType=VARCHAR},
+      </if>
+      <if test="custOutCode != null">
+        cust_out_code = #{custOutCode,jdbcType=VARCHAR},
+      </if>
+      <if test="custZhName != null">
+        cust_zh_name = #{custZhName,jdbcType=VARCHAR},
+      </if>
+      <if test="custEnName != null">
+        cust_en_name = #{custEnName,jdbcType=VARCHAR},
+      </if>
+      <if test="custAbbreviation != null">
+        cust_abbreviation = #{custAbbreviation,jdbcType=VARCHAR},
+      </if>
+      <if test="custMobile != null">
+        cust_mobile = #{custMobile,jdbcType=VARCHAR},
+      </if>
+      <if test="custPhoneNo != null">
+        cust_phone_no = #{custPhoneNo,jdbcType=VARCHAR},
+      </if>
+      <if test="custFax != null">
+        cust_fax = #{custFax,jdbcType=VARCHAR},
+      </if>
+      <if test="custEmail != null">
+        cust_email = #{custEmail,jdbcType=VARCHAR},
+      </if>
+      <if test="custWeb != null">
+        cust_web = #{custWeb,jdbcType=VARCHAR},
+      </if>
+      <if test="corporateAssets != null">
+        corporate_assets = #{corporateAssets,jdbcType=DECIMAL},
+      </if>
+      <if test="corporateNumber != null">
+        corporate_number = #{corporateNumber,jdbcType=INTEGER},
+      </if>
+      <if test="corporateParents != null">
+        corporate_parents = #{corporateParents,jdbcType=VARCHAR},
+      </if>
+      <if test="creditInitalValue != null">
+        credit_inital_value = #{creditInitalValue,jdbcType=DECIMAL},
+      </if>
+      <if test="creditEngagedValue != null">
+        credit_engaged_value = #{creditEngagedValue,jdbcType=DECIMAL},
+      </if>
+      <if test="creditSurplus != null">
+        credit_surplus = #{creditSurplus,jdbcType=DECIMAL},
+      </if>
+      <if test="isWhiteList != null">
+        is_white_list = #{isWhiteList,jdbcType=INTEGER},
+      </if>
+      <if test="dealerStatus != null">
+        dealer_status = #{dealerStatus,jdbcType=INTEGER},
+      </if>
+      <if test="createUser != null">
+        create_user = #{createUser,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null">
+        update_user = #{updateUser,jdbcType=INTEGER},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="active != null">
+        active = #{active,jdbcType=INTEGER},
+      </if>
+      <if test="advantageValue != null">
+        advantage_value = #{advantageValue,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="advantageIntroduction != null">
+        advantage_introduction = #{advantageIntroduction,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="businessIntroduction != null">
+        business_introduction = #{businessIntroduction,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.crazy.portal.entity.cust.TCustomerInfoDOWithBLOBs">
+    update t_customer_info
+    set cust_type = #{custType,jdbcType=INTEGER},
+      cust_role = #{custRole,jdbcType=INTEGER},
+      cust_in_code = #{custInCode,jdbcType=VARCHAR},
+      cust_out_code = #{custOutCode,jdbcType=VARCHAR},
+      cust_zh_name = #{custZhName,jdbcType=VARCHAR},
+      cust_en_name = #{custEnName,jdbcType=VARCHAR},
+      cust_abbreviation = #{custAbbreviation,jdbcType=VARCHAR},
+      cust_mobile = #{custMobile,jdbcType=VARCHAR},
+      cust_phone_no = #{custPhoneNo,jdbcType=VARCHAR},
+      cust_fax = #{custFax,jdbcType=VARCHAR},
+      cust_email = #{custEmail,jdbcType=VARCHAR},
+      cust_web = #{custWeb,jdbcType=VARCHAR},
+      corporate_assets = #{corporateAssets,jdbcType=DECIMAL},
+      corporate_number = #{corporateNumber,jdbcType=INTEGER},
+      corporate_parents = #{corporateParents,jdbcType=VARCHAR},
+      credit_inital_value = #{creditInitalValue,jdbcType=DECIMAL},
+      credit_engaged_value = #{creditEngagedValue,jdbcType=DECIMAL},
+      credit_surplus = #{creditSurplus,jdbcType=DECIMAL},
+      is_white_list = #{isWhiteList,jdbcType=INTEGER},
+      dealer_status = #{dealerStatus,jdbcType=INTEGER},
+      create_user = #{createUser,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_user = #{updateUser,jdbcType=INTEGER},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      active = #{active,jdbcType=INTEGER},
+      advantage_value = #{advantageValue,jdbcType=LONGVARCHAR},
+      advantage_introduction = #{advantageIntroduction,jdbcType=LONGVARCHAR},
+      business_introduction = #{businessIntroduction,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.crazy.portal.entity.cust.TCustomerInfoDO">
+    update t_customer_info
+    set cust_type = #{custType,jdbcType=INTEGER},
+      cust_role = #{custRole,jdbcType=INTEGER},
+      cust_in_code = #{custInCode,jdbcType=VARCHAR},
+      cust_out_code = #{custOutCode,jdbcType=VARCHAR},
+      cust_zh_name = #{custZhName,jdbcType=VARCHAR},
+      cust_en_name = #{custEnName,jdbcType=VARCHAR},
+      cust_abbreviation = #{custAbbreviation,jdbcType=VARCHAR},
+      cust_mobile = #{custMobile,jdbcType=VARCHAR},
+      cust_phone_no = #{custPhoneNo,jdbcType=VARCHAR},
+      cust_fax = #{custFax,jdbcType=VARCHAR},
+      cust_email = #{custEmail,jdbcType=VARCHAR},
+      cust_web = #{custWeb,jdbcType=VARCHAR},
+      corporate_assets = #{corporateAssets,jdbcType=DECIMAL},
+      corporate_number = #{corporateNumber,jdbcType=INTEGER},
+      corporate_parents = #{corporateParents,jdbcType=VARCHAR},
+      credit_inital_value = #{creditInitalValue,jdbcType=DECIMAL},
+      credit_engaged_value = #{creditEngagedValue,jdbcType=DECIMAL},
+      credit_surplus = #{creditSurplus,jdbcType=DECIMAL},
+      is_white_list = #{isWhiteList,jdbcType=INTEGER},
+      dealer_status = #{dealerStatus,jdbcType=INTEGER},
+      create_user = #{createUser,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_user = #{updateUser,jdbcType=INTEGER},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      active = #{active,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

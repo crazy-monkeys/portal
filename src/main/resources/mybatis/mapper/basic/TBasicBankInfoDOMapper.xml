@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.crazy.portal.dao.basic.TBasicBankInfoDOMapper">
+  <resultMap id="BaseResultMap" type="com.crazy.portal.entity.basic.TBasicBankInfoDO">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="cust_id" jdbcType="INTEGER" property="custId" />
+    <result column="bank_name" jdbcType="VARCHAR" property="bankName" />
+    <result column="bank_account" jdbcType="VARCHAR" property="bankAccount" />
+    <result column="bank_bic" jdbcType="VARCHAR" property="bankBic" />
+    <result column="bank_country" jdbcType="VARCHAR" property="bankCountry" />
+    <result column="bank_province" jdbcType="VARCHAR" property="bankProvince" />
+    <result column="bank_city" jdbcType="VARCHAR" property="bankCity" />
+    <result column="bank_district" jdbcType="VARCHAR" property="bankDistrict" />
+    <result column="create_user" jdbcType="INTEGER" property="createUser" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_user" jdbcType="INTEGER" property="updateUser" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="active" jdbcType="INTEGER" property="active" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.crazy.portal.entity.basic.TBasicBankInfoDO">
+    <result column="bank_detail_info" jdbcType="LONGVARCHAR" property="bankDetailInfo" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, cust_id, bank_name, bank_account, bank_bic, bank_country, bank_province, bank_city, 
+    bank_district, create_user, create_time, update_user, update_time, active
+  </sql>
+  <sql id="Blob_Column_List">
+    bank_detail_info
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from t_basic_bank_info
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_basic_bank_info
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.crazy.portal.entity.basic.TBasicBankInfoDO">
+    insert into t_basic_bank_info (id, cust_id, bank_name, 
+      bank_account, bank_bic, bank_country, 
+      bank_province, bank_city, bank_district, 
+      create_user, create_time, update_user, 
+      update_time, active, bank_detail_info
+      )
+    values (#{id,jdbcType=INTEGER}, #{custId,jdbcType=INTEGER}, #{bankName,jdbcType=VARCHAR}, 
+      #{bankAccount,jdbcType=VARCHAR}, #{bankBic,jdbcType=VARCHAR}, #{bankCountry,jdbcType=VARCHAR}, 
+      #{bankProvince,jdbcType=VARCHAR}, #{bankCity,jdbcType=VARCHAR}, #{bankDistrict,jdbcType=VARCHAR}, 
+      #{createUser,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{updateUser,jdbcType=INTEGER}, 
+      #{updateTime,jdbcType=TIMESTAMP}, #{active,jdbcType=INTEGER}, #{bankDetailInfo,jdbcType=LONGVARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.crazy.portal.entity.basic.TBasicBankInfoDO">
+    insert into t_basic_bank_info
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="custId != null">
+        cust_id,
+      </if>
+      <if test="bankName != null">
+        bank_name,
+      </if>
+      <if test="bankAccount != null">
+        bank_account,
+      </if>
+      <if test="bankBic != null">
+        bank_bic,
+      </if>
+      <if test="bankCountry != null">
+        bank_country,
+      </if>
+      <if test="bankProvince != null">
+        bank_province,
+      </if>
+      <if test="bankCity != null">
+        bank_city,
+      </if>
+      <if test="bankDistrict != null">
+        bank_district,
+      </if>
+      <if test="createUser != null">
+        create_user,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateUser != null">
+        update_user,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="active != null">
+        active,
+      </if>
+      <if test="bankDetailInfo != null">
+        bank_detail_info,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="custId != null">
+        #{custId,jdbcType=INTEGER},
+      </if>
+      <if test="bankName != null">
+        #{bankName,jdbcType=VARCHAR},
+      </if>
+      <if test="bankAccount != null">
+        #{bankAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="bankBic != null">
+        #{bankBic,jdbcType=VARCHAR},
+      </if>
+      <if test="bankCountry != null">
+        #{bankCountry,jdbcType=VARCHAR},
+      </if>
+      <if test="bankProvince != null">
+        #{bankProvince,jdbcType=VARCHAR},
+      </if>
+      <if test="bankCity != null">
+        #{bankCity,jdbcType=VARCHAR},
+      </if>
+      <if test="bankDistrict != null">
+        #{bankDistrict,jdbcType=VARCHAR},
+      </if>
+      <if test="createUser != null">
+        #{createUser,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null">
+        #{updateUser,jdbcType=INTEGER},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="active != null">
+        #{active,jdbcType=INTEGER},
+      </if>
+      <if test="bankDetailInfo != null">
+        #{bankDetailInfo,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.crazy.portal.entity.basic.TBasicBankInfoDO">
+    update t_basic_bank_info
+    <set>
+      <if test="custId != null">
+        cust_id = #{custId,jdbcType=INTEGER},
+      </if>
+      <if test="bankName != null">
+        bank_name = #{bankName,jdbcType=VARCHAR},
+      </if>
+      <if test="bankAccount != null">
+        bank_account = #{bankAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="bankBic != null">
+        bank_bic = #{bankBic,jdbcType=VARCHAR},
+      </if>
+      <if test="bankCountry != null">
+        bank_country = #{bankCountry,jdbcType=VARCHAR},
+      </if>
+      <if test="bankProvince != null">
+        bank_province = #{bankProvince,jdbcType=VARCHAR},
+      </if>
+      <if test="bankCity != null">
+        bank_city = #{bankCity,jdbcType=VARCHAR},
+      </if>
+      <if test="bankDistrict != null">
+        bank_district = #{bankDistrict,jdbcType=VARCHAR},
+      </if>
+      <if test="createUser != null">
+        create_user = #{createUser,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null">
+        update_user = #{updateUser,jdbcType=INTEGER},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="active != null">
+        active = #{active,jdbcType=INTEGER},
+      </if>
+      <if test="bankDetailInfo != null">
+        bank_detail_info = #{bankDetailInfo,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.crazy.portal.entity.basic.TBasicBankInfoDO">
+    update t_basic_bank_info
+    set cust_id = #{custId,jdbcType=INTEGER},
+      bank_name = #{bankName,jdbcType=VARCHAR},
+      bank_account = #{bankAccount,jdbcType=VARCHAR},
+      bank_bic = #{bankBic,jdbcType=VARCHAR},
+      bank_country = #{bankCountry,jdbcType=VARCHAR},
+      bank_province = #{bankProvince,jdbcType=VARCHAR},
+      bank_city = #{bankCity,jdbcType=VARCHAR},
+      bank_district = #{bankDistrict,jdbcType=VARCHAR},
+      create_user = #{createUser,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_user = #{updateUser,jdbcType=INTEGER},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      active = #{active,jdbcType=INTEGER},
+      bank_detail_info = #{bankDetailInfo,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.crazy.portal.entity.basic.TBasicBankInfoDO">
+    update t_basic_bank_info
+    set cust_id = #{custId,jdbcType=INTEGER},
+      bank_name = #{bankName,jdbcType=VARCHAR},
+      bank_account = #{bankAccount,jdbcType=VARCHAR},
+      bank_bic = #{bankBic,jdbcType=VARCHAR},
+      bank_country = #{bankCountry,jdbcType=VARCHAR},
+      bank_province = #{bankProvince,jdbcType=VARCHAR},
+      bank_city = #{bankCity,jdbcType=VARCHAR},
+      bank_district = #{bankDistrict,jdbcType=VARCHAR},
+      create_user = #{createUser,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_user = #{updateUser,jdbcType=INTEGER},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      active = #{active,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
