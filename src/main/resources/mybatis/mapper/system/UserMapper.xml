@@ -208,7 +208,7 @@
       <if test="loginName != null and loginName != ''">
         and a.login_name = #{loginName,jdbcType=VARCHAR}
       </if>
-      <if test="userType != null">
+      <if test="userType != null and userType != ''">
         and a.user_type = #{userType,jdbcType=INTEGER}
       </if>
       <if test="regStartTime != null and regEndTime != null">

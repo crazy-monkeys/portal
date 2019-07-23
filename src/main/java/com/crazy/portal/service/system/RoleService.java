@@ -86,6 +86,13 @@ public class RoleService {
     }
 
 
+    /**
+     * 获取所有有效的角色
+     * @return
+     */
+    public List<Role> findRoles(){
+        return roleMapper.findAllRoles();
+    }
 
     /**
      * 删除角色

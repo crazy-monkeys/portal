@@ -41,4 +41,6 @@ public interface RoleMapper {
     int countByRoleName(String roleName);
 
     List<Role> findRolesByResourceId(Integer resourceId);
+
+    List<Role> findAllRoles();
 }

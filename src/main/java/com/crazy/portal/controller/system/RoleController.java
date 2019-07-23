@@ -11,6 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @Desc:
@@ -38,6 +39,12 @@ public class RoleController extends BaseController {
                                     @RequestParam(required = false,defaultValue = "10") Integer pageSize) {
         PageInfo<Role> pager = roleService.queryRoleListPag(roleName, pageNum,pageSize);
         return super.successResult(pager);
+    }
+
+    @GetMapping(value = "/findRoles")
+    public BaseResponse findRoles() {
+        List<Role> roles = roleService.findRoles();
+        return super.successResult(roles);
     }
 
     /**
