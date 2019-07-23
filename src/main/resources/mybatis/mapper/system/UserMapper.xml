@@ -215,10 +215,10 @@
       <if test="userType != null and userType != ''">
         and a.user_type = #{userType,jdbcType=INTEGER}
       </if>
-      <if test="regStartTime != null regEndTime == null">
+      <if test="regStartTime != null and regEndTime == null">
         and a.reg_time &gt;= #{regStartTime}
       </if>
-      <if test="regStartTime == null regEndTime != null">
+      <if test="regStartTime == null and regEndTime != null">
         and a.reg_time &lt;= #{regEndTime}
       </if>
       <if test="regStartTime != null and regEndTime != null">
