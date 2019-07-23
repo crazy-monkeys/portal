@@ -115,7 +115,7 @@ public class PermissionController extends BaseController{
             return new BaseResponse(SystemManagerEnum.ROLE_NOT_EXIST.getCode(),SystemManagerEnum.ROLE_NOT_EXIST.getZhMsg());
         }
         permissionService.improveUserPerm(role.getId(),user.getId(),super.getCurrentUser().getId());
-        return null;
+        return super.successResult();
     }
 
 

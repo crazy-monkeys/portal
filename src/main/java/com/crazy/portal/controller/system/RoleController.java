@@ -33,10 +33,11 @@ public class RoleController extends BaseController {
      * @param pageSize
      * @return
      */
-    @GetMapping(value = "/roleInfo")
+    @GetMapping(value = "/rolePageInfo")
     public BaseResponse userSetting(@RequestParam(required = false) String roleCode,
                                     @RequestParam(required = false,defaultValue = "1") Integer pageNum,
                                     @RequestParam(required = false,defaultValue = "10") Integer pageSize) {
+
         PageInfo<Role> pager = roleService.queryRoleListPag(roleCode, pageNum,pageSize);
         return super.successResult(pager);
     }
