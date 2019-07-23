@@ -34,10 +34,10 @@ public class RoleController extends BaseController {
      * @return
      */
     @GetMapping(value = "/roleInfo")
-    public BaseResponse userSetting(@RequestParam(required = false) String roleName,
+    public BaseResponse userSetting(@RequestParam(required = false) String roleCode,
                                     @RequestParam(required = false,defaultValue = "1") Integer pageNum,
                                     @RequestParam(required = false,defaultValue = "10") Integer pageSize) {
-        PageInfo<Role> pager = roleService.queryRoleListPag(roleName, pageNum,pageSize);
+        PageInfo<Role> pager = roleService.queryRoleListPag(roleCode, pageNum,pageSize);
         return super.successResult(pager);
     }
 
@@ -53,14 +53,20 @@ public class RoleController extends BaseController {
      */
     @PostMapping(value = "/saveRole")
     public BaseResponse saveRole(@RequestBody Role role) {
+
+        if(StringUtils.isEmpty(role.getRoleCode())){
+            return new BaseResponse(SystemManagerEnum.ROLE_EMPTY_CODE.getCode(),
+                    SystemManagerEnum.ROLE_EMPTY_CODE.getZhMsg());
+        }
+
         if(StringUtils.isEmpty(role.getRoleName())){
             return new BaseResponse(SystemManagerEnum.ROLE_EMPTY_NAME.getCode(),
                     SystemManagerEnum.ROLE_EMPTY_NAME.getZhMsg());
         }
 
         role.setActive((short)1);
-        boolean isExist = roleService.roleExist(role.getRoleName());
-        if(isExist){
+        Role roleQuery = roleService.findRoleByCode(role.getRoleCode());
+        if(roleQuery != null){
             return new BaseResponse(SystemManagerEnum.ROLE_EXISTS.getCode(),
                     SystemManagerEnum.ROLE_EXISTS.getZhMsg());
         }
@@ -72,12 +78,11 @@ public class RoleController extends BaseController {
 
     /**
      * 查询角色详情
-     * @param roleId
      * @return
      */
-    @GetMapping(value = "/findRole/{roleId}")
-    public BaseResponse findRole(@PathVariable Integer roleId) {
-        Role role = roleService.findRole(roleId);
+    @GetMapping(value = "/findRole/{roleCode}")
+    public BaseResponse findRole(@PathVariable String roleCode) {
+        Role role = roleService.findRoleByCode(roleCode);
         if(role.getRoleName() == null){
             return new BaseResponse(SystemManagerEnum.ROLE_NOT_EXIST.getCode(),
                     SystemManagerEnum.ROLE_NOT_EXIST.getZhMsg());
@@ -91,24 +96,21 @@ public class RoleController extends BaseController {
      */
     @PostMapping(value = "/updateRole")
     public BaseResponse updateRole(@RequestBody Role role) {
-        if(StringUtils.isEmpty(role.getRoleName())){
-            return new BaseResponse(SystemManagerEnum.ROLE_EMPTY_NAME.getCode(),
-                    SystemManagerEnum.ROLE_EMPTY_NAME.getZhMsg());
+        if(StringUtils.isEmpty(role.getRoleCode())){
+            return new BaseResponse(SystemManagerEnum.ROLE_EMPTY_CODE.getCode(),
+                    SystemManagerEnum.ROLE_EMPTY_CODE.getZhMsg());
         }
-        if(role.getId() == null){
-            return new BaseResponse(SystemManagerEnum.ROLE_EMPTY_ID.getCode(),
-                    SystemManagerEnum.ROLE_EMPTY_ID.getZhMsg());
-        }
-        Role currentRole = roleService.findRole(role.getId());
+        Role currentRole = roleService.findRoleByCode(role.getRoleCode());
         if(currentRole.getRoleName() == null){
             return new BaseResponse(SystemManagerEnum.ROLE_NOT_EXIST.getCode(),
                     SystemManagerEnum.ROLE_NOT_EXIST.getZhMsg());
         }
-        boolean hasExist = roleService.roleExist(role.getRoleName());
-        if(!currentRole.getRoleName().equals(role.getRoleName()) && hasExist){
+        Role roleQuery = roleService.findRoleByCode(role.getRoleCode());
+        if(!currentRole.getRoleName().equals(role.getRoleName()) && roleQuery != null){
             return new BaseResponse(SystemManagerEnum.ROLE_EXISTS.getCode(),
                     SystemManagerEnum.ROLE_EXISTS.getZhMsg());
         }
+        role.setId(roleQuery.getId());
         role.setUpdateTime(new Date());
         role.setUpdateUserId(super.getCurrentUser().getId());
         roleService.saveRole(role);

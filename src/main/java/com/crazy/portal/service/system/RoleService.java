@@ -2,21 +2,15 @@ package com.crazy.portal.service.system;
 
 import com.crazy.portal.config.exception.BusinessException;
 import com.crazy.portal.dao.system.RoleMapper;
-import com.crazy.portal.dao.system.RoleResourceMapper;
 import com.crazy.portal.entity.system.Role;
 import com.crazy.portal.util.BeanUtils;
 import com.crazy.portal.util.ErrorCodes;
 import com.crazy.portal.util.PortalUtil;
-import com.fasterxml.jackson.databind.util.BeanUtil;
-import com.github.pagehelper.Page;
-import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.beans.IntrospectionException;
-import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 /**
@@ -31,8 +25,6 @@ public class RoleService {
 
     @Resource
     private RoleMapper roleMapper;
-    @Resource
-    private RoleResourceMapper roleResourceMapper;
 
     /**
      * 分页获取角色列表
@@ -40,16 +32,14 @@ public class RoleService {
      * @param pageSize
      * @return
      */
-    public PageInfo<Role> queryRoleListPag(String roleName, int pageNum,int pageSize){
+    public PageInfo<Role> queryRoleListPag(String roleCode, int pageNum,int pageSize){
         PortalUtil.defaultStartPage(pageNum,pageSize);
-        List<Role> roleList = roleMapper.queryRoleList(roleName);
-//        Page<Role> page = new Page<>();
-//        page.addAll(roleList);
+        List<Role> roleList = roleMapper.queryRoleList(roleCode);
         return new PageInfo<>(roleList);
     }
 
-    public boolean roleExist(String roleName){
-        return roleMapper.countByRoleName(roleName)>0?true:false;
+    public Role findRoleByCode(String roleCode){
+        return roleMapper.findRoleByCode(roleCode);
     }
 
 
@@ -61,12 +51,12 @@ public class RoleService {
     public int saveRole(Role role){
         try {
             if(role.getId() == null){
-                return roleMapper.insert(role);
+                return roleMapper.insertSelective(role);
             }else{
-                Role roleInDo = roleMapper.selectByPrimaryKey(role.getId());
+                Role roleInDo = roleMapper.findRoleByCode(role.getRoleCode());
                 if(roleInDo != null){
                     BeanUtils.copyNotNullFields(role,roleInDo);
-                    return roleMapper.updateByPrimaryKey(roleInDo);
+                    return roleMapper.updateByPrimaryKeySelective(roleInDo);
                 }
             }
         } catch (Exception e) {
@@ -78,11 +68,11 @@ public class RoleService {
 
     /**
      * 查询role详情
-     * @param roleId
+     * @param roleCode
      * @return
      */
-    public Role findRole(Integer roleId){
-        return roleMapper.selectByPrimaryKey(roleId);
+    public Role findRole(String roleCode){
+        return roleMapper.findRoleByCode(roleCode);
     }
 
 

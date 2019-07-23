@@ -6,32 +6,27 @@
     <result column="active" jdbcType="SMALLINT" property="active" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="create_user_id" jdbcType="INTEGER" property="createUserId" />
-    <result column="role_desc" jdbcType="VARCHAR" property="roleDesc" />
     <result column="role_name" jdbcType="VARCHAR" property="roleName" />
+    <result column="role_code" jdbcType="VARCHAR" property="roleCode" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="update_user_id" jdbcType="INTEGER" property="updateUserId" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, active, create_time, create_user_id, role_desc, role_name, update_time, update_user_id
+    id, active, create_time, create_user_id, role_code, role_name, update_time, update_user_id
   </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+
+  <select id="findById" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from t_role
     where id = #{id,jdbcType=INTEGER}
   </select>
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from t_role
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.crazy.portal.entity.system.Role" keyProperty="id" useGeneratedKeys="true">
-    insert into t_role (active, create_time,
-      create_user_id, role_desc, role_name, 
-      update_time, update_user_id)
-    values (#{active,jdbcType=SMALLINT}, #{createTime,jdbcType=TIMESTAMP},
-      #{createUserId,jdbcType=INTEGER}, #{roleDesc,jdbcType=VARCHAR}, #{roleName,jdbcType=VARCHAR}, 
-      #{updateTime,jdbcType=TIMESTAMP}, #{updateUserId,jdbcType=INTEGER})
-  </insert>
+
   <insert id="insertSelective" parameterType="com.crazy.portal.entity.system.Role" keyProperty="id">
     insert into t_role
     <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -47,8 +42,8 @@
       <if test="createUserId != null">
         create_user_id,
       </if>
-      <if test="roleDesc != null">
-        role_desc,
+      <if test="roleCode != null">
+        role_code,
       </if>
       <if test="roleName != null">
         role_name,
@@ -73,8 +68,8 @@
       <if test="createUserId != null">
         #{createUserId,jdbcType=INTEGER},
       </if>
-      <if test="roleDesc != null">
-        #{roleDesc,jdbcType=VARCHAR},
+      <if test="roleCode != null">
+        #{roleCode,jdbcType=VARCHAR},
       </if>
       <if test="roleName != null">
         #{roleName,jdbcType=VARCHAR},
@@ -114,25 +109,14 @@
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.crazy.portal.entity.system.Role">
-    update t_role
-    set active = #{active,jdbcType=SMALLINT},
-      create_time = #{createTime,jdbcType=TIMESTAMP},
-      create_user_id = #{createUserId,jdbcType=INTEGER},
-      role_desc = #{roleDesc,jdbcType=VARCHAR},
-      role_name = #{roleName,jdbcType=VARCHAR},
-      update_time = #{updateTime,jdbcType=TIMESTAMP},
-      update_user_id = #{updateUserId,jdbcType=INTEGER}
-    where id = #{id,jdbcType=INTEGER}
-  </update>
 
 
   <select id="queryRoleList" resultMap="BaseResultMap" parameterType="com.crazy.portal.entity.system.Role">
     SELECT
     <include refid="Base_Column_List" />
     FROM t_role where active = 1
-    <if test="roleName != null">
-      and role_name = #{roleName}
+    <if test="roleCode != null">
+      and role_code = #{roleCode}
     </if>
   </select>
 
@@ -142,9 +126,9 @@
     FROM t_role a inner join t_user_role b on a.role_id = b.role_id where b.user_id = #{userId,jdbcType=INTEGER}
   </select>
 
-  <select id="countByRoleName" resultType="int">
-    select count(1) from t_role
-    where role_name =#{roleName}
+  <select id="findRoleByCode" resultMap="BaseResultMap">
+    select * from t_role
+    where role_code = #{roleCode}
   </select>
 
   <select id="findRolesByResourceId" parameterType="java.lang.Integer" resultMap="BaseResultMap">

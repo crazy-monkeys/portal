@@ -3,10 +3,7 @@ package com.crazy.portal.service.system;
 import com.crazy.portal.bean.system.PermissionBean;
 import com.crazy.portal.config.exception.BusinessException;
 import com.crazy.portal.dao.system.*;
-import com.crazy.portal.entity.system.Resource;
-import com.crazy.portal.entity.system.Role;
-import com.crazy.portal.entity.system.RoleResource;
-import com.crazy.portal.entity.system.User;
+import com.crazy.portal.entity.system.*;
 import com.crazy.portal.util.DateUtil;
 import com.crazy.portal.util.ErrorCodes;
 import com.crazy.portal.util.StringUtil;
@@ -198,20 +195,40 @@ public class PermissionService {
      * @return
      */
     public boolean savePermission(PermissionBean permissionBean, Integer userId){
-        Integer roleId = permissionBean.getRoleId();
+        String roleCode = permissionBean.getRoleCode();
         List<Integer> addPermissionIds = permissionBean.getAddPermissionIds();
         List<Integer> rmPermissionIds = permissionBean.getRmPermissionIds();
         synchronized (this){
-            Role roleDO = roleMapper.selectByPrimaryKey(roleId);
+            Role roleDO = roleMapper.findRoleByCode(roleCode);
             if(roleDO == null){
                 throw new BusinessException(ErrorCodes.SystemManagerEnum.ROLE_NOT_EXIST.getCode(),
                         ErrorCodes.SystemManagerEnum.ROLE_NOT_EXIST.getZhMsg());
             }
             if(addPermissionIds != null && !addPermissionIds.isEmpty()){
-                this.saveResouece(addPermissionIds, roleId,true,userId);
+                this.saveResouece(addPermissionIds, roleDO.getId(),true,userId);
             }
             if(rmPermissionIds != null && !rmPermissionIds.isEmpty()){
-                this.saveResouece(rmPermissionIds, roleId,false,userId);
+                this.saveResouece(rmPermissionIds, roleDO.getId(),false,userId);
+            }
+        }
+        return true;
+    }
+
+    public boolean improveUserPerm(Integer roleId,Integer userId,Integer currentUserId){
+        UserRole userRole = userRoleMapper.selectByUserId(userId);
+        if(userRole == null){
+            userRole = new UserRole();
+            userRole.setUserId(userId);
+            userRole.setRoleId(roleId);
+            userRole.setCreateTime(new Date());
+            userRole.setCreateId(currentUserId);
+            userRoleMapper.insertSelective(userRole);
+        }else{
+            if(userRole.getRoleId() != roleId){
+                userRole.setRoleId(roleId);
+                userRole.setUpdateId(currentUserId);
+                userRole.setUpdateTime(new Date());
+                userRoleMapper.updateByPrimaryKeySelective(userRole);
             }
         }
         return true;

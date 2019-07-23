@@ -111,7 +111,7 @@ public class JwtUserService implements UserDetailsService {
             throw new LockedException("password expiration");
         }
         UserRole userRole = userRoleMapper.selectByUserId(user.getId());
-        Role role = roleMapper.selectByPrimaryKey(userRole.getRoleId());
+        Role role = roleMapper.findById(userRole.getRoleId());
         return new JwtUser(user,user.getLoginName(),user.getLoginPwd(),
                 Collections.singleton(new SimpleGrantedAuthority(role.getRoleName())));
     }

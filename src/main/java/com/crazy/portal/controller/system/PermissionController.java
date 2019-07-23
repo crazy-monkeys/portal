@@ -4,7 +4,11 @@ import com.crazy.portal.bean.BaseResponse;
 import com.crazy.portal.bean.system.PermissionBean;
 import com.crazy.portal.controller.BaseController;
 import com.crazy.portal.entity.system.Resource;
+import com.crazy.portal.entity.system.Role;
+import com.crazy.portal.entity.system.User;
 import com.crazy.portal.service.system.PermissionService;
+import com.crazy.portal.service.system.RoleService;
+import com.crazy.portal.service.system.UserService;
 import com.crazy.portal.util.Enums;
 import com.crazy.portal.util.ErrorCodes.SystemManagerEnum;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +32,10 @@ public class PermissionController extends BaseController{
 
     @javax.annotation.Resource
     private PermissionService permissionService;
+    @javax.annotation.Resource
+    private UserService userService;
+    @javax.annotation.Resource
+    private RoleService roleService;
 
 
     /**
@@ -47,28 +55,33 @@ public class PermissionController extends BaseController{
 
     /**
      * 获取角色对应的资源id
-     * @param roleId
+     * @param roleCode
      * @return
      */
-    @GetMapping(value = "/findPermission/{roleId}")
-    public BaseResponse findPermission(@PathVariable Integer roleId) {
-        if(roleId == null){
-            return new BaseResponse(SystemManagerEnum.ROLE_EMPTY_ID.getCode(),
-                    SystemManagerEnum.ROLE_EMPTY_ID.getZhMsg());
+    @GetMapping(value = "/findPermission/{roleCode}")
+    public BaseResponse findPermission(@PathVariable String roleCode) {
+        if(roleCode == null){
+            return new BaseResponse(SystemManagerEnum.ROLE_EMPTY_CODE.getCode(),
+                    SystemManagerEnum.ROLE_EMPTY_CODE.getZhMsg());
         }
-        List<Integer> resourceIds = permissionService.findPermissionIds(Collections.singletonList(roleId));
+        Role role = roleService.findRoleByCode(roleCode);
+        if(role == null){
+            return new BaseResponse(SystemManagerEnum.ROLE_NOT_EXIST.getCode(),
+                    SystemManagerEnum.ROLE_NOT_EXIST.getZhMsg());
+        }
+        List<Integer> resourceIds = permissionService.findPermissionIds(Collections.singletonList(role.getId()));
         return super.successResult(resourceIds);
     }
 
     /**
-     * 赋权
+     * 给角色赋资源权限
      * @return
      */
     @PostMapping(value = "/savePermission")
     public BaseResponse empowerment(@RequestBody PermissionBean permissionBean) {
-        if(permissionBean.getRoleId() == null){
-            return new BaseResponse(SystemManagerEnum.ROLE_EMPTY_ID.getCode(),
-                    SystemManagerEnum.ROLE_EMPTY_ID.getZhMsg());
+        if(permissionBean.getRoleCode() == null){
+            return new BaseResponse(SystemManagerEnum.ROLE_EMPTY_CODE.getCode(),
+                    SystemManagerEnum.ROLE_EMPTY_CODE.getZhMsg());
         }
         List<Integer> addResourcesIds = permissionBean.getAddPermissionIds();
         List<Integer> rmResourcesIds = permissionBean.getRmPermissionIds();
@@ -80,6 +93,29 @@ public class PermissionController extends BaseController{
         }
         permissionService.savePermission(permissionBean,super.getCurrentUser().getId());
         return super.successResult();
+    }
+
+    /**
+     * 给指定用户赋角色
+     * @param loginName
+     * @param roleCode
+     * @return
+     */
+    @PostMapping(value = "/improveUserPerm")
+    public BaseResponse improveUserPerm(@RequestParam String loginName,
+                                        @RequestParam String roleCode){
+
+        User user = userService.findUser(loginName);
+        if(user == null){
+            return new BaseResponse(SystemManagerEnum.USER_NOT_EXISTS.getCode(),SystemManagerEnum.USER_NOT_EXISTS.getZhMsg());
+        }
+
+        Role role = roleService.findRoleByCode(roleCode);
+        if(role == null){
+            return new BaseResponse(SystemManagerEnum.ROLE_NOT_EXIST.getCode(),SystemManagerEnum.ROLE_NOT_EXIST.getZhMsg());
+        }
+        permissionService.improveUserPerm(role.getId(),user.getId(),super.getCurrentUser().getId());
+        return null;
     }
 
 

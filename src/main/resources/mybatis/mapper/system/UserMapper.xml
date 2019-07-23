@@ -20,7 +20,10 @@
     <result column="user_type" jdbcType="INTEGER" property="userType" />
 
     <!-- EXT -->
-    <result column="role_name" property="roleName" jdbcType="VARCHAR" />
+    <collection property="role" javaType="com.crazy.portal.entity.system.Role" ofType="com.crazy.portal.entity.system.Role">
+      <result column="role_code" property="roleCode" jdbcType="VARCHAR" />
+      <result column="role_name" property="roleName" jdbcType="VARCHAR" />
+    </collection>
   </resultMap>
 
   <sql id="Base_Column_List">
@@ -200,7 +203,8 @@
   <select id="selectUserWithPage" resultMap="BaseResultMap">
     select
     a.*,
-    ro.role_name
+    ro.role_name,
+    ro.role_code
     from t_user a
     inner join t_user_role b on a.id = b.user_id
     inner join t_role ro on b.role_id = ro.id
@@ -215,9 +219,9 @@
         and a.reg_time &gt;= #{regStartTime} and a.reg_time &lt;= #{regEndTime}
       </if>
       <if test="customerName != null and customerName != ''">
-        and a.customer_name = #{customer_name}
+        and a.customer_name = #{customerName}
       </if>
-      <if test="roleName != null and roleName != ''">
+      <if test="role != null and role.roleName != null and role.roleName != ''">
         and ro.role_name = #{roleName}
       </if>
     </where>

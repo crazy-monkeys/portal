@@ -66,7 +66,7 @@ public class User {
     private Date updateTime;
 
     /** ext **/
-    private String roleName;
+    private Role role;
 
     @JSONField(serialize=false)
     private Date regStartTime;
