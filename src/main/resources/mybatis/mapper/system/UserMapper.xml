@@ -206,8 +206,8 @@
     ro.role_name,
     ro.role_code
     from t_user a
-    inner join t_user_role b on a.id = b.user_id
-    inner join t_role ro on b.role_id = ro.id
+    left join t_user_role b on a.id = b.user_id
+    left join t_role ro on b.role_id = ro.id
     <where>
       <if test="loginName != null and loginName != ''">
         and a.login_name = #{loginName,jdbcType=VARCHAR}
