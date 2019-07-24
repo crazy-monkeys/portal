@@ -352,4 +352,14 @@
       modify_time = #{modifyTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}
   </update>
+
+  <select id="selectCustByPage" resultMap="BaseResultMap" parameterType="com.crazy.portal.bean.customer.CustomerQueryBean">
+    select
+    <include refid="Base_Column_List" />
+    from t_cust_basic_info
+    where 1=1
+    <if test="customerName != null">
+      and customer_name = #{customerName,jdbcType=BIGINT}
+    </if>
+  </select>
 </mapper>

@@ -1,6 +1,9 @@
 package com.crazy.portal.dao.customer;
 
+import com.crazy.portal.bean.customer.CustomerQueryBean;
 import com.crazy.portal.entity.customer.CustBasicInfo;
+
+import java.util.List;
 
 public interface CustBasicInfoMapper {
     int deleteByPrimaryKey(Long id);
@@ -14,4 +17,6 @@ public interface CustBasicInfoMapper {
     int updateByPrimaryKeySelective(CustBasicInfo record);
 
     int updateByPrimaryKey(CustBasicInfo record);
+
+    List<CustBasicInfo> selectCustByPage(CustomerQueryBean bean);
 }
