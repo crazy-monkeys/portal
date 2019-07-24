@@ -92,6 +92,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                 .addFilterBefore(spnegoAuthenticationProcessingFilter(authenticationManagerBean()),BasicAuthenticationFilter.class)
                 //拦截OPTIONS请求，直接返回header
                 .addFilterAfter(new RequestFilter(), CorsFilter.class)
+
                 //添加登录filter
                 .apply(new LoginConfigurer<>()).loginSuccessHandler(loginSuccessHandler)
                 .and()
@@ -111,22 +112,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
     @Override
     protected void configure(AuthenticationManagerBuilder auth) {
         auth
+            .authenticationProvider(daoAuthenticationProvider())
             .authenticationProvider(kerberosAuthenticationProvider())
             .authenticationProvider(kerberosServiceAuthenticationProvider())
-            .authenticationProvider(daoAuthenticationProvider())
-            .authenticationProvider(jwtAuthenticationProvider())
-        ;
+            .authenticationProvider(jwtAuthenticationProvider());
     }
-
 
     @Override
     protected UserDetailsService userDetailsService() {
         return jwtUserService;
     }
 
-
     /**
-     *
      *
      * @return
      */

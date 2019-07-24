@@ -74,8 +74,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
-
-
         //获取资源路径
         String url = request.getServletPath();
         //可以忽略权限的url
@@ -88,9 +86,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
                 }
             }
         }
-
         Throwable throwable;
         try {
+//            Authentication existingAuth = SecurityContextHolder.getContext().getAuthentication();
+//            if(existingAuth != null){
+//                log.info("123213");
+//            }
+//            filterChain.doFilter(request, response);
+//            return;
             String token = getJwtToken(request);
             if(StringUtils.isEmpty(token)){
                 log.warn("url {} token is null",url);

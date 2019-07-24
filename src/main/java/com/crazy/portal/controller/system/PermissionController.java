@@ -14,10 +14,7 @@ import com.crazy.portal.util.ErrorCodes.SystemManagerEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * @Desc:
@@ -39,18 +36,23 @@ public class PermissionController extends BaseController{
 
 
     /**
-     * 获取所有资源
+     * 获取当前登录用户下拥有的所有资源
      * @return
      */
     @GetMapping(value="/getAll")
     public BaseResponse getAll(){
+
+        Map<String,Object> root = new HashMap<>();
+        root.put("id",0);
+        root.put("resourceName","ROOT");
+        root.put("children",Collections.EMPTY_LIST);
         List<Resource> list = permissionService.queryResourceList();
-        if(list.isEmpty()){
-            return super.successResult(list);
+        if(!list.isEmpty()){
+            //获取树形结构
+            List<Resource> resources = permissionService.resourceTree(list);
+            root.put("children",resources);
         }
-        //获取树形结构
-        List<Resource> resources = permissionService.resourceTree(list);
-        return super.successResult(resources);
+        return super.successResult(root);
     }
 
     /**
