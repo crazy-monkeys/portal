@@ -71,4 +71,9 @@ public class BaseController {
         return response;
     }
 
+    protected BaseResponse errorResult(){
+        BaseResponse resp = new BaseResponse();
+        resp.fail(null);
+        return resp;
+    }
 }
