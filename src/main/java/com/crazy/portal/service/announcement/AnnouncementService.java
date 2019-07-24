@@ -51,6 +51,7 @@ public class AnnouncementService {
      * @param id 公告ID
      * @return
      */
+    @Deprecated
     public Announcement previewById(Integer id) {
         Announcement announcement = announcementDOMapper.selectByPrimaryKey(id);
         Assert.notNull(announcement, "No relevant record information was found by id");
@@ -139,8 +140,8 @@ public class AnnouncementService {
         boolean condition = dbRecord.getCreateUserId() == userId;
         Assert.isTrue(condition, "Do not operate other announcement information");
         dbRecord.setTitle(reqRecord.getTitle());
-        dbRecord.setContent(reqRecord.getContent());
-        dbRecord.setTopmost(reqRecord.getTopmost());
+//        dbRecord.setContent(reqRecord.getContent());
+//        dbRecord.setTopmost(reqRecord.getTopmost());
         dbRecord.setUpdateTime(DateUtil.getCurrentTS());
         dbRecord.setTypeId(reqRecord.getTypeId());
         return announcementDOMapper.updateByPrimaryKeySelective(dbRecord);
