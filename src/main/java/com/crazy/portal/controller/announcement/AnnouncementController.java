@@ -66,9 +66,23 @@ public class AnnouncementController extends BaseController {
         return super.successResult();
     }
 
+    /**
+     * 公告文件上传
+     * @param files
+     * @return
+     */
     @PostMapping(value = "/file")
     public BaseResponse pushFile(MultipartFile[] files) {
         return super.successResult(announcementService.pushFile());
+    }
+
+    /**
+     * 公告文档下载或预览
+     * @param id    公告ID
+     */
+    @GetMapping(value = "/file/{id}")
+    public void pullFile(Integer id) {
+
     }
 
 }
