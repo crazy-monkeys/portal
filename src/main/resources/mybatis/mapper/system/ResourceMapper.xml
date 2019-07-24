@@ -28,11 +28,15 @@
     where id = #{id,jdbcType=INTEGER}
   </select>
 
-  <select id="findActiveList" resultMap="BaseResultMap">
+  <select id="findActiveList" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
-    from t_resource
-    where active = 1
+    from t_resource where active = 1
+    <if test="roleId != null">
+      and id in(
+        select resource_id from t_role_resource where role_id = #{roleId}
+      )
+    </if>
   </select>
 
   <select id="getRoleCountByResourceId" resultType="int">

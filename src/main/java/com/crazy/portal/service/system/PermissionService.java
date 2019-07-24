@@ -64,11 +64,11 @@ public class PermissionService {
     }
 
     /**
-     * 获取所有权限
+     * 获取用户下所有权限
      * @return
      */
-    public List<Resource> queryResourceList(){
-        return resourceMapper.findActiveList();
+    public List<Resource> queryResourceList(Integer roleId){
+        return resourceMapper.findActiveList(roleId);
     }
 
     /**

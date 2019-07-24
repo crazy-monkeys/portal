@@ -46,7 +46,14 @@ public class PermissionController extends BaseController{
         root.put("id",0);
         root.put("resourceName","ROOT");
         root.put("children",Collections.EMPTY_LIST);
-        List<Resource> list = permissionService.queryResourceList();
+        Role currentRole = super.getCurrentRole();
+        Integer roleID;
+        if(currentRole.getRoleCode().equals("ADMIN")){
+            roleID = null;
+        }else{
+            roleID = currentRole.getId();
+        }
+        List<Resource> list = permissionService.queryResourceList(roleID);
         if(!list.isEmpty()){
             //获取树形结构
             List<Resource> resources = permissionService.resourceTree(list);

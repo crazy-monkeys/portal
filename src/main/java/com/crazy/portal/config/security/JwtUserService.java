@@ -113,7 +113,7 @@ public class JwtUserService implements UserDetailsService {
         UserRole userRole = userRoleMapper.selectByUserId(user.getId());
         Role role = roleMapper.findById(userRole.getRoleId());
         return new JwtUser(user,user.getLoginName(),user.getLoginPwd(),
-                Collections.singleton(new SimpleGrantedAuthority(role.getRoleName())));
+                Collections.singleton(new SimpleGrantedAuthority(role.getRoleCode())));
     }
 
     /**

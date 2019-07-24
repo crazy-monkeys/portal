@@ -25,7 +25,7 @@ public interface ResourceMapper {
      */
     List<Resource> queryResourceByResourId(@Param("resourceOrder") Integer resourceOrder);
 
-    List<Resource> findActiveList();
+    List<Resource> findActiveList(@Param("roleId") Integer roleId);
 
     /**
      * 查询所有菜单总合

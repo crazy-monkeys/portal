@@ -38,7 +38,7 @@ public class JwtRefreshSuccessHandler implements AuthenticationSuccessHandler{
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
-                                        Authentication authentication) throws IOException, ServletException {
+                                        Authentication authentication)  {
         DecodedJWT jwt = ((JwtAuthenticationToken)authentication).getToken();
         boolean shouldRefresh = shouldTokenRefresh(jwt.getIssuedAt());
         if(shouldRefresh) {
