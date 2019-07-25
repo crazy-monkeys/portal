@@ -16,44 +16,35 @@ import java.util.List;
 @Service
 public class CustomersService {
 
-    @Resource
-    private CustBasicInfoMapper custBasicInfoMapper;
-    @Resource
-    private CustBankInfoMapper custBankInfoMapper;
-    @Resource
-    private CustContactInfoMapper custContactInfoMapper;
-    @Resource
-    private CustEquityInfoMapper custEquityInfoMapper;
-    @Resource
-    private CustIntercourseInfoMapper custIntercourseInfoMapper;
+
     @Resource
     private CustVisitingRecordMapper custVisitingRecordMapper;
 
 
-    /**
-     * 分页查询客户列表
-     * @param bean
-     * @return
-     */
-    public PageInfo<CustBasicInfo> queryCustByPage(CustomerQueryBean bean){
-        PageHelper.startPage(bean.getPageIndex(), bean.getPageSize());
-        List<CustBasicInfo> list = custBasicInfoMapper.selectCustByPage(bean);
-        return new PageInfo<>(list);
-    }
-
-    public CustomerVO queryCustDetail(Long id){
-        CustomerVO vo = new CustomerVO();
-        vo.setBasicInfo(custBasicInfoMapper.selectByPrimaryKey(id));
-        return vo;
-    }
-
-    public boolean update(CustomerVO vo){
-        CustBasicInfo basicInfo = vo.getBasicInfo();
-        if(basicInfo.getId() == null){
-            custBasicInfoMapper.insertSelective(basicInfo);
-        }else{
-            custBasicInfoMapper.updateByPrimaryKeySelective(basicInfo);
-        }
-        return true;
-    }
+//    /**
+//     * 分页查询客户列表
+//     * @param bean
+//     * @return
+//     */
+//    public PageInfo<CustBasicInfo> queryCustByPage(CustomerQueryBean bean){
+//        PageHelper.startPage(bean.getPageIndex(), bean.getPageSize());
+//        List<CustBasicInfo> list = custBasicInfoMapper.selectCustByPage(bean);
+//        return new PageInfo<>(list);
+//    }
+//
+//    public CustomerVO queryCustDetail(Long id){
+//        CustomerVO vo = new CustomerVO();
+//        vo.setBasicInfo(custBasicInfoMapper.selectByPrimaryKey(id));
+//        return vo;
+//    }
+//
+//    public boolean update(CustomerVO vo){
+//        CustBasicInfo basicInfo = vo.getBasicInfo();
+//        if(basicInfo.getId() == null){
+//            custBasicInfoMapper.insertSelective(basicInfo);
+//        }else{
+//            custBasicInfoMapper.updateByPrimaryKeySelective(basicInfo);
+//        }
+//        return true;
+//    }
 }

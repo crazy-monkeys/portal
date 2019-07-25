@@ -10,13 +10,11 @@ public class CustomerVO {
 
     private CustBasicInfo basicInfo;
 
-    List<CustBankInfo> bankInfos;
+    List<CustInvoiceInfo> bankInfos;
 
     List<CustContactInfo> custContactInfos;
 
-    List<CustEquityInfo> custEquityInfos;
-
-    List<CustIntercourseInfo> custIntercourseInfos;
+    List<CustRelation> custRelations;
 
     List<CustVisitingRecord> custVisitingRecords;
 }

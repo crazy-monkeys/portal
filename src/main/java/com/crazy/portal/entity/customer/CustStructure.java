@@ -5,19 +5,18 @@ import lombok.Data;
 import java.util.Date;
 
 /**
- * 客户拜访记录
+ * 客户层次结构
  */
 @Data
-public class CustVisitingRecord {
+public class CustStructure {
+
     private Long id;
-
-    private String customerName;
-
-    private String projectName;
-
-    private String remark;
-
-    private String annex;
+    //名称
+    private String name;
+    //地址
+    private String address;
+    //主要联系人
+    private String primaryContact;
 
     private Long createId;
 
@@ -26,6 +25,4 @@ public class CustVisitingRecord {
     private Long modifyId;
 
     private Date modifyTime;
-
-
 }

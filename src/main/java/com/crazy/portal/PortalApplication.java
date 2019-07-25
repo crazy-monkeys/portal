@@ -35,4 +35,4 @@ public class PortalApplication extends SpringBootServletInitializer {
 		return builder.sources(PortalApplication.class);
 	}
 }
-}
+

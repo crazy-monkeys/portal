@@ -2,16 +2,19 @@ package com.crazy.portal.entity.customer;
 
 import lombok.Data;
 
-import java.math.BigDecimal;
 import java.util.Date;
 
+
+/**
+ * 客户关系
+ */
 @Data
-public class CustEquityInfo {
+public class CustRelation {
     private Long id;
 
-    private String shareholder;
+    private String name;
 
-    private BigDecimal proportion;
+    private String relationType;
 
     private Long createId;
 

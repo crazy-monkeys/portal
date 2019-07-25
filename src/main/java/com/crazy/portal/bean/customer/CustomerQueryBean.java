@@ -12,7 +12,7 @@ public class CustomerQueryBean extends PageBean {
     //客户简称
     private String customerSimpleName;
     //是否Lincense客户
-    private Boolean isLicencse;
+    private Short isLicencse;
     //业务类型
     private String businessType;
     //报备开始时间

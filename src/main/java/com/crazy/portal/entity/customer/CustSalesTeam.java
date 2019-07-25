@@ -4,17 +4,19 @@ import lombok.Data;
 
 import java.util.Date;
 
+/**
+ * 销售团队
+ */
 @Data
-public class CustBankInfo {
+public class CustSalesTeam {
+
     private Long id;
-
-    private String bankName;
-
-    private String bankAddress;
-
-    private String account;
-
-    private String identifier;
+    //角色类型
+    private Short roleId;
+    //名称
+    private String name;
+    //手机号
+    private String mobile;
 
     private Long createId;
 
@@ -23,6 +25,4 @@ public class CustBankInfo {
     private Long modifyId;
 
     private Date modifyTime;
-
-
 }
