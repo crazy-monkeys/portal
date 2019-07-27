@@ -5,17 +5,18 @@ import com.crazy.portal.config.exception.BusinessException;
 import com.crazy.portal.dao.basic.*;
 import com.crazy.portal.dao.customer.*;
 import com.crazy.portal.entity.basic.BaseEntity;
-import com.crazy.portal.entity.basic.TBasicBankInfoDO;
-import com.crazy.portal.entity.basic.TBasicInvoiceInfoDO;
-import com.crazy.portal.entity.customer.TCustomerInfoDO;
+import com.crazy.portal.entity.basic.BasicBankInfo;
+import com.crazy.portal.entity.customer.CustomerInfo;
 import com.crazy.portal.util.DateUtil;
 import com.crazy.portal.util.Enums;
 import com.crazy.portal.util.PortalUtil;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,38 +25,39 @@ import java.util.stream.Collectors;
  * @Author Shawn
  * @Date 2019-07-27
  */
+@Transactional
 @Slf4j
 @Service
 public class CustomersService {
 
     @Resource
-    private TCustomerInfoDOMapper tCustomerInfoDOMapper;
+    private CustomerInfoMapper customerInfoMapper;
     @Resource
-    private TBasicInvoiceInfoDOMapper tBasicInvoiceInfoDOMapper;
+    private BasicInvoiceInfoMapper basicInvoiceInfoMapper;
     @Resource
-    private TBasicCorporateRelationshipDOMapper tBasicCorporateRelationshipDOMapper;
+    private BasicCorporateRelationshipMapper basicCorporateRelationshipMapper;
     @Resource
-    private TBasicCorporateStructureDOMapper tBasicCorporateStructureDOMapper;
+    private BasicCorporateStructureMapper basicCorporateStructureMapper;
     @Resource
-    private TBasicFileDOMapper tBasicFileDOMapper;
+    private BasicFileMapper basicFileMapper;
     @Resource
-    private TBasicSalesDOMapper tBasicSalesDOMapper;
+    private BasicSalesMapper basicSalesMapper;
     @Resource
-    private TBasicSalesTeamDOMapper tBasicSalesTeamDOMapper;
+    private BasicSalesTeamMapper basicSalesTeamMapper;
     @Resource
-    private TBasicContactDOMapper tBasicContactDOMapper;
+    private BasicContactMapper basicContactMapper;
     @Resource
-    private TBasicBankInfoDOMapper tBasicBankInfoDOMapper;
+    private BasicBankInfoMapper basicBankInfoMapper;
     @Resource
-    private TBasicAddressDOMapper tBasicAddressDOMapper;
+    private BasicAddressMapper basicAddressMapper;
     /**
      * 分页查询客户列表
      * @param bean
      * @return
      */
-    public PageInfo<TCustomerInfoDO> queryCustByPage(CustomerQueryBean bean){
+    public PageInfo<CustomerInfo> queryCustByPage(CustomerQueryBean bean){
         PortalUtil.defaultStartPage(bean.getPageIndex(), bean.getPageSize());
-        List<TCustomerInfoDO> list = tCustomerInfoDOMapper.selectCustByPage(bean);
+        List<CustomerInfo> list = customerInfoMapper.selectCustByPage(bean);
         return new PageInfo<>(list);
     }
 
@@ -64,21 +66,26 @@ public class CustomersService {
      * @param id
      * @return
      */
-    public TCustomerInfoDO queryCustDetail(Integer id){
-        TCustomerInfoDO customerInfo = tCustomerInfoDOMapper.selectByPrimaryKey(id);
-        customerInfo.setBasicInvoice(tBasicInvoiceInfoDOMapper.selectByCustId(id));
-        customerInfo.setBasicContact(tBasicContactDOMapper.selectByCustId(id));
-        customerInfo.setBasicStructure(tBasicCorporateStructureDOMapper.selectByCustId(id));
-        customerInfo.setSalesTeam(tBasicSalesTeamDOMapper.selectByCustId(id));
-        customerInfo.setBasicShip(tBasicCorporateRelationshipDOMapper.selectByCustId(id));
-        customerInfo.setSales(tBasicSalesDOMapper.selectByCustId(id));
-        customerInfo.setBasicFile(tBasicFileDOMapper.selectByCustId(id));
-        customerInfo.setBasicBank(tBasicBankInfoDOMapper.selectByCustId(id));
-        customerInfo.setBasicAddress(tBasicAddressDOMapper.selectByCustId(id));
+    public CustomerInfo queryCustDetail(Integer id){
+        CustomerInfo customerInfo = customerInfoMapper.selectByPrimaryKey(id);
+        customerInfo.setBasicInvoice(basicInvoiceInfoMapper.selectByCustId(id));
+        customerInfo.setBasicContact(basicContactMapper.selectByCustId(id));
+        customerInfo.setBasicStructure(basicCorporateStructureMapper.selectByCustId(id));
+        customerInfo.setSalesTeam(basicSalesTeamMapper.selectByCustId(id));
+        customerInfo.setBasicShip(basicCorporateRelationshipMapper.selectByCustId(id));
+        customerInfo.setSales(basicSalesMapper.selectByCustId(id));
+        customerInfo.setBasicFile(basicFileMapper.selectByCustId(id));
+        customerInfo.setBasicBank(basicBankInfoMapper.selectByCustId(id));
+        customerInfo.setBasicAddress(basicAddressMapper.selectByCustId(id));
         return customerInfo;
     }
 
-    public void addOrUpdate(TCustomerInfoDO bean, Integer userId){
+    /**
+     * 新增或更新客户信息
+     * @param bean
+     * @param userId
+     */
+    public void addOrUpdate(CustomerInfo bean, Integer userId){
         if(bean.getId() == null){
             add(bean, userId);
         }else{
@@ -90,73 +97,97 @@ public class CustomersService {
      * @param bean
      * @return
      */
-    public void add(TCustomerInfoDO bean, Integer userId){
+    public void add(CustomerInfo bean, Integer userId){
         if(bean.getId() != null){
             throw new BusinessException(1001, "客户已存在");
         }
+        Date currDate = DateUtil.getCurrentTS();
         bean.setCreateUser(userId);
-        bean.setCreateTime(DateUtil.getCurrentTS());
-        tCustomerInfoDOMapper.insertSelective(bean);
+        bean.setCreateTime(currDate);
+        customerInfoMapper.insertSelective(bean);
 
-        TBasicBankInfoDO bankInfo = bean.getBasicBank();
+        BasicBankInfo bankInfo = bean.getBasicBank();
         bankInfo.setCreateUser(userId);
-        bankInfo.setCreateTime(DateUtil.getCurrentTS());
-        tBasicBankInfoDOMapper.insertSelective(bean.getBasicBank());
+        bankInfo.setCreateTime(currDate);
+        basicBankInfoMapper.insertSelective(bean.getBasicBank());
 
-        bean.getBasicInvoice().stream().forEach(e->tBasicInvoiceInfoDOMapper.insertSelective(e));
-        bean.getBasicContact().stream().forEach(e->tBasicContactDOMapper.insertSelective(e));
-        bean.getBasicStructure().stream().forEach(e->tBasicCorporateStructureDOMapper.insertSelective(e));
-        bean.getSalesTeam().stream().forEach(e->tBasicSalesTeamDOMapper.insertSelective(e));
-        bean.getBasicShip().stream().forEach(e->tBasicCorporateRelationshipDOMapper.insertSelective(e));
-        bean.getSales().stream().forEach(e->tBasicSalesDOMapper.insertSelective(e));
-        bean.getBasicFile().stream().forEach(e->tBasicFileDOMapper.insertSelective(e));
-        bean.getBasicAddress().stream().forEach(e->tBasicAddressDOMapper.insertSelective(e));
+
+        addExtendInfo(bean.getBasicInvoice(), basicInvoiceInfoMapper, bean);
+
+        addExtendInfo(bean.getBasicContact(), basicContactMapper, bean);
+
+        addExtendInfo(bean.getBasicStructure(), basicCorporateStructureMapper, bean);
+
+        addExtendInfo(bean.getSalesTeam(), basicSalesTeamMapper, bean);
+
+        addExtendInfo(bean.getBasicShip(), basicCorporateRelationshipMapper, bean);
+
+        addExtendInfo(bean.getSales(), basicSalesMapper, bean);
+
+        addExtendInfo(bean.getBasicFile(), basicFileMapper, bean);
+
+        addExtendInfo(bean.getBasicAddress(), basicAddressMapper, bean);
+    }
+
+    public void addExtendInfo(List<? extends BaseEntity> list, BaseMapper mapper, CustomerInfo bean){
+        list.stream().forEach((e)-> {
+            e.setCustId(bean.getId());
+            e.setCreateUser(bean.getCreateUser());
+            e.setCreateTime(bean.getCreateTime());
+            mapper.insertSelective(e);
+        });
     }
 
     /**
      * 更新客户信息
      * @param bean
      */
-    public void update(TCustomerInfoDO bean, Integer userId){
+    public void update(CustomerInfo bean, Integer userId){
         if(bean.getId() == null){
             throw new BusinessException(1002, "客户不存在");
         }
         bean.setUpdateUser(userId);
         bean.setUpdateTime(DateUtil.getCurrentTS());
-        tCustomerInfoDOMapper.updateByPrimaryKeySelective(bean);
+        customerInfoMapper.updateByPrimaryKeySelective(bean);
 
-        TBasicBankInfoDO bankInfo = bean.getBasicBank();
+        BasicBankInfo bankInfo = bean.getBasicBank();
         if(bankInfo != null && bankInfo.getId() != null){
             bankInfo.setUpdateUser(userId);
             bankInfo.setUpdateTime(DateUtil.getCurrentTS());
-            tBasicBankInfoDOMapper.updateByPrimaryKeySelective(bankInfo);
+            basicBankInfoMapper.updateByPrimaryKeySelective(bankInfo);
         }
 
-        List<Integer> addressIds = tBasicAddressDOMapper.selectIdsByCustId(bean.getId());
-        updateExtendInfo(addressIds, bean.getBasicAddress(), tBasicAddressDOMapper);
+        List<Integer> addressIds = basicAddressMapper.selectIdsByCustId(bean.getId());
+        updateExtendInfo(addressIds, bean.getBasicAddress(), basicAddressMapper);
 
-        List<Integer> invoiceInfoIds = tBasicInvoiceInfoDOMapper.selectIdsByCustId(bean.getId());
-        updateExtendInfo(invoiceInfoIds, bean.getBasicInvoice(), tBasicInvoiceInfoDOMapper);
+        List<Integer> invoiceInfoIds = basicInvoiceInfoMapper.selectIdsByCustId(bean.getId());
+        updateExtendInfo(invoiceInfoIds, bean.getBasicInvoice(), basicInvoiceInfoMapper);
 
-        List<Integer> contactIds = tBasicContactDOMapper.selectIdsByCustId(bean.getId());
-        updateExtendInfo(contactIds, bean.getBasicContact(), tBasicContactDOMapper);
+        List<Integer> contactIds = basicContactMapper.selectIdsByCustId(bean.getId());
+        updateExtendInfo(contactIds, bean.getBasicContact(), basicContactMapper);
 
-        List<Integer> structureIds = tBasicCorporateStructureDOMapper.selectIdsByCustId(bean.getId());
-        updateExtendInfo(structureIds, bean.getBasicContact(), tBasicCorporateStructureDOMapper);
+        List<Integer> structureIds = basicCorporateStructureMapper.selectIdsByCustId(bean.getId());
+        updateExtendInfo(structureIds, bean.getBasicStructure(), basicCorporateStructureMapper);
 
-        List<Integer> relationIds = tBasicCorporateRelationshipDOMapper.selectIdsByCustId(bean.getId());
-        updateExtendInfo(relationIds, bean.getBasicShip(), tBasicCorporateRelationshipDOMapper);
+        List<Integer> relationIds = basicCorporateRelationshipMapper.selectIdsByCustId(bean.getId());
+        updateExtendInfo(relationIds, bean.getBasicShip(), basicCorporateRelationshipMapper);
 
-        List<Integer> fileIds = tBasicFileDOMapper.selectIdsByCustId(bean.getId());
-        updateExtendInfo(fileIds, bean.getBasicFile(), tBasicFileDOMapper);
+        List<Integer> fileIds = basicFileMapper.selectIdsByCustId(bean.getId());
+        updateExtendInfo(fileIds, bean.getBasicFile(), basicFileMapper);
 
-        List<Integer> teamIds = tBasicSalesTeamDOMapper.selectIdsByCustId(bean.getId());
-        updateExtendInfo(teamIds, bean.getSalesTeam(), tBasicSalesTeamDOMapper);
+        List<Integer> teamIds = basicSalesTeamMapper.selectIdsByCustId(bean.getId());
+        updateExtendInfo(teamIds, bean.getSalesTeam(), basicSalesTeamMapper);
 
-        List<Integer> salesIds = tBasicSalesDOMapper.selectIdsByCustId(bean.getId());
-        updateExtendInfo(salesIds, bean.getSales(), tBasicSalesDOMapper);
+        List<Integer> salesIds = basicSalesMapper.selectIdsByCustId(bean.getId());
+        updateExtendInfo(salesIds, bean.getSales(), basicSalesMapper);
     }
 
+    /**
+     * 更新客户扩展信息
+     * @param sourceList
+     * @param newList
+     * @param mapper
+     */
     public void updateExtendInfo(List<Integer> sourceList, List<? extends BaseEntity> newList, BaseMapper mapper){
         newList.stream().filter(e->sourceList.contains(e.getId()))
                 .forEach(e->mapper.updateByPrimaryKeySelective(e));
@@ -171,44 +202,45 @@ public class CustomersService {
      * @param userId
      */
     public void delete(Integer id, Integer userId){
-        tCustomerInfoDOMapper.deleteByPrimaryKey(id, userId);
-        tBasicBankInfoDOMapper.deleteByCustId(id, userId);
-        tBasicAddressDOMapper.deleteByCustId(id, userId);
-        tBasicInvoiceInfoDOMapper.deleteByCustId(id, userId);
-        tBasicFileDOMapper.deleteByCustId(id, userId);
-        tBasicCorporateRelationshipDOMapper.deleteByCustId(id, userId);
-        tBasicCorporateStructureDOMapper.deleteByCustId(id, userId);
-        tBasicContactDOMapper.deleteByCustId(id, userId);
-        tBasicSalesDOMapper.deleteByCustId(id, userId);
-        tBasicSalesTeamDOMapper.deleteByCustId(id, userId);
+        customerInfoMapper.deleteByPrimaryKey(id, userId);
+        basicBankInfoMapper.deleteByCustId(id, userId);
+        basicAddressMapper.deleteByCustId(id, userId);
+        basicInvoiceInfoMapper.deleteByCustId(id, userId);
+        basicFileMapper.deleteByCustId(id, userId);
+        basicCorporateRelationshipMapper.deleteByCustId(id, userId);
+        basicCorporateStructureMapper.deleteByCustId(id, userId);
+        basicContactMapper.deleteByCustId(id, userId);
+        basicSalesMapper.deleteByCustId(id, userId);
+        basicSalesTeamMapper.deleteByCustId(id, userId);
     }
 
     /**
      * 重新报备
      */
     public void againReport(Integer id){
-        TCustomerInfoDO record = new TCustomerInfoDO();
+        CustomerInfo record = new CustomerInfo();
         record.setId(id);
         record.setCustomerStatus(Enums.CustomerStatus.WAIT_APPROVAL.getCode());
-        tCustomerInfoDOMapper.updateByPrimaryKeySelective(record);
+        customerInfoMapper.updateByPrimaryKeySelective(record);
     }
 
     /**
      * 审批
      */
     public void approval(Integer id){
-        TCustomerInfoDO record = new TCustomerInfoDO();
+        CustomerInfo record = new CustomerInfo();
         record.setId(id);
         record.setCustomerStatus(Enums.CustomerStatus.NORMAL.getCode());
-        tCustomerInfoDOMapper.updateByPrimaryKeySelective(record);
+        customerInfoMapper.updateByPrimaryKeySelective(record);
     }
+
     /**
      * 驳回
      */
     public void reject(Integer id){
-        TCustomerInfoDO record = new TCustomerInfoDO();
+        CustomerInfo record = new CustomerInfo();
         record.setId(id);
         record.setCustomerStatus(Enums.CustomerStatus.REJECT.getCode());
-        tCustomerInfoDOMapper.updateByPrimaryKeySelective(record);
+        customerInfoMapper.updateByPrimaryKeySelective(record);
     }
 }

@@ -6,9 +6,9 @@ import com.crazy.portal.bean.customer.basic.FileVO;
 import com.crazy.portal.bean.customer.basic.InvoiceVO;
 import com.crazy.portal.bean.customer.basic.ShipVO;
 import com.crazy.portal.bean.customer.dealer.DealerVO;
-import com.crazy.portal.dao.customer.TCustomerInfoDOMapper;
+import com.crazy.portal.dao.customer.CustomerInfoMapper;
 import com.crazy.portal.entity.basic.*;
-import com.crazy.portal.entity.customer.TCustomerInfoDO;
+import com.crazy.portal.entity.customer.CustomerInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -25,12 +25,12 @@ import java.util.List;
 @Service
 public class DealerService {
     @Resource
-    private TCustomerInfoDOMapper tCustomerInfoDOMapper;
+    private CustomerInfoMapper customerInfoMapper;
 
     //代理商个人信息
     public DealerVO getDealerInfo(Integer dealerId){
         try{
-            TCustomerInfoDO dealerInfo = tCustomerInfoDOMapper.selectDealerInfo(dealerId);
+            CustomerInfo dealerInfo = customerInfoMapper.selectDealerInfo(dealerId);
             log.info(JSON.toJSONString(dealerInfo));
             return mappingVO(dealerInfo);
         }catch (Exception e){
@@ -39,7 +39,7 @@ public class DealerService {
         }
     }
 
-    private DealerVO mappingVO(TCustomerInfoDO dealer){
+    private DealerVO mappingVO(CustomerInfo dealer){
         DealerVO vo = new DealerVO();
         vo.setDealerCode(dealer.getCustInCode());
         vo.setDealerName(dealer.getCustZhName());
@@ -70,9 +70,9 @@ public class DealerService {
 
     }
 
-    private List<FileVO> mappingFile(List<TBasicFileDO> fileDOS){
+    private List<FileVO> mappingFile(List<BasicFile> fileDOS){
         List<FileVO> fileVOS = new ArrayList<>();
-        for(TBasicFileDO fileDO : fileDOS){
+        for(BasicFile fileDO : fileDOS){
             FileVO fileVO = new FileVO();
             fileVO.setFileName(fileDO.getFileName());
             fileVO.setFilePath(fileDO.getFilePath());
@@ -82,9 +82,9 @@ public class DealerService {
         return fileVOS;
     }
 
-    private List<InvoiceVO> mappingInvoice(List<TBasicInvoiceInfoDO> invoiceInfoDOS){
+    private List<InvoiceVO> mappingInvoice(List<BasicInvoiceInfo> invoiceInfoDOS){
         List<InvoiceVO> invoiceVOS = new ArrayList<>();
-        for(TBasicInvoiceInfoDO invoiceInfoDO : invoiceInfoDOS){
+        for(BasicInvoiceInfo invoiceInfoDO : invoiceInfoDOS){
             InvoiceVO invoiceVO = new InvoiceVO();
             invoiceVO.setPurchasingUnit(invoiceInfoDO.getPurchasingUnit());
             invoiceVO.setShippingAddress(invoiceInfoDO.getShippingAddress());
@@ -96,9 +96,9 @@ public class DealerService {
         return invoiceVOS;
     }
 
-    private List<ContactVO> mappingContact(List<TBasicContactDO> contactDOS){
+    private List<ContactVO> mappingContact(List<BasicContact> contactDOS){
         List<ContactVO> contactVOS = new ArrayList<>();
-        for(TBasicContactDO contactDO : contactDOS){
+        for(BasicContact contactDO : contactDOS){
             ContactVO contactVO = new ContactVO();
             contactVO.setCName(contactDO.getContactName());
             contactVO.setCMobile(contactDO.getContactMobile());
@@ -111,9 +111,9 @@ public class DealerService {
         return contactVOS;
     }
 
-    private List<ShipVO> mappingShip(List<TBasicCorporateRelationshipDO> ships){
+    private List<ShipVO> mappingShip(List<BasicCorporateRelationship> ships){
         List<ShipVO> shipVos = new ArrayList<>();
-        for(TBasicCorporateRelationshipDO ship : ships){
+        for(BasicCorporateRelationship ship : ships){
             ShipVO shipVO = new ShipVO();
             shipVO.setShipName(ship.getCorporateName());
             shipVO.setShipType(ship.getCorporateType());
@@ -122,7 +122,7 @@ public class DealerService {
         return shipVos;
     }
 
-    private void mappingBank(DealerVO vo,TBasicBankInfoDO bank){
+    private void mappingBank(DealerVO vo, BasicBankInfo bank){
         if(null == bank){
             return;
         }

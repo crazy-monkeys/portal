@@ -3,7 +3,7 @@ package com.crazy.portal.controller.customer;
 import com.crazy.portal.bean.BaseResponse;
 import com.crazy.portal.bean.customer.CustomerQueryBean;
 import com.crazy.portal.controller.BaseController;
-import com.crazy.portal.entity.customer.TCustomerInfoDO;
+import com.crazy.portal.entity.customer.CustomerInfo;
 import com.crazy.portal.service.customer.CustomersService;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
@@ -27,24 +27,24 @@ public class CustomerController extends BaseController{
     private CustomersService customersService;
 
     @GetMapping("/list")
-    public BaseResponse customers(@RequestBody CustomerQueryBean bean){
+    public BaseResponse customers(CustomerQueryBean bean){
         bean.setUserId(this.getCurrentUser().getId());
         PageInfo page = customersService.queryCustByPage(bean);
         return successResult(page);
     }
 
-    @GetMapping("/info/{id}")
+    @GetMapping(value="/info/{id}")
     public BaseResponse getCustomer(@PathVariable Integer id){
         return successResult(customersService.queryCustDetail(id));
     }
 
     @PostMapping("/info")
-    public BaseResponse customerAdd(@RequestBody TCustomerInfoDO vo){
+    public BaseResponse customerAdd(@RequestBody CustomerInfo vo){
         customersService.addOrUpdate(vo, this.getCurrentUser().getId());
         return successResult();
     }
 
-    @Delete("/info/{id}")
+    @DeleteMapping("/info/{id}")
     public BaseResponse customerDelete(@PathVariable Integer id){
         customersService.delete(id, this.getCurrentUser().getId());
         return successResult();
