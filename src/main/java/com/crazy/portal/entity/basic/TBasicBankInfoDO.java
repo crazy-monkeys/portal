@@ -5,7 +5,7 @@ import lombok.Data;
 import java.util.Date;
 
 @Data
-public class TBasicBankInfoDO {
+public class TBasicBankInfoDO implements BaseEntity{
     private Integer id;
 
     private Integer custId;

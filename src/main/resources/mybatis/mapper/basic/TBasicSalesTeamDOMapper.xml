@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.crazy.portal.dao.basic.TBasicSalesTeamDOMapper">
+  <resultMap id="BaseResultMap" type="com.crazy.portal.entity.basic.TBasicSalesTeamDO">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="cust_id" jdbcType="INTEGER" property="custId" />
+    <result column="role_id" jdbcType="INTEGER" property="roleId" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="mobile" jdbcType="VARCHAR" property="mobile" />
+    <result column="active" jdbcType="INTEGER" property="active" />
+    <result column="create_user_id" jdbcType="INTEGER" property="createUserId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="modify_user_id" jdbcType="INTEGER" property="modifyUserId" />
+    <result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, cust_id, role_id, name, mobile, active, create_user_id, create_time, modify_user_id, 
+    modify_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_basic_sales_team
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_basic_sales_team
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+
+  <insert id="insertSelective" parameterType="com.crazy.portal.entity.basic.TBasicSalesTeamDO">
+    insert into t_basic_sales_team
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="custId != null">
+        cust_id,
+      </if>
+      <if test="roleId != null">
+        role_id,
+      </if>
+      <if test="name != null">
+        name,
+      </if>
+      <if test="mobile != null">
+        mobile,
+      </if>
+      <if test="active != null">
+        active,
+      </if>
+      <if test="createUserId != null">
+        create_user_id,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="modifyUserId != null">
+        modify_user_id,
+      </if>
+      <if test="modifyTime != null">
+        modify_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="custId != null">
+        #{custId,jdbcType=INTEGER},
+      </if>
+      <if test="roleId != null">
+        #{roleId,jdbcType=INTEGER},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="mobile != null">
+        #{mobile,jdbcType=VARCHAR},
+      </if>
+      <if test="active != null">
+        #{active,jdbcType=INTEGER},
+      </if>
+      <if test="createUserId != null">
+        #{createUserId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifyUserId != null">
+        #{modifyUserId,jdbcType=INTEGER},
+      </if>
+      <if test="modifyTime != null">
+        #{modifyTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.crazy.portal.entity.basic.TBasicSalesTeamDO">
+    update t_basic_sales_team
+    <set>
+      <if test="custId != null">
+        cust_id = #{custId,jdbcType=INTEGER},
+      </if>
+      <if test="roleId != null">
+        role_id = #{roleId,jdbcType=INTEGER},
+      </if>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="mobile != null">
+        mobile = #{mobile,jdbcType=VARCHAR},
+      </if>
+      <if test="active != null">
+        active = #{active,jdbcType=INTEGER},
+      </if>
+      <if test="createUserId != null">
+        create_user_id = #{createUserId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifyUserId != null">
+        modify_user_id = #{modifyUserId,jdbcType=INTEGER},
+      </if>
+      <if test="modifyTime != null">
+        modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <select id="selectByCustId" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_basic_sales_team
+    where cust_id = #{custId,jdbcType=INTEGER} and active = 1
+    order by create_time desc
+  </select>
+
+  <select id="selectIdsByCustId" resultType="java.lang.Integer">
+    select
+    id
+    from t_basic_sales_team
+    where cust_id = #{custId,jdbcType=INTEGER} and active = 1
+  </select>
+
+  <update id="deleteByCustId">
+    update t_basic_sales_team set active = 0,modify_user_id = #{userId},modify_time = now()
+    where cust_id = #{custId}
+  </update>
+
+</mapper>

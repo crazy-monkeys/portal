@@ -29,18 +29,7 @@
     delete from t_basic_invoice_info
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.crazy.portal.entity.basic.TBasicInvoiceInfoDO">
-    insert into t_basic_invoice_info (id, cust_id, purchasing_unit, 
-      shipping_address, shipping_mobile, taxpayer_registration_number, 
-      currency, create_user, create_time, 
-      update_user, update_time, active
-      )
-    values (#{id,jdbcType=INTEGER}, #{custId,jdbcType=INTEGER}, #{purchasingUnit,jdbcType=VARCHAR}, 
-      #{shippingAddress,jdbcType=VARCHAR}, #{shippingMobile,jdbcType=VARCHAR}, #{taxpayerRegistrationNumber,jdbcType=VARCHAR}, 
-      #{currency,jdbcType=VARCHAR}, #{createUser,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, 
-      #{updateUser,jdbcType=INTEGER}, #{updateTime,jdbcType=TIMESTAMP}, #{active,jdbcType=INTEGER}
-      )
-  </insert>
+
   <insert id="insertSelective" parameterType="com.crazy.portal.entity.basic.TBasicInvoiceInfoDO">
     insert into t_basic_invoice_info
     <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -159,19 +148,26 @@
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.crazy.portal.entity.basic.TBasicInvoiceInfoDO">
-    update t_basic_invoice_info
-    set cust_id = #{custId,jdbcType=INTEGER},
-      purchasing_unit = #{purchasingUnit,jdbcType=VARCHAR},
-      shipping_address = #{shippingAddress,jdbcType=VARCHAR},
-      shipping_mobile = #{shippingMobile,jdbcType=VARCHAR},
-      taxpayer_registration_number = #{taxpayerRegistrationNumber,jdbcType=VARCHAR},
-      currency = #{currency,jdbcType=VARCHAR},
-      create_user = #{createUser,jdbcType=INTEGER},
-      create_time = #{createTime,jdbcType=TIMESTAMP},
-      update_user = #{updateUser,jdbcType=INTEGER},
-      update_time = #{updateTime,jdbcType=TIMESTAMP},
-      active = #{active,jdbcType=INTEGER}
-    where id = #{id,jdbcType=INTEGER}
+
+  <select id="selectByCustId" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_basic_invoice_info
+    where cust_id = #{custId,jdbcType=INTEGER} and active = 1
+    order by create_time desc
+  </select>
+
+  <select id="selectIdsByCustId" resultType="java.lang.Integer">
+    select
+    id
+    from t_basic_invoice_info
+    where cust_id = #{custId,jdbcType=INTEGER} and active = 1
+  </select>
+
+  <update id="deleteByCustId" >
+    update t_basic_invoice_info set active = 0,update_user = #{userId},update_time = now()
+    where cust_id = #{custId}
   </update>
+
+
 </mapper>

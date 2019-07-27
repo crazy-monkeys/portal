@@ -1,11 +1,12 @@
 package com.crazy.portal.dao.basic;
 
 import com.crazy.portal.entity.basic.TBasicContactDO;
+import org.apache.ibatis.annotations.Param;
 
-public interface TBasicContactDOMapper {
+import java.util.List;
+
+public interface TBasicContactDOMapper extends BaseMapper{
     int deleteByPrimaryKey(Integer id);
-
-    int insert(TBasicContactDO record);
 
     int insertSelective(TBasicContactDO record);
 
@@ -13,5 +14,10 @@ public interface TBasicContactDOMapper {
 
     int updateByPrimaryKeySelective(TBasicContactDO record);
 
-    int updateByPrimaryKey(TBasicContactDO record);
+    List<TBasicContactDO> selectByCustId(@Param("custId")Integer custId);
+
+    List<Integer> selectIdsByCustId(@Param("custId") Integer custId);
+
+    int deleteByCustId(@Param("custId") Integer custId, @Param("userId")Integer userId);
+
 }

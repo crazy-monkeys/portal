@@ -2,12 +2,12 @@ package com.crazy.portal.controller.customer;
 
 import com.crazy.portal.bean.BaseResponse;
 import com.crazy.portal.bean.customer.CustomerQueryBean;
-import com.crazy.portal.bean.customer.CustomerVO;
 import com.crazy.portal.controller.BaseController;
-import com.crazy.portal.entity.customer.CustBasicInfo;
+import com.crazy.portal.entity.customer.TCustomerInfoDO;
 import com.crazy.portal.service.customer.CustomersService;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.annotations.Delete;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -20,43 +20,52 @@ import javax.annotation.Resource;
  */
 @Slf4j
 @RestController
-@RequestMapping("/cust")
+@RequestMapping("/customer")
 public class CustomerController extends BaseController{
 
     @Resource
     private CustomersService customersService;
 
-//    @GetMapping("/customers")
-//    public BaseResponse customers(@RequestBody CustomerQueryBean bean){
-//        try {
-//            PageInfo page = customersService.queryCustByPage(bean);
-//            return successResult(page);
-//        } catch (Exception e) {
-//            log.error("查询客户列表异常", e);
-//            return errorResult();
-//        }
-//
-//    }
-//
-//    @GetMapping("/customer/{id}")
-//    public BaseResponse customer(@PathVariable Long id){
-//        try {
-//            CustomerVO vo = customersService.queryCustDetail(id);
-//            return successResult(vo);
-//        } catch (Exception e) {
-//            log.error("查询客户详情异常", e);
-//            return errorResult();
-//        }
-//    }
-//
-//    @PostMapping("/customer")
-//    public BaseResponse customer(CustomerVO vo){
-//        try {
-//            customersService.update(vo);
-//            return successResult();
-//        } catch (Exception e) {
-//            log.error("客户报备异常", e);
-//            return errorResult();
-//        }
-//    }
+    @GetMapping("/list")
+    public BaseResponse customers(@RequestBody CustomerQueryBean bean){
+        bean.setUserId(this.getCurrentUser().getId());
+        PageInfo page = customersService.queryCustByPage(bean);
+        return successResult(page);
+    }
+
+    @GetMapping("/info/{id}")
+    public BaseResponse getCustomer(@PathVariable Integer id){
+        return successResult(customersService.queryCustDetail(id));
+    }
+
+    @PostMapping("/info")
+    public BaseResponse customerAdd(@RequestBody TCustomerInfoDO vo){
+        customersService.addOrUpdate(vo, this.getCurrentUser().getId());
+        return successResult();
+    }
+
+    @Delete("/info/{id}")
+    public BaseResponse customerDelete(@PathVariable Integer id){
+        customersService.delete(id, this.getCurrentUser().getId());
+        return successResult();
+    }
+
+    @GetMapping("/againReport/{id}")
+    public BaseResponse againReport(@PathVariable Integer id){
+        customersService.againReport(id);
+        return successResult();
+    }
+
+    @GetMapping("/approval/{id}")
+    public BaseResponse approval(@PathVariable Integer id){
+        customersService.approval(id);
+        return successResult();
+    }
+
+    @GetMapping("/reject/{id}")
+    public BaseResponse reject(@PathVariable Integer id){
+        customersService.reject(id);
+        return successResult();
+    }
+
 }

@@ -16,24 +16,18 @@
     <result column="update_user" jdbcType="INTEGER" property="updateUser" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="active" jdbcType="INTEGER" property="active" />
-
     <result column="bank_address" jdbcType="VARCHAR" property="bankAddress" />
-  </resultMap>
-  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.crazy.portal.entity.basic.TBasicBankInfoDO">
     <result column="bank_detail_info" jdbcType="LONGVARCHAR" property="bankDetailInfo" />
   </resultMap>
+
   <sql id="Base_Column_List">
     id, cust_id, bank_name, bank_account, bank_bic, bank_country, bank_province, bank_city, 
-    bank_district, create_user, create_time, update_user, update_time, active
+    bank_district, create_user, create_time, update_user, update_time, active, bank_detail_info
   </sql>
-  <sql id="Blob_Column_List">
-    bank_detail_info
-  </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    ,
-    <include refid="Blob_Column_List" />
     from t_basic_bank_info
     where id = #{id,jdbcType=INTEGER}
   </select>
@@ -41,20 +35,7 @@
     delete from t_basic_bank_info
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.crazy.portal.entity.basic.TBasicBankInfoDO">
-    insert into t_basic_bank_info (id, cust_id, bank_name, 
-      bank_account, bank_bic, bank_country, 
-      bank_province, bank_city, bank_district, 
-      create_user, create_time, update_user, 
-      update_time, active, bank_detail_info
-      )
-    values (#{id,jdbcType=INTEGER}, #{custId,jdbcType=INTEGER}, #{bankName,jdbcType=VARCHAR}, 
-      #{bankAccount,jdbcType=VARCHAR}, #{bankBic,jdbcType=VARCHAR}, #{bankCountry,jdbcType=VARCHAR}, 
-      #{bankProvince,jdbcType=VARCHAR}, #{bankCity,jdbcType=VARCHAR}, #{bankDistrict,jdbcType=VARCHAR}, 
-      #{createUser,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{updateUser,jdbcType=INTEGER}, 
-      #{updateTime,jdbcType=TIMESTAMP}, #{active,jdbcType=INTEGER}, #{bankDetailInfo,jdbcType=LONGVARCHAR}
-      )
-  </insert>
+
   <insert id="insertSelective" parameterType="com.crazy.portal.entity.basic.TBasicBankInfoDO">
     insert into t_basic_bank_info
     <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -200,39 +181,18 @@
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.crazy.portal.entity.basic.TBasicBankInfoDO">
-    update t_basic_bank_info
-    set cust_id = #{custId,jdbcType=INTEGER},
-      bank_name = #{bankName,jdbcType=VARCHAR},
-      bank_account = #{bankAccount,jdbcType=VARCHAR},
-      bank_bic = #{bankBic,jdbcType=VARCHAR},
-      bank_country = #{bankCountry,jdbcType=VARCHAR},
-      bank_province = #{bankProvince,jdbcType=VARCHAR},
-      bank_city = #{bankCity,jdbcType=VARCHAR},
-      bank_district = #{bankDistrict,jdbcType=VARCHAR},
-      create_user = #{createUser,jdbcType=INTEGER},
-      create_time = #{createTime,jdbcType=TIMESTAMP},
-      update_user = #{updateUser,jdbcType=INTEGER},
-      update_time = #{updateTime,jdbcType=TIMESTAMP},
-      active = #{active,jdbcType=INTEGER},
-      bank_detail_info = #{bankDetailInfo,jdbcType=LONGVARCHAR}
-    where id = #{id,jdbcType=INTEGER}
+
+  <select id="selectByCustId" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_basic_bank_info
+    where cust_id = #{custId,jdbcType=INTEGER} active = 1
+    order by create_time desc
+  </select>
+
+  <update id="deleteByCustId" >
+    update t_basic_bank_info set active = 0,update_user = #{userId},update_time = now()
+    where cust_id = #{custId}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.crazy.portal.entity.basic.TBasicBankInfoDO">
-    update t_basic_bank_info
-    set cust_id = #{custId,jdbcType=INTEGER},
-      bank_name = #{bankName,jdbcType=VARCHAR},
-      bank_account = #{bankAccount,jdbcType=VARCHAR},
-      bank_bic = #{bankBic,jdbcType=VARCHAR},
-      bank_country = #{bankCountry,jdbcType=VARCHAR},
-      bank_province = #{bankProvince,jdbcType=VARCHAR},
-      bank_city = #{bankCity,jdbcType=VARCHAR},
-      bank_district = #{bankDistrict,jdbcType=VARCHAR},
-      create_user = #{createUser,jdbcType=INTEGER},
-      create_time = #{createTime,jdbcType=TIMESTAMP},
-      update_user = #{updateUser,jdbcType=INTEGER},
-      update_time = #{updateTime,jdbcType=TIMESTAMP},
-      active = #{active,jdbcType=INTEGER}
-    where id = #{id,jdbcType=INTEGER}
-  </update>
+
 </mapper>

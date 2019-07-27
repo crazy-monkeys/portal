@@ -15,22 +15,17 @@
     <result column="update_user" jdbcType="INTEGER" property="updateUser" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="active" jdbcType="INTEGER" property="active" />
-  </resultMap>
-  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.crazy.portal.entity.basic.TBasicAddressDO">
     <result column="detail_info" jdbcType="LONGVARCHAR" property="detailInfo" />
   </resultMap>
+
   <sql id="Base_Column_List">
     id, cust_id, is_default, address_type, country, province, city, district, create_user, 
-    create_time, update_user, update_time, active
+    create_time, update_user, update_time, active, detail_info
   </sql>
-  <sql id="Blob_Column_List">
-    detail_info
-  </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    ,
-    <include refid="Blob_Column_List" />
     from t_basic_address
     where id = #{id,jdbcType=INTEGER}
   </select>
@@ -38,18 +33,7 @@
     delete from t_basic_address
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.crazy.portal.entity.basic.TBasicAddressDO">
-    insert into t_basic_address (id, cust_id, is_default, 
-      address_type, country, province, 
-      city, district, create_user, 
-      create_time, update_user, update_time, 
-      active, detail_info)
-    values (#{id,jdbcType=INTEGER}, #{custId,jdbcType=INTEGER}, #{isDefault,jdbcType=INTEGER}, 
-      #{addressType,jdbcType=VARCHAR}, #{country,jdbcType=VARCHAR}, #{province,jdbcType=VARCHAR},
-      #{city,jdbcType=VARCHAR}, #{district,jdbcType=VARCHAR}, #{createUser,jdbcType=INTEGER}, 
-      #{createTime,jdbcType=TIMESTAMP}, #{updateUser,jdbcType=INTEGER}, #{updateTime,jdbcType=TIMESTAMP}, 
-      #{active,jdbcType=INTEGER}, #{detailInfo,jdbcType=LONGVARCHAR})
-  </insert>
+
   <insert id="insertSelective" parameterType="com.crazy.portal.entity.basic.TBasicAddressDO">
     insert into t_basic_address
     <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -186,37 +170,26 @@
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.crazy.portal.entity.basic.TBasicAddressDO">
-    update t_basic_address
-    set cust_id = #{custId,jdbcType=INTEGER},
-      is_default = #{isDefault,jdbcType=INTEGER},
-      address_type = #{addressType,jdbcType=VARCHAR},
-      country = #{country,jdbcType=VARCHAR},
-      province = #{province,jdbcType=VARCHAR},
-      city = #{city,jdbcType=VARCHAR},
-      district = #{district,jdbcType=VARCHAR},
-      create_user = #{createUser,jdbcType=INTEGER},
-      create_time = #{createTime,jdbcType=TIMESTAMP},
-      update_user = #{updateUser,jdbcType=INTEGER},
-      update_time = #{updateTime,jdbcType=TIMESTAMP},
-      active = #{active,jdbcType=INTEGER},
-      detail_info = #{detailInfo,jdbcType=LONGVARCHAR}
-    where id = #{id,jdbcType=INTEGER}
+
+
+  <select id="selectByCustId" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_basic_address
+    where cust_id = #{custId,jdbcType=INTEGER} and active = 1
+    order by create_time desc
+  </select>
+
+  <select id="selectIdsByCustId" resultType="java.lang.Integer">
+    select
+    id
+    from t_basic_address
+    where cust_id = #{custId,jdbcType=INTEGER} and active = 1
+  </select>
+
+  <update id="deleteByCustId" >
+    update t_basic_address set active = 0,update_user = #{userId},update_time = now()
+    where cust_id = #{custId}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.crazy.portal.entity.basic.TBasicAddressDO">
-    update t_basic_address
-    set cust_id = #{custId,jdbcType=INTEGER},
-      is_default = #{isDefault,jdbcType=INTEGER},
-      address_type = #{addressType,jdbcType=VARCHAR},
-      country = #{country,jdbcType=VARCHAR},
-      province = #{province,jdbcType=VARCHAR},
-      city = #{city,jdbcType=VARCHAR},
-      district = #{district,jdbcType=VARCHAR},
-      create_user = #{createUser,jdbcType=INTEGER},
-      create_time = #{createTime,jdbcType=TIMESTAMP},
-      update_user = #{updateUser,jdbcType=INTEGER},
-      update_time = #{updateTime,jdbcType=TIMESTAMP},
-      active = #{active,jdbcType=INTEGER}
-    where id = #{id,jdbcType=INTEGER}
-  </update>
+
 </mapper>

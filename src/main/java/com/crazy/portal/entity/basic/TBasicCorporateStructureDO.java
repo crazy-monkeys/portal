@@ -8,7 +8,7 @@ import java.util.Date;
  * 层次结构
  */
 @Data
-public class TBasicCorporateStructureDO {
+public class TBasicCorporateStructureDO implements BaseEntity{
     private Integer id;
 
     /**
@@ -27,7 +27,7 @@ public class TBasicCorporateStructureDO {
     private String corporateStructureAddress;
 
     /**
-     * 只要联系人
+     * 主要联系人
      */
     private String isDefaultContact;
 

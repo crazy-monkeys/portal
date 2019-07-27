@@ -1,16 +1,14 @@
-package com.crazy.portal.entity.customer;
+package com.crazy.portal.entity.basic;
 
 import lombok.Data;
 
 import java.util.Date;
 
-/***
- * 销售数据
- */
 @Data
-public class CustSales {
-
-    private Long id;
+public class TBasicSalesDO implements BaseEntity{
+    private Integer id;
+    //客户ID
+    private Integer custId;
     //销售组织
     private String salesOrganize;
     //分销渠道
@@ -34,11 +32,14 @@ public class CustSales {
     //税分类
     private String taxClassification;
 
-    private Long createId;
+    private Integer active;
+
+    private Integer createUserId;
 
     private Date createTime;
 
-    private Long modifyId;
+    private Integer modifyUserId;
 
     private Date modifyTime;
+
 }

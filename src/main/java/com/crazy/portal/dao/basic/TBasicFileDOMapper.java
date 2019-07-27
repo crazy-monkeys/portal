@@ -1,11 +1,12 @@
 package com.crazy.portal.dao.basic;
 
 import com.crazy.portal.entity.basic.TBasicFileDO;
+import org.apache.ibatis.annotations.Param;
 
-public interface TBasicFileDOMapper {
+import java.util.List;
+
+public interface TBasicFileDOMapper extends BaseMapper{
     int deleteByPrimaryKey(Integer id);
-
-    int insert(TBasicFileDO record);
 
     int insertSelective(TBasicFileDO record);
 
@@ -13,5 +14,9 @@ public interface TBasicFileDOMapper {
 
     int updateByPrimaryKeySelective(TBasicFileDO record);
 
-    int updateByPrimaryKey(TBasicFileDO record);
+    List<TBasicFileDO> selectByCustId(@Param("custId")Integer custId);
+
+    List<Integer> selectIdsByCustId(@Param("custId") Integer custId);
+
+    int deleteByCustId(@Param("custId") Integer custId, @Param("userId")Integer userId);
 }

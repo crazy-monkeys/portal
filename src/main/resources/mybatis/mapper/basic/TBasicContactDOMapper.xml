@@ -33,20 +33,7 @@
     delete from t_basic_contact
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.crazy.portal.entity.basic.TBasicContactDO">
-    insert into t_basic_contact (id, cust_id, is_default, 
-      contact_name, contact_mobile, contact_email, 
-      contact_department, contact_position, is_decision_maker, 
-      equity_ratio, create_user, create_time, 
-      update_user, update_time, active
-      )
-    values (#{id,jdbcType=INTEGER}, #{custId,jdbcType=INTEGER}, #{isDefault,jdbcType=INTEGER}, 
-      #{contactName,jdbcType=VARCHAR}, #{contactMobile,jdbcType=VARCHAR}, #{contactEmail,jdbcType=VARCHAR}, 
-      #{contactDepartment,jdbcType=VARCHAR}, #{contactPosition,jdbcType=VARCHAR}, #{isDecisionMaker,jdbcType=INTEGER}, 
-      #{equityRatio,jdbcType=DECIMAL}, #{createUser,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, 
-      #{updateUser,jdbcType=INTEGER}, #{updateTime,jdbcType=TIMESTAMP}, #{active,jdbcType=INTEGER}
-      )
-  </insert>
+
   <insert id="insertSelective" parameterType="com.crazy.portal.entity.basic.TBasicContactDO">
     insert into t_basic_contact
     <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -192,22 +179,25 @@
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.crazy.portal.entity.basic.TBasicContactDO">
-    update t_basic_contact
-    set cust_id = #{custId,jdbcType=INTEGER},
-      is_default = #{isDefault,jdbcType=INTEGER},
-      contact_name = #{contactName,jdbcType=VARCHAR},
-      contact_mobile = #{contactMobile,jdbcType=VARCHAR},
-      contact_email = #{contactEmail,jdbcType=VARCHAR},
-      contact_department = #{contactDepartment,jdbcType=VARCHAR},
-      contact_position = #{contactPosition,jdbcType=VARCHAR},
-      is_decision_maker = #{isDecisionMaker,jdbcType=INTEGER},
-      equity_ratio = #{equityRatio,jdbcType=DECIMAL},
-      create_user = #{createUser,jdbcType=INTEGER},
-      create_time = #{createTime,jdbcType=TIMESTAMP},
-      update_user = #{updateUser,jdbcType=INTEGER},
-      update_time = #{updateTime,jdbcType=TIMESTAMP},
-      active = #{active,jdbcType=INTEGER}
-    where id = #{id,jdbcType=INTEGER}
+
+  <select id="selectByCustId" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_basic_contact
+    where cust_id = #{custId,jdbcType=INTEGER} and active = 1
+    order by create_time desc
+  </select>
+
+  <select id="selectIdsByCustId" resultType="java.lang.Integer">
+    select
+    id
+    from t_basic_contact
+    where cust_id = #{custId,jdbcType=INTEGER} and active = 1
+  </select>
+
+  <update id="deleteByCustId" >
+    update t_basic_contact set active = 0,update_user = #{userId},update_time = now()
+    where cust_id = #{custId}
   </update>
+
 </mapper>

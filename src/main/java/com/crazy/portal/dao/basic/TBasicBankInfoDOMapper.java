@@ -1,11 +1,11 @@
 package com.crazy.portal.dao.basic;
 
 import com.crazy.portal.entity.basic.TBasicBankInfoDO;
+import org.apache.ibatis.annotations.Param;
 
-public interface TBasicBankInfoDOMapper {
+
+public interface TBasicBankInfoDOMapper{
     int deleteByPrimaryKey(Integer id);
-
-    int insert(TBasicBankInfoDO record);
 
     int insertSelective(TBasicBankInfoDO record);
 
@@ -13,7 +13,7 @@ public interface TBasicBankInfoDOMapper {
 
     int updateByPrimaryKeySelective(TBasicBankInfoDO record);
 
-    int updateByPrimaryKeyWithBLOBs(TBasicBankInfoDO record);
+    TBasicBankInfoDO selectByCustId(@Param("custId")Integer custId);
 
-    int updateByPrimaryKey(TBasicBankInfoDO record);
+    int deleteByCustId(@Param("custId") Integer custId, @Param("userId")Integer userId);
 }

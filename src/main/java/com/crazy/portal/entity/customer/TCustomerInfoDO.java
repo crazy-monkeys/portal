@@ -1,4 +1,4 @@
-package com.crazy.portal.entity.cust;
+package com.crazy.portal.entity.customer;
 
 import com.crazy.portal.entity.basic.*;
 import lombok.Data;
@@ -34,6 +34,15 @@ public class TCustomerInfoDO {
      */
     private String custOutCode;
 
+    /**
+     * 是否License客户 1-是 0-否
+     */
+    private Short isLicense;
+
+    /**
+     * 业务类型  1-massMarket 2-accountMarket
+     */
+    private Short businessType;
     /**
      * 客户中文名
      */
@@ -94,6 +103,7 @@ public class TCustomerInfoDO {
      */
     private String corporateParents;
 
+
     /**
      * 授信额度初始值
      */
@@ -115,9 +125,29 @@ public class TCustomerInfoDO {
     private Integer isWhiteList;
 
     /**
+     *优势价值
+     */
+    private String advantageValue;
+
+    /**
+     * 优势介绍
+     */
+    private String advantageIntroduction;
+
+    /**
+     * 业务介绍
+     */
+    private String businessIntroduction;
+
+    /**
      * 用户状态 1-生效 0-冻结
      */
     private Integer dealerStatus;
+
+    /**
+     * 客户状态 1-待提交 2-待审批 3-正常
+     */
+    private Integer customerStatus;
 
     private Integer createUser;
 
@@ -168,4 +198,14 @@ public class TCustomerInfoDO {
      * 开票信息
      */
     private List<TBasicInvoiceInfoDO> basicInvoice;
+
+    /**
+     * 销售团队
+     */
+    private List<TBasicSalesTeamDO> salesTeam;
+
+    /**
+     * 销售数据
+     */
+    private List<TBasicSalesDO> sales;
 }

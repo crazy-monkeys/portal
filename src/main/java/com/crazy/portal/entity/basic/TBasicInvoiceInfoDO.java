@@ -8,7 +8,7 @@ import java.util.Date;
  * 开票信息
  */
 @Data
-public class TBasicInvoiceInfoDO {
+public class TBasicInvoiceInfoDO implements BaseEntity{
     private Integer id;
 
     private Integer custId;

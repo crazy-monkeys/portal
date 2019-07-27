@@ -8,7 +8,7 @@ import java.util.Date;
  * 地址信息
  */
 @Data
-public class TBasicAddressDO {
+public class TBasicAddressDO implements BaseEntity{
     private Integer id;
 
     /**

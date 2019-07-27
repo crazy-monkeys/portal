@@ -1,11 +1,12 @@
 package com.crazy.portal.dao.basic;
 
 import com.crazy.portal.entity.basic.TBasicCorporateRelationshipDO;
+import org.apache.ibatis.annotations.Param;
 
-public interface TBasicCorporateRelationshipDOMapper {
+import java.util.List;
+
+public interface TBasicCorporateRelationshipDOMapper extends BaseMapper{
     int deleteByPrimaryKey(Integer id);
-
-    int insert(TBasicCorporateRelationshipDO record);
 
     int insertSelective(TBasicCorporateRelationshipDO record);
 
@@ -13,5 +14,9 @@ public interface TBasicCorporateRelationshipDOMapper {
 
     int updateByPrimaryKeySelective(TBasicCorporateRelationshipDO record);
 
-    int updateByPrimaryKey(TBasicCorporateRelationshipDO record);
+    List<TBasicCorporateRelationshipDO> selectByCustId(@Param("custId")Integer custId);
+
+    List<Integer> selectIdsByCustId(@Param("custId") Integer custId);
+
+    int deleteByCustId(@Param("custId") Integer custId, @Param("userId")Integer userId);
 }

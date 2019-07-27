@@ -1,11 +1,12 @@
 package com.crazy.portal.dao.basic;
 
 import com.crazy.portal.entity.basic.TBasicAddressDO;
+import org.apache.ibatis.annotations.Param;
 
-public interface TBasicAddressDOMapper {
+import java.util.List;
+
+public interface TBasicAddressDOMapper extends BaseMapper{
     int deleteByPrimaryKey(Integer id);
-
-    int insert(TBasicAddressDO record);
 
     int insertSelective(TBasicAddressDO record);
 
@@ -13,7 +14,9 @@ public interface TBasicAddressDOMapper {
 
     int updateByPrimaryKeySelective(TBasicAddressDO record);
 
-    int updateByPrimaryKeyWithBLOBs(TBasicAddressDO record);
+    List<TBasicAddressDO> selectByCustId(@Param("custId")Integer custId);
 
-    int updateByPrimaryKey(TBasicAddressDO record);
+    List<Integer> selectIdsByCustId(@Param("custId") Integer custId);
+
+    int deleteByCustId(@Param("custId") Integer custId, @Param("userId")Integer userId);
 }

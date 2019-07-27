@@ -9,7 +9,7 @@ import java.util.Date;
  * 联系人
  */
 @Data
-public class TBasicContactDO {
+public class TBasicContactDO implements BaseEntity{
     private Integer id;
 
     /**

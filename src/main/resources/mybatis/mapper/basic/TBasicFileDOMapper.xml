@@ -28,16 +28,7 @@
     delete from t_basic_file
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.crazy.portal.entity.basic.TBasicFileDO">
-    insert into t_basic_file (id, relation_type, relation_id, 
-      file_type, file_name, file_path, 
-      create_user, create_time, update_user, 
-      update_time, active)
-    values (#{id,jdbcType=INTEGER}, #{relationType,jdbcType=INTEGER}, #{relationId,jdbcType=INTEGER}, 
-      #{fileType,jdbcType=INTEGER}, #{fileName,jdbcType=VARCHAR}, #{filePath,jdbcType=VARCHAR}, 
-      #{createUser,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{updateUser,jdbcType=INTEGER}, 
-      #{updateTime,jdbcType=TIMESTAMP}, #{active,jdbcType=INTEGER})
-  </insert>
+
   <insert id="insertSelective" parameterType="com.crazy.portal.entity.basic.TBasicFileDO">
     insert into t_basic_file
     <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -147,18 +138,26 @@
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.crazy.portal.entity.basic.TBasicFileDO">
-    update t_basic_file
-    set relation_type = #{relationType,jdbcType=INTEGER},
-      relation_id = #{relationId,jdbcType=INTEGER},
-      file_type = #{fileType,jdbcType=INTEGER},
-      file_name = #{fileName,jdbcType=VARCHAR},
-      file_path = #{filePath,jdbcType=VARCHAR},
-      create_user = #{createUser,jdbcType=INTEGER},
-      create_time = #{createTime,jdbcType=TIMESTAMP},
-      update_user = #{updateUser,jdbcType=INTEGER},
-      update_time = #{updateTime,jdbcType=TIMESTAMP},
-      active = #{active,jdbcType=INTEGER}
-    where id = #{id,jdbcType=INTEGER}
+
+
+  <select id="selectByCustId" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_basic_file
+    where cust_id = #{custId,jdbcType=INTEGER} and active = 1
+    order by create_time desc
+  </select>
+
+  <select id="selectIdsByCustId" resultType="java.lang.Integer">
+    select
+    id
+    from t_basic_file
+    where cust_id = #{custId,jdbcType=INTEGER} and active = 1
+  </select>
+
+  <update id="deleteByCustId" >
+    update t_basic_file set active = 0,update_user = #{userId},update_time = now()
+    where cust_id = #{custId}
   </update>
+
 </mapper>

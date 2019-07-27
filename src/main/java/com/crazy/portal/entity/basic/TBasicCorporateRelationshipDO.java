@@ -8,7 +8,7 @@ import java.util.Date;
  * 公司关系
  */
 @Data
-public class TBasicCorporateRelationshipDO {
+public class TBasicCorporateRelationshipDO implements BaseEntity{
     private Integer id;
 
     /**

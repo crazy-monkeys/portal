@@ -6,17 +6,14 @@ import com.crazy.portal.bean.customer.basic.FileVO;
 import com.crazy.portal.bean.customer.basic.InvoiceVO;
 import com.crazy.portal.bean.customer.basic.ShipVO;
 import com.crazy.portal.bean.customer.dealer.DealerVO;
-import com.crazy.portal.dao.cust.TCustomerInfoDOMapper;
+import com.crazy.portal.dao.customer.TCustomerInfoDOMapper;
 import com.crazy.portal.entity.basic.*;
-import com.crazy.portal.entity.cust.TCustomerInfoDO;
-import com.crazy.portal.entity.cust.TCustomerInfoDOWithBLOBs;
+import com.crazy.portal.entity.customer.TCustomerInfoDO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -33,7 +30,7 @@ public class DealerService {
     //代理商个人信息
     public DealerVO getDealerInfo(Integer dealerId){
         try{
-            TCustomerInfoDOWithBLOBs dealerInfo = tCustomerInfoDOMapper.selectDealerInfo(dealerId);
+            TCustomerInfoDO dealerInfo = tCustomerInfoDOMapper.selectDealerInfo(dealerId);
             log.info(JSON.toJSONString(dealerInfo));
             return mappingVO(dealerInfo);
         }catch (Exception e){
@@ -42,7 +39,7 @@ public class DealerService {
         }
     }
 
-    private DealerVO mappingVO(TCustomerInfoDOWithBLOBs dealer){
+    private DealerVO mappingVO(TCustomerInfoDO dealer){
         DealerVO vo = new DealerVO();
         vo.setDealerCode(dealer.getCustInCode());
         vo.setDealerName(dealer.getCustZhName());
