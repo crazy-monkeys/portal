@@ -2,6 +2,7 @@ package com.crazy.portal.dao.cust;
 
 import com.crazy.portal.entity.cust.TCustomerInfoDO;
 import com.crazy.portal.entity.cust.TCustomerInfoDOWithBLOBs;
+import org.apache.ibatis.annotations.Param;
 
 public interface TCustomerInfoDOMapper {
     int deleteByPrimaryKey(Integer id);
@@ -17,4 +18,6 @@ public interface TCustomerInfoDOMapper {
     int updateByPrimaryKeyWithBLOBs(TCustomerInfoDOWithBLOBs record);
 
     int updateByPrimaryKey(TCustomerInfoDO record);
+
+    TCustomerInfoDOWithBLOBs selectDealerInfo(@Param("dealerId") Integer dealerId);
 }

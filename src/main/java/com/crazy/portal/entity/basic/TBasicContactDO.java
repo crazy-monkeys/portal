@@ -5,6 +5,9 @@ import lombok.Data;
 import java.math.BigDecimal;
 import java.util.Date;
 
+/**
+ * 联系人
+ */
 @Data
 public class TBasicContactDO {
     private Integer id;

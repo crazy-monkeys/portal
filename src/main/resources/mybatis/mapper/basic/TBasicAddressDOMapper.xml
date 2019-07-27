@@ -5,7 +5,7 @@
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="cust_id" jdbcType="INTEGER" property="custId" />
     <result column="is_default" jdbcType="INTEGER" property="isDefault" />
-    <result column="address_type" jdbcType="INTEGER" property="addressType" />
+    <result column="address_type" jdbcType="VARCHAR" property="addressType" />
     <result column="country" jdbcType="VARCHAR" property="country" />
     <result column="province" jdbcType="VARCHAR" property="province" />
     <result column="city" jdbcType="VARCHAR" property="city" />
@@ -45,7 +45,7 @@
       create_time, update_user, update_time, 
       active, detail_info)
     values (#{id,jdbcType=INTEGER}, #{custId,jdbcType=INTEGER}, #{isDefault,jdbcType=INTEGER}, 
-      #{addressType,jdbcType=INTEGER}, #{country,jdbcType=VARCHAR}, #{province,jdbcType=VARCHAR}, 
+      #{addressType,jdbcType=VARCHAR}, #{country,jdbcType=VARCHAR}, #{province,jdbcType=VARCHAR},
       #{city,jdbcType=VARCHAR}, #{district,jdbcType=VARCHAR}, #{createUser,jdbcType=INTEGER}, 
       #{createTime,jdbcType=TIMESTAMP}, #{updateUser,jdbcType=INTEGER}, #{updateTime,jdbcType=TIMESTAMP}, 
       #{active,jdbcType=INTEGER}, #{detailInfo,jdbcType=LONGVARCHAR})
@@ -107,7 +107,7 @@
         #{isDefault,jdbcType=INTEGER},
       </if>
       <if test="addressType != null">
-        #{addressType,jdbcType=INTEGER},
+        #{addressType,jdbcType=VARCHAR},
       </if>
       <if test="country != null">
         #{country,jdbcType=VARCHAR},
@@ -151,7 +151,7 @@
         is_default = #{isDefault,jdbcType=INTEGER},
       </if>
       <if test="addressType != null">
-        address_type = #{addressType,jdbcType=INTEGER},
+        address_type = #{addressType,jdbcType=VARCHAR},
       </if>
       <if test="country != null">
         country = #{country,jdbcType=VARCHAR},
@@ -190,7 +190,7 @@
     update t_basic_address
     set cust_id = #{custId,jdbcType=INTEGER},
       is_default = #{isDefault,jdbcType=INTEGER},
-      address_type = #{addressType,jdbcType=INTEGER},
+      address_type = #{addressType,jdbcType=VARCHAR},
       country = #{country,jdbcType=VARCHAR},
       province = #{province,jdbcType=VARCHAR},
       city = #{city,jdbcType=VARCHAR},
@@ -207,7 +207,7 @@
     update t_basic_address
     set cust_id = #{custId,jdbcType=INTEGER},
       is_default = #{isDefault,jdbcType=INTEGER},
-      address_type = #{addressType,jdbcType=INTEGER},
+      address_type = #{addressType,jdbcType=VARCHAR},
       country = #{country,jdbcType=VARCHAR},
       province = #{province,jdbcType=VARCHAR},
       city = #{city,jdbcType=VARCHAR},

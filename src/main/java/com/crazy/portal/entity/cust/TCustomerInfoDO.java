@@ -1,9 +1,11 @@
 package com.crazy.portal.entity.cust;
 
+import com.crazy.portal.entity.basic.*;
 import lombok.Data;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 客户信息表
@@ -83,6 +85,11 @@ public class TCustomerInfoDO {
     private Integer corporateNumber;
 
     /**
+     * 注册时间
+     */
+    private Date registerTime;
+
+    /**
      * 母公司
      */
     private String corporateParents;
@@ -121,4 +128,44 @@ public class TCustomerInfoDO {
     private Date updateTime;
 
     private Integer active;
+
+    /**
+     * 银行账号信息
+     */
+    private TBasicBankInfoDO basicBank;
+
+    /**
+     * 地址信息
+     */
+    private List<TBasicAddressDO> basicAddress;
+
+    /**
+     * 分级分类信息
+     */
+    private List<TBasicLableDO> basicLables;
+
+    /**
+     * 附件信息
+     */
+    private List<TBasicFileDO> basicFile;
+
+    /**
+     *联系人信息
+     */
+    private List<TBasicContactDO> basicContact;
+
+    /**
+     * 公司关系
+     */
+    private List<TBasicCorporateRelationshipDO> basicShip;
+
+    /**
+     * 层次结构
+     */
+    private List<TBasicCorporateStructureDO> basicStructure;
+
+    /**
+     * 开票信息
+     */
+    private List<TBasicInvoiceInfoDO> basicInvoice;
 }

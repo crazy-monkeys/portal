@@ -24,7 +24,7 @@ public class TBasicAddressDO {
     /**
      * 地址类型 注册地址、办公地址
      */
-    private Integer addressType;
+    private String addressType;
 
     /**
      * 国家

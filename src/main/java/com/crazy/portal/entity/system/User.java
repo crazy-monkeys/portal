@@ -73,4 +73,9 @@ public class User {
     @JSONField(serialize=false)
     private Date regEndTime;
 
+    /**
+     * dealer 用户同步进用户表 关联上dealerId
+     */
+    private Integer dealerId;
+
 }

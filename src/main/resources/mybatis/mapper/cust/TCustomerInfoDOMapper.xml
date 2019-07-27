@@ -34,6 +34,20 @@
     <result column="advantage_introduction" jdbcType="LONGVARCHAR" property="advantageIntroduction" />
     <result column="business_introduction" jdbcType="LONGVARCHAR" property="businessIntroduction" />
   </resultMap>
+
+  <!--代理商result-->
+  <resultMap id="DealerResultMap" type="com.crazy.portal.entity.cust.TCustomerInfoDOWithBLOBs" extends="ResultMapWithBLOBs">
+    <association property="basicBank" resultMap="com.crazy.portal.dao.basic.TBasicBankInfoDOMapper.BaseResultMap" />
+    <collection property="basicAddress" resultMap="com.crazy.portal.dao.basic.TBasicAddressDOMapper.BaseResultMap" />
+    <collection property="basicLables" resultMap="com.crazy.portal.dao.basic.TBasicLableDOMapper.BaseResultMap" />
+    <collection property="basicFile" resultMap="com.crazy.portal.dao.basic.TBasicFileDOMapper.BaseResultMap" />
+    <collection property="basicContact" resultMap="com.crazy.portal.dao.basic.TBasicContactDOMapper.BaseResultMap" />
+    <collection property="basicShip" resultMap="com.crazy.portal.dao.basic.TBasicCorporateRelationshipDOMapper.BaseResultMap" />
+    <collection property="basicStructure" resultMap="com.crazy.portal.dao.basic.TBasicCorporateStructureDOMapper.BaseResultMap" />
+    <collection property="basicInvoice" resultMap="com.crazy.portal.dao.basic.TBasicInvoiceInfoDOMapper.BaseResultMap" />
+  </resultMap>
+
+
   <sql id="Base_Column_List">
     id, cust_type, cust_role, cust_in_code, cust_out_code, cust_zh_name, cust_en_name, 
     cust_abbreviation, cust_mobile, cust_phone_no, cust_fax, cust_email, cust_web, corporate_assets, 
@@ -41,6 +55,7 @@
     is_white_list, dealer_status, create_user, create_time, update_user, update_time, 
     active
   </sql>
+
   <sql id="Blob_Column_List">
     advantage_value, advantage_introduction, business_introduction
   </sql>
@@ -412,4 +427,71 @@
       active = #{active,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <select id="selectDealerInfo" resultMap="DealerResultMap">
+    select
+    cust.id,
+    cust.cust_in_code,
+    cust.cust_zh_name,
+    cust.cust_abbreviation,
+    cust.cust_mobile,
+    cust.cust_email,
+    cust.cust_web,
+    cust.corporate_assets,
+    cust.corporate_number,
+    cust.register_time,
+    cust.corporate_parents,
+    cust.advantage_value,
+    cust.advantage_introduction,
+    cust.business_introduction,
+    adr.id,
+    adr.cust_id,
+    adr.address_type,
+    adr.province,
+    adr.city,
+    adr.district,
+    adr.detail_info,
+    bank.id,
+    bank.cust_id,
+    bank.bank_name,
+    CONCAT_WS('',bank.bank_country,bank.bank_province,bank.bank_city,bank.bank_district,bank.bank_detail_info) as bank_address,
+    bank.bank_account,
+    bank.bank_bic,
+    ship.id,
+    ship.cust_id,
+    ship.corporate_name,
+    ship.corporate_type,
+    contact.id,
+    contact.cust_id,
+    contact.contact_name,
+    contact.contact_mobile,
+    contact.contact_email,
+    contact.contact_department,
+    contact.contact_position,
+    contact.is_decision_maker,
+    contact.equity_ratio,
+    invoice.id,
+    invoice.cust_id,
+    invoice.purchasing_unit,
+    CONCAT_WS('',invoice.shipping_province,invoice.shipping_city,invoice.shipping_district,invoice.shipping_detail_info) as shippingAddress,
+    invoice.shipping_mobile,
+    invoice.taxpayer_registration_number,
+    invoice.currency,
+    file.id,
+    file.relation_id,
+    file.file_type,
+    file.file_name,
+    file.file_path,
+    file.create_time
+    from t_customer_info cust
+    left join t_basic_lable lable on cust.id = lable.cust_id and lable.active=1
+    left join t_basic_file file on file.relation_id = cust.id and file.relation_type = 1 and file.active=1
+    left join t_basic_contact contact on cust.id = contact.cust_id and contact.active=1
+    left join t_basic_corporate_structure str on cust.id = str.cust_id and str.active=1
+    left join t_basic_corporate_relationship ship on cust.id = ship.cust_id and ship.active=1
+    left join t_basic_bank_info bank on cust.id = bank.cust_id and bank.active=1
+    left join t_basic_invoice_info invoice on cust.id = invoice.cust_id and invoice.active=1
+    left join t_basic_address adr on cust.id = adr.cust_id and adr.active=1
+    where cust.id= #{dealerId}
+  </select>
 </mapper>

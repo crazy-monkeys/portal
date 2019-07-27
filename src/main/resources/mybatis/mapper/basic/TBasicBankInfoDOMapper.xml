@@ -16,6 +16,8 @@
     <result column="update_user" jdbcType="INTEGER" property="updateUser" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="active" jdbcType="INTEGER" property="active" />
+
+    <result column="bank_address" jdbcType="VARCHAR" property="bankAddress" />
   </resultMap>
   <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.crazy.portal.entity.basic.TBasicBankInfoDO">
     <result column="bank_detail_info" jdbcType="LONGVARCHAR" property="bankDetailInfo" />
