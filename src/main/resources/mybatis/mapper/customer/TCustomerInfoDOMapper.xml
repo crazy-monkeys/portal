@@ -37,7 +37,7 @@
   </resultMap>
 
   <!--代理商result-->
-  <resultMap id="DealerResultMap" type="com.crazy.portal.entity.customer.TCustomerInfoDO" extends="ResultMap">
+  <resultMap id="DealerResultMap" type="com.crazy.portal.entity.customer.TCustomerInfoDO" extends="BaseResultMap">
     <association property="basicBank" resultMap="com.crazy.portal.dao.basic.TBasicBankInfoDOMapper.BaseResultMap" />
     <collection property="basicAddress" resultMap="com.crazy.portal.dao.basic.TBasicAddressDOMapper.BaseResultMap" />
     <collection property="basicLables" resultMap="com.crazy.portal.dao.basic.TBasicLableDOMapper.BaseResultMap" />
