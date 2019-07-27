@@ -1,7 +1,6 @@
 package com.crazy.portal.util;
 
 import com.crazy.portal.bean.customer.basic.FileVO;
-import com.crazy.portal.config.exception.BusinessException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,10 +20,7 @@ public class FileUtil {
 
     public static List<FileVO> upload(MultipartFile[] files, String filePath){
         List<FileVO> result = new ArrayList<>();
-
-        if(files.length == 0 || StringUtils.isEmpty(filePath)){
-            throw new BusinessException(FILE_PARAM_EMPTY);
-        }
+        BusinessUtil.assertFlase(files.length == 0 || StringUtils.isEmpty(filePath), FILE_PARAM_EMPTY);
         try {
             long  startTime = System.currentTimeMillis();
             for(MultipartFile multipartFile: files) {

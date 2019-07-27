@@ -20,6 +20,7 @@ public class GlobalExceptionHandler {
     @ResponseBody
     @ExceptionHandler(value = Exception.class)
     public BaseResponse parameterExceptionHandler(Exception exception) {
+        log.error(exception.getMessage(), exception);
         BaseResponse response = new BaseResponse();
         if(exception instanceof MethodArgumentNotValidException){
             StringBuilder stringBuilder = new StringBuilder();
@@ -44,7 +45,6 @@ public class GlobalExceptionHandler {
             return response;
         }
         response.systemException();
-        log.error(exception.getMessage(), exception);
         return response;
     }
 

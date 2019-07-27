@@ -85,8 +85,8 @@ public class AnnouncementController extends BaseController {
      * @param id    公告ID
      */
     @GetMapping(value = "/file/{id}")
-    public void pullFile(Integer id) {
-
+    public BaseResponse getFileUrl(@PathVariable Integer id) {
+        return super.successResult(announcementService.getFileUrl(id));
     }
 
 }

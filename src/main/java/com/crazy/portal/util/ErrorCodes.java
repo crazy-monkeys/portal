@@ -106,7 +106,11 @@ public class ErrorCodes {
         FILE_PARAM_EMPTY(20000, "上传文件必填参数缺失", ""),
 
         //公告模块
-        ANNOUNCEMENT_FILE_SIZE_ERROR(30000, "请勿上传多个文件", "");
+        ANNOUNCEMENT_FILE_LIST_PARAM_EMPTY(30000, "请上传正确文件参数", ""),
+        ANNOUNCEMENT_FILE_SIZE_ERROR(30001, "请勿上传多个文件", ""),
+        ANNOUNCEMENT_FILE_PARAM_EMPTY(30002, "请先上传文件", ""),
+        ANNOUNCEMENT_FILE_NOT_FOUND_BY_ID(30003, "未找到公告文件", ""),
+        ANNOUNCEMENT_FILE_ERROR_BY_ID(30004, "公告文件数据异常", "");
 
         //客户模块
 

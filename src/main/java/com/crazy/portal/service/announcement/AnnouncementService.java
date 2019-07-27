@@ -13,17 +13,18 @@ import com.crazy.portal.util.PortalUtil;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import org.springframework.web.multipart.MultipartFile;
-
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
-import static com.crazy.portal.util.ErrorCodes.BusinessEnum.ANNOUNCEMENT_FILE_SIZE_ERROR;
+import static com.crazy.portal.util.ErrorCodes.BusinessEnum.*;
 
 /**
  * Created by lee on 2019/6/4.
@@ -142,11 +143,28 @@ public class AnnouncementService {
         return announcementFileMapper.selectByIds(keys);
     }
 
+    /**
+     * 获取公告文件访问的url
+     * @param id
+     * @return
+     */
+    public String getFileUrl(Integer id) {
+        List<AnnouncementFile> result = announcementFileMapper.selectByAnnouncementId(id);
+        BusinessUtil.assertFlase(null == result, ANNOUNCEMENT_FILE_NOT_FOUND_BY_ID);
+        BusinessUtil.assertFlase(result.size() != 1, ANNOUNCEMENT_FILE_ERROR_BY_ID);
+        AnnouncementFile announcementFile = result.get(0);
+//        return String.format("%s%s", announcementFile.getFileStoragePath(), announcementFile.getFileName());
+        return announcementFile.getFileName();
+    }
+
     private int saveAnnouncementInfo(Announcement reqRecord, Integer userId){
+        boolean condition = null == reqRecord.getFileList() || reqRecord.getFileList().size() == 0;
+        BusinessUtil.assertFlase(condition, ANNOUNCEMENT_FILE_PARAM_EMPTY);
         reqRecord.setCreateTime(DateUtil.getCurrentTS());
         reqRecord.setCreateUserId(userId);
-        //初始值为'未发布'
-        reqRecord.setStatus(0);
+        //初始值为'已发布'
+        reqRecord.setStatus(1);
+        reqRecord.setReleaseTime(new Date());
         return announcementDOMapper.insertSelective(reqRecord);
     }
 
@@ -164,18 +182,11 @@ public class AnnouncementService {
 
     private void editFile(List<AnnouncementFile> fileList, Integer announcementId) {
         for(AnnouncementFile file : fileList) {
+            BusinessUtil.assertFlase(file.getId() == null, ANNOUNCEMENT_FILE_LIST_PARAM_EMPTY);
             AnnouncementFile dbRecord = announcementFileMapper.selectByPrimaryKey(file.getId());
-            if(null == dbRecord){
-                dbRecord = new AnnouncementFile();
-                dbRecord.setAnnouncementId(announcementId);
-                dbRecord.setFileName(file.getFileName());
-                dbRecord.setFileStoragePath(file.getFileStoragePath());
-                announcementFileMapper.insertSelective(dbRecord);
-            }else{
-                dbRecord.setFileName(file.getFileName());
-                dbRecord.setFileStoragePath(file.getFileStoragePath());
-                announcementFileMapper.updateByPrimaryKeySelective(dbRecord);
-            }
+            BusinessUtil.assertFlase(dbRecord == null, ANNOUNCEMENT_FILE_LIST_PARAM_EMPTY);
+            dbRecord.setAnnouncementId(announcementId);
+            announcementFileMapper.updateByPrimaryKeySelective(dbRecord);
         }
     }
 
