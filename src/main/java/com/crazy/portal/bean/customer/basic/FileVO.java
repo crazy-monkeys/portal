@@ -11,8 +11,19 @@ import java.util.Date;
  */
 @Data
 public class FileVO {
+
     private Integer fileType;
+
+    //文件名称（a.pdf）
     private String fileName;
+
+    //文件夹路径（/a/b/c/dir/）
     private String filePath;
+
+    //文件地址全路径（/a/b/c/dir/a.pdf）
+    private String fullPath;
+
+    //创建时间
     private Date createTime;
+
 }

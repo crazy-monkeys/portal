@@ -23,3 +23,10 @@ spring:
     password: ThreeApe!@#$2019
     url: jdbc:mysql://47.100.106.186:3306/portal?useUnicode=true&characterEncoding=utf8&rewriteBatchedStatements=true&serverTimezone=UTC
     driver-class-name: com.mysql.cj.jdbc.Driver
+
+file:
+  path:
+    announcement:
+      thrid-push: /Users/lee/Documents/job_code/portal_file/push_thrid/
+      thrid-pull: /Users/lee/Documents/job_code/portal_file/pull_thrid/
+      local: /Users/lee/Documents/job_code/portal_file/local/

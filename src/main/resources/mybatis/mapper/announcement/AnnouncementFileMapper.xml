@@ -27,7 +27,7 @@
     values (#{id,jdbcType=INTEGER}, #{announcementId,jdbcType=INTEGER}, #{fileName,jdbcType=VARCHAR}, 
       #{fileStoragePath,jdbcType=VARCHAR}, #{active,jdbcType=VARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="com.crazy.portal.entity.announcement.AnnouncementFile">
+  <insert id="insertSelective" useGeneratedKeys="true" keyProperty="id" parameterType="com.crazy.portal.entity.announcement.AnnouncementFile">
     insert into t_announcement_file
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -96,6 +96,22 @@
     <include refid="Base_Column_List" />
     from t_announcement_file
     where announcement_id = #{announcementId}
+  </select>
+
+  <select id="selectByIds" resultMap="BaseResultMap" >
+    select
+    <include refid="Base_Column_List" />
+    from t_announcement_file
+    <choose>
+      <when test="ids != null and ids.size() != 0" >
+        <foreach collection="ids" item="item" index="index" open="where id in (" close=")" separator=",">
+          #{item}
+        </foreach>
+      </when>
+      <otherwise>
+        where 1 = 2
+      </otherwise>
+    </choose>
   </select>
 
 </mapper>

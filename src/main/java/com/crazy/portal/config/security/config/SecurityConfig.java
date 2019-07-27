@@ -37,7 +37,7 @@ import java.util.Arrays;
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
-    private static final String[] permissiveUrl = new String[]{"/user/login","/logout","/home","/login","/"};
+    private static final String[] permissiveUrl = new String[]{"/**"};
 
     @Value("${app.service-principal}")
     private String servicePrincipal;
@@ -89,17 +89,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                     new Header("Access-Control-Expose-Headers","Authorization"))))
                 .frameOptions().disable()
                 .and()
-                .addFilterBefore(spnegoAuthenticationProcessingFilter(authenticationManagerBean()),BasicAuthenticationFilter.class)
+//                .addFilterBefore(spnegoAuthenticationProcessingFilter(authenticationManagerBean()),BasicAuthenticationFilter.class)
                 //拦截OPTIONS请求，直接返回header
                 .addFilterAfter(new RequestFilter(), CorsFilter.class)
 
                 //添加登录filter
-                .apply(new LoginConfigurer<>()).loginSuccessHandler(loginSuccessHandler)
-                .and()
+//                .apply(new LoginConfigurer<>()).loginSuccessHandler(loginSuccessHandler)
+//                .and()
                 //添加token的filter
-                .apply(new JwtLoginConfigurer<>()).tokenValidSuccessHandler(jwtRefreshSuccessHandler)
-                .permissiveRequestUrls(permissiveUrl)
-                .and()
+//                .apply(new JwtLoginConfigurer<>()).tokenValidSuccessHandler(jwtRefreshSuccessHandler)
+//                .permissiveRequestUrls(permissiveUrl)
+//                .and()
                 //使用默认的logoutFilter
                 .logout()
                 //logout时清除token

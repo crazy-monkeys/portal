@@ -19,4 +19,6 @@ public interface AnnouncementFileMapper {
     int updateByPrimaryKey(AnnouncementFile record);
 
     List<AnnouncementFile> selectByAnnouncementId(@Param(value = "announcementId") Integer announcementId);
+
+    List<AnnouncementFile> selectByIds(@Param(value = "ids") List<Integer> ids);
 }

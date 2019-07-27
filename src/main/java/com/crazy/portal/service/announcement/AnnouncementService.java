@@ -1,21 +1,29 @@
 package com.crazy.portal.service.announcement;
 
 import com.alibaba.fastjson.JSONObject;
+import com.crazy.portal.bean.customer.basic.FileVO;
 import com.crazy.portal.dao.announcement.AnnouncementDOMapper;
 import com.crazy.portal.dao.announcement.AnnouncementFileMapper;
 import com.crazy.portal.entity.announcement.Announcement;
 import com.crazy.portal.entity.announcement.AnnouncementFile;
+import com.crazy.portal.util.BusinessUtil;
 import com.crazy.portal.util.DateUtil;
+import com.crazy.portal.util.FileUtil;
 import com.crazy.portal.util.PortalUtil;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
+import org.springframework.web.multipart.MultipartFile;
+
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.crazy.portal.util.ErrorCodes.BusinessEnum.ANNOUNCEMENT_FILE_SIZE_ERROR;
 
 /**
  * Created by lee on 2019/6/4.
@@ -25,6 +33,8 @@ import java.util.List;
 @Service
 public class AnnouncementService {
 
+    @Value("${file.path.announcement.local}")
+    private String filePath;
     @Resource
     private AnnouncementDOMapper announcementDOMapper;
     @Resource
@@ -86,6 +96,7 @@ public class AnnouncementService {
      * @param id    公告ID
      * @param userId    操作用户ID
      */
+    @Deprecated
     @Transactional
     public void releaseById(Integer id, Integer userId) {
         Announcement dbRecord = announcementDOMapper.selectByPrimaryKey(id);
@@ -112,20 +123,23 @@ public class AnnouncementService {
         announcementDOMapper.updateByPrimaryKeySelective(dbRecord);
     }
 
-    public List<AnnouncementFile> pushFile() {
-        //TODO 文档保存操作待实现
-        List<AnnouncementFile> list = new ArrayList<>();
-        AnnouncementFile file1 = new AnnouncementFile();
-        file1.setId(1);
-        file1.setFileName("aaaa");
-        file1.setFileStoragePath("/service/file/announcement");
-        AnnouncementFile file2 = new AnnouncementFile();
-        file2.setId(2);
-        file2.setFileName("bbbb");
-        file2.setFileStoragePath("/service/file/announcement");
-        list.add(file1);
-        list.add(file2);
-        return list;
+    /**
+     * 保存公告文件
+     * @param files
+     * @return
+     */
+    public List<AnnouncementFile> pushFile(MultipartFile[] files) {
+        BusinessUtil.assertFlase(files.length > 1, ANNOUNCEMENT_FILE_SIZE_ERROR);
+        List<FileVO> result = FileUtil.upload(files, filePath);
+        List<Integer> keys = new ArrayList<>();
+        for(FileVO fileVO : result){
+            AnnouncementFile file = new AnnouncementFile();
+            file.setFileName(fileVO.getFileName());
+            file.setFileStoragePath(fileVO.getFilePath());
+            announcementFileMapper.insertSelective(file);
+            keys.add(file.getId());
+        }
+        return announcementFileMapper.selectByIds(keys);
     }
 
     private int saveAnnouncementInfo(Announcement reqRecord, Integer userId){
@@ -137,14 +151,15 @@ public class AnnouncementService {
     }
 
     private int updateAnnouncementInfo(Announcement dbRecord, Announcement reqRecord, Integer userId){
-        boolean condition = dbRecord.getCreateUserId() == userId;
+        /*boolean condition = dbRecord.getCreateUserId() == userId;
         Assert.isTrue(condition, "Do not operate other announcement information");
         dbRecord.setTitle(reqRecord.getTitle());
 //        dbRecord.setContent(reqRecord.getContent());
 //        dbRecord.setTopmost(reqRecord.getTopmost());
         dbRecord.setUpdateTime(DateUtil.getCurrentTS());
         dbRecord.setTypeId(reqRecord.getTypeId());
-        return announcementDOMapper.updateByPrimaryKeySelective(dbRecord);
+        return announcementDOMapper.updateByPrimaryKeySelective(dbRecord);*/
+        return 0;
     }
 
     private void editFile(List<AnnouncementFile> fileList, Integer announcementId) {

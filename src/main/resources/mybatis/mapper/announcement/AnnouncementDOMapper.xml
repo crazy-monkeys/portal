@@ -198,6 +198,12 @@
     <if test="releaseStartTime != null and releaseStartTime != '' and releaseEndTime != null and releaseEndTime != ''" >
       and t.release_time between #{releaseStartTime} and #{releaseEndTime}
     </if>
+    <if test="releaseStartTime != null and releaseStartTime != '' and (releaseEndTime == null or releaseEndTime == '')" >
+      and t.release_time >= #{releaseStartTime}
+    </if>
+    <if test="(releaseStartTime == null or releaseStartTime == '') and releaseEndTime != null and releaseEndTime != ''" >
+      <![CDATA[ and t.release_time <= #{releaseEndTime} ]]>
+    </if>
     <if test="typeId != null" >
       and t.type_id = #{typeId}
     </if>

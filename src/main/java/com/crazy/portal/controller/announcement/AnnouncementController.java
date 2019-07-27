@@ -1,14 +1,18 @@
 package com.crazy.portal.controller.announcement;
 
 import com.crazy.portal.bean.BaseResponse;
+import com.crazy.portal.bean.customer.basic.FileVO;
 import com.crazy.portal.controller.BaseController;
 import com.crazy.portal.entity.announcement.Announcement;
 import com.crazy.portal.service.announcement.AnnouncementService;
+import com.crazy.portal.util.FileUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.List;
 
 /**
  * Created by lee on 2019/6/4.
@@ -40,7 +44,7 @@ public class AnnouncementController extends BaseController {
         return super.successResult(announcementService.previewById(id));
     }
 
-    /**
+    /**`
      * 新增/编辑公告
      */
     @PostMapping(value = "/info")
@@ -73,7 +77,7 @@ public class AnnouncementController extends BaseController {
      */
     @PostMapping(value = "/file")
     public BaseResponse pushFile(MultipartFile[] files) {
-        return super.successResult(announcementService.pushFile());
+        return super.successResult(announcementService.pushFile(files));
     }
 
     /**

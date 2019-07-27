@@ -99,4 +99,41 @@ public class ErrorCodes {
             return enMsg;
         }
     }
+
+    public enum BusinessEnum implements ErrorInfo {
+
+        //文件Util
+        FILE_PARAM_EMPTY(20000, "上传文件必填参数缺失", ""),
+
+        //公告模块
+        ANNOUNCEMENT_FILE_SIZE_ERROR(30000, "请勿上传多个文件", "");
+
+        //客户模块
+
+        //代理商模块
+
+        private final int code;
+        private final String zhMsg;
+        private final String enMsg;
+
+        BusinessEnum(int code, String zhMsg, String enMsg){
+            this.code = code;
+            this.zhMsg = zhMsg;
+            this.enMsg = enMsg;
+        }
+
+        @Override
+        public int getCode() {
+            return code;
+        }
+
+        @Override
+        public String getZhMsg() {
+            return zhMsg;
+        }
+
+        public String getEnMsg() {
+            return enMsg;
+        }
+    }
 }
