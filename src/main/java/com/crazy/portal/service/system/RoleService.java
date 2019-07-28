@@ -49,7 +49,7 @@ public class RoleService {
             if(role.getId() == null){
                 return roleMapper.insertSelective(role);
             }else{
-                Role roleInDo = roleMapper.findRoleByCode(role.getRoleCode());
+                Role roleInDo = roleMapper.findById(role.getId());
                 if(roleInDo != null){
                     BeanUtils.copyNotNullFields(role,roleInDo);
                     return roleMapper.updateByPrimaryKeySelective(roleInDo);
@@ -75,6 +75,9 @@ public class RoleService {
         return roleMapper.findById(roleId);
     }
 
+    public Role findRoleByName(String roleName){
+        return roleMapper.findByName(roleName);
+    }
     /**
      * 获取所有有效的角色
      * @return

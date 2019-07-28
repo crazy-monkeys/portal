@@ -87,10 +87,21 @@ public class RoleController extends BaseController {
         BusinessUtil.assertIsNull(role.getId(),SystemManagerEnum.ROLE_EMPTY_ID);
         BusinessUtil.assertEmpty(role.getRoleCode(),SystemManagerEnum.ROLE_EMPTY_CODE);
         Role currentRole = roleService.findRole(role.getId());
+        String currentRoleName = currentRole.getRoleName();
+        String currentRoleCode = currentRole.getRoleCode();
         BusinessUtil.assertIsNull(currentRole,SystemManagerEnum.ROLE_NOT_EXIST);
-        Role roleQuery = roleService.findRole(role.getId());
-        if(!currentRole.getRoleName().equals(role.getRoleName())){
-            BusinessUtil.assertIsNotNull(roleQuery,SystemManagerEnum.ROLE_EXISTS);
+        if(role.getRoleCode().equals(currentRoleCode) && role.getRoleName().equals(currentRoleName)){
+            log.info("没有数据需要更改");
+            return successResult();
+        }
+        Role checkRoleName = roleService.findRoleByName(role.getRoleName());
+        if(checkRoleName != null && !currentRoleName.equals(checkRoleName.getRoleName())){
+            BusinessUtil.assertFlase(true,SystemManagerEnum.ROLE_EXISTS);
+        }
+
+        Role checkRoleCode = roleService.findRole(role.getRoleCode());
+        if(checkRoleCode != null && !currentRoleCode.equals(checkRoleCode.getRoleCode())){
+            BusinessUtil.assertFlase(true,SystemManagerEnum.ROLE_CODE_EXISTS);
         }
         role.setUpdateTime(new Date());
         role.setUpdateUserId(super.getCurrentUser().getId());
