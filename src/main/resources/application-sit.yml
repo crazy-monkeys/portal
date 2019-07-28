@@ -16,6 +16,6 @@ spring:
 file:
   path:
     announcement:
-      thrid-push: /service/ftp/portal_file/push_thrid/
-      thrid-pull: /service/ftp/portal_file/pull_thrid/
-      local: /service/ftp/portal_file/local/
+      thrid-push: /service/ftp/portal_file/push_thrid/announcement/
+      thrid-pull: /service/ftp/portal_file/pull_thrid/announcement/
+      local: /service/ftp/portal_file/local/announcement/

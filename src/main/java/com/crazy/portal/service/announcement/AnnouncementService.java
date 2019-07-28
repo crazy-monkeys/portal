@@ -13,7 +13,6 @@ import com.crazy.portal.util.PortalUtil;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -153,8 +152,7 @@ public class AnnouncementService {
         BusinessUtil.assertFlase(null == result, ANNOUNCEMENT_FILE_NOT_FOUND_BY_ID);
         BusinessUtil.assertFlase(result.size() != 1, ANNOUNCEMENT_FILE_ERROR_BY_ID);
         AnnouncementFile announcementFile = result.get(0);
-//        return String.format("%s%s", announcementFile.getFileStoragePath(), announcementFile.getFileName());
-        return announcementFile.getFileName();
+        return String.format("%s%s", announcementFile.getFileStoragePath(), announcementFile.getFileName());
     }
 
     private int saveAnnouncementInfo(Announcement reqRecord, Integer userId){
