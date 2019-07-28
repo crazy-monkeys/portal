@@ -6,6 +6,7 @@
     <result column="cust_id" jdbcType="INTEGER" property="custId" />
     <result column="corporate_id" jdbcType="INTEGER" property="corporateId" />
     <result column="corporate_type" jdbcType="VARCHAR" property="corporateType" />
+    <result column="corporate_name" jdbcType="VARCHAR" property="corporateName"></result>
     <result column="create_user" jdbcType="INTEGER" property="createUser" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_user" jdbcType="INTEGER" property="updateUser" />
@@ -14,7 +15,7 @@
   </resultMap>
   <sql id="Base_Column_List">
     id, cust_id, corporate_id, corporate_type, create_user, create_time, update_user, 
-    update_time, active
+    update_time, active, corporate_name
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -57,6 +58,9 @@
       <if test="active != null">
         active,
       </if>
+      <if test="corporateName != null">
+        corporate_name,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -86,6 +90,9 @@
       <if test="active != null">
         #{active,jdbcType=INTEGER},
       </if>
+      <if test="corporateName != null">
+        #{corporateName,jdbcType=VARCHAR},
+      </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.crazy.portal.entity.basic.BasicCorporateRelationship">
@@ -114,6 +121,9 @@
       </if>
       <if test="active != null">
         active = #{active,jdbcType=INTEGER},
+      </if>
+      <if test="corporateName != null">
+        corporate_name = #{corporateName,jdbcType=VARCHAR},
       </if>
     </set>
     where id = #{id,jdbcType=INTEGER}

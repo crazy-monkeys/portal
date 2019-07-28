@@ -20,7 +20,7 @@ public class BasicContact implements BaseEntity{
     private Integer custId;
 
     /**
-     * 是否主要
+     * 是否主要 1-是 0-否
      */
     private Integer isDefault;
 

@@ -85,4 +85,26 @@ public class Enums {
             return desc;
         }
     }
+
+    /**
+     * 业务类型
+     */
+    public enum BusinessType{
+
+        MASS((short)1, "Mass Market"),
+        ACCOUNT((short)2, "Account Market");
+
+        private Short code;
+        private String desc;
+        BusinessType(Short code, String desc){
+            this.code = code;
+            this.desc = desc;
+        }
+        public Short getCode(){
+            return code;
+        }
+        public String getDesc(){
+            return desc;
+        }
+    }
 }

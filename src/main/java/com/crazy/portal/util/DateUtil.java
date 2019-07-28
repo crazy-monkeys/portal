@@ -88,7 +88,7 @@ public class DateUtil {
 		if (StringUtil.isBlank(format)) {
 			throw new ParseException("Null format. ", 0);
 		}
-
+		sDate = sDate.replaceAll("\"","");
 		DateFormat dateFormat = new SimpleDateFormat(format);
 
 		if (sDate == null) {

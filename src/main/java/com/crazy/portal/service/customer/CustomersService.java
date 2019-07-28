@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -66,6 +67,7 @@ public class CustomersService {
      */
     public CustomerInfo queryCustDetail(Integer id){
         CustomerInfo customerInfo = customerInfoMapper.selectByPrimaryKey(id);
+        BusinessUtil.assertIsNull(customerInfo, ErrorCodes.BusinessEnum.CUSTOMER_IS_EMPYT);
         customerInfo.setBasicInvoice(basicInvoiceInfoMapper.selectByCustId(id));
         customerInfo.setBasicContact(basicContactMapper.selectByCustId(id));
         customerInfo.setBasicStructure(basicCorporateStructureMapper.selectByCustId(id));
@@ -96,15 +98,24 @@ public class CustomersService {
      * @return
      */
     public void add(CustomerInfo bean, Integer userId){
-        if(bean.getId() != null){
-            throw new BusinessException(1001, "客户已存在");
-        }
+        checkCustName(bean.getCustZhName());
         Date currDate = DateUtil.getCurrentTS();
+        bean.setBusinessType(bean.getBusinessType() == null ? Enums.BusinessType.MASS.getCode() : bean.getBusinessType());
+        bean.setCustomerStatus(bean.getCustomerStatus() == null ? Enums.CustomerStatus.WAIT_SUBMIT.getCode() : bean.getCustomerStatus());
+        try {
+            bean.setRegisterTime(bean.getRegisterTimeStr() != null ? DateUtil.parseDate(bean.getRegisterTimeStr(), DateUtil.WEB_FORMAT) : null);
+        }catch (ParseException e){
+            log.error("日期转换异常", e);
+        }
+
+        bean.setActive(1);
         bean.setCreateUser(userId);
         bean.setCreateTime(currDate);
         customerInfoMapper.insertSelective(bean);
 
         BasicBankInfo bankInfo = bean.getBasicBank();
+        bankInfo.setCustId(bean.getId());
+        bankInfo.setActive(1);
         bankInfo.setCreateUser(userId);
         bankInfo.setCreateTime(currDate);
         basicBankInfoMapper.insertSelective(bean.getBasicBank());
@@ -130,6 +141,7 @@ public class CustomersService {
     public void addExtendInfo(List<? extends BaseEntity> list, BaseMapper mapper, CustomerInfo bean){
         list.stream().forEach((e)-> {
             e.setCustId(bean.getId());
+            e.setActive(1);
             e.setCreateUser(bean.getCreateUser());
             e.setCreateTime(bean.getCreateTime());
             mapper.insertSelective(e);
@@ -144,10 +156,17 @@ public class CustomersService {
         BusinessUtil.assertIsNull(bean.getId(), ErrorCodes.BusinessEnum.CUSTOMER_IS_EMPYT);
         bean.setUpdateUser(userId);
         bean.setUpdateTime(DateUtil.getCurrentTS());
+        try {
+            bean.setRegisterTime(bean.getRegisterTimeStr() != null ? DateUtil.parseDate(bean.getRegisterTimeStr(), DateUtil.NEW_FORMAT) : null);
+        }catch (ParseException e){
+            log.error("日期转换异常", e);
+        }
         customerInfoMapper.updateByPrimaryKeySelective(bean);
 
         BasicBankInfo bankInfo = bean.getBasicBank();
         if(bankInfo != null && bankInfo.getId() != null){
+            bankInfo.setCustId(bean.getId());
+            bankInfo.setActive(1);
             bankInfo.setUpdateUser(userId);
             bankInfo.setUpdateTime(DateUtil.getCurrentTS());
             basicBankInfoMapper.updateByPrimaryKeySelective(bankInfo);
@@ -156,28 +175,28 @@ public class CustomersService {
         Date currTime = DateUtil.getCurrentTS();
 
         List<Integer> addressIds = basicAddressMapper.selectIdsByCustId(bean.getId());
-        updateExtendInfo(addressIds, bean.getBasicAddress(), basicAddressMapper, userId, currTime);
+        updateExtendInfo(addressIds, bean.getBasicAddress(), basicAddressMapper, userId, currTime, bean.getId());
 
         List<Integer> invoiceInfoIds = basicInvoiceInfoMapper.selectIdsByCustId(bean.getId());
-        updateExtendInfo(invoiceInfoIds, bean.getBasicInvoice(), basicInvoiceInfoMapper, userId, currTime);
+        updateExtendInfo(invoiceInfoIds, bean.getBasicInvoice(), basicInvoiceInfoMapper, userId, currTime, bean.getId());
 
         List<Integer> contactIds = basicContactMapper.selectIdsByCustId(bean.getId());
-        updateExtendInfo(contactIds, bean.getBasicContact(), basicContactMapper, userId, currTime);
+        updateExtendInfo(contactIds, bean.getBasicContact(), basicContactMapper, userId, currTime, bean.getId());
 
         List<Integer> structureIds = basicCorporateStructureMapper.selectIdsByCustId(bean.getId());
-        updateExtendInfo(structureIds, bean.getBasicStructure(), basicCorporateStructureMapper, userId, currTime);
+        updateExtendInfo(structureIds, bean.getBasicStructure(), basicCorporateStructureMapper, userId, currTime, bean.getId());
 
         List<Integer> relationIds = basicCorporateRelationshipMapper.selectIdsByCustId(bean.getId());
-        updateExtendInfo(relationIds, bean.getBasicShip(), basicCorporateRelationshipMapper, userId, currTime);
+        updateExtendInfo(relationIds, bean.getBasicShip(), basicCorporateRelationshipMapper, userId, currTime, bean.getId());
 
         List<Integer> fileIds = basicFileMapper.selectIdsByCustId(bean.getId());
-        updateExtendInfo(fileIds, bean.getBasicFile(), basicFileMapper, userId, currTime);
+        updateExtendInfo(fileIds, bean.getBasicFile(), basicFileMapper, userId, currTime, bean.getId());
 
         List<Integer> teamIds = basicSalesTeamMapper.selectIdsByCustId(bean.getId());
-        updateExtendInfo(teamIds, bean.getSalesTeam(), basicSalesTeamMapper, userId, currTime);
+        updateExtendInfo(teamIds, bean.getSalesTeam(), basicSalesTeamMapper, userId, currTime, bean.getId());
 
         List<Integer> salesIds = basicSalesMapper.selectIdsByCustId(bean.getId());
-        updateExtendInfo(salesIds, bean.getSales(), basicSalesMapper, userId, currTime);
+        updateExtendInfo(salesIds, bean.getSales(), basicSalesMapper, userId, currTime, bean.getId());
     }
 
     /**
@@ -186,18 +205,20 @@ public class CustomersService {
      * @param newList
      * @param mapper
      */
-    public void updateExtendInfo(List<Integer> sourceList, List<? extends BaseEntity> newList, BaseMapper mapper, Integer userId, Date currTime){
+    public void updateExtendInfo(List<Integer> sourceList, List<? extends BaseEntity> newList, BaseMapper mapper, Integer userId, Date currTime, Integer custId){
         if(null == newList || newList.isEmpty()){
             return;
         }
         newList.stream().filter(e->e.getId()!=null && sourceList.contains(e.getId())).forEach(e->{
-            ((BaseEntity) e).setUpdateUser(userId);
-            ((BaseEntity) e).setUpdateTime(currTime);
+            e.setUpdateUser(userId);
+            e.setUpdateTime(currTime);
             mapper.updateByPrimaryKeySelective(e);
         });
         newList.stream().filter(e->null == e.getId() || !sourceList.contains(e.getId())).forEach(e->{
-            ((BaseEntity) e).setCreateUser(userId);
-            ((BaseEntity) e).setCreateTime(currTime);
+            e.setCustId(custId);
+            e.setActive(1);
+            e.setCreateUser(userId);
+            e.setCreateTime(currTime);
             mapper.insertSelective(e);
         });
         List<Integer> newIds = newList.stream().map(e-> e.getId()).collect(Collectors.toList());
@@ -212,6 +233,8 @@ public class CustomersService {
      * @param userId
      */
     public void delete(Integer id, Integer userId){
+        CustomerInfo customerInfo = customerInfoMapper.selectByPrimaryKey(id);
+        BusinessUtil.assertIsNull(customerInfo, ErrorCodes.BusinessEnum.CUSTOMER_IS_EMPYT);
         customerInfoMapper.deleteByPrimaryKey(id, userId);
         basicBankInfoMapper.deleteByCustId(id, userId);
         basicAddressMapper.deleteByCustId(id, userId);
@@ -258,5 +281,14 @@ public class CustomersService {
         record.setUpdateTime(DateUtil.getCurrentTS());
         record.setCustomerStatus(Enums.CustomerStatus.REJECT.getCode());
         customerInfoMapper.updateByPrimaryKeySelective(record);
+    }
+
+    /**
+     * 校验客户名是否存在
+     * @param custName
+     */
+    public void checkCustName(String custName){
+        CustomerInfo customerInfo = customerInfoMapper.selectByCustName(custName);
+        BusinessUtil.assertIsNotNull(customerInfo, ErrorCodes.BusinessEnum.CUSTOMER_NAME_EXISTS);
     }
 }

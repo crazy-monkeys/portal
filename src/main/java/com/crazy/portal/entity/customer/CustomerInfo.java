@@ -2,6 +2,7 @@ package com.crazy.portal.entity.customer;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import com.crazy.portal.entity.basic.*;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
@@ -98,8 +99,12 @@ public class CustomerInfo {
     /**
      * 注册时间
      */
+    @JsonIgnore
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
     private Date registerTime;
 
+
+    private String registerTimeStr;
     /**
      * 母公司
      */
@@ -147,7 +152,7 @@ public class CustomerInfo {
     private Integer dealerStatus;
 
     /**
-     * 客户状态 1-待提交 2-待审批 3-正常
+     * 客户状态 1-待提交 2-待审批 3-正常 4-被驳回
      */
     private Integer customerStatus;
 

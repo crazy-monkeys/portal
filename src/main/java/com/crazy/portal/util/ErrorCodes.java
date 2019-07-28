@@ -115,8 +115,8 @@ public class ErrorCodes {
         ANNOUNCEMENT_FILE_ERROR_BY_ID(30004, "公告文件数据异常", ""),
 
         //客户模块
-        CUSTOMER_IS_EMPYT(50000, "没有对应的客户信息", "");
-
+        CUSTOMER_IS_EMPYT(50000, "没有对应的客户信息", ""),
+        CUSTOMER_NAME_EXISTS(50001, "该客户名已存在", "");
 
         private final int code;
         private final String zhMsg;

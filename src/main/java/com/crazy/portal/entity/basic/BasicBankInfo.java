@@ -25,6 +25,11 @@ public class BasicBankInfo implements BaseEntity{
     private String bankCity;
 
     private String bankDistrict;
+
+    private String bankDetailInfo;
+
+    private String bankAddress;
+
     @JsonIgnore
     @JSONField(serialize = false)
     private Integer createUser;
@@ -41,7 +46,5 @@ public class BasicBankInfo implements BaseEntity{
     @JSONField(serialize = false)
     private Integer active;
 
-    private String bankDetailInfo;
 
-    private String bankAddress;
 }

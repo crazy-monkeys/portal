@@ -53,6 +53,7 @@ public class BasicLable {
     /**
      * 开始时间
      */
+
     private Date lableStartTime;
 
     /**

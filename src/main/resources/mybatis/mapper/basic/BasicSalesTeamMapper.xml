@@ -10,8 +10,8 @@
     <result column="active" jdbcType="INTEGER" property="active" />
     <result column="create_user" jdbcType="INTEGER" property="createUser" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
-    <result column="update_user" jdbcType="INTEGER" property="modifyUser" />
-    <result column="update_time" jdbcType="TIMESTAMP" property="modifyTime" />
+    <result column="update_user" jdbcType="INTEGER" property="updateUser" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
   <sql id="Base_Column_List">
     id, cust_id, role_id, name, mobile, active, create_user, create_time, update_user, 
@@ -55,10 +55,10 @@
       <if test="createTime != null">
         create_time,
       </if>
-      <if test="modifyUser != null">
+      <if test="updateUser != null">
         update_user,
       </if>
-      <if test="modifyTime != null">
+      <if test="updateTime != null">
         update_time,
       </if>
     </trim>
@@ -87,11 +87,11 @@
       <if test="createTime != null">
         #{createTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="modifyUser != null">
-        #{modifyUser,jdbcType=INTEGER},
+      <if test="updateUser != null">
+        #{updateUser,jdbcType=INTEGER},
       </if>
-      <if test="modifyTime != null">
-        #{modifyTime,jdbcType=TIMESTAMP},
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
       </if>
     </trim>
   </insert>
@@ -119,11 +119,11 @@
       <if test="createTime != null">
         create_time = #{createTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="modifyUser != null">
-        update_user = #{modifyUser,jdbcType=INTEGER},
+      <if test="updateUser != null">
+        update_user = #{updateUser,jdbcType=INTEGER},
       </if>
-      <if test="modifyTime != null">
-        update_time = #{modifyTime,jdbcType=TIMESTAMP},
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
       </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
