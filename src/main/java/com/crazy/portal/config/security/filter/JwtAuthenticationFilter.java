@@ -9,6 +9,7 @@ import com.crazy.portal.service.system.PermissionService;
 import com.crazy.portal.util.Enums;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
@@ -55,6 +56,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
     private AuthenticationFailureHandler failureHandler;
     private AntPathMatcher antPathMatcher;
 
+    @Value("${app.ad-domain}")
+    private String adDomain;
+
     public JwtAuthenticationFilter() {
         this.successHandler = new SavedRequestAwareAuthenticationSuccessHandler();
         this.failureHandler = new SimpleUrlAuthenticationFailureHandler();
@@ -81,16 +85,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
         //获取资源路径
         String url = request.getServletPath();
         //可以忽略权限的url
-        if(permissiveRequestMatchers != null && !permissiveRequestMatchers.isEmpty()){
-            for(RequestMatcher permissiveMatcher : permissiveRequestMatchers) {
-                if(permissiveMatcher.matches(request)){
-                    //放行
-                    filterChain.doFilter(request, response);
-                    return;
-                }
-            }
-        }
-        Throwable throwable;
+        if (this.checkPermissiveUrl(request, response, filterChain)) return;
+        Throwable throwable = null;
         try {
             Authentication existingAuth = SecurityContextHolder.getContext().getAuthentication();
             if(existingAuth == null){
@@ -98,33 +94,20 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
                 return;
             }else{
                 User user = ((JwtUser)existingAuth.getPrincipal()).getUser();
-                if(user.getUserType().equals(Enums.USER_TYPE.internal.toString())){
-                    if(authRequest(request,user.getLoginName())){
-                        filterChain.doFilter(request, response);
-                        return;
-                    }
-                    this.authenticationFailure(request, response,
-                            new InsufficientAuthenticationException("Insufficient permissions"));
-                    return;
-                }
+                if (this.checkForInternalUser(request, response, filterChain, user)) return;
                 String token = getJwtToken(request);
                 if(StringUtils.isEmpty(token)){
                     log.warn("url {} token is null",url);
                     this.authenticationFailure(request, response,new InsufficientAuthenticationException("JWT is Empty"));
                     return;
                 }
-                JwtAuthenticationToken authToken = new JwtAuthenticationToken(JWT.decode(token));
-                Authentication authResult = this.getAuthenticationManager().authenticate(authToken);
-                //token认证不成功，或者不具有访问url的权限
-                if(authResult == null || !authRequest(request,user.getLoginName())){
-                    this.authenticationFailure(request, response,
-                            new InsufficientAuthenticationException("Insufficient permissions"));
+                Authentication authResult = this.authUrl(request, response, user, token);
+                if (authResult != null) {
+                    //放行
+                    this.successfulAuthentication(request, response, filterChain, authResult);
+                    filterChain.doFilter(request, response);
                     return;
                 }
-                //放行
-                this.successfulAuthentication(request, response, filterChain, authResult);
-                filterChain.doFilter(request, response);
-                return;
             }
 
         } catch(JWTDecodeException e) {
@@ -145,6 +128,44 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
         this.authenticationFailure(request, response,
                 new InsufficientAuthenticationException("authentication failure！", throwable));
         return;
+    }
+
+    private boolean checkPermissiveUrl(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws IOException, ServletException {
+        if(permissiveRequestMatchers != null && !permissiveRequestMatchers.isEmpty()){
+            for(RequestMatcher permissiveMatcher : permissiveRequestMatchers) {
+                if(permissiveMatcher.matches(request)){
+                    //放行
+                    filterChain.doFilter(request, response);
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private Authentication authUrl(HttpServletRequest request, HttpServletResponse response, User user, String token) throws IOException, ServletException {
+        JwtAuthenticationToken authToken = new JwtAuthenticationToken(JWT.decode(token));
+        Authentication authResult = this.getAuthenticationManager().authenticate(authToken);
+        //token认证不成功，或者不具有访问url的权限
+        if(authResult == null || !authRequest(request,user.getLoginName())){
+            this.authenticationFailure(request, response,
+                    new InsufficientAuthenticationException("Insufficient permissions"));
+        }
+        return authResult;
+    }
+
+    private boolean checkForInternalUser(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain, User user) throws IOException, ServletException {
+        if(user.getCustomerName().contains(adDomain) &&
+                user.getUserType().equals(Enums.USER_TYPE.internal.toString())){
+            if(authRequest(request,user.getLoginName())){
+                filterChain.doFilter(request, response);
+                return true;
+            }
+            this.authenticationFailure(request, response,
+                    new InsufficientAuthenticationException("Insufficient permissions"));
+            return true;
+        }
+        return false;
     }
 
     /**
