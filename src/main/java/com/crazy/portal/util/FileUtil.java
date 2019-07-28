@@ -10,8 +10,8 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static com.crazy.portal.util.ErrorCodes.BusinessEnum.*;
@@ -72,31 +72,52 @@ public class FileUtil {
         }
     }
 
+    /**
+     * 多文件保存
+     * @param files 文件
+     * @param filePath  文件保存路径
+     * @return
+     */
     public static List<FileVO> upload(MultipartFile[] files, String filePath){
         List<FileVO> result = new ArrayList<>();
-        BusinessUtil.assertFlase(files.length == 0 || StringUtils.isEmpty(filePath), FILE_UPLOAD_PARAM_EMPTY);
+        if(StringUtils.isEmpty(filePath) || null == files){
+            log.error("File path is not empty or [files] is null");
+            throw new BusinessException(FILE_UPLOAD_PARAM_EMPTY);
+        }
+        if(files.length == 0){
+            log.warn("File size is zero");
+            return Collections.emptyList();
+        }
         try {
+            checkDirExists(filePath);
             long  startTime = System.currentTimeMillis();
-            for(MultipartFile multipartFile: files) {
+            for(MultipartFile multipartFile : files) {
                 if(multipartFile != null) {
                     String fileName = convertFileName(multipartFile.getOriginalFilename());
                     String fullPath = String.format("%s%s", filePath, fileName);
-                    //上传
                     multipartFile.transferTo(new File(fullPath));
                     pushResultInfo(result, fileName, filePath, fullPath);
-                }else{
-                    log.info("没有拿到文件信息");
                 }
             }
             if(log.isDebugEnabled()){
-                log.debug("文件上传处理完成，耗时：{}", System.currentTimeMillis() - startTime);
+                log.debug("File upload takes {} ms", System.currentTimeMillis() - startTime);
             }
-        }catch (IOException ex) {
-            log.error("", ex);
         }catch (Exception ex) {
-            log.error("", ex);
+            log.error("Exception in file upload", ex);
         }
         return result;
+    }
+
+    /**
+     * 检查文件路径是否存在，不存在则进行创建
+     * @param filePath
+     */
+    private static void checkDirExists(String filePath) {
+        File fileDir = new File(filePath);
+        if(!fileDir.exists()){
+            log.warn("File path is not exists , create file path : {}", filePath);
+            fileDir.mkdir();
+        }
     }
 
     private static String convertFileName(String fileName) {
