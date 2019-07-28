@@ -12,7 +12,7 @@ public class CustomerQueryBean extends PageBean {
     //客户外部编号
     private String customerOutCode;
     //是否Lincense客户 1-是 0-否
-    private Short isLicencse;
+    private Short isLicense;
     //业务类型 1-massMarket 2-accountMarket
     private Short businessType;
     //报备开始时间

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.crazy.portal.dao.customer.TCustomerInfoDOMapper">
-  <resultMap id="BaseResultMap" type="com.crazy.portal.entity.customer.TCustomerInfoDO">
+<mapper namespace="com.crazy.portal.dao.customer.CustomerInfoMapper">
+  <resultMap id="BaseResultMap" type="com.crazy.portal.entity.customer.CustomerInfo">
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="cust_type" jdbcType="INTEGER" property="custType" />
     <result column="cust_role" jdbcType="INTEGER" property="custRole" />
@@ -18,9 +18,6 @@
     <result column="corporate_assets" jdbcType="DECIMAL" property="corporateAssets" />
     <result column="corporate_number" jdbcType="INTEGER" property="corporateNumber" />
     <result column="corporate_parents" jdbcType="VARCHAR" property="corporateParents" />
-    <result column="credit_inital_value" jdbcType="DECIMAL" property="creditInitalValue" />
-    <result column="credit_engaged_value" jdbcType="DECIMAL" property="creditEngagedValue" />
-    <result column="credit_surplus" jdbcType="DECIMAL" property="creditSurplus" />
     <result column="is_white_list" jdbcType="INTEGER" property="isWhiteList" />
     <result column="advantage_value" jdbcType="LONGVARCHAR" property="advantageValue" />
     <result column="advantage_introduction" jdbcType="LONGVARCHAR" property="advantageIntroduction" />
@@ -37,25 +34,25 @@
   </resultMap>
 
   <!--代理商result-->
-  <resultMap id="DealerResultMap" type="com.crazy.portal.entity.customer.TCustomerInfoDO" extends="BaseResultMap">
-    <association property="basicBank" resultMap="com.crazy.portal.dao.basic.TBasicBankInfoDOMapper.BaseResultMap" />
-    <collection property="basicAddress" resultMap="com.crazy.portal.dao.basic.TBasicAddressDOMapper.BaseResultMap" />
-    <collection property="basicLables" resultMap="com.crazy.portal.dao.basic.TBasicLableDOMapper.BaseResultMap" />
-    <collection property="basicFile" resultMap="com.crazy.portal.dao.basic.TBasicFileDOMapper.BaseResultMap" />
-    <collection property="basicContact" resultMap="com.crazy.portal.dao.basic.TBasicContactDOMapper.BaseResultMap" />
-    <collection property="basicShip" resultMap="com.crazy.portal.dao.basic.TBasicCorporateRelationshipDOMapper.BaseResultMap" />
-    <collection property="basicStructure" resultMap="com.crazy.portal.dao.basic.TBasicCorporateStructureDOMapper.BaseResultMap" />
-    <collection property="basicInvoice" resultMap="com.crazy.portal.dao.basic.TBasicInvoiceInfoDOMapper.BaseResultMap" />
+  <resultMap id="DealerResultMap" type="com.crazy.portal.entity.customer.CustomerInfo" extends="BaseResultMap">
+    <association property="basicBank" resultMap="com.crazy.portal.dao.basic.BasicBankInfoMapper.BaseResultMap" />
+    <collection property="basicAddress" resultMap="com.crazy.portal.dao.basic.BasicAddressMapper.BaseResultMap" />
+    <collection property="basicLables" resultMap="com.crazy.portal.dao.basic.BasicLableMapper.BaseResultMap" />
+    <collection property="basicFile" resultMap="com.crazy.portal.dao.basic.BasicFileMapper.BaseResultMap" />
+    <collection property="basicContact" resultMap="com.crazy.portal.dao.basic.BasicContactMapper.BaseResultMap" />
+    <collection property="basicShip" resultMap="com.crazy.portal.dao.basic.BasicCorporateRelationshipMapper.BaseResultMap" />
+    <collection property="basicStructure" resultMap="com.crazy.portal.dao.basic.BasicCorporateStructureMapper.BaseResultMap" />
+    <collection property="basicInvoice" resultMap="com.crazy.portal.dao.basic.BasicInvoiceInfoMapper.BaseResultMap" />
   </resultMap>
 
 
   <sql id="Base_Column_List">
     id, cust_type, cust_role, cust_in_code, cust_out_code, cust_zh_name, cust_en_name, 
     cust_abbreviation, cust_mobile, cust_phone_no, cust_fax, cust_email, cust_web, corporate_assets, 
-    corporate_number, corporate_parents, credit_inital_value, credit_engaged_value, credit_surplus, 
+    corporate_number, corporate_parents,
     is_white_list, dealer_status, create_user, create_time, update_user, update_time, 
     active, advantage_value, advantage_introduction, business_introduction, is_license,
-    business_type, customerStatus
+    business_type, customer_status
   </sql>
 
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
@@ -70,7 +67,7 @@
     where id = #{id,jdbcType=INTEGER}
   </update>
 
-  <insert id="insertSelective" parameterType="com.crazy.portal.entity.customer.TCustomerInfoDO">
+  <insert id="insertSelective" parameterType="com.crazy.portal.entity.customer.CustomerInfo" useGeneratedKeys="true" keyProperty="id">
     insert into t_customer_info
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -120,15 +117,6 @@
       </if>
       <if test="corporateParents != null">
         corporate_parents,
-      </if>
-      <if test="creditInitalValue != null">
-        credit_inital_value,
-      </if>
-      <if test="creditEngagedValue != null">
-        credit_engaged_value,
-      </if>
-      <if test="creditSurplus != null">
-        credit_surplus,
       </if>
       <if test="isWhiteList != null">
         is_white_list,
@@ -219,15 +207,6 @@
       <if test="corporateParents != null">
         #{corporateParents,jdbcType=VARCHAR},
       </if>
-      <if test="creditInitalValue != null">
-        #{creditInitalValue,jdbcType=DECIMAL},
-      </if>
-      <if test="creditEngagedValue != null">
-        #{creditEngagedValue,jdbcType=DECIMAL},
-      </if>
-      <if test="creditSurplus != null">
-        #{creditSurplus,jdbcType=DECIMAL},
-      </if>
       <if test="isWhiteList != null">
         #{isWhiteList,jdbcType=INTEGER},
       </if>
@@ -269,7 +248,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.crazy.portal.entity.customer.TCustomerInfoDO">
+  <update id="updateByPrimaryKeySelective" parameterType="com.crazy.portal.entity.customer.CustomerInfo">
     update t_customer_info
     <set>
       <if test="custType != null">
@@ -316,15 +295,6 @@
       </if>
       <if test="corporateParents != null">
         corporate_parents = #{corporateParents,jdbcType=VARCHAR},
-      </if>
-      <if test="creditInitalValue != null">
-        credit_inital_value = #{creditInitalValue,jdbcType=DECIMAL},
-      </if>
-      <if test="creditEngagedValue != null">
-        credit_engaged_value = #{creditEngagedValue,jdbcType=DECIMAL},
-      </if>
-      <if test="creditSurplus != null">
-        credit_surplus = #{creditSurplus,jdbcType=DECIMAL},
       </if>
       <if test="isWhiteList != null">
         is_white_list = #{isWhiteList,jdbcType=INTEGER},
@@ -450,7 +420,7 @@
     <if test="customerOutCode != null">
       and cust_out_code like concat('%',#{customerOutCode},'%')
     </if>
-    <if test="isLicencse != null">
+    <if test="isLicense != null">
       and is_license = #{isLicense}
     </if>
     <if test="businessType != null">
