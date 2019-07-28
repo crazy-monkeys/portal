@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -143,16 +144,18 @@ public class AnnouncementService {
     }
 
     /**
-     * 获取公告文件访问的url
-     * @param id
+     * 下载公告文件
+     * @param id    公告ID
+     * @param response Servlet response
      * @return
      */
-    public String getFileUrl(Integer id) {
+    public void pullFile(Integer id, HttpServletResponse response) {
         List<AnnouncementFile> result = announcementFileMapper.selectByAnnouncementId(id);
         BusinessUtil.assertFlase(null == result, ANNOUNCEMENT_FILE_NOT_FOUND_BY_ID);
         BusinessUtil.assertFlase(result.size() != 1, ANNOUNCEMENT_FILE_ERROR_BY_ID);
         AnnouncementFile announcementFile = result.get(0);
-        return String.format("%s%s", announcementFile.getFileStoragePath(), announcementFile.getFileName());
+        String.format("%s%s", announcementFile.getFileStoragePath(), announcementFile.getFileName());
+        FileUtil.download(response, announcementFile.getFileStoragePath(), announcementFile.getFileName());
     }
 
     private int saveAnnouncementInfo(Announcement reqRecord, Integer userId){

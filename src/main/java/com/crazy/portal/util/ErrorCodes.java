@@ -103,7 +103,9 @@ public class ErrorCodes {
     public enum BusinessEnum implements ErrorInfo {
 
         //文件Util
-        FILE_PARAM_EMPTY(20000, "上传文件必填参数缺失", ""),
+        FILE_UPLOAD_PARAM_EMPTY(20000, "上传文件必填参数缺失", ""),
+        FILE_DOWNLOAD_PARAM_EMPTY(20001, "下载文件必填参数缺失", ""),
+        FILE_DOWNLOAD_FILE_NOT_FOUND(20002, "未找到需要下载的文件", ""),
 
         //公告模块
         ANNOUNCEMENT_FILE_LIST_PARAM_EMPTY(30000, "请上传正确文件参数", ""),
