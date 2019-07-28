@@ -23,5 +23,7 @@ public interface RoleMapper {
 
     Role findRoleByCode(String roleCode);
 
+    Role findByName(String roleName);
+
     List<Role> findAllRoles();
 }

@@ -55,12 +55,13 @@ public class ErrorCodes {
         USER_INVALID_PASSWORD(10013,"原密码不正确",""),
 
 
-        ROLE_EXISTS(10020,"角色已经存在",""),
+        ROLE_EXISTS(10020,"角色名已经存在",""),
         ROLE_NOT_EXIST(10021,"角色不存在",""),
         ROLE_EMPTY_NAME(10022,"角色名不能为空",""),
         ROLE_EMPTY_CODE(10023,"角色编码不能为空",""),
         ROLE_EMPTY_ID(10024,"角色ID不能为空",""),
         ROLE_SAVE_FAILED(10025,"角色保存失败",""),
+        ROLE_CODE_EXISTS(10026,"角色编码已经存在",""),
 
         PERMISSION_ILLEGAL(10040,"资源必填项不能为空",""),
         PERMISSION_NOT_EXIST(10041,"(父级/当前)资源ID不存在",""),
