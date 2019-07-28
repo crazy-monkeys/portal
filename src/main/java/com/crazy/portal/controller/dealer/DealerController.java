@@ -29,7 +29,7 @@ public class DealerController extends BaseController{
      */
     @GetMapping("/getDealerInfo")
     public BaseResponse getDealerInfo(){
-        return super.successResult(dealerService.getDealerInfo(/*this.getCurrentUser().getDealerId()*/1));
+        return super.successResult(dealerService.getDealerInfo(this.getCurrentUser().getDealerId()));
     }
 
     /**
