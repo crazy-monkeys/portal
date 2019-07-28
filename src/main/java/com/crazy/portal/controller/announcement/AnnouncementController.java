@@ -8,10 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.io.*;
 
 /**
  * Created by lee on 2019/6/4.
@@ -86,35 +84,7 @@ public class AnnouncementController extends BaseController {
      */
     @GetMapping(value = "/file/{id}")
     public void getFileUrl(@PathVariable Integer id, HttpServletResponse response) {
-
-        String fileName = announcementService.getFileUrl(id);
-        response.setContentType("multipart/form-data");
-        //2.设置文件头：最后一个参数是设置下载文件名(假如我们叫a.pdf)
-        response.setHeader("Content-Disposition", "attachment;fileName="+"test1111.pdf");
-        ServletOutputStream out;
-        //通过文件路径获得File对象(假如此路径中有一个download.pdf文件)
-        File file = new File(fileName);
-
-        try {
-            FileInputStream inputStream = new FileInputStream(file);
-
-            //3.通过response获取ServletOutputStream对象(out)
-            out = response.getOutputStream();
-
-            int b = 0;
-            byte[] buffer = new byte[512];
-            while (b != -1){
-                b = inputStream.read(buffer);
-                //4.写到输出流(out)中
-                out.write(buffer,0,b);
-            }
-            inputStream.close();
-            out.close();
-            out.flush();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        announcementService.pullFile(id, response);
     }
 
 }

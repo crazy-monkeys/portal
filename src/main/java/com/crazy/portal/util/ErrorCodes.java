@@ -104,18 +104,20 @@ public class ErrorCodes {
     public enum BusinessEnum implements ErrorInfo {
 
         //文件Util
-        FILE_PARAM_EMPTY(20000, "上传文件必填参数缺失", ""),
+        FILE_UPLOAD_PARAM_EMPTY(20000, "上传文件必填参数缺失", ""),
+        FILE_DOWNLOAD_PARAM_EMPTY(20001, "下载文件必填参数缺失", ""),
+        FILE_DOWNLOAD_FILE_NOT_FOUND(20002, "未找到需要下载的文件", ""),
 
         //公告模块
         ANNOUNCEMENT_FILE_LIST_PARAM_EMPTY(30000, "请上传正确文件参数", ""),
         ANNOUNCEMENT_FILE_SIZE_ERROR(30001, "请勿上传多个文件", ""),
         ANNOUNCEMENT_FILE_PARAM_EMPTY(30002, "请先上传文件", ""),
         ANNOUNCEMENT_FILE_NOT_FOUND_BY_ID(30003, "未找到公告文件", ""),
-        ANNOUNCEMENT_FILE_ERROR_BY_ID(30004, "公告文件数据异常", "");
+        ANNOUNCEMENT_FILE_ERROR_BY_ID(30004, "公告文件数据异常", ""),
 
         //客户模块
+        CUSTOMER_IS_EMPYT(50000, "没有对应的客户信息", "");
 
-        //代理商模块
 
         private final int code;
         private final String zhMsg;
