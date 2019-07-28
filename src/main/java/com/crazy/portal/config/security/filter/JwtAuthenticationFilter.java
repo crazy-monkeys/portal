@@ -3,7 +3,10 @@ package com.crazy.portal.config.security.filter;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.crazy.portal.config.security.JwtAuthenticationToken;
+import com.crazy.portal.config.security.JwtUser;
+import com.crazy.portal.entity.system.User;
 import com.crazy.portal.service.system.PermissionService;
+import com.crazy.portal.util.Enums;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -26,6 +29,7 @@ import org.springframework.util.Assert;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.annotation.Resource;
+import javax.security.auth.kerberos.KerberosPrincipal;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -88,23 +92,31 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
         }
         Throwable throwable;
         try {
-//            Authentication existingAuth = SecurityContextHolder.getContext().getAuthentication();
-//            if(existingAuth != null){
-//                log.info("123213");
-//            }
-//            filterChain.doFilter(request, response);
-//            return;
-            String token = getJwtToken(request);
-            if(StringUtils.isEmpty(token)){
-                log.warn("url {} token is null",url);
-                this.authenticationFailure(request, response,new InsufficientAuthenticationException("JWT is Empty"));
+            Authentication existingAuth = SecurityContextHolder.getContext().getAuthentication();
+            if(existingAuth == null){
+                filterChain.doFilter(request, response);
                 return;
-            }
-            else {
+            }else{
+                User user = ((JwtUser)existingAuth.getPrincipal()).getUser();
+                if(user.getUserType().equals(Enums.USER_TYPE.internal.toString())){
+                    if(authRequest(request,user.getLoginName())){
+                        filterChain.doFilter(request, response);
+                        return;
+                    }
+                    this.authenticationFailure(request, response,
+                            new InsufficientAuthenticationException("Insufficient permissions"));
+                    return;
+                }
+                String token = getJwtToken(request);
+                if(StringUtils.isEmpty(token)){
+                    log.warn("url {} token is null",url);
+                    this.authenticationFailure(request, response,new InsufficientAuthenticationException("JWT is Empty"));
+                    return;
+                }
                 JwtAuthenticationToken authToken = new JwtAuthenticationToken(JWT.decode(token));
                 Authentication authResult = this.getAuthenticationManager().authenticate(authToken);
                 //token认证不成功，或者不具有访问url的权限
-                if(authResult == null || !authRequest(request,authResult)){
+                if(authResult == null || !authRequest(request,user.getLoginName())){
                     this.authenticationFailure(request, response,
                             new InsufficientAuthenticationException("Insufficient permissions"));
                     return;
@@ -114,6 +126,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
                 filterChain.doFilter(request, response);
                 return;
             }
+
         } catch(JWTDecodeException e) {
             logger.error("JWT format error!", e);
             throwable = e;
@@ -139,21 +152,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
      * @param request
      * @return
      */
-    protected boolean authRequest(HttpServletRequest request,Authentication authResult) {
-        if(authResult == null){
-            return false;
-        }
+    protected boolean authRequest(HttpServletRequest request,String userName) {
         try {
             //用户在系统的权限
-            UserDetails userDetails = (UserDetails)authResult.getPrincipal();
-            List<com.crazy.portal.entity.system.Resource> resources = permissionService.findAllPerMissionByUserId(userDetails.getUsername());
+            List<com.crazy.portal.entity.system.Resource> resources = permissionService.findAllPerMissionByUserId(userName);
             String requestUrl = request.getServletPath();
             for(com.crazy.portal.entity.system.Resource resource : resources){
                 if(antPathMatcher.match(resource.getPermissionPrefixUrl(),requestUrl)){
                     return true;
                 }
             }
-            logger.warn(String.format("用户 %s 访问 %s 权限不足!",userDetails.getUsername(),request.getRequestURI()));
+            logger.warn(String.format("用户 %s 访问 %s 权限不足!",userName,request.getRequestURI()));
             return false;
         } catch (Exception e) {
             throw new RuntimeException("查询用户权限发生异常",e);

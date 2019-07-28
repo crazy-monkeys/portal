@@ -52,6 +52,7 @@ public class UserController extends BaseController {
 
     @GetMapping("/find/{loginName}")
     public BaseResponse findUser(@PathVariable String loginName){
+        log.info(super.getCurrentUser().getLoginName());
         return super.successResult(userService.findUser(loginName));
     }
 

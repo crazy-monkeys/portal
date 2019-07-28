@@ -1,21 +1,10 @@
-
 logging:
   config: classpath:logback-dev.xml
 
-
-#java -Djava.security.krb5.conf=/Users/Bill/Desktop/krb5.ini -Dsun.security.krb5.debug=true -jar
-#app:
-    ##  ad-domain: AD-THREEAPE.CN
-    ##  ad-server: ldap://addemo.ad-threeape.cn/
-    ##  service-principal: HTTP/addemo.ad-threeape.cn@AD-THREEAPE.CN
-    ##  keytab-location: /Users/Bill/Desktop/user1.keytab
-  ##  ldap-search-base: dc=ad-threeape,dc=cn
-  ##  ldap-search-filter: "(| (userPrincipalName={0}) (sAMAccountName={0}))"
-
 app:
-  ad-domain: AD-THREEAPE.CN
-  service-principal: HTTP/addemo.ad-threeape.cn@AD-THREEAPE.CN
-  keytab-location: /Users/Bill/Desktop/user1.keytab
+  ad-domain: THREEAPE.CN
+  service-principal: HTTP/ad.threeape.cn@THREEAPE.CN
+  keytab-location: C:\Users\Administrator\Desktop\tomcat.keytab
 
 spring:
   datasource:
