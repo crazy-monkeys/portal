@@ -4,7 +4,6 @@ import com.crazy.portal.bean.customer.basic.ContactVO;
 import com.crazy.portal.bean.customer.basic.FileVO;
 import com.crazy.portal.bean.customer.basic.InvoiceVO;
 import com.crazy.portal.bean.customer.basic.ShipVO;
-import com.crazy.portal.bean.customer.dealer.DealerUpdateVO;
 import com.crazy.portal.bean.customer.dealer.DealerVO;
 import com.crazy.portal.dao.customer.CustomerInfoMapper;
 import com.crazy.portal.entity.basic.*;
@@ -39,7 +38,7 @@ public class DealerService {
      */
     public DealerVO getDealerInfo(Integer dealerId){
         CustomerInfo dealerInfo = customerInfoMapper.selectDealerInfo(dealerId);
-        BusinessUtil.assertObjEmpty(dealerInfo, ErrorCodes.BusinessEnum.CUSTOMER_IS_EMPYT);
+        BusinessUtil.assertIsNull(dealerInfo, ErrorCodes.BusinessEnum.CUSTOMER_IS_EMPYT);
         return mappingVO(dealerInfo);
     }
 

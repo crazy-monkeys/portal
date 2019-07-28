@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.crazy.portal.dao.system.SysParameterMapper">
+  <resultMap id="BaseResultMap" type="com.crazy.portal.entity.system.SysParameter">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="p_model" jdbcType="VARCHAR" property="pModel" />
+    <result column="p_function" jdbcType="VARCHAR" property="pFunction" />
+    <result column="p_value" jdbcType="INTEGER" property="pValue" />
+    <result column="zh_name" jdbcType="VARCHAR" property="zhName" />
+    <result column="en_name" jdbcType="VARCHAR" property="enName" />
+    <result column="active" jdbcType="INTEGER" property="active" />
+    <result column="insert_user" jdbcType="INTEGER" property="insertUser" />
+    <result column="insert_time" jdbcType="TIMESTAMP" property="insertTime" />
+    <result column="update_user" jdbcType="INTEGER" property="updateUser" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, p_model, p_function, p_value, zh_name, en_name, active, insert_user, insert_time, 
+    update_user, update_time
+  </sql>
+
+  <sql id="Status_Column_List">
+    id, p_value, zh_name, en_name, active
+  </sql>
+
+  <sql id="Manager_Column_List">
+    id, p_model, p_function, p_value, zh_name, en_name, active
+  </sql>
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_sys_parameter
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_sys_parameter
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.crazy.portal.entity.system.SysParameter">
+    insert into t_sys_parameter (id, p_model, p_function, 
+      p_value, zh_name, en_name, 
+      active, insert_user, insert_time, 
+      update_user, update_time)
+    values (#{id,jdbcType=INTEGER}, #{pModel,jdbcType=VARCHAR}, #{pFunction,jdbcType=VARCHAR}, 
+      #{pValue,jdbcType=INTEGER}, #{zhName,jdbcType=VARCHAR}, #{enName,jdbcType=VARCHAR}, 
+      #{active,jdbcType=INTEGER}, #{insertUser,jdbcType=INTEGER}, #{insertTime,jdbcType=TIMESTAMP}, 
+      #{updateUser,jdbcType=INTEGER}, #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.crazy.portal.entity.system.SysParameter">
+    insert into t_sys_parameter
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="pModel != null">
+        p_model,
+      </if>
+      <if test="pFunction != null">
+        p_function,
+      </if>
+      <if test="pValue != null">
+        p_value,
+      </if>
+      <if test="zhName != null">
+        zh_name,
+      </if>
+      <if test="enName != null">
+        en_name,
+      </if>
+      <if test="active != null">
+        active,
+      </if>
+      <if test="insertUser != null">
+        insert_user,
+      </if>
+      <if test="insertTime != null">
+        insert_time,
+      </if>
+      <if test="updateUser != null">
+        update_user,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="pModel != null">
+        #{pModel,jdbcType=VARCHAR},
+      </if>
+      <if test="pFunction != null">
+        #{pFunction,jdbcType=VARCHAR},
+      </if>
+      <if test="pValue != null">
+        #{pValue,jdbcType=INTEGER},
+      </if>
+      <if test="zhName != null">
+        #{zhName,jdbcType=VARCHAR},
+      </if>
+      <if test="enName != null">
+        #{enName,jdbcType=VARCHAR},
+      </if>
+      <if test="active != null">
+        #{active,jdbcType=INTEGER},
+      </if>
+      <if test="insertUser != null">
+        #{insertUser,jdbcType=INTEGER},
+      </if>
+      <if test="insertTime != null">
+        #{insertTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null">
+        #{updateUser,jdbcType=INTEGER},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.crazy.portal.entity.system.SysParameter">
+    update t_sys_parameter
+    <set>
+      <if test="pModel != null">
+        p_model = #{pModel,jdbcType=VARCHAR},
+      </if>
+      <if test="pFunction != null">
+        p_function = #{pFunction,jdbcType=VARCHAR},
+      </if>
+      <if test="pValue != null">
+        p_value = #{pValue,jdbcType=INTEGER},
+      </if>
+      <if test="zhName != null">
+        zh_name = #{zhName,jdbcType=VARCHAR},
+      </if>
+      <if test="enName != null">
+        en_name = #{enName,jdbcType=VARCHAR},
+      </if>
+      <if test="active != null">
+        active = #{active,jdbcType=INTEGER},
+      </if>
+      <if test="insertUser != null">
+        insert_user = #{insertUser,jdbcType=INTEGER},
+      </if>
+      <if test="insertTime != null">
+        insert_time = #{insertTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null">
+        update_user = #{updateUser,jdbcType=INTEGER},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.crazy.portal.entity.system.SysParameter">
+    update t_sys_parameter
+    set p_model = #{pModel,jdbcType=VARCHAR},
+      p_function = #{pFunction,jdbcType=VARCHAR},
+      p_value = #{pValue,jdbcType=INTEGER},
+      zh_name = #{zhName,jdbcType=VARCHAR},
+      en_name = #{enName,jdbcType=VARCHAR},
+      active = #{active,jdbcType=INTEGER},
+      insert_user = #{insertUser,jdbcType=INTEGER},
+      insert_time = #{insertTime,jdbcType=TIMESTAMP},
+      update_user = #{updateUser,jdbcType=INTEGER},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <select id="selectAllModel" resultMap="BaseResultMap">
+    select DISTINCT p_model from t_sys_parameter where active=1
+  </select>
+
+  <select id="selectAllFunction" resultMap="BaseResultMap">
+    select DISTINCT p_function from t_sys_parameter where active=1 and p_model=#{model}
+  </select>
+
+  <select id="selectByMAndF" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Status_Column_List" />
+    from t_sys_parameter
+    where active=1 and p_model=#{model} and p_function=#{function}
+  </select>
+
+  <select id="selectAll" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Manager_Column_List" />
+    from t_sys_parameter
+    where active=1
+  </select>
+</mapper>

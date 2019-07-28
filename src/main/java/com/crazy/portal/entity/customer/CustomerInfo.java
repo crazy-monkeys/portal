@@ -17,7 +17,7 @@ public class CustomerInfo {
     private Integer id;
 
     /**
-     * 客户类型：1-代理商 2-终端客户 3-直供客户
+     * 客户类型： Enums.CUSTOMER_TYPE
      */
     private Integer custType;
 
