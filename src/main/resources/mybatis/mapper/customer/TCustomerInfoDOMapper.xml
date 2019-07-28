@@ -27,6 +27,7 @@
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_user" jdbcType="INTEGER" property="updateUser" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="register_time" jdbcType="TIMESTAMP" property="registerTime" />
     <result column="active" jdbcType="INTEGER" property="active" />
     <result column="is_license" jdbcType="INTEGER" property="isLicencse"></result>
     <result column="business_type" jdbcType="INTEGER" property="businessType"/>
@@ -384,19 +385,19 @@
     invoice.id,
     invoice.cust_id,
     invoice.purchasing_unit,
-    CONCAT_WS('',invoice.shipping_province,invoice.shipping_city,invoice.shipping_district,invoice.shipping_detail_info) as shippingAddress,
+    invoice.shipping_address,
     invoice.shipping_mobile,
     invoice.taxpayer_registration_number,
     invoice.currency,
     file.id,
-    file.relation_id,
+    file.cust_id,
     file.file_type,
     file.file_name,
     file.file_path,
     file.create_time
     from t_customer_info cust
     left join t_basic_lable lable on cust.id = lable.cust_id and lable.active=1
-    left join t_basic_file file on file.relation_id = cust.id and file.relation_type = 1 and file.active=1
+    left join t_basic_file file on file.cust_id = cust.id and file.active=1
     left join t_basic_contact contact on cust.id = contact.cust_id and contact.active=1
     left join t_basic_corporate_structure str on cust.id = str.cust_id and str.active=1
     left join t_basic_corporate_relationship ship on cust.id = ship.cust_id and ship.active=1

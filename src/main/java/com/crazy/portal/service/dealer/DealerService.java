@@ -1,14 +1,17 @@
 package com.crazy.portal.service.dealer;
 
-import com.alibaba.fastjson.JSON;
 import com.crazy.portal.bean.customer.basic.ContactVO;
 import com.crazy.portal.bean.customer.basic.FileVO;
 import com.crazy.portal.bean.customer.basic.InvoiceVO;
 import com.crazy.portal.bean.customer.basic.ShipVO;
+import com.crazy.portal.bean.customer.dealer.DealerUpdateVO;
 import com.crazy.portal.bean.customer.dealer.DealerVO;
 import com.crazy.portal.dao.customer.CustomerInfoMapper;
 import com.crazy.portal.entity.basic.*;
 import com.crazy.portal.entity.customer.CustomerInfo;
+import com.crazy.portal.service.customer.CustomersService;
+import com.crazy.portal.util.BusinessUtil;
+import com.crazy.portal.util.ErrorCodes;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -26,17 +29,22 @@ import java.util.List;
 public class DealerService {
     @Resource
     private CustomerInfoMapper customerInfoMapper;
+    @Resource
+    private CustomersService customersService;
 
-    //代理商个人信息
+    /**
+     * 获取代理商信息
+     * @param dealerId
+     * @return
+     */
     public DealerVO getDealerInfo(Integer dealerId){
-        try{
-            CustomerInfo dealerInfo = customerInfoMapper.selectDealerInfo(dealerId);
-            log.info(JSON.toJSONString(dealerInfo));
-            return mappingVO(dealerInfo);
-        }catch (Exception e){
-            log.error("获取代理商个人信息异常！",e);
-            return null;
-        }
+        CustomerInfo dealerInfo = customerInfoMapper.selectDealerInfo(dealerId);
+        BusinessUtil.assertObjEmpty(dealerInfo, ErrorCodes.BusinessEnum.CUSTOMER_IS_EMPYT);
+        return mappingVO(dealerInfo);
+    }
+
+    public void updateDealerInfo(CustomerInfo dealer, Integer dealerId){
+        customersService.update(dealer, dealerId);
     }
 
     private DealerVO mappingVO(CustomerInfo dealer){
@@ -107,6 +115,7 @@ public class DealerService {
             contactVO.setCPosition(contactDO.getContactPosition());
             contactVO.setEquityRatio(contactDO.getEquityRatio());
             contactVO.setIsDecisionMaker(contactDO.getIsDecisionMaker());
+            contactVOS.add(contactVO);
         }
         return contactVOS;
     }
@@ -130,11 +139,6 @@ public class DealerService {
         vo.setBankAccount(bank.getBankAccount());
         vo.setBankAddress(bank.getBankAddress());
         vo.setBankBIC(bank.getBankBic());
-    }
-
-    //修改个人信息
-    public void updateDealerInfo(DealerVO vo){
-
     }
 
     //创建子账号

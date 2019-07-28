@@ -7,9 +7,7 @@ import com.crazy.portal.dao.customer.*;
 import com.crazy.portal.entity.basic.BaseEntity;
 import com.crazy.portal.entity.basic.BasicBankInfo;
 import com.crazy.portal.entity.customer.CustomerInfo;
-import com.crazy.portal.util.DateUtil;
-import com.crazy.portal.util.Enums;
-import com.crazy.portal.util.PortalUtil;
+import com.crazy.portal.util.*;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -143,9 +141,7 @@ public class CustomersService {
      * @param bean
      */
     public void update(CustomerInfo bean, Integer userId){
-        if(bean.getId() == null){
-            throw new BusinessException(1002, "客户不存在");
-        }
+        BusinessUtil.assertIsNull(bean.getId(), ErrorCodes.BusinessEnum.CUSTOMER_IS_EMPYT);
         bean.setUpdateUser(userId);
         bean.setUpdateTime(DateUtil.getCurrentTS());
         customerInfoMapper.updateByPrimaryKeySelective(bean);
@@ -191,12 +187,15 @@ public class CustomersService {
      * @param mapper
      */
     public void updateExtendInfo(List<Integer> sourceList, List<? extends BaseEntity> newList, BaseMapper mapper, Integer userId, Date currTime){
-        newList.stream().filter(e->sourceList.contains(e.getId())).forEach(e->{
+        if(null == newList || newList.isEmpty()){
+            return;
+        }
+        newList.stream().filter(e->e.getId()!=null && sourceList.contains(e.getId())).forEach(e->{
             ((BaseEntity) e).setUpdateUser(userId);
             ((BaseEntity) e).setUpdateTime(currTime);
             mapper.updateByPrimaryKeySelective(e);
         });
-        newList.stream().filter(e->!sourceList.contains(e.getId())).forEach(e->{
+        newList.stream().filter(e->null == e.getId() || !sourceList.contains(e.getId())).forEach(e->{
             ((BaseEntity) e).setCreateUser(userId);
             ((BaseEntity) e).setCreateTime(currTime);
             mapper.insertSelective(e);

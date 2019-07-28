@@ -2,14 +2,10 @@ package com.crazy.portal.controller.dealer;
 
 import com.crazy.portal.bean.BaseResponse;
 import com.crazy.portal.controller.BaseController;
-import com.crazy.portal.entity.system.User;
+import com.crazy.portal.entity.customer.CustomerInfo;
 import com.crazy.portal.service.dealer.DealerService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.ldap.core.LdapTemplate;
-import org.springframework.ldap.core.support.LdapContextSource;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 
@@ -33,17 +29,15 @@ public class DealerController extends BaseController{
      */
     @GetMapping("/getDealerInfo")
     public BaseResponse getDealerInfo(){
-        User user = getCurrentUser();
-        user.setDealerId(1);
-        return super.successResult(dealerService.getDealerInfo(user.getDealerId()));
+        return super.successResult(dealerService.getDealerInfo(/*this.getCurrentUser().getDealerId()*/1));
     }
 
     /**
      * 修改Dealer信息
      */
-    @RequestMapping("/updateDealerInfo")
-    public BaseResponse updateDealerInfo(){
-
+    @PostMapping("/updateDealerInfo")
+    public BaseResponse updateDealerInfo(@RequestBody CustomerInfo vo){
+        dealerService.updateDealerInfo(vo, this.getCurrentUser().getDealerId());
         return successResult();
     }
 }

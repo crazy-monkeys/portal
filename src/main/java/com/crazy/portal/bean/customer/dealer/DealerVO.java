@@ -4,6 +4,7 @@ import com.crazy.portal.bean.customer.basic.ContactVO;
 import com.crazy.portal.bean.customer.basic.FileVO;
 import com.crazy.portal.bean.customer.basic.InvoiceVO;
 import com.crazy.portal.bean.customer.basic.ShipVO;
+import com.crazy.portal.entity.basic.BasicAddress;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -65,4 +66,8 @@ public class DealerVO {
     private List<InvoiceVO> invoices;
     //附件
     private List<FileVO> files;
+    /**
+     * 地址信息
+     */
+    private List<BasicAddress> basicAddress;
 }
