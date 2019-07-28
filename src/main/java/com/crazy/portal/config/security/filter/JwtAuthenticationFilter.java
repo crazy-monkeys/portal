@@ -201,7 +201,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
         if(permissiveRequestMatchers == null)
             permissiveRequestMatchers = new ArrayList<>();
         for(String url : urls)
-            permissiveRequestMatchers .add(new AntPathRequestMatcher(url));
+            permissiveRequestMatchers.add(new AntPathRequestMatcher(url));
     }
 
     public void setAuthenticationSuccessHandler(

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+    <head>
+        <title>Spring Security Kerberos Example</title>
+    </head>
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <body>
+        <div th:if="${param.error}">
+            Invalid username and password.
+        </div>
+        <div th:if="${param.logout}">
+            You have been logged out.
+        </div>
+
+        <div><label> User Name : <input type="text" id="loginName" name="loginName"/> </label></div>
+        <div><label> Password: <input type="password" id="loginPwd" name="loginPwd"/> </label></div>
+        <div><input type="button" value="Sign In" th:onclick="sub()"/></div>
+    </body>
+
+<script type="text/javascript">
+
+    function sub(){
+        var search = {};
+        search["loginName"] = $('#loginName').val();
+        search["loginPwd"] = $('#loginPwd').val();
+        $.ajax({
+            type: 'POST',
+            contentType: "application/json",
+            url: "/portal-api/user/login",
+            data: JSON.stringify(search),
+            dataType: 'json',
+            success: function (data) {
+                alert("登录成功,拥有的权限是"+data.data.permissions.length);
+            }
+        })
+    }
+</script>
+</html>
