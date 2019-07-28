@@ -54,6 +54,7 @@ public class SysParamService {
         }else{
             sysParameter.setInsertTime(new Date());
             sysParameter.setInsertUser(userId);
+            sysParameter.setActive(1);
             sysParameterMapper.insertSelective(sysParameter);
         }
     }
