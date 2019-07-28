@@ -16,7 +16,7 @@ import javax.annotation.Resource;
  */
 @Slf4j
 @RestController
-@RequestMapping("/dealer")
+@RequestMapping("/user/dealer")
 public class DealerController extends BaseController{
 
     @Resource
