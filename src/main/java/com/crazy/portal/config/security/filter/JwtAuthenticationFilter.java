@@ -139,7 +139,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
                 }
             }
         }
-        if(request.getRequestURI().contains("/ad/index")){
+        if(request.getRequestURI().contains("/ad/index") || request.getRequestURI().contains("/announcement/file/")){
             //放行
             filterChain.doFilter(request, response);
             return true;
