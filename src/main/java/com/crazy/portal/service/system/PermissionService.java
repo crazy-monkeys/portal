@@ -54,7 +54,7 @@ public class PermissionService {
             log.warn("用户没有分配角色");
             return null;
         }
-        List<Integer> resourceIds = roleResourceMapper.selectRoleResourceByRoleIds(roleIds);
+        List<Integer> resourceIds = roleResourceMapper.selectRoleResourceByRoleIds(roleIds,true);
         if(resourceIds.isEmpty()){
             log.warn("用户没有分配访问权限");
             return Collections.EMPTY_LIST;
@@ -94,7 +94,7 @@ public class PermissionService {
      * @return
      */
     public List<Integer> findPermissionIds(List<Integer> roleIds){
-        return roleResourceMapper.selectRoleResourceByRoleIds(roleIds);
+        return roleResourceMapper.selectRoleResourceByRoleIds(roleIds,false);
     }
 
     /**

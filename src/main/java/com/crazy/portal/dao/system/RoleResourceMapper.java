@@ -18,7 +18,8 @@ public interface RoleResourceMapper {
 
     int updateByPrimaryKey(RoleResource record);
 
-    List<Integer> selectRoleResourceByRoleIds(@Param("roleIds") List<Integer> roleIds);
+    List<Integer> selectRoleResourceByRoleIds(@Param("roleIds") List<Integer> roleIds,
+                                              @Param("isAllRes") boolean isAllRes);
 
     RoleResource selectByRoleResource(@Param("roleId") Integer roleId,@Param("resourceId") Integer resourceId);
 }
