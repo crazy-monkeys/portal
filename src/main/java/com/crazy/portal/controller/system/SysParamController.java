@@ -20,28 +20,22 @@ public class SysParamController extends BaseController {
     private SysParamService sysParamService;
 
     @GetMapping("/selectAll")
-    public BaseResponse selectAll(){
-        return super.successResult(sysParamService.selectAll());
-    }
-
-    @GetMapping("/selectAllModel")
-    public BaseResponse selectAllModel(){
-        return super.successResult(sysParamService.selectAllModel());
-    }
-
-    @GetMapping("/selectAllFunction/{model}")
-    public BaseResponse selectAllFunction(@PathVariable String model){
-        return super.successResult(sysParamService.selectAllFunction(model));
+    public BaseResponse selectAll(@RequestParam(required = false) Integer pModel,
+                                  @RequestParam(required = false) Integer pFunction,
+                                  @RequestParam(required = false) Integer active,
+                                  @RequestParam(required = false,defaultValue = "1") Integer pageNum,
+                                  @RequestParam(required = false,defaultValue = "10") Integer pageSize){
+        return super.successResult(sysParamService.selectAll(pModel, pFunction, active, pageNum, pageSize));
     }
 
     @GetMapping("/selectByMAndF/{model}/{function}")
-    public BaseResponse selectByMAndF(@PathVariable String model, @PathVariable String function){
+    public BaseResponse selectByMAndF(@PathVariable("model") String model, @PathVariable("function") String function){
         return super.successResult(sysParamService.selectParam(model, function));
     }
 
     @PostMapping("/saveOrUpdate")
-    public BaseResponse saveOrUpdate(@RequestParam SysParameter sysParameter){
-        sysParamService.saveOrUpdate(sysParameter);
+    public BaseResponse saveOrUpdate(@RequestBody SysParameter sysParameter){
+        sysParamService.saveOrUpdate(sysParameter, super.getCurrentUser().getId());
         return super.successResult();
     }
 

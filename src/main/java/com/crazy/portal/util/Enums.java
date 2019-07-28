@@ -62,72 +62,6 @@ public class Enums {
         }
     }
 
-    public enum SYSTEM_MANAGER_MODEL{
-        sys_announcement(1),   //公告
-        sys_customer(2);       //客户
-
-        private final int model;
-
-        SYSTEM_MANAGER_MODEL(int model){
-            this.model = model;
-        }
-
-        public int getModel() {
-            return model;
-        }
-    }
-
-    public enum SYSTEM_MANAGER_TYPE{
-        type_mail(1),           //邮件通知
-        type_file_type(2),      //附件
-        type_status(3);         //状态
-        private final int model;
-
-        SYSTEM_MANAGER_TYPE(int model){
-            this.model = model;
-        }
-
-        public int getModel() {
-            return model;
-        }
-    }
-
-
-    /**
-     * 系统参数维护
-     */
-    public enum SYSTEM_MANAGER{
-        sys_file(1,1,"附件类型","");
-
-        private final int model;
-        private final int function;
-        private final String zhCode;
-        private final String enCode;
-
-        SYSTEM_MANAGER(int model, int function, String zhCode, String enCode){
-            this.model = model;
-            this.function = function;
-            this.zhCode = zhCode;
-            this.enCode = enCode;
-        }
-
-        public int getModel() {
-            return model;
-        }
-
-        public int getFunction() {
-            return function;
-        }
-
-        public String getZhCode() {
-            return zhCode;
-        }
-
-        public String getEnCode() {
-            return enCode;
-        }
-    }
-
     //<editor-fold desc="客户枚举">
     /**
      * 用户类型
@@ -202,7 +136,4 @@ public class Enums {
         }
     }
     //</editor-fold>
-
-
-
 }
