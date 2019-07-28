@@ -4,6 +4,7 @@ import com.crazy.portal.bean.BaseResponse;
 import com.crazy.portal.controller.BaseController;
 import com.crazy.portal.entity.system.Role;
 import com.crazy.portal.service.system.RoleService;
+import com.crazy.portal.util.BusinessUtil;
 import com.crazy.portal.util.ErrorCodes.SystemManagerEnum;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
@@ -55,22 +56,11 @@ public class RoleController extends BaseController {
     @PostMapping(value = "/saveRole")
     public BaseResponse saveRole(@RequestBody Role role) {
 
-        if(StringUtils.isEmpty(role.getRoleCode())){
-            return new BaseResponse(SystemManagerEnum.ROLE_EMPTY_CODE.getCode(),
-                    SystemManagerEnum.ROLE_EMPTY_CODE.getZhMsg());
-        }
-
-        if(StringUtils.isEmpty(role.getRoleName())){
-            return new BaseResponse(SystemManagerEnum.ROLE_EMPTY_NAME.getCode(),
-                    SystemManagerEnum.ROLE_EMPTY_NAME.getZhMsg());
-        }
-
-        role.setActive((short)1);
+        BusinessUtil.assertEmpty(role.getRoleCode(),SystemManagerEnum.ROLE_EMPTY_CODE);
+        BusinessUtil.assertEmpty(role.getRoleName(),SystemManagerEnum.ROLE_EMPTY_CODE);
         Role roleQuery = roleService.findRoleByCode(role.getRoleCode());
-        if(roleQuery != null){
-            return new BaseResponse(SystemManagerEnum.ROLE_EXISTS.getCode(),
-                    SystemManagerEnum.ROLE_EXISTS.getZhMsg());
-        }
+        BusinessUtil.assertIsNotNull(roleQuery,SystemManagerEnum.ROLE_EXISTS);
+        role.setActive((short)1);
         role.setCreateTime(new Date());
         role.setCreateUserId(super.getCurrentUser().getId());
         roleService.saveRole(role);
@@ -84,10 +74,8 @@ public class RoleController extends BaseController {
     @GetMapping(value = "/findRole/{roleCode}")
     public BaseResponse findRole(@PathVariable String roleCode) {
         Role role = roleService.findRoleByCode(roleCode);
-        if(role.getRoleName() == null){
-            return new BaseResponse(SystemManagerEnum.ROLE_NOT_EXIST.getCode(),
-                    SystemManagerEnum.ROLE_NOT_EXIST.getZhMsg());
-        }
+        BusinessUtil.assertIsNull(role,SystemManagerEnum.ROLE_NOT_EXIST);
+        BusinessUtil.assertEmpty(role.getRoleName(),SystemManagerEnum.ROLE_NOT_EXIST);
         return super.successResult(role);
     }
 
@@ -97,19 +85,12 @@ public class RoleController extends BaseController {
      */
     @PostMapping(value = "/updateRole")
     public BaseResponse updateRole(@RequestBody Role role) {
-        if(StringUtils.isEmpty(role.getRoleCode())){
-            return new BaseResponse(SystemManagerEnum.ROLE_EMPTY_CODE.getCode(),
-                    SystemManagerEnum.ROLE_EMPTY_CODE.getZhMsg());
-        }
+        BusinessUtil.assertEmpty(role.getRoleCode(),SystemManagerEnum.ROLE_EMPTY_CODE);
         Role currentRole = roleService.findRoleByCode(role.getRoleCode());
-        if(currentRole.getRoleName() == null){
-            return new BaseResponse(SystemManagerEnum.ROLE_NOT_EXIST.getCode(),
-                    SystemManagerEnum.ROLE_NOT_EXIST.getZhMsg());
-        }
+        BusinessUtil.assertIsNull(currentRole,SystemManagerEnum.ROLE_NOT_EXIST);
         Role roleQuery = roleService.findRoleByCode(role.getRoleCode());
-        if(!currentRole.getRoleName().equals(role.getRoleName()) && roleQuery != null){
-            return new BaseResponse(SystemManagerEnum.ROLE_EXISTS.getCode(),
-                    SystemManagerEnum.ROLE_EXISTS.getZhMsg());
+        if(!currentRole.getRoleName().equals(role.getRoleName())){
+            BusinessUtil.assertIsNotNull(roleQuery,SystemManagerEnum.ROLE_EXISTS);
         }
         role.setId(roleQuery.getId());
         role.setUpdateTime(new Date());

@@ -2,9 +2,9 @@ logging:
   config: classpath:logback-sit.xml
 
 app:
-  ad-domain:
-    service-principal:
-    keytab-location:
+  ad-domain: THREEAPE.CN
+  service-principal: HTTP/ad.threeape.cn@THREEAPE.CN
+  keytab-location: C:\Users\Administrator\Desktop\tomcat.keytab
 
 spring:
   datasource:

@@ -2,6 +2,7 @@ package com.crazy.portal.controller.system;
 
 import com.crazy.portal.bean.BaseResponse;
 import com.crazy.portal.bean.system.PermissionBean;
+import com.crazy.portal.config.exception.BusinessException;
 import com.crazy.portal.controller.BaseController;
 import com.crazy.portal.entity.system.Resource;
 import com.crazy.portal.entity.system.Role;
@@ -9,6 +10,7 @@ import com.crazy.portal.entity.system.User;
 import com.crazy.portal.service.system.PermissionService;
 import com.crazy.portal.service.system.RoleService;
 import com.crazy.portal.service.system.UserService;
+import com.crazy.portal.util.BusinessUtil;
 import com.crazy.portal.util.Enums;
 import com.crazy.portal.util.ErrorCodes.SystemManagerEnum;
 import lombok.extern.slf4j.Slf4j;
@@ -69,15 +71,9 @@ public class PermissionController extends BaseController{
      */
     @GetMapping(value = "/findPermission/{roleCode}")
     public BaseResponse findPermission(@PathVariable String roleCode) {
-        if(roleCode == null){
-            return new BaseResponse(SystemManagerEnum.ROLE_EMPTY_CODE.getCode(),
-                    SystemManagerEnum.ROLE_EMPTY_CODE.getZhMsg());
-        }
+        BusinessUtil.assertIsNull(roleCode,SystemManagerEnum.ROLE_EMPTY_CODE);
         Role role = roleService.findRoleByCode(roleCode);
-        if(role == null){
-            return new BaseResponse(SystemManagerEnum.ROLE_NOT_EXIST.getCode(),
-                    SystemManagerEnum.ROLE_NOT_EXIST.getZhMsg());
-        }
+        BusinessUtil.assertIsNull(role,SystemManagerEnum.ROLE_NOT_EXIST);
         List<Integer> resourceIds = permissionService.findPermissionIds(Collections.singletonList(role.getId()));
         return super.successResult(resourceIds);
     }
@@ -88,16 +84,15 @@ public class PermissionController extends BaseController{
      */
     @PostMapping(value = "/savePermission")
     public BaseResponse empowerment(@RequestBody PermissionBean permissionBean) {
-        if(permissionBean.getRoleCode() == null){
-            return new BaseResponse(SystemManagerEnum.ROLE_EMPTY_CODE.getCode(),
-                    SystemManagerEnum.ROLE_EMPTY_CODE.getZhMsg());
-        }
+
+        BusinessUtil.assertIsNull(permissionBean.getRoleCode(),SystemManagerEnum.ROLE_EMPTY_CODE);
         List<Integer> addResourcesIds = permissionBean.getAddPermissionIds();
         List<Integer> rmResourcesIds = permissionBean.getRmPermissionIds();
+
         if((addResourcesIds == null || addResourcesIds.isEmpty())
                 && (rmResourcesIds == null || rmResourcesIds.isEmpty())){
 
-            return new BaseResponse(SystemManagerEnum.PERMISSION_EMPTY_AND_ROLE.getCode(),
+            throw new BusinessException(SystemManagerEnum.PERMISSION_EMPTY_AND_ROLE.getCode(),
                     SystemManagerEnum.PERMISSION_EMPTY_AND_ROLE.getZhMsg());
         }
         permissionService.savePermission(permissionBean,super.getCurrentUser().getId());
@@ -115,14 +110,9 @@ public class PermissionController extends BaseController{
                                         @RequestParam String roleCode){
 
         User user = userService.findUser(loginName);
-        if(user == null){
-            return new BaseResponse(SystemManagerEnum.USER_NOT_EXISTS.getCode(),SystemManagerEnum.USER_NOT_EXISTS.getZhMsg());
-        }
-
+        BusinessUtil.assertIsNull(user,SystemManagerEnum.USER_NOT_EXISTS);
         Role role = roleService.findRoleByCode(roleCode);
-        if(role == null){
-            return new BaseResponse(SystemManagerEnum.ROLE_NOT_EXIST.getCode(),SystemManagerEnum.ROLE_NOT_EXIST.getZhMsg());
-        }
+        BusinessUtil.assertIsNull(role,SystemManagerEnum.ROLE_NOT_EXIST);
         permissionService.improveUserPerm(role.getId(),user.getId(),super.getCurrentUser().getId());
         return super.successResult();
     }
@@ -139,15 +129,16 @@ public class PermissionController extends BaseController{
                 || StringUtils.isEmpty(resource.getResourceUrl())
                 || resource.getResourceType() == null){
 
-            return new BaseResponse(SystemManagerEnum.PERMISSION_ILLEGAL.getCode(),
+            throw new BusinessException(SystemManagerEnum.PERMISSION_ILLEGAL.getCode(),
                     SystemManagerEnum.PERMISSION_ILLEGAL.getZhMsg());
         }
+        //如果资源类型不在枚举中定义
         if(!Enums.RESOURCE_TYPE_ENUM.getResourceTypes().contains(resource.getResourceType().intValue())){
-            return new BaseResponse(SystemManagerEnum.PERMISSION_UN_TYPE_OPTIONAL.getCode(),
+            throw new BusinessException(SystemManagerEnum.PERMISSION_UN_TYPE_OPTIONAL.getCode(),
                     SystemManagerEnum.PERMISSION_UN_TYPE_OPTIONAL.getZhMsg());
         }
         if(permissionService.findResource(resource.getParentId()) == null && 0 != resource.getParentId()){
-            return new BaseResponse(SystemManagerEnum.PERMISSION_NOT_EXIST.getCode(),
+            throw new BusinessException(SystemManagerEnum.PERMISSION_NOT_EXIST.getCode(),
                     SystemManagerEnum.PERMISSION_NOT_EXIST.getZhMsg());
         }
         resource.setActive((short)1);
@@ -164,10 +155,7 @@ public class PermissionController extends BaseController{
     @GetMapping(value="/findRes/{resourceId}")
     public BaseResponse preEdit(@PathVariable Integer resourceId){
         Resource resource = permissionService.findResource(resourceId);
-        if(resource == null){
-            return new BaseResponse(SystemManagerEnum.PERMISSION_NOT_EXIST.getCode(),
-                    SystemManagerEnum.PERMISSION_NOT_EXIST.getZhMsg());
-        }
+        BusinessUtil.assertIsNull(resource,SystemManagerEnum.PERMISSION_NOT_EXIST);
         return super.successResult(resource);
     }
 
@@ -182,20 +170,17 @@ public class PermissionController extends BaseController{
                 || StringUtils.isEmpty(resource.getResourceUrl())
                 || resource.getId() == null){
 
-            return new BaseResponse(SystemManagerEnum.PERMISSION_ILLEGAL.getCode(),
+            throw new BusinessException(SystemManagerEnum.PERMISSION_ILLEGAL.getCode(),
                     SystemManagerEnum.PERMISSION_ILLEGAL.getZhMsg());
         }
 
         if(!Enums.RESOURCE_TYPE_ENUM.getResourceTypes().contains(resource.getResourceType())){
-            return new BaseResponse(SystemManagerEnum.PERMISSION_UN_TYPE_OPTIONAL.getCode(),
+           throw new BusinessException(SystemManagerEnum.PERMISSION_UN_TYPE_OPTIONAL.getCode(),
                     SystemManagerEnum.PERMISSION_UN_TYPE_OPTIONAL.getZhMsg());
         }
 
-        if(null == permissionService.findResource(resource.getId())){
-
-            return new BaseResponse(SystemManagerEnum.PERMISSION_NOT_EXIST.getCode(),
-                    SystemManagerEnum.PERMISSION_NOT_EXIST.getZhMsg());
-        }
+        Resource res = permissionService.findResource(resource.getId());
+        BusinessUtil.assertIsNull(res,SystemManagerEnum.PERMISSION_NOT_EXIST);
         resource.setUpdateTime(new Date());
         resource.setUpdateUserId(super.getCurrentUser().getId());
         permissionService.saveResource(resource);
@@ -209,16 +194,12 @@ public class PermissionController extends BaseController{
     @DeleteMapping(value="/delResource/{resourceId}")
     public BaseResponse deleteResource(@PathVariable Integer resourceId){
         Resource resource = permissionService.findResource(resourceId);
-        if(resource == null){
-            return new BaseResponse(SystemManagerEnum.PERMISSION_NOT_EXIST.getCode(),
-                    SystemManagerEnum.PERMISSION_NOT_EXIST.getZhMsg());
-        }
+        BusinessUtil.assertIsNull(resource,SystemManagerEnum.PERMISSION_NOT_EXIST);
         log.info("user {} delete the resource {}",super.getCurrentUser().getId(),resourceId);
         int result = permissionService.getRoleCountByResourceId(resourceId);
         if(result > 0){
             log.warn("该权限已配置角色，请先删除该权限的角色信息!");
-            return new BaseResponse(SystemManagerEnum.PERMISSION_USED.getCode(),
-                    SystemManagerEnum.PERMISSION_USED.getZhMsg());
+            BusinessUtil.assertFlase(true,SystemManagerEnum.PERMISSION_USED);
         }
         permissionService.deleteResource(resourceId);
         return super.successResult();

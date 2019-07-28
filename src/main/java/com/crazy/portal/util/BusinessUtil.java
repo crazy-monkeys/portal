@@ -33,4 +33,16 @@ public class BusinessUtil {
         }
     }
 
+    public static void assertIsNull(Object obj, ErrorInfo errorInfo) {
+        if(obj == null){
+            throw new BusinessException(errorInfo);
+        }
+    }
+
+    public static void assertIsNotNull(Object obj, ErrorInfo errorInfo) {
+        if(obj != null){
+            throw new BusinessException(errorInfo);
+        }
+    }
+
 }
