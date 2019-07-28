@@ -38,10 +38,6 @@ public class RoleService {
         return new PageInfo<>(roleList);
     }
 
-    public Role findRoleByCode(String roleCode){
-        return roleMapper.findRoleByCode(roleCode);
-    }
-
 
     /**
      * 新增/更新 角色
@@ -75,6 +71,9 @@ public class RoleService {
         return roleMapper.findRoleByCode(roleCode);
     }
 
+    public Role findRole(Integer roleId){
+        return roleMapper.findById(roleId);
+    }
 
     /**
      * 获取所有有效的角色

@@ -3,7 +3,6 @@ package com.crazy.portal.config.security.filter;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.crazy.portal.config.security.JwtAuthenticationToken;
-import com.crazy.portal.config.security.JwtUser;
 import com.crazy.portal.entity.system.User;
 import com.crazy.portal.service.system.PermissionService;
 import com.crazy.portal.util.Enums;
@@ -30,7 +29,6 @@ import org.springframework.util.Assert;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.annotation.Resource;
-import javax.security.auth.kerberos.KerberosPrincipal;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -86,30 +84,32 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
         String url = request.getServletPath();
         //可以忽略权限的url
         if (this.checkPermissiveUrl(request, response, filterChain)) return;
-        Throwable throwable = null;
+        Throwable throwable;
         try {
-            Authentication existingAuth = SecurityContextHolder.getContext().getAuthentication();
-            if(existingAuth == null){
-                filterChain.doFilter(request, response);
+            String token = getJwtToken(request);
+            if(StringUtils.isEmpty(token)){
+                log.warn("url {} token is null",url);
+                this.authenticationFailure(request, response,new InsufficientAuthenticationException("JWT is Empty"));
                 return;
-            }else{
-                User user = ((JwtUser)existingAuth.getPrincipal()).getUser();
-                if (this.checkForInternalUser(request, response, filterChain, user)) return;
-                String token = getJwtToken(request);
-                if(StringUtils.isEmpty(token)){
-                    log.warn("url {} token is null",url);
-                    this.authenticationFailure(request, response,new InsufficientAuthenticationException("JWT is Empty"));
-                    return;
-                }
-                Authentication authResult = this.authUrl(request, response, user, token);
-                if (authResult != null) {
-                    //放行
-                    this.successfulAuthentication(request, response, filterChain, authResult);
-                    filterChain.doFilter(request, response);
-                    return;
-                }
             }
-
+            Authentication authResult = this.getAuthentication(request, response, token);
+            //token认证不成功
+            if(authResult == null){
+                this.authenticationFailure(request, response,
+                        new InsufficientAuthenticationException("Token authentication failed"));
+                return;
+            }
+            //不具有访问url的权限
+            UserDetails userDetails = (UserDetails)authResult.getPrincipal();
+            if(!authRequest(request,userDetails.getUsername())){
+                this.authenticationFailure(request, response,
+                        new InsufficientAuthenticationException("URL authentication failed"));
+                return;
+            }
+            //放行
+            this.successfulAuthentication(request, response, filterChain, authResult);
+            filterChain.doFilter(request, response);
+            return;
         } catch(JWTDecodeException e) {
             logger.error("JWT format error!", e);
             throwable = e;
@@ -127,7 +127,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
         }
         this.authenticationFailure(request, response,
                 new InsufficientAuthenticationException("authentication failure！", throwable));
-        return;
     }
 
     private boolean checkPermissiveUrl(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws IOException, ServletException {
@@ -143,14 +142,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
         return false;
     }
 
-    private Authentication authUrl(HttpServletRequest request, HttpServletResponse response, User user, String token) throws IOException, ServletException {
+    private Authentication getAuthentication(HttpServletRequest request, HttpServletResponse response, String token) throws IOException, ServletException {
         JwtAuthenticationToken authToken = new JwtAuthenticationToken(JWT.decode(token));
         Authentication authResult = this.getAuthenticationManager().authenticate(authToken);
-        //token认证不成功，或者不具有访问url的权限
-        if(authResult == null || !authRequest(request,user.getLoginName())){
-            this.authenticationFailure(request, response,
-                    new InsufficientAuthenticationException("Insufficient permissions"));
-        }
         return authResult;
     }
 
