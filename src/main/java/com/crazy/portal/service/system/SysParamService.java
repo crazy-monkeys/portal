@@ -2,9 +2,14 @@ package com.crazy.portal.service.system;
 
 import com.crazy.portal.dao.system.SysParameterMapper;
 import com.crazy.portal.entity.system.SysParameter;
+import com.crazy.portal.util.BusinessUtil;
+import com.crazy.portal.util.ErrorCodes;
+import com.crazy.portal.util.PortalUtil;
+import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -19,23 +24,10 @@ public class SysParamService {
     /**
      * 查询所有的系统参数
      */
-    public List<SysParameter> selectAll(){
-        return sysParameterMapper.selectAll();
-    }
-    /**
-     * 查询所有的可配置的模块
-     * @return
-     */
-    public List<SysParameter> selectAllModel(){
-        return sysParameterMapper.selectAll();
-    }
-
-    /**
-     * 查询所有的可配置模块的可配置功能
-     * @return
-     */
-    public List<SysParameter> selectAllFunction(String model){
-        return sysParameterMapper.selectAll();
+    public PageInfo<SysParameter> selectAll(Integer model, Integer function, Integer active, int pageNum,int pageSize){
+        PortalUtil.defaultStartPage(pageNum,pageSize);
+        List<SysParameter> results = sysParameterMapper.selectAll(model, function, active);
+        return new PageInfo<>(results);
     }
 
     /**
@@ -46,17 +38,22 @@ public class SysParamService {
      */
     public List<SysParameter> selectParam(String model, String function){
         return sysParameterMapper.selectByMAndF(model, function);
-
     }
 
     /**
      * 新增或保存系统参数
      * @param sysParameter
      */
-    public void saveOrUpdate(SysParameter sysParameter){
+    public void saveOrUpdate(SysParameter sysParameter, Integer userId){
+        Integer checkResult = sysParameterMapper.checkValue(sysParameter.getPModel(), sysParameter.getPFunction(), sysParameter.getPValue());
+        BusinessUtil.assertTrue(checkResult==1, ErrorCodes.SystemManagerEnum.SYS_PARAM_VALUE);
         if(null!=sysParameter.getId()){
+            sysParameter.setUpdateTime(new Date());
+            sysParameter.setUpdateUser(userId);
             sysParameterMapper.updateByPrimaryKeySelective(sysParameter);
         }else{
+            sysParameter.setInsertTime(new Date());
+            sysParameter.setInsertUser(userId);
             sysParameterMapper.insertSelective(sysParameter);
         }
     }

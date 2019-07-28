@@ -18,11 +18,9 @@ public interface SysParameterMapper {
 
     int updateByPrimaryKey(SysParameter record);
 
-    List<SysParameter> selectAll();
-
-    List<SysParameter> selectAllModel();
-
-    List<SysParameter> selectAllFunction(String model);
+    List<SysParameter> selectAll(@Param("model") Integer model, @Param("function") Integer function, @Param("active") Integer active);
 
     List<SysParameter> selectByMAndF(@Param("model") String model, @Param("function") String function);
+
+    Integer checkValue(@Param("model") Integer model, @Param("function") Integer function, @Param("pValue") Integer value);
 }

@@ -3,8 +3,8 @@
 <mapper namespace="com.crazy.portal.dao.system.SysParameterMapper">
   <resultMap id="BaseResultMap" type="com.crazy.portal.entity.system.SysParameter">
     <id column="id" jdbcType="INTEGER" property="id" />
-    <result column="p_model" jdbcType="VARCHAR" property="pModel" />
-    <result column="p_function" jdbcType="VARCHAR" property="pFunction" />
+    <result column="p_model" jdbcType="INTEGER" property="pModel" />
+    <result column="p_function" jdbcType="INTEGER" property="pFunction" />
     <result column="p_value" jdbcType="INTEGER" property="pValue" />
     <result column="zh_name" jdbcType="VARCHAR" property="zhName" />
     <result column="en_name" jdbcType="VARCHAR" property="enName" />
@@ -42,7 +42,7 @@
       p_value, zh_name, en_name, 
       active, insert_user, insert_time, 
       update_user, update_time)
-    values (#{id,jdbcType=INTEGER}, #{pModel,jdbcType=VARCHAR}, #{pFunction,jdbcType=VARCHAR}, 
+    values (#{id,jdbcType=INTEGER}, #{pModel,jdbcType=INTEGER}, #{pFunction,jdbcType=INTEGER},
       #{pValue,jdbcType=INTEGER}, #{zhName,jdbcType=VARCHAR}, #{enName,jdbcType=VARCHAR}, 
       #{active,jdbcType=INTEGER}, #{insertUser,jdbcType=INTEGER}, #{insertTime,jdbcType=TIMESTAMP}, 
       #{updateUser,jdbcType=INTEGER}, #{updateTime,jdbcType=TIMESTAMP})
@@ -77,22 +77,16 @@
       <if test="insertTime != null">
         insert_time,
       </if>
-      <if test="updateUser != null">
-        update_user,
-      </if>
-      <if test="updateTime != null">
-        update_time,
-      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
         #{id,jdbcType=INTEGER},
       </if>
       <if test="pModel != null">
-        #{pModel,jdbcType=VARCHAR},
+        #{pModel,jdbcType=INTEGER},
       </if>
       <if test="pFunction != null">
-        #{pFunction,jdbcType=VARCHAR},
+        #{pFunction,jdbcType=INTEGER},
       </if>
       <if test="pValue != null">
         #{pValue,jdbcType=INTEGER},
@@ -124,10 +118,10 @@
     update t_sys_parameter
     <set>
       <if test="pModel != null">
-        p_model = #{pModel,jdbcType=VARCHAR},
+        p_model = #{pModel,jdbcType=INTEGER},
       </if>
       <if test="pFunction != null">
-        p_function = #{pFunction,jdbcType=VARCHAR},
+        p_function = #{pFunction,jdbcType=INTEGER},
       </if>
       <if test="pValue != null">
         p_value = #{pValue,jdbcType=INTEGER},
@@ -141,12 +135,6 @@
       <if test="active != null">
         active = #{active,jdbcType=INTEGER},
       </if>
-      <if test="insertUser != null">
-        insert_user = #{insertUser,jdbcType=INTEGER},
-      </if>
-      <if test="insertTime != null">
-        insert_time = #{insertTime,jdbcType=TIMESTAMP},
-      </if>
       <if test="updateUser != null">
         update_user = #{updateUser,jdbcType=INTEGER},
       </if>
@@ -158,8 +146,8 @@
   </update>
   <update id="updateByPrimaryKey" parameterType="com.crazy.portal.entity.system.SysParameter">
     update t_sys_parameter
-    set p_model = #{pModel,jdbcType=VARCHAR},
-      p_function = #{pFunction,jdbcType=VARCHAR},
+    set p_model = #{pModel,jdbcType=INTEGER},
+      p_function = #{pFunction,jdbcType=INTEGER},
       p_value = #{pValue,jdbcType=INTEGER},
       zh_name = #{zhName,jdbcType=VARCHAR},
       en_name = #{enName,jdbcType=VARCHAR},
@@ -170,14 +158,6 @@
       update_time = #{updateTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
-
-  <select id="selectAllModel" resultMap="BaseResultMap">
-    select DISTINCT p_model from t_sys_parameter where active=1
-  </select>
-
-  <select id="selectAllFunction" resultMap="BaseResultMap">
-    select DISTINCT p_function from t_sys_parameter where active=1 and p_model=#{model}
-  </select>
 
   <select id="selectByMAndF" resultMap="BaseResultMap">
     SELECT
@@ -190,6 +170,21 @@
     SELECT
     <include refid="Manager_Column_List" />
     from t_sys_parameter
-    where active=1
+    where 1=1
+    <if test="active != null">
+      and active = #{active}
+    </if>
+    <if test="model != null">
+      and p_model = #{model}
+    </if>
+    <if test="function != null">
+      and p_function = #{function}
+    </if>
+  </select>
+
+  <select id="checkValue" resultType="java.lang.Integer">
+    SELECT count(1)
+    from t_sys_parameter
+    where active=1 and p_model=#{model} and p_function=#{function} and p_value=#{value}
   </select>
 </mapper>
