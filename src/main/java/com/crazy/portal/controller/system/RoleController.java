@@ -8,7 +8,6 @@ import com.crazy.portal.util.BusinessUtil;
 import com.crazy.portal.util.ErrorCodes.SystemManagerEnum;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import java.util.Date;
@@ -57,8 +56,8 @@ public class RoleController extends BaseController {
     public BaseResponse saveRole(@RequestBody Role role) {
 
         BusinessUtil.assertEmpty(role.getRoleCode(),SystemManagerEnum.ROLE_EMPTY_CODE);
-        BusinessUtil.assertEmpty(role.getRoleName(),SystemManagerEnum.ROLE_EMPTY_CODE);
-        Role roleQuery = roleService.findRoleByCode(role.getRoleCode());
+        BusinessUtil.assertEmpty(role.getRoleName(),SystemManagerEnum.ROLE_EMPTY_NAME);
+        Role roleQuery = roleService.findRole(role.getRoleCode());
         BusinessUtil.assertIsNotNull(roleQuery,SystemManagerEnum.ROLE_EXISTS);
         role.setActive((short)1);
         role.setCreateTime(new Date());
@@ -73,7 +72,7 @@ public class RoleController extends BaseController {
      */
     @GetMapping(value = "/findRole/{roleCode}")
     public BaseResponse findRole(@PathVariable String roleCode) {
-        Role role = roleService.findRoleByCode(roleCode);
+        Role role = roleService.findRole(roleCode);
         BusinessUtil.assertIsNull(role,SystemManagerEnum.ROLE_NOT_EXIST);
         BusinessUtil.assertEmpty(role.getRoleName(),SystemManagerEnum.ROLE_NOT_EXIST);
         return super.successResult(role);
@@ -85,14 +84,14 @@ public class RoleController extends BaseController {
      */
     @PostMapping(value = "/updateRole")
     public BaseResponse updateRole(@RequestBody Role role) {
+        BusinessUtil.assertIsNull(role.getId(),SystemManagerEnum.ROLE_EMPTY_ID);
         BusinessUtil.assertEmpty(role.getRoleCode(),SystemManagerEnum.ROLE_EMPTY_CODE);
-        Role currentRole = roleService.findRoleByCode(role.getRoleCode());
+        Role currentRole = roleService.findRole(role.getId());
         BusinessUtil.assertIsNull(currentRole,SystemManagerEnum.ROLE_NOT_EXIST);
-        Role roleQuery = roleService.findRoleByCode(role.getRoleCode());
+        Role roleQuery = roleService.findRole(role.getId());
         if(!currentRole.getRoleName().equals(role.getRoleName())){
             BusinessUtil.assertIsNotNull(roleQuery,SystemManagerEnum.ROLE_EXISTS);
         }
-        role.setId(roleQuery.getId());
         role.setUpdateTime(new Date());
         role.setUpdateUserId(super.getCurrentUser().getId());
         roleService.saveRole(role);

@@ -134,10 +134,15 @@
 
   <!-- 查询角色资源 -->
   <select id="selectRoleResourceByRoleIds" resultType="java.lang.Integer">
-    SELECT RESOURCE_ID FROM t_role_resource WHERE ROLE_ID IN
-    <foreach item="item" index="index" collection="roleIds" open="("
-             separator="," close=")">
-      #{item}
-    </foreach>
+      select a.resource_id from
+      t_role_resource a inner join t_resource b on a.resource_id = b.id
+      where a.role_id in
+      <foreach item="item" index="index" collection="roleIds" open="("
+               separator="," close=")">
+        #{item}
+      </foreach>
+      <if test="isAllRes == false">
+        and b.parent_id  <![CDATA[ <> ]]> 0
+      </if>
   </select>
 </mapper>

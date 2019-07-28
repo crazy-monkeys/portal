@@ -8,6 +8,8 @@ public interface BaseEntity {
 
     public void setCustId(Integer custId);
 
+    public void setActive(Integer active);
+
     public void setCreateUser(Integer userId);
 
     public void setCreateTime(Date time);

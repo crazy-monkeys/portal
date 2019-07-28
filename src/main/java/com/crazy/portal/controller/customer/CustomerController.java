@@ -67,4 +67,9 @@ public class CustomerController extends BaseController{
         return successResult();
     }
 
+    @GetMapping("/checkName")
+    public BaseResponse checkName(String custName){
+        customersService.checkCustName(custName);
+        return successResult();
+    }
 }

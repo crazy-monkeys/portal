@@ -3,6 +3,7 @@ package com.crazy.portal.config.security.config;
 import com.crazy.portal.config.security.JwtUserService;
 import com.crazy.portal.config.security.filter.JwtAuthenticationProvider;
 import com.crazy.portal.config.security.filter.RequestFilter;
+import com.crazy.portal.config.security.handler.AuthenticationFailHandler;
 import com.crazy.portal.config.security.handler.JwtRefreshSuccessHandler;
 import com.crazy.portal.config.security.handler.LoginSuccessHandler;
 import com.crazy.portal.config.security.handler.TokenClearLogoutHandler;
@@ -23,7 +24,6 @@ import org.springframework.security.kerberos.authentication.KerberosServiceAuthe
 import org.springframework.security.kerberos.authentication.sun.SunJaasKerberosClient;
 import org.springframework.security.kerberos.authentication.sun.SunJaasKerberosTicketValidator;
 import org.springframework.security.kerberos.web.authentication.SpnegoAuthenticationProcessingFilter;
-import org.springframework.security.kerberos.web.authentication.SpnegoEntryPoint;
 import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.header.Header;
@@ -37,7 +37,7 @@ import java.util.Arrays;
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
-    private static final String[] permissiveUrl = new String[]{"/**"};
+    private static final String[] permissiveUrl = new String[]{"/user/login","/logout","/ad/index","/"};
 
     @Value("${app.service-principal}")
     private String servicePrincipal;
@@ -74,8 +74,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
-                .exceptionHandling().authenticationEntryPoint(spnegoEntryPoint())
-                .and()
                 .authorizeRequests()
                 .antMatchers(permissiveUrl).permitAll()
                 .anyRequest().authenticated()
@@ -89,17 +87,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                     new Header("Access-Control-Expose-Headers","Authorization"))))
                 .frameOptions().disable()
                 .and()
-//                .addFilterBefore(spnegoAuthenticationProcessingFilter(authenticationManagerBean()),BasicAuthenticationFilter.class)
-//                //拦截OPTIONS请求，直接返回header
+                //拦截OPTIONS请求，直接返回header
                 .addFilterAfter(new RequestFilter(), CorsFilter.class)
-
+                //添加kerberos spnego认证支持
+                .addFilterAfter(spnegoAuthenticationProcessingFilter(authenticationManagerBean()),BasicAuthenticationFilter.class)
                 //添加登录filter
-//                .apply(new LoginConfigurer<>()).loginSuccessHandler(loginSuccessHandler)
-//                .and()
+                .apply(new LoginConfigurer<>()).loginSuccessHandler(loginSuccessHandler)
+                .and()
                 //添加token的filter
-//                .apply(new JwtLoginConfigurer<>()).tokenValidSuccessHandler(jwtRefreshSuccessHandler)
-//                .permissiveRequestUrls(permissiveUrl)
-//                .and()
+                .apply(new JwtLoginConfigurer<>()).tokenValidSuccessHandler(jwtRefreshSuccessHandler)
+                .permissiveRequestUrls(permissiveUrl)
+                .and()
                 //使用默认的logoutFilter
                 .logout()
                 //logout时清除token
@@ -123,10 +121,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
         return jwtUserService;
     }
 
-    /**
-     *
-     * @return
-     */
     @Bean
     public KerberosAuthenticationProvider kerberosAuthenticationProvider() {
         KerberosAuthenticationProvider provider = new KerberosAuthenticationProvider();
@@ -159,11 +153,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
             AuthenticationManager authenticationManager) {
         SpnegoAuthenticationProcessingFilter filter = new SpnegoAuthenticationProcessingFilter();
         filter.setAuthenticationManager(authenticationManager);
+        filter.setSuccessHandler(loginSuccessHandler);
+        filter.setFailureHandler(new AuthenticationFailHandler());
         return filter;
-    }
-
-    @Bean
-    public SpnegoEntryPoint spnegoEntryPoint() {
-        return new SpnegoEntryPoint("/user/login");
     }
 }

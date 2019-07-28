@@ -18,4 +18,6 @@ public interface CustomerInfoMapper {
     List<CustomerInfo> selectCustByPage(CustomerQueryBean bean);
 
     CustomerInfo selectDealerInfo(@Param("dealerId") Integer dealerId);
+
+    CustomerInfo selectByCustName(@Param("custName")String custName);
 }

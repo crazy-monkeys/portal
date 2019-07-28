@@ -22,13 +22,13 @@ public class BusinessUtil {
     }
 
     public static void assertNotEmpty(String value, ErrorInfo errorInfo) {
-        if(StringUtils.isEmpty(value)){
+        if(StringUtils.isNotEmpty(value)){
             throw new BusinessException(errorInfo);
         }
     }
 
     public static void assertEmpty(String value, ErrorInfo errorInfo) {
-        if(StringUtils.isNotEmpty(value)){
+        if(StringUtils.isEmpty(value) || value.equals("null")){
             throw new BusinessException(errorInfo);
         }
     }
