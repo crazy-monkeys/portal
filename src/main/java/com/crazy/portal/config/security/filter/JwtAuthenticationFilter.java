@@ -129,7 +129,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
                 new InsufficientAuthenticationException("authentication failure！", throwable));
     }
 
-    private static final String[] unNeedTokenUrl = new String[]{"/ad/index","/announcement/file/"};
+    private static final String[] unNeedTokenUrl = new String[]{"/ad/index"};
 
     private boolean checkPermissiveUrl(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws IOException, ServletException {
         if(permissiveRequestMatchers != null && !permissiveRequestMatchers.isEmpty()){
@@ -143,7 +143,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
         }
         String requestUrl = request.getServletPath();
         for(String url :unNeedTokenUrl){
-            if(requestUrl.equals(url)){
+            if(requestUrl.contains(url)){
                 filterChain.doFilter(request, response);
                 return true;
             }
