@@ -17,7 +17,6 @@ import javax.servlet.ServletException;
 @EnableTransactionManagement
 @EntityScan
 @EnableCaching
-@EnableAutoConfiguration(exclude = SecurityAutoConfiguration.class)
 @SpringBootApplication
 public class PortalApplication extends SpringBootServletInitializer {
 
