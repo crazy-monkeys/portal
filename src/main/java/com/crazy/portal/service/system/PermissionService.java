@@ -133,37 +133,33 @@ public class PermissionService {
      * @return
      */
     public int saveResource(Resource resource){
-
-        if(resource.getParentId() == 0L){
-            int num = resourceMapper.countOrder();
-            resource.setResourceOrder(num + 1);
-        }else{
-            Resource resourceDO = new Resource();
-            resourceDO.setId(resource.getParentId());
-            Resource res = resourceMapper.selectByPrimaryKey(resource.getId());
-            if(res != null) {
-                resource.setResourceOrder(res.getResourceOrder() + 1);
-                List<Resource> rlist = resourceMapper.queryResourceByResourId(res.getResourceOrder());
-                for (Resource r1 : rlist) {
-                    int orderId = new Long(r1.getResourceOrder()).intValue();
-                    orderId = orderId + 1;
-                    r1.setResourceOrder(orderId);
-                    resourceMapper.updateByPrimaryKeySelective(r1);
-                }
+        int num = resourceMapper.countOrder();
+        resource.setResourceOrder(num + 1);
+        Resource resourceDO = new Resource();
+        resourceDO.setId(resource.getParentId());
+        Resource res = resourceMapper.selectByPrimaryKey(resource.getId());
+        if(res != null) {
+            resource.setResourceOrder(res.getResourceOrder() + 1);
+            List<Resource> rlist = resourceMapper.queryResourceByResourId(res.getResourceOrder());
+            for (Resource r1 : rlist) {
+                int orderId = new Long(r1.getResourceOrder()).intValue();
+                orderId = orderId + 1;
+                r1.setResourceOrder(orderId);
+                resourceMapper.updateByPrimaryKeySelective(r1);
             }
         }
-        int num = 0;
+        int result;
         if(resource.getId() == null) {
             resource.setActive((short)1);
             resource.setCreateUserId(1);
             resource.setCreateTime(DateUtil.getCurrentTS());
             resource.setUpdateUserId(1);
             resource.setUpdateTime(DateUtil.getCurrentTS());
-            num = resourceMapper.insertSelective(resource);
+            result = resourceMapper.insertSelective(resource);
         }else{
-            num = resourceMapper.updateByPrimaryKeySelective(resource);
+            result = resourceMapper.updateByPrimaryKeySelective(resource);
         }
-        return num > 0 ? 1 : -1;
+        return result > 0 ? 1 : -1;
     }
 
     /**
