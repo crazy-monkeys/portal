@@ -139,6 +139,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
                 }
             }
         }
+        if(request.getRequestURI().contains("/ad/index")){
+            //放行
+            filterChain.doFilter(request, response);
+            return true;
+        }
         return false;
     }
 
