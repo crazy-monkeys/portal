@@ -18,6 +18,7 @@
     <result column="update_user_id" jdbcType="INTEGER" property="updateUserId" />
     <result column="user_status" jdbcType="INTEGER" property="userStatus" />
     <result column="user_type" jdbcType="INTEGER" property="userType" />
+    <result column="dealer_id" jdbcType="INTEGER" property="dealerId" />
 
     <!-- EXT -->
     <collection property="role" javaType="com.crazy.portal.entity.system.Role" ofType="com.crazy.portal.entity.system.Role">
@@ -28,7 +29,7 @@
 
   <sql id="Base_Column_List">
     id, active, create_time, create_user_id, email, last_login_time,login_name, login_pwd, mobile, pwd_invalid_time, customer_name, reg_time, update_time,
-    update_user_id, user_status, user_type
+    update_user_id, user_status, user_type, dealer_id
   </sql>
 
   <select id="selectById" resultMap="BaseResultMap">
