@@ -157,29 +157,31 @@ public class CustomersService {
             basicBankInfoMapper.updateByPrimaryKeySelective(bankInfo);
         }
 
+        Date currTime = DateUtil.getCurrentTS();
+
         List<Integer> addressIds = basicAddressMapper.selectIdsByCustId(bean.getId());
-        updateExtendInfo(addressIds, bean.getBasicAddress(), basicAddressMapper);
+        updateExtendInfo(addressIds, bean.getBasicAddress(), basicAddressMapper, userId, currTime);
 
         List<Integer> invoiceInfoIds = basicInvoiceInfoMapper.selectIdsByCustId(bean.getId());
-        updateExtendInfo(invoiceInfoIds, bean.getBasicInvoice(), basicInvoiceInfoMapper);
+        updateExtendInfo(invoiceInfoIds, bean.getBasicInvoice(), basicInvoiceInfoMapper, userId, currTime);
 
         List<Integer> contactIds = basicContactMapper.selectIdsByCustId(bean.getId());
-        updateExtendInfo(contactIds, bean.getBasicContact(), basicContactMapper);
+        updateExtendInfo(contactIds, bean.getBasicContact(), basicContactMapper, userId, currTime);
 
         List<Integer> structureIds = basicCorporateStructureMapper.selectIdsByCustId(bean.getId());
-        updateExtendInfo(structureIds, bean.getBasicStructure(), basicCorporateStructureMapper);
+        updateExtendInfo(structureIds, bean.getBasicStructure(), basicCorporateStructureMapper, userId, currTime);
 
         List<Integer> relationIds = basicCorporateRelationshipMapper.selectIdsByCustId(bean.getId());
-        updateExtendInfo(relationIds, bean.getBasicShip(), basicCorporateRelationshipMapper);
+        updateExtendInfo(relationIds, bean.getBasicShip(), basicCorporateRelationshipMapper, userId, currTime);
 
         List<Integer> fileIds = basicFileMapper.selectIdsByCustId(bean.getId());
-        updateExtendInfo(fileIds, bean.getBasicFile(), basicFileMapper);
+        updateExtendInfo(fileIds, bean.getBasicFile(), basicFileMapper, userId, currTime);
 
         List<Integer> teamIds = basicSalesTeamMapper.selectIdsByCustId(bean.getId());
-        updateExtendInfo(teamIds, bean.getSalesTeam(), basicSalesTeamMapper);
+        updateExtendInfo(teamIds, bean.getSalesTeam(), basicSalesTeamMapper, userId, currTime);
 
         List<Integer> salesIds = basicSalesMapper.selectIdsByCustId(bean.getId());
-        updateExtendInfo(salesIds, bean.getSales(), basicSalesMapper);
+        updateExtendInfo(salesIds, bean.getSales(), basicSalesMapper, userId, currTime);
     }
 
     /**
@@ -188,12 +190,21 @@ public class CustomersService {
      * @param newList
      * @param mapper
      */
-    public void updateExtendInfo(List<Integer> sourceList, List<? extends BaseEntity> newList, BaseMapper mapper){
-        newList.stream().filter(e->sourceList.contains(e.getId()))
-                .forEach(e->mapper.updateByPrimaryKeySelective(e));
-        newList.stream().filter(e->!sourceList.contains(e.getId())).forEach(e->mapper.insertSelective(e));
+    public void updateExtendInfo(List<Integer> sourceList, List<? extends BaseEntity> newList, BaseMapper mapper, Integer userId, Date currTime){
+        newList.stream().filter(e->sourceList.contains(e.getId())).forEach(e->{
+            ((BaseEntity) e).setUpdateUser(userId);
+            ((BaseEntity) e).setUpdateTime(currTime);
+            mapper.updateByPrimaryKeySelective(e);
+        });
+        newList.stream().filter(e->!sourceList.contains(e.getId())).forEach(e->{
+            ((BaseEntity) e).setCreateUser(userId);
+            ((BaseEntity) e).setCreateTime(currTime);
+            mapper.insertSelective(e);
+        });
         List<Integer> newIds = newList.stream().map(e-> e.getId()).collect(Collectors.toList());
-        sourceList.stream().filter(e->!newIds.contains(e)).forEach(e->mapper.deleteByPrimaryKey(e));
+        sourceList.stream().filter(e->!newIds.contains(e)).forEach(e->{
+            mapper.deleteByPrimaryKey(e);
+        });
     }
 
     /**
@@ -217,9 +228,11 @@ public class CustomersService {
     /**
      * 重新报备
      */
-    public void againReport(Integer id){
+    public void againReport(Integer id, Integer userId){
         CustomerInfo record = new CustomerInfo();
         record.setId(id);
+        record.setUpdateUser(userId);
+        record.setUpdateTime(DateUtil.getCurrentTS());
         record.setCustomerStatus(Enums.CustomerStatus.WAIT_APPROVAL.getCode());
         customerInfoMapper.updateByPrimaryKeySelective(record);
     }
@@ -227,9 +240,11 @@ public class CustomersService {
     /**
      * 审批
      */
-    public void approval(Integer id){
+    public void approval(Integer id, Integer userId){
         CustomerInfo record = new CustomerInfo();
         record.setId(id);
+        record.setUpdateUser(userId);
+        record.setUpdateTime(DateUtil.getCurrentTS());
         record.setCustomerStatus(Enums.CustomerStatus.NORMAL.getCode());
         customerInfoMapper.updateByPrimaryKeySelective(record);
     }
@@ -237,9 +252,11 @@ public class CustomersService {
     /**
      * 驳回
      */
-    public void reject(Integer id){
+    public void reject(Integer id, Integer userId){
         CustomerInfo record = new CustomerInfo();
         record.setId(id);
+        record.setUpdateUser(userId);
+        record.setUpdateTime(DateUtil.getCurrentTS());
         record.setCustomerStatus(Enums.CustomerStatus.REJECT.getCode());
         customerInfoMapper.updateByPrimaryKeySelective(record);
     }

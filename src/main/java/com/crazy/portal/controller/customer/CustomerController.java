@@ -7,7 +7,6 @@ import com.crazy.portal.entity.customer.CustomerInfo;
 import com.crazy.portal.service.customer.CustomersService;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.ibatis.annotations.Delete;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -52,19 +51,19 @@ public class CustomerController extends BaseController{
 
     @GetMapping("/againReport/{id}")
     public BaseResponse againReport(@PathVariable Integer id){
-        customersService.againReport(id);
+        customersService.againReport(id, this.getCurrentUser().getId());
         return successResult();
     }
 
     @GetMapping("/approval/{id}")
     public BaseResponse approval(@PathVariable Integer id){
-        customersService.approval(id);
+        customersService.approval(id, this.getCurrentUser().getId());
         return successResult();
     }
 
     @GetMapping("/reject/{id}")
     public BaseResponse reject(@PathVariable Integer id){
-        customersService.reject(id);
+        customersService.reject(id, this.getCurrentUser().getId());
         return successResult();
     }
 

@@ -28,9 +28,9 @@ public class BasicSalesTeam implements BaseEntity{
     private Date createTime;
     @JsonIgnore
     @JSONField(serialize = false)
-    private Integer modifyUser;
+    private Integer updateUser;
     @JsonIgnore
     @JSONField(serialize = false)
-    private Date modifyTime;
+    private Date updateTime;
 
 }
