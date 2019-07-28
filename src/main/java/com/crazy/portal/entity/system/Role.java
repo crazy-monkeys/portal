@@ -11,7 +11,7 @@ public class Role {
 
     @JSONField(serialize=false)
     private Short active;
-    @JSONField(serialize=false)
+    @JSONField(format="yyyy-MM-dd HH:mm:ss")
     private Date createTime;
     @JSONField(serialize=false)
     private Integer createUserId;
