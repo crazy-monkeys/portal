@@ -82,7 +82,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
 
         //获取资源路径
         String url = request.getServletPath();
-        //可以忽略权限的url
+        //可以忽略Token权限的url
         if (this.checkPermissiveUrl(request, response, filterChain)) return;
         Throwable throwable;
         try {
