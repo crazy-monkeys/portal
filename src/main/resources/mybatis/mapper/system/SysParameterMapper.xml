@@ -47,7 +47,7 @@
       #{active,jdbcType=INTEGER}, #{insertUser,jdbcType=INTEGER}, #{insertTime,jdbcType=TIMESTAMP}, 
       #{updateUser,jdbcType=INTEGER}, #{updateTime,jdbcType=TIMESTAMP})
   </insert>
-  <insert id="insertSelective" parameterType="com.crazy.portal.entity.system.SysParameter">
+  <insert id="insertSelective" parameterType="com.crazy.portal.entity.system.SysParameter" useGeneratedKeys="true" keyProperty="id">
     insert into t_sys_parameter
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
