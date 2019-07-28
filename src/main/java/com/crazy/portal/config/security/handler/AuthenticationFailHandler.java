@@ -46,8 +46,13 @@ public class AuthenticationFailHandler implements AuthenticationFailureHandler{
                 baseResponse = new BaseResponse(SystemManagerEnum.TOKEN_INVALID.getCode(),
                         SystemManagerEnum.TOKEN_INVALID.getZhMsg());
             } else if(e instanceof BadCredentialsException || e.getCause() instanceof BadCredentialsException){
-                baseResponse = new BaseResponse(SystemManagerEnum.ACCOUNT_ERROR.getCode(),
-                        SystemManagerEnum.ACCOUNT_ERROR.getZhMsg());
+                if(e.getMessage().contains("Kerberos")){
+                    baseResponse = new BaseResponse(SystemManagerEnum.AD_AUTH_ERROR.getCode(),
+                            SystemManagerEnum.AD_AUTH_ERROR.getZhMsg());
+                }else{
+                    baseResponse = new BaseResponse(SystemManagerEnum.ACCOUNT_ERROR.getCode(),
+                            SystemManagerEnum.ACCOUNT_ERROR.getZhMsg());
+                }
             } else if(e.getCause() instanceof LockedException){
                 if(e.getMessage().equals("password expiration")){
                     baseResponse = new BaseResponse(SystemManagerEnum.PASSWORD_INVALID.getCode(),

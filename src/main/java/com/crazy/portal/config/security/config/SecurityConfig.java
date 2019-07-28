@@ -24,6 +24,7 @@ import org.springframework.security.kerberos.authentication.KerberosServiceAuthe
 import org.springframework.security.kerberos.authentication.sun.SunJaasKerberosClient;
 import org.springframework.security.kerberos.authentication.sun.SunJaasKerberosTicketValidator;
 import org.springframework.security.kerberos.web.authentication.SpnegoAuthenticationProcessingFilter;
+import org.springframework.security.kerberos.web.authentication.SpnegoEntryPoint;
 import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.header.Header;
@@ -37,7 +38,7 @@ import java.util.Arrays;
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
-    private static final String[] permissiveUrl = new String[]{"/user/login","/logout","/ad/index","/"};
+    private static final String[] permissiveUrl = new String[]{"/user/login","/logout","/"};
 
     @Value("${app.service-principal}")
     private String servicePrincipal;
@@ -74,6 +75,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
+                .exceptionHandling()
+                .authenticationEntryPoint(spnegoEntryPoint())
+                .and()
                 .authorizeRequests()
                 .antMatchers(permissiveUrl).permitAll()
                 .anyRequest().authenticated()
@@ -89,8 +93,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                 .and()
                 //拦截OPTIONS请求，直接返回header
                 .addFilterAfter(new RequestFilter(), CorsFilter.class)
-                //添加kerberos spnego认证支持
-                .addFilterAfter(spnegoAuthenticationProcessingFilter(authenticationManagerBean()),BasicAuthenticationFilter.class)
+
                 //添加登录filter
                 .apply(new LoginConfigurer<>()).loginSuccessHandler(loginSuccessHandler)
                 .and()
@@ -103,7 +106,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                 //logout时清除token
                 .addLogoutHandler(tokenClearLogoutHandler)
                 //logout成功后返回200
-                .logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler());
+                .logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler())
+                .and()
+                //添加kerberos spnego认证支持
+                .addFilterBefore(spnegoAuthenticationProcessingFilter(authenticationManagerBean()),BasicAuthenticationFilter.class);
     }
 
 
@@ -156,5 +162,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
         filter.setSuccessHandler(loginSuccessHandler);
         filter.setFailureHandler(new AuthenticationFailHandler());
         return filter;
+    }
+
+    @Bean
+    public SpnegoEntryPoint spnegoEntryPoint() {
+        return new SpnegoEntryPoint("/ad/forward");
     }
 }
