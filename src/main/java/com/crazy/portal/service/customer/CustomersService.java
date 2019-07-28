@@ -100,7 +100,7 @@ public class CustomersService {
     public void add(CustomerInfo bean, Integer userId){
         checkCustName(bean.getCustZhName());
         Date currDate = DateUtil.getCurrentTS();
-        bean.setBusinessType(bean.getBusinessType() == null ? Enums.BusinessType.MASS.getCode() : bean.getBusinessType());
+        bean.setBusinessType(bean.getBusinessType() == null ? Enums.CUSTOMER_BUSINESS_TYPE.mass_market.getCode() : bean.getBusinessType());
         bean.setCustomerStatus(bean.getCustomerStatus() == null ? Enums.CustomerStatus.WAIT_SUBMIT.getCode() : bean.getCustomerStatus());
         try {
             bean.setRegisterTime(bean.getRegisterTimeStr() != null ? DateUtil.parseDate(bean.getRegisterTimeStr(), DateUtil.WEB_FORMAT) : null);

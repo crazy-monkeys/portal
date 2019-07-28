@@ -149,14 +149,14 @@ public class Enums {
      * 客户业务类型
      */
     public enum CUSTOMER_BUSINESS_TYPE{
-        mass_market(1),
-        account_market(2);
+        mass_market((short)1),
+        account_market((short)2);
 
-        private final int code;
-        CUSTOMER_BUSINESS_TYPE(int code){
+        private final Short code;
+        CUSTOMER_BUSINESS_TYPE(Short code){
             this.code = code;
         }
-        public int getCode(){
+        public Short getCode(){
             return code;
         }
     }
