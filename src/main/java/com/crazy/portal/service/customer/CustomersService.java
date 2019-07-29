@@ -1,9 +1,8 @@
 package com.crazy.portal.service.customer;
 
 import com.crazy.portal.bean.customer.CustomerQueryBean;
-import com.crazy.portal.config.exception.BusinessException;
 import com.crazy.portal.dao.basic.*;
-import com.crazy.portal.dao.customer.*;
+import com.crazy.portal.dao.customer.CustomerInfoMapper;
 import com.crazy.portal.entity.basic.BaseEntity;
 import com.crazy.portal.entity.basic.BasicBankInfo;
 import com.crazy.portal.entity.customer.CustomerInfo;
@@ -206,7 +205,7 @@ public class CustomersService {
      * @param mapper
      */
     public void updateExtendInfo(List<Integer> sourceList, List<? extends BaseEntity> newList, BaseMapper mapper, Integer userId, Date currTime, Integer custId){
-        if(null == newList || newList.isEmpty()){
+        if(null == newList){
             return;
         }
         newList.stream().filter(e->e.getId()!=null && sourceList.contains(e.getId())).forEach(e->{
