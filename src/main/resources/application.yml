@@ -46,3 +46,4 @@ server:
   servlet:
     context-path: /portal-api
 
+filepath: /service/ftp/portal_file/
