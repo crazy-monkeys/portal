@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.crazy.portal.dao.product.ProductInfoDOMapper">
+  <resultMap id="BaseResultMap" type="com.crazy.portal.entity.product.ProductInfoDO">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="sn" jdbcType="INTEGER" property="sn" />
+    <result column="product" jdbcType="VARCHAR" property="product" />
+    <result column="bu" jdbcType="VARCHAR" property="bu" />
+    <result column="pdt" jdbcType="VARCHAR" property="pdt" />
+    <result column="category" jdbcType="VARCHAR" property="category" />
+    <result column="sub_category" jdbcType="VARCHAR" property="subCategory" />
+    <result column="platform" jdbcType="VARCHAR" property="platform" />
+    <result column="bu_header" jdbcType="VARCHAR" property="buHeader" />
+    <result column="manager" jdbcType="VARCHAR" property="manager" />
+    <result column="sap_mid" jdbcType="VARCHAR" property="sapMid" />
+    <result column="type" jdbcType="VARCHAR" property="type" />
+    <result column="pro_status" jdbcType="INTEGER" property="proStatus" />
+    <result column="active" jdbcType="INTEGER" property="active" />
+    <result column="insert_time" jdbcType="TIMESTAMP" property="insertTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, sn, product, bu, pdt, category, sub_category, platform, bu_header, manager, sap_mid, 
+    type, pro_status, active, insert_time, update_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_product_info
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_product_info
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.crazy.portal.entity.product.ProductInfoDO">
+    insert into t_product_info (id, sn, product, 
+      bu, pdt, category, 
+      sub_category, platform, bu_header, 
+      manager, sap_mid, type, 
+      pro_status, active, insert_time, 
+      update_time)
+    values (#{id,jdbcType=INTEGER}, #{sn,jdbcType=INTEGER}, #{product,jdbcType=VARCHAR}, 
+      #{bu,jdbcType=VARCHAR}, #{pdt,jdbcType=VARCHAR}, #{category,jdbcType=VARCHAR}, 
+      #{subCategory,jdbcType=VARCHAR}, #{platform,jdbcType=VARCHAR}, #{buHeader,jdbcType=VARCHAR}, 
+      #{manager,jdbcType=VARCHAR}, #{sapMid,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR},
+      #{proStatus,jdbcType=INTEGER}, #{active,jdbcType=INTEGER}, #{insertTime,jdbcType=TIMESTAMP}, 
+      #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.crazy.portal.entity.product.ProductInfoDO" useGeneratedKeys="true" keyProperty="id">
+    insert into t_product_info
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="sn != null">
+        sn,
+      </if>
+      <if test="product != null">
+        product,
+      </if>
+      <if test="bu != null">
+        bu,
+      </if>
+      <if test="pdt != null">
+        pdt,
+      </if>
+      <if test="category != null">
+        category,
+      </if>
+      <if test="subCategory != null">
+        sub_category,
+      </if>
+      <if test="platform != null">
+        platform,
+      </if>
+      <if test="buHeader != null">
+        bu_header,
+      </if>
+      <if test="manager != null">
+        manager,
+      </if>
+      <if test="sapMid != null">
+        sap_mid,
+      </if>
+      <if test="type != null">
+        type,
+      </if>
+      <if test="proStatus != null">
+        pro_status,
+      </if>
+      <if test="active != null">
+        active,
+      </if>
+      <if test="insertTime != null">
+        insert_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="sn != null">
+        #{sn,jdbcType=INTEGER},
+      </if>
+      <if test="product != null">
+        #{product,jdbcType=VARCHAR},
+      </if>
+      <if test="bu != null">
+        #{bu,jdbcType=VARCHAR},
+      </if>
+      <if test="pdt != null">
+        #{pdt,jdbcType=VARCHAR},
+      </if>
+      <if test="category != null">
+        #{category,jdbcType=VARCHAR},
+      </if>
+      <if test="subCategory != null">
+        #{subCategory,jdbcType=VARCHAR},
+      </if>
+      <if test="platform != null">
+        #{platform,jdbcType=VARCHAR},
+      </if>
+      <if test="buHeader != null">
+        #{buHeader,jdbcType=VARCHAR},
+      </if>
+      <if test="manager != null">
+        #{manager,jdbcType=VARCHAR},
+      </if>
+      <if test="sapMid != null">
+        #{sapMid,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="proStatus != null">
+        #{proStatus,jdbcType=INTEGER},
+      </if>
+      <if test="active != null">
+        #{active,jdbcType=INTEGER},
+      </if>
+      <if test="insertTime != null">
+        #{insertTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.crazy.portal.entity.product.ProductInfoDO">
+    update t_product_info
+    <set>
+      <if test="sn != null">
+        sn = #{sn,jdbcType=INTEGER},
+      </if>
+      <if test="product != null">
+        product = #{product,jdbcType=VARCHAR},
+      </if>
+      <if test="bu != null">
+        bu = #{bu,jdbcType=VARCHAR},
+      </if>
+      <if test="pdt != null">
+        pdt = #{pdt,jdbcType=VARCHAR},
+      </if>
+      <if test="category != null">
+        category = #{category,jdbcType=VARCHAR},
+      </if>
+      <if test="subCategory != null">
+        sub_category = #{subCategory,jdbcType=VARCHAR},
+      </if>
+      <if test="platform != null">
+        platform = #{platform,jdbcType=VARCHAR},
+      </if>
+      <if test="buHeader != null">
+        bu_header = #{buHeader,jdbcType=VARCHAR},
+      </if>
+      <if test="manager != null">
+        manager = #{manager,jdbcType=VARCHAR},
+      </if>
+      <if test="sapMid != null">
+        sap_mid = #{sapMid,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        type = #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="proStatus != null">
+        pro_status = #{proStatus,jdbcType=INTEGER},
+      </if>
+      <if test="active != null">
+        active = #{active,jdbcType=INTEGER},
+      </if>
+      <if test="insertTime != null">
+        insert_time = #{insertTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.crazy.portal.entity.product.ProductInfoDO">
+    update t_product_info
+    set sn = #{sn,jdbcType=INTEGER},
+      product = #{product,jdbcType=VARCHAR},
+      bu = #{bu,jdbcType=VARCHAR},
+      pdt = #{pdt,jdbcType=VARCHAR},
+      category = #{category,jdbcType=VARCHAR},
+      sub_category = #{subCategory,jdbcType=VARCHAR},
+      platform = #{platform,jdbcType=VARCHAR},
+      bu_header = #{buHeader,jdbcType=VARCHAR},
+      manager = #{manager,jdbcType=VARCHAR},
+      sap_mid = #{sapMid,jdbcType=VARCHAR},
+      type = #{type,jdbcType=VARCHAR},
+      pro_status = #{proStatus,jdbcType=INTEGER},
+      active = #{active,jdbcType=INTEGER},
+      insert_time = #{insertTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

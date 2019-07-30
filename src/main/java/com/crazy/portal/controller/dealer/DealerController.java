@@ -6,7 +6,6 @@ import com.crazy.portal.entity.customer.CustomerInfo;
 import com.crazy.portal.service.dealer.DealerService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-
 import javax.annotation.Resource;
 
 /**
