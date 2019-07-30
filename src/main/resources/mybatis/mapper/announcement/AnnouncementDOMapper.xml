@@ -204,7 +204,7 @@
     <if test="(releaseStartTime == null or releaseStartTime == '') and releaseEndTime != null and releaseEndTime != ''" >
       <![CDATA[ and t.release_time <= #{releaseEndTime} ]]>
     </if>
-    <if test="typeId != null" >
+    <if test="typeId != null and typeId != -1" >
       and t.type_id = #{typeId}
     </if>
     order by t.release_time asc
