@@ -41,6 +41,8 @@ public class Announcement {
     //发布时间
     private String releaseTimeStr;
 
+    private String zhName;
+
     private List<AnnouncementFile> fileList;
 
 }
