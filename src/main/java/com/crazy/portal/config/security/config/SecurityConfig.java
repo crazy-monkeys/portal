@@ -38,7 +38,7 @@ import java.util.Arrays;
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
-    private static final String[] permissiveUrl = new String[]{"/user/login","/logout","/announcement/file/**","/"};
+    private static final String[] permissiveUrl = new String[]{"/user/login","/logout","/announcement/file/**","/", "/file/**"};
 
     @Value("${app.service-principal}")
     private String servicePrincipal;
