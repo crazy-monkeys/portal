@@ -14,6 +14,8 @@
     <result column="create_time_str" jdbcType="VARCHAR" property="createTimeStr" />
     <result column="release_time_str" jdbcType="VARCHAR" property="releaseTimeStr" />
     <result column="create_user_name" jdbcType="VARCHAR" property="createUserName" />
+
+    <result column="zh_name" jdbcType="VARCHAR" property="zhName" />
   </resultMap>
 
   <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.crazy.portal.entity.announcement.Announcement">
@@ -186,11 +188,12 @@
   </update>
 
   <select id="selectPageListData" resultMap="ResultMapWithBLOBs" >
-    select t.id,t.title,t.status,t.type_id,
+    select t.id,t.title,t.status,p.zh_name,
     t.create_user_id,
     date_format(t.create_time,'%Y-%m-%d %H:%i:%s') create_time_str,
     date_format(t.release_time,'%Y-%m-%d %H:%i:%s') release_time_str
     from t_announcement t
+    inner join t_sys_parameter p on t.type_id = p.p_value
     where 1 = 1
     <if test="title != null and title != ''" >
       and t.title like concat('%',#{title},'%')

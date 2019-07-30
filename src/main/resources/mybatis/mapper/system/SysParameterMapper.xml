@@ -185,6 +185,10 @@
   <select id="checkValue" resultType="java.lang.Integer">
     SELECT count(1)
     from t_sys_parameter
-    where active=1 and p_model=#{model} and p_function=#{function} and p_value=#{pValue}
+    where active=1
+    <if test="id != null">
+      and id != #{id}
+    </if>
+    and p_model=#{model} and p_function=#{function} and p_value=#{pValue}
   </select>
 </mapper>

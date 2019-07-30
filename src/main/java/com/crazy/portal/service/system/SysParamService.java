@@ -45,7 +45,7 @@ public class SysParamService {
      * @param sysParameter
      */
     public void saveOrUpdate(SysParameter sysParameter, Integer userId){
-        Integer checkResult = sysParameterMapper.checkValue(sysParameter.getPModel(), sysParameter.getPFunction(), sysParameter.getPValue());
+        Integer checkResult = sysParameterMapper.checkValue(sysParameter.getPModel(), sysParameter.getPFunction(), sysParameter.getPValue(), sysParameter.getId());
         BusinessUtil.assertFlase(checkResult==1, ErrorCodes.SystemManagerEnum.SYS_PARAM_VALUE);
         if(null!=sysParameter.getId()){
             sysParameter.setUpdateTime(new Date());
@@ -54,7 +54,6 @@ public class SysParamService {
         }else{
             sysParameter.setInsertTime(new Date());
             sysParameter.setInsertUser(userId);
-            sysParameter.setActive(1);
             sysParameterMapper.insertSelective(sysParameter);
         }
     }
