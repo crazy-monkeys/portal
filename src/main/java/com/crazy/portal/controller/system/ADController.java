@@ -16,10 +16,6 @@ import javax.servlet.http.HttpServletResponse;
 @RequestMapping("/ad")
 public class ADController extends BaseController {
 
-
-    @Resource
-    private PermissionService permissionService;
-
     @GetMapping("/index")
     public void index() {
         log.info("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
@@ -29,7 +25,7 @@ public class ADController extends BaseController {
     public BaseResponse authTicket(HttpServletResponse response){
         response.setStatus(401);
         response.setContentType("application/json;charset=utf-8");
-        return new BaseResponse(ErrorCodes.SystemManagerEnum.AD_AUTH_ERROR.getCode(),
-                ErrorCodes.SystemManagerEnum.AD_AUTH_ERROR.getZhMsg());
+        return new BaseResponse(ErrorCodes.SystemManagerEnum.ACCOUNT_ERROR.getCode(),
+                ErrorCodes.SystemManagerEnum.ACCOUNT_ERROR.getZhMsg());
     }
 }

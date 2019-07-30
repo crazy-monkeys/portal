@@ -42,29 +42,33 @@ public class AuthenticationFailHandler implements AuthenticationFailureHandler{
             response.reset();
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             response.setContentType("application/json;charset=utf-8");
+            //认证失败-token过期
             if(e.getCause() instanceof NonceExpiredException){
                 baseResponse = new BaseResponse(SystemManagerEnum.TOKEN_INVALID.getCode(),
                         SystemManagerEnum.TOKEN_INVALID.getZhMsg());
-            } else if(e instanceof BadCredentialsException || e.getCause() instanceof BadCredentialsException){
-                if(e.getMessage().contains("Kerberos")){
-                    baseResponse = new BaseResponse(SystemManagerEnum.AD_AUTH_ERROR.getCode(),
-                            SystemManagerEnum.AD_AUTH_ERROR.getZhMsg());
-                }else{
-                    baseResponse = new BaseResponse(SystemManagerEnum.ACCOUNT_ERROR.getCode(),
-                            SystemManagerEnum.ACCOUNT_ERROR.getZhMsg());
-                }
+            }
+            //认证失败-账号密码错误或者ad域认证失败
+            else if(e instanceof BadCredentialsException || e.getCause() instanceof BadCredentialsException){
+                baseResponse = new BaseResponse(SystemManagerEnum.ACCOUNT_ERROR.getCode(),
+                        SystemManagerEnum.ACCOUNT_ERROR.getZhMsg());
             } else if(e.getCause() instanceof LockedException){
+                //密码过期
                 if(e.getMessage().equals("password expiration")){
                     baseResponse = new BaseResponse(SystemManagerEnum.PASSWORD_INVALID.getCode(),
                             SystemManagerEnum.PASSWORD_INVALID.getZhMsg());
-                }else{
-                    baseResponse = new BaseResponse(SystemManagerEnum.LOCKED.getCode(),
-                            SystemManagerEnum.LOCKED.getZhMsg());
                 }
-            }else if(e instanceof InsufficientAuthenticationException){
+                //账户锁定
+                else{
+                    baseResponse = new BaseResponse(SystemManagerEnum.LOCKED.getCode(),SystemManagerEnum.LOCKED.getZhMsg());
+                }
+            }
+            //鉴权失败
+            else if(e instanceof InsufficientAuthenticationException){
                 baseResponse = new BaseResponse(SystemManagerEnum.AUTH_ERROR.getCode(),
                         SystemManagerEnum.AUTH_ERROR.getZhMsg());
-            }else {
+            }
+            //系统异常
+            else {
                 baseResponse = new BaseResponse(CommonEnum.SYSTEM_EXCEPTION.getCode(),
                         CommonEnum.SYSTEM_EXCEPTION.getZhMsg());
             }
