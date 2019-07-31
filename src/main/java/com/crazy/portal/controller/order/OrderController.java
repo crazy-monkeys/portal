@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
  */
 @Slf4j
 @RestController
-@RequestMapping("/order")
+@RequestMapping("/webservice")
 public class OrderController extends BaseController{
 
     /**
@@ -20,7 +20,7 @@ public class OrderController extends BaseController{
      * @param orderVO
      * @return
      */
-    @PostMapping("/status/update")
+    @PostMapping("/invoke")
     public BaseResponse updateOrderStatus(@RequestBody OrderVO orderVO){
         log.info("order param"+ JSON.toJSONString(orderVO));
         return successResult();
