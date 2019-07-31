@@ -2,12 +2,14 @@ package com.crazy.portal.controller.customer;
 
 import com.crazy.portal.bean.BaseResponse;
 import com.crazy.portal.bean.customer.CustomerQueryBean;
+import com.crazy.portal.bean.customer.VisitRecordQueryBean;
 import com.crazy.portal.controller.BaseController;
 import com.crazy.portal.entity.customer.CustomerInfo;
 import com.crazy.portal.service.customer.CustomersService;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 
@@ -70,6 +72,21 @@ public class CustomerController extends BaseController{
     @GetMapping("/checkName")
     public BaseResponse checkName(String custName){
         customersService.checkCustName(custName);
+        return successResult();
+    }
+
+    @GetMapping("/visitRecord/list")
+    public BaseResponse visitRecordList(VisitRecordQueryBean bean){
+        return successResult();
+    }
+
+    @GetMapping("/visitRecord/download")
+    public BaseResponse visitRecordDownload(){
+        return successResult();
+    }
+
+    @PostMapping("visitRecord/upload")
+    public BaseResponse visitRecordUpload(MultipartFile[] files){
         return successResult();
     }
 }
