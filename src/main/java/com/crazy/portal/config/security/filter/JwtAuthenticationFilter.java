@@ -175,7 +175,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
                     return true;
                 }
             }
-            logger.warn(String.format("用户 %s 访问 %s 权限不足!",userName,request.getRequestURI()));
+            logger.error(String.format("用户 %s 访问 %s 权限不足!",userName,request.getRequestURI()));
             return false;
         } catch (Exception e) {
             throw new RuntimeException("查询用户权限发生异常",e);
