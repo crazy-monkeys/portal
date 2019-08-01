@@ -457,4 +457,10 @@
     from t_customer_info
     where active = 1 and cust_zh_name = #{custName}
   </select>
+
+  <select id="selectNameAndCodeByUserId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select cust_zh_name, cust_in_code from t_customer_info
+    where active = 1 and create_user = #{userId}
+  </select>
+
 </mapper>

@@ -1,17 +1,23 @@
 package com.crazy.portal.controller.customer;
 
+import com.alibaba.excel.metadata.BaseRowModel;
+import com.alibaba.excel.support.ExcelTypeEnum;
 import com.crazy.portal.bean.BaseResponse;
 import com.crazy.portal.bean.customer.CustomerQueryBean;
-import com.crazy.portal.bean.customer.VisitRecordQueryBean;
+import com.crazy.portal.bean.customer.visitRecord.VisitRecordQueryBean;
 import com.crazy.portal.controller.BaseController;
 import com.crazy.portal.entity.customer.CustomerInfo;
 import com.crazy.portal.service.customer.CustomersService;
+import com.crazy.portal.util.EasyExcelUtils;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @Description 客户管理
@@ -77,16 +83,24 @@ public class CustomerController extends BaseController{
 
     @GetMapping("/visitRecord/list")
     public BaseResponse visitRecordList(VisitRecordQueryBean bean){
-        return successResult();
+        return successResult(customersService.selectVisitRecordPage(bean));
     }
 
     @GetMapping("/visitRecord/download")
-    public BaseResponse visitRecordDownload(){
-        return successResult();
+    public BaseResponse visitRecordDownload(HttpServletResponse response){
+        try {
+            Map<String, List<? extends BaseRowModel>> resultMap = customersService.downloadTemplate(this.getCurrentUser().getId());
+            EasyExcelUtils.createExcelStreamMutilByEaysExcel(response, resultMap, ExcelTypeEnum.XLSX);
+            return successResult();
+        }catch (Exception ex){
+            log.error("下载模板异常", ex);
+            return errorResult();
+        }
     }
 
     @PostMapping("visitRecord/upload")
-    public BaseResponse visitRecordUpload(MultipartFile[] files){
+    public BaseResponse visitRecordUpload(MultipartFile[] files) throws Exception{
+        customersService.uploadVisitRecord(files, this.getCurrentUser().getId());
         return successResult();
     }
 }

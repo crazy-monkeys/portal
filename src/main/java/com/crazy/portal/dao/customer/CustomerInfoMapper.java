@@ -20,4 +20,6 @@ public interface CustomerInfoMapper {
     CustomerInfo selectDealerInfo(@Param("dealerId") Integer dealerId);
 
     CustomerInfo selectByCustName(@Param("custName")String custName);
+
+    List<CustomerInfo> selectNameAndCodeByUserId(@Param("userId") Integer userId);
 }

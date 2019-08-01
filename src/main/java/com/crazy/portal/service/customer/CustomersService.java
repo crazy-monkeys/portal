@@ -1,21 +1,32 @@
 package com.crazy.portal.service.customer;
 
+import com.alibaba.excel.EasyExcelFactory;
+import com.alibaba.excel.ExcelReader;
+import com.alibaba.excel.metadata.BaseRowModel;
+import com.alibaba.excel.metadata.Sheet;
 import com.crazy.portal.bean.customer.CustomerQueryBean;
+import com.crazy.portal.bean.customer.visitRecord.CustomerCodeEO;
+import com.crazy.portal.bean.customer.visitRecord.VisitRecordEO;
+import com.crazy.portal.bean.customer.visitRecord.VisitRecordQueryBean;
 import com.crazy.portal.dao.basic.*;
 import com.crazy.portal.dao.customer.CustomerInfoMapper;
+import com.crazy.portal.dao.customer.VisitRecordMapper;
 import com.crazy.portal.entity.basic.BaseEntity;
 import com.crazy.portal.entity.basic.BasicBankInfo;
 import com.crazy.portal.entity.customer.CustomerInfo;
+import com.crazy.portal.entity.customer.VisitRecord;
 import com.crazy.portal.util.*;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import java.beans.IntrospectionException;
+import java.lang.reflect.InvocationTargetException;
 import java.text.ParseException;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -48,6 +59,8 @@ public class CustomersService {
     private BasicBankInfoMapper basicBankInfoMapper;
     @Resource
     private BasicAddressMapper basicAddressMapper;
+    @Resource
+    private VisitRecordMapper visitRecordMapper;
     /**
      * 分页查询客户列表
      * @param bean
@@ -289,5 +302,46 @@ public class CustomersService {
     public void checkCustName(String custName){
         CustomerInfo customerInfo = customerInfoMapper.selectByCustName(custName);
         BusinessUtil.assertIsNotNull(customerInfo, ErrorCodes.BusinessEnum.CUSTOMER_NAME_EXISTS);
+    }
+
+    public Map<String, List<? extends BaseRowModel>> downloadTemplate(Integer userId){
+        Map<String, List<? extends BaseRowModel>> resultMap = new HashMap<>();
+        List<CustomerInfo> custList = customerInfoMapper.selectNameAndCodeByUserId(userId);
+        List<CustomerCodeEO> custCodeList = new ArrayList<>();
+        custList.forEach(cust -> {
+            CustomerCodeEO eo = new CustomerCodeEO();
+            eo.setCustomerName(cust.getCustZhName());
+            eo.setCustomerCode(cust.getCustInCode());
+            custCodeList.add(eo);
+        });
+        List<VisitRecordEO> visitRecordEO = new ArrayList<>();
+        resultMap.put("模板", visitRecordEO);
+        resultMap.put("客户", custCodeList);
+        return resultMap;
+    }
+
+    public PageInfo<VisitRecord> selectVisitRecordPage(VisitRecordQueryBean bean){
+        PortalUtil.defaultStartPage(bean.getPageIndex(), bean.getPageSize());
+        List<VisitRecord> records = visitRecordMapper.selectByPage(bean);
+        return new PageInfo<>(records);
+    }
+
+    public void uploadVisitRecord(MultipartFile[] files, Integer userId) throws Exception{
+        for (MultipartFile file : files) {
+            List<Object> records = EasyExcelFactory.read(file.getInputStream(), new Sheet(1, 1,VisitRecordEO.class));
+            records.forEach(e->{
+                try {
+                    VisitRecord record = new VisitRecord();
+                    BeanUtils.copyNotNullFields(e , record);
+                    record.setActive(1);
+                    record.setCreateUserId(userId);
+                    record.setCreateTime(DateUtil.getCurrentTS());
+                    visitRecordMapper.insertSelective(record);
+                } catch (Exception ex) {
+                    log.error("保存拜访记录异常", ex);
+                }
+            });
+
+        }
     }
 }
