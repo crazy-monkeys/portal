@@ -57,6 +57,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
     @Value("${app.ad-domain}")
     private String adDomain;
 
+    private static final String AD_LOGIN_URL = "/ad/index";
+
     public JwtAuthenticationFilter() {
         this.successHandler = new SavedRequestAwareAuthenticationSuccessHandler();
         this.failureHandler = new SimpleUrlAuthenticationFailureHandler();
@@ -83,12 +85,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
         //获取资源路径
         String url = request.getServletPath();
         //可以忽略Token权限的url
-        if (this.checkPermissiveUrl(request, response, filterChain)) return;
-        Throwable throwable;
+        if (this.checkPermissiveUrl(request, response, filterChain)){
+            log.info("Authentication token is not required -> {}",url);
+            return;
+        }
         try {
             String token = getJwtToken(request);
             if(StringUtils.isEmpty(token)){
-                log.warn("url {} token is null",url);
+                log.error("This url does not carry tokens -> {}",url);
                 this.authenticationFailure(request, response,new InsufficientAuthenticationException("JWT is Empty"));
                 return;
             }
@@ -100,36 +104,23 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
                 return;
             }
             //不具有访问url的权限
-            UserDetails userDetails = (UserDetails)authResult.getPrincipal();
+            UserDetails userDetails = (UserDetails) authResult.getPrincipal();
             if(!authRequest(request,userDetails.getUsername())){
+                log.error("Insufficient permissions");
                 this.authenticationFailure(request, response,
-                        new InsufficientAuthenticationException("URL authentication failed"));
+                        new InsufficientAuthenticationException("Insufficient permissions"));
                 return;
             }
             //放行
             this.successfulAuthentication(request, response, filterChain, authResult);
             filterChain.doFilter(request, response);
             return;
-        } catch(JWTDecodeException e) {
-            logger.error("JWT format error!", e);
-            throwable = e;
-        } catch (NonceExpiredException e){
-            logger.error("token failure!", e);
-            throwable = e;
-        } catch (BadCredentialsException e){
-            logger.error("bad credentials!", e);
-            throwable = e;
-        } catch (Exception e){
-            logger.error("runtime exception!", e);
+        } catch(JWTDecodeException | NonceExpiredException | BadCredentialsException e) {
+            log.error("",e);
             this.authenticationFailure(request, response,
-                    new DisabledException("system disabled！", e));
-            return;
+                    new InsufficientAuthenticationException("Authentication failed", e));
         }
-        this.authenticationFailure(request, response,
-                new InsufficientAuthenticationException("authentication failure！", throwable));
     }
-
-    private static final String[] unNeedTokenUrl = new String[]{"/ad/index"};
 
     private boolean checkPermissiveUrl(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws IOException, ServletException {
         if(permissiveRequestMatchers != null && !permissiveRequestMatchers.isEmpty()){
@@ -142,11 +133,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
             }
         }
         String requestUrl = request.getServletPath();
-        for(String url :unNeedTokenUrl){
-            if(requestUrl.contains(url)){
-                filterChain.doFilter(request, response);
-                return true;
-            }
+        if(requestUrl.contains(AD_LOGIN_URL)){
+            filterChain.doFilter(request, response);
+            return true;
         }
         return false;
     }
