@@ -3,15 +3,12 @@ package com.crazy.portal.config.security.filter;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.crazy.portal.config.security.JwtAuthenticationToken;
-import com.crazy.portal.entity.system.User;
 import com.crazy.portal.service.system.PermissionService;
-import com.crazy.portal.util.Enums;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -27,7 +24,6 @@ import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.Assert;
 import org.springframework.web.filter.OncePerRequestFilter;
-
 import javax.annotation.Resource;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -144,20 +140,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
         JwtAuthenticationToken authToken = new JwtAuthenticationToken(JWT.decode(token));
         Authentication authResult = this.getAuthenticationManager().authenticate(authToken);
         return authResult;
-    }
-
-    private boolean checkForInternalUser(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain, User user) throws IOException, ServletException {
-        if(user.getCustomerName().contains(adDomain) &&
-                user.getUserType().equals(Enums.USER_TYPE.internal.toString())){
-            if(authRequest(request,user.getLoginName())){
-                filterChain.doFilter(request, response);
-                return true;
-            }
-            this.authenticationFailure(request, response,
-                    new InsufficientAuthenticationException("Insufficient permissions"));
-            return true;
-        }
-        return false;
     }
 
     /**
