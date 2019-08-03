@@ -1,11 +1,15 @@
 package com.crazy.portal.service.system;
 
 import com.crazy.portal.bean.system.MailBean;
-import com.crazy.portal.bean.system.UserBasicInfo;
+import com.crazy.portal.bean.system.SubAgentVO;
 import com.crazy.portal.config.email.EmailHelper;
 import com.crazy.portal.config.exception.BusinessException;
+import com.crazy.portal.dao.system.RoleMapper;
 import com.crazy.portal.dao.system.UserMapper;
+import com.crazy.portal.dao.system.UserRoleMapper;
+import com.crazy.portal.entity.system.Role;
 import com.crazy.portal.entity.system.User;
+import com.crazy.portal.entity.system.UserRole;
 import com.crazy.portal.util.*;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +20,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @Desc:
@@ -29,6 +36,10 @@ public class UserService {
 
     @Resource
     private UserMapper userMapper;
+    @Resource
+    private UserRoleMapper userRoleMapper;
+    @Resource
+    private RoleMapper roleMapper;
     @Resource
     private EmailHelper emailHelper;
 
@@ -66,7 +77,7 @@ public class UserService {
      * @return
      */
     @Transactional
-    public int updateChildUser(UserBasicInfo basicInfo){
+    public int updateChildUser(SubAgentVO basicInfo){
         User user = this.findUser(basicInfo.getLoginName());
         return userMapper.updateByPrimaryKeySelective(user);
     }
@@ -78,25 +89,67 @@ public class UserService {
      * @return
      */
     @Transactional
-    public int register(User subAgentUser,User currentUser) {
+    public void regSubAgent(SubAgentVO subAgentUser,Integer userId) {
         String username = subAgentUser.getLoginName();
         if (userMapper.findByLoginName(username) != null) {
             throw new BusinessException(ErrorCodes.SystemManagerEnum.USER_EXISTS.getCode(),
                     ErrorCodes.SystemManagerEnum.USER_EXISTS.getZhMsg());
         }
-        subAgentUser.setLoginPwd(passwordEncoder.encode(subAgentUser.getLoginPwd()));
-        subAgentUser.setUserStatus(Enums.USER_STATUS.freeze.getCode());
+        User user = new User();
+        String passwod = generateRandomPassword();
+        user.setLoginPwd(passwordEncoder.encode(passwod));
+        user.setUserStatus(Enums.USER_STATUS.freeze.getCode());
         //只允许子账号注册
-        subAgentUser.setUserType(Enums.USER_TYPE.subAgent.toString());
-        subAgentUser.setRegTime(new Date());
-        subAgentUser.setCreateUserId(currentUser.getCreateUserId());
-        subAgentUser.setCreateTime(new Date());
-        subAgentUser.setPwdInvalidTime(DateUtil.addDays(new Date(),365));
-        subAgentUser.setActive((short)1);
-        subAgentUser.setUserStatus(1);
-        return userMapper.insertSelective(subAgentUser);
+        user.setUserType(Enums.USER_TYPE.subAgent.toString());
+        user.setRegTime(new Date());
+        user.setCreateUserId(userId);
+        user.setCreateTime(new Date());
+        user.setPwdInvalidTime(DateUtil.addDays(new Date(),365));
+        user.setActive((short)1);
+        user.setUserStatus(1);
+        int result = userMapper.insertSelective(user);
+        BusinessUtil.assertTrue(result==1,ErrorCodes.CommonEnum.SYSTEM_EXCEPTION);
+        BusinessUtil.assertIsNull(user.getId(), ErrorCodes.SystemManagerEnum.USER_SAVE_FAILED);
+
+        //分配指定的角色
+        Role role = roleMapper.findRoleByCode(subAgentUser.getRoleCode());
+        BusinessUtil.assertIsNull(role, ErrorCodes.SystemManagerEnum.ROLE_NOT_EXIST);
+
+        BusinessUtil.assertTrue(Enums.ROLE_TYPE.SUB_USER.getRoleType() != role.getRoleType().intValue(),
+                ErrorCodes.SystemManagerEnum.ROLE_SAVE_FAILED);
+
+        userRoleMapper.insertSelective(new UserRole(user.getId(),role.getId()));
+
+        //发送邮件通知用户
+        MailBean mailBean = new MailBean();
+        mailBean.setTos(user.getEmail());
+        mailBean.setSubject("账号开通邮件");
+        Map<String,String> map = new HashMap<>();
+        map.put("loginName",user.getLoginName());
+        map.put("passwod",passwod);
+        mailBean.setParams(map);
+        mailBean.setTemplateName(Enums.MAIL_TEMPLATE.USER_CREATE.getTemplateName());
+        emailHelper.sendHtmlMail(mailBean);
     }
 
+    /**
+     * 获取子账号信息
+     * @param userQuery
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
+    public PageInfo<User> getSubAgents(User userQuery,Integer pageNum,Integer pageSize){
+        PortalUtil.defaultStartPage(pageNum, pageSize);
+        return new PageInfo<>(userMapper.selectUserWithPage(userQuery));
+    }
+
+
+    /**
+     * 重置密码
+     * @param loginName
+     * @param currentUser
+     */
     @Transactional
     public void resetUserPwd(String loginName,User currentUser){
         User user = this.findUser(loginName);

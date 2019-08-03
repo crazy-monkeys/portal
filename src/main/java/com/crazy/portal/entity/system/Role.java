@@ -18,6 +18,7 @@ public class Role {
 
     private String roleCode;
     private String roleName;
+    private Integer roleType;
     @JSONField(serialize=false)
     private Date updateTime;
     @JSONField(serialize=false)

@@ -1,7 +1,7 @@
 package com.crazy.portal.controller.system;
 
 import com.crazy.portal.bean.BaseResponse;
-import com.crazy.portal.bean.system.UserBasicInfo;
+import com.crazy.portal.bean.system.SubAgentVO;
 import com.crazy.portal.controller.BaseController;
 import com.crazy.portal.entity.system.User;
 import com.crazy.portal.service.system.UserService;
@@ -28,16 +28,6 @@ public class UserController extends BaseController {
     private UserService userService;
 
     /**
-     * 创建登陆账号
-     * @param user
-     */
-    @PostMapping("/register")
-    public BaseResponse createUser(@RequestBody User user){
-        userService.register(user,super.getCurrentUser());
-        return super.successResult();
-    }
-
-    /**
      * 分页查询
      * @return
      */
@@ -62,7 +52,7 @@ public class UserController extends BaseController {
      * @return
      */
     @PostMapping("/update")
-    public BaseResponse updateUser(@RequestBody UserBasicInfo userBasicInfo){
+    public BaseResponse updateUser(@RequestBody SubAgentVO userBasicInfo){
         userService.updateChildUser(userBasicInfo);
         return super.successResult();
     }

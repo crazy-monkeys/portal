@@ -7,6 +7,12 @@ import java.util.Date;
 @Data
 public class UserRole {
 
+
+    public UserRole(){}
+    public UserRole(Integer userId,Integer roleId){
+        this.userId = userId;
+        this.roleId = roleId;
+    }
     private Integer id;
 
     private Integer userId;

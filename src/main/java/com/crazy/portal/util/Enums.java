@@ -11,6 +11,40 @@ import java.util.List;
  */
 public class Enums {
 
+
+    public enum MAIL_TEMPLATE {
+        USER_CREATE("createSubAgent"),
+        RESET_PWD("resetPwdTemplate");
+
+        private String templateName;
+
+        MAIL_TEMPLATE(String templateName){
+            this.templateName = templateName;
+        }
+
+        public String getTemplateName() {
+            return templateName;
+        }
+    }
+
+    /**
+     * 角色类型
+     */
+    public enum ROLE_TYPE {
+        USER(1),
+        SUB_USER(2);
+
+        private int roleType;
+
+        ROLE_TYPE(Integer roleType){
+            this.roleType = roleType;
+        }
+
+        public int getRoleType() {
+            return roleType;
+        }
+    }
+
     /**
      * 用户类型
      * agent.代理商

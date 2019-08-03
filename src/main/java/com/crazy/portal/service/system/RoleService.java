@@ -86,6 +86,10 @@ public class RoleService {
         return roleMapper.findAllRoles();
     }
 
+    public List<Role> findRoles(Integer roleType){
+        return roleMapper.findRoleByType(roleType);
+    }
+
     /**
      * 删除角色
      * @param roleId
