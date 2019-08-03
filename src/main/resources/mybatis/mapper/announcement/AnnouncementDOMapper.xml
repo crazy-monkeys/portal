@@ -194,7 +194,7 @@
     date_format(t.release_time,'%Y-%m-%d %H:%i:%s') release_time_str
     from t_announcement t
     inner join t_sys_parameter p on t.type_id = p.p_value
-    where 1 = 1
+    where 1 = 1 and t.status = 1
     <if test="title != null and title != ''" >
       and t.title like concat('%',#{title},'%')
     </if>
