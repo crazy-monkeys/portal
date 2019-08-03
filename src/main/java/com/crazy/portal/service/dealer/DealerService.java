@@ -11,6 +11,7 @@ import com.crazy.portal.config.exception.BusinessException;
 import com.crazy.portal.dao.customer.CustomerInfoMapper;
 import com.crazy.portal.entity.basic.*;
 import com.crazy.portal.entity.customer.CustomerInfo;
+import com.crazy.portal.entity.system.User;
 import com.crazy.portal.service.customer.CustomersService;
 import com.crazy.portal.util.BusinessUtil;
 import com.crazy.portal.util.ErrorCodes;
@@ -75,14 +76,14 @@ public class DealerService {
         }
     }
 
-    public void updateDealerInfo(CustomerInfo dealer, Integer dealerId){
-        customersService.update(dealer, dealerId);
+    public void updateDealerInfo(CustomerInfo dealer, User user){
+        customersService.update(dealer, user);
     }
 
     private DealerVO mappingVO(CustomerInfo dealer, Zsdscredit zsdscredit){
         DealerVO vo = new DealerVO();
         vo.setDealerCode(dealer.getCustInCode());
-        vo.setDealerName(dealer.getCustZhName());
+        vo.setDealerName(dealer.getCustName());
         vo.setDealerSName(dealer.getCustAbbreviation());
         vo.setMobile(dealer.getCustMobile());
         vo.setEmail(dealer.getCustEmail());

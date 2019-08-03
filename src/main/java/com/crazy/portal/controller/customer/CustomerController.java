@@ -47,7 +47,7 @@ public class CustomerController extends BaseController{
 
     @PostMapping("/info")
     public BaseResponse customerAdd(@RequestBody CustomerInfo vo){
-        customersService.addOrUpdate(vo, this.getCurrentUser().getId());
+        customersService.addOrUpdate(vo, this.getCurrentUser());
         return successResult();
     }
 

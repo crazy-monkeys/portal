@@ -58,6 +58,12 @@ public class BasicContact implements BaseEntity{
      * 股权占比
      */
     private BigDecimal equityRatio;
+
+    /**
+     * 联系人类型 C01 - 出货数据确认人; C02 - Rebate确认人
+     */
+    private String contactType;
+
     @JsonIgnore
     @JSONField(serialize = false)
     private Integer createUser;

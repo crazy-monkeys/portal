@@ -17,11 +17,12 @@
     <result column="update_user" jdbcType="INTEGER" property="updateUser" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="active" jdbcType="INTEGER" property="active" />
+    <result column="contact_type" jdbcType="VARCHAR" property="contactType"></result>
   </resultMap>
   <sql id="Base_Column_List">
     id, cust_id, is_default, contact_name, contact_mobile, contact_email, contact_department, 
     contact_position, is_decision_maker, equity_ratio, create_user, create_time, update_user, 
-    update_time, active
+    update_time, active, contact_type
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -82,6 +83,9 @@
       <if test="active != null">
         active,
       </if>
+      <if test="contactType != null">
+        contact_type,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -129,6 +133,9 @@
       <if test="active != null">
         #{active,jdbcType=INTEGER},
       </if>
+      <if test="contactType != null">
+        #{contactType,jdbcType=VARCHAR},
+      </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.crazy.portal.entity.basic.BasicContact">
@@ -175,6 +182,9 @@
       </if>
       <if test="active != null">
         active = #{active,jdbcType=INTEGER},
+      </if>
+      <if test="contactType != null">
+        contact_type = #{contactType,jdbcType=VARCHAR},
       </if>
     </set>
     where id = #{id,jdbcType=INTEGER}

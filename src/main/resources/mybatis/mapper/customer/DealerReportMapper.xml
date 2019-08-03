@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.crazy.portal.dao.customer.DealerReportMapper">
+  <resultMap id="BaseResultMap" type="com.crazy.portal.entity.customer.DealerReport">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="dealer_id" jdbcType="INTEGER" property="dealerId" />
+    <result column="cust_id" jdbcType="INTEGER" property="custId" />
+    <result column="dealer_status" jdbcType="INTEGER" property="dealerStatus" />
+    <result column="start_date" jdbcType="TIMESTAMP" property="startDate" />
+    <result column="end_date" jdbcType="TIMESTAMP" property="endDate" />
+    <result column="approver" jdbcType="INTEGER" property="approver" />
+    <result column="approver_date" jdbcType="TIMESTAMP" property="approverDate" />
+    <result column="approver_remark" jdbcType="VARCHAR" property="approverRemark" />
+    <result column="active" jdbcType="INTEGER" property="active" />
+    <result column="create_user_id" jdbcType="INTEGER" property="createUserId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_user_id" jdbcType="INTEGER" property="updateUserId" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, dealer_id, cust_id, dealer_status, start_date, end_date, approver, approver_date, 
+    approver_remark, active, create_user_id, create_time, update_user_id, update_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_dealer_report
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_dealer_report
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+
+  <insert id="insertSelective" parameterType="com.crazy.portal.entity.customer.DealerReport">
+    insert into t_dealer_report
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="dealerId != null">
+        dealer_id,
+      </if>
+      <if test="custId != null">
+        cust_id,
+      </if>
+      <if test="dealerStatus != null">
+        dealer_status,
+      </if>
+      <if test="startDate != null">
+        start_date,
+      </if>
+      <if test="endDate != null">
+        end_date,
+      </if>
+      <if test="approver != null">
+        approver,
+      </if>
+      <if test="approverDate != null">
+        approver_date,
+      </if>
+      <if test="approverRemark != null">
+        approver_remark,
+      </if>
+      <if test="active != null">
+        active,
+      </if>
+      <if test="createUserId != null">
+        create_user_id,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateUserId != null">
+        update_user_id,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="dealerId != null">
+        #{dealerId,jdbcType=INTEGER},
+      </if>
+      <if test="custId != null">
+        #{custId,jdbcType=INTEGER},
+      </if>
+      <if test="dealerStatus != null">
+        #{dealerStatus,jdbcType=INTEGER},
+      </if>
+      <if test="startDate != null">
+        #{startDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endDate != null">
+        #{endDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="approver != null">
+        #{approver,jdbcType=INTEGER},
+      </if>
+      <if test="approverDate != null">
+        #{approverDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="approverRemark != null">
+        #{approverRemark,jdbcType=VARCHAR},
+      </if>
+      <if test="active != null">
+        #{active,jdbcType=INTEGER},
+      </if>
+      <if test="createUserId != null">
+        #{createUserId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUserId != null">
+        #{updateUserId,jdbcType=INTEGER},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.crazy.portal.entity.customer.DealerReport">
+    update t_dealer_report
+    <set>
+      <if test="dealerId != null">
+        dealer_id = #{dealerId,jdbcType=INTEGER},
+      </if>
+      <if test="custId != null">
+        cust_id = #{custId,jdbcType=INTEGER},
+      </if>
+      <if test="dealerStatus != null">
+        dealer_status = #{dealerStatus,jdbcType=INTEGER},
+      </if>
+      <if test="startDate != null">
+        start_date = #{startDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endDate != null">
+        end_date = #{endDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="approver != null">
+        approver = #{approver,jdbcType=INTEGER},
+      </if>
+      <if test="approverDate != null">
+        approver_date = #{approverDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="approverRemark != null">
+        approver_remark = #{approverRemark,jdbcType=VARCHAR},
+      </if>
+      <if test="active != null">
+        active = #{active,jdbcType=INTEGER},
+      </if>
+      <if test="createUserId != null">
+        create_user_id = #{createUserId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUserId != null">
+        update_user_id = #{updateUserId,jdbcType=INTEGER},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+</mapper>

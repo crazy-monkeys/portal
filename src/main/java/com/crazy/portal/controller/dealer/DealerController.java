@@ -36,7 +36,7 @@ public class DealerController extends BaseController{
      */
     @PostMapping("/updateDealerInfo")
     public BaseResponse updateDealerInfo(@RequestBody CustomerInfo vo){
-        dealerService.updateDealerInfo(vo, this.getCurrentUser().getDealerId());
+        dealerService.updateDealerInfo(vo, this.getCurrentUser());
         return successResult();
     }
 }

@@ -4,17 +4,21 @@ import com.alibaba.excel.EasyExcelFactory;
 import com.alibaba.excel.ExcelReader;
 import com.alibaba.excel.metadata.BaseRowModel;
 import com.alibaba.excel.metadata.Sheet;
+import com.crazy.portal.bean.common.Constant;
 import com.crazy.portal.bean.customer.CustomerQueryBean;
 import com.crazy.portal.bean.customer.visitRecord.CustomerCodeEO;
 import com.crazy.portal.bean.customer.visitRecord.VisitRecordEO;
 import com.crazy.portal.bean.customer.visitRecord.VisitRecordQueryBean;
 import com.crazy.portal.dao.basic.*;
 import com.crazy.portal.dao.customer.CustomerInfoMapper;
+import com.crazy.portal.dao.customer.DealerReportMapper;
 import com.crazy.portal.dao.customer.VisitRecordMapper;
 import com.crazy.portal.entity.basic.BaseEntity;
 import com.crazy.portal.entity.basic.BasicBankInfo;
 import com.crazy.portal.entity.customer.CustomerInfo;
+import com.crazy.portal.entity.customer.DealerReport;
 import com.crazy.portal.entity.customer.VisitRecord;
+import com.crazy.portal.entity.system.User;
 import com.crazy.portal.util.*;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
@@ -61,6 +65,8 @@ public class CustomersService {
     private BasicAddressMapper basicAddressMapper;
     @Resource
     private VisitRecordMapper visitRecordMapper;
+    @Resource
+    private DealerReportMapper dealerReportMapper;
     /**
      * 分页查询客户列表
      * @param bean
@@ -95,13 +101,13 @@ public class CustomersService {
     /**
      * 新增或更新客户信息
      * @param bean
-     * @param userId
+     * @param user
      */
-    public void addOrUpdate(CustomerInfo bean, Integer userId){
+    public void addOrUpdate(CustomerInfo bean, User user){
         if(bean.getId() == null){
-            add(bean, userId);
+            add(bean, user);
         }else{
-            update(bean, userId);
+            update(bean, user);
         }
     }
     /**
@@ -109,8 +115,8 @@ public class CustomersService {
      * @param bean
      * @return
      */
-    public void add(CustomerInfo bean, Integer userId){
-        checkCustName(bean.getCustZhName());
+    public void add(CustomerInfo bean, User user){
+        checkCustName(bean.getCustName());
         Date currDate = DateUtil.getCurrentTS();
         bean.setBusinessType(bean.getBusinessType() == null ? Enums.CUSTOMER_BUSINESS_TYPE.mass_market.getCode() : bean.getBusinessType());
         bean.setCustomerStatus(bean.getCustomerStatus() == null ? Enums.CustomerStatus.WAIT_SUBMIT.getCode() : bean.getCustomerStatus());
@@ -120,18 +126,26 @@ public class CustomersService {
             log.error("日期转换异常", e);
         }
 
-        bean.setActive(1);
-        bean.setCreateUser(userId);
+        bean.setActive(Constant.ACTIVE);
+        bean.setCreateUser(user.getId());
         bean.setCreateTime(currDate);
         customerInfoMapper.insertSelective(bean);
 
         BasicBankInfo bankInfo = bean.getBasicBank();
         bankInfo.setCustId(bean.getId());
-        bankInfo.setActive(1);
-        bankInfo.setCreateUser(userId);
+        bankInfo.setActive(Constant.ACTIVE);
+        bankInfo.setCreateUser(user.getId());
         bankInfo.setCreateTime(currDate);
         basicBankInfoMapper.insertSelective(bean.getBasicBank());
 
+        DealerReport dealerReport = new DealerReport();
+        dealerReport.setDealerId(user.getDealerId());
+        dealerReport.setCustId(bean.getId());
+        dealerReport.setDealerStatus(Enums.DealerStatus.TAKE_EFFECT.getCode());
+        dealerReport.setActive(Constant.ACTIVE);
+        dealerReport.setCreateUserId(user.getId());
+        dealerReport.setCreateTime(DateUtil.getCurrentTS());
+        dealerReportMapper.insertSelective(dealerReport);
 
         addExtendInfo(bean.getBasicInvoice(), basicInvoiceInfoMapper, bean);
 
@@ -153,7 +167,7 @@ public class CustomersService {
     public void addExtendInfo(List<? extends BaseEntity> list, BaseMapper mapper, CustomerInfo bean){
         list.stream().forEach((e)-> {
             e.setCustId(bean.getId());
-            e.setActive(1);
+            e.setActive(Constant.ACTIVE);
             e.setCreateUser(bean.getCreateUser());
             e.setCreateTime(bean.getCreateTime());
             mapper.insertSelective(e);
@@ -164,9 +178,9 @@ public class CustomersService {
      * 更新客户信息
      * @param bean
      */
-    public void update(CustomerInfo bean, Integer userId){
+    public void update(CustomerInfo bean, User user){
         BusinessUtil.assertIsNull(bean.getId(), ErrorCodes.BusinessEnum.CUSTOMER_IS_EMPYT);
-        bean.setUpdateUser(userId);
+        bean.setUpdateUser(user.getId());
         bean.setUpdateTime(DateUtil.getCurrentTS());
         try {
             bean.setRegisterTime(bean.getRegisterTimeStr() != null ? DateUtil.parseDate(bean.getRegisterTimeStr(), DateUtil.NEW_FORMAT) : null);
@@ -178,8 +192,8 @@ public class CustomersService {
         BasicBankInfo bankInfo = bean.getBasicBank();
         if(bankInfo != null && bankInfo.getId() != null){
             bankInfo.setCustId(bean.getId());
-            bankInfo.setActive(1);
-            bankInfo.setUpdateUser(userId);
+            bankInfo.setActive(Constant.ACTIVE);
+            bankInfo.setUpdateUser(user.getId());
             bankInfo.setUpdateTime(DateUtil.getCurrentTS());
             basicBankInfoMapper.updateByPrimaryKeySelective(bankInfo);
         }
@@ -187,28 +201,28 @@ public class CustomersService {
         Date currTime = DateUtil.getCurrentTS();
 
         List<Integer> addressIds = basicAddressMapper.selectIdsByCustId(bean.getId());
-        updateExtendInfo(addressIds, bean.getBasicAddress(), basicAddressMapper, userId, currTime, bean.getId());
+        updateExtendInfo(addressIds, bean.getBasicAddress(), basicAddressMapper, user.getId(), currTime, bean.getId());
 
         List<Integer> invoiceInfoIds = basicInvoiceInfoMapper.selectIdsByCustId(bean.getId());
-        updateExtendInfo(invoiceInfoIds, bean.getBasicInvoice(), basicInvoiceInfoMapper, userId, currTime, bean.getId());
+        updateExtendInfo(invoiceInfoIds, bean.getBasicInvoice(), basicInvoiceInfoMapper, user.getId(), currTime, bean.getId());
 
         List<Integer> contactIds = basicContactMapper.selectIdsByCustId(bean.getId());
-        updateExtendInfo(contactIds, bean.getBasicContact(), basicContactMapper, userId, currTime, bean.getId());
+        updateExtendInfo(contactIds, bean.getBasicContact(), basicContactMapper, user.getId(), currTime, bean.getId());
 
         List<Integer> structureIds = basicCorporateStructureMapper.selectIdsByCustId(bean.getId());
-        updateExtendInfo(structureIds, bean.getBasicStructure(), basicCorporateStructureMapper, userId, currTime, bean.getId());
+        updateExtendInfo(structureIds, bean.getBasicStructure(), basicCorporateStructureMapper, user.getId(), currTime, bean.getId());
 
         List<Integer> relationIds = basicCorporateRelationshipMapper.selectIdsByCustId(bean.getId());
-        updateExtendInfo(relationIds, bean.getBasicShip(), basicCorporateRelationshipMapper, userId, currTime, bean.getId());
+        updateExtendInfo(relationIds, bean.getBasicShip(), basicCorporateRelationshipMapper, user.getId(), currTime, bean.getId());
 
         List<Integer> fileIds = basicFileMapper.selectIdsByCustId(bean.getId());
-        updateExtendInfo(fileIds, bean.getBasicFile(), basicFileMapper, userId, currTime, bean.getId());
+        updateExtendInfo(fileIds, bean.getBasicFile(), basicFileMapper, user.getId(), currTime, bean.getId());
 
         List<Integer> teamIds = basicSalesTeamMapper.selectIdsByCustId(bean.getId());
-        updateExtendInfo(teamIds, bean.getSalesTeam(), basicSalesTeamMapper, userId, currTime, bean.getId());
+        updateExtendInfo(teamIds, bean.getSalesTeam(), basicSalesTeamMapper, user.getId(), currTime, bean.getId());
 
         List<Integer> salesIds = basicSalesMapper.selectIdsByCustId(bean.getId());
-        updateExtendInfo(salesIds, bean.getSales(), basicSalesMapper, userId, currTime, bean.getId());
+        updateExtendInfo(salesIds, bean.getSales(), basicSalesMapper, user.getId(), currTime, bean.getId());
     }
 
     /**
@@ -228,7 +242,7 @@ public class CustomersService {
         });
         newList.stream().filter(e->null == e.getId() || !sourceList.contains(e.getId())).forEach(e->{
             e.setCustId(custId);
-            e.setActive(1);
+            e.setActive(Constant.ACTIVE);
             e.setCreateUser(userId);
             e.setCreateTime(currTime);
             mapper.insertSelective(e);
@@ -304,13 +318,18 @@ public class CustomersService {
         BusinessUtil.assertIsNotNull(customerInfo, ErrorCodes.BusinessEnum.CUSTOMER_NAME_EXISTS);
     }
 
+    /**
+     * 下载客户拜访模板
+     * @param userId
+     * @return
+     */
     public Map<String, List<? extends BaseRowModel>> downloadTemplate(Integer userId){
         Map<String, List<? extends BaseRowModel>> resultMap = new HashMap<>();
         List<CustomerInfo> custList = customerInfoMapper.selectNameAndCodeByUserId(userId);
         List<CustomerCodeEO> custCodeList = new ArrayList<>();
         custList.forEach(cust -> {
             CustomerCodeEO eo = new CustomerCodeEO();
-            eo.setCustomerName(cust.getCustZhName());
+            eo.setCustomerName(cust.getCustName());
             eo.setCustomerCode(cust.getCustInCode());
             custCodeList.add(eo);
         });
@@ -320,12 +339,23 @@ public class CustomersService {
         return resultMap;
     }
 
+    /**
+     * 查询客户拜访记录
+     * @param bean
+     * @return
+     */
     public PageInfo<VisitRecord> selectVisitRecordPage(VisitRecordQueryBean bean){
         PortalUtil.defaultStartPage(bean.getPageIndex(), bean.getPageSize());
         List<VisitRecord> records = visitRecordMapper.selectByPage(bean);
         return new PageInfo<>(records);
     }
 
+    /**
+     * 上传客户拜访记录
+     * @param files
+     * @param userId
+     * @throws Exception
+     */
     public void uploadVisitRecord(MultipartFile[] files, Integer userId) throws Exception{
         for (MultipartFile file : files) {
             List<Object> records = EasyExcelFactory.read(file.getInputStream(), new Sheet(1, 1,VisitRecordEO.class));
@@ -333,7 +363,7 @@ public class CustomersService {
                 try {
                     VisitRecord record = new VisitRecord();
                     BeanUtils.copyNotNullFields(e , record);
-                    record.setActive(1);
+                    record.setActive(Constant.ACTIVE);
                     record.setCreateUserId(userId);
                     record.setCreateTime(DateUtil.getCurrentTS());
                     visitRecordMapper.insertSelective(record);

@@ -17,6 +17,8 @@ public class BasicSalesTeam implements BaseEntity{
     private String name;
     //手机号
     private String mobile;
+    //角色名称
+    private String roleName;
     @JsonIgnore
     @JSONField(serialize = false)
     private Integer active;

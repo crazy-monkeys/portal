@@ -19,8 +19,8 @@ public class VisitRecordEO  extends BaseRowModel {
     private String visitDate;
     @ExcelProperty(value = "客户所在地", index = 1)
     private String customerLocation;
-    @ExcelProperty(value = "客户名称", index = 2)
-    private String customerName;
+    @ExcelProperty(value = "客户编号", index = 2)
+    private String customerCode;
     @ExcelProperty(value = "拜访次数", index = 3)
     private Integer visitNumber;
     @ExcelProperty(value = "拜访目的", index = 4)

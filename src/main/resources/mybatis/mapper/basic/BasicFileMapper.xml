@@ -7,6 +7,7 @@
     <result column="file_type" jdbcType="INTEGER" property="fileType" />
     <result column="file_name" jdbcType="VARCHAR" property="fileName" />
     <result column="file_path" jdbcType="VARCHAR" property="filePath" />
+    <result column="create_user_name" jdbcType="VARCHAR" property="createUserName"></result>
     <result column="create_user" jdbcType="INTEGER" property="createUser" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_user" jdbcType="INTEGER" property="updateUser" />
@@ -132,10 +133,12 @@
 
   <select id="selectByCustId" resultMap="BaseResultMap">
     select
-    <include refid="Base_Column_List" />
-    from t_basic_file
-    where cust_id = #{custId,jdbcType=INTEGER} and active = 1
-    order by create_time desc
+    a.id, a.cust_id, a.file_type, a.file_name, a.file_path, a.create_user, a.create_time,
+    a.update_user, a.update_time, a.active, b.customer_name as create_user_name
+    from t_basic_file a
+    inner join t_user b on b.id = a.create_user
+    where a.cust_id = #{custId,jdbcType=INTEGER} and a.active = 1
+    order by a.create_time desc
   </select>
 
   <select id="selectIdsByCustId" resultType="java.lang.Integer">

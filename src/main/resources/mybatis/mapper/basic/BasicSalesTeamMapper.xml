@@ -12,6 +12,7 @@
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_user" jdbcType="INTEGER" property="updateUser" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="role_name" jdbcType="VARCHAR" property="roleName"></result>
   </resultMap>
   <sql id="Base_Column_List">
     id, cust_id, role_id, name, mobile, active, create_user, create_time, update_user, 
@@ -131,10 +132,12 @@
 
   <select id="selectByCustId" resultMap="BaseResultMap">
     select
-    <include refid="Base_Column_List" />
-    from t_basic_sales_team
-    where cust_id = #{custId,jdbcType=INTEGER} and active = 1
-    order by create_time desc
+    a.id, a.cust_id, a.role_id, a.name, a.mobile, a.active, a.create_user, a.create_time, a.update_user,
+    a.update_time, b.role_name
+    from t_basic_sales_team a
+    inner join t_role b on b.id = a.role_id
+    where a.cust_id = #{custId,jdbcType=INTEGER} and a.active = 1
+    order by a.create_time desc
   </select>
 
   <select id="selectIdsByCustId" resultType="java.lang.Integer">

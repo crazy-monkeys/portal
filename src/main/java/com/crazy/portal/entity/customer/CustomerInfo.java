@@ -43,18 +43,17 @@ public class CustomerInfo {
     private Short isLicense;
 
     /**
+     * 是否潜在客户
+     */
+    private Short isPotential;
+    /**
      * 业务类型  1-massMarket 2-accountMarket
      */
     private Short businessType;
     /**
-     * 客户中文名
+     * 客户名
      */
-    private String custZhName;
-
-    /**
-     * 客户英文名
-     */
-    private String custEnName;
+    private String custName;
 
     /**
      * 客户简称

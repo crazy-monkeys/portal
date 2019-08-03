@@ -154,7 +154,11 @@ public class Enums {
         WAIT_SUBMIT(1, "待提交"),
         WAIT_APPROVAL(2, "待审批"),
         NORMAL(3, "正常"),
-        REJECT(4, "被驳回");
+        REJECT(4, "被驳回"),
+        SALES_FROZEN(5, "销售支持冻结"),
+        DELIVERY_FROZEN(6, "交货冻结"),
+        ORDER(7, "订单冻结"),
+        INVOICE(8, "开票冻结");
 
         private Integer code;
         private String desc;
@@ -169,5 +173,71 @@ public class Enums {
             return desc;
         }
     }
-    //</editor-fold>
+
+    /**
+     * 代理状态
+     */
+    public enum DealerStatus{
+        TAKE_EFFECT(1, "生效"),
+        FROZEN(0, "冻结");
+
+        private Integer code;
+        private String desc;
+
+        DealerStatus(Integer code, String desc){
+            this.code = code;
+            this.desc = desc;
+        }
+        public Integer getCode(){
+            return code;
+        }
+        public String getDesc(){
+            return desc;
+        }
+    }
+
+    /**
+     * 联系人类型
+     */
+    public enum ContactType{
+        C01("CO1", "出货数据确认人"),
+        C02("C02", "Rebate确认人");
+
+        private String code;
+        private String desc;
+
+        ContactType(String code, String desc){
+            this.code = code;
+            this.desc = desc;
+        }
+        public String getCode(){
+            return code;
+        }
+        public String getDesc(){
+            return desc;
+        }
+    }
+
+    /**
+     * 币种
+     */
+    public enum Currency{
+        RMB("RMB", ""),
+        USD("USD", ""),
+        HDK("HDK", "");
+
+        private String code;
+        private String desc;
+
+        Currency(String code, String desc){
+            this.code = code;
+            this.desc = desc;
+        }
+        public String getCode(){
+            return code;
+        }
+        public String getDesc(){
+            return desc;
+        }
+    }
 }

@@ -15,7 +15,7 @@ import lombok.ToString;
 @ToString
 public class CustomerCodeEO extends BaseRowModel {
 
-    @ExcelProperty(value = "客户CODE", index = 0)
+    @ExcelProperty(value = "客户编号", index = 0)
     private String customerCode;
     @ExcelProperty(value = "客户名称", index = 1)
     private String customerName;
