@@ -8,7 +8,7 @@ import com.crazy.portal.bean.customer.visitRecord.VisitRecordQueryBean;
 import com.crazy.portal.controller.BaseController;
 import com.crazy.portal.entity.customer.CustomerInfo;
 import com.crazy.portal.service.customer.CustomersService;
-import com.crazy.portal.util.EasyExcelUtils;
+import com.crazy.portal.util.ExcelUtils;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -90,7 +90,7 @@ public class CustomerController extends BaseController{
     public BaseResponse visitRecordDownload(HttpServletResponse response){
         try {
             Map<String, List<? extends BaseRowModel>> resultMap = customersService.downloadTemplate(this.getCurrentUser().getId());
-            EasyExcelUtils.createExcelStreamMutilByEaysExcel(response, resultMap, ExcelTypeEnum.XLSX);
+            ExcelUtils.createExcelStreamMutilByEaysExcel(response, resultMap, ExcelTypeEnum.XLSX);
             return successResult();
         }catch (Exception ex){
             log.error("下载模板异常", ex);

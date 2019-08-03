@@ -21,4 +21,7 @@ file:
     template: /Users/lee/Documents/job_code/portal_file/template
 
 announcement:
-  path: ${file.path.local}/announcement/
+  local-path: ${file.path.local}/announcement/
+
+deliver:
+  template-path: ${file.path.template}/deliver/

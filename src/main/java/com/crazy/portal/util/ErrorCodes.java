@@ -111,6 +111,8 @@ public class ErrorCodes {
         FILE_UPLOAD_PARAM_EMPTY(20000, "上传文件必填参数缺失", ""),
         FILE_DOWNLOAD_PARAM_EMPTY(20001, "下载文件必填参数缺失", ""),
         FILE_DOWNLOAD_FILE_NOT_FOUND(20002, "未找到需要下载的文件", ""),
+        EXCEL_READ_ERROR(21001, "Excel数据读取异常", ""),
+        EXCEL_TYPE_ERROR(21002, "请上传正确Excel文件", ""),
 
         //公告模块
         ANNOUNCEMENT_FILE_LIST_PARAM_EMPTY(30000, "请上传正确文件参数", ""),
@@ -121,7 +123,8 @@ public class ErrorCodes {
 
         //客户模块
         CUSTOMER_IS_EMPYT(50000, "没有对应的客户信息", ""),
-        CUSTOMER_NAME_EXISTS(50001, "该客户名已存在", "");
+        CUSTOMER_NAME_EXISTS(50001, "该客户名已存在", ""),
+        CUSTOMER_CREDIT(50002,"获取代理商授信额度异常","");
 
         private final int code;
         private final String zhMsg;

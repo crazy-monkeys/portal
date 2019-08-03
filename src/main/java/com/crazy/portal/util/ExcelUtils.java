@@ -1,18 +1,25 @@
 package com.crazy.portal.util;
 
+import com.alibaba.excel.ExcelReader;
 import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.metadata.BaseRowModel;
 import com.alibaba.excel.metadata.Sheet;
 import com.alibaba.excel.support.ExcelTypeEnum;
+import com.crazy.portal.config.exception.BusinessException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.CollectionUtils;
-
+import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+
+import static com.crazy.portal.util.ErrorCodes.BusinessEnum.*;
 
 /**
  * @Description EasyExcel工具类
@@ -21,7 +28,7 @@ import java.util.Map;
  * @Modify by
  */
 @Slf4j
-public class EasyExcelUtils {
+public class ExcelUtils {
 
     /**
      * 导出excel 支持一张表导出多个sheet
@@ -45,6 +52,46 @@ public class EasyExcelUtils {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+
+    public static<T> List<T> readExcel(MultipartFile excel, Class clazz, int sheetNo) {
+        return readExcel(excel, clazz, sheetNo, 1);
+    }
+
+
+    public static<T> List<T> readExcel(MultipartFile excel, Class clazz, int sheetNo, int headLineNum) {
+        if(null == excel){
+            log.warn("Excel is null");
+            return Collections.emptyList();
+        }
+        ExcelListener excelListener = new ExcelListener();
+        try {
+            ExcelReader reader = getReader(excel, excelListener);
+            Sheet sheet = new Sheet(sheetNo, headLineNum, clazz);
+            reader.read(sheet);
+        }catch (Exception ex) {
+            log.error("Read excel exception", ex);
+            throw new BusinessException(EXCEL_READ_ERROR);
+        }
+        return excelListener.getData();
+    }
+
+    /**
+     *
+     * @param excel
+     * @param excelListener
+     * @return
+     * @throws IOException
+     */
+    private static ExcelReader getReader(MultipartFile excel, ExcelListener excelListener) throws IOException {
+        String lowerFileName = null == excel.getOriginalFilename() ? "" : excel.getOriginalFilename().toLowerCase();
+        if(!(lowerFileName.endsWith(ExcelTypeEnum.XLS.getValue()) || lowerFileName.endsWith(ExcelTypeEnum.XLSX.getValue()))){
+            log.error("Excel type is error, fullName : {}", lowerFileName);
+            throw new BusinessException(EXCEL_TYPE_ERROR);
+        }
+        InputStream inputStream = new BufferedInputStream(excel.getInputStream());
+        return new ExcelReader(inputStream, null, excelListener, false);
     }
 
     /**

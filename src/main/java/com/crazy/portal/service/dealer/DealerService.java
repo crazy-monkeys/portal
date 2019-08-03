@@ -5,12 +5,17 @@ import com.crazy.portal.bean.customer.basic.FileVO;
 import com.crazy.portal.bean.customer.basic.InvoiceVO;
 import com.crazy.portal.bean.customer.basic.ShipVO;
 import com.crazy.portal.bean.customer.dealer.DealerVO;
+import com.crazy.portal.bean.customer.dealer.credit.ZrfcsdcustomercreditResponse;
+import com.crazy.portal.bean.customer.dealer.credit.Zsdscredit;
+import com.crazy.portal.config.exception.BusinessException;
 import com.crazy.portal.dao.customer.CustomerInfoMapper;
 import com.crazy.portal.entity.basic.*;
 import com.crazy.portal.entity.customer.CustomerInfo;
 import com.crazy.portal.service.customer.CustomersService;
 import com.crazy.portal.util.BusinessUtil;
 import com.crazy.portal.util.ErrorCodes;
+import com.crazy.portal.util.HttpClientUtils;
+import com.crazy.portal.util.JaxbXmlUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
@@ -25,6 +30,8 @@ import java.util.List;
 @Slf4j
 @Service
 public class DealerService {
+    private static final String PRODUCT_URL = "https://e600180-hcioem.hcisbt.cn1.hana.ondemand.com:443/cxf/CUSTOMERCREDIT";
+
     @Resource
     private CustomerInfoMapper customerInfoMapper;
     @Resource
@@ -38,14 +45,41 @@ public class DealerService {
     public DealerVO getDealerInfo(Integer dealerId){
         CustomerInfo dealerInfo = customerInfoMapper.selectDealerInfo(dealerId);
         BusinessUtil.assertIsNull(dealerInfo, ErrorCodes.BusinessEnum.CUSTOMER_IS_EMPYT);
-        return mappingVO(dealerInfo);
+        ZrfcsdcustomercreditResponse response = getDealerCredit(dealerInfo.getCustInCode());
+        Zsdscredit zsdscredit = new Zsdscredit();
+        if(response.getOreturn().equals("0")){
+            zsdscredit = response.getOcredit();
+        }
+        return mappingVO(dealerInfo, zsdscredit);
+    }
+
+    /**
+     * 获取代理商 授信额度
+     * @param dealerCode
+     * @return
+     */
+    public ZrfcsdcustomercreditResponse getDealerCredit(String dealerCode){
+        try{
+            String params = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:urn=\"urn:sap-com:document:sap:soap:functions:mc-style\">" +
+                    "   <soapenv:Header/>" +
+                    "   <soapenv:Body>" +
+                    "      <urn:Zrfcsdcustomercredit>" +
+                    "         <Ikunnr>"+dealerCode+"</Ikunnr>" +
+                    "      </urn:Zrfcsdcustomercredit>" +
+                    "   </soapenv:Body>" +
+                    "</soapenv:Envelope>";
+            String jsonStr = HttpClientUtils.postHeader(PRODUCT_URL, params);
+            return JaxbXmlUtil.convertSoapXmlToJavaBean(jsonStr, ZrfcsdcustomercreditResponse.class);
+        }catch (Exception e){
+            throw new BusinessException(ErrorCodes.BusinessEnum.CUSTOMER_CREDIT);
+        }
     }
 
     public void updateDealerInfo(CustomerInfo dealer, Integer dealerId){
         customersService.update(dealer, dealerId);
     }
 
-    private DealerVO mappingVO(CustomerInfo dealer){
+    private DealerVO mappingVO(CustomerInfo dealer, Zsdscredit zsdscredit){
         DealerVO vo = new DealerVO();
         vo.setDealerCode(dealer.getCustInCode());
         vo.setDealerName(dealer.getCustZhName());
@@ -66,14 +100,12 @@ public class DealerService {
         vo.setContacts(mappingContact(dealer.getBasicContact()));
         vo.setInvoices(mappingInvoice(dealer.getBasicInvoice()));
         vo.setFiles(mappingFile(dealer.getBasicFile()));
-        return vo;
-       /* //授信额度初始值
-        private BigDecimal credit;
-        //授信额度占用值
-        private BigDecimal creditUSE;
-        //授信额度剩余值
-        private BigDecimal creditUnUSE;*/
 
+         //授信额度初始值
+        vo.setCredit(zsdscredit.getDmbtr());
+        vo.setCreditUSE(zsdscredit.getZoccupy());
+        vo.setCreditUnUSE(zsdscredit.getZremain());
+        return vo;
     }
 
     private List<FileVO> mappingFile(List<BasicFile> fileDOS){
@@ -138,9 +170,4 @@ public class DealerService {
         vo.setBankAddress(bank.getBankAddress());
         vo.setBankBIC(bank.getBankBic());
     }
-
-    //创建子账号
-
-
-
 }
