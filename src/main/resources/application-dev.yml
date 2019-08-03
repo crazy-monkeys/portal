@@ -15,7 +15,10 @@ spring:
 
 file:
   path:
-    announcement:
-      thrid-push: /Users/lee/Documents/job_code/portal_file/push_thrid/
-      thrid-pull: /Users/lee/Documents/job_code/portal_file/pull_thrid/
-      local: /Users/lee/Documents/job_code/portal_file/local/
+    thrid-push: /Users/lee/Documents/job_code/portal_file/push_thrid
+    thrid-pull: /Users/lee/Documents/job_code/portal_file/pull_thrid
+    local: /Users/lee/Documents/job_code/portal_file/local
+    template: /Users/lee/Documents/job_code/portal_file/template
+
+announcement:
+  path: ${file.path.local}/announcement/
