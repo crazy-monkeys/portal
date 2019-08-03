@@ -34,7 +34,7 @@ import static com.crazy.portal.util.ErrorCodes.BusinessEnum.*;
 @Service
 public class AnnouncementService {
 
-    @Value("${announcement.path}")
+    @Value("${announcement.local-path}")
     private String filePath;
     @Resource
     private AnnouncementDOMapper announcementDOMapper;
