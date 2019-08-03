@@ -120,7 +120,8 @@ public class ErrorCodes {
 
         //客户模块
         CUSTOMER_IS_EMPYT(50000, "没有对应的客户信息", ""),
-        CUSTOMER_NAME_EXISTS(50001, "该客户名已存在", "");
+        CUSTOMER_NAME_EXISTS(50001, "该客户名已存在", ""),
+        CUSTOMER_CREDIT(50002,"获取代理商授信额度异常","");
 
         private final int code;
         private final String zhMsg;

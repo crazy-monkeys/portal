@@ -8,7 +8,6 @@ import com.crazy.portal.entity.product.ProductInfoDO;
 import com.crazy.portal.util.HttpClientUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
 import javax.annotation.Resource;
 import java.util.Date;
 import java.util.List;
@@ -22,12 +21,14 @@ public class ProductService {
     @Resource
     private ProductInfoDOMapper productInfoDOMapper;
 
+    private static final String PRODUCT_URL = "https://e600180-hcioem.hcisbt.cn1.hana.ondemand.com/http/MDMProductMaster";
+
     /**
      * 同步MDM的产品信息
      */
     public void syscProduct(){
         try {
-            String jsonStr = HttpClientUtils.get("https://e600180-hcioem.hcisbt.cn1.hana.ondemand.com/http/MDMProductMaster");
+            String jsonStr = HttpClientUtils.get(PRODUCT_URL);
             BaseProResponseVO responseVO = JSON.parseObject(jsonStr, BaseProResponseVO.class);
             List<ProductVO> productVOS = responseVO.getContents();
             for(ProductVO vo : productVOS){
@@ -37,15 +38,6 @@ public class ProductService {
             }
         }catch (Exception e){
             log.error("产品每日同步异常，MSG：",e);
-        }
-    }
-
-    public static void main(String[] args) {
-        try{
-            String jsonStr = HttpClientUtils.get("https://e600180-hcioem.hcisbt.cn1.hana.ondemand.com/cxf/ECCTEST");
-            System.out.printf(jsonStr);
-        }catch (Exception e){
-            e.printStackTrace();
         }
     }
 
