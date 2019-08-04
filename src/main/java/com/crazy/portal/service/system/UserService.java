@@ -148,7 +148,7 @@ public class UserService {
         Role role = roleMapper.findRoleByCode(subAgentUser.getRoleCode());
         BusinessUtil.assertIsNull(role, ErrorCodes.SystemManagerEnum.ROLE_NOT_EXIST);
 
-        BusinessUtil.assertTrue(Enums.ROLE_TYPE.SUB_USER.getRoleType() != role.getRoleType().intValue(),
+        BusinessUtil.assertTrue(Enums.ROLE_TYPE.SUB_USER.getRoleType() == role.getRoleType().intValue(),
                 ErrorCodes.SystemManagerEnum.ROLE_SAVE_FAILED);
 
         userRoleMapper.insertSelective(new UserRole(userId,role.getId()));
