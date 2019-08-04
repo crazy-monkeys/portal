@@ -4,7 +4,7 @@
   <resultMap id="BaseResultMap" type="com.crazy.portal.entity.customer.VisitRecord">
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="cust_id" jdbcType="INTEGER" property="custId" />
-    <result column="visit_date" jdbcType="TIMESTAMP" property="visitDate" />
+    <result column="visit_date" jdbcType="VARCHAR" property="visitDate" />
     <result column="customer_location" jdbcType="VARCHAR" property="customerLocation" />
     <result column="customer_code" jdbcType="VARCHAR" property="customerCode" />
     <result column="visit_number" jdbcType="INTEGER" property="visitNumber" />
@@ -120,7 +120,7 @@
         #{custId,jdbcType=INTEGER},
       </if>
       <if test="visitDate != null">
-        #{visitDate,jdbcType=TIMESTAMP},
+        #{visitDate,jdbcType=VARCHAR},
       </if>
       <if test="customerLocation != null">
         #{customerLocation,jdbcType=VARCHAR},
@@ -188,7 +188,7 @@
         cust_id = #{custId,jdbcType=INTEGER},
       </if>
       <if test="visitDate != null">
-        visit_date = #{visitDate,jdbcType=TIMESTAMP},
+        visit_date = #{visitDate,jdbcType=VARCHAR},
       </if>
       <if test="customerLocation != null">
         customer_location = #{customerLocation,jdbcType=VARCHAR},

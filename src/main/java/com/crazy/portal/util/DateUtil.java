@@ -7,6 +7,7 @@ import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalTime;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -18,7 +19,7 @@ import java.util.GregorianCalendar;
  */
 public class DateUtil {
 
-	private DateUtil(){
+	private DateUtil() {
 
 	}
 
@@ -29,10 +30,12 @@ public class DateUtil {
 	public static final String SHORT_FORMAT = "yyyyMMdd";
 	public static final String LONG_FORMAT = "yyyyMMddHHmmss";
 	public static final String WEB_FORMAT = "yyyy-MM-dd";
+	public static final String OLD_FORMAT = "yyyy/MM/dd";
 	public static final String TIME_FORMAT = "HHmmss";
 	public static final String MONTH_FORMAT = "yyyyMM";
 	public static final String CHINESE_DT_FORMAT = "yyyy年MM月dd日";
 	public static final String NEW_FORMAT = "yyyy-MM-dd HH:mm:ss";
+	public static final String OLD_LONG_FORMAT = "yyyy/MM/dd HH:mm:ss";
 	public static final String NO_SECOND_FORMAT = "yyyy-MM-dd HH:mm";
 	public static final long ONE_DAY_MILL_SECONDS = 86400000;
 	public static final String NEW_TIME_FORMAT = "HH:mm";
@@ -88,7 +91,7 @@ public class DateUtil {
 		if (StringUtil.isBlank(format)) {
 			throw new ParseException("Null format. ", 0);
 		}
-		sDate = sDate.replaceAll("\"","");
+		sDate = sDate.replaceAll("\"", "");
 		DateFormat dateFormat = new SimpleDateFormat(format);
 
 		if (sDate == null) {
@@ -140,10 +143,9 @@ public class DateUtil {
 
 	/**
 	 * 计算当前时间几小时之后的时间
-	 * 
+	 *
 	 * @param date
 	 * @param hours
-	 * 
 	 * @return
 	 */
 	public static Date addHours(Date date, long hours) {
@@ -152,10 +154,9 @@ public class DateUtil {
 
 	/**
 	 * 计算当前时间几分钟之后的时间
-	 * 
+	 *
 	 * @param date
 	 * @param minutes
-	 * 
 	 * @return
 	 */
 	public static Date addMinutes(Date date, long minutes) {
@@ -165,7 +166,6 @@ public class DateUtil {
 	/**
 	 * @param date1
 	 * @param secs
-	 * 
 	 * @return
 	 */
 
@@ -175,9 +175,8 @@ public class DateUtil {
 
 	/**
 	 * 判断输入的字符串是否为合法的小时
-	 * 
+	 *
 	 * @param hourStr
-	 * 
 	 * @return true/false
 	 */
 	public static boolean isValidHour(String hourStr) {
@@ -194,9 +193,8 @@ public class DateUtil {
 
 	/**
 	 * 判断输入的字符串是否为合法的分或秒
-	 * 
+	 *
 	 * @param
-	 * 
 	 * @return true/false
 	 */
 	public static boolean isValidMinuteOrSecond(String str) {
@@ -213,12 +211,9 @@ public class DateUtil {
 
 	/**
 	 * 取得新的日期
-	 * 
-	 * @param date1
-	 *            日期
-	 * @param days
-	 *            天数
-	 * 
+	 *
+	 * @param date1 日期
+	 * @param days  天数
 	 * @return 新的日期
 	 */
 	public static Date addDays(Date date1, long days) {
@@ -289,9 +284,8 @@ public class DateUtil {
 
 	/**
 	 * 取得“X年X月X日”的日期格式
-	 * 
+	 *
 	 * @param date
-	 * 
 	 * @return
 	 */
 	public static String getChineseDateString(Date date) {
@@ -321,12 +315,9 @@ public class DateUtil {
 
 	/**
 	 * 取得两个日期间隔秒数（日期1-日期2）
-	 * 
-	 * @param one
-	 *            日期1
-	 * @param two
-	 *            日期2
-	 * 
+	 *
+	 * @param one 日期1
+	 * @param two 日期2
 	 * @return 间隔秒数
 	 */
 	public static long getDiffSeconds(Date one, Date two) {
@@ -353,10 +344,9 @@ public class DateUtil {
 
 	/**
 	 * 取得两个日期的间隔天数
-	 * 
+	 *
 	 * @param one
 	 * @param two
-	 * 
 	 * @return 间隔天数
 	 */
 	public static long getDiffDays(Date one, Date two) {
@@ -415,7 +405,7 @@ public class DateUtil {
 
 	/**
 	 * 判断表示时间的字符是否为符合yyyyMMddHHmmss格式
-	 * 
+	 *
 	 * @param strDate
 	 * @return
 	 */
@@ -443,7 +433,7 @@ public class DateUtil {
 
 	/**
 	 * 判断表示时间的字符是否为符合yyyyMMddHHmmss格式
-	 * 
+	 *
 	 * @param strDate
 	 * @param delimiter
 	 * @return
@@ -552,7 +542,6 @@ public class DateUtil {
 	 * @param date1
 	 * @param date2
 	 * @param
-	 * 
 	 * @return
 	 */
 	public static boolean dateNotLessThan(String date1, String date2, DateFormat format) {
@@ -616,7 +605,7 @@ public class DateUtil {
 
 	/**
 	 * 获取系统日期的前一天日期，返回Date
-	 * 
+	 *
 	 * @return
 	 */
 	public static Date getBeforeDate() {
@@ -627,7 +616,7 @@ public class DateUtil {
 
 	/**
 	 * 获得指定时间当天起点时间
-	 * 
+	 *
 	 * @param date
 	 * @return
 	 */
@@ -644,7 +633,7 @@ public class DateUtil {
 
 	/**
 	 * 判断参date上min分钟后，是否小于当前时间
-	 * 
+	 *
 	 * @param date
 	 * @param min
 	 * @return
@@ -656,7 +645,7 @@ public class DateUtil {
 
 	/**
 	 * 是否在现在时间之前
-	 * 
+	 *
 	 * @param date
 	 * @return
 	 */
@@ -668,13 +657,10 @@ public class DateUtil {
 
 	/**
 	 * 是否有效
-	 * 
-	 * @param requestTime
-	 *            请求时间
-	 * @param effectTime
-	 *            生效时间
-	 * @param expiredTime
-	 *            失效时间
+	 *
+	 * @param requestTime 请求时间
+	 * @param effectTime  生效时间
+	 * @param expiredTime 失效时间
 	 * @return
 	 */
 	public static boolean isValidate(Date requestTime, Date effectTime, Date expiredTime) {
@@ -700,7 +686,7 @@ public class DateUtil {
 
 	/**
 	 * 判断两个日期是否是同一天
-	 * 
+	 *
 	 * @param date1
 	 * @param date2
 	 * @return
@@ -712,17 +698,17 @@ public class DateUtil {
 
 	/**
 	 * 获取系统当前时间
-	 * 
+	 *
 	 * @return
 	 */
 	public static Date getCurrentTS() {
 		Calendar calendar = Calendar.getInstance();
 		return calendar.getTime();
 	}
-	
+
 	/**
 	 * 获取当前时间的前几天或者后几天的日期
-	 * 
+	 *
 	 * @param days
 	 * @return
 	 */
@@ -734,11 +720,10 @@ public class DateUtil {
 
 	/**
 	 * 计算两个时间的差（相差的天、小时、分钟、秒）
-	 * 
+	 *
 	 * @param start
 	 * @param end
-	 * @param type
-	 *            (可以是：day、hour、min、sec)
+	 * @param type  (可以是：day、hour、min、sec)
 	 * @return
 	 */
 	public static Long getDiffSecondByTwoDate(Date start, Date end, String type) {
@@ -771,27 +756,23 @@ public class DateUtil {
 
 	/**
 	 * 指定时间推移前(后)几天
-	 * 
-	 * @param date
-	 *            时间
-	 * @param amount
-	 *            几天
+	 *
+	 * @param date   时间
+	 * @param amount 几天
 	 * @return
 	 */
 	public static Date computeWithDay(Date date, int amount) {
 		Calendar cal = Calendar.getInstance();
-		cal.setTime(date); 
-		cal.add(Calendar.DAY_OF_YEAR, amount); 
+		cal.setTime(date);
+		cal.add(Calendar.DAY_OF_YEAR, amount);
 		return cal.getTime();
 	}
 
 	/**
 	 * 指定时间推移前(后)几月
-	 * 
-	 * @param date
-	 *            时间
-	 * @param amount
-	 *            几月
+	 *
+	 * @param date   时间
+	 * @param amount 几月
 	 * @return
 	 */
 	public static Date computeWithMonth(Date date, int amount) {
@@ -800,14 +781,12 @@ public class DateUtil {
 		cal.add(Calendar.MONTH, amount);
 		return cal.getTime();
 	}
-	
+
 	/**
 	 * 指定时间推移前(后)几年
-	 * 
-	 * @param date
-	 *            时间
-	 * @param amount
-	 *            几年
+	 *
+	 * @param date   时间
+	 * @param amount 几年
 	 * @return
 	 */
 	public static Date computeWithYear(Date date, int amount) {
@@ -816,14 +795,12 @@ public class DateUtil {
 		cal.add(Calendar.YEAR, amount);
 		return cal.getTime();
 	}
-	
+
 	/**
 	 * 指定时间推移前(后)几小时
-	 * 
-	 * @param date
-	 *            时间
-	 * @param amount
-	 *            几小时
+	 *
+	 * @param date   时间
+	 * @param amount 几小时
 	 * @return
 	 */
 	public static Date computeWithHour(Date date, int amount) {
@@ -854,12 +831,13 @@ public class DateUtil {
 		return sdf.format(new Date(time.getTime()));
 	}
 
-	public static int getCurrentDayOfMonth(){
+	public static int getCurrentDayOfMonth() {
 		return Calendar.getInstance().get(Calendar.DATE);
 	}
 
 	/**
 	 * 获取某日期的年份
+	 *
 	 * @param date
 	 * @return
 	 */
@@ -871,6 +849,7 @@ public class DateUtil {
 
 	/**
 	 * 获取某日期的月份
+	 *
 	 * @param date
 	 * @return
 	 */
@@ -882,16 +861,17 @@ public class DateUtil {
 
 	/**
 	 * 获取某日期的日数
+	 *
 	 * @param date
 	 * @return
 	 */
-	public static Integer getDay(Date date){
+	public static Integer getDay(Date date) {
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(date);
 		return cal.get(Calendar.DATE);//获取日
 	}
 
-	public static Date getAppointedMonthAndDayDate(Date sourceDate, int newMonth, int newDay){
+	public static Date getAppointedMonthAndDayDate(Date sourceDate, int newMonth, int newDay) {
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(sourceDate);
 		GregorianCalendar gc = new GregorianCalendar();
@@ -903,6 +883,7 @@ public class DateUtil {
 
 	/**
 	 * 获得指定日的日期
+	 *
 	 * @param sourceDate
 	 * @param newDay
 	 * @return
@@ -917,4 +898,64 @@ public class DateUtil {
 		return gc.getTime();
 	}
 
+	private static final int SECONDS_PER_MINUTE = 60;
+	private static final int MINUTES_PER_HOUR = 60;
+	private static final int HOURS_PER_DAY = 24;
+	private static final int SECONDS_PER_DAY = (HOURS_PER_DAY * MINUTES_PER_HOUR * SECONDS_PER_MINUTE);
+	/**
+	 一天的毫秒数
+	 **/
+	private static final long DAY_MILLISECONDS = SECONDS_PER_DAY * 1000L;
+	/**
+	 转换方法
+	 @parma numberString 要转换的浮点数
+	 @parma format 要获得的格式 例如"hh:mm:ss"
+	 **/
+	public static Date toDate(double numberString) {
+		int wholeDays = (int)Math.floor(numberString);
+		int millisecondsInday = (int)((numberString - wholeDays) * DAY_MILLISECONDS + 0.5);
+		Calendar calendar = new GregorianCalendar();
+		setCalendar(calendar, wholeDays, millisecondsInday, false);
+		return calendar.getTime();
+
+	}
+	private static void setCalendar(Calendar calendar, int wholeDays,
+									int millisecondsInDay, boolean use1904windowing) {
+		int startYear = 1900;
+		int dayAdjust = -1; // Excel thinks 2/29/1900 is a valid date, which it isn't
+		if (use1904windowing) {
+			startYear = 1904;
+			dayAdjust = 1; // 1904 date windowing uses 1/2/1904 as the first day
+		}
+		else if (wholeDays < 61) {
+			// Date is prior to 3/1/1900, so adjust because Excel thinks 2/29/1900 exists
+			// If Excel date == 2/29/1900, will become 3/1/1900 in Java representation
+			dayAdjust = 0;
+		}
+		calendar.set(startYear,0, wholeDays + dayAdjust, 0, 0, 0);
+		calendar.set(GregorianCalendar.MILLISECOND, millisecondsInDay);
+	}
+
+	public static String getFlexibleDate(String dateStr) throws ParseException{
+		Date date = null;
+		if(StringUtil.isNotBlank(dateStr))
+		{
+			if (dateStr.indexOf('-') == -1 && dateStr.indexOf('/') == -1) {
+				date = toDate(Double.valueOf(dateStr));
+			} else if (dateStr.indexOf('-') != -1) {
+				if (dateStr.indexOf(':') != -1) {
+					date = DateUtil.parseDate(dateStr, NEW_FORMAT);
+				} else {
+					date = DateUtil.parseDate(dateStr, WEB_FORMAT);
+				}
+			} else if (dateStr.indexOf('/') != -1) {
+				if (dateStr.indexOf(':') != -1) {
+					date = DateUtil.parseDate(dateStr, OLD_LONG_FORMAT);
+				} else {
+					date = DateUtil.parseDate(dateStr, OLD_FORMAT);
+				}
+			}
+		}
+		return format(date, WEB_FORMAT);
+	}
 }
