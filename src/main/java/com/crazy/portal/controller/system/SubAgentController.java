@@ -35,7 +35,7 @@ public class SubAgentController extends BaseController {
      * 创建登陆账号
      * @param subAgentVO
      */
-    @PostMapping("/regSubAgent")
+    @PostMapping("/register")
     public BaseResponse regSubAgent(@Valid @RequestBody SubAgentVO subAgentVO){
         userService.regSubAgent(subAgentVO,super.getCurrentUser().getId());
         return super.successResult();
@@ -45,7 +45,7 @@ public class SubAgentController extends BaseController {
      * 查询所有子账号角色类型的角色
      * @return
      */
-    @GetMapping("/getSubRoles")
+    @GetMapping("/getRoles")
     public BaseResponse getSubRole(){
         int roleType = 2;
         List<Role> roles = roleService.findRoles(roleType);
@@ -58,7 +58,7 @@ public class SubAgentController extends BaseController {
      * @param pageSize
      * @return
      */
-    @GetMapping("/getSubAgents")
+    @GetMapping("/list")
     public BaseResponse getSubAgents(@RequestParam(required = false,defaultValue = "1") Integer pageNum,
                                      @RequestParam(required = false,defaultValue = "10") Integer pageSize){
 

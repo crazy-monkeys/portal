@@ -18,18 +18,18 @@
         <javaTypeResolver>  
             <property name="forceBigDecimals" value="false"/>  
         </javaTypeResolver>  
-        <javaModelGenerator targetPackage="com.crazy.portal.entity.system" targetProject="src/main/java">
+        <javaModelGenerator targetPackage="com.crazy.portal.entity.business" targetProject="src/main/java">
             <property name="enableSubPackages" value="true"/>  
             <property name="trimStrings" value="true"/>  
         </javaModelGenerator>  
-        <sqlMapGenerator targetPackage="com.crazy.portal.dao.system" targetProject="src/main/java">
+        <sqlMapGenerator targetPackage="com.crazy.portal.dao.business" targetProject="src/main/java">
             <property name="enableSubPackages" value="true"/>  
         </sqlMapGenerator>  
        
-        <javaClientGenerator type="XMLMAPPER" targetPackage="com.crazy.portal.dao.system" targetProject="src/main/java">
+        <javaClientGenerator type="XMLMAPPER" targetPackage="com.crazy.portal.dao.business" targetProject="src/main/java">
             <property name="enableSubPackages" value="true"/>  
         </javaClientGenerator>  
        <!--  <table tableName="t_schedule_job" domainObjectName="ScheduleJob" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>  --> 
-        <table tableName="t_user_role" domainObjectName="UserRoleDO" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+        <table tableName="t_business_insurance_info" domainObjectName="InsuranceInfo" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
     </context>  
 </generatorConfiguration>  
