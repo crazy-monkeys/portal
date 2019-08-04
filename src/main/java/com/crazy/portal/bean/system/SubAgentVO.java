@@ -2,9 +2,9 @@ package com.crazy.portal.bean.system;
 
 import lombok.Data;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 
 /**
  * @Desc:子账号基本信息
@@ -34,7 +34,7 @@ public class SubAgentVO {
      */
     @NotNull(message = "邮箱不能为空")
     @NotEmpty(message = "邮箱不能为空")
-    @Pattern(regexp="^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$",
+    @Email(regexp = "^[_A-Za-z0-9-]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$",
             message = "邮箱格式不正确")
     private String mail;
 
