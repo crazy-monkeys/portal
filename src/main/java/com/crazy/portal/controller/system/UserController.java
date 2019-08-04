@@ -46,16 +46,6 @@ public class UserController extends BaseController {
         return super.successResult(userService.findUser(loginName));
     }
 
-    /**
-     * 修改子账号基本信息
-     * @param userBasicInfo
-     * @return
-     */
-    @PostMapping("/update")
-    public BaseResponse updateUser(@RequestBody SubAgentVO userBasicInfo){
-        userService.updateChildUser(userBasicInfo);
-        return super.successResult();
-    }
 
     /**
      * 登录名称是否可用

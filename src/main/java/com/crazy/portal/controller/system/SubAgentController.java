@@ -42,6 +42,18 @@ public class SubAgentController extends BaseController {
     }
 
     /**
+     * 修改子账号信息
+     * @param userBasicInfo
+     * @return
+     */
+    @PostMapping("/update")
+    public BaseResponse updateUser(@RequestBody SubAgentVO userBasicInfo){
+        userService.updateSubAgent(userBasicInfo,super.getCurrentUser().getId());
+        return super.successResult();
+    }
+
+
+    /**
      * 查询所有子账号角色类型的角色
      * @return
      */

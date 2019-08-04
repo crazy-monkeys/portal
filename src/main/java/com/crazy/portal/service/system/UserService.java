@@ -21,7 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -77,8 +76,18 @@ public class UserService {
      * @return
      */
     @Transactional
-    public int updateChildUser(SubAgentVO basicInfo){
+    public int updateSubAgent(SubAgentVO basicInfo,Integer userId){
         User user = this.findUser(basicInfo.getLoginName());
+        if(!user.getUserType().equals(Enums.USER_TYPE.subAgent.toString())){
+            log.error("当前用户{} 修改的用户类型并不是子账号类型",userId);
+            throw new BusinessException(ErrorCodes.CommonEnum.SYSTEM_EXCEPTION.getCode(),
+                    ErrorCodes.CommonEnum.SYSTEM_EXCEPTION.getZhMsg());
+        }
+        user.setEmail(basicInfo.getMail());
+
+        if(StringUtil.isEmpty(basicInfo.getRoleCode())){
+            this.subAgentEmpowerment(basicInfo,userId);
+        }
         return userMapper.updateByPrimaryKeySelective(user);
     }
 
@@ -111,14 +120,8 @@ public class UserService {
         BusinessUtil.assertTrue(result==1,ErrorCodes.CommonEnum.SYSTEM_EXCEPTION);
         BusinessUtil.assertIsNull(user.getId(), ErrorCodes.SystemManagerEnum.USER_SAVE_FAILED);
 
-        //分配指定的角色
-        Role role = roleMapper.findRoleByCode(subAgentUser.getRoleCode());
-        BusinessUtil.assertIsNull(role, ErrorCodes.SystemManagerEnum.ROLE_NOT_EXIST);
-
-        BusinessUtil.assertTrue(Enums.ROLE_TYPE.SUB_USER.getRoleType() != role.getRoleType().intValue(),
-                ErrorCodes.SystemManagerEnum.ROLE_SAVE_FAILED);
-
-        userRoleMapper.insertSelective(new UserRole(user.getId(),role.getId()));
+        //子角色赋权
+        this.subAgentEmpowerment(subAgentUser, user.getId());
 
         //发送邮件通知用户
         MailBean mailBean = new MailBean();
@@ -130,6 +133,22 @@ public class UserService {
         mailBean.setParams(map);
         mailBean.setTemplateName(Enums.MAIL_TEMPLATE.USER_CREATE.getTemplateName());
         emailHelper.sendHtmlMail(mailBean);
+    }
+
+    /**
+     * 子角色赋权
+     * @param subAgentUser
+     * @param userId
+     */
+    private void subAgentEmpowerment(SubAgentVO subAgentUser, Integer userId) {
+        //分配指定的角色
+        Role role = roleMapper.findRoleByCode(subAgentUser.getRoleCode());
+        BusinessUtil.assertIsNull(role, ErrorCodes.SystemManagerEnum.ROLE_NOT_EXIST);
+
+        BusinessUtil.assertTrue(Enums.ROLE_TYPE.SUB_USER.getRoleType() != role.getRoleType().intValue(),
+                ErrorCodes.SystemManagerEnum.ROLE_SAVE_FAILED);
+
+        userRoleMapper.insertSelective(new UserRole(userId,role.getId()));
     }
 
     /**
