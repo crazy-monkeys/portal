@@ -2,15 +2,15 @@ logging:
   config: classpath:logback-sit.xml
 
 app:
-  ad-domain: unisoc.com
-  service-principal: HTTP/crmqa.unisoc.com@unisoc.com
-  keytab-location: /home/crmpor/svc.crm.keytab
+  ad-domain: THREEAPE.CN
+  service-principal: HTTP/ad.threeape.cn@THREEAPE.CN
+  keytab-location: C:\Users\Administrator\Desktop\tomcat.keytab
 
 spring:
   datasource:
-    username: crmportalqa
-    password: Crm$20%My99
-    url: jdbc:mysql://10.29.60.170:3306/crmportalqa?useUnicode=true&characterEncoding=utf8&rewriteBatchedStatements=true&serverTimezone=UTC
+    username: root
+    password: ThreeApe!@#$2019
+    url: jdbc:mysql://47.100.106.186:3306/portal?useUnicode=true&characterEncoding=utf8&rewriteBatchedStatements=true&serverTimezone=UTC
     driver-class-name: com.mysql.cj.jdbc.Driver
 
 file:
