@@ -90,10 +90,6 @@ public class RoleController extends BaseController {
         String currentRoleName = currentRole.getRoleName();
         String currentRoleCode = currentRole.getRoleCode();
         BusinessUtil.assertIsNull(currentRole,SystemManagerEnum.ROLE_NOT_EXIST);
-        if(role.getRoleCode().equals(currentRoleCode) && role.getRoleName().equals(currentRoleName)){
-            log.info("没有数据需要更改");
-            return successResult();
-        }
         Role checkRoleName = roleService.findRoleByName(role.getRoleName());
         if(checkRoleName != null && !currentRoleName.equals(checkRoleName.getRoleName())){
             BusinessUtil.assertFlase(true,SystemManagerEnum.ROLE_EXISTS);
