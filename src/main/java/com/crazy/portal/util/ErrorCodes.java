@@ -62,6 +62,7 @@ public class ErrorCodes {
         ROLE_EMPTY_ID(10024,"角色ID不能为空",""),
         ROLE_SAVE_FAILED(10025,"角色保存失败",""),
         ROLE_CODE_EXISTS(10026,"角色编码已经存在",""),
+        ROLE_EMPTY_TYPE(10027,"角色类型不能为空",""),
 
         PERMISSION_ILLEGAL(10040,"资源必填项不能为空",""),
         PERMISSION_NOT_EXIST(10041,"(父级/当前)资源ID不存在",""),

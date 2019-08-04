@@ -105,6 +105,9 @@ public class UserService {
                     ErrorCodes.SystemManagerEnum.USER_EXISTS.getZhMsg());
         }
         User user = new User();
+        user.setLoginName(subAgentUser.getLoginName());
+        user.setEmail(subAgentUser.getMail());
+        user.setCustomerName(subAgentUser.getCustomerName());
         String passwod = generateRandomPassword();
         user.setLoginPwd(passwordEncoder.encode(passwod));
         user.setUserStatus(Enums.USER_STATUS.freeze.getCode());

@@ -54,9 +54,9 @@ public class RoleController extends BaseController {
      */
     @PostMapping(value = "/saveRole")
     public BaseResponse saveRole(@RequestBody Role role) {
-
         BusinessUtil.assertEmpty(role.getRoleCode(),SystemManagerEnum.ROLE_EMPTY_CODE);
         BusinessUtil.assertEmpty(role.getRoleName(),SystemManagerEnum.ROLE_EMPTY_NAME);
+        BusinessUtil.assertIsNull(role.getRoleType(),SystemManagerEnum.ROLE_EMPTY_TYPE);
         Role roleQuery = roleService.findRole(role.getRoleCode());
         BusinessUtil.assertIsNotNull(roleQuery,SystemManagerEnum.ROLE_EXISTS);
         role.setActive((short)1);
