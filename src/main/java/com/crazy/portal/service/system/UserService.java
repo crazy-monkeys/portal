@@ -84,7 +84,7 @@ public class UserService {
                     ErrorCodes.CommonEnum.SYSTEM_EXCEPTION.getZhMsg());
         }
         user.setEmail(basicInfo.getMail());
-
+        user.setCustomerName(basicInfo.getCustomerName());
         if(StringUtil.isEmpty(basicInfo.getRoleCode())){
             this.subAgentEmpowerment(basicInfo,userId);
         }
