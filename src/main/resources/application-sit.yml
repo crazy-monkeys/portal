@@ -15,11 +15,10 @@ spring:
 
 file:
   path:
-    announcement:
-      thrid-push: /service/ftp/portal_file/push_thrid/announcement
-      thrid-pull: /service/ftp/portal_file/pull_thrid/announcement
-      local: /service/ftp/portal_file/local/announcement
-      template: /service/ftp/portal_file/template
+    thrid-push: /service/ftp/portal_file/push_thrid/announcement
+    thrid-pull: /service/ftp/portal_file/pull_thrid/announcement
+    local: /service/ftp/portal_file/local/announcement
+    template: /service/ftp/portal_file/template
 
 announcement:
   local-path: ${file.path.local}/announcement/
