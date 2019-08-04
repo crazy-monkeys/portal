@@ -108,8 +108,8 @@ public class UserService {
         user.setLoginName(subAgentUser.getLoginName());
         user.setEmail(subAgentUser.getMail());
         user.setCustomerName(subAgentUser.getCustomerName());
-        String passwod = generateRandomPassword();
-        user.setLoginPwd(passwordEncoder.encode(passwod));
+        String password = generateRandomPassword();
+        user.setLoginPwd(passwordEncoder.encode(password));
         user.setUserStatus(Enums.USER_STATUS.freeze.getCode());
         //只允许子账号注册
         user.setUserType(Enums.USER_TYPE.subAgent.toString());
@@ -132,7 +132,7 @@ public class UserService {
         mailBean.setSubject("账号开通邮件");
         Map<String,String> map = new HashMap<>();
         map.put("loginName",user.getLoginName());
-        map.put("passwod",passwod);
+        map.put("password",password);
         mailBean.setParams(map);
         mailBean.setTemplateName(Enums.MAIL_TEMPLATE.USER_CREATE.getTemplateName());
         emailHelper.sendHtmlMail(mailBean);

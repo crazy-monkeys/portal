@@ -8,6 +8,14 @@ app:
   keytab-location: /home/crmpor/svc.crm.keytab
 
 spring:
+  mail:
+    host: smtp.spreadtrum.com
+    port: 587
+    username: CRM.Admin@UniSoC.com
+    password: caCA$617
+    protocol: smtp
+    default-encoding: UTF-8
+
   datasource:
     username: crmportalqa
     password: Crm$20%My99

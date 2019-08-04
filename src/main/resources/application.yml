@@ -31,15 +31,6 @@ spring:
           mergeSql: true
           slowSqlMillis: 5000
 
-  # mail config
-  mail:
-    host: smtp.spreadtrum.com
-    port: 587
-    username: CRM.Admin@UniSoC.com
-    password: caCA$617
-    protocol: smtp
-    default-encoding: UTF-8
-
 
 server:
   port: 8080

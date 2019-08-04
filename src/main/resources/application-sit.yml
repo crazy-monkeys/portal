@@ -7,6 +7,15 @@ app:
   keytab-location: C:\Users\Administrator\Desktop\tomcat.keytab
 
 spring:
+  mail:
+    host: smtp.qq.com
+    port: 465
+    username: biao.chenit@qq.com
+    password: ewennkedjtdebeca
+    protocol: smtp
+    default-encoding: UTF-8
+
+
   datasource:
     username: root
     password: ThreeApe!@#$2019
