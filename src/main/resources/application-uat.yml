@@ -20,3 +20,9 @@ file:
       thrid-push: /service/ftp/portal_file/push_thrid/announcement/
       thrid-pull: /service/ftp/portal_file/pull_thrid/announcement/
       local: /home/crmpor/ftp/portal_file/local/announcement/
+
+announcement:
+  local-path: ${file.path.local}/announcement/
+
+deliver:
+  template-path: ${file.path.template}/deliver/
