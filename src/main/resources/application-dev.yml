@@ -28,6 +28,8 @@ spring:
     url: jdbc:mysql://47.100.106.186:3306/portal?useUnicode=true&characterEncoding=utf8&rewriteBatchedStatements=true&serverTimezone=UTC
     driver-class-name: com.mysql.cj.jdbc.Driver
 
+filepath:
+
 file:
   path:
     thrid-push: /Users/lee/Documents/job_code/portal_file/push_thrid

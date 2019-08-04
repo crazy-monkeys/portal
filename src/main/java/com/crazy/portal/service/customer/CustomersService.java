@@ -1,11 +1,11 @@
 package com.crazy.portal.service.customer;
 
 import com.alibaba.excel.EasyExcelFactory;
-import com.alibaba.excel.ExcelReader;
 import com.alibaba.excel.metadata.BaseRowModel;
 import com.alibaba.excel.metadata.Sheet;
 import com.crazy.portal.bean.common.Constant;
 import com.crazy.portal.bean.customer.CustomerQueryBean;
+import com.crazy.portal.bean.customer.basic.FileVO;
 import com.crazy.portal.bean.customer.visitRecord.CustomerCodeEO;
 import com.crazy.portal.bean.customer.visitRecord.VisitRecordEO;
 import com.crazy.portal.bean.customer.visitRecord.VisitRecordQueryBean;
@@ -15,6 +15,7 @@ import com.crazy.portal.dao.customer.DealerReportMapper;
 import com.crazy.portal.dao.customer.VisitRecordMapper;
 import com.crazy.portal.entity.basic.BaseEntity;
 import com.crazy.portal.entity.basic.BasicBankInfo;
+import com.crazy.portal.entity.basic.BasicFile;
 import com.crazy.portal.entity.customer.CustomerInfo;
 import com.crazy.portal.entity.customer.DealerReport;
 import com.crazy.portal.entity.customer.VisitRecord;
@@ -22,13 +23,14 @@ import com.crazy.portal.entity.system.User;
 import com.crazy.portal.util.*;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
-import java.beans.IntrospectionException;
-import java.lang.reflect.InvocationTargetException;
+import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.text.ParseException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -67,6 +69,10 @@ public class CustomersService {
     private VisitRecordMapper visitRecordMapper;
     @Resource
     private DealerReportMapper dealerReportMapper;
+    @Value("${filepath}")
+    private String filePath;
+
+    private static final String CUST_FILE_PATH = "custfile";
     /**
      * 分页查询客户列表
      * @param bean
@@ -165,7 +171,7 @@ public class CustomersService {
     }
 
     public void addExtendInfo(List<? extends BaseEntity> list, BaseMapper mapper, CustomerInfo bean){
-        list.stream().forEach((e)-> {
+        list.forEach((e)-> {
             e.setCustId(bean.getId());
             e.setActive(Constant.ACTIVE);
             e.setCreateUser(bean.getCreateUser());
@@ -376,5 +382,28 @@ public class CustomersService {
             });
 
         }
+    }
+
+    /**
+     * 文件上传
+     * @param files
+     * @return
+     */
+    public List<FileVO> fileUpload(MultipartFile[] files){
+        List<FileVO> fileList = FileUtil.upload(files, getCustFilePath());
+        return fileList;
+    }
+
+    /**
+     * 文件下载
+     * @param response
+     */
+    public void fileDownload(HttpServletResponse response, Integer id){
+        BasicFile file = basicFileMapper.selectByPrimaryKey(id);
+        FileUtil.download(response, getCustFilePath(), file.getFileName());
+    }
+
+    public String getCustFilePath(){
+        return filePath.concat(File.separator).concat(CUST_FILE_PATH);
     }
 }

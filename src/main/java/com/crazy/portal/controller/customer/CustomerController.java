@@ -102,4 +102,14 @@ public class CustomerController extends BaseController{
         customersService.uploadVisitRecord(files, this.getCurrentUser().getId());
         return successResult();
     }
+
+    @PostMapping("/file")
+    public BaseResponse fileUpload(MultipartFile[] files){
+        return successResult(customersService.fileUpload(files));
+    }
+
+    @GetMapping("/file/{id}")
+    public void fileDownload(HttpServletResponse response, @PathVariable Integer id){
+        customersService.fileDownload(response, id);
+    }
 }
