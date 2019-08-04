@@ -14,7 +14,7 @@ public class VisitRecord {
 
     private String customerLocation;
 
-    private String customerName;
+    private String customerCode;
 
     private Integer visitNumber;
 

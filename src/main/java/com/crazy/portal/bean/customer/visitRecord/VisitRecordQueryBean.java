@@ -12,8 +12,8 @@ import lombok.Data;
 @Data
 public class VisitRecordQueryBean extends PageBean{
 
-    //客户名
-    private String customerName;
+    //客户编号
+    private String customerCode;
     //项目名
     private String projectName;
     //拜访目的
