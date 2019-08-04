@@ -6,7 +6,7 @@
     <result column="cust_id" jdbcType="INTEGER" property="custId" />
     <result column="visit_date" jdbcType="TIMESTAMP" property="visitDate" />
     <result column="customer_location" jdbcType="VARCHAR" property="customerLocation" />
-    <result column="customer_name" jdbcType="VARCHAR" property="customerName" />
+    <result column="customer_code" jdbcType="VARCHAR" property="customerCode" />
     <result column="visit_number" jdbcType="INTEGER" property="visitNumber" />
     <result column="visit_purpose" jdbcType="VARCHAR" property="visitPurpose" />
     <result column="project_name" jdbcType="VARCHAR" property="projectName" />
@@ -26,7 +26,7 @@
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, cust_id, visit_date, customer_location, customer_name, visit_number, visit_purpose, 
+    id, cust_id, visit_date, customer_location, customer_code, visit_number, visit_purpose,
     project_name, project_status, project_department, talk_content, follow_plan, claim_description, 
     participants_zr, participants_ct, participants_dl, error_message, active, create_user_id, 
     create_time, update_user_id, update_time
@@ -57,8 +57,8 @@
       <if test="customerLocation != null">
         customer_location,
       </if>
-      <if test="customerName != null">
-        customer_name,
+      <if test="customerCode != null">
+        customer_code,
       </if>
       <if test="visitNumber != null">
         visit_number,
@@ -125,8 +125,8 @@
       <if test="customerLocation != null">
         #{customerLocation,jdbcType=VARCHAR},
       </if>
-      <if test="customerName != null">
-        #{customerName,jdbcType=VARCHAR},
+      <if test="customerCode != null">
+        #{customerCode,jdbcType=VARCHAR},
       </if>
       <if test="visitNumber != null">
         #{visitNumber,jdbcType=INTEGER},
@@ -193,8 +193,8 @@
       <if test="customerLocation != null">
         customer_location = #{customerLocation,jdbcType=VARCHAR},
       </if>
-      <if test="customerName != null">
-        customer_name = #{customerName,jdbcType=VARCHAR},
+      <if test="customerCode != null">
+        customer_code = #{customerCode,jdbcType=VARCHAR},
       </if>
       <if test="visitNumber != null">
         visit_number = #{visitNumber,jdbcType=INTEGER},
@@ -256,16 +256,16 @@
     <include refid="Base_Column_List" />
     from t_visit_record
     where create_user_id = #{userId,jdbcType=INTEGER} and active = 1
-    <if test="customerName != null">
-      and customer_name like concat('%', #{customerName}, '%')
+    <if test="customerCode != null and customerCode != ''">
+      and customer_code like concat('%', #{customerCode}, '%')
     </if>
-    <if test="projectName != null">
+    <if test="projectName != null and projectName != ''">
       and project_name like concat('%', #{projectName}, '%')
     </if>
-    <if test="visitPurpose != null">
+    <if test="visitPurpose != null and visitPurpose != ''">
       and visit_purpose like concat('%', #{visitPurpose}, '%')
     </if>
-    <if test="visitStartDate != null and visitEndDate != null">
+    <if test="visitStartDate != null and visitEndDate != null and visitStartDate != '' and visitEndDate != ''">
       and visit_date BETWEEN  str_to_date(#{visitStartDate}, '%m-%d-%Y %h:%i:%s') and str_to_date(#{visitEndDate}, '%m-%d-%Y %h:%i:%s')
     </if>
     order by create_time desc

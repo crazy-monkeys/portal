@@ -23,7 +23,7 @@ public class CustomerInfo {
     private Integer custType;
 
     /**
-     * 客户角色 1-内部客户 2-外部客户 3-潜在客户
+     * 客户角色 1-内部客户 2-外部客户
      */
     private Integer custRole;
 
@@ -43,7 +43,7 @@ public class CustomerInfo {
     private Short isLicense;
 
     /**
-     * 是否潜在客户
+     * 是否潜在客户 1-是 0-否
      */
     private Short isPotential;
     /**

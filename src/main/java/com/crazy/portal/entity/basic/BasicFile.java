@@ -40,5 +40,4 @@ public class BasicFile implements BaseEntity{
     @JSONField(serialize = false)
     private Date updateTime;
 
-
 }
