@@ -36,14 +36,14 @@ public class ExcelUtils {
      * Map<String, List>  sheetName和每个sheet的数据
      * ExcelTypeEnum 要导出的excel的类型 有ExcelTypeEnum.xls 和有ExcelTypeEnum.xlsx
      */
-    public static void createExcelStreamMutilByEaysExcel(HttpServletResponse response, Map<String, List<? extends BaseRowModel>> SheetNameAndDateList, ExcelTypeEnum type) throws UnsupportedEncodingException {
+    public static void createExcelStreamMutilByEaysExcel(HttpServletResponse response, Map<String, List<? extends BaseRowModel>> SheetNameAndDateList, String fileName, ExcelTypeEnum type) throws UnsupportedEncodingException {
         if (checkParam(SheetNameAndDateList, type)){
             return;
         }
         try {
             response.setContentType("multipart/form-data");
             response.setCharacterEncoding("utf-8");
-            response.setHeader("Content-disposition", "attachment;filename=" + "default" + type.getValue());
+            response.setHeader("Content-disposition", "attachment;filename=".concat(fileName).concat(type.getValue()));
             ServletOutputStream out = response.getOutputStream();
             ExcelWriter writer = new ExcelWriter(out, type, true);
             setSheet(SheetNameAndDateList, writer);

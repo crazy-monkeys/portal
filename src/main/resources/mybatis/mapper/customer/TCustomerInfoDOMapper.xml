@@ -33,6 +33,8 @@
     <result column="business_type" jdbcType="INTEGER" property="businessType"/>
     <result column="customer_status" jdbcType="INTEGER" property="customerStatus"></result>
     <result column="is_potential" jdbcType="INTEGER" property="isPotential"></result>
+    <result column="sales_name" jdbcType="VARCHAR" property="salesName"></result>
+    <result column="dealer_name" jdbcType="VARCHAR" property="dealerName"></result>
   </resultMap>
 
   <!--代理商result-->
@@ -55,7 +57,7 @@
     is_white_list, dealer_status, create_user, create_time, update_user, update_time, 
     active, advantage_value, advantage_introduction, business_introduction, is_license,
     business_type, customer_status, DATE_FORMAT(register_time,   '%Y-%m-%d %H:%i:%S') as register_time_str,
-    is_potential
+    is_potential, sales_name
   </sql>
 
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
@@ -163,6 +165,9 @@
       <if test="isPotential != null">
         is_potential,
       </if>
+      <if test="salesName != null">
+        sales_name,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -254,6 +259,9 @@
       </if>
       <if test="isPotential != null">
         #{isPotential,jdbcType=INTEGER},
+      </if>
+      <if test="salesName != null">
+        #{salesName,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -347,6 +355,9 @@
       <if test="isPotential != null">
         is_potential = #{isPotential,jdbcType=INTEGER},
       </if>
+      <if test="salesName != null">
+        sales_name = #{salesName,jdbcType=VARCHAR},
+      </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
@@ -420,35 +431,43 @@
 
   <select id="selectCustByPage" resultMap="BaseResultMap" parameterType="com.crazy.portal.bean.customer.CustomerQueryBean">
     select
-    <include refid="Base_Column_List" />
-    from t_customer_info
-    where active = 1 and create_user = #{userId}
+    a.id, a.cust_type, a.cust_role, a.cust_in_code, a.cust_out_code, a.cust_name,
+    a.cust_abbreviation, a.cust_mobile, a.cust_phone_no, a.cust_fax, a.cust_email, a.cust_web, a.corporate_assets,
+    a.corporate_number, a.corporate_parents,
+    a.is_white_list, a.dealer_status, a.create_user, a.create_time, a.update_user, a.update_time,
+    a.active, a.advantage_value, a.advantage_introduction, a.business_introduction, a.is_license,
+    a.business_type, a.customer_status, DATE_FORMAT(a.register_time,   '%Y-%m-%d %H:%i:%S') as register_time_str,
+    a.is_potential, a.sales_name, b.cust_name as dealer_name
+    from t_customer_info a
+    left join t_dealer_report dr on dr.cust_id = a.id
+    left join t_customer_info b on b.id = dr.dealer_id
+    where a.active = 1 and a.create_user = #{userId}
     <if test="customerName != null and customerName != ''">
-      and cust_name like concat('%',#{customerName},'%')
+      and a.cust_name like concat('%',#{customerName},'%')
     </if>
     <if test="customerInCode != null and customerInCode != ''">
-      and cust_in_code like concat('%',#{customerInCode},'%')
+      and a.cust_in_code like concat('%',#{customerInCode},'%')
     </if>
     <if test="customerOutCode != null and customerOutCode != ''">
-      and cust_out_code like concat('%',#{customerOutCode},'%')
+      and a.cust_out_code like concat('%',#{customerOutCode},'%')
     </if>
     <if test="isLicense != null">
-      and is_license = #{isLicense}
+      and a.is_license = #{isLicense}
     </if>
     <if test="businessType != null and businessType != ''">
-      and business_type = #{businessType}
+      and a.business_type = #{businessType}
     </if>
     <if test="reportStartDate != null and reportEndDate != null and reportStartDate != '' and reportEndDate != ''">
-      and register_time between str_to_date(#{reportStartDate}, '%Y-%m-%d') and str_to_date(#{reportEndDate}, '%Y-%m-%d')
+      and a.register_time between str_to_date(#{reportStartDate}, '%Y-%m-%d') and str_to_date(#{reportEndDate}, '%Y-%m-%d')
     </if>
     <if test="createStartDate != null and createEndDate != null and createStartDate != '' and createEndDate != ''">
-      and create_time between str_to_date(#{createStartDate}, '%Y-%m-%d') and str_to_date(#{createEndDate}, '%Y-%m-%d')
+      and a.create_time between str_to_date(#{createStartDate}, '%Y-%m-%d') and str_to_date(#{createEndDate}, '%Y-%m-%d')
     </if>
     <if test="customerStatus != null and customerStatus != 1">
-      and customer_status = #{customerStatus}
+      and a.customer_status = #{customerStatus}
     </if>
     <if test="customerStatus != null and customerStatus == 1">
-      and customer_status in (1,4)
+      and a.customer_status in (1,4)
     </if>
   </select>
 

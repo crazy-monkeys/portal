@@ -149,7 +149,14 @@ public class CustomerInfo {
      * 用户状态 1-生效 0-冻结
      */
     private Integer dealerStatus;
-
+    /**
+     * 代理商名称
+     */
+    private String dealerName;
+    /**
+     * 销售名称
+     */
+    private String salesName;
     /**
      * 客户状态 1-待提交 2-待审批 3-正常 4-被驳回
      */
@@ -158,8 +165,7 @@ public class CustomerInfo {
     @JsonIgnore
     @JSONField(serialize = false)
     private Integer createUser;
-    @JsonIgnore
-    @JSONField(serialize = false)
+    @JSONField(format="yyyy-MM-dd HH:mm:ss")
     private Date createTime;
     @JsonIgnore
     @JSONField(serialize = false)

@@ -1,5 +1,6 @@
 package com.crazy.portal.util;
 
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,6 +13,7 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
+@Slf4j
 public class BeanUtils {
     private static final Logger logger = LoggerFactory.getLogger(BeanUtils.class);
     private BeanUtils() {
@@ -55,5 +57,21 @@ public class BeanUtils {
             }
         }
 
+    }
+
+    /**
+     * 根据属性名获取属性值
+     * */
+    public static Object getFieldValueByName(String fieldName, Object o) {
+        try {
+            String firstLetter = fieldName.substring(0, 1).toUpperCase();
+            String getter = "get" + firstLetter + fieldName.substring(1);
+            Method method = o.getClass().getMethod(getter, new Class[] {});
+            Object value = method.invoke(o, new Object[] {});
+            return value;
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            return null;
+        }
     }
 }

@@ -83,22 +83,21 @@ public class CustomerController extends BaseController{
 
     @GetMapping("/visitRecord/list")
     public BaseResponse visitRecordList(VisitRecordQueryBean bean){
+        bean.setUserId(this.getCurrentUser().getId());
         return successResult(customersService.selectVisitRecordPage(bean));
     }
 
     @GetMapping("/visitRecord/download")
-    public BaseResponse visitRecordDownload(HttpServletResponse response){
+    public void visitRecordDownload(HttpServletResponse response){
         try {
             Map<String, List<? extends BaseRowModel>> resultMap = customersService.downloadTemplate(this.getCurrentUser().getId());
-            ExcelUtils.createExcelStreamMutilByEaysExcel(response, resultMap, ExcelTypeEnum.XLSX);
-            return successResult();
+            ExcelUtils.createExcelStreamMutilByEaysExcel(response, resultMap, "拜访记录", ExcelTypeEnum.XLSX);
         }catch (Exception ex){
             log.error("下载模板异常", ex);
-            return errorResult();
         }
     }
 
-    @PostMapping("visitRecord/upload")
+    @PostMapping("/visitRecord/upload")
     public BaseResponse visitRecordUpload(MultipartFile[] files) throws Exception{
         customersService.uploadVisitRecord(files, this.getCurrentUser().getId());
         return successResult();

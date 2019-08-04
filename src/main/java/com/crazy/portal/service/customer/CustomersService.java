@@ -333,8 +333,9 @@ public class CustomersService {
             eo.setCustomerCode(cust.getCustInCode());
             custCodeList.add(eo);
         });
-        List<VisitRecordEO> visitRecordEO = new ArrayList<>();
-        resultMap.put("模板", visitRecordEO);
+        List<VisitRecordEO> visitRecordList = new ArrayList<>();
+        visitRecordList.add(new VisitRecordEO());
+        resultMap.put("模板", visitRecordList);
         resultMap.put("客户", custCodeList);
         return resultMap;
     }
@@ -363,6 +364,8 @@ public class CustomersService {
                 try {
                     VisitRecord record = new VisitRecord();
                     BeanUtils.copyNotNullFields(e , record);
+                    String excelVisitDate = BeanUtils.getFieldValueByName("visitDate", e).toString();
+                    record.setVisitDate(DateUtil.getFlexibleDate(excelVisitDate));
                     record.setActive(Constant.ACTIVE);
                     record.setCreateUserId(userId);
                     record.setCreateTime(DateUtil.getCurrentTS());
