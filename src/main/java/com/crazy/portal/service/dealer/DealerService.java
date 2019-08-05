@@ -5,20 +5,18 @@ import com.crazy.portal.bean.customer.basic.FileVO;
 import com.crazy.portal.bean.customer.basic.InvoiceVO;
 import com.crazy.portal.bean.customer.basic.ShipVO;
 import com.crazy.portal.bean.customer.dealer.DealerVO;
-import com.crazy.portal.bean.customer.dealer.credit.ZrfcsdcustomercreditResponse;
 import com.crazy.portal.bean.customer.dealer.credit.Zsdscredit;
-import com.crazy.portal.config.exception.BusinessException;
 import com.crazy.portal.dao.customer.CustomerInfoMapper;
 import com.crazy.portal.entity.basic.*;
 import com.crazy.portal.entity.customer.CustomerInfo;
 import com.crazy.portal.entity.system.User;
 import com.crazy.portal.service.customer.CustomersService;
 import com.crazy.portal.util.BusinessUtil;
+import com.crazy.portal.util.CallApiUtils;
 import com.crazy.portal.util.ErrorCodes;
-import com.crazy.portal.util.HttpClientUtils;
-import com.crazy.portal.util.JaxbXmlUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,8 +29,6 @@ import java.util.List;
 @Slf4j
 @Service
 public class DealerService {
-    private static final String PRODUCT_URL = "https://e600180-hcioem.hcisbt.cn1.hana.ondemand.com:443/cxf/CUSTOMERCREDIT";
-
     @Resource
     private CustomerInfoMapper customerInfoMapper;
     @Resource
@@ -46,41 +42,14 @@ public class DealerService {
     public DealerVO getDealerInfo(Integer dealerId){
         CustomerInfo dealerInfo = customerInfoMapper.selectDealerInfo(dealerId);
         BusinessUtil.assertIsNull(dealerInfo, ErrorCodes.BusinessEnum.CUSTOMER_IS_EMPYT);
-        ZrfcsdcustomercreditResponse response = getDealerCredit(dealerInfo.getCustInCode());
-        Zsdscredit zsdscredit = new Zsdscredit();
-        if(response.getOreturn().equals("0")){
-            zsdscredit = response.getOcredit();
-        }
-        return mappingVO(dealerInfo, zsdscredit);
-    }
-
-    /**
-     * 获取代理商 授信额度
-     * @param dealerCode
-     * @return
-     */
-    public ZrfcsdcustomercreditResponse getDealerCredit(String dealerCode){
-        try{
-            String params = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:urn=\"urn:sap-com:document:sap:soap:functions:mc-style\">" +
-                    "   <soapenv:Header/>" +
-                    "   <soapenv:Body>" +
-                    "      <urn:Zrfcsdcustomercredit>" +
-                    "         <Ikunnr>"+dealerCode+"</Ikunnr>" +
-                    "      </urn:Zrfcsdcustomercredit>" +
-                    "   </soapenv:Body>" +
-                    "</soapenv:Envelope>";
-            String jsonStr = HttpClientUtils.postHeader(PRODUCT_URL, params);
-            return JaxbXmlUtil.convertSoapXmlToJavaBean(jsonStr, ZrfcsdcustomercreditResponse.class);
-        }catch (Exception e){
-            throw new BusinessException(ErrorCodes.BusinessEnum.CUSTOMER_CREDIT);
-        }
+        return mappingVO(dealerInfo);
     }
 
     public void updateDealerInfo(CustomerInfo dealer, User user){
         customersService.update(dealer, user);
     }
 
-    private DealerVO mappingVO(CustomerInfo dealer, Zsdscredit zsdscredit){
+    private DealerVO mappingVO(CustomerInfo dealer){
         DealerVO vo = new DealerVO();
         vo.setDealerCode(dealer.getCustInCode());
         vo.setDealerName(dealer.getCustName());
@@ -103,6 +72,7 @@ public class DealerService {
         vo.setFiles(mappingFile(dealer.getBasicFile()));
 
          //授信额度初始值
+        Zsdscredit zsdscredit = CallApiUtils.callECCCreditApi(dealer.getCustInCode());
         vo.setCredit(zsdscredit.getDmbtr());
         vo.setCreditUSE(zsdscredit.getZoccupy());
         vo.setCreditUnUSE(zsdscredit.getZremain());

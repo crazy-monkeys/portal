@@ -11,5 +11,5 @@ import java.util.List;
 public class BaseProResponseVO {
     private String msg;
     private Boolean result;
-    private List<ProductVO> contents;
+    private List<ProductBean> contents;
 }

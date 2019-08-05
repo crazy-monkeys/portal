@@ -173,6 +173,21 @@ public class Enums {
             return desc;
         }
     }
+    //</editor-fold>
+
+    public enum RATE_TYPE{
+        ACTIVE(1),INACTIVE(0);
+
+        private final int code;
+
+        RATE_TYPE(int code){
+            this.code = code;
+        }
+
+        public int getCode() {
+            return code;
+        }
+    }
 
     /**
      * 代理状态

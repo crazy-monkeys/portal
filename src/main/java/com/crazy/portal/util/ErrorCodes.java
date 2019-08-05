@@ -70,7 +70,8 @@ public class ErrorCodes {
         PERMISSION_USED(10043,"该权限已配置角色，请先删除该权限的角色信息",""),
         PERMISSION_UN_TYPE_OPTIONAL(10044,"类型不存在",""),
 
-        SYS_PARAM_VALUE(10045,"该选项下value已存在","")
+        SYS_PARAM_VALUE(10045,"该选项下value已存在",""),
+        SYS_BEAN_ERROR(10046,"对象映射异常","")
         ;
 
 
@@ -125,7 +126,10 @@ public class ErrorCodes {
         //客户模块
         CUSTOMER_IS_EMPYT(50000, "没有对应的客户信息", ""),
         CUSTOMER_NAME_EXISTS(50001, "该客户名已存在", ""),
-        CUSTOMER_CREDIT(50002,"获取代理商授信额度异常","");
+        CUSTOMER_CREDIT(50002,"获取代理商授信额度异常",""),
+
+
+        RATE_BATCH_IS_NOT_NULL(60001,"批次号已存在","");
 
         private final int code;
         private final String zhMsg;

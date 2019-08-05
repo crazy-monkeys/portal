@@ -1,20 +1,16 @@
 package com.crazy.portal.bean.product;
 
+import com.crazy.portal.bean.common.PageBean;
 import lombok.Data;
 
 /**
- * Created by weiying on 2019/7/29.
+ * @ClassName: ProductVO
+ * @Author: God Man Qiu~
+ * @Date: 2019/8/3 13:06
  */
 @Data
-public class ProductVO {
-    private String BU;
-    private String BUHead;
-    private String PDT;
-    private String Platform;
-    private String Product;
-    private String SAPMID;
-    private String SubCategory;
-    private String Category;
-    private Integer SN;
-    private String Manager;
+public class ProductVO extends PageBean{
+    private Integer pModel;
+    private Integer pFunction;
+    private Integer active;
 }
