@@ -32,13 +32,13 @@ spring:
 file:
   path:
     root: /service/ftp/portal_file #公用基础路径
-    local: ${file.path.root}/local #portal系统内文件地址入口
-    thrid-push: ${file.path.root}/push_thrid #portal对接第三方文件出口地址
-    thrid-pull: ${file.path.root}/pull_thrid #第三方传输文件至portal入口地址
-    template: ${file.path.root}/template #portal功能模版文件地址
+    root-local: ${file.path.root}/local #portal系统内文件地址入口
+    root-thrid-push: ${file.path.root}/push_thrid #portal对接第三方文件出口地址
+    root-thrid-pull: ${file.path.root}/pull_thrid #第三方传输文件至portal入口地址
+    root-template: ${file.path.root}/template #portal功能模版文件地址
     announcement: #公告管理模块
-      local: ${file.path.local}/announcement/
+      local: ${file.path.root-local}/announcement/
     deliver: #出货管理模块
-      template: ${file.path.template}/deliver/
-      push: ${file.path.thrid-push}/deliver/
-      pull: ${file.path.thrid-pull}/deliver/
+      template: ${file.path.root-template}/deliver/
+      push: ${file.path.root-thrid-push}/deliver/
+      pull: ${file.path.root-thrid-pull}/deliver/
