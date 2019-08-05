@@ -123,6 +123,11 @@ public class ErrorCodes {
         ANNOUNCEMENT_FILE_NOT_FOUND_BY_ID(30003, "未找到公告文件", ""),
         ANNOUNCEMENT_FILE_ERROR_BY_ID(30004, "公告文件数据异常", ""),
 
+        //交付模块
+        //交付模块 - 出货管理
+        HANDOVER_DELIVER_NOT_DEALER(40001, "非代理商禁止操作", ""),
+        //交付模块 - 收货管理
+
         //客户模块
         CUSTOMER_IS_EMPYT(50000, "没有对应的客户信息", ""),
         CUSTOMER_NAME_EXISTS(50001, "该客户名已存在", ""),
