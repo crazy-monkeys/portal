@@ -69,7 +69,7 @@ public class CustomersService {
     private VisitRecordMapper visitRecordMapper;
     @Resource
     private DealerReportMapper dealerReportMapper;
-    @Value("${filepath}")
+    @Value("${file.path.root}")
     private String filePath;
 
     private static final String CUST_FILE_PATH = "custfile";

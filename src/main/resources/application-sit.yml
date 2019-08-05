@@ -29,10 +29,9 @@ spring:
     url: jdbc:mysql://47.100.106.186:3306/portal?useUnicode=true&characterEncoding=utf8&rewriteBatchedStatements=true&serverTimezone=UTC
     driver-class-name: com.mysql.cj.jdbc.Driver
 
-filepath: /service/ftp/portal_file/
-
 file:
   path:
+    root: /service/ftp/portal_file
     thrid-push: /service/ftp/portal_file/push_thrid/announcement
     thrid-pull: /service/ftp/portal_file/pull_thrid/announcement
     local: /service/ftp/portal_file/local/announcement
