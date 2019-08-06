@@ -42,7 +42,7 @@ public class DealerRateService {
         rateBatch = mappingBatch(batchSeq, userId);
         dealerRateBatchMapper.insertSelective(rateBatch);
 
-        List<DealerRateBean> rateBeans = ExcelUtils.readExcel(file, DealerRateBean.class,1);
+        List<DealerRateBean> rateBeans = ExcelUtils.readExcel(file, DealerRateBean.class);
         for(DealerRateBean rateBean : rateBeans){
             dealerRateDOMapper.insertSelective(mappingDealerReate(rateBean, userId, rateBatch.getId()));
         }

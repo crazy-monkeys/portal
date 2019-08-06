@@ -11,10 +11,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -54,44 +51,126 @@ public class ExcelUtils {
         }
     }
 
+    /**
+     * 默认读取第一个sheet页，并从数据第二行开始读取数据，适用于第一行作为表头的Excel文档
+     * @param filePath
+     * @param fileName
+     * @param clazz
+     * @param <T>
+     * @return
+     */
+    public static<T> List<T> readExcel(String filePath, String fileName, Class clazz) {
+        return readExcel(filePath, fileName, clazz, 1);
+    }
 
+    /**
+     * 读取指定sheet页，默认从数据第二行开始读取数据，适用于第一行作为表头的Excel文档
+     * @param filePath
+     * @param fileName
+     * @param clazz
+     * @param sheetNo
+     * @param <T>
+     * @return
+     */
+    public static<T> List<T> readExcel(String filePath, String fileName, Class clazz, int sheetNo) {
+        return readExcel(filePath, fileName, clazz, sheetNo, 1);
+    }
+
+    /**
+     * 读取指定sheet页，指定数据行的Excel文档
+     * @param filePath
+     * @param fileName
+     * @param clazz
+     * @param sheetNo
+     * @param headLineNum
+     * @param <T>
+     * @return
+     */
+    public static<T> List<T> readExcel(String filePath, String fileName, Class clazz, int sheetNo, int headLineNum){
+        FileInputStream in;
+        try {
+            in = new FileInputStream(String.format("%s%s", filePath, fileName));
+        }catch (FileNotFoundException ex) {
+            log.warn("File does not exist, filePath:[{}], fileName:[{}]", filePath, fileName);
+            return Collections.emptyList();
+        }
+        try {
+            return readExcel(in, clazz, fileName, sheetNo, headLineNum);
+        }catch (Exception ex) {
+            log.error("Read excel exception", ex);
+            throw new BusinessException(EXCEL_READ_ERROR);
+        }
+    }
+
+    /**
+     * 默认读取第一个sheet页，并从数据第二行开始读取数据，适用于第一行作为表头的Excel文档
+     * @param excel
+     * @param clazz
+     * @param <T>
+     * @return
+     */
+    public static<T> List<T> readExcel(MultipartFile excel, Class clazz) {
+        return readExcel(excel, clazz, 1);
+    }
+
+    /**
+     * 读取指定sheet页，默认从数据第二行开始读取数据，适用于第一行作为表头的Excel文档
+     * @param excel
+     * @param clazz
+     * @param sheetNo
+     * @param <T>
+     * @return
+     */
     public static<T> List<T> readExcel(MultipartFile excel, Class clazz, int sheetNo) {
         return readExcel(excel, clazz, sheetNo, 1);
     }
 
-
+    /**
+     * 读取指定sheet页，指定数据行的Excel文档
+     * @param excel
+     * @param clazz
+     * @param sheetNo
+     * @param headLineNum
+     * @param <T>
+     * @return
+     */
     public static<T> List<T> readExcel(MultipartFile excel, Class clazz, int sheetNo, int headLineNum) {
         if(null == excel){
             log.warn("Excel is null");
             return Collections.emptyList();
         }
-        ExcelListener excelListener = new ExcelListener();
         try {
-            ExcelReader reader = getReader(excel, excelListener);
-            Sheet sheet = new Sheet(sheetNo, headLineNum, clazz);
-            reader.read(sheet);
+            return readExcel(excel.getInputStream(), clazz, excel.getOriginalFilename(), sheetNo, headLineNum);
         }catch (Exception ex) {
             log.error("Read excel exception", ex);
             throw new BusinessException(EXCEL_READ_ERROR);
         }
+    }
+
+    private static<T> List<T> readExcel(InputStream in, Class clazz, String fileName, int sheetNo, int headLineNum) throws IOException {
+        checkExcelType(fileName);
+        ExcelListener excelListener = new ExcelListener();
+        ExcelReader reader = getReader(in, excelListener);
+        Sheet sheet = new Sheet(sheetNo, headLineNum, clazz);
+        reader.read(sheet);
         return excelListener.getData();
     }
 
+    private static ExcelReader getReader(InputStream in, ExcelListener excelListener) throws IOException {
+        InputStream inputStream = new BufferedInputStream(in);
+        return new ExcelReader(inputStream, null, excelListener, false);
+    }
+
     /**
-     *
-     * @param excel
-     * @param excelListener
-     * @return
-     * @throws IOException
+     * 校验Excel文件后缀是否符合要求
+     * @param fileName 文件名
      */
-    private static ExcelReader getReader(MultipartFile excel, ExcelListener excelListener) throws IOException {
-        String lowerFileName = null == excel.getOriginalFilename() ? "" : excel.getOriginalFilename().toLowerCase();
-        if(!(lowerFileName.endsWith(ExcelTypeEnum.XLS.getValue()) || lowerFileName.endsWith(ExcelTypeEnum.XLSX.getValue()))){
-            log.error("Excel type is error, fullName : {}", lowerFileName);
+    private static void checkExcelType(String fileName) {
+        fileName = null == fileName ? "" : fileName.toLowerCase();
+        if(!(fileName.endsWith(ExcelTypeEnum.XLS.getValue()) || fileName.endsWith(ExcelTypeEnum.XLSX.getValue()))){
+            log.error("Excel type is error, fullName : {}", fileName);
             throw new BusinessException(EXCEL_TYPE_ERROR);
         }
-        InputStream inputStream = new BufferedInputStream(excel.getInputStream());
-        return new ExcelReader(inputStream, null, excelListener, false);
     }
 
     /**

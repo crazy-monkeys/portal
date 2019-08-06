@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.crazy.portal.dao.handover.DeliverRecordMapper">
-  <resultMap id="BaseResultMap" type="com.crazy.portal.entity.handover.DeliverRecord">
+<mapper namespace="com.crazy.portal.dao.handover.DeliverReceiveRecordMapper">
+  <resultMap id="BaseResultMap" type="com.crazy.portal.entity.handover.DeliverReceiveRecord">
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="dealer_id" jdbcType="INTEGER" property="dealerId" />
     <result column="dealer_name" jdbcType="VARCHAR" property="dealerName" />
-    <result column="delivery_date" jdbcType="TIMESTAMP" property="deliveryDate" />
+    <result column="type" jdbcType="INTEGER" property="type" />
     <result column="upload_time" jdbcType="TIMESTAMP" property="uploadTime" />
     <result column="status" jdbcType="INTEGER" property="status" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
@@ -13,31 +13,31 @@
     <result column="approval_time" jdbcType="TIMESTAMP" property="approvalTime" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, dealer_id, dealer_name, delivery_date, upload_time, status, create_time, approval_user_id, 
+    id, dealer_id, dealer_name, type, upload_time, status, create_time, approval_user_id, 
     approval_time
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from t_deliver_record
+    from t_deliver_receive_record
     where id = #{id,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from t_deliver_record
+    delete from t_deliver_receive_record
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.crazy.portal.entity.handover.DeliverRecord">
-    insert into t_deliver_record (id, dealer_id, dealer_name, 
-      delivery_date, upload_time, status, 
+  <insert id="insert" parameterType="com.crazy.portal.entity.handover.DeliverReceiveRecord">
+    insert into t_deliver_receive_record (id, dealer_id, dealer_name, 
+      type, upload_time, status, 
       create_time, approval_user_id, approval_time
       )
     values (#{id,jdbcType=INTEGER}, #{dealerId,jdbcType=INTEGER}, #{dealerName,jdbcType=VARCHAR}, 
-      #{deliveryDate,jdbcType=TIMESTAMP}, #{uploadTime,jdbcType=TIMESTAMP}, #{status,jdbcType=INTEGER}, 
+      #{type,jdbcType=INTEGER}, #{uploadTime,jdbcType=TIMESTAMP}, #{status,jdbcType=INTEGER}, 
       #{createTime,jdbcType=TIMESTAMP}, #{approvalUserId,jdbcType=INTEGER}, #{approvalTime,jdbcType=TIMESTAMP}
       )
   </insert>
-  <insert id="insertSelective" useGeneratedKeys="true" keyProperty="id" parameterType="com.crazy.portal.entity.handover.DeliverRecord">
-    insert into t_deliver_record
+  <insert id="insertSelective" parameterType="com.crazy.portal.entity.handover.DeliverReceiveRecord">
+    insert into t_deliver_receive_record
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
@@ -48,8 +48,8 @@
       <if test="dealerName != null">
         dealer_name,
       </if>
-      <if test="deliveryDate != null">
-        delivery_date,
+      <if test="type != null">
+        type,
       </if>
       <if test="uploadTime != null">
         upload_time,
@@ -77,8 +77,8 @@
       <if test="dealerName != null">
         #{dealerName,jdbcType=VARCHAR},
       </if>
-      <if test="deliveryDate != null">
-        #{deliveryDate,jdbcType=TIMESTAMP},
+      <if test="type != null">
+        #{type,jdbcType=INTEGER},
       </if>
       <if test="uploadTime != null">
         #{uploadTime,jdbcType=TIMESTAMP},
@@ -97,8 +97,8 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.crazy.portal.entity.handover.DeliverRecord">
-    update t_deliver_record
+  <update id="updateByPrimaryKeySelective" parameterType="com.crazy.portal.entity.handover.DeliverReceiveRecord">
+    update t_deliver_receive_record
     <set>
       <if test="dealerId != null">
         dealer_id = #{dealerId,jdbcType=INTEGER},
@@ -106,8 +106,8 @@
       <if test="dealerName != null">
         dealer_name = #{dealerName,jdbcType=VARCHAR},
       </if>
-      <if test="deliveryDate != null">
-        delivery_date = #{deliveryDate,jdbcType=TIMESTAMP},
+      <if test="type != null">
+        type = #{type,jdbcType=INTEGER},
       </if>
       <if test="uploadTime != null">
         upload_time = #{uploadTime,jdbcType=TIMESTAMP},
@@ -127,11 +127,11 @@
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.crazy.portal.entity.handover.DeliverRecord">
-    update t_deliver_record
+  <update id="updateByPrimaryKey" parameterType="com.crazy.portal.entity.handover.DeliverReceiveRecord">
+    update t_deliver_receive_record
     set dealer_id = #{dealerId,jdbcType=INTEGER},
       dealer_name = #{dealerName,jdbcType=VARCHAR},
-      delivery_date = #{deliveryDate,jdbcType=TIMESTAMP},
+      type = #{type,jdbcType=INTEGER},
       upload_time = #{uploadTime,jdbcType=TIMESTAMP},
       status = #{status,jdbcType=INTEGER},
       create_time = #{createTime,jdbcType=TIMESTAMP},

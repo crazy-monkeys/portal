@@ -11,6 +11,8 @@ import lombok.Data;
 @Data
 public class DeliverTemplateBean extends BaseRowModel {
 
+    private String dealerName;
+
     /** 上传时间 */
     @ExcelProperty(index = 0)
     private String uploadTime;
@@ -27,68 +29,64 @@ public class DeliverTemplateBean extends BaseRowModel {
     @ExcelProperty(index = 3)
     private String sales;
 
-    /** 销售 */
+    /** 类别一(类型) */
     @ExcelProperty(index = 4)
     private String categoryOne;
 
-    /** 类别一(类型) */
+    /** 类别二(子类) */
     @ExcelProperty(index = 5)
     private String categoryTow;
 
-    /** 类别二(子类) */
+    /** 类别三(平台) */
     @ExcelProperty(index = 6)
     private String categoryThree;
 
-    /** 类别三(平台) */
-    @ExcelProperty(index = 7)
-    private String categoryFour;
-
     /** 产品型号 */
-    @ExcelProperty(index = 8)
+    @ExcelProperty(index = 7)
     private String productModel;
 
     /** 出货日期 */
-    @ExcelProperty(index = 9)
+    @ExcelProperty(index = 8)
     private String deliveryDate;
 
     /** 数量 */
-    @ExcelProperty(index = 10)
-    private String number;
+    @ExcelProperty(index = 9)
+    private String deliverNumber;
 
     /** Sale Price */
-    @ExcelProperty(index = 11)
+    @ExcelProperty(index = 10)
     private String salePrice;
 
     /** Po Price */
-    @ExcelProperty(index = 12)
+    @ExcelProperty(index = 11)
     private String poPrice;
 
     /** Margin */
-    @ExcelProperty(index = 13)
+    @ExcelProperty(index = 12)
     private String margin;
 
     /** 币种 */
-    @ExcelProperty(index = 14)
+    @ExcelProperty(index = 13)
     private String currency;
 
     /** 客户订单号 */
-    @ExcelProperty(index = 15)
+    @ExcelProperty(index = 14)
     private String customerOrderNumber;
 
     /** 出货类型 */
-    @ExcelProperty(index = 16)
+    @ExcelProperty(index = 15)
     private String deliveryType;
 
     /** 订单月份 */
-    @ExcelProperty(index = 17)
+    @ExcelProperty(index = 16)
     private String orderMonth;
 
     /** 发货公司 */
-    @ExcelProperty(index = 18)
+    @ExcelProperty(index = 17)
     private String deliveryCompany;
 
     /** 备注 */
-    @ExcelProperty(index = 19)
+    @ExcelProperty(index = 18)
     private String remark;
 
 }

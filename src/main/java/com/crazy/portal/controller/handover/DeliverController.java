@@ -1,12 +1,14 @@
 package com.crazy.portal.controller.handover;
 
 import com.crazy.portal.bean.BaseResponse;
+import com.crazy.portal.bean.handover.DeliverTemplateBean;
 import com.crazy.portal.controller.BaseController;
 import com.crazy.portal.service.handover.DeliverService;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 /**
  * Created by lee on 2019/8/3.
@@ -28,13 +30,14 @@ public class DeliverController extends BaseController {
     }
 
     /**
-     * 出货数据上传
+     * 出货数据上传 并 校验
      * @param excel
      * @return
      */
     @PostMapping(value = "/deliver/template")
-    public BaseResponse uploadTemplate(MultipartFile excel) {
-        return super.successResult(deliverService.uploadTemplate(excel, getCurrentUser().getId()));
+    public BaseResponse uploadTemplateData(MultipartFile excel) {
+        List<DeliverTemplateBean> deliverData = deliverService.uploadTemplateData(excel, getCurrentUser().getId());
+        return super.successResult(deliverService.verificationData(deliverData, getCurrentUser().getId()));
     }
 
     /**
@@ -42,8 +45,8 @@ public class DeliverController extends BaseController {
      * @param response
      */
     @GetMapping(value = "/deliver/error")
-    public void downloadError(HttpServletResponse response) {
-        deliverService.downloadError(response);
+    public void downloadError(HttpServletResponse response, String fileName) {
+        deliverService.downloadError(response, fileName);
     }
 
     /**
@@ -51,11 +54,11 @@ public class DeliverController extends BaseController {
      * @param ids
      * @return
      */
-    @GetMapping(value = "/deliver/verification")
+/*    @GetMapping(value = "/deliver/verification")
     public BaseResponse verificationData(Integer[] ids) {
-        deliverService.verificationData(ids);
+//        deliverService.verificationData(ids);
         return super.successResult();
-    }
+    }*/
 
     /**
      * 出货数据提交

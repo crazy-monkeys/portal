@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.crazy.portal.dao.handover.DeliverDetailMapper">
+  <resultMap id="BaseResultMap" type="com.crazy.portal.entity.handover.DeliverDetail">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="upload_time" jdbcType="TIMESTAMP" property="uploadTime" />
+    <result column="customer_external_number" jdbcType="VARCHAR" property="customerExternalNumber" />
+    <result column="customer_full_name" jdbcType="VARCHAR" property="customerFullName" />
+    <result column="sales" jdbcType="VARCHAR" property="sales" />
+    <result column="category_one" jdbcType="VARCHAR" property="categoryOne" />
+    <result column="category_tow" jdbcType="VARCHAR" property="categoryTow" />
+    <result column="category_three" jdbcType="VARCHAR" property="categoryThree" />
+    <result column="product_model" jdbcType="VARCHAR" property="productModel" />
+    <result column="delivery_date" jdbcType="TIMESTAMP" property="deliveryDate" />
+    <result column="deliver_number" jdbcType="INTEGER" property="deliverNumber" />
+    <result column="sale_price" jdbcType="DECIMAL" property="salePrice" />
+    <result column="po_price" jdbcType="DECIMAL" property="poPrice" />
+    <result column="margin" jdbcType="VARCHAR" property="margin" />
+    <result column="currency" jdbcType="VARCHAR" property="currency" />
+    <result column="customer_order_number" jdbcType="INTEGER" property="customerOrderNumber" />
+    <result column="delivery_type" jdbcType="INTEGER" property="deliveryType" />
+    <result column="order_month" jdbcType="VARCHAR" property="orderMonth" />
+    <result column="delivery_company" jdbcType="VARCHAR" property="deliveryCompany" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="error_msg" jdbcType="VARCHAR" property="errorMsg" />
+    <result column="record_id" jdbcType="INTEGER" property="recordId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, upload_time, customer_external_number, customer_full_name, sales, category_one, 
+    category_tow, category_three, product_model, delivery_date, deliver_number, sale_price, 
+    po_price, margin, currency, customer_order_number, delivery_type, order_month, delivery_company, 
+    remark, error_msg, record_id
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_deliver_detail
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_deliver_detail
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.crazy.portal.entity.handover.DeliverDetail">
+    insert into t_deliver_detail (id, upload_time, customer_external_number, 
+      customer_full_name, sales, category_one, 
+      category_tow, category_three, product_model, 
+      delivery_date, deliver_number, sale_price, 
+      po_price, margin, currency, 
+      customer_order_number, delivery_type, order_month, 
+      delivery_company, remark, error_msg, 
+      record_id)
+    values (#{id,jdbcType=INTEGER}, #{uploadTime,jdbcType=TIMESTAMP}, #{customerExternalNumber,jdbcType=VARCHAR}, 
+      #{customerFullName,jdbcType=VARCHAR}, #{sales,jdbcType=VARCHAR}, #{categoryOne,jdbcType=VARCHAR}, 
+      #{categoryTow,jdbcType=VARCHAR}, #{categoryThree,jdbcType=VARCHAR}, #{productModel,jdbcType=VARCHAR}, 
+      #{deliveryDate,jdbcType=TIMESTAMP}, #{deliverNumber,jdbcType=INTEGER}, #{salePrice,jdbcType=DECIMAL}, 
+      #{poPrice,jdbcType=DECIMAL}, #{margin,jdbcType=VARCHAR}, #{currency,jdbcType=VARCHAR}, 
+      #{customerOrderNumber,jdbcType=INTEGER}, #{deliveryType,jdbcType=INTEGER}, #{orderMonth,jdbcType=VARCHAR}, 
+      #{deliveryCompany,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, #{errorMsg,jdbcType=VARCHAR}, 
+      #{recordId,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.crazy.portal.entity.handover.DeliverDetail">
+    insert into t_deliver_detail
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="uploadTime != null">
+        upload_time,
+      </if>
+      <if test="customerExternalNumber != null">
+        customer_external_number,
+      </if>
+      <if test="customerFullName != null">
+        customer_full_name,
+      </if>
+      <if test="sales != null">
+        sales,
+      </if>
+      <if test="categoryOne != null">
+        category_one,
+      </if>
+      <if test="categoryTow != null">
+        category_tow,
+      </if>
+      <if test="categoryThree != null">
+        category_three,
+      </if>
+      <if test="productModel != null">
+        product_model,
+      </if>
+      <if test="deliveryDate != null">
+        delivery_date,
+      </if>
+      <if test="deliverNumber != null">
+        deliver_number,
+      </if>
+      <if test="salePrice != null">
+        sale_price,
+      </if>
+      <if test="poPrice != null">
+        po_price,
+      </if>
+      <if test="margin != null">
+        margin,
+      </if>
+      <if test="currency != null">
+        currency,
+      </if>
+      <if test="customerOrderNumber != null">
+        customer_order_number,
+      </if>
+      <if test="deliveryType != null">
+        delivery_type,
+      </if>
+      <if test="orderMonth != null">
+        order_month,
+      </if>
+      <if test="deliveryCompany != null">
+        delivery_company,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+      <if test="errorMsg != null">
+        error_msg,
+      </if>
+      <if test="recordId != null">
+        record_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="uploadTime != null">
+        #{uploadTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="customerExternalNumber != null">
+        #{customerExternalNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="customerFullName != null">
+        #{customerFullName,jdbcType=VARCHAR},
+      </if>
+      <if test="sales != null">
+        #{sales,jdbcType=VARCHAR},
+      </if>
+      <if test="categoryOne != null">
+        #{categoryOne,jdbcType=VARCHAR},
+      </if>
+      <if test="categoryTow != null">
+        #{categoryTow,jdbcType=VARCHAR},
+      </if>
+      <if test="categoryThree != null">
+        #{categoryThree,jdbcType=VARCHAR},
+      </if>
+      <if test="productModel != null">
+        #{productModel,jdbcType=VARCHAR},
+      </if>
+      <if test="deliveryDate != null">
+        #{deliveryDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deliverNumber != null">
+        #{deliverNumber,jdbcType=INTEGER},
+      </if>
+      <if test="salePrice != null">
+        #{salePrice,jdbcType=DECIMAL},
+      </if>
+      <if test="poPrice != null">
+        #{poPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="margin != null">
+        #{margin,jdbcType=VARCHAR},
+      </if>
+      <if test="currency != null">
+        #{currency,jdbcType=VARCHAR},
+      </if>
+      <if test="customerOrderNumber != null">
+        #{customerOrderNumber,jdbcType=INTEGER},
+      </if>
+      <if test="deliveryType != null">
+        #{deliveryType,jdbcType=INTEGER},
+      </if>
+      <if test="orderMonth != null">
+        #{orderMonth,jdbcType=VARCHAR},
+      </if>
+      <if test="deliveryCompany != null">
+        #{deliveryCompany,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="errorMsg != null">
+        #{errorMsg,jdbcType=VARCHAR},
+      </if>
+      <if test="recordId != null">
+        #{recordId,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.crazy.portal.entity.handover.DeliverDetail">
+    update t_deliver_detail
+    <set>
+      <if test="uploadTime != null">
+        upload_time = #{uploadTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="customerExternalNumber != null">
+        customer_external_number = #{customerExternalNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="customerFullName != null">
+        customer_full_name = #{customerFullName,jdbcType=VARCHAR},
+      </if>
+      <if test="sales != null">
+        sales = #{sales,jdbcType=VARCHAR},
+      </if>
+      <if test="categoryOne != null">
+        category_one = #{categoryOne,jdbcType=VARCHAR},
+      </if>
+      <if test="categoryTow != null">
+        category_tow = #{categoryTow,jdbcType=VARCHAR},
+      </if>
+      <if test="categoryThree != null">
+        category_three = #{categoryThree,jdbcType=VARCHAR},
+      </if>
+      <if test="productModel != null">
+        product_model = #{productModel,jdbcType=VARCHAR},
+      </if>
+      <if test="deliveryDate != null">
+        delivery_date = #{deliveryDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deliverNumber != null">
+        deliver_number = #{deliverNumber,jdbcType=INTEGER},
+      </if>
+      <if test="salePrice != null">
+        sale_price = #{salePrice,jdbcType=DECIMAL},
+      </if>
+      <if test="poPrice != null">
+        po_price = #{poPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="margin != null">
+        margin = #{margin,jdbcType=VARCHAR},
+      </if>
+      <if test="currency != null">
+        currency = #{currency,jdbcType=VARCHAR},
+      </if>
+      <if test="customerOrderNumber != null">
+        customer_order_number = #{customerOrderNumber,jdbcType=INTEGER},
+      </if>
+      <if test="deliveryType != null">
+        delivery_type = #{deliveryType,jdbcType=INTEGER},
+      </if>
+      <if test="orderMonth != null">
+        order_month = #{orderMonth,jdbcType=VARCHAR},
+      </if>
+      <if test="deliveryCompany != null">
+        delivery_company = #{deliveryCompany,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="errorMsg != null">
+        error_msg = #{errorMsg,jdbcType=VARCHAR},
+      </if>
+      <if test="recordId != null">
+        record_id = #{recordId,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.crazy.portal.entity.handover.DeliverDetail">
+    update t_deliver_detail
+    set upload_time = #{uploadTime,jdbcType=TIMESTAMP},
+      customer_external_number = #{customerExternalNumber,jdbcType=VARCHAR},
+      customer_full_name = #{customerFullName,jdbcType=VARCHAR},
+      sales = #{sales,jdbcType=VARCHAR},
+      category_one = #{categoryOne,jdbcType=VARCHAR},
+      category_tow = #{categoryTow,jdbcType=VARCHAR},
+      category_three = #{categoryThree,jdbcType=VARCHAR},
+      product_model = #{productModel,jdbcType=VARCHAR},
+      delivery_date = #{deliveryDate,jdbcType=TIMESTAMP},
+      deliver_number = #{deliverNumber,jdbcType=INTEGER},
+      sale_price = #{salePrice,jdbcType=DECIMAL},
+      po_price = #{poPrice,jdbcType=DECIMAL},
+      margin = #{margin,jdbcType=VARCHAR},
+      currency = #{currency,jdbcType=VARCHAR},
+      customer_order_number = #{customerOrderNumber,jdbcType=INTEGER},
+      delivery_type = #{deliveryType,jdbcType=INTEGER},
+      order_month = #{orderMonth,jdbcType=VARCHAR},
+      delivery_company = #{deliveryCompany,jdbcType=VARCHAR},
+      remark = #{remark,jdbcType=VARCHAR},
+      error_msg = #{errorMsg,jdbcType=VARCHAR},
+      record_id = #{recordId,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <select id="countErrorData" resultType="java.lang.Integer" >
+    select count(1) from t_deliver_detail
+    where record_id = #{recordId} and error_msg is not null
+  </select>
+
+</mapper>
