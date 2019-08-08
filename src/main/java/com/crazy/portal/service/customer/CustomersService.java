@@ -137,12 +137,14 @@ public class CustomersService {
         bean.setCreateTime(currDate);
         customerInfoMapper.insertSelective(bean);
 
-        BasicBankInfo bankInfo = bean.getBasicBank();
-        bankInfo.setCustId(bean.getId());
-        bankInfo.setActive(Constant.ACTIVE);
-        bankInfo.setCreateUser(user.getId());
-        bankInfo.setCreateTime(currDate);
-        basicBankInfoMapper.insertSelective(bean.getBasicBank());
+        if(bean.getBasicBank() != null) {
+            BasicBankInfo bankInfo = bean.getBasicBank();
+            bankInfo.setCustId(bean.getId());
+            bankInfo.setActive(Constant.ACTIVE);
+            bankInfo.setCreateUser(user.getId());
+            bankInfo.setCreateTime(currDate);
+            basicBankInfoMapper.insertSelective(bean.getBasicBank());
+        }
 
         DealerReport dealerReport = new DealerReport();
         dealerReport.setDealerId(user.getDealerId());
@@ -165,21 +167,38 @@ public class CustomersService {
 
         addExtendInfo(bean.getSales(), basicSalesMapper, bean);
 
-        addExtendInfo(bean.getBasicFile(), basicFileMapper, bean);
+        addExtendFile(bean.getBasicFile(), basicFileMapper, bean);
 
         addExtendInfo(bean.getBasicAddress(), basicAddressMapper, bean);
     }
 
     public void addExtendInfo(List<? extends BaseEntity> list, BaseMapper mapper, CustomerInfo bean){
+        if(list == null){
+            return;
+        }
         list.forEach((e)-> {
-            e.setCustId(bean.getId());
-            e.setActive(Constant.ACTIVE);
-            e.setCreateUser(bean.getCreateUser());
-            e.setCreateTime(bean.getCreateTime());
+            setCreateBasicInfo(e, bean.getId(), bean.getCreateUser(), bean.getCreateTime());
             mapper.insertSelective(e);
         });
     }
 
+    private void setCreateBasicInfo(BaseEntity e, Integer id, Integer createUser, Date createTime) {
+        e.setCustId(id);
+        e.setActive(Constant.ACTIVE);
+        e.setCreateUser(createUser);
+        e.setCreateTime(createTime);
+    }
+
+    public void addExtendFile(List<BasicFile> list, BaseMapper mapper, CustomerInfo bean){
+        if(list == null){
+            return;
+        }
+        list.forEach((e)-> {
+            setFileInfo(e);
+            setCreateBasicInfo(e, bean.getId(), bean.getCreateUser(), bean.getCreateTime());
+            mapper.insertSelective(e);
+        });
+    }
     /**
      * 更新客户信息
      * @param bean
@@ -222,7 +241,7 @@ public class CustomersService {
         updateExtendInfo(relationIds, bean.getBasicShip(), basicCorporateRelationshipMapper, user.getId(), currTime, bean.getId());
 
         List<Integer> fileIds = basicFileMapper.selectIdsByCustId(bean.getId());
-        updateExtendInfo(fileIds, bean.getBasicFile(), basicFileMapper, user.getId(), currTime, bean.getId());
+        updateExtendFile(fileIds, bean.getBasicFile(), basicFileMapper, user.getId(), currTime, bean.getId());
 
         List<Integer> teamIds = basicSalesTeamMapper.selectIdsByCustId(bean.getId());
         updateExtendInfo(teamIds, bean.getSalesTeam(), basicSalesTeamMapper, user.getId(), currTime, bean.getId());
@@ -242,21 +261,48 @@ public class CustomersService {
             return;
         }
         newList.stream().filter(e->e.getId()!=null && sourceList.contains(e.getId())).forEach(e->{
-            e.setUpdateUser(userId);
-            e.setUpdateTime(currTime);
+            setUpdateBasicInfo(userId, currTime, e);
             mapper.updateByPrimaryKeySelective(e);
         });
         newList.stream().filter(e->null == e.getId() || !sourceList.contains(e.getId())).forEach(e->{
-            e.setCustId(custId);
-            e.setActive(Constant.ACTIVE);
-            e.setCreateUser(userId);
-            e.setCreateTime(currTime);
+            setCreateBasicInfo(e, custId, userId, currTime);
             mapper.insertSelective(e);
         });
         List<Integer> newIds = newList.stream().map(e-> e.getId()).collect(Collectors.toList());
         sourceList.stream().filter(e->!newIds.contains(e)).forEach(e->{
             mapper.deleteByPrimaryKey(e);
         });
+    }
+
+    public void updateExtendFile(List<Integer> sourceList, List<BasicFile> newList, BaseMapper mapper, Integer userId, Date currTime, Integer custId){
+        if(null == newList){
+            return;
+        }
+        newList.stream().filter(e->e.getId()!=null && sourceList.contains(e.getId())).forEach(e->{
+            setFileInfo(e);
+            setUpdateBasicInfo(userId, currTime, e);
+            mapper.updateByPrimaryKeySelective(e);
+        });
+        newList.stream().filter(e->null == e.getId() || !sourceList.contains(e.getId())).forEach(e->{
+            setFileInfo(e);
+            setCreateBasicInfo(e, custId, userId, currTime);
+            mapper.insertSelective(e);
+        });
+        List<Integer> newIds = newList.stream().map(e-> e.getId()).collect(Collectors.toList());
+        sourceList.stream().filter(e->!newIds.contains(e)).forEach(e->{
+            mapper.deleteByPrimaryKey(e);
+        });
+    }
+
+    private void setUpdateBasicInfo(Integer userId, Date currTime, BaseEntity e) {
+        e.setUpdateUser(userId);
+        e.setUpdateTime(currTime);
+    }
+
+    private void setFileInfo(BasicFile e) {
+        FileVO fileInfo = FileUtil.upload(e.getFile(), getCustFilePath());
+        e.setFileName(fileInfo.getFileName());
+        e.setFilePath(fileInfo.getFullPath());
     }
 
     /**

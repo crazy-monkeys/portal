@@ -6,6 +6,7 @@ import com.crazy.portal.config.exception.BusinessException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
+
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
@@ -106,6 +107,14 @@ public class FileUtil {
             log.error("Exception in file upload", ex);
         }
         return result;
+    }
+
+    public static FileVO upload(MultipartFile file, String filePath){
+        List<FileVO> fileVos = upload(new MultipartFile[]{file}, filePath);
+        if(fileVos != null && fileVos.size() > 0){
+            return fileVos.get(0);
+        }
+        return null;
     }
 
     /**
