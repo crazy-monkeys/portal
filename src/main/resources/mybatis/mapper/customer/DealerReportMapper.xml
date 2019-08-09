@@ -169,4 +169,10 @@
     where id = #{id,jdbcType=INTEGER}
   </update>
 
+  <select id="selectByCustId" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_dealer_report
+    where cust_id = #{custId,jdbcType=INTEGER}
+  </select>
 </mapper>

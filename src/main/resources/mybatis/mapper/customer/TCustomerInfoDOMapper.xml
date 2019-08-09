@@ -33,8 +33,10 @@
     <result column="business_type" jdbcType="INTEGER" property="businessType"/>
     <result column="customer_status" jdbcType="INTEGER" property="customerStatus"></result>
     <result column="is_potential" jdbcType="INTEGER" property="isPotential"></result>
-    <result column="sales_name" jdbcType="VARCHAR" property="salesName"></result>
+    <result column="dealer_id" jdbcType="INTEGER" property="dealerId"></result>
     <result column="dealer_name" jdbcType="VARCHAR" property="dealerName"></result>
+    <result column="sales_id" jdbcType="INTEGER" property="salesId"></result>
+    <result column="sales_name" jdbcType="VARCHAR" property="salesName"></result>
   </resultMap>
 
   <!--代理商result-->
@@ -57,7 +59,7 @@
     is_white_list, dealer_status, create_user, create_time, update_user, update_time, 
     active, advantage_value, advantage_introduction, business_introduction, is_license,
     business_type, customer_status, DATE_FORMAT(register_time,   '%Y-%m-%d %H:%i:%S') as register_time_str,
-    is_potential, sales_name
+    is_potential
   </sql>
 
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
@@ -165,8 +167,11 @@
       <if test="isPotential != null">
         is_potential,
       </if>
-      <if test="salesName != null">
-        sales_name,
+      <if test="dealerId != null">
+        dealer_id,
+      </if>
+      <if test="salesId != null">
+        sales_id,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -260,8 +265,11 @@
       <if test="isPotential != null">
         #{isPotential,jdbcType=INTEGER},
       </if>
-      <if test="salesName != null">
-        #{salesName,jdbcType=VARCHAR},
+      <if test="dealerId != null">
+        #{dealerId,jdbcType=INTEGER},
+      </if>
+      <if test="salesId != null">
+        #{salesId,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>
@@ -355,8 +363,11 @@
       <if test="isPotential != null">
         is_potential = #{isPotential,jdbcType=INTEGER},
       </if>
-      <if test="salesName != null">
-        sales_name = #{salesName,jdbcType=VARCHAR},
+      <if test="dealerId != null">
+        dealer_id = #{dealerId,jdbcType=INTEGER},
+      </if>
+      <if test="salesId != null">
+        sales_id = #{salesId,jdbcType=INTEGER},
       </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
@@ -437,10 +448,9 @@
     a.is_white_list, a.dealer_status, a.create_user, a.create_time, a.update_user, a.update_time,
     a.active, a.advantage_value, a.advantage_introduction, a.business_introduction, a.is_license,
     a.business_type, a.customer_status, DATE_FORMAT(a.register_time,   '%Y-%m-%d %H:%i:%S') as register_time_str,
-    a.is_potential, a.sales_name, b.cust_name as dealer_name
+    a.is_potential, a.sales_id, b.cust_name as dealer_name
     from t_customer_info a
-    left join t_dealer_report dr on dr.cust_id = a.id
-    left join t_customer_info b on b.id = dr.dealer_id
+    left join t_customer_info b on b.id = a.dealer_id
     where a.active = 1 and a.create_user = #{userId}
     <if test="customerName != null and customerName != ''">
       and a.cust_name like concat('%',#{customerName},'%')

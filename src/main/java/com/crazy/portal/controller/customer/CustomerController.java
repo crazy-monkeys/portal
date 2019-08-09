@@ -4,6 +4,7 @@ import com.alibaba.excel.metadata.BaseRowModel;
 import com.alibaba.excel.support.ExcelTypeEnum;
 import com.crazy.portal.bean.BaseResponse;
 import com.crazy.portal.bean.customer.CustomerQueryBean;
+import com.crazy.portal.bean.customer.approval.ApprovalBean;
 import com.crazy.portal.bean.customer.visitRecord.VisitRecordQueryBean;
 import com.crazy.portal.controller.BaseController;
 import com.crazy.portal.entity.customer.CustomerInfo;
@@ -63,15 +64,17 @@ public class CustomerController extends BaseController{
         return successResult();
     }
 
-    @GetMapping("/approval/{id}")
-    public BaseResponse approval(@PathVariable Integer id){
-        customersService.approval(id, this.getCurrentUser().getId());
+    @GetMapping("/approval")
+    public BaseResponse approval(ApprovalBean bean){
+        bean.setUserId(this.getCurrentUser().getId());
+        customersService.approval(bean);
         return successResult();
     }
 
-    @GetMapping("/reject/{id}")
-    public BaseResponse reject(@PathVariable Integer id){
-        customersService.reject(id, this.getCurrentUser().getId());
+    @GetMapping("/reject")
+    public BaseResponse reject(ApprovalBean bean){
+        bean.setUserId(this.getCurrentUser().getId());
+        customersService.reject(bean);
         return successResult();
     }
 

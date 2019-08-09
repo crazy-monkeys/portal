@@ -5,6 +5,7 @@ import com.alibaba.excel.metadata.BaseRowModel;
 import com.alibaba.excel.metadata.Sheet;
 import com.crazy.portal.bean.common.Constant;
 import com.crazy.portal.bean.customer.CustomerQueryBean;
+import com.crazy.portal.bean.customer.approval.ApprovalBean;
 import com.crazy.portal.bean.customer.basic.FileVO;
 import com.crazy.portal.bean.customer.visitRecord.CustomerCodeEO;
 import com.crazy.portal.bean.customer.visitRecord.VisitRecordEO;
@@ -340,25 +341,41 @@ public class CustomersService {
     /**
      * 审批
      */
-    public void approval(Integer id, Integer userId){
+    public void approval(ApprovalBean bean){
         CustomerInfo record = new CustomerInfo();
-        record.setId(id);
-        record.setUpdateUser(userId);
+        record.setId(bean.getId());
+        record.setDealerId(bean.getDealerId());
+        record.setSalesId(bean.getSalesId());
+        record.setUpdateUser(bean.getUserId());
         record.setUpdateTime(DateUtil.getCurrentTS());
         record.setCustomerStatus(Enums.CustomerStatus.NORMAL.getCode());
         customerInfoMapper.updateByPrimaryKeySelective(record);
+
+        DealerReport dealerReport = dealerReportMapper.selectByCustId(bean.getId());
+        dealerReport.setApprover(bean.getDealerId());
+        dealerReport.setApproverDate(DateUtil.getCurrentTS());
+        dealerReport.setApproverRemark(bean.getApprovalRemark());
+        dealerReport.setUpdateUserId(bean.getUserId());
+        dealerReport.setUpdateTime(DateUtil.getCurrentTS());
+        dealerReportMapper.updateByPrimaryKeySelective(dealerReport);
     }
 
     /**
      * 驳回
      */
-    public void reject(Integer id, Integer userId){
+    public void reject(ApprovalBean bean){
         CustomerInfo record = new CustomerInfo();
-        record.setId(id);
-        record.setUpdateUser(userId);
+        record.setId(bean.getId());
+        record.setUpdateUser(bean.getUserId());
         record.setUpdateTime(DateUtil.getCurrentTS());
         record.setCustomerStatus(Enums.CustomerStatus.REJECT.getCode());
         customerInfoMapper.updateByPrimaryKeySelective(record);
+
+        DealerReport dealerReport = dealerReportMapper.selectByCustId(bean.getId());
+        dealerReport.setApproverRemark(bean.getApprovalRemark());
+        dealerReport.setUpdateUserId(bean.getUserId());
+        dealerReport.setUpdateTime(DateUtil.getCurrentTS());
+        dealerReportMapper.updateByPrimaryKeySelective(dealerReport);
     }
 
     /**

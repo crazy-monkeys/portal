@@ -150,9 +150,17 @@ public class CustomerInfo {
      */
     private Integer dealerStatus;
     /**
+     * 代理商ID
+     */
+    private Integer dealerId;
+    /**
      * 代理商名称
      */
     private String dealerName;
+    /**
+     * 销售ID
+     */
+    private Integer salesId;
     /**
      * 销售名称
      */
