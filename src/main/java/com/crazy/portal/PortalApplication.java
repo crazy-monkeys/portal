@@ -6,6 +6,7 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.servlet.ServletContext;
@@ -15,6 +16,7 @@ import javax.servlet.ServletException;
 @EnableTransactionManagement
 @EntityScan
 @EnableCaching
+@EnableScheduling
 @SpringBootApplication
 public class PortalApplication extends SpringBootServletInitializer {
 
