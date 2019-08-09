@@ -97,8 +97,8 @@ public class DeliverController extends BaseController {
      * @return
      */
     @GetMapping(value = "/deliver/{id}")
-    public BaseResponse getDetailInfo(@PathVariable Integer id) {
-        return super.successResult(deliverService.getDetailInfo(id));
+    public BaseResponse getDetailInfo(@PathVariable Integer id, Integer pageNum, Integer pageSize) {
+        return super.successResult(deliverService.getDetailInfo(id, pageNum, pageSize));
     }
 
     /**

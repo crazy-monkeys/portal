@@ -18,7 +18,7 @@ public interface DeliverDetailMapper {
 
     int updateByPrimaryKey(DeliverDetail record);
 
-//    List<DeliverDetail> selectByRecordId(@Param(value = "recordId") Integer recordId);
+    List<DeliverDetail> selectByRecordId(@Param(value = "recordId") Integer recordId);
 
     int countErrorData(@Param(value = "recordId") Integer recordId);
 }

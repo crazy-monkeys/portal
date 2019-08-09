@@ -141,7 +141,7 @@
   </update>
 
   <select id="selectPageInfo" resultMap="BaseResultMap" >
-    select * from t_deliver_record
+    select * from t_deliver_receive_record
     where 1 = 1
     order by create_time desc
   </select>

@@ -1,5 +1,6 @@
 package com.crazy.portal.service.handover;
 
+import com.alibaba.fastjson.JSONObject;
 import com.crazy.portal.bean.handover.DeliverTemplateBean;
 import com.crazy.portal.bean.handover.DeliverUploadVO;
 import com.crazy.portal.config.exception.BusinessException;
@@ -55,7 +56,7 @@ public class DeliverService {
     }
 
     /**
-     * 上传出货数据，并与第三方交互获取数据校验结果
+     * 解释文件内数据
      * @param excel
      * @param userId
      * @return
@@ -75,13 +76,21 @@ public class DeliverService {
         return deliverData;
     }
 
+    /**
+     * 请求第三方校验数据结果
+     * @param deliverData
+     * @param userId
+     * @return
+     */
     public DeliverUploadVO verificationData(List<DeliverTemplateBean> deliverData, Integer userId) {
+        //需要给到第三方的文件
+        String newFileName = ExcelUtils.writeExcel(pushPath, deliverData, DeliverTemplateBean.class);
         String dealerName = deliverData.get(0).getDealerName();
         DeliverUploadVO resultInfo = new DeliverUploadVO();
         //TODO 生成第三方的数据文件 并 请求第三方
-        String fileName = "deliver_error_data_1.xlsx";
+        String fileName = "deliver_error.xlsx";
         //拿到对方返回文件
-        List<DeliverDetail> responseData = ExcelUtils.readExcel(pullPath, fileName, DeliverDetail.class);
+        List<DeliverTemplateBean> responseData = ExcelUtils.readExcel(pullPath, fileName, DeliverTemplateBean.class);
         String verificationResult = "no";//是否全部校验通过
         if(verificationResult.equals("ok")){
             DeliverReceiveRecord record = new DeliverReceiveRecord();
@@ -91,7 +100,8 @@ public class DeliverService {
             record.setStatus(0);
             deliverReceiveRecordMapper.insertSelective(record);
             //数据都正确，则进行保存
-            for(DeliverDetail detail : responseData){
+            for(DeliverTemplateBean data : responseData){
+                DeliverDetail detail = JSONObject.parseObject(JSONObject.toJSONString(data), DeliverDetail.class);
                 detail.setRecordId(record.getId());
                 deliverDetailMapper.insert(detail);
             }
@@ -131,7 +141,8 @@ public class DeliverService {
         int errorCnt = deliverDetailMapper.countErrorData(id);
         BusinessUtil.assertFlase(errorCnt > 0, HANDOVER_DELIVER_EXISTS_DATA_ERROR);
         //TODO 生成文件 并 请求第三方提交数据接口
-        List<DeliverDetail> deliverData = null;
+//        List<DeliverDetail> deliverData = null;
+//        String newFileName = ExcelUtils.writeExcel(pushPath, deliverData, DeliverTemplateBean.class);
     }
 
     /**
@@ -158,22 +169,19 @@ public class DeliverService {
 
     /**
      * 进出货明细记录
-     * @param id
+     * @param recordId
      * @return
      */
-    public List<?> getDetailInfo(Integer id) {
-        //TODO 查询数据库记录并返回
-        return null;
+    public PageInfo<DeliverDetail> getDetailInfo(Integer recordId, Integer pageNum, Integer pageSize) {
+        PortalUtil.defaultStartPage(pageNum,pageSize);
+        List<DeliverDetail> result = deliverDetailMapper.selectByRecordId(recordId);
+        return new PageInfo<>(result);
     }
 
     public void approvalDeliverInfo(Integer id, Integer userId) {
         DeliverReceiveRecord record = deliverReceiveRecordMapper.selectByPrimaryKey(id);
-        if(null == record){
-            return;
-        }
-        if(record.getStatus() != 0){
-            //TODO 数据不符合 待确认 状态
-        }
+        BusinessUtil.assertFlase(null == record, HANDOVER_DELIVER_INVALID_PARAM);
+        BusinessUtil.assertFlase(record.getStatus() != -1, HANDOVER_DELIVER_NOT_CONFIRM);
         if(false){
             //TODO 用户不是 销售运作部 不允许操作
         }
