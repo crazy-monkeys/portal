@@ -7,12 +7,14 @@ import com.alibaba.excel.metadata.Sheet;
 import com.alibaba.excel.support.ExcelTypeEnum;
 import com.crazy.portal.config.exception.BusinessException;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.util.IOUtils;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -48,6 +50,28 @@ public class ExcelUtils {
             out.flush();
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    public static String writeExcel(String filePath, List<? extends BaseRowModel> data, Class clazz) {
+        FileOutputStream out = null;
+        try {
+            //暂时根据时间戳定义文件，防止名称一样
+            String fileName = String.format("%s%s", new Date().getTime(), ExcelTypeEnum.XLSX.getValue());
+            File file = new File(String.format("%s%s", filePath, fileName));
+            file.createNewFile();
+            out = new FileOutputStream(file);
+            Sheet sheet1 = new Sheet(1, 0, clazz);
+            sheet1.setSheetName("Sheet1");
+            ExcelWriter writer = new ExcelWriter(out, ExcelTypeEnum.XLSX);
+            writer.write(data, sheet1);
+            writer.finish();
+            return fileName;
+        }catch (Exception ex) {
+            log.error("", ex);
+            return "";
+        }finally {
+            IOUtils.closeQuietly(out);
         }
     }
 

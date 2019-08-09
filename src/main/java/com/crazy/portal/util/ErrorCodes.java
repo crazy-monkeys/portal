@@ -129,6 +129,7 @@ public class ErrorCodes {
         HANDOVER_DELIVER_EXISTS_DATA_ERROR(40002, "存在错误数据，禁止提交", ""),
         HANDOVER_DELIVER_WAITING_CONFIRM(40003, "已超过提交时间，请联系【销售运作部】进行数据确认", ""),
         HANDOVER_DELIVER_ALREADY_CONFIRM(40004, "数据已提交，请勿重复操作", ""),
+        HANDOVER_DELIVER_NOT_CONFIRM(40005, "请勿操作非【待确认】状态数据", ""),
         HANDOVER_DELIVER_INVALID_PARAM(40006, "请使用有效参数进行操作", ""),
         //交付模块 - 收货管理
 

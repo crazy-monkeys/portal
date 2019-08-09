@@ -70,45 +70,4 @@ public class DeliverController extends BaseController {
         return super.successResult();
     }
 
-    /**
-     * 出货数据查询
-     * @param dealerName
-     * @param status
-     * @param deliveryStartDate
-     * @param deliveryEndDate
-     * @param uploadStartTime
-     * @param uploadEndTime
-     * @param pageNum
-     * @param pageSize
-     * @return
-     */
-    @GetMapping(value = "/deliver")
-    public BaseResponse getPageList(String dealerName, Integer status,
-                                    String deliveryStartDate, String deliveryEndDate,
-                                    String uploadStartTime, String uploadEndTime,
-                                    Integer pageNum, Integer pageSize) {
-        return super.successResult(deliverService.getPageList(dealerName, status, deliveryStartDate, deliveryEndDate,
-                uploadStartTime, uploadEndTime, pageNum, pageSize));
-    }
-
-    /**
-     * 出货数据详情
-     * @param id
-     * @return
-     */
-    @GetMapping(value = "/deliver/{id}")
-    public BaseResponse getDetailInfo(@PathVariable Integer id) {
-        return super.successResult(deliverService.getDetailInfo(id));
-    }
-
-    /**
-     * 出货数据审核（运作部审核）
-     * @return
-     */
-    @GetMapping(value = "/deliver/approval/{id}")
-    public BaseResponse approvalDeliverInfo(@PathVariable Integer id) {
-        deliverService.approvalDeliverInfo(id, getCurrentUser().getId());
-        return super.successResult();
-    }
-
 }
