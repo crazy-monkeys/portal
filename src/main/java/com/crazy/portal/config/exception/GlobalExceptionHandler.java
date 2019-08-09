@@ -44,6 +44,7 @@ public class GlobalExceptionHandler {
             response.setMsg(ex.getMessage());
             return response;
         }
+        log.error("系统异常：-> {}", exception);
         response.systemException();
         return response;
     }
