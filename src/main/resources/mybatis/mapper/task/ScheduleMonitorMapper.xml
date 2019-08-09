@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.crazy.portal.dao.ScheduleMonitorMapper">
+<mapper namespace="com.crazy.portal.dao.task.ScheduleMonitorMapper">
   <resultMap id="BaseResultMap" type="com.crazy.portal.entity.task.ScheduleMonitor">
     <id column="schedule_monitor_id" jdbcType="BIGINT" property="scheduleMonitorId" />
     <result column="schedule_name" jdbcType="VARCHAR" property="scheduleName" />
