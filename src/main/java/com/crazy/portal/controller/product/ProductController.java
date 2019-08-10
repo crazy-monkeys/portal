@@ -5,9 +5,8 @@ import com.crazy.portal.bean.product.ProductVO;
 import com.crazy.portal.controller.BaseController;
 import com.crazy.portal.service.product.ProductService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
 import javax.annotation.Resource;
 
 /**
@@ -20,10 +19,9 @@ public class ProductController extends BaseController {
     @Resource
     private ProductService productService;
 
-    @GetMapping("/getList")
-    public BaseResponse getList(ProductVO productVO){
-        productService.syscProduct();
-        return successResult();
+    @PostMapping("/getList")
+    public BaseResponse getList(@RequestBody ProductVO productVO){
+        return successResult(productService.selectProduct(productVO));
     }
 
 }

@@ -212,6 +212,23 @@
     <if test="validStartDate != null and validStartDate != ''">
       and valid_start_date = #{validStartDate}
     </if>
+    <if test="startTime != null and startTime != ''">
+      and valid_start_date >= DATE_FORMAT(#{startTime},'%Y%m%d')
+    </if>
+    <if test="endTime != null and endTime != ''">
+      <![CDATA[ and valid_start_date < DATE_FORMAT(#{endTime},'%Y%m%d') ]]>
+    </if>
+    <if test="startTime != null and startTime != '' and endTime != null and endTime != ''">
+      and valid_start_date between DATE_FORMAT(#{startTime},'%Y%m%d') and DATE_FORMAT(#{endTime},'%Y%m%d')
+    </if>
     order by create_time desc
   </select>
+
+  <update id="inActive">
+    update t_agency_rate set active = 0 where active=1
+  </update>
+
+  <update id="approve">
+    update t_agency_rate set active = 1 where active=-1
+  </update>
 </mapper>

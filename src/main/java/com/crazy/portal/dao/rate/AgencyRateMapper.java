@@ -16,4 +16,7 @@ public interface AgencyRateMapper {
 
     List<AgencyRate> selectByPage(AgencyRateQueryBean bean);
 
+    int inActive();
+
+    int approve();
 }

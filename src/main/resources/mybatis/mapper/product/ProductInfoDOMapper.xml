@@ -3,8 +3,11 @@
 <mapper namespace="com.crazy.portal.dao.product.ProductInfoDOMapper">
   <resultMap id="BaseResultMap" type="com.crazy.portal.entity.product.ProductInfoDO">
     <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="batch_id" jdbcType="INTEGER" property="batchId" />
     <result column="sn" jdbcType="INTEGER" property="sn" />
     <result column="product" jdbcType="VARCHAR" property="product" />
+    <result column="life_cycle" jdbcType="VARCHAR" property="lifeCycle" />
+    <result column="mpq" jdbcType="NUMERIC" property="mpq" />
     <result column="bu" jdbcType="VARCHAR" property="bu" />
     <result column="pdt" jdbcType="VARCHAR" property="pdt" />
     <result column="category" jdbcType="VARCHAR" property="category" />
@@ -23,6 +26,10 @@
     id, sn, product, bu, pdt, category, sub_category, platform, bu_header, manager, sap_mid, 
     type, pro_status, active, insert_time, update_time
   </sql>
+  
+  <resultMap id="ProductResultMap" type="com.crazy.portal.entity.product.ProductInfoDO" extends="BaseResultMap">
+    <collection property="subProducts" resultMap="com.crazy.portal.dao.product.ProductSubDOMapper.BaseResultMap" />
+  </resultMap>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
@@ -53,8 +60,17 @@
       <if test="id != null">
         id,
       </if>
+      <if test="batchId != null">
+        batch_id,
+      </if>
       <if test="sn != null">
         sn,
+      </if>
+      <if test="lifeCycle != null">
+        life_cycle,
+      </if>
+      <if test="mpq != null">
+        mpq,
       </if>
       <if test="product != null">
         product,
@@ -103,8 +119,17 @@
       <if test="id != null">
         #{id,jdbcType=INTEGER},
       </if>
+      <if test="batchId != null">
+        #{batchId,jdbcType=INTEGER},
+      </if>
       <if test="sn != null">
         #{sn,jdbcType=INTEGER},
+      </if>
+      <if test="lifeCycle != null">
+        #{lifeCycle,jdbcType=VARCHAR},
+      </if>
+      <if test="mpq != null">
+        #{mpq,jdbcType=NUMERIC},
       </if>
       <if test="product != null">
         #{product,jdbcType=VARCHAR},
@@ -220,4 +245,50 @@
       update_time = #{updateTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <select id="selectProductInfo" resultMap="ProductResultMap">
+    select
+    pro.id,
+    pro.sn,
+    pro.product,
+    pro.bu,
+    pro.pdt,
+    pro.category,
+    pro.sub_category,
+    pro.platform,
+    pro.bu_header,
+    pro.manager,
+    pro.sap_mid,
+    sub.sub_mid,
+    sub.sub_number
+    from t_product_batch batch
+    left join t_product_info pro on batch.id = pro.batch_id
+    left join t_product_sub sub on sub.product_id = pro.id
+    where batch.batch_status=1
+    <if test="product != null and product != ''">
+        and pro.product like concat('%',#{product},'%')
+    </if>
+    <if test="bu != null and bu != ''">
+        and pro.bu like concat('%',#{bu},'%')
+    </if>
+    <if test="pdt != null and pdt != ''">
+        and pro.pdt = #{pdt}
+    </if>
+    <if test="category != null and category != ''">
+        and pro.category like concat('%',#{category},'%')
+    </if>
+    <if test="subCategory != null and subCategory != ''">
+        and pro.sub_category like concat('%',#{subCategory},'%')
+    </if>
+    <if test="platform != null and platform != ''">
+        and pro.platform like concat('%',#{platform},'%')
+    </if>
+    <if test="sapMid != null and sapMid != ''">
+      and pro.sap_mid like concat('%',#{sapMid},'%')
+    </if>
+    <if test="subMid != null and subMid != ''">
+      and sub.sub_mid like concat('%',#{subMid},'%')
+    </if>
+    order by pro.sn
+  </select>
 </mapper>

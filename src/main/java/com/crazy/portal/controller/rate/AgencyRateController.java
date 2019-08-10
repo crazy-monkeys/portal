@@ -31,7 +31,12 @@ public class AgencyRateController extends BaseController {
 
     @PostMapping("/upload")
     public BaseResponse upload(MultipartFile[] files) throws Exception{
-        agencyRateService.uploadAgencyRateFile(files, this.getCurrentUser().getId());
+        return successResult(agencyRateService.uploadAgencyRateFile(files, this.getCurrentUser().getId()));
+    }
+
+    @GetMapping("/approve")
+    public BaseResponse approve(){
+        agencyRateService.approveRate();
         return successResult();
     }
 }

@@ -176,7 +176,7 @@ public class Enums {
     //</editor-fold>
 
     public enum RATE_TYPE{
-        ACTIVE(1),INACTIVE(0);
+        INI(-1),ACTIVE(1),INACTIVE(0);
 
         private final int code;
 
@@ -304,6 +304,18 @@ public class Enums {
         }
         public String getDesc(){
             return desc;
+        }
+    }
+
+    public enum ProductStatus{
+        ACTIVE(1),INACTIVE(0);
+        private Integer status;
+        ProductStatus(Integer status){
+            this.status = status;
+        }
+
+        public Integer getStatus() {
+            return status;
         }
     }
 }

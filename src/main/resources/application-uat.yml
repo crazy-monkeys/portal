@@ -3,7 +3,7 @@ logging:
   config: classpath:logback-uat.xml
 
 app:
-  ad-domain: unisoc.com
+  ad-domain: UNISOC.COM
   service-principal: HTTP/crmqa.unisoc.com@unisoc.com
   keytab-location: /home/crmpor/svc.crm.keytab
 
@@ -24,7 +24,7 @@ spring:
 
 file:
   path:
-    root: /service/ftp/portal_file #公用基础路径
+    root: /home/crmpor/portal_file #公用基础路径
     root-local: ${file.path.root}/local #portal系统内文件地址入口
     root-thrid-push: ${file.path.root}/push_thrid #portal对接第三方文件出口地址
     root-thrid-pull: ${file.path.root}/pull_thrid #第三方传输文件至portal入口地址
