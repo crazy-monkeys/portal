@@ -2,13 +2,10 @@ package com.crazy.portal.service.rate;
 
 import com.alibaba.excel.EasyExcelFactory;
 import com.alibaba.excel.metadata.Sheet;
-import com.crazy.portal.bean.BaseResponse;
 import com.crazy.portal.bean.common.Constant;
-import com.crazy.portal.bean.customer.visitRecord.VisitRecordEO;
 import com.crazy.portal.bean.rate.AgencyRateQueryBean;
 import com.crazy.portal.config.exception.BusinessException;
 import com.crazy.portal.dao.rate.AgencyRateMapper;
-import com.crazy.portal.entity.customer.VisitRecord;
 import com.crazy.portal.entity.rate.AgencyRate;
 import com.crazy.portal.util.BeanUtils;
 import com.crazy.portal.util.DateUtil;
