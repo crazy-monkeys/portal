@@ -42,3 +42,7 @@ file:
       template: ${file.path.root-template}/deliver/
       push: ${file.path.root-thrid-push}/deliver/
       pull: ${file.path.root-thrid-pull}/deliver/
+   receive: #收货管理模块
+      template: ${file.path.root-template}/receive/
+      push: ${file.path.root-thrid-push}/receive/
+      pull: ${file.path.root-thrid-pull}/receive/
