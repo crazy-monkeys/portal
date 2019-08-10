@@ -1,13 +1,14 @@
 package com.crazy.portal.entity.basic;
 
 import com.alibaba.fastjson.annotation.JSONField;
+import com.crazy.portal.entity.base.BaseEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import java.util.Date;
 
 @Data
-public class BasicSales implements BaseEntity{
+public class BasicSales implements BaseEntity {
     private Integer id;
     //客户ID
     private Integer custId;

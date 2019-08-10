@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.crazy.portal.dao.business.BusinessReturnsInfoMapper">
+  <resultMap id="BaseResultMap" type="com.crazy.portal.entity.business.BusinessReturnsInfo">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="idr_info_id" jdbcType="INTEGER" property="idrInfoId" />
+    <result column="replacement_date" jdbcType="VARCHAR" property="replacementDate" />
+    <result column="amount" jdbcType="DECIMAL" property="amount" />
+    <result column="price" jdbcType="DECIMAL" property="price" />
+    <result column="currency" jdbcType="VARCHAR" property="currency" />
+    <result column="num" jdbcType="INTEGER" property="num" />
+    <result column="product_model" jdbcType="VARCHAR" property="productModel" />
+    <result column="platform" jdbcType="VARCHAR" property="platform" />
+    <result column="pdt" jdbcType="VARCHAR" property="pdt" />
+    <result column="bu" jdbcType="VARCHAR" property="bu" />
+    <result column="product_line" jdbcType="VARCHAR" property="productLine" />
+    <result column="take_goods_date" jdbcType="VARCHAR" property="takeGoodsDate" />
+    <result column="order_number" jdbcType="VARCHAR" property="orderNumber" />
+    <result column="type" jdbcType="VARCHAR" property="type" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="create_id" jdbcType="INTEGER" property="createId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_id" jdbcType="INTEGER" property="updateId" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, idr_info_id, replacement_date, amount, price, currency, num, product_model, platform, 
+    pdt, bu, product_line, take_goods_date, order_number, type, remark, create_id, create_time, 
+    update_id, update_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_business_returns_info
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_business_returns_info
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+
+  <insert id="insertSelective" parameterType="com.crazy.portal.entity.business.BusinessReturnsInfo">
+    insert into t_business_returns_info
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="idrInfoId != null">
+        idr_info_id,
+      </if>
+      <if test="replacementDate != null">
+        replacement_date,
+      </if>
+      <if test="amount != null">
+        amount,
+      </if>
+      <if test="price != null">
+        price,
+      </if>
+      <if test="currency != null">
+        currency,
+      </if>
+      <if test="num != null">
+        num,
+      </if>
+      <if test="productModel != null">
+        product_model,
+      </if>
+      <if test="platform != null">
+        platform,
+      </if>
+      <if test="pdt != null">
+        pdt,
+      </if>
+      <if test="bu != null">
+        bu,
+      </if>
+      <if test="productLine != null">
+        product_line,
+      </if>
+      <if test="takeGoodsDate != null">
+        take_goods_date,
+      </if>
+      <if test="orderNumber != null">
+        order_number,
+      </if>
+      <if test="type != null">
+        type,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+      <if test="createId != null">
+        create_id,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateId != null">
+        update_id,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="idrInfoId != null">
+        #{idrInfoId,jdbcType=INTEGER},
+      </if>
+      <if test="replacementDate != null">
+        #{replacementDate,jdbcType=VARCHAR},
+      </if>
+      <if test="amount != null">
+        #{amount,jdbcType=DECIMAL},
+      </if>
+      <if test="price != null">
+        #{price,jdbcType=DECIMAL},
+      </if>
+      <if test="currency != null">
+        #{currency,jdbcType=VARCHAR},
+      </if>
+      <if test="num != null">
+        #{num,jdbcType=INTEGER},
+      </if>
+      <if test="productModel != null">
+        #{productModel,jdbcType=VARCHAR},
+      </if>
+      <if test="platform != null">
+        #{platform,jdbcType=VARCHAR},
+      </if>
+      <if test="pdt != null">
+        #{pdt,jdbcType=VARCHAR},
+      </if>
+      <if test="bu != null">
+        #{bu,jdbcType=VARCHAR},
+      </if>
+      <if test="productLine != null">
+        #{productLine,jdbcType=VARCHAR},
+      </if>
+      <if test="takeGoodsDate != null">
+        #{takeGoodsDate,jdbcType=VARCHAR},
+      </if>
+      <if test="orderNumber != null">
+        #{orderNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="createId != null">
+        #{createId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateId != null">
+        #{updateId,jdbcType=INTEGER},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.crazy.portal.entity.business.BusinessReturnsInfo">
+    update t_business_returns_info
+    <set>
+      <if test="idrInfoId != null">
+        idr_info_id = #{idrInfoId,jdbcType=INTEGER},
+      </if>
+      <if test="replacementDate != null">
+        replacement_date = #{replacementDate,jdbcType=VARCHAR},
+      </if>
+      <if test="amount != null">
+        amount = #{amount,jdbcType=DECIMAL},
+      </if>
+      <if test="price != null">
+        price = #{price,jdbcType=DECIMAL},
+      </if>
+      <if test="currency != null">
+        currency = #{currency,jdbcType=VARCHAR},
+      </if>
+      <if test="num != null">
+        num = #{num,jdbcType=INTEGER},
+      </if>
+      <if test="productModel != null">
+        product_model = #{productModel,jdbcType=VARCHAR},
+      </if>
+      <if test="platform != null">
+        platform = #{platform,jdbcType=VARCHAR},
+      </if>
+      <if test="pdt != null">
+        pdt = #{pdt,jdbcType=VARCHAR},
+      </if>
+      <if test="bu != null">
+        bu = #{bu,jdbcType=VARCHAR},
+      </if>
+      <if test="productLine != null">
+        product_line = #{productLine,jdbcType=VARCHAR},
+      </if>
+      <if test="takeGoodsDate != null">
+        take_goods_date = #{takeGoodsDate,jdbcType=VARCHAR},
+      </if>
+      <if test="orderNumber != null">
+        order_number = #{orderNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        type = #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="createId != null">
+        create_id = #{createId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateId != null">
+        update_id = #{updateId,jdbcType=INTEGER},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <select id="selectByIdrInfoId" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_business_returns_info
+    where idr_info_id = #{idrInfoId,jdbcType=INTEGER}
+  </select>
+
+  <delete id="deleteByIdrInfoId">
+    delete from t_business_returns_info
+    where idr_info_id = #{idrInfoId,jdbcType=INTEGER}
+  </delete>
+
+</mapper>

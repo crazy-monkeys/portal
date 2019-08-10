@@ -1,8 +1,8 @@
 package com.crazy.portal.entity.basic;
 
 import com.alibaba.fastjson.annotation.JSONField;
+import com.crazy.portal.entity.base.BaseEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 import java.util.Date;
@@ -11,7 +11,7 @@ import java.util.Date;
  * 地址信息
  */
 @Data
-public class BasicAddress implements BaseEntity{
+public class BasicAddress implements BaseEntity {
     private Integer id;
 
     /**

@@ -1,6 +1,6 @@
 package com.crazy.portal.dao.basic;
 
-import com.crazy.portal.entity.basic.BaseEntity;
+import com.crazy.portal.entity.base.BaseEntity;
 
 import java.util.List;
 

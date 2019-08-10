@@ -1,12 +1,26 @@
 package com.crazy.portal.controller.business;
 
+import com.alibaba.excel.metadata.BaseRowModel;
+import com.alibaba.excel.support.ExcelTypeEnum;
 import com.crazy.portal.bean.BaseResponse;
+import com.crazy.portal.bean.business.BusinessIdrQueryBean;
+import com.crazy.portal.bean.customer.visitRecord.VisitRecordEO;
 import com.crazy.portal.controller.BaseController;
 import com.crazy.portal.service.business.IDRService;
+import com.crazy.portal.util.ExcelUtils;
+import lombok.extern.slf4j.Slf4j;
+import org.omg.CORBA.INTERNAL;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by bill on 2019/7/30.
@@ -14,41 +28,57 @@ import java.math.BigDecimal;
  * D: diff 差价
  * R: returns 退货
  */
+@Slf4j
 @RestController
-@RequestMapping("/business/")
+@RequestMapping("/business")
 public class IDRController extends BaseController {
 
-    private IDRService ipreService;
+    @Resource
+    private IDRService idrService;
+
 
     /**
-     * 上传保价附件
-     * @param file
+     * 列表
      * @return
      */
-    @PostMapping("/upIsurance")
-    public BaseResponse upIsurance(@RequestParam("file") MultipartFile file) throws IOException {
-
-        return super.successResult();
+    @GetMapping("/list")
+    public BaseResponse list(BusinessIdrQueryBean bean){
+        return super.successResult(idrService.selectByPage(bean));
     }
 
     /**
-     * 上传差价附件
-     * @param file
+     * 明细
+     * @param id
      * @return
      */
-    @PostMapping("/upDiffPrice")
-    public BaseResponse upDiffPrice(@RequestParam("file") MultipartFile file){
-        return super.successResult();
+    @GetMapping("/find/{id}")
+    public BaseResponse find(@PathVariable Integer id){
+        return super.successResult(idrService.selectIdrDetail(id));
     }
 
     /**
-     * 上传退换货附件
-     * @param file
+     * 模板下载
+     * @param response
+     */
+    @GetMapping("/templateDownload")
+    public void templateDownload(Integer type, HttpServletResponse response) throws Exception{
+        idrService.templateDownload(type, response);
+    }
+    /**
+     * 上传附件
+     * @param type 1.保价 2.差价补偿 3.退换货
+     * @param fileType 1：普通附件 2：保差退附件 3：财务完结附件
+     * @param crAmount CR金额
+     * @param file 文件
      * @return
      */
-    @PostMapping("/upReturns")
-    public BaseResponse upReturns(@RequestParam("file") MultipartFile file){
-        return super.successResult();
+    @PostMapping("/upload")
+    public BaseResponse upload(@RequestParam("id") Integer id,
+                                   @RequestParam("type") Integer type,
+                                   @RequestParam("fileType") Integer fileType,
+                                   @RequestParam("crAmount") BigDecimal crAmount,
+                                   @RequestParam("file") MultipartFile file) throws Exception {
+        return super.successResult(idrService.upload(id, type, fileType, crAmount, file, this.getCurrentUser().getId()));
     }
 
     /**
@@ -60,37 +90,5 @@ public class IDRController extends BaseController {
         return super.successResult();
     }
 
-    /**
-     * 明细
-     * @param id
-     * @return
-     */
-    @GetMapping("/find/{id}")
-    public BaseResponse find(@PathVariable Integer id){
-        return super.successResult();
-    }
 
-    /**
-     * 代理商在申请列表的上传
-     * @param crAmount
-     * @param file
-     * @return
-     */
-    @PostMapping("/upload")
-    public BaseResponse upload(
-            @RequestParam("crAmount") BigDecimal crAmount,
-            @RequestParam("file") MultipartFile file){
-
-        return super.successResult();
-    }
-
-    /**
-     * 申请列表
-     * @return
-     */
-    @GetMapping("/list")
-    public BaseResponse list(){
-
-        return super.successResult();
-    }
 }

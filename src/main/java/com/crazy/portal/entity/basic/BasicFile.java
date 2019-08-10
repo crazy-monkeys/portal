@@ -1,6 +1,7 @@
 package com.crazy.portal.entity.basic;
 
 import com.alibaba.fastjson.annotation.JSONField;
+import com.crazy.portal.entity.base.BaseEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
@@ -11,7 +12,7 @@ import java.util.Date;
  * 客户附件
  */
 @Data
-public class BasicFile implements BaseEntity{
+public class BasicFile implements BaseEntity {
     private Integer id;
     //客户ID
     private Integer custId;

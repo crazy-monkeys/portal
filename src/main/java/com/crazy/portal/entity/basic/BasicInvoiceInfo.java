@@ -1,6 +1,7 @@
 package com.crazy.portal.entity.basic;
 
 import com.alibaba.fastjson.annotation.JSONField;
+import com.crazy.portal.entity.base.BaseEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
@@ -10,7 +11,7 @@ import java.util.Date;
  * 开票信息
  */
 @Data
-public class BasicInvoiceInfo implements BaseEntity{
+public class BasicInvoiceInfo implements BaseEntity {
     private Integer id;
 
     private Integer custId;

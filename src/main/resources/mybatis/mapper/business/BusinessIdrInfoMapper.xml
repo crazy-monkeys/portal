@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.crazy.portal.dao.business.BusinessIdrInfoMapper">
+  <resultMap id="BaseResultMap" type="com.crazy.portal.entity.business.BusinessIdrInfo">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="shipper_code" jdbcType="VARCHAR" property="shipperCode" />
+    <result column="apply_time" jdbcType="DATE" property="applyTime" />
+    <result column="currency" jdbcType="VARCHAR" property="currency" />
+    <result column="cr_amount" jdbcType="DECIMAL" property="crAmount" />
+    <result column="in_customer_name" jdbcType="VARCHAR" property="inCustomerName" />
+    <result column="dealer_id" jdbcType="INTEGER" property="dealerId" />
+    <result column="reson" jdbcType="VARCHAR" property="reson" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="type" jdbcType="INTEGER" property="type" />
+    <result column="create_id" jdbcType="INTEGER" property="createId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_id" jdbcType="INTEGER" property="updateId" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="company" jdbcType="VARCHAR" property="company" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, shipper_code, apply_time, currency, cr_amount, in_customer_name, dealer_id, reson, 
+    remark, type, create_id, create_time, update_id, update_time, status, company
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_business_idr_info
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_business_idr_info
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+
+  <insert id="insertSelective" parameterType="com.crazy.portal.entity.business.BusinessIdrInfo">
+    insert into t_business_idr_info
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="shipperCode != null">
+        shipper_code,
+      </if>
+      <if test="applyTime != null">
+        apply_time,
+      </if>
+      <if test="currency != null">
+        currency,
+      </if>
+      <if test="crAmount != null">
+        cr_amount,
+      </if>
+      <if test="inCustomerName != null">
+        in_customer_name,
+      </if>
+      <if test="dealerId != null">
+        dealer_id,
+      </if>
+      <if test="reson != null">
+        reson,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+      <if test="type != null">
+        type,
+      </if>
+      <if test="createId != null">
+        create_id,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateId != null">
+        update_id,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="company != null">
+        company,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="shipperCode != null">
+        #{shipperCode,jdbcType=VARCHAR},
+      </if>
+      <if test="applyTime != null">
+        #{applyTime,jdbcType=DATE},
+      </if>
+      <if test="currency != null">
+        #{currency,jdbcType=VARCHAR},
+      </if>
+      <if test="crAmount != null">
+        #{crAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="inCustomerName != null">
+        #{inCustomerName,jdbcType=VARCHAR},
+      </if>
+      <if test="dealerId != null">
+        #{dealerId,jdbcType=INTEGER},
+      </if>
+      <if test="reson != null">
+        #{reson,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        #{type,jdbcType=INTEGER},
+      </if>
+      <if test="createId != null">
+        #{createId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateId != null">
+        #{updateId,jdbcType=INTEGER},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="company != null">
+        #{company,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.crazy.portal.entity.business.BusinessIdrInfo">
+    update t_business_idr_info
+    <set>
+      <if test="shipperCode != null">
+        shipper_code = #{shipperCode,jdbcType=VARCHAR},
+      </if>
+      <if test="applyTime != null">
+        apply_time = #{applyTime,jdbcType=DATE},
+      </if>
+      <if test="currency != null">
+        currency = #{currency,jdbcType=VARCHAR},
+      </if>
+      <if test="crAmount != null">
+        cr_amount = #{crAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="inCustomerName != null">
+        in_customer_name = #{inCustomerName,jdbcType=VARCHAR},
+      </if>
+      <if test="dealerId != null">
+        dealer_id = #{dealerId,jdbcType=INTEGER},
+      </if>
+      <if test="reson != null">
+        reson = #{reson,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        type = #{type,jdbcType=INTEGER},
+      </if>
+      <if test="createId != null">
+        create_id = #{createId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateId != null">
+        update_id = #{updateId,jdbcType=INTEGER},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="company != null">
+        company = #{company,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <select id="selectByPage" resultMap="BaseResultMap" parameterType="com.crazy.portal.bean.business.BusinessIdrQueryBean">
+    select
+    <include refid="Base_Column_List" />
+    from t_business_idr_info
+    where 1=1
+    <if test="type != null">
+      and type = #{type}
+    </if>
+    <if test="shipperCode != null and shipperCode != ''">
+      and shipper_code like concat('%',#{shipperCode},'%')
+    </if>
+    <if test="company != null and company != ''">
+      and company like concat('%',#{company},'%')
+    </if>
+    <if test="crAmount != null">
+      and cr_amount = #{crAmount}
+    </if>
+    <if test="applyStartTime != null and applyEndTime != null">
+      and apply_time between str_to_date(#{applyStartTime}, '%Y-%m-%d') and str_to_date(#{applyEndTime}, '%Y-%m-%d')
+    </if>
+    <if test="currency != null">
+      and currency = #{currency}
+    </if>
+    <if test="inCustomerName != null">
+      and in_customer_name = #{inCustomerName}
+    </if>
+    order by create_time desc
+  </select>
+</mapper>

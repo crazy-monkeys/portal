@@ -14,7 +14,7 @@ import com.crazy.portal.dao.basic.*;
 import com.crazy.portal.dao.customer.CustomerInfoMapper;
 import com.crazy.portal.dao.customer.DealerReportMapper;
 import com.crazy.portal.dao.customer.VisitRecordMapper;
-import com.crazy.portal.entity.basic.BaseEntity;
+import com.crazy.portal.entity.base.BaseEntity;
 import com.crazy.portal.entity.basic.BasicBankInfo;
 import com.crazy.portal.entity.basic.BasicFile;
 import com.crazy.portal.entity.customer.CustomerInfo;
