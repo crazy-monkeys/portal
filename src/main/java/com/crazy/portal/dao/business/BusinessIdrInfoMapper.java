@@ -5,7 +5,7 @@ import com.crazy.portal.entity.business.BusinessIdrInfo;
 
 import java.util.List;
 
-public interface BusinessIdrInfoMapper {
+public interface BusinessIdrInfoMapper extends IdrBaseMapper{
     int deleteByPrimaryKey(Integer id);
 
     int insertSelective(BusinessIdrInfo record);

@@ -12,5 +12,5 @@ public class BusinessFileUploadBean {
 
     private String filePath;
 
-    private List<Object> idrList;
+    private List<BaseRowModel> idrList;
 }

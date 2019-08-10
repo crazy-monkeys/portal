@@ -7,7 +7,7 @@ import lombok.Data;
 import java.util.Date;
 
 @Data
-public class BusinessFile {
+public class BusinessFile implements IdrBaseEntity{
     private Integer id;
 
     private Integer idrInfoId;
@@ -17,18 +17,16 @@ public class BusinessFile {
     private String filePath;
 
     private Integer fileType;
+
     @JsonIgnore
     @JSONField(serialize = false)
-    private Integer active;
-    @JsonIgnore
-    @JSONField(serialize = false)
-    private Integer createUserId;
+    private Integer createId;
     @JsonIgnore
     @JSONField(serialize = false)
     private Date createTime;
     @JsonIgnore
     @JSONField(serialize = false)
-    private Integer updateUserId;
+    private Integer updateId;
     @JsonIgnore
     @JSONField(serialize = false)
     private Date updateTime;

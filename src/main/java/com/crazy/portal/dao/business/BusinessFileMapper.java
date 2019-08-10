@@ -5,7 +5,7 @@ import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
-public interface BusinessFileMapper {
+public interface BusinessFileMapper extends IdrBaseMapper{
     int deleteByPrimaryKey(Integer id);
 
     int insertSelective(BusinessFile record);

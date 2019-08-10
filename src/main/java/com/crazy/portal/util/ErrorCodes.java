@@ -142,12 +142,18 @@ public class ErrorCodes {
 
 
         RATE_BATCH_IS_NOT_NULL(60001,"批次号已存在",""),
+        //代理费率
+        AGENCY_RATE_UPLOAD_EXCEPTION(70001, "代理费率上传异常", ""),
+        //商务管理
+        BUSINESS_TYPE_IS_NULL(70002, "保差退类型不能为空", ""),
+        BUSINESS_FILE_TYPE_IS_NULL(70003, "文件类型不能为空", ""),
+        BUSINESS_FILE_IS_NULL(70004, "文件不能为空", ""),
+        BUSINESS_IDR_ID_IS_NULL(70005, "记录ID不能为空", ""),
 
 
         PRODUCT_QUERY_ERROR(70001,"产品查询异常",""),
-        PRODUCT_SYNC_ERROR(70002,"产品同步异常",""),
+        PRODUCT_SYNC_ERROR(70002,"产品同步异常","");
 
-        AGENCY_RATE_UPLOAD_EXCEPTION(70001, "代理费率上传异常", "");
         private final int code;
         private final String zhMsg;
         private final String enMsg;

@@ -34,7 +34,7 @@
     where id = #{id,jdbcType=INTEGER}
   </delete>
 
-  <insert id="insertSelective" parameterType="com.crazy.portal.entity.business.BusinessIdrInfo">
+  <insert id="insertSelective" keyProperty="id" parameterType="com.crazy.portal.entity.business.BusinessIdrInfo">
     insert into t_business_idr_info
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">

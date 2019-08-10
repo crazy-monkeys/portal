@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 @Data
-public class BusinessDiffPriceInfo {
+public class BusinessDiffPriceInfo implements IdrBaseEntity{
     private Integer id;
 
     private Integer idrInfoId;

@@ -5,7 +5,7 @@ import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
-public interface BusinessInsuranceInfoMapper {
+public interface BusinessInsuranceInfoMapper extends IdrBaseMapper{
     int deleteByPrimaryKey(Integer id);
 
     int insertSelective(BusinessInsuranceInfo record);

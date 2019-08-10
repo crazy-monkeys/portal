@@ -7,7 +7,7 @@ import lombok.Data;
 import java.util.Date;
 
 @Data
-public class BusinessInsuranceInfo {
+public class BusinessInsuranceInfo implements IdrBaseEntity{
     private Integer id;
 
     private Integer idrInfoId;

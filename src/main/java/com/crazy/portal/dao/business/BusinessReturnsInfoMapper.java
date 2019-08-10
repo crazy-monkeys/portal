@@ -5,7 +5,7 @@ import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
-public interface BusinessReturnsInfoMapper {
+public interface BusinessReturnsInfoMapper extends IdrBaseMapper{
     int deleteByPrimaryKey(Integer id);
 
     int insertSelective(BusinessReturnsInfo record);

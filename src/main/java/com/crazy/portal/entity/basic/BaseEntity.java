@@ -1,4 +1,4 @@
-package com.crazy.portal.entity.base;
+package com.crazy.portal.entity.basic;
 
 import java.util.Date;
 

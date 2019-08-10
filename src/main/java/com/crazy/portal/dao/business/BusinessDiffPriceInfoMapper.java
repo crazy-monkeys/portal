@@ -5,7 +5,7 @@ import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
-public interface BusinessDiffPriceInfoMapper {
+public interface BusinessDiffPriceInfoMapper extends IdrBaseMapper{
     int deleteByPrimaryKey(Integer id);
 
     int insertSelective(BusinessDiffPriceInfo record);

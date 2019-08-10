@@ -7,15 +7,14 @@
     <result column="file_name" jdbcType="VARCHAR" property="fileName" />
     <result column="file_path" jdbcType="VARCHAR" property="filePath" />
     <result column="file_type" jdbcType="INTEGER" property="fileType" />
-    <result column="active" jdbcType="INTEGER" property="active" />
-    <result column="create_user_id" jdbcType="INTEGER" property="createUserId" />
+    <result column="create_id" jdbcType="INTEGER" property="createId" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
-    <result column="update_user_id" jdbcType="INTEGER" property="updateUserId" />
+    <result column="update_id" jdbcType="INTEGER" property="updateId" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, idr_info_id, file_name, file_path, file_type, active, create_user_id, create_time, 
-    update_user_id, update_time
+    id, idr_info_id, file_name, file_path, file_type, create_id, create_time,
+    update_id, update_time
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -46,17 +45,14 @@
       <if test="fileType != null">
         file_type,
       </if>
-      <if test="active != null">
-        active,
-      </if>
-      <if test="createUserId != null">
-        create_user_id,
+      <if test="createId != null">
+        create_id,
       </if>
       <if test="createTime != null">
         create_time,
       </if>
-      <if test="updateUserId != null">
-        update_user_id,
+      <if test="updateId != null">
+        update_id,
       </if>
       <if test="updateTime != null">
         update_time,
@@ -78,17 +74,14 @@
       <if test="fileType != null">
         #{fileType,jdbcType=INTEGER},
       </if>
-      <if test="active != null">
-        #{active,jdbcType=INTEGER},
-      </if>
-      <if test="createUserId != null">
-        #{createUserId,jdbcType=INTEGER},
+      <if test="createId != null">
+        #{createId,jdbcType=INTEGER},
       </if>
       <if test="createTime != null">
         #{createTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="updateUserId != null">
-        #{updateUserId,jdbcType=INTEGER},
+      <if test="updateId != null">
+        #{updateId,jdbcType=INTEGER},
       </if>
       <if test="updateTime != null">
         #{updateTime,jdbcType=TIMESTAMP},
@@ -110,17 +103,14 @@
       <if test="fileType != null">
         file_type = #{fileType,jdbcType=INTEGER},
       </if>
-      <if test="active != null">
-        active = #{active,jdbcType=INTEGER},
-      </if>
-      <if test="createUserId != null">
-        create_user_id = #{createUserId,jdbcType=INTEGER},
+      <if test="createId != null">
+        create_id = #{createId,jdbcType=INTEGER},
       </if>
       <if test="createTime != null">
         create_time = #{createTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="updateUserId != null">
-        update_user_id = #{updateUserId,jdbcType=INTEGER},
+      <if test="updateId != null">
+        update_id = #{updateId,jdbcType=INTEGER},
       </if>
       <if test="updateTime != null">
         update_time = #{updateTime,jdbcType=TIMESTAMP},

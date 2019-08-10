@@ -1,26 +1,16 @@
 package com.crazy.portal.controller.business;
 
-import com.alibaba.excel.metadata.BaseRowModel;
-import com.alibaba.excel.support.ExcelTypeEnum;
 import com.crazy.portal.bean.BaseResponse;
 import com.crazy.portal.bean.business.BusinessIdrQueryBean;
-import com.crazy.portal.bean.customer.visitRecord.VisitRecordEO;
 import com.crazy.portal.controller.BaseController;
 import com.crazy.portal.service.business.IDRService;
-import com.crazy.portal.util.ExcelUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.omg.CORBA.INTERNAL;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Created by bill on 2019/7/30.
@@ -58,6 +48,7 @@ public class IDRController extends BaseController {
 
     /**
      * 模板下载
+     * @param type 1.保价 2.差价补偿 3.退换货
      * @param response
      */
     @GetMapping("/templateDownload")
@@ -66,6 +57,7 @@ public class IDRController extends BaseController {
     }
     /**
      * 上传附件
+     * @param id 保差退ID
      * @param type 1.保价 2.差价补偿 3.退换货
      * @param fileType 1：普通附件 2：保差退附件 3：财务完结附件
      * @param crAmount CR金额
@@ -74,10 +66,10 @@ public class IDRController extends BaseController {
      */
     @PostMapping("/upload")
     public BaseResponse upload(@RequestParam("id") Integer id,
-                                   @RequestParam("type") Integer type,
-                                   @RequestParam("fileType") Integer fileType,
-                                   @RequestParam("crAmount") BigDecimal crAmount,
-                                   @RequestParam("file") MultipartFile file) throws Exception {
+                               @RequestParam("type") Integer type,
+                               @RequestParam("fileType") Integer fileType,
+                               @RequestParam("crAmount") BigDecimal crAmount,
+                               @RequestParam("file") MultipartFile file) throws Exception {
         return super.successResult(idrService.upload(id, type, fileType, crAmount, file, this.getCurrentUser().getId()));
     }
 

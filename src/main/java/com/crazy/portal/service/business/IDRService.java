@@ -4,34 +4,26 @@ import com.alibaba.excel.EasyExcelFactory;
 import com.alibaba.excel.metadata.BaseRowModel;
 import com.alibaba.excel.metadata.Sheet;
 import com.alibaba.excel.support.ExcelTypeEnum;
-import com.crazy.portal.bean.BaseResponse;
 import com.crazy.portal.bean.business.*;
 import com.crazy.portal.bean.common.Constant;
 import com.crazy.portal.bean.customer.basic.FileVO;
-import com.crazy.portal.bean.customer.visitRecord.VisitRecordEO;
-import com.crazy.portal.config.exception.ErrorInfo;
 import com.crazy.portal.dao.business.*;
-import com.crazy.portal.entity.base.BaseEntity;
 import com.crazy.portal.entity.business.BusinessFile;
 import com.crazy.portal.entity.business.BusinessIdrInfo;
 import com.crazy.portal.entity.business.BusinessInsuranceInfo;
-import com.crazy.portal.entity.customer.VisitRecord;
+import com.crazy.portal.entity.business.IdrBaseEntity;
 import com.crazy.portal.util.*;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by bill on 2019/7/30.
@@ -89,28 +81,20 @@ public class IDRService {
 
     /**
      * 模板下载
-     * @param type
+     * @param type 1.保价 2.差价补偿 3.退换货
      * @param response
      */
     public void templateDownload(Integer type, HttpServletResponse response) throws Exception{
+        BusinessUtil.assertIsNull(type, ErrorCodes.BusinessEnum.BUSINESS_TYPE_IS_NULL);
         Map<String, List<? extends BaseRowModel>> resultMap = new HashMap<>();
-        String sheetName = "";
-        List<BaseRowModel> list = new ArrayList<>();
-        if(type == Enums.BusinessIdrType.INSURANCE.getCode()){
-            sheetName = Enums.BusinessIdrType.INSURANCE.getDesc();
-            list.add(new InsuranceEO());
-        }else if(type == Enums.BusinessIdrType.DIFF_PRICE.getCode()){
-            sheetName = Enums.BusinessIdrType.DIFF_PRICE.getDesc();
-            list.add(new DiffPriceEO());
-        }else if(type == Enums.BusinessIdrType.RETURNS.getCode()){
-            sheetName = Enums.BusinessIdrType.RETURNS.getDesc();
-            list.add(new ReturnsEO());
-        }
-        resultMap.put("模板", list);
+        Enums.BusinessIdrType enumType = Enums.BusinessIdrType.getDescByCode(type);
+        String sheetName = enumType.getDesc();
+        resultMap.put("sheet1", Collections.singletonList(enumType.getType()));
         ExcelUtils.createExcelStreamMutilByEaysExcel(response, resultMap, sheetName, ExcelTypeEnum.XLSX);
     }
     /**
      * 上传附件
+     * @param id 保差退ID
      * @param type 1.保价 2.差价补偿 3.退换货
      * @param fileType 1：普通附件 2：保差退附件 3：财务完结附件
      * @param crAmount CR金额
@@ -118,50 +102,75 @@ public class IDRService {
      * @return
      */
     public BusinessFileUploadBean upload(Integer id, Integer type, Integer fileType, BigDecimal crAmount, MultipartFile file, Integer userId) throws Exception{
+        BusinessUtil.assertIsNull(fileType, ErrorCodes.BusinessEnum.BUSINESS_FILE_TYPE_IS_NULL);
+        BusinessUtil.assertIsNull(file, ErrorCodes.BusinessEnum.BUSINESS_FILE_IS_NULL);
+        if(fileType == Enums.BusinessFileType.FINANCIAL_CLOSURE.getCode()){
+            BusinessUtil.assertIsNull(id, ErrorCodes.BusinessEnum.BUSINESS_IDR_ID_IS_NULL);
+        }
+        if(fileType == Enums.BusinessFileType.IDR.getCode()){
+            BusinessUtil.assertIsNull(type, ErrorCodes.BusinessEnum.BUSINESS_TYPE_IS_NULL);
+
+        }
+        BusinessFileUploadBean result = new BusinessFileUploadBean();
         FileVO fileVo = FileUtil.upload(file, getIdrFilePath());
         if(fileType == Enums.BusinessFileType.FINANCIAL_CLOSURE.getCode()){
-            BusinessFile businessFile = new BusinessFile();
-            businessFile.setIdrInfoId(id);
-            businessFile.setFileName(fileVo.getFileName());
-            businessFile.setFilePath(fileVo.getFullPath());
-            businessFile.setFileType(fileType);
-            businessFile.setActive(Constant.ACTIVE);
-            businessFile.setCreateUserId(userId);
-            businessFile.setCreateTime(DateUtil.getCurrentTS());
+            financialClosure(id, fileType, crAmount, userId, fileVo);
         }
-        List<Object> records = null;
         if(fileType == Enums.BusinessFileType.IDR.getCode()){
-            Class typeClass = null;
-            if(type == Enums.BusinessIdrType.INSURANCE.getCode()){
-                typeClass = InsuranceEO.class;
-            }else if(type == Enums.BusinessIdrType.DIFF_PRICE.getCode()){
-                typeClass = DiffPriceEO.class;
-            }else if(type == Enums.BusinessIdrType.RETURNS.getCode()){
-                typeClass = ReturnsEO.class;
-            }
-            records = EasyExcelFactory.read(file.getInputStream(), new Sheet(1, 1, typeClass));
-            records.forEach(e->{
-                try {
-                    BusinessInsuranceInfo record = new BusinessInsuranceInfo();
-                    BeanUtils.copyNotNullFields(e , record);
-                    record.setIdrInfoId(id);
-                    record.setCreateId(userId);
-                    record.setCreateTime(DateUtil.getCurrentTS());
-                } catch (Exception ex) {
-                    log.error("保存拜访记录异常", ex);
-                }
-            });
+            Enums.BusinessIdrType idrType = Enums.BusinessIdrType.getDescByCode(type);
+            List<BaseRowModel>  records = ExcelUtils.readExcel(file, idrType.getType().getClass());
+            result.setIdrList(records);
         }
-
-        BusinessFileUploadBean result = new BusinessFileUploadBean();
         result.setFileName(fileVo.getFileName());
         result.setFilePath(fileVo.getFullPath());
-        result.setIdrList(records);
         return result;
+    }
+
+    private void financialClosure(Integer id, Integer fileType, BigDecimal crAmount, Integer userId, FileVO fileVo) {
+        BusinessFile businessFile = new BusinessFile();
+        businessFile.setIdrInfoId(id);
+        businessFile.setFileName(fileVo.getFileName());
+        businessFile.setFilePath(fileVo.getFullPath());
+        businessFile.setFileType(fileType);
+        businessFile.setCreateId(userId);
+        businessFile.setCreateTime(DateUtil.getCurrentTS());
+        businessFileMapper.insertSelective(businessFile);
+
+        BusinessIdrInfo info = new BusinessIdrInfo();
+        info.setId(id);
+        info.setCrAmount(crAmount);
+        info.setStatus(Enums.BusinessIdrStatus.FINISHED.getCode());
+        info.setUpdateId(userId);
+        info.setUpdateTime(DateUtil.getCurrentTS());
+        businessIdrInfoMapper.updateByPrimaryKeySelective(info);
     }
 
     public String getIdrFilePath(){
         return filePath.concat(File.separator).concat(IDR_FILE_PATH);
+    }
+
+    public void save(BusinessIdrInfo bean, Integer userId){
+        bean.setStatus(Enums.BusinessIdrStatus.SUBMIT.getCode());
+        bean.setCreateId(userId);
+        bean.setCreateTime(DateUtil.getCurrentTS());
+        businessIdrInfoMapper.insertSelective(bean);
+
+        saveExtendsInfo(bean.getIList(), businessInsuranceInfoMapper, bean);
+
+        saveExtendsInfo(bean.getDList(), businessDiffPriceInfoMapper, bean);
+
+        saveExtendsInfo(bean.getRList(), businessReturnsInfoMapper, bean);
+
+        saveExtendsInfo(bean.getFiles(), businessFileMapper, bean);
+    }
+
+    public void saveExtendsInfo(List<? extends IdrBaseEntity> list, IdrBaseMapper mapper, BusinessIdrInfo bean){
+        list.forEach(e->{
+            e.setIdrInfoId(bean.getId());
+            e.setCreateId(bean.getCreateId());
+            e.setCreateTime(bean.getCreateTime());
+            mapper.insertSelective(e);
+        });
     }
 
 }
