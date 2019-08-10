@@ -25,6 +25,12 @@
     <result column="error_msg" jdbcType="VARCHAR" property="errorMsg" />
     <result column="record_id" jdbcType="INTEGER" property="recordId" />
   </resultMap>
+
+  <resultMap id="errorResultMap" extends="BaseResultMap" type="com.crazy.portal.bean.handover.DeliverTemplateBean" >
+    <result column="error_id" jdbcType="INTEGER" property="errorId" />
+    <result column="third_error_msg" jdbcType="VARCHAR" property="thirdErrorMsg" />
+  </resultMap>
+
   <sql id="Base_Column_List">
     id, upload_time, customer_external_number, customer_full_name, sales, category_one, 
     category_tow, category_three, product_model, delivery_date, deliver_number, sale_price, 
@@ -301,5 +307,18 @@
   <select id="selectByRecordId" resultMap="BaseResultMap" >
     select * from t_deliver_detail t where t.record_id = #{recordId}
   </select>
+
+  <select id="selectErrorDataByRecord" resultMap="errorResultMap" >
+    select upload_time, customer_external_number, customer_full_name, sales, category_one,
+    category_tow, category_three, product_model, delivery_date, deliver_number, sale_price,
+    po_price, margin, currency, customer_order_number, delivery_type, order_month, delivery_company,
+    remark,id as error_id,error_msg as third_error_msg
+    from t_deliver_detail
+    where record_id = #{recordId} and error_msg is not null
+  </select>
+
+  <delete id="deleteByRecordId" >
+    delete from t_deliver_detail where record_id = #{recordId}
+  </delete>
 
 </mapper>

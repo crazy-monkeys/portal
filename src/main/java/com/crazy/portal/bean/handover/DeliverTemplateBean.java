@@ -2,7 +2,10 @@ package com.crazy.portal.bean.handover;
 
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.excel.metadata.BaseRowModel;
+import com.crazy.portal.entity.handover.DeliverDetail;
 import lombok.Data;
+
+import java.util.Date;
 
 /**
  * Created by lee on 2019/8/3.
@@ -15,7 +18,7 @@ public class DeliverTemplateBean extends BaseRowModel {
 
     /** 上传时间 */
     @ExcelProperty(index = 0, value = "上传时间")
-    private String uploadTime;
+    private Date uploadTime;
 
     /** 客户外部号 */
     @ExcelProperty(index = 1, value = "客户外部号")
@@ -47,19 +50,19 @@ public class DeliverTemplateBean extends BaseRowModel {
 
     /** 出货日期 */
     @ExcelProperty(index = 8, value = "出货日期")
-    private String deliveryDate;
+    private Date deliveryDate;
 
     /** 数量 */
     @ExcelProperty(index = 9, value = "数量")
-    private String deliverNumber;
+    private Integer deliverNumber;
 
     /** Sale Price */
     @ExcelProperty(index = 10, value = "Sale Price")
-    private String salePrice;
+    private Long salePrice;
 
     /** Po Price */
     @ExcelProperty(index = 11, value = "Po Price")
-    private String poPrice;
+    private Long poPrice;
 
     /** Margin */
     @ExcelProperty(index = 12, value = "Margin")
@@ -71,11 +74,11 @@ public class DeliverTemplateBean extends BaseRowModel {
 
     /** 客户订单号 */
     @ExcelProperty(index = 14, value = "客户订单号")
-    private String customerOrderNumber;
+    private Integer customerOrderNumber;
 
     /** 出货类型 */
     @ExcelProperty(index = 15, value = "出货类型")
-    private String deliveryType;
+    private Integer deliveryType;
 
     /** 订单月份 */
     @ExcelProperty(index = 16, value = "订单月份")
@@ -89,8 +92,12 @@ public class DeliverTemplateBean extends BaseRowModel {
     @ExcelProperty(index = 18, value = "备注")
     private String remark;
 
-    /** 错误信息 */
+    /** 第三方错误信息错误信息 */
     @ExcelProperty(index = 19, value = "错误信息")
-    private String errorMsg;
+    private String thirdErrorMsg;
+
+    /** 错误信息在portal中的数据ID */
+    @ExcelProperty(index = 20, value = "错误ID")
+    private Integer errorId;
 
 }

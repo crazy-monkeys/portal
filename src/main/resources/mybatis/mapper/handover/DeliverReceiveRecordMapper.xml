@@ -11,10 +11,14 @@
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="approval_user_id" jdbcType="INTEGER" property="approvalUserId" />
     <result column="approval_time" jdbcType="TIMESTAMP" property="approvalTime" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="type_desc" jdbcType="VARCHAR" property="typeDesc" />
+    <result column="status_desc" jdbcType="VARCHAR" property="statusDesc" />
+    <result column="upload_time_str" jdbcType="VARCHAR" property="uploadTimeStr" />
   </resultMap>
   <sql id="Base_Column_List">
     id, dealer_id, dealer_name, type, upload_time, status, create_time, approval_user_id, 
-    approval_time
+    approval_time, remark
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -66,6 +70,9 @@
       <if test="approvalTime != null">
         approval_time,
       </if>
+      <if test="remark != null" >
+        remark,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -94,6 +101,9 @@
       </if>
       <if test="approvalTime != null">
         #{approvalTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remark != null" >
+        #{remark},
       </if>
     </trim>
   </insert>
@@ -124,6 +134,9 @@
       <if test="approvalTime != null">
         approval_time = #{approvalTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="remark != null" >
+        remark = #{remark},
+      </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
@@ -141,8 +154,35 @@
   </update>
 
   <select id="selectPageInfo" resultMap="BaseResultMap" >
-    select * from t_deliver_receive_record
+    select *,
+    case when type = 1 then '出货'
+    when type = 2 then '收货' else '未知' end type_desc,
+    case when type = -1 then '待确认'
+    when type = 0 then '初始化'
+    when type = 1 then '已确认'
+    when type = 2 then '已提交'
+    when type = 3 then '已驳回' else '未知' end status_desc,
+    DATE_FORMAT(upload_time,'%Y-%m-%d %H:%i:%s') upload_time_str
+    from t_deliver_receive_record
     where 1 = 1
+    <if test="uploadStartTime != null and uploadStartTime != '' and uploadEndTime != null and uploadEndTime != ''" >
+      and upload_time between #{uploadStartTime} and #{uploadEndTime}
+    </if>
+    <if test="uploadStartTime != null and uploadStartTime != '' and (uploadEndTime == null or uploadEndTime == '')" >
+      and upload_time >= #{uploadStartTime}
+    </if>
+    <if test="(uploadStartTime == null or uploadStartTime == '') and uploadEndTime != null and uploadEndTime != ''" >
+      <![CDATA[ and upload_time <= #{uploadEndTime} ]]>
+    </if>
+    <if test="dealerName != null and dealerName != ''" >
+      and dealer_name like concat('%',#{dealerName},'%')
+    </if>
+    <if test="status != null" >
+      and status = #{status}
+    </if>
+    <if test="dealerId != null" >
+      and dealer_id = #{dealerId}
+    </if>
     order by create_time desc
   </select>
 

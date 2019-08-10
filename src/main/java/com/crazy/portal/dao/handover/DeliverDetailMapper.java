@@ -1,5 +1,6 @@
 package com.crazy.portal.dao.handover;
 
+import com.crazy.portal.bean.handover.DeliverTemplateBean;
 import com.crazy.portal.entity.handover.DeliverDetail;
 import org.apache.ibatis.annotations.Param;
 
@@ -21,4 +22,8 @@ public interface DeliverDetailMapper {
     List<DeliverDetail> selectByRecordId(@Param(value = "recordId") Integer recordId);
 
     int countErrorData(@Param(value = "recordId") Integer recordId);
+
+    List<DeliverTemplateBean> selectErrorDataByRecord(@Param(value = "recordId") Integer recordId);
+
+    int deleteByRecordId(@Param(value = "recordId") Integer recordId);
 }

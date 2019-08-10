@@ -1,7 +1,10 @@
 package com.crazy.portal.entity.handover;
 
+import lombok.Data;
+
 import java.util.Date;
 
+@Data
 public class DeliverReceiveRecord {
     private Integer id;
 
@@ -21,75 +24,12 @@ public class DeliverReceiveRecord {
 
     private Date approvalTime;
 
-    public Integer getId() {
-        return id;
-    }
+    private String remark;
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+    private String typeDesc;
 
-    public Integer getDealerId() {
-        return dealerId;
-    }
+    private String statusDesc;
 
-    public void setDealerId(Integer dealerId) {
-        this.dealerId = dealerId;
-    }
+    private String uploadTimeStr;
 
-    public String getDealerName() {
-        return dealerName;
-    }
-
-    public void setDealerName(String dealerName) {
-        this.dealerName = dealerName == null ? null : dealerName.trim();
-    }
-
-    public Integer getType() {
-        return type;
-    }
-
-    public void setType(Integer type) {
-        this.type = type;
-    }
-
-    public Date getUploadTime() {
-        return uploadTime;
-    }
-
-    public void setUploadTime(Date uploadTime) {
-        this.uploadTime = uploadTime;
-    }
-
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
-
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
-
-    public Integer getApprovalUserId() {
-        return approvalUserId;
-    }
-
-    public void setApprovalUserId(Integer approvalUserId) {
-        this.approvalUserId = approvalUserId;
-    }
-
-    public Date getApprovalTime() {
-        return approvalTime;
-    }
-
-    public void setApprovalTime(Date approvalTime) {
-        this.approvalTime = approvalTime;
-    }
 }

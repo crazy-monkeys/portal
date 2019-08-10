@@ -19,9 +19,8 @@ public interface DeliverReceiveRecordMapper {
 
     List<DeliverReceiveRecord> selectPageInfo(@Param(value = "dealerName") String dealerName,
                                               @Param(value = "status") Integer status,
-                                              @Param(value = "deliveryStartDate") String deliveryStartDate,
-                                              @Param(value = "deliveryEndDate") String deliveryEndDate,
                                               @Param(value = "uploadStartTime") String uploadStartTime,
-                                              @Param(value = "uploadEndTime") String uploadEndTime);
+                                              @Param(value = "uploadEndTime") String uploadEndTime,
+                                              @Param(value = "dealerId") String dealerId);
 
 }

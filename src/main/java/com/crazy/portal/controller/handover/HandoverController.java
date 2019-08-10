@@ -26,8 +26,6 @@ public class HandoverController extends BaseController {
      * 出货数据查询
      * @param dealerName
      * @param status
-     * @param deliveryStartDate
-     * @param deliveryEndDate
      * @param uploadStartTime
      * @param uploadEndTime
      * @param pageNum
@@ -36,11 +34,21 @@ public class HandoverController extends BaseController {
      */
     @GetMapping(value = "/handover")
     public BaseResponse getPageList(String dealerName, Integer status,
-                                    String deliveryStartDate, String deliveryEndDate,
                                     String uploadStartTime, String uploadEndTime,
                                     Integer pageNum, Integer pageSize) {
-        return super.successResult(handoverService.getPageList(dealerName, status, deliveryStartDate, deliveryEndDate,
-                uploadStartTime, uploadEndTime, pageNum, pageSize));
+        return super.successResult(handoverService.getPageList(dealerName, status, uploadStartTime, uploadEndTime, pageNum, pageSize));
+    }
+
+    /**
+     * 代理商自己查询上传记录
+     * @param dealerId
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
+    @GetMapping(value = "/handover/dealer")
+    public BaseResponse getDealerPageList(String dealerId, Integer pageNum, Integer pageSize) {
+        return super.successResult(handoverService.getDealerPageList(dealerId, pageNum, pageSize));
     }
 
     /**
@@ -48,8 +56,8 @@ public class HandoverController extends BaseController {
      * @param id
      * @return
      */
-    @GetMapping(value = "/handover/{type}/{id}")
-    public BaseResponse getDetailInfo(@PathVariable Integer id, @PathVariable String type, Integer pageNum, Integer pageSize) {
+    @GetMapping(value = "/handover/detail/{id}")
+    public BaseResponse getDetailInfo(@PathVariable Integer id, String type, Integer pageNum, Integer pageSize) {
         return super.successResult(handoverService.getDetailInfo(id, type, pageNum, pageSize));
     }
 
@@ -57,8 +65,8 @@ public class HandoverController extends BaseController {
      * 出货数据审核（运作部审核）
      * @return
      */
-    @GetMapping(value = "/handover/approval/{type}/{id}")
-    public BaseResponse approvalDeliverInfo(@PathVariable Integer id, @PathVariable String type) {
+    @GetMapping(value = "/handover/approval/{id}")
+    public BaseResponse approvalDeliverInfo(@PathVariable Integer id, String type) {
         handoverService.approvalDeliverInfo(id, getCurrentUser().getId(), type);
         return super.successResult();
     }
@@ -69,8 +77,8 @@ public class HandoverController extends BaseController {
      * @param response
      * @param type deliver:出货 receive:收货
      */
-    @GetMapping(value = "/handover/{type}/template")
-    public void downloadTemplate(HttpServletResponse response, @PathVariable String type) {
+    @GetMapping(value = "/handover/template")
+    public void downloadTemplate(String type, HttpServletResponse response) {
         handoverService.downloadTemplate(response, type);
     }
 
@@ -79,18 +87,31 @@ public class HandoverController extends BaseController {
      * @param excel
      * @return
      */
-    @PostMapping(value = "/handover/{type}/template")
-    public BaseResponse uploadTemplateData(MultipartFile excel, @PathVariable String type) {
+    @PostMapping(value = "/handover/template")
+    public BaseResponse uploadTemplateData(MultipartFile excel, String type) {
         List<?> data = handoverService.uploadTemplateData(excel, getCurrentUser().getId(), type);
         return super.successResult(handoverService.verificationData(data, getCurrentUser().getId(), type));
+    }
+
+    /**
+     * 错误数据修正
+     * @param excel
+     * @param type
+     * @param recordId
+     * @return
+     */
+    @PostMapping(value = "/handover/error/retry")
+    public BaseResponse modifyErrorData(MultipartFile excel, String type, Integer recordId) {
+        List<?> data = handoverService.uploadTemplateData(excel, getCurrentUser().getId(), type);
+        return super.successResult(handoverService.verificationDataByErrorData(data, getCurrentUser().getId(), type, recordId));
     }
 
     /**
      * 出货数据校验失败信息下载
      * @param response
      */
-    @GetMapping(value = "/handover/{type}/error")
-    public void downloadError(HttpServletResponse response, @PathVariable String type, String fileName) {
+    @GetMapping(value = "/handover/error")
+    public void downloadError(HttpServletResponse response, String type, String fileName) {
         handoverService.downloadError(response, fileName, type);
     }
 
@@ -98,8 +119,8 @@ public class HandoverController extends BaseController {
      * 出货数据提交
      * @return
      */
-    @PostMapping(value = "/handover/{type}")
-    public BaseResponse submitData(Integer recordId, @PathVariable String type) {
+    @PostMapping(value = "/handover/detail")
+    public BaseResponse submitData(Integer recordId, String type) {
         handoverService.submitData(recordId, type);
         return super.successResult();
     }

@@ -62,8 +62,6 @@ public class HandoverService {
      * 进出货记录分页列表
      * @param dealerName
      * @param status
-     * @param deliveryStartDate
-     * @param deliveryEndDate
      * @param uploadStartTime
      * @param uploadEndTime
      * @param pageNum
@@ -71,12 +69,17 @@ public class HandoverService {
      * @return
      */
     public PageInfo<DeliverReceiveRecord> getPageList(String dealerName, Integer status,
-                                                      String deliveryStartDate, String deliveryEndDate,
                                                       String uploadStartTime, String uploadEndTime,
                                                       Integer pageNum, Integer pageSize) {
         PortalUtil.defaultStartPage(pageNum,pageSize);
-        List<DeliverReceiveRecord> result = deliverReceiveRecordMapper.selectPageInfo(dealerName, status, deliveryStartDate, deliveryEndDate,
-                uploadStartTime, uploadEndTime);
+        List<DeliverReceiveRecord> result = deliverReceiveRecordMapper.selectPageInfo(dealerName, status,
+                uploadStartTime, uploadEndTime, null);
+        return new PageInfo<>(result);
+    }
+
+    public PageInfo<DeliverReceiveRecord> getDealerPageList(String dealerId, Integer pageNum, Integer pageSize) {
+        PortalUtil.defaultStartPage(pageNum,pageSize);
+        List<DeliverReceiveRecord> result = deliverReceiveRecordMapper.selectPageInfo(null, null, null, null, dealerId);
         return new PageInfo<>(result);
     }
 
@@ -154,11 +157,65 @@ public class HandoverService {
         return null;
     }
 
-    private Map<String, String> reqThridServer() {
-        Map<String, String> response = new HashMap<>();
-        response.put("status", "ok");
-        response.put("fileName", "deliver_error.xlsx");
-        return response;
+    private DeliverReceiveRecord genRecord(String dealerName, Integer userId, Integer type) {
+        DeliverReceiveRecord record = new DeliverReceiveRecord();
+        record.setUploadTime(new Date());
+        record.setDealerName(dealerName);
+        record.setDealerId(userId);
+        record.setStatus(0);
+        record.setType(type);
+        record.setCreateTime(new Date());
+        deliverReceiveRecordMapper.insertSelective(record);
+        return record;
+    }
+
+    private HandoverUploadVO genThirdResult(Map<String, String> result, List<DeliverTemplateBean> responseData, Integer recordId) {
+        HandoverUploadVO resultInfo = new HandoverUploadVO();
+        boolean condition = "ok".equals(result.get("status"));
+        resultInfo.setDeliverDetails(responseData);
+        resultInfo.setRecordId(recordId);
+        resultInfo.setIsError(condition ? 0 : 1);
+        resultInfo.setDeliverDetails(responseData);
+        if(!condition){
+            List<DeliverTemplateBean> errorData = deliverDetailMapper.selectErrorDataByRecord(recordId);
+            String errorDataFileName = ExcelUtils.writeExcel(deliverPushPath, errorData, DeliverTemplateBean.class);
+            resultInfo.setErrorFileName(errorDataFileName);
+        }
+        resultInfo.setMsg(condition ? null : "请点击【下载错误数据】，并将更新后的数据重新上传");
+        return resultInfo;
+    }
+
+    @Transactional
+    public HandoverUploadVO verificationDataByErrorData(List<?> data, Integer userId, String type, Integer recordId) {
+        if(deliver_type.equals(type)){
+            List<DeliverTemplateBean> errorList = (List<DeliverTemplateBean>) data;
+            for(DeliverTemplateBean errorData : errorList) {
+                DeliverDetail dbRecord = deliverDetailMapper.selectByPrimaryKey(errorData.getErrorId());
+                //Excel内的ID未找到记录则不尽兴处理
+                BusinessUtil.assertFlase(null == dbRecord || recordId != dbRecord.getRecordId(), HANDOVER_DELIVER_DATA_NOT_EXISTS);
+                DeliverDetail detail = JSONObject.parseObject(JSONObject.toJSONString(errorData), DeliverDetail.class);
+                detail.setId(dbRecord.getId());
+                detail.setErrorMsg(null);
+                deliverDetailMapper.updateByPrimaryKeySelective(detail);
+            }
+            //复核数据记录是否还存在错误
+//            int errorCnt = deliverDetailMapper.countErrorData(recordId);
+//            BusinessUtil.assertFlase(errorCnt > 0, HANDOVER_DELIVER_EXISTS_DATA_ERROR);
+            //重新生成数据
+            List<DeliverDetail> fullData = deliverDetailMapper.selectByRecordId(recordId);
+//            String thridFileName = ExcelUtils.writeExcel(deliverPushPath, fullData, DeliverDetail.class);
+            Map<String, String> result = reqThridServer();
+            List<DeliverTemplateBean> responseData = ExcelUtils.readExcel(deliverPullPath, result.get("fileName"), DeliverTemplateBean.class);
+            deliverDetailMapper.deleteByRecordId(recordId);
+            for(DeliverTemplateBean templateBean : responseData){
+                DeliverDetail detail = JSONObject.parseObject(JSONObject.toJSONString(templateBean), DeliverDetail.class);
+                detail.setErrorMsg(templateBean.getThirdErrorMsg());
+                detail.setRecordId(recordId);
+                deliverDetailMapper.insert(detail);
+            }
+            return genThirdResult(result, responseData, recordId);
+        }
+        return null;
     }
 
     /**
@@ -174,33 +231,24 @@ public class HandoverService {
         String thridFileName = null;
         Map<String, String> result = null;
         String dealerName = "模拟出来的代理商名字";
-        HandoverUploadVO resultInfo = new HandoverUploadVO();
         if(deliver_type.equals(type)){
-            List<DeliverTemplateBean> deliverData = (List<DeliverTemplateBean>) data;
-            thridFileName = ExcelUtils.writeExcel(deliverPushPath, deliverData, DeliverTemplateBean.class);
+            /*
+            List<DeliverDetail> deliverData = (List<DeliverDetail>) data;
+            //数据包装，生成第三方需要的文件
+            thridFileName = ExcelUtils.writeExcel(deliverPushPath, deliverData, DeliverDetail.class);
+            //假设请求了第三方，并拿到了结果
+            */
             result = reqThridServer();
             List<DeliverTemplateBean> responseData = ExcelUtils.readExcel(deliverPullPath, result.get("fileName"), DeliverTemplateBean.class);
-            if("ok".equals(result.get("status"))){
-                DeliverReceiveRecord record = new DeliverReceiveRecord();
-                record.setUploadTime(new Date());
-                record.setDealerName(dealerName);
-                record.setDealerId(userId);
-                record.setStatus(0);
-                deliverReceiveRecordMapper.insertSelective(record);
-                for(DeliverTemplateBean templateBean : responseData){
-                    DeliverDetail detail = JSONObject.parseObject(JSONObject.toJSONString(templateBean), DeliverDetail.class);
-                    detail.setRecordId(record.getId());
-                    deliverDetailMapper.insert(detail);
-                }
-                resultInfo.setDeliverDetails(responseData);
-                resultInfo.setRecordId(record.getId());
-                resultInfo.setIsError(0);
-                return resultInfo;
+            //批次记录表
+            DeliverReceiveRecord record = genRecord(dealerName, userId, 1);
+            for(DeliverTemplateBean templateBean : responseData){
+                DeliverDetail detail = JSONObject.parseObject(JSONObject.toJSONString(templateBean), DeliverDetail.class);
+                detail.setErrorMsg(templateBean.getThirdErrorMsg());
+                detail.setRecordId(record.getId());
+                deliverDetailMapper.insert(detail);
             }
-            resultInfo.setIsError(1);
-            resultInfo.setErrorFileName(thridFileName);
-            resultInfo.setMsg("请点击【下载错误数据】，并将更新后的数据重新上传");
-            return resultInfo;
+            return genThirdResult(result, responseData, record.getId());
         }
         if(receive_type.equals(type)){
             List<DeliverTemplateBean> receiveData = (List<DeliverTemplateBean>) data;
@@ -261,8 +309,28 @@ public class HandoverService {
         return map;
     }
 
+    private Map<String, String> reqThridServer() {
+        Map<String, String> response = new HashMap<>();
+        response.put("status", mockThridResult() ? "ok" : "no");
+        response.put("fileName", mockThridResult() ? "deliver_ok.xlsx" : "deliver_error.xlsx");
+        response.put("msg", "这是一个描述");
+        return response;
+    }
+
     private boolean checkTimeline() {
-        return false;
+        return mockThridResult();
+    }
+
+    /**
+     * 模拟第三方结果
+     * 截取时间戳最后一个数字，0 ～ 4：false 5 ～ 9：true
+     * @return
+     */
+    private boolean mockThridResult() {
+        String time = String.valueOf(new Date().getTime());
+        int len = time.length();
+        int i = Integer.parseInt(String.valueOf(time.charAt(len - 1)));
+        return i > 4;
     }
 
 }
