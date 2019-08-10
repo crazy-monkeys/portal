@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.crazy.portal.dao.product.ProductBatchDOMapper">
+  <resultMap id="BaseResultMap" type="com.crazy.portal.entity.product.ProductBatchDO">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="batch_seq" jdbcType="VARCHAR" property="batchSeq" />
+    <result column="batch_status" jdbcType="INTEGER" property="batchStatus" />
+    <result column="insert_time" jdbcType="TIMESTAMP" property="insertTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, batch_seq, batch_status, insert_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_product_batch
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_product_batch
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.crazy.portal.entity.product.ProductBatchDO">
+    insert into t_product_batch (id, batch_seq, batch_status, 
+      insert_time)
+    values (#{id,jdbcType=INTEGER}, #{batchSeq,jdbcType=VARCHAR}, #{batchStatus,jdbcType=INTEGER}, 
+      #{insertTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.crazy.portal.entity.product.ProductBatchDO" useGeneratedKeys="true" keyProperty="id">
+    insert into t_product_batch
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="batchSeq != null">
+        batch_seq,
+      </if>
+      <if test="batchStatus != null">
+        batch_status,
+      </if>
+      <if test="insertTime != null">
+        insert_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="batchSeq != null">
+        #{batchSeq,jdbcType=VARCHAR},
+      </if>
+      <if test="batchStatus != null">
+        #{batchStatus,jdbcType=INTEGER},
+      </if>
+      <if test="insertTime != null">
+        #{insertTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.crazy.portal.entity.product.ProductBatchDO">
+    update t_product_batch
+    <set>
+      <if test="batchSeq != null">
+        batch_seq = #{batchSeq,jdbcType=VARCHAR},
+      </if>
+      <if test="batchStatus != null">
+        batch_status = #{batchStatus,jdbcType=INTEGER},
+      </if>
+      <if test="insertTime != null">
+        insert_time = #{insertTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.crazy.portal.entity.product.ProductBatchDO">
+    update t_product_batch
+    set batch_seq = #{batchSeq,jdbcType=VARCHAR},
+      batch_status = #{batchStatus,jdbcType=INTEGER},
+      insert_time = #{insertTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <update id="updateStatus">
+    update t_product_batch set batch_status = 0 where batch_status = 1
+  </update>
+</mapper>

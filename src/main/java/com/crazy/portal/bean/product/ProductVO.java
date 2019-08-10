@@ -10,7 +10,12 @@ import lombok.Data;
  */
 @Data
 public class ProductVO extends PageBean{
-    private Integer pModel;
-    private Integer pFunction;
-    private Integer active;
+    private String product;
+    private String bu;
+    private String pdt;
+    private String category;
+    private String subCategory;
+    private String platform;
+    private String sapMid;
+    private String subMid;
 }

@@ -29,4 +29,8 @@ public class AgencyRateQueryBean extends BaseRowModel {
     private Integer pageIndex;
 
     private Integer pageSize;
+
+    private String startTime;
+
+    private String endTime;
 }

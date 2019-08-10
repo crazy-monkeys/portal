@@ -16,8 +16,8 @@ import com.crazy.portal.util.CallApiUtils;
 import com.crazy.portal.util.ErrorCodes;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
 import javax.annotation.Resource;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -73,9 +73,9 @@ public class DealerService {
 
          //授信额度初始值
         Zsdscredit zsdscredit = CallApiUtils.callECCCreditApi(dealer.getCustInCode());
-        vo.setCredit(zsdscredit.getDmbtr());
-        vo.setCreditUSE(zsdscredit.getZoccupy());
-        vo.setCreditUnUSE(zsdscredit.getZremain());
+        vo.setCredit(null == zsdscredit.getDmbtr()? BigDecimal.ZERO:zsdscredit.getDmbtr());
+        vo.setCreditUSE(null == zsdscredit.getZoccupy()?BigDecimal.ZERO:zsdscredit.getZoccupy());
+        vo.setCreditUnUSE(null == zsdscredit.getZremain()?BigDecimal.ZERO:zsdscredit.getZoccupy());
         return vo;
     }
 

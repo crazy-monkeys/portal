@@ -2,11 +2,15 @@ package com.crazy.portal.entity.product;
 
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 @Data
 public class ProductInfoDO {
     private Integer id;
+
+    private Integer batchId;
 
     private Integer sn;
 
@@ -17,6 +21,10 @@ public class ProductInfoDO {
     private String pdt;
 
     private String category;
+
+    private String lifeCycle;
+
+    private BigDecimal mpq;
 
     private String subCategory;
 
@@ -37,4 +45,7 @@ public class ProductInfoDO {
     private Date insertTime;
 
     private Date updateTime;
+
+    private List<ProductSubDO> subProducts;
+    private String subMid;
 }

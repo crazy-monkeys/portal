@@ -14,7 +14,9 @@ public class ProductBean {
     private String Product;
     private String SAPMID;
     private String SubCategory;
+    private String LifeCycle;
     private String Category;
     private Integer SN;
     private String Manager;
+    private String[] BOMCode;
 }

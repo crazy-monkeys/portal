@@ -143,6 +143,10 @@ public class ErrorCodes {
 
         RATE_BATCH_IS_NOT_NULL(60001,"批次号已存在",""),
 
+
+        PRODUCT_QUERY_ERROR(70001,"产品查询异常",""),
+        PRODUCT_SYNC_ERROR(70002,"产品同步异常",""),
+
         AGENCY_RATE_UPLOAD_EXCEPTION(70001, "代理费率上传异常", "");
         private final int code;
         private final String zhMsg;
