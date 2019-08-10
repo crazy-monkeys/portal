@@ -11,6 +11,8 @@ import lombok.Data;
 @Data
 public class ReceiveTemplateBrean extends BaseRowModel {
 
+    private String dealerName;
+
     /** 上传时间 */
     @ExcelProperty(index = 0)
     private String uploadTime;

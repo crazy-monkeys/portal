@@ -7,7 +7,7 @@ import lombok.Data;
  */
 
 @Data
-public class DeliverUploadVO {
+public class HandoverUploadVO {
 
     /** 是否存在错误信息 1:存在 0:不存在 */
     private Integer isError = 1;
@@ -15,8 +15,11 @@ public class DeliverUploadVO {
     /** 包含错误信息的文件名 */
     private String errorFileName;
 
-    /** 全部校验通过 则将数据返回给前端 */
-    private Object details;
+    /** 全部校验通过 则将出货数据返回给前端 */
+    private Object deliverDetails;
+
+    /** 全部校验通过 则将收货数据返回给前端 */
+    private Object receiveDetails;
 
     /** 校验成功后的记录ID */
     private Integer recordId;
