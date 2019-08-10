@@ -62,12 +62,16 @@ public class HandoverController extends BaseController {
     }
 
     /**
-     * 出货数据审核（运作部审核）
+     * 数据操作（运作部审核 || 驳回）
+     * @param id
+     * @param type
+     * @param status
+     * @param remark
      * @return
      */
     @GetMapping(value = "/handover/approval/{id}")
-    public BaseResponse approvalDeliverInfo(@PathVariable Integer id, String type) {
-        handoverService.approvalDeliverInfo(id, getCurrentUser().getId(), type);
+    public BaseResponse approvalDeliverInfo(@PathVariable Integer id, String type, Integer status, String remark) {
+        handoverService.approvalDeliverInfo(id, getCurrentUser().getId(), type, status, remark);
         return super.successResult();
     }
 
@@ -83,7 +87,7 @@ public class HandoverController extends BaseController {
     }
 
     /**
-     * 出货数据上传 并 校验
+     * 数据上传 并 校验
      * @param excel
      * @return
      */
@@ -107,7 +111,7 @@ public class HandoverController extends BaseController {
     }
 
     /**
-     * 出货数据校验失败信息下载
+     * 数据校验失败信息下载
      * @param response
      */
     @GetMapping(value = "/handover/error")
@@ -116,7 +120,7 @@ public class HandoverController extends BaseController {
     }
 
     /**
-     * 出货数据提交
+     * 数据提交
      * @return
      */
     @PostMapping(value = "/handover/detail")

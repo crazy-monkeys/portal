@@ -97,7 +97,8 @@ public class HandoverService {
         return null;
     }
 
-    public void approvalDeliverInfo(Integer id, Integer userId, String type) {
+    @Transactional
+    public void approvalDeliverInfo(Integer id, Integer userId, String type, Integer status, String remark) {
         checkTypeValue(type);
         if(deliver_type.equals(type)){
             DeliverReceiveRecord record = deliverReceiveRecordMapper.selectByPrimaryKey(id);
@@ -106,7 +107,11 @@ public class HandoverService {
             if(false){
                 //TODO 用户不是 销售运作部 不允许操作
             }
-            //TODO 更新记录状态 待确认 -> 已确认
+            record.setStatus(status);
+            record.setRemark(remark);
+            record.setApprovalUserId(userId);
+            record.setApprovalTime(new Date());
+            deliverReceiveRecordMapper.updateByPrimaryKeySelective(record);
         }
     }
 
