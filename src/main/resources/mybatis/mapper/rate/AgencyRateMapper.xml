@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.crazy.portal.dao.rate.AgencyRateMapper">
+  <resultMap id="BaseResultMap" type="com.crazy.portal.entity.rate.AgencyRate">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="customer_type" jdbcType="VARCHAR" property="customerType" />
+    <result column="inside_customer" jdbcType="VARCHAR" property="insideCustomer" />
+    <result column="product_level_one" jdbcType="VARCHAR" property="productLevelOne" />
+    <result column="product_level_two" jdbcType="VARCHAR" property="productLevelTwo" />
+    <result column="product_level_three" jdbcType="VARCHAR" property="productLevelThree" />
+    <result column="product_type" jdbcType="VARCHAR" property="productType" />
+    <result column="basic_agency_rate" jdbcType="VARCHAR" property="basicAgencyRate" />
+    <result column="float_agency_rate" jdbcType="VARCHAR" property="floatAgencyRate" />
+    <result column="valid_start_date" jdbcType="VARCHAR" property="validStartDate" />
+    <result column="active" jdbcType="INTEGER" property="active" />
+    <result column="create_user_id" jdbcType="INTEGER" property="createUserId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_user_id" jdbcType="INTEGER" property="updateUserId" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, customer_type, inside_customer, product_level_one, product_level_two, product_level_three, 
+    product_type, basic_agency_rate, float_agency_rate, valid_start_date, active, create_user_id, 
+    create_time, update_user_id, update_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_agency_rate
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_agency_rate
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+
+  <insert id="insertSelective" parameterType="com.crazy.portal.entity.rate.AgencyRate">
+    insert into t_agency_rate
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="customerType != null">
+        customer_type,
+      </if>
+      <if test="insideCustomer != null">
+        inside_customer,
+      </if>
+      <if test="productLevelOne != null">
+        product_level_one,
+      </if>
+      <if test="productLevelTwo != null">
+        product_level_two,
+      </if>
+      <if test="productLevelThree != null">
+        product_level_three,
+      </if>
+      <if test="productType != null">
+        product_type,
+      </if>
+      <if test="basicAgencyRate != null">
+        basic_agency_rate,
+      </if>
+      <if test="floatAgencyRate != null">
+        float_agency_rate,
+      </if>
+      <if test="validStartDate != null">
+        valid_start_date,
+      </if>
+      <if test="active != null">
+        active,
+      </if>
+      <if test="createUserId != null">
+        create_user_id,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateUserId != null">
+        update_user_id,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="customerType != null">
+        #{customerType,jdbcType=VARCHAR},
+      </if>
+      <if test="insideCustomer != null">
+        #{insideCustomer,jdbcType=VARCHAR},
+      </if>
+      <if test="productLevelOne != null">
+        #{productLevelOne,jdbcType=VARCHAR},
+      </if>
+      <if test="productLevelTwo != null">
+        #{productLevelTwo,jdbcType=VARCHAR},
+      </if>
+      <if test="productLevelThree != null">
+        #{productLevelThree,jdbcType=VARCHAR},
+      </if>
+      <if test="productType != null">
+        #{productType,jdbcType=VARCHAR},
+      </if>
+      <if test="basicAgencyRate != null">
+        #{basicAgencyRate,jdbcType=VARCHAR},
+      </if>
+      <if test="floatAgencyRate != null">
+        #{floatAgencyRate,jdbcType=VARCHAR},
+      </if>
+      <if test="validStartDate != null">
+        #{validStartDate,jdbcType=VARCHAR},
+      </if>
+      <if test="active != null">
+        #{active,jdbcType=INTEGER},
+      </if>
+      <if test="createUserId != null">
+        #{createUserId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUserId != null">
+        #{updateUserId,jdbcType=INTEGER},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.crazy.portal.entity.rate.AgencyRate">
+    update t_agency_rate
+    <set>
+      <if test="customerType != null">
+        customer_type = #{customerType,jdbcType=VARCHAR},
+      </if>
+      <if test="insideCustomer != null">
+        inside_customer = #{insideCustomer,jdbcType=VARCHAR},
+      </if>
+      <if test="productLevelOne != null">
+        product_level_one = #{productLevelOne,jdbcType=VARCHAR},
+      </if>
+      <if test="productLevelTwo != null">
+        product_level_two = #{productLevelTwo,jdbcType=VARCHAR},
+      </if>
+      <if test="productLevelThree != null">
+        product_level_three = #{productLevelThree,jdbcType=VARCHAR},
+      </if>
+      <if test="productType != null">
+        product_type = #{productType,jdbcType=VARCHAR},
+      </if>
+      <if test="basicAgencyRate != null">
+        basic_agency_rate = #{basicAgencyRate,jdbcType=VARCHAR},
+      </if>
+      <if test="floatAgencyRate != null">
+        float_agency_rate = #{floatAgencyRate,jdbcType=VARCHAR},
+      </if>
+      <if test="validStartDate != null">
+        valid_start_date = #{validStartDate,jdbcType=VARCHAR},
+      </if>
+      <if test="active != null">
+        active = #{active,jdbcType=INTEGER},
+      </if>
+      <if test="createUserId != null">
+        create_user_id = #{createUserId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUserId != null">
+        update_user_id = #{updateUserId,jdbcType=INTEGER},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <select id="selectByPage" resultMap="BaseResultMap" parameterType="com.crazy.portal.bean.rate.AgencyRateQueryBean">
+    select
+    <include refid="Base_Column_List" />
+    from t_agency_rate
+    where active = 1
+    <if test="customerType != null and customerType != ''">
+      and customer_type like concat('%',#{customerType},'%')
+    </if>
+    <if test="insideCustomer != null and insideCustomer != ''">
+      and inside_customer like concat('%',#{insideCustomer},'%')
+    </if>
+    <if test="productLevelOne != null and productLevelOne != ''">
+      and product_level_one = #{productLevelOne}
+    </if>
+    <if test="productLevelTwo != null and productLevelTwo != ''">
+      and product_level_two = #{productLevelTwo}
+    </if>
+    <if test="productLevelThree != null and productLevelThree != ''">
+      and product_level_three = #{productLevelThree}
+    </if>
+    <if test="productType != null and productType != ''">
+      and product_type = #{productType}
+    </if>
+    <if test="basicAgencyRate != null and basicAgencyRate != ''">
+      and basic_agency_rate = #{basicAgencyRate}
+    </if>
+    <if test="floatAgencyRate != null and floatAgencyRate != ''">
+      and float_agency_rate = #{floatAgencyRate}
+    </if>
+    <if test="validStartDate != null and validStartDate != ''">
+      and valid_start_date = #{validStartDate}
+    </if>
+    order by create_time desc
+  </select>
+</mapper>

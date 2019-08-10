@@ -302,8 +302,10 @@ public class CustomersService {
 
     private void setFileInfo(BasicFile e) {
         FileVO fileInfo = FileUtil.upload(e.getFile(), getCustFilePath());
-        e.setFileName(fileInfo.getFileName());
-        e.setFilePath(fileInfo.getFullPath());
+        if(fileInfo != null) {
+            e.setFileName(fileInfo.getFileName());
+            e.setFilePath(fileInfo.getFullPath());
+        }
     }
 
     /**
@@ -352,7 +354,7 @@ public class CustomersService {
         customerInfoMapper.updateByPrimaryKeySelective(record);
 
         DealerReport dealerReport = dealerReportMapper.selectByCustId(bean.getId());
-        dealerReport.setApprover(bean.getDealerId());
+        dealerReport.setApprover(bean.getUserId());
         dealerReport.setApproverDate(DateUtil.getCurrentTS());
         dealerReport.setApproverRemark(bean.getApprovalRemark());
         dealerReport.setUpdateUserId(bean.getUserId());

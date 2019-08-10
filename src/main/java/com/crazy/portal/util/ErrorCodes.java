@@ -140,8 +140,9 @@ public class ErrorCodes {
         CUSTOMER_CREDIT(50002,"获取代理商授信额度异常",""),
 
 
-        RATE_BATCH_IS_NOT_NULL(60001,"批次号已存在","");
+        RATE_BATCH_IS_NOT_NULL(60001,"批次号已存在",""),
 
+        AGENCY_RATE_UPLOAD_EXCEPTION(70001, "代理费率上传异常", "");
         private final int code;
         private final String zhMsg;
         private final String enMsg;
