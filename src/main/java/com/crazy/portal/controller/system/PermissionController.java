@@ -141,6 +141,10 @@ public class PermissionController extends BaseController{
             throw new BusinessException(SystemManagerEnum.PERMISSION_NOT_EXIST.getCode(),
                     SystemManagerEnum.PERMISSION_NOT_EXIST.getZhMsg());
         }
+        if(permissionService.findResource(resource.getResourceName()) != null){
+            throw new BusinessException(SystemManagerEnum.PERMISSION_EXIST.getCode(),
+                    SystemManagerEnum.PERMISSION_EXIST.getZhMsg());
+        }
         resource.setActive((short)1);
         resource.setCreateTime(new Date());
         resource.setCreateUserId(super.getCurrentUser().getId());

@@ -69,6 +69,7 @@ public class ErrorCodes {
         PERMISSION_EMPTY_AND_ROLE(10042,"添加/移除权限ID不能同时为空",""),
         PERMISSION_USED(10043,"该权限已配置角色，请先删除该权限的角色信息",""),
         PERMISSION_UN_TYPE_OPTIONAL(10044,"类型不存在",""),
+        PERMISSION_EXIST(10045,"资源名称已经存在",""),
 
         SYS_PARAM_VALUE(10045,"该选项下value已存在",""),
         SYS_BEAN_ERROR(10046,"对象映射异常","")

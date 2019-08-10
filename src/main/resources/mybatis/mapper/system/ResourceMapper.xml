@@ -28,6 +28,13 @@
     where id = #{id,jdbcType=INTEGER}
   </select>
 
+  <select id="selectResource" resultMap="BaseResultMap" parameterType="java.lang.String">
+    select
+    <include refid="Base_Column_List" />
+    from t_resource
+    where resource_name = #{resName,jdbcType=VARCHAR}
+  </select>
+
   <select id="findActiveList" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />

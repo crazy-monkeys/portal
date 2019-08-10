@@ -88,6 +88,10 @@ public class PermissionService {
         return resourceMapper.selectByPrimaryKey(resId);
     }
 
+    public Resource findResource(String resName){
+        return resourceMapper.selectResourceByName(resName);
+    }
+
     /**
      * 根据角色id获取拥有的权限
      * @param roleIds
