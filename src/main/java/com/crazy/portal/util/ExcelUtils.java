@@ -10,15 +10,17 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.util.IOUtils;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
+
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.net.URLEncoder;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import static com.crazy.portal.util.ErrorCodes.BusinessEnum.*;
+import static com.crazy.portal.util.ErrorCodes.BusinessEnum.EXCEL_READ_ERROR;
+import static com.crazy.portal.util.ErrorCodes.BusinessEnum.EXCEL_TYPE_ERROR;
 
 /**
  * @Description EasyExcel工具类
@@ -40,9 +42,10 @@ public class ExcelUtils {
             return;
         }
         try {
+            fileName = URLEncoder.encode(fileName, "utf-8").concat(type.getValue());
             response.setContentType("multipart/form-data");
             response.setCharacterEncoding("utf-8");
-            response.setHeader("Content-disposition", "attachment;filename=".concat(fileName).concat(type.getValue()));
+            response.setHeader("Content-disposition", "attachment;fileName=\"".concat(fileName).concat("\"; filename*=\"utf-8''").concat(fileName).concat("\""+";filename*=utf-8''").concat(fileName));
             ServletOutputStream out = response.getOutputStream();
             ExcelWriter writer = new ExcelWriter(out, type, true);
             setSheet(SheetNameAndDateList, writer);
@@ -57,7 +60,7 @@ public class ExcelUtils {
         FileOutputStream out = null;
         try {
             //暂时根据时间戳定义文件，防止名称一样
-            String fileName = String.format("%s%s", new Date().getTime(), ExcelTypeEnum.XLSX.getValue());
+            String fileName = String.format("%s%s", System.currentTimeMillis(), ExcelTypeEnum.XLSX.getValue());
             File file = new File(String.format("%s%s", filePath, fileName));
             file.createNewFile();
             out = new FileOutputStream(file);

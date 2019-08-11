@@ -2,13 +2,14 @@ package com.crazy.portal.bean.business;
 
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.excel.metadata.BaseRowModel;
-import com.alibaba.fastjson.annotation.JSONField;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.crazy.portal.util.DateUtil;
+import com.crazy.portal.util.StringUtil;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 
 import java.math.BigDecimal;
-import java.util.Date;
 
+@Slf4j
 @Data
 public class DiffPriceEO extends BaseRowModel {
 
@@ -37,6 +38,17 @@ public class DiffPriceEO extends BaseRowModel {
     @ExcelProperty(value = "客户", index = 11)
     private String customerName;
 
-
+    @SuppressWarnings("all")
+    public String getShipmentDate() {
+        if(StringUtil.isNotBlank(shipmentDate)){
+            try{
+                return DateUtil.getFlexibleDate(shipmentDate);
+            }catch (Exception e){
+                log.error("get flexible date error:", e);
+                return shipmentDate;
+            }
+        }
+        return null;
+    }
 
 }

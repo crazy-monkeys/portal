@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import java.math.BigDecimal;
 
 /**
@@ -21,7 +22,7 @@ import java.math.BigDecimal;
  */
 @Slf4j
 @RestController
-@RequestMapping("/business")
+@RequestMapping("/business/idr")
 public class IDRController extends BaseController {
 
     @Resource
@@ -66,11 +67,11 @@ public class IDRController extends BaseController {
      * @return
      */
     @PostMapping("/upload")
-    public BaseResponse upload(@RequestParam("id") Integer id,
-                               @RequestParam("type") Integer type,
+    public BaseResponse upload(MultipartFile file,
+                               @RequestParam("id") Integer id,
+                               @RequestParam("idrType") Integer type,
                                @RequestParam("fileType") Integer fileType,
-                               @RequestParam("crAmount") BigDecimal crAmount,
-                               @RequestParam("file") MultipartFile file) throws Exception {
+                               @RequestParam("crAmount") BigDecimal crAmount) throws Exception {
         return super.successResult(idrService.upload(id, type, fileType, crAmount, file, this.getCurrentUser().getId()));
     }
 
@@ -80,7 +81,7 @@ public class IDRController extends BaseController {
      * @return
      */
     @PostMapping("/submit")
-    public BaseResponse submit(BusinessIdrInfo bean){
+    public BaseResponse submit(@RequestBody @Valid BusinessIdrInfo bean){
         idrService.save(bean, this.getCurrentUser().getId());
         return super.successResult();
     }

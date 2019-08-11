@@ -2,18 +2,18 @@ package com.crazy.portal.bean.business;
 
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.excel.metadata.BaseRowModel;
-import com.alibaba.fastjson.annotation.JSONField;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.crazy.portal.util.DateUtil;
+import com.crazy.portal.util.StringUtil;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 
-import java.util.Date;
-
+@Slf4j
 @Data
 public class InsuranceEO extends BaseRowModel {
 
     @ExcelProperty(value = "客户", index = 0)
     private String customerName;
-    @ExcelProperty(value = "调价时间", index = 1)
+    @ExcelProperty(value = "调价时间", index = 1, format = "yyyy-MM-dd")
     private String adjustDate;
     @ExcelProperty(value = "收货时间", index = 2)
     private String receiveGoodsDate;
@@ -42,5 +42,28 @@ public class InsuranceEO extends BaseRowModel {
     @ExcelProperty(value = "备注", index = 14)
     private String remark;
 
-
+    @SuppressWarnings("all")
+    public String getAdjustDate() {
+        if(StringUtil.isNotBlank(adjustDate)){
+            try{
+                return DateUtil.getFlexibleDate(adjustDate);
+            }catch (Exception e){
+                log.error("get flexible date error:", e);
+                return adjustDate;
+            }
+        }
+        return null;
+    }
+    @SuppressWarnings("all")
+    public String getModifyDate() {
+        if(StringUtil.isNotBlank(modifyDate)){
+            try{
+                return DateUtil.getFlexibleDate(modifyDate);
+            }catch (Exception e){
+                log.error("get flexible date error:", e);
+                return modifyDate;
+            }
+        }
+        return null;
+    }
 }

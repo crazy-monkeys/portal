@@ -34,7 +34,7 @@
     where id = #{id,jdbcType=INTEGER}
   </delete>
 
-  <insert id="insertSelective" keyProperty="id" parameterType="com.crazy.portal.entity.business.BusinessIdrInfo">
+  <insert id="insertSelective" useGeneratedKeys="true" keyProperty="id" parameterType="com.crazy.portal.entity.business.BusinessIdrInfo">
     insert into t_business_idr_info
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -195,7 +195,7 @@
     from t_business_idr_info
     where 1=1
     <if test="type != null">
-      and type = #{type}
+      and type = #{type,jdbcType=INTEGER}
     </if>
     <if test="shipperCode != null and shipperCode != ''">
       and shipper_code like concat('%',#{shipperCode},'%')
@@ -206,13 +206,13 @@
     <if test="crAmount != null">
       and cr_amount = #{crAmount}
     </if>
-    <if test="applyStartTime != null and applyEndTime != null">
+    <if test="applyStartTime != null and applyEndTime != null and applyStartTime != '' and applyEndTime != ''">
       and apply_time between str_to_date(#{applyStartTime}, '%Y-%m-%d') and str_to_date(#{applyEndTime}, '%Y-%m-%d')
     </if>
-    <if test="currency != null">
+    <if test="currency != null and currency != ''">
       and currency = #{currency}
     </if>
-    <if test="inCustomerName != null">
+    <if test="inCustomerName != null and inCustomerName != ''">
       and in_customer_name = #{inCustomerName}
     </if>
     order by create_time desc

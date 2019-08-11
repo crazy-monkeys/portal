@@ -150,7 +150,7 @@ public class ErrorCodes {
         BUSINESS_FILE_TYPE_IS_NULL(70003, "文件类型不能为空", ""),
         BUSINESS_FILE_IS_NULL(70004, "文件不能为空", ""),
         BUSINESS_IDR_ID_IS_NULL(70005, "记录ID不能为空", ""),
-
+        BUSINESS_IDRINFO_IS_NULL(70006, "信息不存在", ""),
 
         PRODUCT_QUERY_ERROR(70001,"产品查询异常",""),
         PRODUCT_SYNC_ERROR(70002,"产品同步异常","");

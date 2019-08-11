@@ -2,13 +2,13 @@ package com.crazy.portal.bean.business;
 
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.excel.metadata.BaseRowModel;
-import com.alibaba.fastjson.annotation.JSONField;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.crazy.portal.util.DateUtil;
+import com.crazy.portal.util.StringUtil;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 
 import java.math.BigDecimal;
-import java.util.Date;
-
+@Slf4j
 @Data
 public class ReturnsEO extends BaseRowModel {
 
@@ -36,9 +36,33 @@ public class ReturnsEO extends BaseRowModel {
     private BigDecimal price;
     @ExcelProperty(value = "金额", index = 11)
     private BigDecimal amount;
-    @ExcelProperty(value = "换货日期", index = 12)
+    @ExcelProperty(value = "换货日期", index = 12, format = "yyyy-MM-dd")
     private String replacementDate;
     @ExcelProperty(value = "备注", index = 13)
     private String remark;
 
+    @SuppressWarnings("all")
+    public String getTakeGoodsDate() {
+        if(StringUtil.isNotBlank(takeGoodsDate)){
+            try{
+                return DateUtil.getFlexibleDate(takeGoodsDate);
+            }catch (Exception e){
+                log.error("get takeGoodsDate flexible date error:", e);
+                return takeGoodsDate;
+            }
+        }
+        return null;
+    }
+    @SuppressWarnings("all")
+    public String getReplacementDate() {
+        if(StringUtil.isNotBlank(replacementDate)){
+            try{
+                return DateUtil.getFlexibleDate(replacementDate);
+            }catch (Exception e){
+                log.error("get replacementDate flexible date error:", e);
+                return replacementDate;
+            }
+        }
+        return null;
+    }
 }

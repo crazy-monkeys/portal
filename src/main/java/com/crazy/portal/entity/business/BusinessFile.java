@@ -9,7 +9,8 @@ import java.util.Date;
 @Data
 public class BusinessFile implements IdrBaseEntity{
     private Integer id;
-
+    @JsonIgnore
+    @JSONField(serialize = false)
     private Integer idrInfoId;
 
     private String fileName;

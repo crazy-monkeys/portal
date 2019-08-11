@@ -469,6 +469,6 @@ public class CustomersService {
     }
 
     public String getCustFilePath(){
-        return filePath.concat(File.separator).concat(CUST_FILE_PATH);
+        return filePath.concat(File.separator).concat(CUST_FILE_PATH).concat(File.separator);
     }
 }

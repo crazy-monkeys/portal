@@ -18,6 +18,7 @@ public class BusinessIdrInfo {
     private String shipperCode;
     //申请时间
     @NotNull(message = "请选择申请时间")
+    @JSONField(format="yyyy-MM-dd")
     @DateTimeFormat(pattern="yyyy-MM-dd")
     private Date applyTime;
     //币种
@@ -38,8 +39,6 @@ public class BusinessIdrInfo {
     //类型 1.保价 2.差价补偿 3.退换货
     @NotNull(message = "请选择保差退类型")
     private Integer type;
-    //类型名称
-    private String typeName;
     //状态 1：已提交  2：已完结
     private Integer status;
 

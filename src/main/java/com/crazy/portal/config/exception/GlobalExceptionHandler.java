@@ -4,9 +4,11 @@ import com.crazy.portal.bean.BaseResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
 import java.util.List;
 
 /**
@@ -38,13 +40,18 @@ public class GlobalExceptionHandler {
             response.fail(-1, exception.getMessage());
             return response;
         }
+        if(exception instanceof MissingServletRequestParameterException){
+            response.fail(-1, exception.getMessage());
+            return response;
+        }
         if(exception instanceof BusinessException){
             BusinessException ex = (BusinessException)exception;
             response.setCode(ex.getErrorCode());
             response.setMsg(ex.getMessage());
             return response;
         }
-        log.error("系统异常：-> {}", exception);
+
+        log.error("系统异常：", exception);
         response.systemException();
         return response;
     }
