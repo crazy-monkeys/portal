@@ -28,7 +28,7 @@
     where id = #{id,jdbcType=INTEGER}
   </select>
 
-  <select id="selectResource" resultMap="BaseResultMap" parameterType="java.lang.String">
+  <select id="selectResourceByName" resultMap="BaseResultMap" parameterType="java.lang.String">
     select
     <include refid="Base_Column_List" />
     from t_resource
