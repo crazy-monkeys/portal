@@ -3,6 +3,7 @@ package com.crazy.portal.controller.business;
 import com.crazy.portal.bean.BaseResponse;
 import com.crazy.portal.bean.business.BusinessIdrQueryBean;
 import com.crazy.portal.controller.BaseController;
+import com.crazy.portal.entity.business.BusinessIdrInfo;
 import com.crazy.portal.service.business.IDRService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -75,10 +76,12 @@ public class IDRController extends BaseController {
 
     /**
      * 提交
+     * @param bean 信息
      * @return
      */
     @PostMapping("/submit")
-    public BaseResponse submit(){
+    public BaseResponse submit(BusinessIdrInfo bean){
+        idrService.save(bean, this.getCurrentUser().getId());
         return super.successResult();
     }
 
