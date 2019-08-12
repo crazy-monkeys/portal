@@ -156,6 +156,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
     public SunJaasKerberosTicketValidator sunJaasKerberosTicketValidator() {
         final GlobalSunJaasKerberosConfig globalSunJaasKerberosConfig = new GlobalSunJaasKerberosConfig();
         globalSunJaasKerberosConfig.setKrbConfLocation(krb5Config);
+        globalSunJaasKerberosConfig.setDebug(true);
         try {
             globalSunJaasKerberosConfig.afterPropertiesSet();
         } catch (Exception e) {
