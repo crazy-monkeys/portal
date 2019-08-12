@@ -20,20 +20,13 @@ public interface ResourceMapper {
 
     List<Resource> selectResourceByIds(@Param("ids") List<Integer> ids);
 
-    /**
-     * 根据排序号查询不为空的菜单
-     * @param resourceOrder
-     * @return
-     */
-    List<Resource> queryResourceByResourId(@Param("resourceOrder") Integer resourceOrder);
-
     List<Resource> findActiveList(@Param("roleId") Integer roleId);
 
     /**
      * 查询所有菜单总合
      * @return
      */
-    int countOrder();
+    int maxOrder();
 
     int getRoleCountByResourceId(Integer resourceId);
 }

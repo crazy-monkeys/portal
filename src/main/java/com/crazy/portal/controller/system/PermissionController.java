@@ -145,10 +145,7 @@ public class PermissionController extends BaseController{
             throw new BusinessException(SystemManagerEnum.PERMISSION_EXIST.getCode(),
                     SystemManagerEnum.PERMISSION_EXIST.getZhMsg());
         }
-        resource.setActive((short)1);
-        resource.setCreateTime(new Date());
-        resource.setCreateUserId(super.getCurrentUser().getId());
-        permissionService.saveResource(resource);
+        permissionService.saveResource(resource,super.getCurrentUser().getId());
         return super.successResult();
     }
 
@@ -185,9 +182,10 @@ public class PermissionController extends BaseController{
 
         Resource res = permissionService.findResource(resource.getId());
         BusinessUtil.assertIsNull(res,SystemManagerEnum.PERMISSION_NOT_EXIST);
-        resource.setUpdateTime(new Date());
-        resource.setUpdateUserId(super.getCurrentUser().getId());
-        permissionService.saveResource(resource);
+
+        Resource parentRes = permissionService.findResource(resource.getParentId());
+        BusinessUtil.assertIsNull(parentRes,SystemManagerEnum.PERMISSION_PARENT_NOT_EXIST);
+        permissionService.saveResource(resource,super.getCurrentUser().getId());
         return super.successResult();
     }
 

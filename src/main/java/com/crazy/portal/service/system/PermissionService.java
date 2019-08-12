@@ -128,36 +128,27 @@ public class PermissionService {
         }
         return tCrmResourceDO;
     }
+
     /**
      * 添加/修改资源
+     *
      * @param resource
      * @return
      */
-    public int saveResource(Resource resource){
-        int num = resourceMapper.countOrder();
-        resource.setResourceOrder(num + 1);
-        Resource resourceDO = new Resource();
-        resourceDO.setId(resource.getParentId());
-        Resource res = resourceMapper.selectByPrimaryKey(resource.getId());
-        if(res != null) {
-            resource.setResourceOrder(res.getResourceOrder() + 1);
-            List<Resource> rlist = resourceMapper.queryResourceByResourId(res.getResourceOrder());
-            for (Resource r1 : rlist) {
-                int orderId = new Long(r1.getResourceOrder()).intValue();
-                orderId = orderId + 1;
-                r1.setResourceOrder(orderId);
-                resourceMapper.updateByPrimaryKeySelective(r1);
-            }
-        }
+    public int saveResource(Resource resource,Integer userId){
         int result;
         if(resource.getId() == null) {
+            //菜单顺序暂时不做维护
+            int maxOrder = resourceMapper.maxOrder();
+            resource.setResourceOrder(maxOrder + 1);
             resource.setActive((short)1);
+            resource.setCreateUserId(userId);
             resource.setCreateUserId(1);
             resource.setCreateTime(DateUtil.getCurrentTS());
-            resource.setUpdateUserId(1);
-            resource.setUpdateTime(DateUtil.getCurrentTS());
             result = resourceMapper.insertSelective(resource);
         }else{
+            resource.setUpdateUserId(userId);
+            resource.setUpdateTime(DateUtil.getCurrentTS());
             result = resourceMapper.updateByPrimaryKeySelective(resource);
         }
         return result > 0 ? 1 : -1;
@@ -169,21 +160,9 @@ public class PermissionService {
      * @return
      */
     public int deleteResource(Integer id){
-        Resource resource = resourceMapper.selectByPrimaryKey(id);
-        if (null != resource) {
-            List<Resource> list = resourceMapper.queryResourceByResourId(resource.getResourceOrder());
-            //TODO 如果不减 ztree能不能正常显示？理论可以
-            for (Resource r1 : list) {
-                int orderId = r1.getResourceOrder();
-                orderId = orderId - 1;
-                r1.setResourceOrder(orderId);
-                resourceMapper.updateByPrimaryKeySelective(r1);
-            }
-        }
         int num = resourceMapper.deleteByPrimaryKey(id);
         return num>0?1:-1;
     }
-
 
     /**
      * 分配权限
@@ -202,10 +181,10 @@ public class PermissionService {
                         ErrorCodes.SystemManagerEnum.ROLE_NOT_EXIST.getZhMsg());
             }
             if(addPermissionIds != null && !addPermissionIds.isEmpty()){
-                this.saveResouece(addPermissionIds, roleDO.getId(),true,userId);
+                this.setPermission(addPermissionIds, roleDO.getId(),true,userId);
             }
             if(rmPermissionIds != null && !rmPermissionIds.isEmpty()){
-                this.saveResouece(rmPermissionIds, roleDO.getId(),false,userId);
+                this.setPermission(rmPermissionIds, roleDO.getId(),false,userId);
             }
         }
         return true;
@@ -231,22 +210,20 @@ public class PermissionService {
         return true;
     }
 
-    private void saveResouece(List<Integer> resourcesIds, Integer roleId, boolean isAdd, Integer userId) {
-
-        Map<String,Integer> map = new HashMap<>();
-
+    private void setPermission(List<Integer> resourcesIds, Integer roleId, boolean isAdd, Integer userId) {
         if(resourcesIds != null && !resourcesIds.isEmpty()){
             for(Integer resourceId : resourcesIds){
                 if(resourceId == null){
                     continue;
                 }
-                Resource crmResourceDO = resourceMapper.selectByPrimaryKey(resourceId);
-                if(crmResourceDO == null){
+                Resource currentResource = resourceMapper.selectByPrimaryKey(resourceId);
+                if(currentResource == null){
                     throw new BusinessException(ErrorCodes.SystemManagerEnum.PERMISSION_NOT_EXIST.getCode(),
                             ErrorCodes.SystemManagerEnum.PERMISSION_NOT_EXIST.getZhMsg());
                 }
                 RoleResource roleResourceDO = roleResourceMapper.selectByRoleResource(roleId,resourceId);
                 if(isAdd){
+                    //新增权限
                     if(roleResourceDO != null){
                         continue;
                     }
@@ -257,7 +234,9 @@ public class PermissionService {
                     roleRes.setCreateId(userId);
                     roleResourceMapper.insertSelective(roleRes);
                 }else{
+                    //删除权限
                     if(roleResourceDO != null){
+                        currentResource.getParentId();
                         roleResourceMapper.deleteByPrimaryKey(roleResourceDO.getId());
                     }
                 }

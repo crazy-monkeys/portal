@@ -221,25 +221,10 @@
     ORDER BY RESOURCE_ORDER
   </select>
 
-  <select id="queryResourceByResourId" resultMap="BaseResultMap">
-    SELECT
-    <include refid="Base_Column_List" />
-    FROM t_resource
-    WHERE 1=1
-    <if test="resourceOrder != null">
-      <![CDATA[ AND RESOURCE_ORDER  > #{resourceOrder}   ]]>
-    </if>
-    AND RESOURCE_ORDER IS NOT NULL
-    ORDER BY RESOURCE_ORDER
-  </select>
-
   <select id="countOrder" resultType="int">
-    SELECT
-    COUNT(*)
-    FROM t_resource
-    WHERE 1=1
-    AND  RESOURCE_ORDER IS NOT NULL
-
+    select
+    max(resource_order)
+    from t_resource
   </select>
   <!-- 查询资源列表 -->
   <select id="selectResourceByIds" resultMap="BaseResultMap">
