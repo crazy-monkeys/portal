@@ -3,9 +3,10 @@ logging:
   config: classpath:logback-uat.xml
 
 app:
-  ad-domain: UNISOC.COM
-  service-principal: HTTP/crmqa.unisoc.com@unisoc.com
+  ad-domain: SPREADTRUM.COM
+  service-principal: HTTP/crmqa.spreadtrum.com@SPREADTRUM.COM
   keytab-location: /home/crmpor/svc.crm.keytab
+  krb5-config: /home/crmpor/krb5.ini
 
 spring:
   mail:

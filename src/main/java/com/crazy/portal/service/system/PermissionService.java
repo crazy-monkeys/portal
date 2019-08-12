@@ -11,10 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * @Desc:
@@ -235,6 +232,9 @@ public class PermissionService {
     }
 
     private void saveResouece(List<Integer> resourcesIds, Integer roleId, boolean isAdd, Integer userId) {
+
+        Map<String,Integer> map = new HashMap<>();
+
         if(resourcesIds != null && !resourcesIds.isEmpty()){
             for(Integer resourceId : resourcesIds){
                 if(resourceId == null){

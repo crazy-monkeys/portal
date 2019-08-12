@@ -21,6 +21,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.kerberos.authentication.KerberosAuthenticationProvider;
 import org.springframework.security.kerberos.authentication.KerberosServiceAuthenticationProvider;
+import org.springframework.security.kerberos.authentication.sun.GlobalSunJaasKerberosConfig;
 import org.springframework.security.kerberos.authentication.sun.SunJaasKerberosClient;
 import org.springframework.security.kerberos.authentication.sun.SunJaasKerberosTicketValidator;
 import org.springframework.security.kerberos.web.authentication.SpnegoAuthenticationProcessingFilter;
@@ -46,6 +47,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
     @Value("${app.keytab-location}")
     private String keytabLocation;
+
+    @Value("${app.krb5-config}")
+    private String krb5Config;
 
     @Resource
     private LoginSuccessHandler loginSuccessHandler;
@@ -148,6 +152,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
     @Bean
     public SunJaasKerberosTicketValidator sunJaasKerberosTicketValidator() {
+        final GlobalSunJaasKerberosConfig globalSunJaasKerberosConfig = new GlobalSunJaasKerberosConfig();
+        globalSunJaasKerberosConfig.setKrbConfLocation(krb5Config);
+        try {
+            globalSunJaasKerberosConfig.afterPropertiesSet();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         SunJaasKerberosTicketValidator ticketValidator = new SunJaasKerberosTicketValidator();
         ticketValidator.setServicePrincipal(servicePrincipal);
         ticketValidator.setKeyTabLocation(new FileSystemResource(keytabLocation));

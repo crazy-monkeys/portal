@@ -4,7 +4,8 @@ logging:
 app:
   ad-domain: THREEAPE.CN
   service-principal: HTTP/ad.threeape.cn@THREEAPE.CN
-  keytab-location: C:\Users\Administrator\Desktop\tomcat.keytab
+  keytab-location: /Users/Bill/Desktop/tomcat.keytab
+  krb5-config: /Users/Bill/Desktop/krb5.ini
 
 spring:
   mail:
