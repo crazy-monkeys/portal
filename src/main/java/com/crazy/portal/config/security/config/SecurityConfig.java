@@ -7,6 +7,7 @@ import com.crazy.portal.config.security.handler.AuthenticationFailHandler;
 import com.crazy.portal.config.security.handler.JwtRefreshSuccessHandler;
 import com.crazy.portal.config.security.handler.LoginSuccessHandler;
 import com.crazy.portal.config.security.handler.TokenClearLogoutHandler;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -37,6 +38,7 @@ import java.util.Arrays;
 
 @EnableWebSecurity
 @Configuration
+@Slf4j
 public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
     private static final String[] permissiveUrl = new String[]{"/user/login","/logout","/announcement/file/**","/", "/file/**","/webservice/invoke"
@@ -92,7 +94,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                 .cors()
                 .and()
                 .headers().addHeaderWriter(new StaticHeadersWriter(Arrays.asList(
-                    new Header("Access-control-Allow-Origin","*"),
+                    new Header("Access-Control-Allow-Origin","*"),
                     new Header("Access-Control-Expose-Headers","Authorization"))))
                 .frameOptions().disable()
                 .and()
@@ -157,7 +159,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
         try {
             globalSunJaasKerberosConfig.afterPropertiesSet();
         } catch (Exception e) {
-            e.printStackTrace();
+           log.error("设置krb5.ini({})文件出现异常",krb5Config);
         }
         SunJaasKerberosTicketValidator ticketValidator = new SunJaasKerberosTicketValidator();
         ticketValidator.setServicePrincipal(servicePrincipal);

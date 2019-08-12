@@ -58,10 +58,9 @@ public class TaskController {
 			List<ScheduleJob> executingJobList = scheduleJobService.queryExecutingJobList(jobGroup);
 			mv.addObject("executingJobList", executingJobList);
 			//扫描自定义注解Task的类
-			@SuppressWarnings("unchecked")
 			Set<Class<?>> classSet = new LoadPackageClasses(
 					Constant.ANNOTATION_COMPONENT_SCAN_PACKAGES, Task.class).getClassSet();
-			List<TaskBean> tasks = new ArrayList<TaskBean>();
+			List<TaskBean> tasks = new ArrayList<>();
 			for(Class<?> clazz : classSet){
 				TaskBean taskBean = new TaskBean();
 				Task taskAnnotation = clazz.getAnnotation(Task.class);
@@ -70,12 +69,7 @@ public class TaskController {
 				taskBean.setClassPath(clazz.getName());
 				tasks.add(taskBean);
 			}
-			Collections.sort(tasks, new Comparator<TaskBean>() {  
-		           @Override  
-		           public int compare(TaskBean o1, TaskBean o2) { 
-		               return o1.getJobDisplayName().compareTo(o2.getJobDisplayName());  
-		           }  
-		    });
+			Collections.sort(tasks, Comparator.comparing(TaskBean::getJobDisplayName));
 			mv.addObject("readyTasks", tasks);
 			mv.addObject("jobGroup", jobGroup);
 		} catch (Exception e) {
