@@ -17,9 +17,9 @@ spring:
     timeBetweenEvictionRunsMillis: 60000
     #一个连接在池中最小生存的时间
     minEvictableIdleTimeMillis: 300000
-    validationQuery: SELECT 1 FROM DUAL
+    validationQuery: SELECT 1
     testWhileIdle: true
-    testOnBorrow: false
+    testOnBorrow: true
     testOnReturn: false
     #打开PSCache，并指定每个连接上PSCache的大小。oracle设为true，mysql设为false。分库分表较多推荐设置为false
     poolPreparedStatements: false
@@ -30,30 +30,27 @@ spring:
         stat:
           mergeSql: true
           slowSqlMillis: 5000
+  ##thymelef配置
   thymeleaf:
-          cache: false
-          prefix: classpath:/templates/
-          suffix: .html
-          content-type: text/html
-          encoding: UTF-8
-          mode: HTML5
-  batch:
-          initializer:
-              enabled: false
-          job:
-              enabled: false
+    cache: false
+    prefix: classpath:/templates/
+    suffix: .html
+    encoding: UTF-8
+    mode: HTML5
   main:
       allow-bean-definition-overriding: true
+  ##文件上传配置
   servlet:
-      multipart:
-          max-file-size: 50MB
-          max-request-size: 200MB
-
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 200MB
+##web容器配置
 server:
   port: 8080
   servlet:
     context-path: /portal-api
 
+##自定义配置
 login:
-    password: 1234
-    username: admin
+  password: 1234
+  username: admin
