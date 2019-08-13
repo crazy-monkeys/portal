@@ -64,16 +64,16 @@ public class ErrorCodes {
         ROLE_CODE_EXISTS(10026,"角色编码已经存在",""),
         ROLE_EMPTY_TYPE(10027,"角色类型不能为空",""),
 
-        PERMISSION_ILLEGAL(10040,"资源必填项不能为空",""),
-        PERMISSION_NOT_EXIST(10041,"资源不存在",""),
-        PERMISSION_PARENT_NOT_EXIST(10042,"父级资源不存在",""),
-        PERMISSION_EMPTY_AND_ROLE(10043,"添加/移除权限ID不能同时为空",""),
-        PERMISSION_USED(10044,"该权限已配置角色，请先删除该权限的角色信息",""),
-        PERMISSION_UN_TYPE_OPTIONAL(10045,"类型不存在",""),
-        PERMISSION_EXIST(10046,"资源名称已经存在",""),
+        RESOURCE_ILLEGAL(10040,"资源必填项不能为空",""),
+        RESOURCE_NOT_EXIST(10041,"资源不存在",""),
+        RESOURCE_PARENT_NOT_EXIST(10042,"父级资源不存在",""),
+        RESOURCE_EMPTY_LIST(10043,"资源列表为空",""),
+        RESOURCE_USED(10045,"该资源已经绑定在角色上，不允许删除",""),
+        RESOURCE_TYPE_NOT_EXIST(10046,"类型不存在",""),
+        RESOURCE_EXIST(10047,"资源名称已经存在",""),
 
-        SYS_PARAM_VALUE(10047,"该选项下value已存在",""),
-        SYS_BEAN_ERROR(10048,"对象映射异常","")
+        SYS_PARAM_VALUE(10048,"该选项下value已存在",""),
+        SYS_BEAN_ERROR(10049,"对象映射异常","")
         ;
 
 

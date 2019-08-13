@@ -4,6 +4,8 @@ import com.crazy.portal.config.exception.BusinessException;
 import com.crazy.portal.config.exception.ErrorInfo;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.List;
+
 /**
  * Created by lee on 2019/7/27.
  */
@@ -33,14 +35,20 @@ public class BusinessUtil {
         }
     }
 
-    public static void assertIsNull(Object obj, ErrorInfo errorInfo) {
+    public static void notNull(Object obj, ErrorInfo errorInfo) {
         if(obj == null){
             throw new BusinessException(errorInfo);
         }
     }
 
-    public static void assertIsNotNull(Object obj, ErrorInfo errorInfo) {
+    public static void isNull(Object obj, ErrorInfo errorInfo) {
         if(obj != null){
+            throw new BusinessException(errorInfo);
+        }
+    }
+
+    public static void isEmptyList(List list, ErrorInfo errorInfo) {
+        if(list != null && !list.isEmpty()){
             throw new BusinessException(errorInfo);
         }
     }

@@ -14,7 +14,6 @@ import com.github.pagehelper.PageInfo;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -72,7 +71,7 @@ public class IDRService {
      */
     public BusinessIdrInfo selectIdrDetail(Integer id){
         BusinessIdrInfo info = businessIdrInfoMapper.selectByPrimaryKey(id);
-        BusinessUtil.assertIsNull(info, ErrorCodes.BusinessEnum.BUSINESS_IDRINFO_IS_NULL);
+        BusinessUtil.notNull(info, ErrorCodes.BusinessEnum.BUSINESS_IDRINFO_IS_NULL);
         if(info.getType().equals(Enums.BusinessIdrType.INSURANCE.getCode())){
             info.setIList(businessInsuranceInfoMapper.selectByIdrInfoId(id));
         }else if(info.getType().equals(Enums.BusinessIdrType.DIFF_PRICE.getCode())){
@@ -90,7 +89,7 @@ public class IDRService {
      * @param response
      */
     public void templateDownload(Integer type, HttpServletResponse response) throws Exception{
-        BusinessUtil.assertIsNull(type, ErrorCodes.BusinessEnum.BUSINESS_TYPE_IS_NULL);
+        BusinessUtil.notNull(type, ErrorCodes.BusinessEnum.BUSINESS_TYPE_IS_NULL);
         Map<String, List<? extends BaseRowModel>> resultMap = new HashMap<>();
         Enums.BusinessIdrType enumType = Enums.BusinessIdrType.getDescByCode(type);
         String sheetName = enumType.getDesc();
@@ -107,13 +106,13 @@ public class IDRService {
      * @return
      */
     public BusinessFileUploadBean upload(Integer id, Integer type, Integer fileType, BigDecimal crAmount, MultipartFile file, Integer userId) throws Exception{
-        BusinessUtil.assertIsNull(fileType, ErrorCodes.BusinessEnum.BUSINESS_FILE_TYPE_IS_NULL);
-        BusinessUtil.assertIsNull(file, ErrorCodes.BusinessEnum.BUSINESS_FILE_IS_NULL);
+        BusinessUtil.notNull(fileType, ErrorCodes.BusinessEnum.BUSINESS_FILE_TYPE_IS_NULL);
+        BusinessUtil.notNull(file, ErrorCodes.BusinessEnum.BUSINESS_FILE_IS_NULL);
         if(fileType.equals(Enums.BusinessFileType.FINANCIAL_CLOSURE.getCode())){
-            BusinessUtil.assertIsNull(id, ErrorCodes.BusinessEnum.BUSINESS_IDR_ID_IS_NULL);
+            BusinessUtil.notNull(id, ErrorCodes.BusinessEnum.BUSINESS_IDR_ID_IS_NULL);
         }
         if(fileType.equals(Enums.BusinessFileType.IDR.getCode())){
-            BusinessUtil.assertIsNull(type, ErrorCodes.BusinessEnum.BUSINESS_TYPE_IS_NULL);
+            BusinessUtil.notNull(type, ErrorCodes.BusinessEnum.BUSINESS_TYPE_IS_NULL);
         }
         BusinessFileUploadBean result = new BusinessFileUploadBean();
         if(fileType.equals(Enums.BusinessFileType.IDR.getCode())){

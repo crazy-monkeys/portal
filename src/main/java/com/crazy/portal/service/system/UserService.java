@@ -121,7 +121,7 @@ public class UserService {
         user.setUserStatus(1);
         int result = userMapper.insertSelective(user);
         BusinessUtil.assertTrue(result==1,ErrorCodes.CommonEnum.SYSTEM_EXCEPTION);
-        BusinessUtil.assertIsNull(user.getId(), ErrorCodes.SystemManagerEnum.USER_SAVE_FAILED);
+        BusinessUtil.notNull(user.getId(), ErrorCodes.SystemManagerEnum.USER_SAVE_FAILED);
 
         //子角色赋权
         this.subAgentEmpowerment(subAgentUser, user.getId());
@@ -146,7 +146,7 @@ public class UserService {
     private void subAgentEmpowerment(SubAgentVO subAgentUser, Integer userId) {
         //分配指定的角色
         Role role = roleMapper.findRoleByCode(subAgentUser.getRoleCode());
-        BusinessUtil.assertIsNull(role, ErrorCodes.SystemManagerEnum.ROLE_NOT_EXIST);
+        BusinessUtil.notNull(role, ErrorCodes.SystemManagerEnum.ROLE_NOT_EXIST);
 
         BusinessUtil.assertTrue(Enums.ROLE_TYPE.SUB_USER.getRoleType() == role.getRoleType().intValue(),
                 ErrorCodes.SystemManagerEnum.ROLE_SAVE_FAILED);

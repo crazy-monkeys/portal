@@ -28,17 +28,17 @@ public class BaseController {
     private RoleMapper roleMapper;
 
     protected User getCurrentUser(){
-        try {
-            User user = ((JwtUser) SecurityContextHolder
-                    .getContext()
-                    .getAuthentication()
-                    .getPrincipal())
-                    .getUser();
+        User user = ((JwtUser) SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getPrincipal())
+                .getUser();
 
-            return null == user ? mockUser() : user;
-        }catch (Exception ex){
-            return mockUser();
-        }
+        return user;
+    }
+
+    protected Integer getCurrentUserId(){
+        return this.getCurrentUser().getId();
     }
 
     protected Role getCurrentRole(){
@@ -53,11 +53,6 @@ public class BaseController {
         return roleMapper.findRoleByCode(roleCode);
     }
 
-    private User mockUser(){
-        User user = new User();
-        user.setId(1);
-        return user;
-    }
 
     protected BaseResponse successResult() {
         BaseResponse response = new BaseResponse();

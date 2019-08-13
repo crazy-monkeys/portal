@@ -6,7 +6,8 @@ import java.util.List;
 
 @Data
 public class PermissionBean {
+    //角色编码
     private String roleCode;
-    private List<Integer> addPermissionIds;
-    private List<Integer> rmPermissionIds;
+
+    private List<Integer> permissionIds;
 }

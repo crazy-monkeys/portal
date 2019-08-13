@@ -13,124 +13,25 @@
   <sql id="Base_Column_List">
     id, role_id, resource_id, create_time, create_id, update_time, update_id
   </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select 
-    <include refid="Base_Column_List" />
-    from t_role_resource
-    where id = #{id,jdbcType=INTEGER}
-  </select>
 
-  <select id="selectByRoleResource" resultMap="BaseResultMap">
-    select
-    <include refid="Base_Column_List" />
-    from t_role_resource
-    where role_id = #{roleId,jdbcType=INTEGER} and resource_id = #{resourceId,jdbcType=INTEGER}
-  </select>
-
-  <select id="findAll" resultMap="BaseResultMap">
-    select
-    <include refid="Base_Column_List" />
-    from t_role_resource
-  </select>
-
-
-
-
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+  <!-- 删除角色下所有资源,该权限表资源数据量一般不大,直接删除再加入对系统性能影响可忽略不计-->
+  <delete id="deleteByRoleId" parameterType="java.lang.Integer">
     delete from t_role_resource
-    where id = #{id,jdbcType=INTEGER}
+    where role_id = #{roleId,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.crazy.portal.entity.system.RoleResource">
-    insert into t_role_resource (id, role_id, resource_id, 
-      create_time, create_id, update_time, 
-      update_id)
-    values (#{id,jdbcType=INTEGER}, #{roleId,jdbcType=INTEGER}, #{resourceId,jdbcType=INTEGER}, 
-      #{createTime,jdbcType=TIMESTAMP}, #{createId,jdbcType=INTEGER}, #{updateTime,jdbcType=TIMESTAMP}, 
-      #{updateId,jdbcType=INTEGER})
+
+  <insert id="insertBatchByRoleId" parameterType="java.util.List">
+    insert into t_role_resource (role_id,resource_id, create_time, create_id)
+    values
+    <foreach collection="list" item="item" index= "index" separator =",">
+      (
+        #{item.roleId},
+        #{item.resourceId},
+        #{item.createTime},
+        #{item.createId}
+      )
+    </foreach>
   </insert>
-  <insert id="insertSelective" parameterType="com.crazy.portal.entity.system.RoleResource">
-    insert into t_role_resource
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        id,
-      </if>
-      <if test="roleId != null">
-        role_id,
-      </if>
-      <if test="resourceId != null">
-        resource_id,
-      </if>
-      <if test="createTime != null">
-        create_time,
-      </if>
-      <if test="createId != null">
-        create_id,
-      </if>
-      <if test="updateTime != null">
-        update_time,
-      </if>
-      <if test="updateId != null">
-        update_id,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        #{id,jdbcType=INTEGER},
-      </if>
-      <if test="roleId != null">
-        #{roleId,jdbcType=INTEGER},
-      </if>
-      <if test="resourceId != null">
-        #{resourceId,jdbcType=INTEGER},
-      </if>
-      <if test="createTime != null">
-        #{createTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="createId != null">
-        #{createId,jdbcType=INTEGER},
-      </if>
-      <if test="updateTime != null">
-        #{updateTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updateId != null">
-        #{updateId,jdbcType=INTEGER},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.crazy.portal.entity.system.RoleResource">
-    update t_role_resource
-    <set>
-      <if test="roleId != null">
-        role_id = #{roleId,jdbcType=INTEGER},
-      </if>
-      <if test="resourceId != null">
-        resource_id = #{resourceId,jdbcType=INTEGER},
-      </if>
-      <if test="createTime != null">
-        create_time = #{createTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="createId != null">
-        create_id = #{createId,jdbcType=INTEGER},
-      </if>
-      <if test="updateTime != null">
-        update_time = #{updateTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updateId != null">
-        update_id = #{updateId,jdbcType=INTEGER},
-      </if>
-    </set>
-    where id = #{id,jdbcType=INTEGER}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.crazy.portal.entity.system.RoleResource">
-    update t_role_resource
-    set role_id = #{roleId,jdbcType=INTEGER},
-      resource_id = #{resourceId,jdbcType=INTEGER},
-      create_time = #{createTime,jdbcType=TIMESTAMP},
-      create_id = #{createId,jdbcType=INTEGER},
-      update_time = #{updateTime,jdbcType=TIMESTAMP},
-      update_id = #{updateId,jdbcType=INTEGER}
-    where id = #{id,jdbcType=INTEGER}
-  </update>
 
   <!-- 查询角色资源 -->
   <select id="selectRoleResourceByRoleIds" resultType="java.lang.Integer">

@@ -41,7 +41,7 @@ public class DealerService {
      */
     public DealerVO getDealerInfo(Integer dealerId){
         CustomerInfo dealerInfo = customerInfoMapper.selectDealerInfo(dealerId);
-        BusinessUtil.assertIsNull(dealerInfo, ErrorCodes.BusinessEnum.CUSTOMER_IS_EMPYT);
+        BusinessUtil.notNull(dealerInfo, ErrorCodes.BusinessEnum.CUSTOMER_IS_EMPYT);
         return mappingVO(dealerInfo);
     }
 

@@ -1,9 +1,8 @@
 package com.crazy.portal.service.system;
 
-import com.crazy.portal.bean.system.PermissionBean;
-import com.crazy.portal.config.exception.BusinessException;
 import com.crazy.portal.dao.system.*;
 import com.crazy.portal.entity.system.*;
+import com.crazy.portal.util.BusinessUtil;
 import com.crazy.portal.util.DateUtil;
 import com.crazy.portal.util.ErrorCodes;
 import com.crazy.portal.util.StringUtil;
@@ -12,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @Desc:
@@ -33,7 +33,6 @@ public class PermissionService {
     private RoleResourceMapper roleResourceMapper;
     @javax.annotation.Resource
     private ResourceMapper resourceMapper;
-
 
     /**
      * 获取用户所有可访问的资源,可缓存至redis
@@ -166,27 +165,14 @@ public class PermissionService {
 
     /**
      * 分配权限
-     * @param permissionBean
+     * @param permissionIds 最新的权限列表
      * @param userId
      * @return
      */
-    public boolean savePermission(PermissionBean permissionBean, Integer userId){
-        String roleCode = permissionBean.getRoleCode();
-        List<Integer> addPermissionIds = permissionBean.getAddPermissionIds();
-        List<Integer> rmPermissionIds = permissionBean.getRmPermissionIds();
-        synchronized (this){
-            Role roleDO = roleMapper.findRoleByCode(roleCode);
-            if(roleDO == null){
-                throw new BusinessException(ErrorCodes.SystemManagerEnum.ROLE_NOT_EXIST.getCode(),
-                        ErrorCodes.SystemManagerEnum.ROLE_NOT_EXIST.getZhMsg());
-            }
-            if(addPermissionIds != null && !addPermissionIds.isEmpty()){
-                this.setPermission(addPermissionIds, roleDO.getId(),true,userId);
-            }
-            if(rmPermissionIds != null && !rmPermissionIds.isEmpty()){
-                this.setPermission(rmPermissionIds, roleDO.getId(),false,userId);
-            }
-        }
+    public boolean savePermission(List<Integer> permissionIds,String roleCode,Integer userId){
+        Role roleDO = roleMapper.findRoleByCode(roleCode);
+        BusinessUtil.notNull(roleDO,ErrorCodes.SystemManagerEnum.ROLE_NOT_EXIST);
+        this.setPermission(permissionIds, roleDO.getId(),userId);
         return true;
     }
 
@@ -210,37 +196,39 @@ public class PermissionService {
         return true;
     }
 
-    private void setPermission(List<Integer> resourcesIds, Integer roleId, boolean isAdd, Integer userId) {
-        if(resourcesIds != null && !resourcesIds.isEmpty()){
-            for(Integer resourceId : resourcesIds){
-                if(resourceId == null){
-                    continue;
-                }
-                Resource currentResource = resourceMapper.selectByPrimaryKey(resourceId);
-                if(currentResource == null){
-                    throw new BusinessException(ErrorCodes.SystemManagerEnum.PERMISSION_NOT_EXIST.getCode(),
-                            ErrorCodes.SystemManagerEnum.PERMISSION_NOT_EXIST.getZhMsg());
-                }
-                RoleResource roleResourceDO = roleResourceMapper.selectByRoleResource(roleId,resourceId);
-                if(isAdd){
-                    //新增权限
-                    if(roleResourceDO != null){
-                        continue;
-                    }
-                    RoleResource roleRes = new RoleResource();
-                    roleRes.setRoleId(roleId);
-                    roleRes.setResourceId(resourceId);
-                    roleRes.setCreateTime(new Date());
-                    roleRes.setCreateId(userId);
-                    roleResourceMapper.insertSelective(roleRes);
-                }else{
-                    //删除权限
-                    if(roleResourceDO != null){
-                        currentResource.getParentId();
-                        roleResourceMapper.deleteByPrimaryKey(roleResourceDO.getId());
-                    }
-                }
-            }
-        }
+    /**
+     * 对角色进行权限设置
+     * @param resourcesIds 权限列表
+     * @param roleId 角色id
+     * @param userId 操作人
+     * @return
+     */
+    private boolean setPermission(List<Integer> resourcesIds, Integer roleId, Integer userId) {
+
+        List<Integer> errorList = resourcesIds.stream().filter(x->
+            x == null
+        ).collect(Collectors.toList());
+
+        //不能存在空值数据
+        BusinessUtil.isEmptyList(errorList,ErrorCodes.SystemManagerEnum.RESOURCE_NOT_EXIST);
+
+        //先删除指定角色下的资源，该权限数据不多,删除跟添加在同一事物，性能影响可忽略不计
+        int deleteResult = roleResourceMapper.deleteByRoleId(roleId);
+        BusinessUtil.assertTrue(deleteResult>0,ErrorCodes.CommonEnum.SYSTEM_EXCEPTION);
+
+        List<RoleResource> roleResourceList = new ArrayList<>();
+        resourcesIds.stream().forEach(x->{
+            Resource resource = resourceMapper.selectByPrimaryKey(x);
+            BusinessUtil.notNull(resource,ErrorCodes.SystemManagerEnum.RESOURCE_NOT_EXIST);
+            RoleResource roleResource = new RoleResource();
+            roleResource.setCreateId(userId);
+            roleResource.setCreateTime(new Date());
+            roleResource.setRoleId(roleId);
+            roleResource.setResourceId(x);
+            roleResourceList.add(roleResource);
+        });
+        int result = roleResourceMapper.insertBatchByRoleId(roleResourceList);
+        BusinessUtil.assertTrue(result > 0,ErrorCodes.CommonEnum.SYSTEM_EXCEPTION);
+        return true;
     }
 }

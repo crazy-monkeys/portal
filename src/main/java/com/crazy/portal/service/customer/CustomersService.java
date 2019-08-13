@@ -92,7 +92,7 @@ public class CustomersService {
      */
     public CustomerInfo queryCustDetail(Integer id){
         CustomerInfo customerInfo = customerInfoMapper.selectByPrimaryKey(id);
-        BusinessUtil.assertIsNull(customerInfo, ErrorCodes.BusinessEnum.CUSTOMER_IS_EMPYT);
+        BusinessUtil.notNull(customerInfo, ErrorCodes.BusinessEnum.CUSTOMER_IS_EMPYT);
         customerInfo.setBasicInvoice(basicInvoiceInfoMapper.selectByCustId(id));
         customerInfo.setBasicContact(basicContactMapper.selectByCustId(id));
         customerInfo.setBasicStructure(basicCorporateStructureMapper.selectByCustId(id));
@@ -205,7 +205,7 @@ public class CustomersService {
      * @param bean
      */
     public void update(CustomerInfo bean, User user){
-        BusinessUtil.assertIsNull(bean.getId(), ErrorCodes.BusinessEnum.CUSTOMER_IS_EMPYT);
+        BusinessUtil.notNull(bean.getId(), ErrorCodes.BusinessEnum.CUSTOMER_IS_EMPYT);
         bean.setUpdateUser(user.getId());
         bean.setUpdateTime(DateUtil.getCurrentTS());
         try {
@@ -315,7 +315,7 @@ public class CustomersService {
      */
     public void delete(Integer id, Integer userId){
         CustomerInfo customerInfo = customerInfoMapper.selectByPrimaryKey(id);
-        BusinessUtil.assertIsNull(customerInfo, ErrorCodes.BusinessEnum.CUSTOMER_IS_EMPYT);
+        BusinessUtil.notNull(customerInfo, ErrorCodes.BusinessEnum.CUSTOMER_IS_EMPYT);
         customerInfoMapper.deleteByPrimaryKey(id, userId);
         basicBankInfoMapper.deleteByCustId(id, userId);
         basicAddressMapper.deleteByCustId(id, userId);
@@ -386,7 +386,7 @@ public class CustomersService {
      */
     public void checkCustName(String custName){
         CustomerInfo customerInfo = customerInfoMapper.selectByCustName(custName);
-        BusinessUtil.assertIsNotNull(customerInfo, ErrorCodes.BusinessEnum.CUSTOMER_NAME_EXISTS);
+        BusinessUtil.isNull(customerInfo, ErrorCodes.BusinessEnum.CUSTOMER_NAME_EXISTS);
     }
 
     /**
