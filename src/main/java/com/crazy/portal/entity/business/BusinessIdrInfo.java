@@ -32,6 +32,8 @@ public class BusinessIdrInfo {
     private String inCustomerName;
     //外部客户ID
     private Integer dealerId;
+    //外部客户名
+    private String outCustomerName;
     //原因
     private String reson;
     //备注

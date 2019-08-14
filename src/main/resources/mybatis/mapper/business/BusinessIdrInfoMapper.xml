@@ -206,8 +206,11 @@
     <if test="crAmount != null">
       and cr_amount = #{crAmount}
     </if>
-    <if test="applyStartTime != null and applyEndTime != null and applyStartTime != '' and applyEndTime != ''">
-      and apply_time between str_to_date(#{applyStartTime}, '%Y-%m-%d') and str_to_date(#{applyEndTime}, '%Y-%m-%d')
+    <if test="applyStartTime != null and  applyStartTime != ''">
+      and apply_time >= str_to_date(#{applyStartTime}, '%Y-%m-%d')
+    </if>
+    <if test="applyEndTime != null and applyEndTime != ''">
+      and apply_time &lt;= str_to_date(#{applyEndTime}, '%Y-%m-%d')
     </if>
     <if test="currency != null and currency != ''">
       and currency = #{currency}

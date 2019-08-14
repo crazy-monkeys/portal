@@ -22,8 +22,7 @@ public class BusinessFile implements IdrBaseEntity{
     @JsonIgnore
     @JSONField(serialize = false)
     private Integer createId;
-    @JsonIgnore
-    @JSONField(serialize = false)
+    @JSONField(format="yyyy-MM-dd HH:mm:ss")
     private Date createTime;
     @JsonIgnore
     @JSONField(serialize = false)
