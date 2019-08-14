@@ -14,7 +14,6 @@ import com.crazy.portal.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.LockedException;
-import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -22,12 +21,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
-
 import javax.annotation.Resource;
 import java.util.Collections;
 import java.util.Date;
-import java.util.logging.Logger;
 
 /**
  * @Desc:
@@ -117,14 +113,14 @@ public class JwtUserService implements UserDetailsService {
     }
 
     /**
-     * TODO 将salt保存到数据库或者缓存中 BCrypt.gensalt()
+     * 生成token
      * @param user
      * @return
      */
-    public String saveUserLoginInfo(UserDetails user) {
+    public String generateToken(UserDetails user) {
         Algorithm algorithm = Algorithm.HMAC256(secret);
-        //设置15分钟过期 TODO 暂时设置10天过期
-        Date date = new Date(System.currentTimeMillis()+1000*60*15*1000);
+        //设置15分钟过期
+        Date date = new Date(System.currentTimeMillis()+ 60 * 15 * 1000);
         return JWT.create()
                 .withSubject(user.getUsername())
                 .withExpiresAt(date)
@@ -136,7 +132,6 @@ public class JwtUserService implements UserDetailsService {
      * 清除数据库或者缓存中登录secret
      */
     public void deleteUserLoginInfo(String username) {
-        //TODO
         log.info("用户{}完成退出",username);
     }
 

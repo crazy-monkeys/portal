@@ -2,17 +2,20 @@ package com.crazy.portal.controller;
 
 import com.crazy.portal.bean.BaseResponse;
 import com.crazy.portal.config.security.JwtUser;
+import com.crazy.portal.config.security.JwtUserService;
 import com.crazy.portal.dao.system.RoleMapper;
+import com.crazy.portal.dao.system.UserMapper;
 import com.crazy.portal.entity.system.Role;
 import com.crazy.portal.entity.system.User;
+import com.crazy.portal.service.system.PermissionService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -52,7 +55,6 @@ public class BaseController {
         String roleCode = list.get(0);
         return roleMapper.findRoleByCode(roleCode);
     }
-
 
     protected BaseResponse successResult() {
         BaseResponse response = new BaseResponse();

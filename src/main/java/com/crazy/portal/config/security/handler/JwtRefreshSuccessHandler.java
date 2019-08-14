@@ -9,10 +9,8 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
@@ -42,7 +40,7 @@ public class JwtRefreshSuccessHandler implements AuthenticationSuccessHandler{
         DecodedJWT jwt = ((JwtAuthenticationToken)authentication).getToken();
         boolean shouldRefresh = shouldTokenRefresh(jwt.getIssuedAt());
         if(shouldRefresh) {
-            String newToken = jwtUserService.saveUserLoginInfo((UserDetails) authentication.getPrincipal());
+            String newToken = jwtUserService.generateToken((UserDetails) authentication.getPrincipal());
             response.setHeader("Authorization", newToken);
         }
     }
