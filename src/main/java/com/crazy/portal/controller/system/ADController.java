@@ -29,13 +29,13 @@ public class ADController extends BaseController {
     private JwtUserService jwtUserService;
 
     /**
-     * Kerberos\Spnego Negotiation 登录入口
+     * Kerberos\Spnego Negotiation 登录成功之后获取资源列表
      * @param response
      * @return
      */
     @GetMapping("/index")
     public BaseResponse index(HttpServletResponse response) {
-        Authentication authentication= SecurityContextHolder.getContext().getAuthentication();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         //用户kerberos认证成功之后，再次点击，应该返回用户当前权限
         Map<String,?> currentMenu = loginSuccessHandler.getCurrentMenu();
         UserDetails userDetails = (UserDetails)authentication.getPrincipal();

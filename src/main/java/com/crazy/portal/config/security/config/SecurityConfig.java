@@ -100,7 +100,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                 .and()
                 //拦截OPTIONS请求，直接返回header
                 .addFilterAfter(new RequestFilter(), CorsFilter.class)
-
                 //添加登录filter
                 .apply(new LoginConfigurer<>()).loginSuccessHandler(loginSuccessHandler)
                 .and()
@@ -174,8 +173,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
             AuthenticationManager authenticationManager) {
         SpnegoAuthenticationProcessingFilter filter = new SpnegoAuthenticationProcessingFilter();
         filter.setAuthenticationManager(authenticationManager);
-        filter.setSuccessHandler(loginSuccessHandler);
-        filter.setFailureHandler(new AuthenticationFailHandler());
         return filter;
     }
 
