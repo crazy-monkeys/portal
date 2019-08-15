@@ -3,7 +3,6 @@ package com.crazy.portal.config.security.config;
 import com.crazy.portal.config.security.JwtUserService;
 import com.crazy.portal.config.security.filter.JwtAuthenticationProvider;
 import com.crazy.portal.config.security.filter.RequestFilter;
-import com.crazy.portal.config.security.handler.AuthenticationFailHandler;
 import com.crazy.portal.config.security.handler.JwtRefreshSuccessHandler;
 import com.crazy.portal.config.security.handler.LoginSuccessHandler;
 import com.crazy.portal.config.security.handler.TokenClearLogoutHandler;
@@ -104,7 +103,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                 .apply(new LoginConfigurer<>()).loginSuccessHandler(loginSuccessHandler)
                 .and()
                 //添加token的filter
-                .apply(new JwtLoginConfigurer<>()).tokenValidSuccessHandler(jwtRefreshSuccessHandler)
+                .apply(new JwtAccessConfigurer<>()).tokenValidSuccessHandler(jwtRefreshSuccessHandler)
                 .permissiveRequestUrls(permissiveUrl)
                 .and()
                 //使用默认的logoutFilter

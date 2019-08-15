@@ -14,12 +14,12 @@ import org.springframework.security.web.authentication.logout.LogoutFilter;
  * @Date: created in 20:11 2019/4/20
  * @Modified by:
  */
-public class JwtLoginConfigurer <T extends JwtLoginConfigurer<T, B>,
+public class JwtAccessConfigurer<T extends JwtAccessConfigurer<T, B>,
         B extends HttpSecurityBuilder<B>> extends AbstractHttpConfigurer<T, B> {
 
     private JwtAuthenticationFilter authFilter;
 
-    public JwtLoginConfigurer() {
+    public JwtAccessConfigurer() {
         this.authFilter = new JwtAuthenticationFilter();
     }
 
@@ -28,17 +28,17 @@ public class JwtLoginConfigurer <T extends JwtLoginConfigurer<T, B>,
         authFilter.setAuthenticationManager(http.getSharedObject(AuthenticationManager.class));
         authFilter.setAuthenticationFailureHandler(new AuthenticationFailHandler());
         //将filter放到logoutFilter之前
-        JwtAuthenticationFilter filter = postProcess(authFilter);
+        JwtAuthenticationFilter filter = super.postProcess(authFilter);
         http.addFilterBefore(filter, LogoutFilter.class);
     }
 
     //设置匿名用户可访问url
-    public JwtLoginConfigurer<T, B> permissiveRequestUrls(String ... urls){
+    public JwtAccessConfigurer<T, B> permissiveRequestUrls(String ... urls){
         authFilter.setPermissiveUrl(urls);
         return this;
     }
 
-    public JwtLoginConfigurer<T, B> tokenValidSuccessHandler(AuthenticationSuccessHandler successHandler){
+    public JwtAccessConfigurer<T, B> tokenValidSuccessHandler(AuthenticationSuccessHandler successHandler){
         authFilter.setAuthenticationSuccessHandler(successHandler);
         return this;
     }
