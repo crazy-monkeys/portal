@@ -92,7 +92,7 @@ public class EmailHelper {
             helper.addAttachment(mailBean.getAttachmentFilename(), mailBean.getFile());
             mailSender.send(mimeMessage);
         } catch (MessagingException e) {
-            log.error("发送邮件失败",e);
+            log.error("发送附件类型邮件失败",e);
         }
     }
 
@@ -101,17 +101,17 @@ public class EmailHelper {
      * @param mailBean
      */
     private void sendMail(MailBean mailBean,boolean html) {
-        MimeMessage mimeMessage = mailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage);
         try {
+            MimeMessage mimeMessage = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage);
             helper.setFrom(sender);
             helper.setTo(mailBean.getTos());
             helper.setSubject(mailBean.getSubject());
             helper.setText(mailBean.getContent(),html);
+            mailSender.send(mimeMessage);
         } catch (MessagingException e) {
-            log.error("发送邮件失败",e);
+            log.error("发送html类型邮件失败",e);
         }
-        mailSender.send(mimeMessage);
     }
 
     private Context getContext(Map<String, String> paramsMap) {
