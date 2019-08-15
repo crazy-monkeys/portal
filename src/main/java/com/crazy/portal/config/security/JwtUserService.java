@@ -10,6 +10,7 @@ import com.crazy.portal.entity.system.User;
 import com.crazy.portal.entity.system.UserRole;
 import com.crazy.portal.util.DateUtil;
 import com.crazy.portal.util.Enums;
+import com.crazy.portal.util.PortalUtil;
 import com.crazy.portal.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -79,10 +80,12 @@ public class JwtUserService implements UserDetailsService {
             user = new User();
             user.setLoginName(loginName);
             user.setCustomerName(username);
-            user.setLoginPwd(passwordEncoder.encode("123456"));
+            //域账号使用随机密码
+            user.setLoginPwd(passwordEncoder.encode(PortalUtil.generateRandomPassword()));
             user.setActive((short)1);
             user.setUserStatus(1);
-            user.setPwdInvalidTime(DateUtil.addDays(new Date(),365));
+            //域账号密码过期跟随ad域,这里设置为永久
+            user.setPwdInvalidTime(DateUtil.addDays(new Date(),9999999));
             user.setRegTime(new Date());
             user.setUserType(Enums.USER_TYPE.internal.toString());
             user.setCreateUserId(1);
@@ -119,8 +122,8 @@ public class JwtUserService implements UserDetailsService {
      */
     public String generateToken(UserDetails user) {
         Algorithm algorithm = Algorithm.HMAC256(secret);
-        //设置15分钟过期
-        Date date = new Date(System.currentTimeMillis()+ 60 * 15 * 1000);
+        //设置一个小时后过期
+        Date date = new Date(System.currentTimeMillis()+ 60 * 60 * 1000);
         return JWT.create()
                 .withSubject(user.getUsername())
                 .withExpiresAt(date)

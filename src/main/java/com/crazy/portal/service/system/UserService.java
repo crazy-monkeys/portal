@@ -108,7 +108,7 @@ public class UserService {
         user.setLoginName(subAgentUser.getLoginName());
         user.setEmail(subAgentUser.getMail());
         user.setCustomerName(subAgentUser.getCustomerName());
-        String password = generateRandomPassword();
+        String password = PortalUtil.generateRandomPassword();
         user.setLoginPwd(passwordEncoder.encode(password));
         user.setUserStatus(Enums.USER_STATUS.freeze.getCode());
         //只允许子账号注册
@@ -166,7 +166,6 @@ public class UserService {
         return new PageInfo<>(userMapper.selectUserWithPage(userQuery));
     }
 
-
     /**
      * 重置密码
      * @param loginName
@@ -181,9 +180,9 @@ public class UserService {
         }
         user.setUpdateTime(new Date());
         user.setUpdateUserId(currentUser.getId());
-        String newPasswod = this.generateRandomPassword();
+        String newPasswod = PortalUtil.generateRandomPassword();
         user.setLoginPwd(passwordEncoder.encode(newPasswod));
-//        userMapper.updateByPrimaryKeySelective(user);
+        userMapper.updateByPrimaryKeySelective(user);
 
         //发送邮件
         MailBean mailBean = new MailBean();
@@ -208,29 +207,5 @@ public class UserService {
         user.setUpdateTime(new Date());
         user.setUpdateUserId(userId);
         userMapper.updateByPrimaryKeySelective(user);
-    }
-
-    /**
-     * 重置密码随机生成10位密码数
-     * @return
-     */
-    private static String generateRandomPassword() {
-        int length = 10;
-        char[] ss = new char[10];
-        int[] flag = { 0, 0, 0 }; // A-Z, a-z, 0-9
-        int i = 0;
-        while (flag[0] == 0 || flag[1] == 0 || flag[2] == 0 || i < length) {
-            i = i % length;
-            int f = (int) (Math.random() * 3 % 3);
-            if (f == 0)
-                ss[i] = (char) ('A' + Math.random() * 26);
-            else if (f == 1)
-                ss[i] = (char) ('a' + Math.random() * 26);
-            else
-                ss[i] = (char) ('0' + Math.random() * 10);
-            flag[f] = 1;
-            i++;
-        }
-        return new String(ss) + "$";
     }
 }

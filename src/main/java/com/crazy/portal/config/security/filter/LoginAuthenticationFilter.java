@@ -39,11 +39,6 @@ public class LoginAuthenticationFilter extends AbstractAuthenticationProcessingF
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
             throws AuthenticationException, IOException {
 
-        String header = request.getHeader("Authorization");
-        if (header != null && (header.startsWith("Negotiate ") || header.startsWith("Kerberos "))) {
-            System.out.println("kerberos 登录");
-        }
-        //从json中获取username和password
         String body = StreamUtils.copyToString(request.getInputStream(), Charset.forName("UTF-8"));
         String loginName = "", loginPwd = "";
         if(StringUtils.hasText(body)) {

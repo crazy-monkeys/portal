@@ -70,6 +70,4 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
         return authentication.isAssignableFrom(JwtAuthenticationToken.class);
     }
 
-
-
 }
