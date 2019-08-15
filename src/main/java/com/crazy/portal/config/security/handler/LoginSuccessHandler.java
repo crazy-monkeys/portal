@@ -1,6 +1,7 @@
 package com.crazy.portal.config.security.handler;
 
 import com.alibaba.fastjson.JSON;
+import com.crazy.portal.bean.BaseResponse;
 import com.crazy.portal.config.security.JwtUserService;
 import com.crazy.portal.dao.system.UserMapper;
 import com.crazy.portal.entity.system.User;
@@ -75,9 +76,11 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
         response.reset();
         response.setHeader("Authorization", token);
         response.setContentType("application/json;charset=utf-8");
+        BaseResponse baseResponse = new BaseResponse();
+        baseResponse.setData(currentMenu);
         //获取权限资源
         try(OutputStream out = response.getOutputStream()){
-            out.write(JSON.toJSONString(currentMenu).getBytes());
+            out.write(JSON.toJSONString(baseResponse).getBytes());
             out.flush();
         }catch (Exception e){
             log.error("The output stream handles exceptions",e);
