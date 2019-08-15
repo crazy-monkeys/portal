@@ -37,8 +37,8 @@ public class ScheduleJobService {
     @Resource
 	private ScheduleJobMapper scheduleJobMapper;
 
-    public void initScheduleJob() throws Exception{
-    	List<ScheduleJob> jobList = scheduleJobMapper.getAll("data-treating");
+    public void initScheduleJob(){
+    	List<ScheduleJob> jobList = scheduleJobMapper.getAll();
         if (jobList.isEmpty()) {
             return;
         }
@@ -53,8 +53,8 @@ public class ScheduleJobService {
         }
     }
 
-	public List<ScheduleJob> queryList(String jobGroup) throws Exception{
-	    List<ScheduleJob> list = scheduleJobMapper.getAll(jobGroup);
+	public List<ScheduleJob> queryList() throws Exception{
+	    List<ScheduleJob> list = scheduleJobMapper.getAll();
         for (ScheduleJob vo : list) {
 
             JobKey jobKey = ScheduleUtils.getJobKey(vo.getJobName(), vo.getJobGroup());

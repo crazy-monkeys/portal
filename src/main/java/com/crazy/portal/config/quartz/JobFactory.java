@@ -1,7 +1,6 @@
 package com.crazy.portal.config.quartz;
 
 import org.quartz.spi.TriggerFiredBundle;
-import org.springframework.batch.core.configuration.annotation.DefaultBatchConfigurer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.context.annotation.ComponentScan;
@@ -15,19 +14,12 @@ import org.springframework.scheduling.quartz.AdaptableJobFactory;
  * 原理就是在我们扩展JobFactory创建job的方法，在创建完Job以后进行属性注入。
  * 作用：支持job实例中使用自动装配bean
  * AutowireCapableBeanFactory：主要是为了装配applicationContext管理之外的Bean
- *
- * DefaultBatchConfigurer:
- * spring batch启动时，AbstractBatchConfiguration尝试首先在Spring容器中查找BatchConfigurer，
- * 如果没有找到，则尝试创建它本身，
- * 这时在容器中找到多个DataSource 的实例，因此抛出IllegalStateException异常。
- *
- *
  * </p>
  * @author Bill Chan
  * @date 2017年6月2日 下午5:11:42
  */
 @Configuration
-@ComponentScan(basePackageClasses = DefaultBatchConfigurer.class)
+@ComponentScan
 public class JobFactory extends AdaptableJobFactory {
     @Autowired
     private AutowireCapableBeanFactory capableBeanFactory;

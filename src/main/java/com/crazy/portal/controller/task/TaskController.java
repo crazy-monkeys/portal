@@ -48,11 +48,7 @@ public class TaskController {
 	@RequestMapping("/scheduleJob/list")
 	public ModelAndView list(ModelAndView mv,String jobGroup){
 		try {
-			//分组标签
-			mv.addObject("jobGroupList", Constant.getJobGroupList());
-			jobGroup = jobGroup == null ? Constant.getJobGroupList().get(0).get("groupCode").toString():jobGroup;
-			//获取数据库中已经绑定的值
-			List<ScheduleJob> list = scheduleJobService.queryList(jobGroup);
+			List<ScheduleJob> list = scheduleJobService.queryList();
 			mv.addObject("scheduleJobVoList", list);
 			//运行中的任务
 			List<ScheduleJob> executingJobList = scheduleJobService.queryExecutingJobList(jobGroup);
@@ -118,7 +114,7 @@ public class TaskController {
     @RequestMapping(value = "/ajax/scheduleJob/add")
     public @ResponseBody String saveScheduleJob(ScheduleJob scheduleJob) {
     	try {
-			List<ScheduleJob> list = scheduleJobService.queryList(null);
+			List<ScheduleJob> list = scheduleJobService.queryList();
 			for (int i = 0; i < list.size(); i++) {
 				if(list.get(i).getAliasName().equals(scheduleJob.getAliasName())){
 					return "double";//已存在
@@ -199,7 +195,7 @@ public class TaskController {
     	List<ScheduleJob> list;
 		try {
             Thread.sleep(10000);
-			list = scheduleJobService.queryList(jobGroup);
+			list = scheduleJobService.queryList();
 			executingJobList = scheduleJobService.queryExecutingJobList(jobGroup);
 			map.put("execList", executingJobList);
 			map.put("allList", list);

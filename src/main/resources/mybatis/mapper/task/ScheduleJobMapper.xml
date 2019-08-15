@@ -192,13 +192,13 @@
   <select id="getAll" resultMap="BaseResultMap"  >
    select 
    <include refid="Base_Column_List" />
-      FROM t_schedule_job t <if test="jobGroup != null"> WHERE JOB_GROUP = #{jobGroup} </if>
+      FROM t_schedule_job t
   </select>
   
   <select id="selectByJobName" resultMap="BaseResultMap" parameterType="string">
    select 
    <include refid="Base_Column_List" />
-       from t_schedule_job where job_name = #{jobName} <if test="jobGroup != null"> AND JOB_GROUP = #{jobGroup} </if>
+       from t_schedule_job where job_name = #{jobName}
   </select>
   
   

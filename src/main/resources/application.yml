@@ -37,8 +37,6 @@ spring:
     suffix: .html
     encoding: UTF-8
     mode: HTML5
-  main:
-      allow-bean-definition-overriding: true
   ##文件上传配置
   servlet:
     multipart:

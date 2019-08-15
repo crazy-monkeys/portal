@@ -19,7 +19,7 @@ public interface ScheduleJobMapper {
 
     int updateByPrimaryKey(ScheduleJob record);
     
-    List<ScheduleJob> getAll(@Param("jobGroup") String jobGroup);
+    List<ScheduleJob> getAll();
 
     ScheduleJob selectByJobName(@Param("jobName") String jobName, @Param("jobGroup") String jobGroup);
 

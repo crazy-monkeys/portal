@@ -1,6 +1,7 @@
 package com.crazy.portal.task.common;
 
 import com.crazy.portal.service.task.ScheduleJobService;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -15,10 +16,8 @@ import javax.annotation.Resource;
  *
  */
 @Component
+@Slf4j
 public class SystemInitEvent {
-
-    /** 日志对象 */
-    private static final Logger LOGGER = LoggerFactory.getLogger(SystemInitEvent.class);
 
     /** 定时任务service */
     @Resource
@@ -28,23 +27,9 @@ public class SystemInitEvent {
      * 项目启动时初始化
      */
     @PostConstruct
-    public void init() throws Exception{
-        initialScheduleJob();
+    public void init() {
+        log.info(">  >  >  >  >  schedule jobs init [begin]      >  >  >  >  >  ");
+        scheduleJobService.initScheduleJob();
+        log.info(">  >  >  >  >  schedule jobs init [end]      >  >  >  >  >  ");
     }
-
-    private void initialScheduleJob() {
-        if (LOGGER.isInfoEnabled()) {
-        	LOGGER.info(">  >  >  >  >  schedule jobs init [begin]      >  >  >  >  >  ");
-        }
-        try {
-			scheduleJobService.initScheduleJob();
-		} catch (Exception e) {
-			LOGGER.error("定时任务初始化失败",e);
-		}
-
-        if (LOGGER.isInfoEnabled()) {
-        	LOGGER.info(">  >  >  >  >  schedule jobs init [end]      >  >  >  >  >  ");
-        }
-    }
-
 }
