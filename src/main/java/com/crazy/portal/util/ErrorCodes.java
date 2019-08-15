@@ -43,17 +43,16 @@ public class ErrorCodes {
      * 系统管理状态码
      */
     public enum SystemManagerEnum implements ErrorInfo {
-        ACCOUNT_ERROR(10001,"用户名或密码错误",""),
+        ACCOUNT_ERROR(10001,"登录名或密码错误",""),
         LOCKED(10002,"账户锁定",""),
         PASSWORD_INVALID(10003,"密码过期",""),
         AUTH_ERROR(10004,"权限不足",""),
         TOKEN_INVALID(10005,"令牌失效,请重新登录",""),
-        USER_EXISTS(10010,"用户已经存在",""),
-        USER_EMPTY_USER_NAME(10011,"用户名不能为空",""),
+        USER_EXISTS(10010,"登录名已经存在",""),
+        USER_EMPTY_USER_NAME(10011,"登录名不能为空",""),
         USER_NOT_EXISTS(10012,"用户不存在",""),
         USER_INVALID_PASSWORD(10013,"原密码不正确",""),
         USER_SAVE_FAILED(10014,"用户保存失败",""),
-
 
         ROLE_NAME_EXISTS(10020,"角色名已经存在",""),
         ROLE_NOT_EXIST(10021,"角色不存在",""),
