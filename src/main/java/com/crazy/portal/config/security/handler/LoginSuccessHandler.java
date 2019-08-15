@@ -77,7 +77,7 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
         response.setHeader("Authorization", token);
         response.setContentType("application/json;charset=utf-8");
         BaseResponse baseResponse = new BaseResponse();
-        baseResponse.setData(currentMenu);
+        baseResponse.success(currentMenu);
         //获取权限资源
         try(OutputStream out = response.getOutputStream()){
             out.write(JSON.toJSONString(baseResponse).getBytes());
