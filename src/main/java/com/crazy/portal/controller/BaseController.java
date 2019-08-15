@@ -2,20 +2,17 @@ package com.crazy.portal.controller;
 
 import com.crazy.portal.bean.BaseResponse;
 import com.crazy.portal.config.security.JwtUser;
-import com.crazy.portal.config.security.JwtUserService;
 import com.crazy.portal.dao.system.RoleMapper;
-import com.crazy.portal.dao.system.UserMapper;
 import com.crazy.portal.entity.system.Role;
 import com.crazy.portal.entity.system.User;
-import com.crazy.portal.service.system.PermissionService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -30,6 +27,10 @@ public class BaseController {
     @Resource
     private RoleMapper roleMapper;
 
+    /**
+     * 获取当前登录用户
+     * @return
+     */
     protected User getCurrentUser(){
         User user = ((JwtUser) SecurityContextHolder
                 .getContext()
@@ -40,10 +41,18 @@ public class BaseController {
         return user;
     }
 
+    /**
+     * 获取当前登录用户ID
+     * @return
+     */
     protected Integer getCurrentUserId(){
         return this.getCurrentUser().getId();
     }
 
+    /**
+     * 获取当前登录用户角色
+     * @return
+     */
     protected Role getCurrentRole(){
         Authentication authentication= SecurityContextHolder
                 .getContext()
@@ -52,6 +61,8 @@ public class BaseController {
         Collection<? extends GrantedAuthority> grantedAuthorities = authentication.getAuthorities();
         List<String> list = grantedAuthorities.stream()
                 .map(x->x.getAuthority()).collect(Collectors.toList());
+
+        //目前只支持用户单角色
         String roleCode = list.get(0);
         return roleMapper.findRoleByCode(roleCode);
     }
@@ -66,11 +77,5 @@ public class BaseController {
         BaseResponse response = new BaseResponse();
         response.success(data);
         return response;
-    }
-
-    protected BaseResponse errorResult(){
-        BaseResponse resp = new BaseResponse();
-        resp.fail(null);
-        return resp;
     }
 }
