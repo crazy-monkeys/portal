@@ -62,7 +62,7 @@ public class RoleController extends BaseController {
         BusinessUtil.isNull(roleCodeQuery,SystemManagerEnum.ROLE_CODE_EXISTS);
 
         Role roleNameQuery = roleService.findRoleByName(role.getRoleName());
-        BusinessUtil.isNull(roleNameQuery,SystemManagerEnum.ROLE_CODE_EXISTS);
+        BusinessUtil.isNull(roleNameQuery,SystemManagerEnum.ROLE_NAME_EXISTS);
 
         role.setActive((short)1);
         role.setCreateTime(new Date());
