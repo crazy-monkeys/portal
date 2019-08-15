@@ -32,6 +32,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 /**
  * 资源访问过滤器
@@ -50,10 +51,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
     private AuthenticationFailureHandler failureHandler;
     private AntPathMatcher antPathMatcher;
 
-    @Value("${app.ad-domain}")
-    private String adDomain;
-
-    private static final String AD_LOGIN_URL = "/ad/index";
 
     public JwtAuthenticationFilter() {
         this.successHandler = new SavedRequestAwareAuthenticationSuccessHandler();
@@ -61,8 +58,20 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
         this.antPathMatcher = new AntPathMatcher();
     }
 
+    @Value("${app.ad-domain}")
+    private String adDomain;
+
     @Resource
     PermissionService permissionService;
+
+    private static final String AD_LOGIN_URL = "/ad/index";
+
+    @Override
+    public void afterPropertiesSet() {
+        Assert.notNull(authenticationManager, "authenticationManager must be specified");
+        Assert.notNull(successHandler, "AuthenticationSuccessHandler must be specified");
+        Assert.notNull(failureHandler, "AuthenticationFailureHandler must be specified");
+    }
 
     /**
      * 资源访问过滤器
@@ -81,36 +90,37 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
         //获取资源路径
         String url = request.getServletPath();
         //可以忽略Token权限的url
-        if (this.checkPermissiveUrl(request, response, filterChain)){
-            log.info("Authentication token is not required -> {}",url);
+        if (this.canIgnorePermiss(request, response, filterChain)){
+            log.info("Anonymous access -> {}",url);
             return;
         }
         try {
-            String token = getJwtToken(request);
+            String token = this.getToken(request);
             if(StringUtils.isEmpty(token)){
-                log.error("This url does not carry tokens -> {}",url);
-                this.authenticationFailure(request, response,new InsufficientAuthenticationException("JWT is Empty"));
+                this.authenticationFailure(request, response,new InsufficientAuthenticationException("Url does not carry tokens"));
                 return;
             }
-            Authentication authResult = this.getAuthentication(request, response, token);
+            //根据token获取身份认证
+            Authentication authResult = this.getAuthentication(token);
             //token认证不成功
             if(authResult == null){
                 this.authenticationFailure(request, response,
                         new InsufficientAuthenticationException("Token authentication failed"));
                 return;
             }
-            //不具有访问url的权限
+
             UserDetails userDetails = (UserDetails) authResult.getPrincipal();
             if(!authRequest(request,userDetails.getUsername())){
-                log.error("Insufficient permissions");
+                //鉴权失败处理
                 this.authenticationFailure(request, response,
                         new InsufficientAuthenticationException("Insufficient permissions"));
                 return;
             }
-            //放行
-            this.successfulAuthentication(request, response, filterChain, authResult);
+            //认证成功并放行
+            this.successfulAuthentication(request, response, authResult);
             filterChain.doFilter(request, response);
             return;
+
         } catch(JWTDecodeException | NonceExpiredException | BadCredentialsException e) {
             log.error("",e);
             this.authenticationFailure(request, response,
@@ -118,28 +128,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
         }
     }
 
-    private boolean checkPermissiveUrl(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws IOException, ServletException {
-        if(permissiveRequestMatchers != null && !permissiveRequestMatchers.isEmpty()){
-            for(RequestMatcher permissiveMatcher : permissiveRequestMatchers) {
-                if(permissiveMatcher.matches(request)){
-                    //放行
-                    filterChain.doFilter(request, response);
-                    return true;
-                }
-            }
-        }
-        String requestUrl = request.getServletPath();
-        if(requestUrl.contains(AD_LOGIN_URL)){
-            filterChain.doFilter(request, response);
-            return true;
-        }
-        return false;
-    }
-
-    private Authentication getAuthentication(HttpServletRequest request, HttpServletResponse response, String token) throws IOException, ServletException {
-        JwtAuthenticationToken authToken = new JwtAuthenticationToken(JWT.decode(token));
-        Authentication authResult = this.getAuthenticationManager().authenticate(authToken);
-        return authResult;
+    /**
+     * 获取token
+     * @param request
+     * @return
+     */
+    protected String getToken(HttpServletRequest request) {
+        String authInfo = request.getHeader("Authorization");
+        return StringUtils.removeStart(authInfo, "Bearer ");
     }
 
     /**
@@ -157,17 +153,52 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
                     return true;
                 }
             }
-            logger.error(String.format("用户 %s 访问 %s 权限不足!",userName,request.getRequestURI()));
+            logger.error(String.format("Insufficient access rights for %s user to %s",userName,request.getRequestURI()));
             return false;
         } catch (Exception e) {
-            throw new RuntimeException("查询用户权限发生异常",e);
+            throw new RuntimeException("Url authentication failed",e);
         }
     }
 
-    protected String getJwtToken(HttpServletRequest request) {
-        String authInfo = request.getHeader("Authorization");
-        return StringUtils.removeStart(authInfo, "Bearer ");
+    /**
+     * 检查请求的url是否可以匿名访问
+     * @param request
+     * @param response
+     * @param filterChain
+     * @return
+     * @throws IOException
+     * @throws ServletException
+     */
+    private boolean canIgnorePermiss(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws IOException, ServletException {
+        if(permissiveRequestMatchers != null && !permissiveRequestMatchers.isEmpty()){
+            for(RequestMatcher permissiveMatcher : permissiveRequestMatchers) {
+                if(permissiveMatcher.matches(request)){
+                    //匹配则放行
+                    filterChain.doFilter(request, response);
+                    return true;
+                }
+            }
+        }
+        String requestUrl = request.getServletPath();
+        //对ad登录的链接设置不校验token
+        if(requestUrl.contains(AD_LOGIN_URL)){
+            filterChain.doFilter(request, response);
+            return true;
+        }
+        return false;
     }
+
+    /**
+     * 通过token获取身份验证器
+     * @param token
+     * @return
+     */
+    private Authentication getAuthentication(String token){
+        JwtAuthenticationToken authToken = new JwtAuthenticationToken(JWT.decode(token));
+        Authentication authResult = this.getAuthenticationManager().authenticate(authToken);
+        return authResult;
+    }
+
 
     protected void authenticationFailure(HttpServletRequest request,
                                          HttpServletResponse response, AuthenticationException failed)
@@ -177,9 +208,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
         failureHandler.onAuthenticationFailure(request, response, failed);
     }
 
-    protected void successfulAuthentication(HttpServletRequest request,
-                                            HttpServletResponse response, FilterChain chain, Authentication authResult)
-            throws IOException, ServletException{
+    protected void successfulAuthentication(HttpServletRequest request,HttpServletResponse response,
+                                            Authentication authResult) throws IOException, ServletException{
+
         SecurityContextHolder.getContext().setAuthentication(authResult);
         successHandler.onAuthenticationSuccess(request, response, authResult);
     }
@@ -192,29 +223,26 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
         this.authenticationManager = authenticationManager;
     }
 
-    public void setPermissiveUrl(String... urls) {
-        if(permissiveRequestMatchers == null)
-            permissiveRequestMatchers = new ArrayList<>();
-        for(String url : urls)
-            permissiveRequestMatchers.add(new AntPathRequestMatcher(url));
-    }
 
-    public void setAuthenticationSuccessHandler(
-            AuthenticationSuccessHandler successHandler) {
+
+    public void setAuthenticationSuccessHandler(AuthenticationSuccessHandler successHandler) {
+
         Assert.notNull(successHandler, "successHandler cannot be null");
         this.successHandler = successHandler;
     }
 
-    public void setAuthenticationFailureHandler(
-            AuthenticationFailureHandler failureHandler) {
+    public void setAuthenticationFailureHandler(AuthenticationFailureHandler failureHandler) {
+
         Assert.notNull(failureHandler, "failureHandler cannot be null");
         this.failureHandler = failureHandler;
     }
 
-    @Override
-    public void afterPropertiesSet() {
-        Assert.notNull(authenticationManager, "authenticationManager must be specified");
-        Assert.notNull(successHandler, "AuthenticationSuccessHandler must be specified");
-        Assert.notNull(failureHandler, "AuthenticationFailureHandler must be specified");
+    public void setPermissiveUrl(String... urls) {
+        if(permissiveRequestMatchers == null){
+            permissiveRequestMatchers = new ArrayList<>();
+        }
+        Stream.of(urls).forEach(x->
+                permissiveRequestMatchers.add(new AntPathRequestMatcher(x))
+        );
     }
 }

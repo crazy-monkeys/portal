@@ -40,12 +40,12 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-        DecodedJWT jwt = ((JwtAuthenticationToken)authentication).getToken();
 
+        DecodedJWT jwt = ((JwtAuthenticationToken)authentication).getToken();
         Date now = new Date();
         if(jwt.getExpiresAt().before(now)){
-            log.debug("jwt中设置的过期时间是{}",((SimpleDateFormat)threadLocal.get()).format(jwt.getExpiresAt()));
-            log.debug("当前时间是{}",((SimpleDateFormat)threadLocal.get()).format(now));
+            log.debug("Expiration time is {}",((SimpleDateFormat)threadLocal.get()).format(jwt.getExpiresAt()));
+            log.debug("Current time is {}",((SimpleDateFormat)threadLocal.get()).format(now));
             throw new NonceExpiredException("Token expires");
         }
         String username = jwt.getSubject();
@@ -60,6 +60,7 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
         } catch (Exception e) {
             throw new BadCredentialsException("Invalid token", e);
         }
+
         //成功后返回认证信息，filter会将认证信息放入SecurityContext
         JwtAuthenticationToken token = new JwtAuthenticationToken(user, jwt, user.getAuthorities());
         return token;

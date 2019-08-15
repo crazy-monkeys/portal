@@ -39,6 +39,7 @@ public class LoginAuthenticationFilter extends AbstractAuthenticationProcessingF
             JSONObject jsonObj = JSON.parseObject(body);
             String userNameStr = jsonObj.getString("loginName");
             String passStr = jsonObj.getString("loginPwd");
+
             if(userNameStr != null) loginName = userNameStr;
             if(passStr != null) loginPwd = passStr;
         }
