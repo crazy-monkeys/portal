@@ -47,7 +47,7 @@ public class ErrorCodes {
         LOCKED(10002,"账户锁定",""),
         PASSWORD_INVALID(10003,"密码过期",""),
         AUTH_ERROR(10004,"权限不足",""),
-        TOKEN_INVALID(10005,"令牌失效,请重新登录",""),
+        TOKEN_INVALID(10005,"会话已经过期,请重新登录",""),
         USER_EXISTS(10010,"登录名已经存在",""),
         USER_EMPTY_USER_NAME(10011,"登录名不能为空",""),
         USER_NOT_EXISTS(10012,"用户不存在",""),

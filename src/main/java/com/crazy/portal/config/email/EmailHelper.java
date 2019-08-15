@@ -66,7 +66,9 @@ public class EmailHelper {
         String content = templateEngine.process(
                 mailBean.getTemplateName(),
                 mailBean.getParams() == null ? new Context() : this.getContext(mailBean.getParams()));
+
         mailBean.setContent(content);
+
         this.sendMail(mailBean,true);
     }
 

@@ -188,6 +188,11 @@ public class UserService {
         MailBean mailBean = new MailBean();
         mailBean.setTos(user.getEmail());
         mailBean.setSubject("密码重置邮件");
+
+        Map<String,String> map = new HashMap<>();
+        map.put("loginName",user.getLoginName());
+        map.put("password",newPasswod);
+        mailBean.setParams(map);
         mailBean.setTemplateName(EmailHelper.MAIL_TEMPLATE.RESET_PWD.getTemplateName());
         emailHelper.sendHtmlMail(mailBean);
     }
