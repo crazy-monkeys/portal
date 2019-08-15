@@ -67,11 +67,11 @@ public class RoleService {
      * @param roleCode
      * @return
      */
-    public Role findRole(String roleCode){
+    public Role findRoleByCode(String roleCode){
         return roleMapper.findRoleByCode(roleCode);
     }
 
-    public Role findRole(Integer roleId){
+    public Role findRoleById(Integer roleId){
         return roleMapper.findById(roleId);
     }
 

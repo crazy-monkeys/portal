@@ -57,8 +57,13 @@ public class RoleController extends BaseController {
         BusinessUtil.assertEmpty(role.getRoleCode(),SystemManagerEnum.ROLE_EMPTY_CODE);
         BusinessUtil.assertEmpty(role.getRoleName(),SystemManagerEnum.ROLE_EMPTY_NAME);
         BusinessUtil.notNull(role.getRoleType(),SystemManagerEnum.ROLE_EMPTY_TYPE);
-        Role roleQuery = roleService.findRole(role.getRoleCode());
-        BusinessUtil.isNull(roleQuery,SystemManagerEnum.ROLE_EXISTS);
+
+        Role roleCodeQuery = roleService.findRoleByCode(role.getRoleCode());
+        BusinessUtil.isNull(roleCodeQuery,SystemManagerEnum.ROLE_CODE_EXISTS);
+
+        Role roleNameQuery = roleService.findRoleByName(role.getRoleName());
+        BusinessUtil.isNull(roleNameQuery,SystemManagerEnum.ROLE_CODE_EXISTS);
+
         role.setActive((short)1);
         role.setCreateTime(new Date());
         role.setCreateUserId(super.getCurrentUser().getId());
@@ -72,7 +77,7 @@ public class RoleController extends BaseController {
      */
     @GetMapping(value = "/findRole/{roleCode}")
     public BaseResponse findRole(@PathVariable String roleCode) {
-        Role role = roleService.findRole(roleCode);
+        Role role = roleService.findRoleByCode(roleCode);
         BusinessUtil.notNull(role,SystemManagerEnum.ROLE_NOT_EXIST);
         BusinessUtil.assertEmpty(role.getRoleName(),SystemManagerEnum.ROLE_NOT_EXIST);
         return super.successResult(role);
@@ -86,19 +91,23 @@ public class RoleController extends BaseController {
     public BaseResponse updateRole(@RequestBody Role role) {
         BusinessUtil.notNull(role.getId(),SystemManagerEnum.ROLE_EMPTY_ID);
         BusinessUtil.assertEmpty(role.getRoleCode(),SystemManagerEnum.ROLE_EMPTY_CODE);
-        Role currentRole = roleService.findRole(role.getId());
+
+        Role currentRole = roleService.findRoleById(role.getId());
+        BusinessUtil.notNull(currentRole,SystemManagerEnum.ROLE_NOT_EXIST);
+
         String currentRoleName = currentRole.getRoleName();
         String currentRoleCode = currentRole.getRoleCode();
-        BusinessUtil.notNull(currentRole,SystemManagerEnum.ROLE_NOT_EXIST);
+
         Role checkRoleName = roleService.findRoleByName(role.getRoleName());
         if(checkRoleName != null && !currentRoleName.equals(checkRoleName.getRoleName())){
-            BusinessUtil.assertFlase(true,SystemManagerEnum.ROLE_EXISTS);
+            BusinessUtil.assertFlase(true,SystemManagerEnum.ROLE_NAME_EXISTS);
         }
 
-        Role checkRoleCode = roleService.findRole(role.getRoleCode());
+        Role checkRoleCode = roleService.findRoleByCode(role.getRoleCode());
         if(checkRoleCode != null && !currentRoleCode.equals(checkRoleCode.getRoleCode())){
             BusinessUtil.assertFlase(true,SystemManagerEnum.ROLE_CODE_EXISTS);
         }
+
         role.setUpdateTime(new Date());
         role.setUpdateUserId(super.getCurrentUser().getId());
         roleService.saveRole(role);

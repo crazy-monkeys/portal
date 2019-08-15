@@ -55,7 +55,7 @@ public class ErrorCodes {
         USER_SAVE_FAILED(10014,"用户保存失败",""),
 
 
-        ROLE_EXISTS(10020,"角色名已经存在",""),
+        ROLE_NAME_EXISTS(10020,"角色名已经存在",""),
         ROLE_NOT_EXIST(10021,"角色不存在",""),
         ROLE_EMPTY_NAME(10022,"角色名不能为空",""),
         ROLE_EMPTY_CODE(10023,"角色编码不能为空",""),

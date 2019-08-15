@@ -72,7 +72,7 @@ public class PermissionController extends BaseController{
     @GetMapping(value = "/findPermission/{roleCode}")
     public BaseResponse findPermission(@PathVariable String roleCode) {
         BusinessUtil.notNull(roleCode,SystemManagerEnum.ROLE_EMPTY_CODE);
-        Role role = roleService.findRole(roleCode);
+        Role role = roleService.findRoleByCode(roleCode);
         BusinessUtil.notNull(role,SystemManagerEnum.ROLE_NOT_EXIST);
         List<Integer> resourceIds = permissionService.findPermissionIds(Collections.singletonList(role.getId()));
         return super.successResult(resourceIds);
@@ -109,7 +109,7 @@ public class PermissionController extends BaseController{
 
         User user = userService.findUser(loginName);
         BusinessUtil.notNull(user,SystemManagerEnum.USER_NOT_EXISTS);
-        Role role = roleService.findRole(roleCode);
+        Role role = roleService.findRoleByCode(roleCode);
         BusinessUtil.notNull(role,SystemManagerEnum.ROLE_NOT_EXIST);
         permissionService.improveUserPerm(role.getId(),user.getId(),super.getCurrentUser().getId());
         return super.successResult();
