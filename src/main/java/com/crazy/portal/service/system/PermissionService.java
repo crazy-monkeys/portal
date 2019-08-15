@@ -213,8 +213,7 @@ public class PermissionService {
         BusinessUtil.isEmptyList(errorList,ErrorCodes.SystemManagerEnum.RESOURCE_NOT_EXIST);
 
         //先删除指定角色下的资源，该权限数据不多,删除跟添加在同一事物，性能影响可忽略不计
-        int deleteResult = roleResourceMapper.deleteByRoleId(roleId);
-        BusinessUtil.assertTrue(deleteResult>0,ErrorCodes.CommonEnum.SYSTEM_EXCEPTION);
+        roleResourceMapper.deleteByRoleId(roleId);
 
         List<RoleResource> roleResourceList = new ArrayList<>();
         resourcesIds.stream().forEach(x->{
