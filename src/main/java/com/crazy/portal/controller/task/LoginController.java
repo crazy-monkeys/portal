@@ -24,7 +24,7 @@ public class LoginController {
 	
 	@RequestMapping("/login")
 	public String login(){
-		return "login";
+		return "task/login";
 	}
 	/**
 	 * 登录验证

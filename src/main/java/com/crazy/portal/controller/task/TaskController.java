@@ -71,7 +71,7 @@ public class TaskController {
 		} catch (Exception e) {
 			logger.error("获取任务列表失败",e);
 		}
-		mv.setViewName("index");
+		mv.setViewName("task/index");
 		return mv;
 	}
 	
