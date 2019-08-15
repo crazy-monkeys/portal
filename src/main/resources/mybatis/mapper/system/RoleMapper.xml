@@ -108,7 +108,7 @@
         role_name = #{roleName,jdbcType=VARCHAR},
       </if>
       <if test="roleType != null">
-        role_type = #{roleName,jdbcType=INTEGER},
+        role_type = #{roleType,jdbcType=INTEGER},
       </if>
       <if test="updateTime != null">
         update_time = #{updateTime,jdbcType=TIMESTAMP},
