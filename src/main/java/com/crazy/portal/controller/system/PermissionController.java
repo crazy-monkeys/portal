@@ -136,8 +136,8 @@ public class PermissionController extends BaseController{
                     SystemManagerEnum.RESOURCE_TYPE_NOT_EXIST.getZhMsg());
         }
         if(permissionService.findResource(resource.getParentId()) == null && 0 != resource.getParentId()){
-            throw new BusinessException(SystemManagerEnum.RESOURCE_NOT_EXIST.getCode(),
-                    SystemManagerEnum.RESOURCE_NOT_EXIST.getZhMsg());
+            throw new BusinessException(SystemManagerEnum.RESOURCE_PARENT_NOT_EXIST.getCode(),
+                    SystemManagerEnum.RESOURCE_PARENT_NOT_EXIST.getZhMsg());
         }
         if(permissionService.findResource(resource.getResourceName()) != null){
             throw new BusinessException(SystemManagerEnum.RESOURCE_EXIST.getCode(),

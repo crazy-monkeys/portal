@@ -68,7 +68,7 @@ public class ErrorCodes {
         RESOURCE_PARENT_NOT_EXIST(10042,"父级资源不存在",""),
         RESOURCE_EMPTY_LIST(10043,"资源列表为空",""),
         RESOURCE_USED(10045,"该资源已经绑定在角色上，不允许删除",""),
-        RESOURCE_TYPE_NOT_EXIST(10046,"类型不存在",""),
+        RESOURCE_TYPE_NOT_EXIST(10046,"资源类型不存在",""),
         RESOURCE_EXIST(10047,"资源名称已经存在",""),
 
         SYS_PARAM_VALUE(10048,"该选项下value已存在",""),
