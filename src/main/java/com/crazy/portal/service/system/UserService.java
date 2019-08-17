@@ -110,7 +110,7 @@ public class UserService {
         user.setCustomerName(subAgentUser.getCustomerName());
         String password = PortalUtil.generateRandomPassword();
         user.setLoginPwd(passwordEncoder.encode(password));
-        user.setUserStatus(Enums.USER_STATUS.freeze.getCode());
+        user.setUserStatus(Enums.USER_STATUS.normal.getCode());
         //只允许子账号注册
         user.setUserType(Enums.USER_TYPE.subAgent.toString());
         user.setRegTime(new Date());

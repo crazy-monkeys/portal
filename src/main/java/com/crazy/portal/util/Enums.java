@@ -61,7 +61,7 @@ public class Enums {
     }
 
     /**
-     * 用户状态：初始化、正常、冻结
+     * 用户状态：正常、冻结
      */
     public enum USER_STATUS{
         normal(1),freeze(0);
