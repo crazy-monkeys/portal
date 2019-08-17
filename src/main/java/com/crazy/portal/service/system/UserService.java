@@ -116,7 +116,7 @@ public class UserService {
         user.setRegTime(new Date());
         user.setCreateUserId(userId);
         user.setCreateTime(new Date());
-        user.setPwdInvalidTime(DateUtil.addDays(new Date(),365));
+        user.setPwdInvalidTime(DateUtil.addDays(new Date(),3650));
         user.setActive((short)1);
         user.setUserStatus(1);
         int result = userMapper.insertSelective(user);
