@@ -1,4 +1,4 @@
-package com.crazy.portal.entity.business;
+package com.crazy.portal.entity.business.idr;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -8,36 +8,32 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 @Data
-public class BusinessReturnsInfo implements IdrBaseEntity{
+public class BusinessDiffPriceInfo implements IdrBaseEntity{
     private Integer id;
 
     private Integer idrInfoId;
 
-    private String replacementDate;
+    private BigDecimal differenceAmount;
 
-    private BigDecimal amount;
+    private BigDecimal agentPrice;
 
-    private BigDecimal price;
-
-    private String currency;
+    private BigDecimal customerPrice;
 
     private Integer num;
 
+    private String shipmentDate;
+
     private String productModel;
 
-    private String platform;
+    private String platfom;
+
+    private String productType;
 
     private String pdt;
 
     private String bu;
 
-    private String productLine;
-
-    private String takeGoodsDate;
-
-    private String orderNumber;
-
-    private String type;
+    private String customerName;
 
     private String remark;
     @JsonIgnore

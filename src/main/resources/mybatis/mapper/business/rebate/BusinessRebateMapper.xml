@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.crazy.portal.dao.business.rebate.BusinessRebateMapper">
+  <resultMap id="BaseResultMap" type="com.crazy.portal.entity.business.rebate.BusinessRebate">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="dealer_name" jdbcType="VARCHAR" property="dealerName" />
+    <result column="customer_name" jdbcType="VARCHAR" property="customerName" />
+    <result column="rebate_amount" jdbcType="DECIMAL" property="rebateAmount" />
+    <result column="notice_date" jdbcType="TIMESTAMP" property="noticeDate" />
+    <result column="executor" jdbcType="VARCHAR" property="executor" />
+    <result column="release_amount" jdbcType="DECIMAL" property="releaseAmount" />
+    <result column="surplus_rebate_amount" jdbcType="DECIMAL" property="surplusRebateAmount" />
+    <result column="execute_style" jdbcType="VARCHAR" property="executeStyle" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="active" jdbcType="INTEGER" property="active" />
+    <result column="create_id" jdbcType="INTEGER" property="createId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_id" jdbcType="INTEGER" property="updateId" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, dealer_name, customer_name, rebate_amount, notice_date, executor, release_amount, 
+    surplus_rebate_amount, execute_style, remark, status, active, create_id, create_time, 
+    update_id, update_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_business_rebate
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_business_rebate
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+
+  <insert id="insertSelective" parameterType="com.crazy.portal.entity.business.rebate.BusinessRebate">
+    insert into t_business_rebate
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="dealerName != null">
+        dealer_name,
+      </if>
+      <if test="customerName != null">
+        customer_name,
+      </if>
+      <if test="rebateAmount != null">
+        rebate_amount,
+      </if>
+      <if test="noticeDate != null">
+        notice_date,
+      </if>
+      <if test="executor != null">
+        executor,
+      </if>
+      <if test="releaseAmount != null">
+        release_amount,
+      </if>
+      <if test="surplusRebateAmount != null">
+        surplus_rebate_amount,
+      </if>
+      <if test="executeStyle != null">
+        execute_style,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="active != null">
+        active,
+      </if>
+      <if test="createId != null">
+        create_id,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateId != null">
+        update_id,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="dealerName != null">
+        #{dealerName,jdbcType=VARCHAR},
+      </if>
+      <if test="customerName != null">
+        #{customerName,jdbcType=VARCHAR},
+      </if>
+      <if test="rebateAmount != null">
+        #{rebateAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="noticeDate != null">
+        #{noticeDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="executor != null">
+        #{executor,jdbcType=VARCHAR},
+      </if>
+      <if test="releaseAmount != null">
+        #{releaseAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="surplusRebateAmount != null">
+        #{surplusRebateAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="executeStyle != null">
+        #{executeStyle,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="active != null">
+        #{active,jdbcType=INTEGER},
+      </if>
+      <if test="createId != null">
+        #{createId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateId != null">
+        #{updateId,jdbcType=INTEGER},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.crazy.portal.entity.business.rebate.BusinessRebate">
+    update t_business_rebate
+    <set>
+      <if test="dealerName != null">
+        dealer_name = #{dealerName,jdbcType=VARCHAR},
+      </if>
+      <if test="customerName != null">
+        customer_name = #{customerName,jdbcType=VARCHAR},
+      </if>
+      <if test="rebateAmount != null">
+        rebate_amount = #{rebateAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="noticeDate != null">
+        notice_date = #{noticeDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="executor != null">
+        executor = #{executor,jdbcType=VARCHAR},
+      </if>
+      <if test="releaseAmount != null">
+        release_amount = #{releaseAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="surplusRebateAmount != null">
+        surplus_rebate_amount = #{surplusRebateAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="executeStyle != null">
+        execute_style = #{executeStyle,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="active != null">
+        active = #{active,jdbcType=INTEGER},
+      </if>
+      <if test="createId != null">
+        create_id = #{createId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateId != null">
+        update_id = #{updateId,jdbcType=INTEGER},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <select id="selectByPage" parameterType="com.crazy.portal.bean.business.rebate.RebateQueryBean" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_business_rebate
+    where active = 1
+    <if test="dealerName != null and dealerName != ''">
+      and dealer_name like concat('%',#{dealerName},'%')
+    </if>
+    <if test="customerName != null and customerName != ''">
+      and customer_name like concat('%',#{customerName},'%')
+    </if>
+    <if test="status != null">
+      and status = #{status}
+    </if>
+    order by create_time desc
+  </select>
+</mapper>

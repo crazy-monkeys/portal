@@ -1,4 +1,4 @@
-package com.crazy.portal.entity.business;
+package com.crazy.portal.entity.business.rebate;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -7,22 +7,22 @@ import lombok.Data;
 import java.util.Date;
 
 @Data
-public class BusinessFile implements IdrBaseEntity{
+public class BusinessRebateFile {
     private Integer id;
-    @JsonIgnore
-    @JSONField(serialize = false)
-    private Integer idrInfoId;
+
+    private Integer rebateId;
 
     private String fileName;
 
     private String filePath;
-
-    private Integer fileType;
-
+    @JsonIgnore
+    @JSONField(serialize = false)
+    private Integer active;
     @JsonIgnore
     @JSONField(serialize = false)
     private Integer createId;
-    @JSONField(format="yyyy-MM-dd HH:mm:ss")
+    @JsonIgnore
+    @JSONField(serialize = false)
     private Date createTime;
     @JsonIgnore
     @JSONField(serialize = false)

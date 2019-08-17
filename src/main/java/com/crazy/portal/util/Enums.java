@@ -1,9 +1,9 @@
 package com.crazy.portal.util;
 
 import com.alibaba.excel.metadata.BaseRowModel;
-import com.crazy.portal.bean.business.DiffPriceEO;
-import com.crazy.portal.bean.business.InsuranceEO;
-import com.crazy.portal.bean.business.ReturnsEO;
+import com.crazy.portal.bean.business.idr.DiffPriceEO;
+import com.crazy.portal.bean.business.idr.InsuranceEO;
+import com.crazy.portal.bean.business.idr.ReturnsEO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -312,6 +312,28 @@ public class Enums {
         private String desc;
 
         BusinessFileType(Integer code, String desc){
+            this.code = code;
+            this.desc = desc;
+        }
+        public Integer getCode(){
+            return code;
+        }
+        public String getDesc(){
+            return desc;
+        }
+    }
+
+    public enum BusinessRebateStatus{
+
+        IN_APPROVAL(1, "审核中"),
+        CS_CONFIRM(2, "CS确认"),
+        CUST_CONFIRM(3, "客户确认"),
+        FINISHED(4, "执行完成");
+
+        private Integer code;
+        private String desc;
+
+        BusinessRebateStatus(Integer code, String desc){
             this.code = code;
             this.desc = desc;
         }

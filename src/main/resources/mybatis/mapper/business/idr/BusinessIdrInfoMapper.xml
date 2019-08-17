@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.crazy.portal.dao.business.BusinessIdrInfoMapper">
-  <resultMap id="BaseResultMap" type="com.crazy.portal.entity.business.BusinessIdrInfo">
+<mapper namespace="com.crazy.portal.dao.business.idr.BusinessIdrInfoMapper">
+  <resultMap id="BaseResultMap" type="com.crazy.portal.entity.business.idr.BusinessIdrInfo">
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="shipper_code" jdbcType="VARCHAR" property="shipperCode" />
     <result column="apply_time" jdbcType="DATE" property="applyTime" />
@@ -34,7 +34,7 @@
     where id = #{id,jdbcType=INTEGER}
   </delete>
 
-  <insert id="insertSelective" useGeneratedKeys="true" keyProperty="id" parameterType="com.crazy.portal.entity.business.BusinessIdrInfo">
+  <insert id="insertSelective" useGeneratedKeys="true" keyProperty="id" parameterType="com.crazy.portal.entity.business.idr.BusinessIdrInfo">
     insert into t_business_idr_info
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -137,7 +137,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.crazy.portal.entity.business.BusinessIdrInfo">
+  <update id="updateByPrimaryKeySelective" parameterType="com.crazy.portal.entity.business.idr.BusinessIdrInfo">
     update t_business_idr_info
     <set>
       <if test="shipperCode != null">
@@ -189,7 +189,7 @@
     where id = #{id,jdbcType=INTEGER}
   </update>
 
-  <select id="selectByPage" resultMap="BaseResultMap" parameterType="com.crazy.portal.bean.business.BusinessIdrQueryBean">
+  <select id="selectByPage" resultMap="BaseResultMap" parameterType="com.crazy.portal.bean.business.idr.BusinessIdrQueryBean">
     select
     <include refid="Base_Column_List" />
     from t_business_idr_info

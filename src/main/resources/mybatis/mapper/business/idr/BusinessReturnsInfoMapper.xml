@@ -1,20 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.crazy.portal.dao.business.BusinessDiffPriceInfoMapper">
-  <resultMap id="BaseResultMap" type="com.crazy.portal.entity.business.BusinessDiffPriceInfo">
+<mapper namespace="com.crazy.portal.dao.business.idr.BusinessReturnsInfoMapper">
+  <resultMap id="BaseResultMap" type="com.crazy.portal.entity.business.idr.BusinessReturnsInfo">
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="idr_info_id" jdbcType="INTEGER" property="idrInfoId" />
-    <result column="difference_amount" jdbcType="DECIMAL" property="differenceAmount" />
-    <result column="agent_price" jdbcType="DECIMAL" property="agentPrice" />
-    <result column="customer_price" jdbcType="DECIMAL" property="customerPrice" />
+    <result column="replacement_date" jdbcType="VARCHAR" property="replacementDate" />
+    <result column="amount" jdbcType="DECIMAL" property="amount" />
+    <result column="price" jdbcType="DECIMAL" property="price" />
+    <result column="currency" jdbcType="VARCHAR" property="currency" />
     <result column="num" jdbcType="INTEGER" property="num" />
-    <result column="shipment_date" jdbcType="VARCHAR" property="shipmentDate" />
     <result column="product_model" jdbcType="VARCHAR" property="productModel" />
-    <result column="platfom" jdbcType="VARCHAR" property="platfom" />
-    <result column="product_type" jdbcType="VARCHAR" property="productType" />
+    <result column="platform" jdbcType="VARCHAR" property="platform" />
     <result column="pdt" jdbcType="VARCHAR" property="pdt" />
     <result column="bu" jdbcType="VARCHAR" property="bu" />
-    <result column="customer_name" jdbcType="VARCHAR" property="customerName" />
+    <result column="product_line" jdbcType="VARCHAR" property="productLine" />
+    <result column="take_goods_date" jdbcType="VARCHAR" property="takeGoodsDate" />
+    <result column="order_number" jdbcType="VARCHAR" property="orderNumber" />
+    <result column="type" jdbcType="VARCHAR" property="type" />
     <result column="remark" jdbcType="VARCHAR" property="remark" />
     <result column="create_id" jdbcType="INTEGER" property="createId" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
@@ -22,23 +24,23 @@
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, idr_info_id, difference_amount, agent_price, customer_price, num, shipment_date, 
-    product_model, platfom, product_type, pdt, bu, customer_name, remark, create_id, 
-    create_time, update_id, update_time
+    id, idr_info_id, replacement_date, amount, price, currency, num, product_model, platform, 
+    pdt, bu, product_line, take_goods_date, order_number, type, remark, create_id, create_time, 
+    update_id, update_time
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from t_business_diff_price_info
+    from t_business_returns_info
     where id = #{id,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from t_business_diff_price_info
+    delete from t_business_returns_info
     where id = #{id,jdbcType=INTEGER}
   </delete>
 
-  <insert id="insertSelective" parameterType="com.crazy.portal.entity.business.BusinessDiffPriceInfo">
-    insert into t_business_diff_price_info
+  <insert id="insertSelective" parameterType="com.crazy.portal.entity.business.idr.BusinessReturnsInfo">
+    insert into t_business_returns_info
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
@@ -46,29 +48,26 @@
       <if test="idrInfoId != null">
         idr_info_id,
       </if>
-      <if test="differenceAmount != null">
-        difference_amount,
+      <if test="replacementDate != null">
+        replacement_date,
       </if>
-      <if test="agentPrice != null">
-        agent_price,
+      <if test="amount != null">
+        amount,
       </if>
-      <if test="customerPrice != null">
-        customer_price,
+      <if test="price != null">
+        price,
+      </if>
+      <if test="currency != null">
+        currency,
       </if>
       <if test="num != null">
         num,
       </if>
-      <if test="shipmentDate != null">
-        shipment_date,
-      </if>
       <if test="productModel != null">
         product_model,
       </if>
-      <if test="platfom != null">
-        platfom,
-      </if>
-      <if test="productType != null">
-        product_type,
+      <if test="platform != null">
+        platform,
       </if>
       <if test="pdt != null">
         pdt,
@@ -76,8 +75,17 @@
       <if test="bu != null">
         bu,
       </if>
-      <if test="customerName != null">
-        customer_name,
+      <if test="productLine != null">
+        product_line,
+      </if>
+      <if test="takeGoodsDate != null">
+        take_goods_date,
+      </if>
+      <if test="orderNumber != null">
+        order_number,
+      </if>
+      <if test="type != null">
+        type,
       </if>
       <if test="remark != null">
         remark,
@@ -102,29 +110,26 @@
       <if test="idrInfoId != null">
         #{idrInfoId,jdbcType=INTEGER},
       </if>
-      <if test="differenceAmount != null">
-        #{differenceAmount,jdbcType=DECIMAL},
+      <if test="replacementDate != null">
+        #{replacementDate,jdbcType=VARCHAR},
       </if>
-      <if test="agentPrice != null">
-        #{agentPrice,jdbcType=DECIMAL},
+      <if test="amount != null">
+        #{amount,jdbcType=DECIMAL},
       </if>
-      <if test="customerPrice != null">
-        #{customerPrice,jdbcType=DECIMAL},
+      <if test="price != null">
+        #{price,jdbcType=DECIMAL},
+      </if>
+      <if test="currency != null">
+        #{currency,jdbcType=VARCHAR},
       </if>
       <if test="num != null">
         #{num,jdbcType=INTEGER},
       </if>
-      <if test="shipmentDate != null">
-        #{shipmentDate,jdbcType=VARCHAR},
-      </if>
       <if test="productModel != null">
         #{productModel,jdbcType=VARCHAR},
       </if>
-      <if test="platfom != null">
-        #{platfom,jdbcType=VARCHAR},
-      </if>
-      <if test="productType != null">
-        #{productType,jdbcType=VARCHAR},
+      <if test="platform != null">
+        #{platform,jdbcType=VARCHAR},
       </if>
       <if test="pdt != null">
         #{pdt,jdbcType=VARCHAR},
@@ -132,8 +137,17 @@
       <if test="bu != null">
         #{bu,jdbcType=VARCHAR},
       </if>
-      <if test="customerName != null">
-        #{customerName,jdbcType=VARCHAR},
+      <if test="productLine != null">
+        #{productLine,jdbcType=VARCHAR},
+      </if>
+      <if test="takeGoodsDate != null">
+        #{takeGoodsDate,jdbcType=VARCHAR},
+      </if>
+      <if test="orderNumber != null">
+        #{orderNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        #{type,jdbcType=VARCHAR},
       </if>
       <if test="remark != null">
         #{remark,jdbcType=VARCHAR},
@@ -152,35 +166,32 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.crazy.portal.entity.business.BusinessDiffPriceInfo">
-    update t_business_diff_price_info
+  <update id="updateByPrimaryKeySelective" parameterType="com.crazy.portal.entity.business.idr.BusinessReturnsInfo">
+    update t_business_returns_info
     <set>
       <if test="idrInfoId != null">
         idr_info_id = #{idrInfoId,jdbcType=INTEGER},
       </if>
-      <if test="differenceAmount != null">
-        difference_amount = #{differenceAmount,jdbcType=DECIMAL},
+      <if test="replacementDate != null">
+        replacement_date = #{replacementDate,jdbcType=VARCHAR},
       </if>
-      <if test="agentPrice != null">
-        agent_price = #{agentPrice,jdbcType=DECIMAL},
+      <if test="amount != null">
+        amount = #{amount,jdbcType=DECIMAL},
       </if>
-      <if test="customerPrice != null">
-        customer_price = #{customerPrice,jdbcType=DECIMAL},
+      <if test="price != null">
+        price = #{price,jdbcType=DECIMAL},
+      </if>
+      <if test="currency != null">
+        currency = #{currency,jdbcType=VARCHAR},
       </if>
       <if test="num != null">
         num = #{num,jdbcType=INTEGER},
       </if>
-      <if test="shipmentDate != null">
-        shipment_date = #{shipmentDate,jdbcType=VARCHAR},
-      </if>
       <if test="productModel != null">
         product_model = #{productModel,jdbcType=VARCHAR},
       </if>
-      <if test="platfom != null">
-        platfom = #{platfom,jdbcType=VARCHAR},
-      </if>
-      <if test="productType != null">
-        product_type = #{productType,jdbcType=VARCHAR},
+      <if test="platform != null">
+        platform = #{platform,jdbcType=VARCHAR},
       </if>
       <if test="pdt != null">
         pdt = #{pdt,jdbcType=VARCHAR},
@@ -188,8 +199,17 @@
       <if test="bu != null">
         bu = #{bu,jdbcType=VARCHAR},
       </if>
-      <if test="customerName != null">
-        customer_name = #{customerName,jdbcType=VARCHAR},
+      <if test="productLine != null">
+        product_line = #{productLine,jdbcType=VARCHAR},
+      </if>
+      <if test="takeGoodsDate != null">
+        take_goods_date = #{takeGoodsDate,jdbcType=VARCHAR},
+      </if>
+      <if test="orderNumber != null">
+        order_number = #{orderNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        type = #{type,jdbcType=VARCHAR},
       </if>
       <if test="remark != null">
         remark = #{remark,jdbcType=VARCHAR},
@@ -213,12 +233,13 @@
   <select id="selectByIdrInfoId" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
-    from t_business_diff_price_info
+    from t_business_returns_info
     where idr_info_id = #{idrInfoId,jdbcType=INTEGER}
   </select>
 
   <delete id="deleteByIdrInfoId">
-    delete from t_business_diff_price_info
+    delete from t_business_returns_info
     where idr_info_id = #{idrInfoId,jdbcType=INTEGER}
   </delete>
+
 </mapper>

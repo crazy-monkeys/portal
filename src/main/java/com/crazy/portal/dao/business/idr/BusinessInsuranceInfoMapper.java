@@ -1,6 +1,6 @@
-package com.crazy.portal.dao.business;
+package com.crazy.portal.dao.business.idr;
 
-import com.crazy.portal.entity.business.BusinessInsuranceInfo;
+import com.crazy.portal.entity.business.idr.BusinessInsuranceInfo;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;

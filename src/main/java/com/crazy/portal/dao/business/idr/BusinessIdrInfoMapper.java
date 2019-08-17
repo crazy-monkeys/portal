@@ -1,7 +1,7 @@
-package com.crazy.portal.dao.business;
+package com.crazy.portal.dao.business.idr;
 
-import com.crazy.portal.bean.business.BusinessIdrQueryBean;
-import com.crazy.portal.entity.business.BusinessIdrInfo;
+import com.crazy.portal.bean.business.idr.BusinessIdrQueryBean;
+import com.crazy.portal.entity.business.idr.BusinessIdrInfo;
 
 import java.util.List;
 

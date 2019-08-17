@@ -1,4 +1,4 @@
-package com.crazy.portal.entity.business;
+package com.crazy.portal.entity.business.idr;
 
 import java.util.Date;
 

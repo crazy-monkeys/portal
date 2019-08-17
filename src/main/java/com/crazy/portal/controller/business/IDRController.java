@@ -1,9 +1,9 @@
 package com.crazy.portal.controller.business;
 
 import com.crazy.portal.bean.BaseResponse;
-import com.crazy.portal.bean.business.BusinessIdrQueryBean;
+import com.crazy.portal.bean.business.idr.BusinessIdrQueryBean;
 import com.crazy.portal.controller.BaseController;
-import com.crazy.portal.entity.business.BusinessIdrInfo;
+import com.crazy.portal.entity.business.idr.BusinessIdrInfo;
 import com.crazy.portal.service.business.IDRService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;

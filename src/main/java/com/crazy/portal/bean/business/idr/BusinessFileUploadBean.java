@@ -1,4 +1,4 @@
-package com.crazy.portal.bean.business;
+package com.crazy.portal.bean.business.idr;
 
 import com.alibaba.excel.metadata.BaseRowModel;
 import lombok.Data;
