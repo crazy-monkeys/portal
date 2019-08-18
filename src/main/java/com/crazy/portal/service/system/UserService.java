@@ -213,4 +213,9 @@ public class UserService {
         user.setUpdateUserId(userId);
         userMapper.updateByPrimaryKeySelective(user);
     }
+
+    public Boolean checkUser(Integer userId, Enums.SYS_MODEL model){
+
+        return true;
+    }
 }
