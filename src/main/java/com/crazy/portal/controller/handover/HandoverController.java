@@ -46,13 +46,23 @@ public class HandoverController extends BaseController {
      * @param pageSize
      * @return
      */
-    @GetMapping(value = "/handover/dealer")
-    public BaseResponse getDealerPageList(String dealerId, Integer pageNum, Integer pageSize) {
-        return super.successResult(handoverService.getDealerPageList(dealerId, pageNum, pageSize));
+    @GetMapping(value = "/handover/dealer/reject")
+    public BaseResponse getRejectInfo(Integer dealerId, String type, Integer pageNum, Integer pageSize) {
+        return super.successResult(handoverService.getRejectInfo(dealerId, type, pageNum, pageSize));
+    }
+
+    @GetMapping(value = "/handover/dealer/detail")
+    public BaseResponse getDetailList(Integer dealerId, String type, Integer pageNum, Integer pageSize) {
+        return super.successResult(handoverService.getDetailList(type, dealerId, pageNum, pageSize));
+    }
+
+    @GetMapping(value = "/handover/dealer/reject/download")
+    public void downloadRejectData(Integer recordId, String type, HttpServletResponse response) {
+        handoverService.downloadRejectData(recordId, type, response);
     }
 
     /**
-     * 出货数据详情
+     * 数据详情
      * @param id
      * @return
      */
@@ -69,9 +79,9 @@ public class HandoverController extends BaseController {
      * @param remark
      * @return
      */
-    @GetMapping(value = "/handover/approval/{id}")
-    public BaseResponse approvalDeliverInfo(@PathVariable Integer id, String type, Integer status, String remark) {
-        handoverService.approvalDeliverInfo(id, getCurrentUser().getId(), type, status, remark);
+    @GetMapping(value = "/handover/operation/{id}")
+    public BaseResponse operationDeliverInfo(@PathVariable Integer id, String type, Integer status, String remark) {
+        handoverService.operationDeliverInfo(id, getCurrentUser().getId(), type, status, remark);
         return super.successResult();
     }
 

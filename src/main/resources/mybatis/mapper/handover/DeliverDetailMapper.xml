@@ -321,4 +321,11 @@
     delete from t_deliver_detail where record_id = #{recordId}
   </delete>
 
+  <select id="selectByDealerId" resultMap="BaseResultMap" >
+    select b.* from t_deliver_receive_record a
+    inner join t_deliver_detail b on a.id = b.record_id
+    where a.dealer_id = #{dealerId}
+    order by a.create_time desc
+  </select>
+
 </mapper>

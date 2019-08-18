@@ -3,12 +3,14 @@ package com.crazy.portal.service.handover;
 import com.alibaba.fastjson.JSONObject;
 import com.crazy.portal.bean.handover.DeliverTemplateBean;
 import com.crazy.portal.bean.handover.HandoverUploadVO;
-import com.crazy.portal.bean.handover.ReceiveTemplateBrean;
+import com.crazy.portal.bean.handover.ReceiveTemplateBean;
 import com.crazy.portal.config.exception.BusinessException;
 import com.crazy.portal.dao.handover.DeliverDetailMapper;
 import com.crazy.portal.dao.handover.DeliverReceiveRecordMapper;
+import com.crazy.portal.dao.handover.ReceiveDetailMapper;
 import com.crazy.portal.entity.handover.DeliverDetail;
 import com.crazy.portal.entity.handover.DeliverReceiveRecord;
+import com.crazy.portal.entity.handover.ReceiveDetail;
 import com.crazy.portal.util.BusinessUtil;
 import com.crazy.portal.util.ExcelUtils;
 import com.crazy.portal.util.FileUtil;
@@ -39,6 +41,8 @@ public class HandoverService {
     private DeliverReceiveRecordMapper deliverReceiveRecordMapper;
     @Resource
     private DeliverDetailMapper deliverDetailMapper;
+    @Resource
+    private ReceiveDetailMapper receiveDetailMapper;
 
     //出货配置信息
     @Value("${file.path.deliver.template}")
@@ -47,6 +51,8 @@ public class HandoverService {
     private String deliverPushPath;
     @Value("${file.path.deliver.pull}")
     private String deliverPullPath;
+    @Value("${file.path.deliver.local}")
+    private String deliverLocalPath;
     //收货配置信息
     @Value("${file.path.receive.template}")
     private String receiveTemplatePath;
@@ -54,6 +60,8 @@ public class HandoverService {
     private String receivePushPath;
     @Value("${file.path.receive.pull}")
     private String receivePullPath;
+    @Value("${file.path.receive.local}")
+    private String receiveLocalPath;
 
     private String deliver_type = "deliver";
     private String receive_type = "receive";
@@ -73,14 +81,45 @@ public class HandoverService {
                                                       Integer pageNum, Integer pageSize) {
         PortalUtil.defaultStartPage(pageNum,pageSize);
         List<DeliverReceiveRecord> result = deliverReceiveRecordMapper.selectPageInfo(dealerName, status,
-                uploadStartTime, uploadEndTime, null);
+                uploadStartTime, uploadEndTime, null, null);
         return new PageInfo<>(result);
     }
 
-    public PageInfo<DeliverReceiveRecord> getDealerPageList(String dealerId, Integer pageNum, Integer pageSize) {
+    public PageInfo<DeliverReceiveRecord> getRejectInfo(Integer dealerId, String type, Integer pageNum, Integer pageSize) {
+        checkTypeValue(type);
         PortalUtil.defaultStartPage(pageNum,pageSize);
-        List<DeliverReceiveRecord> result = deliverReceiveRecordMapper.selectPageInfo(null, null, null, null, dealerId);
+        List<DeliverReceiveRecord> result = deliverReceiveRecordMapper.selectPageInfo(null, 3,
+                null, null, dealerId, deliver_type.equals(type) ? 1 : 2);
         return new PageInfo<>(result);
+    }
+
+    public PageInfo<?> getDetailList(String type, Integer dealerId, Integer pageNum, Integer pageSize) {
+        checkTypeValue(type);
+        PortalUtil.defaultStartPage(pageNum,pageSize);
+        if(deliver_type.equals(type)){
+            List<DeliverDetail> result = deliverDetailMapper.selectByDealerId(dealerId);
+            return new PageInfo<>(result);
+        }
+        if(receive_type.equals(type)){
+            List<ReceiveDetail> result = receiveDetailMapper.selectByDealerId(dealerId);
+            return new PageInfo<>(result);
+        }
+        return null;
+    }
+
+    public void downloadRejectData(Integer recordId, String type, HttpServletResponse response) {
+        checkTypeValue(type);
+        if(deliver_type.equals(type)){
+            List<DeliverDetail> result = deliverDetailMapper.selectByRecordId(recordId);
+            String fileName = ExcelUtils.writeExcel(deliverLocalPath, result, DeliverDetail.class);
+            FileUtil.download(response, deliverLocalPath, fileName);
+        }
+        if(receive_type.equals(type)){
+            List<ReceiveDetail> result = receiveDetailMapper.selectByRecordId(recordId);
+            String fileName = ExcelUtils.writeExcel(receiveLocalPath, result, ReceiveDetail.class);
+            FileUtil.download(response, receiveLocalPath, fileName);
+        }
+
     }
 
     /**
@@ -89,30 +128,43 @@ public class HandoverService {
      * @return
      */
     public PageInfo<?> getDetailInfo(Integer recordId, String type, Integer pageNum, Integer pageSize) {
+        checkTypeValue(type);
         PortalUtil.defaultStartPage(pageNum,pageSize);
         if(deliver_type.equals(type)){
             List<DeliverDetail> result = deliverDetailMapper.selectByRecordId(recordId);
+            return new PageInfo<>(result);
+        }
+        if(receive_type.equals(type)){
+            List<ReceiveDetail> result = receiveDetailMapper.selectByRecordId(recordId);
             return new PageInfo<>(result);
         }
         return null;
     }
 
     @Transactional
-    public void approvalDeliverInfo(Integer id, Integer userId, String type, Integer status, String remark) {
+    public void operationDeliverInfo(Integer id, Integer userId, String type, Integer status, String remark) {
         checkTypeValue(type);
-        if(deliver_type.equals(type)){
-            DeliverReceiveRecord record = deliverReceiveRecordMapper.selectByPrimaryKey(id);
-            BusinessUtil.assertFlase(null == record, HANDOVER_DELIVER_INVALID_PARAM);
-            BusinessUtil.assertFlase(record.getStatus() != -1, HANDOVER_DELIVER_NOT_CONFIRM);
-            if(false){
-                //TODO 用户不是 销售运作部 不允许操作
-            }
-            record.setStatus(status);
-            record.setRemark(remark);
-            record.setApprovalUserId(userId);
-            record.setApprovalTime(new Date());
-            deliverReceiveRecordMapper.updateByPrimaryKeySelective(record);
+//        if(deliver_type.equals(type)){
+//
+//        }
+        DeliverReceiveRecord record = deliverReceiveRecordMapper.selectByPrimaryKey(id);
+        BusinessUtil.assertFlase(null == record, HANDOVER_INVALID_PARAM);
+        //执行驳回
+        if(status == 3){
+            BusinessUtil.assertFlase(record.getStatus() == 2, HANDOVER_NOT_REJECT);
         }
+        //执行确认
+        if(status == 1){
+            BusinessUtil.assertFlase(record.getStatus() != -1, HANDOVER_NOT_CONFIRM);
+        }
+        if(false){
+            //TODO 用户不是 销售运作部 不允许操作
+        }
+        record.setStatus(status);
+        record.setRemark(remark);
+        record.setApprovalUserId(userId);
+        record.setApprovalTime(new Date());
+        deliverReceiveRecordMapper.updateByPrimaryKeySelective(record);
     }
 
     /**
@@ -144,7 +196,7 @@ public class HandoverService {
         //此处代码等业务确认之后进行替换（如何识别代理商身份）
         String dealerName = mockDealerInfo(userId).get("dealerName");
         //判断当前用户是否为 代理商
-        BusinessUtil.assertFlase(false, HANDOVER_DELIVER_NOT_DEALER);
+        BusinessUtil.assertFlase(false, HANDOVER_NOT_DEALER);
         if(deliver_type.equals(type)){
             List<DeliverTemplateBean> deliverData =  ExcelUtils.readExcel(excel, DeliverTemplateBean.class , 1);
             for(DeliverTemplateBean templateBean : deliverData){
@@ -153,8 +205,8 @@ public class HandoverService {
             return deliverData;
         }
         if(receive_type.equals(type)){
-            List<ReceiveTemplateBrean> receiveData =  ExcelUtils.readExcel(excel, ReceiveTemplateBrean.class , 1);
-            for(ReceiveTemplateBrean templateBean : receiveData){
+            List<ReceiveTemplateBean> receiveData =  ExcelUtils.readExcel(excel, ReceiveTemplateBean.class , 1);
+            for(ReceiveTemplateBean templateBean : receiveData){
                 templateBean.setDealerName(dealerName);
             }
             return receiveData;
@@ -174,17 +226,26 @@ public class HandoverService {
         return record;
     }
 
-    private HandoverUploadVO genThirdResult(Map<String, String> result, List<DeliverTemplateBean> responseData, Integer recordId) {
+    private HandoverUploadVO genThirdResult(Map<String, String> result, List<?> responseData, Integer recordId, String type) {
         HandoverUploadVO resultInfo = new HandoverUploadVO();
         boolean condition = "ok".equals(result.get("status"));
-        resultInfo.setDeliverDetails(responseData);
         resultInfo.setRecordId(recordId);
         resultInfo.setIsError(condition ? 0 : 1);
-        resultInfo.setDeliverDetails(responseData);
-        if(!condition){
-            List<DeliverTemplateBean> errorData = deliverDetailMapper.selectErrorDataByRecord(recordId);
-            String errorDataFileName = ExcelUtils.writeExcel(deliverPushPath, errorData, DeliverTemplateBean.class);
-            resultInfo.setErrorFileName(errorDataFileName);
+        if(deliver_type.equals(type)){
+            resultInfo.setDeliverDetails(responseData);
+            if(!condition){
+                List<DeliverTemplateBean> errorData = deliverDetailMapper.selectErrorDataByRecord(recordId);
+                String errorDataFileName = ExcelUtils.writeExcel(deliverPullPath, errorData, DeliverTemplateBean.class);
+                resultInfo.setErrorFileName(errorDataFileName);
+            }
+        }
+        if(receive_type.equals(type)){
+            resultInfo.setReceiveDetails(responseData);
+            if(!condition){
+                List<ReceiveTemplateBean> errorData = receiveDetailMapper.selectErrorDataByRecord(recordId);
+                String errorDataFileName = ExcelUtils.writeExcel(receivePullPath, errorData, ReceiveTemplateBean.class);
+                resultInfo.setErrorFileName(errorDataFileName);
+            }
         }
         resultInfo.setMsg(condition ? null : "请点击【下载错误数据】，并将更新后的数据重新上传");
         return resultInfo;
@@ -197,7 +258,7 @@ public class HandoverService {
             for(DeliverTemplateBean errorData : errorList) {
                 DeliverDetail dbRecord = deliverDetailMapper.selectByPrimaryKey(errorData.getErrorId());
                 //Excel内的ID未找到记录则不尽兴处理
-                BusinessUtil.assertFlase(null == dbRecord || recordId != dbRecord.getRecordId(), HANDOVER_DELIVER_DATA_NOT_EXISTS);
+                BusinessUtil.assertFlase(null == dbRecord || recordId != dbRecord.getRecordId(), HANDOVER_DATA_NOT_EXISTS);
                 DeliverDetail detail = JSONObject.parseObject(JSONObject.toJSONString(errorData), DeliverDetail.class);
                 detail.setId(dbRecord.getId());
                 detail.setErrorMsg(null);
@@ -216,9 +277,34 @@ public class HandoverService {
                 DeliverDetail detail = JSONObject.parseObject(JSONObject.toJSONString(templateBean), DeliverDetail.class);
                 detail.setErrorMsg(templateBean.getThirdErrorMsg());
                 detail.setRecordId(recordId);
-                deliverDetailMapper.insert(detail);
+                deliverDetailMapper.insertSelective(detail);
             }
-            return genThirdResult(result, responseData, recordId);
+            return genThirdResult(result, responseData, recordId, type);
+        }
+        if(receive_type.equals(type)){
+            List<ReceiveTemplateBean> errorList = (List<ReceiveTemplateBean>) data;
+            for(ReceiveTemplateBean errorData : errorList){
+                ReceiveDetail dbRecord = receiveDetailMapper.selectByPrimaryKey(errorData.getErrorId());
+                //Excel内的ID未找到记录则不尽兴处理
+                BusinessUtil.assertFlase(null == dbRecord || recordId != dbRecord.getRecordId(), HANDOVER_DATA_NOT_EXISTS);
+                ReceiveDetail detail = JSONObject.parseObject(JSONObject.toJSONString(errorData), ReceiveDetail.class);
+                detail.setId(dbRecord.getId());
+                detail.setErrorMsg(null);
+                receiveDetailMapper.updateByPrimaryKeySelective(detail);
+            }
+
+            List<ReceiveDetail> fullData = receiveDetailMapper.selectByRecordId(recordId);
+//            String thridFileName = ExcelUtils.writeExcel(receivePushPath, fullData, ReceiveDetail.class);
+            Map<String, String> result = reqThridServer();
+            List<ReceiveTemplateBean> responseData = ExcelUtils.readExcel(receivePullPath, result.get("fileName"), ReceiveTemplateBean.class);
+            deliverDetailMapper.deleteByRecordId(recordId);
+            for(ReceiveTemplateBean templateBean : responseData){
+                ReceiveDetail detail = JSONObject.parseObject(JSONObject.toJSONString(templateBean), ReceiveDetail.class);
+                detail.setErrorMsg(templateBean.getThirdErrorMsg());
+                detail.setRecordId(recordId);
+                receiveDetailMapper.insertSelective(detail);
+            }
+            return genThirdResult(result, responseData, recordId, type);
         }
         return null;
     }
@@ -251,14 +337,22 @@ public class HandoverService {
                 DeliverDetail detail = JSONObject.parseObject(JSONObject.toJSONString(templateBean), DeliverDetail.class);
                 detail.setErrorMsg(templateBean.getThirdErrorMsg());
                 detail.setRecordId(record.getId());
-                deliverDetailMapper.insert(detail);
+                deliverDetailMapper.insertSelective(detail);
             }
-            return genThirdResult(result, responseData, record.getId());
+            return genThirdResult(result, responseData, record.getId(), type);
         }
         if(receive_type.equals(type)){
-            List<DeliverTemplateBean> receiveData = (List<DeliverTemplateBean>) data;
-            thridFileName = ExcelUtils.writeExcel(receivePushPath, receiveData, ReceiveTemplateBrean.class);
-            reqThridServer();
+            result = reqThridServer();
+            List<ReceiveTemplateBean> responseData = ExcelUtils.readExcel(receivePullPath, result.get("fileName"), ReceiveTemplateBean.class);
+            //批次记录表
+            DeliverReceiveRecord record = genRecord(dealerName, userId, 2);
+            for(ReceiveTemplateBean templateBean : responseData){
+                ReceiveDetail detail = JSONObject.parseObject(JSONObject.toJSONString(templateBean), ReceiveDetail.class);
+                detail.setErrorMsg(templateBean.getThirdErrorMsg());
+                detail.setRecordId(record.getId());
+                receiveDetailMapper.insertSelective(detail);
+            }
+            return genThirdResult(result, responseData, record.getId(), type);
         }
         return null;
     }
@@ -285,22 +379,29 @@ public class HandoverService {
      */
     public void submitData(Integer id, String type) {
         checkTypeValue(type);
+        DeliverReceiveRecord record = deliverReceiveRecordMapper.selectByPrimaryKey(id);
+        BusinessUtil.assertFlase(null == record, HANDOVER_INVALID_PARAM);
+        BusinessUtil.assertFlase(record.getStatus() == -1, HANDOVER_WAITING_CONFIRM);
+        BusinessUtil.assertFlase(record.getStatus() == 2, HANDOVER_ALREADY_CONFIRM);
+        if(checkTimeline() && record.getStatus() != 1){
+            record.setStatus(-1);//置为待确认状态
+            deliverReceiveRecordMapper.updateByPrimaryKeySelective(record);
+            throw new BusinessException(HANDOVER_WAITING_CONFIRM);
+        }
         if(deliver_type.equals(type)){
-            DeliverReceiveRecord record = deliverReceiveRecordMapper.selectByPrimaryKey(id);
-            BusinessUtil.assertFlase(null == record, HANDOVER_DELIVER_INVALID_PARAM);
-            BusinessUtil.assertFlase(record.getStatus() == -1, HANDOVER_DELIVER_WAITING_CONFIRM);
-            BusinessUtil.assertFlase(record.getStatus() == 2, HANDOVER_DELIVER_ALREADY_CONFIRM);
-            if(checkTimeline() && record.getStatus() != 1){
-                record.setStatus(-1);//置为待确认状态
-                deliverReceiveRecordMapper.updateByPrimaryKeySelective(record);
-                throw new BusinessException(HANDOVER_DELIVER_WAITING_CONFIRM);
-            }
             int errorCnt = deliverDetailMapper.countErrorData(id);
-            BusinessUtil.assertFlase(errorCnt > 0, HANDOVER_DELIVER_EXISTS_DATA_ERROR);
+            BusinessUtil.assertFlase(errorCnt > 0, HANDOVER_EXISTS_DATA_ERROR);
             //TODO 生成文件 并 请求第三方提交数据接口
 //        List<DeliverDetail> deliverData = null;
 //        String newFileName = ExcelUtils.writeExcel(pushPath, deliverData, DeliverTemplateBean.class);
         }
+        if(receive_type.equals(type)){
+            int errorCnt = receiveDetailMapper.countErrorData(id);
+            BusinessUtil.assertFlase(errorCnt > 0, HANDOVER_EXISTS_DATA_ERROR);
+        }
+        //提交给第三方 并更新状态
+        record.setStatus(2);
+        deliverReceiveRecordMapper.updateByPrimaryKeySelective(record);
     }
 
     private void checkTypeValue(String type) {
@@ -317,7 +418,7 @@ public class HandoverService {
     private Map<String, String> reqThridServer() {
         Map<String, String> response = new HashMap<>();
         response.put("status", mockThridResult() ? "ok" : "no");
-        response.put("fileName", mockThridResult() ? "deliver_ok.xlsx" : "deliver_error.xlsx");
+        response.put("fileName", mockThridResult() ? "ok.xlsx" : "error.xlsx");
         response.put("msg", "这是一个描述");
         return response;
     }

@@ -125,16 +125,16 @@ public class ErrorCodes {
         ANNOUNCEMENT_FILE_ERROR_BY_ID(30004, "公告文件数据异常", ""),
 
         //交付模块
-        //交付模块 - 出货管理
+        //交付模块 - 出货管理 & 收货管理
         HANDOVER_PARAM_TYPE_ERROR(40000, "请使用正确参数值进行接口调用", ""),
-        HANDOVER_DELIVER_NOT_DEALER(40001, "非代理商禁止操作", ""),
-        HANDOVER_DELIVER_EXISTS_DATA_ERROR(40002, "存在错误数据，请重试", ""),
-        HANDOVER_DELIVER_WAITING_CONFIRM(40003, "已超过提交时间，请联系【销售运作部】进行数据确认", ""),
-        HANDOVER_DELIVER_ALREADY_CONFIRM(40004, "数据已提交，请勿重复操作", ""),
-        HANDOVER_DELIVER_NOT_CONFIRM(40005, "请勿操作非【待确认】状态数据", ""),
-        HANDOVER_DELIVER_INVALID_PARAM(40006, "请使用有效参数进行操作", ""),
-        HANDOVER_DELIVER_DATA_NOT_EXISTS(40007, "未找到数据记录，请重试", ""),
-        //交付模块 - 收货管理
+        HANDOVER_NOT_DEALER(40001, "非代理商禁止操作", ""),
+        HANDOVER_EXISTS_DATA_ERROR(40002, "存在错误数据，请重试", ""),
+        HANDOVER_WAITING_CONFIRM(40003, "已超过提交时间，请联系【销售运作部】进行数据确认", ""),
+        HANDOVER_ALREADY_CONFIRM(40004, "数据已提交，请勿重复操作", ""),
+        HANDOVER_NOT_CONFIRM(40005, "请勿操作非【待确认】状态数据", ""),
+        HANDOVER_INVALID_PARAM(40006, "请使用有效参数进行操作", ""),
+        HANDOVER_DATA_NOT_EXISTS(40007, "未找到数据记录，请重试", ""),
+        HANDOVER_NOT_REJECT(40005, "数据已提交，无法驳回", ""),
 
         //客户模块
         CUSTOMER_IS_EMPYT(50000, "没有对应的客户信息", ""),

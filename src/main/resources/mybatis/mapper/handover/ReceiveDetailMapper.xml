@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.crazy.portal.dao.handover.ReceiveDetailMapper">
+  <resultMap id="BaseResultMap" type="com.crazy.portal.entity.handover.ReceiveDetail">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="third_id" jdbcType="INTEGER" property="thirdId" />
+    <result column="upload_time" jdbcType="TIMESTAMP" property="uploadTime" />
+    <result column="product_model" jdbcType="VARCHAR" property="productModel" />
+    <result column="inventory_category" jdbcType="VARCHAR" property="inventoryCategory" />
+    <result column="inventory_unit_price" jdbcType="DECIMAL" property="inventoryUnitPrice" />
+    <result column="warehouse" jdbcType="VARCHAR" property="warehouse" />
+    <result column="delivery_time" jdbcType="TIMESTAMP" property="deliveryTime" />
+    <result column="invoice_number" jdbcType="VARCHAR" property="invoiceNumber" />
+    <result column="delivery_num" jdbcType="INTEGER" property="deliveryNum" />
+    <result column="delivery_company" jdbcType="VARCHAR" property="deliveryCompany" />
+    <result column="purchase_number" jdbcType="VARCHAR" property="purchaseNumber" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="error_msg" jdbcType="VARCHAR" property="errorMsg" />
+    <result column="record_id" jdbcType="INTEGER" property="recordId" />
+  </resultMap>
+
+  <resultMap id="errorResultMap" extends="BaseResultMap" type="com.crazy.portal.bean.handover.ReceiveTemplateBean" >
+    <result column="error_id" jdbcType="INTEGER" property="errorId" />
+    <result column="third_error_msg" jdbcType="VARCHAR" property="thirdErrorMsg" />
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    id, third_id, upload_time, product_model, inventory_category, inventory_unit_price, 
+    warehouse, delivery_time, invoice_number, delivery_num, delivery_company, purchase_number, 
+    remark, error_msg, record_id
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_receive_detail
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_receive_detail
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.crazy.portal.entity.handover.ReceiveDetail">
+    insert into t_receive_detail (id, third_id, upload_time, 
+      product_model, inventory_category, inventory_unit_price, 
+      warehouse, delivery_time, invoice_number, 
+      delivery_num, delivery_company, purchase_number, 
+      remark, error_msg, record_id
+      )
+    values (#{id,jdbcType=INTEGER}, #{thirdId,jdbcType=INTEGER}, #{uploadTime,jdbcType=TIMESTAMP}, 
+      #{productModel,jdbcType=VARCHAR}, #{inventoryCategory,jdbcType=VARCHAR}, #{inventoryUnitPrice,jdbcType=DECIMAL}, 
+      #{warehouse,jdbcType=VARCHAR}, #{deliveryTime,jdbcType=TIMESTAMP}, #{invoiceNumber,jdbcType=VARCHAR}, 
+      #{deliveryNum,jdbcType=INTEGER}, #{deliveryCompany,jdbcType=VARCHAR}, #{purchaseNumber,jdbcType=VARCHAR}, 
+      #{remark,jdbcType=VARCHAR}, #{errorMsg,jdbcType=VARCHAR}, #{recordId,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.crazy.portal.entity.handover.ReceiveDetail">
+    insert into t_receive_detail
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="thirdId != null">
+        third_id,
+      </if>
+      <if test="uploadTime != null">
+        upload_time,
+      </if>
+      <if test="productModel != null">
+        product_model,
+      </if>
+      <if test="inventoryCategory != null">
+        inventory_category,
+      </if>
+      <if test="inventoryUnitPrice != null">
+        inventory_unit_price,
+      </if>
+      <if test="warehouse != null">
+        warehouse,
+      </if>
+      <if test="deliveryTime != null">
+        delivery_time,
+      </if>
+      <if test="invoiceNumber != null">
+        invoice_number,
+      </if>
+      <if test="deliveryNum != null">
+        delivery_num,
+      </if>
+      <if test="deliveryCompany != null">
+        delivery_company,
+      </if>
+      <if test="purchaseNumber != null">
+        purchase_number,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+      <if test="errorMsg != null">
+        error_msg,
+      </if>
+      <if test="recordId != null">
+        record_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="thirdId != null">
+        #{thirdId,jdbcType=INTEGER},
+      </if>
+      <if test="uploadTime != null">
+        #{uploadTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="productModel != null">
+        #{productModel,jdbcType=VARCHAR},
+      </if>
+      <if test="inventoryCategory != null">
+        #{inventoryCategory,jdbcType=VARCHAR},
+      </if>
+      <if test="inventoryUnitPrice != null">
+        #{inventoryUnitPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="warehouse != null">
+        #{warehouse,jdbcType=VARCHAR},
+      </if>
+      <if test="deliveryTime != null">
+        #{deliveryTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="invoiceNumber != null">
+        #{invoiceNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="deliveryNum != null">
+        #{deliveryNum,jdbcType=INTEGER},
+      </if>
+      <if test="deliveryCompany != null">
+        #{deliveryCompany,jdbcType=VARCHAR},
+      </if>
+      <if test="purchaseNumber != null">
+        #{purchaseNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="errorMsg != null">
+        #{errorMsg,jdbcType=VARCHAR},
+      </if>
+      <if test="recordId != null">
+        #{recordId,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.crazy.portal.entity.handover.ReceiveDetail">
+    update t_receive_detail
+    <set>
+      <if test="thirdId != null">
+        third_id = #{thirdId,jdbcType=INTEGER},
+      </if>
+      <if test="uploadTime != null">
+        upload_time = #{uploadTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="productModel != null">
+        product_model = #{productModel,jdbcType=VARCHAR},
+      </if>
+      <if test="inventoryCategory != null">
+        inventory_category = #{inventoryCategory,jdbcType=VARCHAR},
+      </if>
+      <if test="inventoryUnitPrice != null">
+        inventory_unit_price = #{inventoryUnitPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="warehouse != null">
+        warehouse = #{warehouse,jdbcType=VARCHAR},
+      </if>
+      <if test="deliveryTime != null">
+        delivery_time = #{deliveryTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="invoiceNumber != null">
+        invoice_number = #{invoiceNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="deliveryNum != null">
+        delivery_num = #{deliveryNum,jdbcType=INTEGER},
+      </if>
+      <if test="deliveryCompany != null">
+        delivery_company = #{deliveryCompany,jdbcType=VARCHAR},
+      </if>
+      <if test="purchaseNumber != null">
+        purchase_number = #{purchaseNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="errorMsg != null">
+        error_msg = #{errorMsg,jdbcType=VARCHAR},
+      </if>
+      <if test="recordId != null">
+        record_id = #{recordId,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.crazy.portal.entity.handover.ReceiveDetail">
+    update t_receive_detail
+    set third_id = #{thirdId,jdbcType=INTEGER},
+      upload_time = #{uploadTime,jdbcType=TIMESTAMP},
+      product_model = #{productModel,jdbcType=VARCHAR},
+      inventory_category = #{inventoryCategory,jdbcType=VARCHAR},
+      inventory_unit_price = #{inventoryUnitPrice,jdbcType=DECIMAL},
+      warehouse = #{warehouse,jdbcType=VARCHAR},
+      delivery_time = #{deliveryTime,jdbcType=TIMESTAMP},
+      invoice_number = #{invoiceNumber,jdbcType=VARCHAR},
+      delivery_num = #{deliveryNum,jdbcType=INTEGER},
+      delivery_company = #{deliveryCompany,jdbcType=VARCHAR},
+      purchase_number = #{purchaseNumber,jdbcType=VARCHAR},
+      remark = #{remark,jdbcType=VARCHAR},
+      error_msg = #{errorMsg,jdbcType=VARCHAR},
+      record_id = #{recordId,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <select id="selectByRecordId" resultMap="BaseResultMap" >
+    select * from t_receive_detail where record_id = #{recordId}
+  </select>
+
+  <select id="selectErrorDataByRecord" resultMap="errorResultMap" >
+    select upload_time, product_model, inventory_category, inventory_unit_price,
+    warehouse, delivery_time, invoice_number, delivery_num, delivery_company, purchase_number,
+    remark,id as error_id,error_msg as third_error_msg
+    from t_receive_detail
+    where record_id = #{recordId} and error_msg is not null
+  </select>
+
+  <select id="selectByDealerId" resultMap="BaseResultMap" >
+    select b.* from t_deliver_receive_record a
+    inner join t_receive_detail b on a.id = b.record_id
+    where a.dealer_id = #{dealerId}
+    order by a.create_time desc
+  </select>
+
+  <select id="countErrorData" resultType="java.lang.Integer" >
+    select count(1) from t_receive_detail
+    where record_id = #{recordId} and error_msg is not null
+  </select>
+
+</mapper>
