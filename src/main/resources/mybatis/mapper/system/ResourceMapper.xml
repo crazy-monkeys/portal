@@ -235,4 +235,8 @@
     </foreach>
     ORDER BY RESOURCE_ORDER
   </select>
+
+  <select id="maxOrder" resultType="java.lang.Integer">
+    select count(1) from t_resource
+  </select>
 </mapper>
