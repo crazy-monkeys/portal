@@ -32,4 +32,6 @@ public class DeliverReceiveRecord {
 
     private String uploadTimeStr;
 
+    private String approvalTimeStr;
+
 }

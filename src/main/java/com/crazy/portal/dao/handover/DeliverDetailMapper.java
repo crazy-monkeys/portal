@@ -21,6 +21,8 @@ public interface DeliverDetailMapper {
 
     List<DeliverDetail> selectByRecordId(@Param(value = "recordId") Integer recordId);
 
+    List<DeliverDetail> selectByDealerId(@Param(value = "dealerId") Integer dealerId);
+
     int countErrorData(@Param(value = "recordId") Integer recordId);
 
     List<DeliverTemplateBean> selectErrorDataByRecord(@Param(value = "recordId") Integer recordId);
