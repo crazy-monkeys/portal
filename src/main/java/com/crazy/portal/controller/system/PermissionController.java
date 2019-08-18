@@ -181,8 +181,10 @@ public class PermissionController extends BaseController{
         Resource res = permissionService.findResource(resource.getId());
         BusinessUtil.notNull(res,SystemManagerEnum.RESOURCE_NOT_EXIST);
 
-        Resource parentRes = permissionService.findResource(resource.getParentId());
-        BusinessUtil.notNull(parentRes,SystemManagerEnum.RESOURCE_PARENT_NOT_EXIST);
+        if(resource.getParentId() != 0){
+            Resource parentRes = permissionService.findResource(resource.getParentId());
+            BusinessUtil.notNull(parentRes,SystemManagerEnum.RESOURCE_PARENT_NOT_EXIST);
+        }
         permissionService.saveResource(resource,super.getCurrentUser().getId());
         return super.successResult();
     }
