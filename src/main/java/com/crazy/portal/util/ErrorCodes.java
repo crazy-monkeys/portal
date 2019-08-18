@@ -153,7 +153,9 @@ public class ErrorCodes {
         BUSINESS_IDRINFO_IS_NULL(70006, "信息不存在", ""),
         //商务管理-客户rebate
         REBATE_RECORD_NOT_FOUND(70101, "Rebate信息不存在", ""),
+        REBATE_SURPLUS_AMOUNT_BIG(70103, "释放金额不能大于rebate金额", ""),
         REBATE_FILE_NOT_FOUND(70103, "文件不存在", ""),
+        REBATE_ITEM_ID_IS_NULL(70104, "rebateItemId不能为空", ""),
 
         PRODUCT_QUERY_ERROR(70501,"产品查询异常",""),
         PRODUCT_SYNC_ERROR(70502,"产品同步异常","");

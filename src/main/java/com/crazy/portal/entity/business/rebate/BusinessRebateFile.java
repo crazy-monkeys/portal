@@ -10,7 +10,7 @@ import java.util.Date;
 public class BusinessRebateFile {
     private Integer id;
 
-    private Integer rebateId;
+    private Integer rebateItemId;
 
     private String fileName;
 

@@ -4,6 +4,7 @@ import com.crazy.portal.bean.business.rebate.RebateQueryBean;
 import com.crazy.portal.entity.business.rebate.BusinessRebateItem;
 import org.apache.ibatis.annotations.Param;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface BusinessRebateItemMapper {
@@ -18,4 +19,5 @@ public interface BusinessRebateItemMapper {
     List<BusinessRebateItem> selectByPage(RebateQueryBean bean);
 
     List<BusinessRebateItem> selectByRebateId(@Param("rebateId")Integer rebateId);
+
 }

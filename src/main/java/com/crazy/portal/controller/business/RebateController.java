@@ -4,7 +4,6 @@ import com.crazy.portal.bean.BaseResponse;
 import com.crazy.portal.bean.business.rebate.RebateConfirmBean;
 import com.crazy.portal.bean.business.rebate.RebateQueryBean;
 import com.crazy.portal.controller.BaseController;
-import com.crazy.portal.entity.business.rebate.BusinessRebate;
 import com.crazy.portal.service.business.RebateService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 
 /**
  * 客户Rebate
@@ -31,9 +31,9 @@ public class RebateController extends BaseController {
         return successResult(rebateService.list(bean));
     }
 
-    @GetMapping("/item")
+    @GetMapping("/items")
     public BaseResponse item(RebateQueryBean bean){
-        return successResult();
+        return successResult(rebateService.items(bean));
     }
 
     @GetMapping("/find/{id}")
@@ -42,7 +42,7 @@ public class RebateController extends BaseController {
     }
 
     @PostMapping("/confirm")
-    public BaseResponse confirm(@RequestBody RebateConfirmBean bean){
+    public BaseResponse confirm(@Valid @RequestBody RebateConfirmBean bean){
         rebateService.confirm(bean, getCurrentUserId());
         return successResult();
     }

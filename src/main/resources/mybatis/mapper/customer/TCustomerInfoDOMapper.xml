@@ -5,13 +5,11 @@
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="cust_type" jdbcType="INTEGER" property="custType" />
     <result column="cust_role" jdbcType="INTEGER" property="custRole" />
-    <result column="cust_in_code" jdbcType="VARCHAR" property="custInCode" />
-    <result column="cust_out_code" jdbcType="VARCHAR" property="custOutCode" />
+    <result column="in_code" jdbcType="VARCHAR" property="custInCode" />
+    <result column="out_code" jdbcType="VARCHAR" property="custOutCode" />
     <result column="cust_name" jdbcType="VARCHAR" property="custName" />
     <result column="cust_abbreviation" jdbcType="VARCHAR" property="custAbbreviation" />
     <result column="cust_mobile" jdbcType="VARCHAR" property="custMobile" />
-    <result column="cust_phone_no" jdbcType="VARCHAR" property="custPhoneNo" />
-    <result column="cust_fax" jdbcType="VARCHAR" property="custFax" />
     <result column="cust_email" jdbcType="VARCHAR" property="custEmail" />
     <result column="cust_web" jdbcType="VARCHAR" property="custWeb" />
     <result column="corporate_assets" jdbcType="DECIMAL" property="corporateAssets" />
@@ -53,8 +51,8 @@
 
 
   <sql id="Base_Column_List">
-    id, cust_type, cust_role, cust_in_code, cust_out_code, cust_name,
-    cust_abbreviation, cust_mobile, cust_phone_no, cust_fax, cust_email, cust_web, corporate_assets, 
+    id, cust_type, cust_role, in_code, out_code, cust_name,
+    cust_abbreviation, cust_mobile, cust_email, cust_web, corporate_assets,
     corporate_number, corporate_parents,
     is_white_list, dealer_status, create_user, create_time, update_user, update_time, 
     active, advantage_value, advantage_introduction, business_introduction, is_license,
@@ -87,10 +85,10 @@
         cust_role,
       </if>
       <if test="custInCode != null">
-        cust_in_code,
+        in_code,
       </if>
       <if test="custOutCode != null">
-        cust_out_code,
+        out_code,
       </if>
       <if test="custName != null">
         cust_name,
@@ -100,12 +98,6 @@
       </if>
       <if test="custMobile != null">
         cust_mobile,
-      </if>
-      <if test="custPhoneNo != null">
-        cust_phone_no,
-      </if>
-      <if test="custFax != null">
-        cust_fax,
       </if>
       <if test="custEmail != null">
         cust_email,
@@ -199,9 +191,6 @@
       <if test="custMobile != null">
         #{custMobile,jdbcType=VARCHAR},
       </if>
-      <if test="custPhoneNo != null">
-        #{custPhoneNo,jdbcType=VARCHAR},
-      </if>
       <if test="custFax != null">
         #{custFax,jdbcType=VARCHAR},
       </if>
@@ -283,10 +272,10 @@
         cust_role = #{custRole,jdbcType=INTEGER},
       </if>
       <if test="custInCode != null">
-        cust_in_code = #{custInCode,jdbcType=VARCHAR},
+        in_code = #{custInCode,jdbcType=VARCHAR},
       </if>
       <if test="custOutCode != null">
-        cust_out_code = #{custOutCode,jdbcType=VARCHAR},
+        out_code = #{custOutCode,jdbcType=VARCHAR},
       </if>
       <if test="custName != null">
         cust_name = #{custName,jdbcType=VARCHAR},
@@ -296,12 +285,6 @@
       </if>
       <if test="custMobile != null">
         cust_mobile = #{custMobile,jdbcType=VARCHAR},
-      </if>
-      <if test="custPhoneNo != null">
-        cust_phone_no = #{custPhoneNo,jdbcType=VARCHAR},
-      </if>
-      <if test="custFax != null">
-        cust_fax = #{custFax,jdbcType=VARCHAR},
       </if>
       <if test="custEmail != null">
         cust_email = #{custEmail,jdbcType=VARCHAR},
@@ -376,7 +359,7 @@
   <select id="selectDealerInfo" resultMap="DealerResultMap">
     select
     cust.id,
-    cust.cust_in_code,
+    cust.in_code,
     cust.cust_name,
     cust.cust_abbreviation,
     cust.cust_mobile,
@@ -442,8 +425,8 @@
 
   <select id="selectCustByPage" resultMap="BaseResultMap" parameterType="com.crazy.portal.bean.customer.CustomerQueryBean">
     select
-    a.id, a.cust_type, a.cust_role, a.cust_in_code, a.cust_out_code, a.cust_name,
-    a.cust_abbreviation, a.cust_mobile, a.cust_phone_no, a.cust_fax, a.cust_email, a.cust_web, a.corporate_assets,
+    a.id, a.cust_type, a.cust_role, a.in_code, a.out_code, a.cust_name,
+    a.cust_abbreviation, a.cust_mobile, a.cust_email, a.cust_web, a.corporate_assets,
     a.corporate_number, a.corporate_parents,
     a.is_white_list, a.dealer_status, a.create_user, a.create_time, a.update_user, a.update_time,
     a.active, a.advantage_value, a.advantage_introduction, a.business_introduction, a.is_license,
@@ -456,10 +439,10 @@
       and a.cust_name like concat('%',#{customerName},'%')
     </if>
     <if test="customerInCode != null and customerInCode != ''">
-      and a.cust_in_code like concat('%',#{customerInCode},'%')
+      and a.in_code like concat('%',#{customerInCode},'%')
     </if>
     <if test="customerOutCode != null and customerOutCode != ''">
-      and a.cust_out_code like concat('%',#{customerOutCode},'%')
+      and a.out_code like concat('%',#{customerOutCode},'%')
     </if>
     <if test="isLicense != null">
       and a.is_license = #{isLicense}
@@ -489,12 +472,12 @@
   </select>
 
   <select id="selectNameAndCodeByUserId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select cust_name, cust_in_code from t_customer_info
+    select cust_name, in_code from t_customer_info
     where active = 1 and create_user = #{userId}
   </select>
 
   <select id="selectAllCustomer" resultMap="BaseResultMap">
-    select id,cust_out_code,cust_name from t_customer_info
+    select id, out_code, cust_name from t_customer_info
     order by create_time desc
   </select>
 </mapper>

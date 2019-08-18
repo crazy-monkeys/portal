@@ -12,5 +12,5 @@ public interface BusinessRebateFileMapper {
 
     int updateByPrimaryKeySelective(BusinessRebateFile record);
 
-    BusinessRebateFile selectByRebateId(@Param("rebateId")Integer rebateId);
+    BusinessRebateFile selectByRebateItemId(@Param("rebateItemId")Integer rebateItemId);
 }

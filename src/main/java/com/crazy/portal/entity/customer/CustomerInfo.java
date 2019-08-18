@@ -66,16 +66,6 @@ public class CustomerInfo {
     private String custMobile;
 
     /**
-     * 座机
-     */
-    private String custPhoneNo;
-
-    /**
-     * 传真
-     */
-    private String custFax;
-
-    /**
      * 邮箱
      */
     private String custEmail;

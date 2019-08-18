@@ -48,7 +48,5 @@ public class BusinessRebate {
 
     List<BusinessStrategy> strategyList;
 
-    BusinessRebateFile file;
-
     List<BusinessRebateItem> itemList;
 }

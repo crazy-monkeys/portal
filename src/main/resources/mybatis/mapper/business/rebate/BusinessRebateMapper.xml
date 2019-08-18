@@ -16,7 +16,7 @@
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_id" jdbcType="INTEGER" property="updateId" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
-    <collection property="itemList" ofType="com.crazy.portal.entity.business.rebate.BusinessRebateItem" column="rebate_id">
+    <collection property="itemList" ofType="com.crazy.portal.entity.business.rebate.BusinessRebateItem">
       <id column="item_id" jdbcType="INTEGER" property="id" />
       <result column="item_dealer_name" jdbcType="VARCHAR" property="dealerName" />
       <result column="item_customer_name" jdbcType="VARCHAR" property="customerName" />
