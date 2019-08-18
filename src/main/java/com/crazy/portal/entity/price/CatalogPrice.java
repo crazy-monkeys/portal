@@ -1,5 +1,7 @@
 package com.crazy.portal.entity.price;
 
+import lombok.Data;
+
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -8,6 +10,7 @@ import java.util.Date;
  * @author Bill
  * @date   2019-08-18 15:36::19
  */
+@Data
 public class CatalogPrice {
     /**
      * 记录序号
@@ -79,115 +82,4 @@ public class CatalogPrice {
      */
     private Date createTime;
 
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status == null ? null : status.trim();
-    }
-
-    public String getBu() {
-        return bu;
-    }
-
-    public void setBu(String bu) {
-        this.bu = bu == null ? null : bu.trim();
-    }
-
-    public String getPdt() {
-        return pdt;
-    }
-
-    public void setPdt(String pdt) {
-        this.pdt = pdt == null ? null : pdt.trim();
-    }
-
-    public String getProductType() {
-        return productType;
-    }
-
-    public void setProductType(String productType) {
-        this.productType = productType == null ? null : productType.trim();
-    }
-
-    public String getPlatform() {
-        return platform;
-    }
-
-    public void setPlatform(String platform) {
-        this.platform = platform == null ? null : platform.trim();
-    }
-
-    public String getProductModel() {
-        return productModel;
-    }
-
-    public void setProductModel(String productModel) {
-        this.productModel = productModel == null ? null : productModel.trim();
-    }
-
-    public BigDecimal getCatalogPrice() {
-        return catalogPrice;
-    }
-
-    public void setCatalogPrice(BigDecimal catalogPrice) {
-        this.catalogPrice = catalogPrice;
-    }
-
-    public String getInsideCustomer() {
-        return insideCustomer;
-    }
-
-    public void setInsideCustomer(String insideCustomer) {
-        this.insideCustomer = insideCustomer == null ? null : insideCustomer.trim();
-    }
-
-    public Date getEffectiveTime() {
-        return effectiveTime;
-    }
-
-    public void setEffectiveTime(Date effectiveTime) {
-        this.effectiveTime = effectiveTime;
-    }
-
-    public Date getDeadTime() {
-        return deadTime;
-    }
-
-    public void setDeadTime(Date deadTime) {
-        this.deadTime = deadTime;
-    }
-
-    public Date getModifyTime() {
-        return modifyTime;
-    }
-
-    public void setModifyTime(Date modifyTime) {
-        this.modifyTime = modifyTime;
-    }
-
-    public String getRemark() {
-        return remark;
-    }
-
-    public void setRemark(String remark) {
-        this.remark = remark == null ? null : remark.trim();
-    }
-
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
 }

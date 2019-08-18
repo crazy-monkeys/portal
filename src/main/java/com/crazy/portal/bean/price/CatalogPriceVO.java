@@ -22,8 +22,6 @@ public class CatalogPriceVO extends PageBean {
 
     private String platform;
 
-    private String productStatus;
-
     private String productModel;
 
     private Date effectBeginTime;
