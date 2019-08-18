@@ -21,11 +21,67 @@
     id, status, bu, pdt, product_type, platform, product_model, catalog_price, inside_customer, 
     effective_time, dead_time, modify_time, remark, create_time
   </sql>
+
+  <sql id="Base_Where_List">
+    <where>
+      <if test="status != null">
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="bu != null">
+        bu = #{bu,jdbcType=VARCHAR},
+      </if>
+      <if test="pdt != null">
+        pdt = #{pdt,jdbcType=VARCHAR},
+      </if>
+      <if test="productType != null">
+        product_type = #{productType,jdbcType=VARCHAR},
+      </if>
+      <if test="platform != null">
+        platform = #{platform,jdbcType=VARCHAR},
+      </if>
+      <if test="productModel != null">
+        product_model = #{productModel,jdbcType=VARCHAR},
+      </if>
+      <if test="catalogPrice != null">
+        catalog_price = #{catalogPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="insideCustomer != null">
+        inside_customer = #{insideCustomer,jdbcType=VARCHAR},
+      </if>
+      <if test="effectiveTime != null">
+        effective_time = #{effectiveTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="effectBeginTime != null">
+        effective_time &gt;= #{effectBeginTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="effectEndTime != null">
+        effective_time &lt;= #{effectEndTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deadTime != null">
+        dead_time = #{deadTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifyTime != null">
+        modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+    </where>
+
+  </sql>
+
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from t_catalog_price
     where id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectByParams" parameterType="com.crazy.portal.bean.price.CatalogPriceVO" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_catalog_price
+    <include refid="Base_Where_List" />
   </select>
 
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
@@ -124,48 +180,11 @@
       </if>
     </trim>
   </insert>
+
   <update id="updateByPrimaryKeySelective" parameterType="com.crazy.portal.entity.price.CatalogPrice">
     update t_catalog_price
     <set>
-      <if test="status != null">
-        status = #{status,jdbcType=VARCHAR},
-      </if>
-      <if test="bu != null">
-        bu = #{bu,jdbcType=VARCHAR},
-      </if>
-      <if test="pdt != null">
-        pdt = #{pdt,jdbcType=VARCHAR},
-      </if>
-      <if test="productType != null">
-        product_type = #{productType,jdbcType=VARCHAR},
-      </if>
-      <if test="platform != null">
-        platform = #{platform,jdbcType=VARCHAR},
-      </if>
-      <if test="productModel != null">
-        product_model = #{productModel,jdbcType=VARCHAR},
-      </if>
-      <if test="catalogPrice != null">
-        catalog_price = #{catalogPrice,jdbcType=DECIMAL},
-      </if>
-      <if test="insideCustomer != null">
-        inside_customer = #{insideCustomer,jdbcType=VARCHAR},
-      </if>
-      <if test="effectiveTime != null">
-        effective_time = #{effectiveTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="deadTime != null">
-        dead_time = #{deadTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="modifyTime != null">
-        modify_time = #{modifyTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="remark != null">
-        remark = #{remark,jdbcType=VARCHAR},
-      </if>
-      <if test="createTime != null">
-        create_time = #{createTime,jdbcType=TIMESTAMP},
-      </if>
+        <include refid="Base_Where_List" />
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
