@@ -9,7 +9,7 @@ app:
 
 spring:
   mail:
-    host: smtp.spreadtrum.com
+    host: smtp.unisoc.com
     port: 587
     username: CRM.Admin@UniSoC.com
     password: caCA$617
@@ -20,7 +20,7 @@ spring:
     username: root
     password: ThreeApe!@#$2019
     url: jdbc:mysql://47.100.106.186:3306/portal?useUnicode=true&characterEncoding=utf8&rewriteBatchedStatements=true&serverTimezone=UTC
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    driver-class-name: com.mysql.jdbc.Driver
 
 file:
   path:
