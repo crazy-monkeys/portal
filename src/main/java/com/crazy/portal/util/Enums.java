@@ -16,6 +16,10 @@ import java.util.List;
  */
 public class Enums {
 
+    public enum SYS_MODEL{
+        FORECAST, //上传预测
+        FORECAST_APPROVE; //上传、修改调整和最终审批
+    }
 
     public enum MAIL_TEMPLATE {
         USER_CREATE("createSubAgent"),
@@ -31,6 +35,22 @@ public class Enums {
             return templateName;
         }
     }
+
+    public enum YES_NO {
+        YES(1),
+        NO(2);
+
+        private int code;
+
+        YES_NO(Integer roleType){
+            this.code = code;
+        }
+
+        public int getCode() {
+            return code;
+        }
+    }
+
 
     /**
      * 角色类型
@@ -155,7 +175,6 @@ public class Enums {
      * 客户状态
      */
     public enum CustomerStatus{
-
         WAIT_SUBMIT(1, "待提交"),
         WAIT_APPROVAL(2, "待审批"),
         NORMAL(3, "正常"),
@@ -178,6 +197,35 @@ public class Enums {
             return desc;
         }
     }
+
+    public enum CUSTOMER_APPROVE_STATUS{
+
+
+
+
+        WAIT_SUBMIT(1, "待提交"),
+        WAIT_APPROVAL(2, "待审批"),
+        NORMAL(3, "正常"),
+        REJECT(4, "被驳回"),
+        SALES_FROZEN(5, "销售支持冻结"),
+        DELIVERY_FROZEN(6, "交货冻结"),
+        ORDER(7, "订单冻结"),
+        INVOICE(8, "开票冻结");
+
+        private Integer code;
+        private String desc;
+        CUSTOMER_APPROVE_STATUS(Integer code, String desc){
+            this.code = code;
+            this.desc = desc;
+        }
+        public Integer getCode(){
+            return code;
+        }
+        public String getDesc(){
+            return desc;
+        }
+    }
+
     //</editor-fold>
 
     public enum RATE_TYPE{
@@ -355,5 +403,9 @@ public class Enums {
         public Integer getStatus() {
             return status;
         }
+    }
+
+    public enum BI_FUNCTION_CODE{
+        CHECK_INVENTORY_IMPORT_FILE,SAVE_INVENTORY_IMPORT_FILE,CHECK_SALES_IMPORT_FILE,SAVE_SALES_IMPORT_FILE;
     }
 }
