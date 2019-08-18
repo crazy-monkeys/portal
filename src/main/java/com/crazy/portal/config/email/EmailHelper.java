@@ -37,7 +37,8 @@ public class EmailHelper {
      */
     public enum MAIL_TEMPLATE {
         USER_CREATE("mail/createSubAgent"),
-        RESET_PWD("mail/resetPwdTemplate");
+        RESET_PWD("mail/resetPwdTemplate"),
+        REBATE_CONFIRM("mail/rebate/confirmLetter");
 
         private String templateName;
 

@@ -493,4 +493,8 @@
     where active = 1 and create_user = #{userId}
   </select>
 
+  <select id="selectAllCustomer" resultMap="BaseResultMap">
+    select id,cust_out_code,cust_name from t_customer_info
+    order by create_time desc
+  </select>
 </mapper>

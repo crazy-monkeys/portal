@@ -115,4 +115,9 @@ public class CustomerController extends BaseController{
     public void fileDownload(HttpServletResponse response, @PathVariable Integer id){
         customersService.fileDownload(response, id);
     }
+
+    @GetMapping("/all")
+    public BaseResponse queryAllCustomer(){
+        return successResult(customersService.queryAllCustomer());
+    }
 }

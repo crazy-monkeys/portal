@@ -11,6 +11,17 @@
     <result column="product_mode" jdbcType="VARCHAR" property="productMode" />
     <result column="valid_start_date" jdbcType="TIMESTAMP" property="validStartDate" />
     <result column="valid_end_date" jdbcType="TIMESTAMP" property="validEndDate" />
+    <result column="actual_price" jdbcType="DECIMAL" property="actualPrice" />
+    <result column="sales_lower_limit" jdbcType="DECIMAL" property="salesLowerLimit" />
+    <result column="sales_upper_limit" jdbcType="DECIMAL" property="salesUpperLimit" />
+    <result column="account_type" jdbcType="VARCHAR" property="accountType" />
+    <result column="rebate_execute_style" jdbcType="VARCHAR" property="rebateExecuteStyle" />
+    <result column="price_applicant" jdbcType="VARCHAR" property="priceApplicant" />
+    <result column="shipment_type" jdbcType="VARCHAR" property="shipmentType" />
+    <result column="company_external_code" jdbcType="VARCHAR" property="companyExternalCode" />
+    <result column="company_full_name" jdbcType="VARCHAR" property="companyFullName" />
+    <result column="product" jdbcType="VARCHAR" property="product" />
+    <result column="price_strategy_number" jdbcType="VARCHAR" property="priceStrategyNumber" />
     <result column="active" jdbcType="INTEGER" property="active" />
     <result column="create_id" jdbcType="INTEGER" property="createId" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
@@ -18,12 +29,14 @@
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, rebate_id, customer_out_code, customer_full_name, customer_in_code, customer_abbr, 
-    product_mode, valid_start_date, valid_end_date, active, create_id, create_time, update_id, 
-    update_time
+    id, rebate_id, customer_out_code, customer_full_name, customer_in_code, customer_abbr,
+    product_mode, valid_start_date, valid_end_date, actual_price, sales_lower_limit,
+    sales_upper_limit, account_type, rebate_execute_style, price_applicant, shipment_type,
+    company_external_code, company_full_name, product, price_strategy_number, active,
+    create_id, create_time, update_id, update_time
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select 
+    select
     <include refid="Base_Column_List" />
     from t_business_strategy
     where id = #{id,jdbcType=INTEGER}
@@ -62,6 +75,39 @@
       </if>
       <if test="validEndDate != null">
         valid_end_date,
+      </if>
+      <if test="actualPrice != null">
+        actual_price,
+      </if>
+      <if test="salesLowerLimit != null">
+        sales_lower_limit,
+      </if>
+      <if test="salesUpperLimit != null">
+        sales_upper_limit,
+      </if>
+      <if test="accountType != null">
+        account_type,
+      </if>
+      <if test="rebateExecuteStyle != null">
+        rebate_execute_style,
+      </if>
+      <if test="priceApplicant != null">
+        price_applicant,
+      </if>
+      <if test="shipmentType != null">
+        shipment_type,
+      </if>
+      <if test="companyExternalCode != null">
+        company_external_code,
+      </if>
+      <if test="companyFullName != null">
+        company_full_name,
+      </if>
+      <if test="product != null">
+        product,
+      </if>
+      <if test="priceStrategyNumber != null">
+        price_strategy_number,
       </if>
       <if test="active != null">
         active,
@@ -107,6 +153,39 @@
       <if test="validEndDate != null">
         #{validEndDate,jdbcType=TIMESTAMP},
       </if>
+      <if test="actualPrice != null">
+        #{actualPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="salesLowerLimit != null">
+        #{salesLowerLimit,jdbcType=DECIMAL},
+      </if>
+      <if test="salesUpperLimit != null">
+        #{salesUpperLimit,jdbcType=DECIMAL},
+      </if>
+      <if test="accountType != null">
+        #{accountType,jdbcType=VARCHAR},
+      </if>
+      <if test="rebateExecuteStyle != null">
+        #{rebateExecuteStyle,jdbcType=VARCHAR},
+      </if>
+      <if test="priceApplicant != null">
+        #{priceApplicant,jdbcType=VARCHAR},
+      </if>
+      <if test="shipmentType != null">
+        #{shipmentType,jdbcType=VARCHAR},
+      </if>
+      <if test="companyExternalCode != null">
+        #{companyExternalCode,jdbcType=VARCHAR},
+      </if>
+      <if test="companyFullName != null">
+        #{companyFullName,jdbcType=VARCHAR},
+      </if>
+      <if test="product != null">
+        #{product,jdbcType=VARCHAR},
+      </if>
+      <if test="priceStrategyNumber != null">
+        #{priceStrategyNumber,jdbcType=VARCHAR},
+      </if>
       <if test="active != null">
         #{active,jdbcType=INTEGER},
       </if>
@@ -150,6 +229,39 @@
       </if>
       <if test="validEndDate != null">
         valid_end_date = #{validEndDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="actualPrice != null">
+        actual_price = #{actualPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="salesLowerLimit != null">
+        sales_lower_limit = #{salesLowerLimit,jdbcType=DECIMAL},
+      </if>
+      <if test="salesUpperLimit != null">
+        sales_upper_limit = #{salesUpperLimit,jdbcType=DECIMAL},
+      </if>
+      <if test="accountType != null">
+        account_type = #{accountType,jdbcType=VARCHAR},
+      </if>
+      <if test="rebateExecuteStyle != null">
+        rebate_execute_style = #{rebateExecuteStyle,jdbcType=VARCHAR},
+      </if>
+      <if test="priceApplicant != null">
+        price_applicant = #{priceApplicant,jdbcType=VARCHAR},
+      </if>
+      <if test="shipmentType != null">
+        shipment_type = #{shipmentType,jdbcType=VARCHAR},
+      </if>
+      <if test="companyExternalCode != null">
+        company_external_code = #{companyExternalCode,jdbcType=VARCHAR},
+      </if>
+      <if test="companyFullName != null">
+        company_full_name = #{companyFullName,jdbcType=VARCHAR},
+      </if>
+      <if test="product != null">
+        product = #{product,jdbcType=VARCHAR},
+      </if>
+      <if test="priceStrategyNumber != null">
+        price_strategy_number = #{priceStrategyNumber,jdbcType=VARCHAR},
       </if>
       <if test="active != null">
         active = #{active,jdbcType=INTEGER},

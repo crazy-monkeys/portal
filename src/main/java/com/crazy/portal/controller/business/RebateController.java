@@ -1,6 +1,7 @@
 package com.crazy.portal.controller.business;
 
 import com.crazy.portal.bean.BaseResponse;
+import com.crazy.portal.bean.business.rebate.RebateConfirmBean;
 import com.crazy.portal.bean.business.rebate.RebateQueryBean;
 import com.crazy.portal.controller.BaseController;
 import com.crazy.portal.entity.business.rebate.BusinessRebate;
@@ -30,13 +31,18 @@ public class RebateController extends BaseController {
         return successResult(rebateService.list(bean));
     }
 
+    @GetMapping("/item")
+    public BaseResponse item(RebateQueryBean bean){
+        return successResult();
+    }
+
     @GetMapping("/find/{id}")
     public BaseResponse find(@PathVariable Integer id){
         return successResult(rebateService.find(id));
     }
 
     @PostMapping("/confirm")
-    public BaseResponse confirm(@RequestBody BusinessRebate bean){
+    public BaseResponse confirm(@RequestBody RebateConfirmBean bean){
         rebateService.confirm(bean, getCurrentUserId());
         return successResult();
     }

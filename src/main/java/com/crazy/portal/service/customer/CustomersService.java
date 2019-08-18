@@ -471,4 +471,12 @@ public class CustomersService {
     public String getCustFilePath(){
         return filePath.concat(File.separator).concat(CUST_FILE_PATH).concat(File.separator);
     }
+
+    /**
+     * 获取系统中所有客户
+     * @return
+     */
+    public List<CustomerInfo> queryAllCustomer(){
+        return customerInfoMapper.selectAllCustomer();
+    }
 }

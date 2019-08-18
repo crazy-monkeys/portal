@@ -6,11 +6,12 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.List;
 
 @Data
-public class BusinessRebate {
+public class BusinessRebateItem {
     private Integer id;
+
+    private Integer rebateId;
 
     private String dealerName;
 
@@ -18,15 +19,15 @@ public class BusinessRebate {
 
     private BigDecimal rebateAmount;
 
-    private BigDecimal releaseAmount;
+    private String executor;
 
-    private BigDecimal surplusRebateAmount;
+    private String executeStyle;
+
+    private Date noticeDate;
+
+    private String remark;
 
     private Integer status;
-
-    private String dealerCode;
-
-    private String customerCode;
     @JsonIgnore
     @JSONField(serialize = false)
     private Integer active;
@@ -43,12 +44,4 @@ public class BusinessRebate {
     @JSONField(serialize = false)
     private Date updateTime;
 
-
-    List<BusinessAccountDetail> accountDetailList;
-
-    List<BusinessStrategy> strategyList;
-
-    BusinessRebateFile file;
-
-    List<BusinessRebateItem> itemList;
 }

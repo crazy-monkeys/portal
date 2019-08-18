@@ -23,7 +23,8 @@ public class Enums {
 
     public enum MAIL_TEMPLATE {
         USER_CREATE("createSubAgent"),
-        RESET_PWD("resetPwdTemplate");
+        RESET_PWD("resetPwdTemplate"),
+        REBATE_CONFIRM("confirmLetter");
 
         private String templateName;
 
@@ -371,11 +372,31 @@ public class Enums {
         }
     }
 
-    public enum BusinessRebateStatus{
+    public enum BusinessRebateItemStatus{
 
         IN_APPROVAL(1, "审核中"),
-        CS_CONFIRM(2, "CS确认"),
-        CUST_CONFIRM(3, "客户确认"),
+        WAIT_CONFIRM(2, "客户待确认"),
+        USED_CONFIRM(3, "客户已确认"),
+        FINISHED(4, "执行完成");
+
+        private Integer code;
+        private String desc;
+
+        BusinessRebateItemStatus(Integer code, String desc){
+            this.code = code;
+            this.desc = desc;
+        }
+        public Integer getCode(){
+            return code;
+        }
+        public String getDesc(){
+            return desc;
+        }
+    }
+
+    public enum BusinessRebateStatus{
+
+        EXECUTE_PROCESS(1, "执行中"),
         FINISHED(4, "执行完成");
 
         private Integer code;

@@ -1,53 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.crazy.portal.dao.business.rebate.BusinessRebateMapper">
-  <resultMap id="BaseResultMap" type="com.crazy.portal.entity.business.rebate.BusinessRebate">
+<mapper namespace="com.crazy.portal.dao.business.rebate.BusinessRebateItemMapper">
+  <resultMap id="BaseResultMap" type="com.crazy.portal.entity.business.rebate.BusinessRebateItem">
     <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="rebate_id" jdbcType="INTEGER" property="rebateId" />
     <result column="dealer_name" jdbcType="VARCHAR" property="dealerName" />
     <result column="customer_name" jdbcType="VARCHAR" property="customerName" />
     <result column="rebate_amount" jdbcType="DECIMAL" property="rebateAmount" />
-    <result column="release_amount" jdbcType="DECIMAL" property="releaseAmount" />
-    <result column="surplus_rebate_amount" jdbcType="DECIMAL" property="surplusRebateAmount" />
+    <result column="executor" jdbcType="VARCHAR" property="executor"/>
+    <result column="execute_style" jdbcType="VARCHAR" property="executeStyle" />
+    <result column="notice_date" jdbcType="TIMESTAMP" property="noticeDate" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
     <result column="status" jdbcType="INTEGER" property="status" />
-    <result column="dealer_code" jdbcType="VARCHAR" property="dealerCode" />
-    <result column="customer_code" jdbcType="VARCHAR" property="customerCode" />
     <result column="active" jdbcType="INTEGER" property="active" />
     <result column="create_id" jdbcType="INTEGER" property="createId" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_id" jdbcType="INTEGER" property="updateId" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
-    <collection property="itemList" ofType="com.crazy.portal.entity.business.rebate.BusinessRebateItem" column="rebate_id">
-      <id column="item_id" jdbcType="INTEGER" property="id" />
-      <result column="item_dealer_name" jdbcType="VARCHAR" property="dealerName" />
-      <result column="item_customer_name" jdbcType="VARCHAR" property="customerName" />
-      <result column="item_rebate_amount" jdbcType="DECIMAL" property="rebateAmount" />
-      <result column="item_executor" jdbcType="VARCHAR" property="executor"/>
-      <result column="item_execute_style" jdbcType="VARCHAR" property="executeStyle" />
-      <result column="item_remark" jdbcType="VARCHAR" property="remark" />
-      <result column="item_status" jdbcType="INTEGER" property="status" />
-    </collection>
   </resultMap>
   <sql id="Base_Column_List">
-    id, dealer_name, customer_name, rebate_amount, release_amount,
-    surplus_rebate_amount, status, dealer_code, customer_code,
-    active, create_id, create_time, update_id, update_time
+    id, rebate_id, dealer_name, customer_name, rebate_amount, executor, execute_style,
+    notice_date, remark,
+    status, active, create_id, create_time, update_id, update_time
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select
+    select 
     <include refid="Base_Column_List" />
-    from t_business_rebate
+    from t_business_rebate_item
     where id = #{id,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from t_business_rebate
+    delete from t_business_rebate_item
     where id = #{id,jdbcType=INTEGER}
   </delete>
 
-  <insert id="insertSelective" parameterType="com.crazy.portal.entity.business.rebate.BusinessRebate">
-    insert into t_business_rebate
+  <insert id="insertSelective" parameterType="com.crazy.portal.entity.business.rebate.BusinessRebateItem">
+    insert into t_business_rebate_item
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
+      </if>
+      <if test="rebateId != null">
+        rebate_id,
       </if>
       <if test="dealerName != null">
         dealer_name,
@@ -58,20 +52,20 @@
       <if test="rebateAmount != null">
         rebate_amount,
       </if>
-      <if test="releaseAmount != null">
-        release_amount,
+      <if test="executor != null">
+        executor,
       </if>
-      <if test="surplusRebateAmount != null">
-        surplus_rebate_amount,
+      <if test="executeStyle != null">
+        execute_style,
+      </if>
+      <if test="noticeDate != null">
+        notice_date,
+      </if>
+      <if test="remark != null">
+        remark,
       </if>
       <if test="status != null">
         status,
-      </if>
-      <if test="dealerCode != null">
-        dealer_code,
-      </if>
-      <if test="customerCode != null">
-        customer_code,
       </if>
       <if test="active != null">
         active,
@@ -93,6 +87,9 @@
       <if test="id != null">
         #{id,jdbcType=INTEGER},
       </if>
+      <if test="rebateId != null">
+        #{rebateId,jdbcType=INTEGER},
+      </if>
       <if test="dealerName != null">
         #{dealerName,jdbcType=VARCHAR},
       </if>
@@ -102,20 +99,20 @@
       <if test="rebateAmount != null">
         #{rebateAmount,jdbcType=DECIMAL},
       </if>
-      <if test="releaseAmount != null">
-        #{releaseAmount,jdbcType=DECIMAL},
+      <if test="executor != null">
+        #{executor,jdbcType=VARCHAR},
       </if>
-      <if test="surplusRebateAmount != null">
-        #{surplusRebateAmount,jdbcType=DECIMAL},
+      <if test="executeStyle != null">
+        #{executeStyle,jdbcType=VARCHAR},
+      </if>
+      <if test="noticeDate != null">
+        #{noticeDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
       </if>
       <if test="status != null">
         #{status,jdbcType=INTEGER},
-      </if>
-      <if test="dealerCode != null">
-        #{dealerCode,jdbcType=VARCHAR},
-      </if>
-      <if test="customerCode != null">
-        #{customerCode,jdbcType=VARCHAR},
       </if>
       <if test="active != null">
         #{active,jdbcType=INTEGER},
@@ -134,9 +131,12 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.crazy.portal.entity.business.rebate.BusinessRebate">
-    update t_business_rebate
+  <update id="updateByPrimaryKeySelective" parameterType="com.crazy.portal.entity.business.rebate.BusinessRebateItem">
+    update t_business_rebate_item
     <set>
+      <if test="rebateId != null">
+        rebate_id = #{rebateId,jdbcType=INTEGER},
+      </if>
       <if test="dealerName != null">
         dealer_name = #{dealerName,jdbcType=VARCHAR},
       </if>
@@ -146,20 +146,20 @@
       <if test="rebateAmount != null">
         rebate_amount = #{rebateAmount,jdbcType=DECIMAL},
       </if>
-      <if test="releaseAmount != null">
-        release_amount = #{releaseAmount,jdbcType=DECIMAL},
+      <if test="executor != null">
+        executor = #{executor,jdbcType=VARCHAR},
       </if>
-      <if test="surplusRebateAmount != null">
-        surplus_rebate_amount = #{surplusRebateAmount,jdbcType=DECIMAL},
+      <if test="executeStyle != null">
+        execute_style = #{executeStyle,jdbcType=VARCHAR},
+      </if>
+      <if test="noticeDate != null">
+        notice_date = #{noticeDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
       </if>
       <if test="status != null">
         status = #{status,jdbcType=INTEGER},
-      </if>
-      <if test="dealerCode != null">
-        dealer_code = #{dealerCode,jdbcType=VARCHAR},
-      </if>
-      <if test="customerCode != null">
-        customer_code = #{customerCode,jdbcType=VARCHAR},
       </if>
       <if test="active != null">
         active = #{active,jdbcType=INTEGER},
@@ -180,29 +180,29 @@
     where id = #{id,jdbcType=INTEGER}
   </update>
 
+  <select id="selectByRebateId" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_business_rebate_item
+    where rebate_id = #{rebateId,jdbcType=INTEGER} and active = 1
+    order by create_time desc
+  </select>
+
   <select id="selectByPage" parameterType="com.crazy.portal.bean.business.rebate.RebateQueryBean" resultMap="BaseResultMap">
     select
-    a.*,
-    b.id as item_id,
-    b.dealer_name as item_dealer_name,
-    b.customer_name as item_customer_name,
-    b.rebate_amount as item_rebate_amount,
-    b.executor as item_executor,
-    b.execute_style as item_execute_style,
-    b.remark as item_remark,
-    b.status as item_status
-    from t_business_rebate a
-    left join t_business_rebate_item b on b.rebate_id = a.id
-    where a.active = 1
+    <include refid="Base_Column_List" />
+    from t_business_rebate_item
+    where active = 1
     <if test="dealerName != null and dealerName != ''">
-      and a.dealer_name like concat('%',#{dealerName},'%')
+      and dealer_name like concat('%',#{dealerName},'%')
     </if>
     <if test="customerName != null and customerName != ''">
-      and a.customer_name like concat('%',#{customerName},'%')
+      and customer_name like concat('%',#{customerName},'%')
     </if>
     <if test="status != null">
-      and a.status = #{status}
+      and status = #{status}
     </if>
-    order by a.create_time desc
+    order by create_time desc
   </select>
+
 </mapper>

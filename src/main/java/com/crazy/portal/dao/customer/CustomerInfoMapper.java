@@ -22,4 +22,6 @@ public interface CustomerInfoMapper {
     CustomerInfo selectByCustName(@Param("custName")String custName);
 
     List<CustomerInfo> selectNameAndCodeByUserId(@Param("userId") Integer userId);
+
+    List<CustomerInfo> selectAllCustomer();
 }
