@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.crazy.portal.dao.price.ActualPriceMapper">
+  <resultMap id="BaseResultMap" type="com.crazy.portal.entity.price.ActualPrice">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="in_customer_code" jdbcType="VARCHAR" property="inCustomerCode" />
+    <result column="in_customer" jdbcType="VARCHAR" property="inCustomer" />
+    <result column="out_customer_code" jdbcType="VARCHAR" property="outCustomerCode" />
+    <result column="out_customer" jdbcType="VARCHAR" property="outCustomer" />
+    <result column="bu" jdbcType="VARCHAR" property="bu" />
+    <result column="pdt" jdbcType="VARCHAR" property="pdt" />
+    <result column="product_model" jdbcType="VARCHAR" property="productModel" />
+    <result column="actual_price" jdbcType="DECIMAL" property="actualPrice" />
+    <result column="upper_number" jdbcType="INTEGER" property="upperNumber" />
+    <result column="lower_number" jdbcType="INTEGER" property="lowerNumber" />
+    <result column="settlement_type" jdbcType="VARCHAR" property="settlementType" />
+    <result column="effect_time" jdbcType="TIMESTAMP" property="effectTime" />
+    <result column="dead_time" jdbcType="TIMESTAMP" property="deadTime" />
+    <result column="relation_out_customer_code" jdbcType="VARCHAR" property="relationOutCustomerCode" />
+    <result column="relation_out_customer" jdbcType="VARCHAR" property="relationOutCustomer" />
+    <result column="relation_product_model" jdbcType="VARCHAR" property="relationProductModel" />
+    <result column="implement_way" jdbcType="VARCHAR" property="implementWay" />
+    <result column="price_proposer" jdbcType="VARCHAR" property="priceProposer" />
+    <result column="shipment_type" jdbcType="VARCHAR" property="shipmentType" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, status, in_customer_code, in_customer, out_customer_code, out_customer, bu, pdt, 
+    product_model, actual_price, upper_number, lower_number, settlement_type, effect_time, 
+    dead_time, relation_out_customer_code, relation_out_customer, relation_product_model, 
+    implement_way, price_proposer, shipment_type, create_time
+  </sql>
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_actual_price
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectByParamsWithPage" parameterType="com.crazy.portal.bean.price.ActualPriceVO" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_actual_price
+    <where>
+      <if test="bu != null">
+        #{bu,jdbcType=VARCHAR},
+      </if>
+      <if test="pdt != null">
+        #{pdt,jdbcType=VARCHAR},
+      </if>
+      <if test="productModel != null">
+        #{product_model,jdbcType=VARCHAR},
+      </if>
+      <if test="relationProductModel != null">
+        #{relation_product_model,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="priceProposer != null">
+        #{priceProposer,jdbcType=VARCHAR},
+      </if>
+      <if test="effectBeginTime != null">
+        effect_time &gt;= #{effectBeginTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="effectEndTime != null">
+        effect_time &lt;= #{effectEndTime,jdbcType=TIMESTAMP},
+      </if>
+    </where>
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_actual_price
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+
+  <insert id="insertSelective" parameterType="com.crazy.portal.entity.price.ActualPrice">
+    insert into t_actual_price
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="inCustomerCode != null">
+        in_customer_code,
+      </if>
+      <if test="inCustomer != null">
+        in_customer,
+      </if>
+      <if test="outCustomerCode != null">
+        out_customer_code,
+      </if>
+      <if test="outCustomer != null">
+        out_customer,
+      </if>
+      <if test="bu != null">
+        bu,
+      </if>
+      <if test="pdt != null">
+        pdt,
+      </if>
+      <if test="productModel != null">
+        product_model,
+      </if>
+      <if test="actualPrice != null">
+        actual_price,
+      </if>
+      <if test="upperNumber != null">
+        upper_number,
+      </if>
+      <if test="lowerNumber != null">
+        lower_number,
+      </if>
+      <if test="settlementType != null">
+        settlement_type,
+      </if>
+      <if test="effectTime != null">
+        effect_time,
+      </if>
+      <if test="deadTime != null">
+        dead_time,
+      </if>
+      <if test="relationOutCustomerCode != null">
+        relation_out_customer_code,
+      </if>
+      <if test="relationOutCustomer != null">
+        relation_out_customer,
+      </if>
+      <if test="relationProductModel != null">
+        relation_product_model,
+      </if>
+      <if test="implementWay != null">
+        implement_way,
+      </if>
+      <if test="priceProposer != null">
+        price_proposer,
+      </if>
+      <if test="shipmentType != null">
+        shipment_type,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="inCustomerCode != null">
+        #{inCustomerCode,jdbcType=VARCHAR},
+      </if>
+      <if test="inCustomer != null">
+        #{inCustomer,jdbcType=VARCHAR},
+      </if>
+      <if test="outCustomerCode != null">
+        #{outCustomerCode,jdbcType=VARCHAR},
+      </if>
+      <if test="outCustomer != null">
+        #{outCustomer,jdbcType=VARCHAR},
+      </if>
+      <if test="bu != null">
+        #{bu,jdbcType=VARCHAR},
+      </if>
+      <if test="pdt != null">
+        #{pdt,jdbcType=VARCHAR},
+      </if>
+      <if test="productModel != null">
+        #{productModel,jdbcType=VARCHAR},
+      </if>
+      <if test="actualPrice != null">
+        #{actualPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="upperNumber != null">
+        #{upperNumber,jdbcType=INTEGER},
+      </if>
+      <if test="lowerNumber != null">
+        #{lowerNumber,jdbcType=INTEGER},
+      </if>
+      <if test="settlementType != null">
+        #{settlementType,jdbcType=VARCHAR},
+      </if>
+      <if test="effectTime != null">
+        #{effectTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deadTime != null">
+        #{deadTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="relationOutCustomerCode != null">
+        #{relationOutCustomerCode,jdbcType=VARCHAR},
+      </if>
+      <if test="relationOutCustomer != null">
+        #{relationOutCustomer,jdbcType=VARCHAR},
+      </if>
+      <if test="relationProductModel != null">
+        #{relationProductModel,jdbcType=VARCHAR},
+      </if>
+      <if test="implementWay != null">
+        #{implementWay,jdbcType=VARCHAR},
+      </if>
+      <if test="priceProposer != null">
+        #{priceProposer,jdbcType=VARCHAR},
+      </if>
+      <if test="shipmentType != null">
+        #{shipmentType,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+
+  <update id="updateByPrimaryKeySelective" parameterType="com.crazy.portal.entity.price.ActualPrice">
+    update t_actual_price
+    <set>
+      <if test="status != null">
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="inCustomerCode != null">
+        in_customer_code = #{inCustomerCode,jdbcType=VARCHAR},
+      </if>
+      <if test="inCustomer != null">
+        in_customer = #{inCustomer,jdbcType=VARCHAR},
+      </if>
+      <if test="outCustomerCode != null">
+        out_customer_code = #{outCustomerCode,jdbcType=VARCHAR},
+      </if>
+      <if test="outCustomer != null">
+        out_customer = #{outCustomer,jdbcType=VARCHAR},
+      </if>
+      <if test="bu != null">
+        bu = #{bu,jdbcType=VARCHAR},
+      </if>
+      <if test="pdt != null">
+        pdt = #{pdt,jdbcType=VARCHAR},
+      </if>
+      <if test="productModel != null">
+        product_model = #{productModel,jdbcType=VARCHAR},
+      </if>
+      <if test="actualPrice != null">
+        actual_price = #{actualPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="upperNumber != null">
+        upper_number = #{upperNumber,jdbcType=INTEGER},
+      </if>
+      <if test="lowerNumber != null">
+        lower_number = #{lowerNumber,jdbcType=INTEGER},
+      </if>
+      <if test="settlementType != null">
+        settlement_type = #{settlementType,jdbcType=VARCHAR},
+      </if>
+      <if test="effectTime != null">
+        effect_time = #{effectTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deadTime != null">
+        dead_time = #{deadTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="relationOutCustomerCode != null">
+        relation_out_customer_code = #{relationOutCustomerCode,jdbcType=VARCHAR},
+      </if>
+      <if test="relationOutCustomer != null">
+        relation_out_customer = #{relationOutCustomer,jdbcType=VARCHAR},
+      </if>
+      <if test="relationProductModel != null">
+        relation_product_model = #{relationProductModel,jdbcType=VARCHAR},
+      </if>
+      <if test="implementWay != null">
+        implement_way = #{implementWay,jdbcType=VARCHAR},
+      </if>
+      <if test="priceProposer != null">
+        price_proposer = #{priceProposer,jdbcType=VARCHAR},
+      </if>
+      <if test="shipmentType != null">
+        shipment_type = #{shipmentType,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+</mapper>

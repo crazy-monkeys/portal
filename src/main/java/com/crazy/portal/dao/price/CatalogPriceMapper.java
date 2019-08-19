@@ -11,7 +11,7 @@ public interface CatalogPriceMapper {
 
     CatalogPrice selectByPrimaryKey(Integer id);
 
-    Page<CatalogPrice> selectByParams(CatalogPriceVO record);
+    Page<CatalogPrice> selectByParamsWithPage(CatalogPriceVO record);
 
     int updateByPrimaryKeySelective(CatalogPrice record);
 

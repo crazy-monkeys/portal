@@ -23,7 +23,7 @@ public class CatalogPriceService {
 
     public PageInfo<CatalogPrice> selectWithPage(CatalogPriceVO catalogPriceVO){
         PortalUtil.defaultStartPage(catalogPriceVO.getPageIndex(), catalogPriceVO.getPageSize());
-        Page<CatalogPrice> catalogPrices = catalogPriceMapper.selectByParams(catalogPriceVO);
+        Page<CatalogPrice> catalogPrices = catalogPriceMapper.selectByParamsWithPage(catalogPriceVO);
         return new PageInfo<>(catalogPrices);
     }
 }
