@@ -1,5 +1,9 @@
 package com.crazy.portal.controller.price;
 
+import com.crazy.portal.bean.BaseResponse;
+import com.crazy.portal.controller.BaseController;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -11,7 +15,35 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/price/enquiry")
-public class EnquiryController {
+public class EnquiryController extends BaseController {
 
+    /**
+     * 询价申请
+     * @return
+     */
+    @PostMapping("/apply")
+    public BaseResponse apply(){
 
+        return super.successResult();
+    }
+
+    /**
+     * 申请列表查询
+     * @return
+     */
+    @PostMapping("/query")
+    public BaseResponse query(){
+
+        return super.successResult();
+    }
+
+    /**
+     * 申请单删除
+     * @return
+     */
+    @DeleteMapping("/delete")
+    public BaseResponse delete(){
+
+        return super.successResult();
+    }
 }
