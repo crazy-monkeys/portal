@@ -1,11 +1,9 @@
 package com.crazy.portal.controller.price;
 
 import com.crazy.portal.bean.BaseResponse;
+import com.crazy.portal.bean.price.EnquiryPriceVO;
 import com.crazy.portal.controller.BaseController;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @Desc: 询价
@@ -22,7 +20,7 @@ public class EnquiryController extends BaseController {
      * @return
      */
     @PostMapping("/apply")
-    public BaseResponse apply(){
+    public BaseResponse apply(@RequestBody EnquiryPriceVO enquiryApplyBean){
 
         return super.successResult();
     }

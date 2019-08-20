@@ -37,6 +37,16 @@ public class Enums {
         }
     }
 
+    /**
+     * 审批状态
+     * pending:待审批
+     * pass:通过
+     * reject:驳回
+     */
+    public enum APPROVAL_STATUS {
+        pending,pass,reject
+    }
+
     public enum YES_NO {
         YES(1),
         NO(2);

@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.crazy.portal.dao.price.EnquiryPriceMapper">
+  <resultMap id="BaseResultMap" type="com.crazy.portal.entity.price.EnquiryPrice">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="product_model" jdbcType="VARCHAR" property="productModel" />
+    <result column="customer_name" jdbcType="VARCHAR" property="customerName" />
+    <result column="apply_remark" jdbcType="VARCHAR" property="applyRemark" />
+    <result column="apply_time" jdbcType="TIMESTAMP" property="applyTime" />
+    <result column="bu" jdbcType="VARCHAR" property="bu" />
+    <result column="pdt" jdbcType="VARCHAR" property="pdt" />
+    <result column="product_type" jdbcType="VARCHAR" property="productType" />
+    <result column="platform" jdbcType="VARCHAR" property="platform" />
+    <result column="catalog_price" jdbcType="DECIMAL" property="catalogPrice" />
+    <result column="in_customer" jdbcType="VARCHAR" property="inCustomer" />
+    <result column="effect_time" jdbcType="TIMESTAMP" property="effectTime" />
+    <result column="dead_time" jdbcType="TIMESTAMP" property="deadTime" />
+    <result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime" />
+    <result column="approval_status" jdbcType="VARCHAR" property="approvalStatus" />
+    <result column="approval_remark" jdbcType="VARCHAR" property="approvalRemark" />
+    <result column="approver" jdbcType="VARCHAR" property="approver" />
+    <result column="proposer" jdbcType="VARCHAR" property="proposer" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, product_model, customer_name, apply_remark, apply_time, bu, pdt, product_type, 
+    platform, catalog_price, in_customer, effect_time, dead_time, modify_time, approval_status, 
+    approval_remark, approver, proposer, create_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_enquiry_price
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+
+
+  <select id="selectByParamsWithPage" parameterType="com.crazy.portal.bean.price.EnquiryPriceVO" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_enquiry_price
+    <where>
+      <if test="bu != null">
+        bu = #{bu,jdbcType=VARCHAR},
+      </if>
+      <if test="pdt != null">
+        pdt = #{pdt,jdbcType=VARCHAR},
+      </if>
+      <if test="platform != null">
+        platform = #{platform,jdbcType=VARCHAR},
+      </if>
+      <if test="productType != null">
+        product_type = #{productType,jdbcType=VARCHAR},
+      </if>
+      <if test="proposer != null">
+        proposer = #{proposer,jdbcType=VARCHAR},
+      </if>
+      <if test="applyBeginTime != null">
+        apply_time &gt;= #{applyBeginTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="applyEndTime != null">
+        apply_time &lt;= #{applyEndTime,jdbcType=TIMESTAMP},
+      </if>
+    </where>
+  </select>
+
+
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_enquiry_price
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+
+  <insert id="insertSelective" parameterType="com.crazy.portal.entity.price.EnquiryPrice">
+    insert into t_enquiry_price
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="productModel != null">
+        product_model,
+      </if>
+      <if test="customerName != null">
+        customer_name,
+      </if>
+      <if test="applyRemark != null">
+        apply_remark,
+      </if>
+      <if test="applyTime != null">
+        apply_time,
+      </if>
+      <if test="bu != null">
+        bu,
+      </if>
+      <if test="pdt != null">
+        pdt,
+      </if>
+      <if test="productType != null">
+        product_type,
+      </if>
+      <if test="platform != null">
+        platform,
+      </if>
+      <if test="catalogPrice != null">
+        catalog_price,
+      </if>
+      <if test="inCustomer != null">
+        in_customer,
+      </if>
+      <if test="effectTime != null">
+        effect_time,
+      </if>
+      <if test="deadTime != null">
+        dead_time,
+      </if>
+      <if test="modifyTime != null">
+        modify_time,
+      </if>
+      <if test="approvalStatus != null">
+        approval_status,
+      </if>
+      <if test="approvalRemark != null">
+        approval_remark,
+      </if>
+      <if test="approver != null">
+        approver,
+      </if>
+      <if test="proposer != null">
+        proposer,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="productModel != null">
+        #{productModel,jdbcType=VARCHAR},
+      </if>
+      <if test="customerName != null">
+        #{customerName,jdbcType=VARCHAR},
+      </if>
+      <if test="applyRemark != null">
+        #{applyRemark,jdbcType=VARCHAR},
+      </if>
+      <if test="applyTime != null">
+        #{applyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="bu != null">
+        #{bu,jdbcType=VARCHAR},
+      </if>
+      <if test="pdt != null">
+        #{pdt,jdbcType=VARCHAR},
+      </if>
+      <if test="productType != null">
+        #{productType,jdbcType=VARCHAR},
+      </if>
+      <if test="platform != null">
+        #{platform,jdbcType=VARCHAR},
+      </if>
+      <if test="catalogPrice != null">
+        #{catalogPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="inCustomer != null">
+        #{inCustomer,jdbcType=VARCHAR},
+      </if>
+      <if test="effectTime != null">
+        #{effectTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deadTime != null">
+        #{deadTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifyTime != null">
+        #{modifyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="approvalStatus != null">
+        #{approvalStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="approvalRemark != null">
+        #{approvalRemark,jdbcType=VARCHAR},
+      </if>
+      <if test="approver != null">
+        #{approver,jdbcType=VARCHAR},
+      </if>
+      <if test="proposer != null">
+        #{proposer,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.crazy.portal.entity.price.EnquiryPrice">
+    update t_enquiry_price
+    <set>
+      <if test="productModel != null">
+        product_model = #{productModel,jdbcType=VARCHAR},
+      </if>
+      <if test="customerName != null">
+        customer_name = #{customerName,jdbcType=VARCHAR},
+      </if>
+      <if test="applyRemark != null">
+        apply_remark = #{applyRemark,jdbcType=VARCHAR},
+      </if>
+      <if test="applyTime != null">
+        apply_time = #{applyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="bu != null">
+        bu = #{bu,jdbcType=VARCHAR},
+      </if>
+      <if test="pdt != null">
+        pdt = #{pdt,jdbcType=VARCHAR},
+      </if>
+      <if test="productType != null">
+        product_type = #{productType,jdbcType=VARCHAR},
+      </if>
+      <if test="platform != null">
+        platform = #{platform,jdbcType=VARCHAR},
+      </if>
+      <if test="catalogPrice != null">
+        catalog_price = #{catalogPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="inCustomer != null">
+        in_customer = #{inCustomer,jdbcType=VARCHAR},
+      </if>
+      <if test="effectTime != null">
+        effect_time = #{effectTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deadTime != null">
+        dead_time = #{deadTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifyTime != null">
+        modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="approvalStatus != null">
+        approval_status = #{approvalStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="approvalRemark != null">
+        approval_remark = #{approvalRemark,jdbcType=VARCHAR},
+      </if>
+      <if test="approver != null">
+        approver = #{approver,jdbcType=VARCHAR},
+      </if>
+      <if test="proposer != null">
+        proposer = #{proposer,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+</mapper>

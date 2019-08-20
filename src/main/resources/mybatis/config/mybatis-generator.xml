@@ -32,7 +32,7 @@
             <property name="enableSubPackages" value="true"/>
         </javaClientGenerator>
 
-        <table tableName="t_price_strategy" domainObjectName="PriceStrategy"
+        <table tableName="t_enquiry_price" domainObjectName="EnquiryPrice"
                enableCountByExample="false"
                enableUpdateByExample="false"
                enableDeleteByExample="false"

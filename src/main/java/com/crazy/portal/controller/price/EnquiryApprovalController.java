@@ -2,7 +2,7 @@ package com.crazy.portal.controller.price;
 
 import com.crazy.portal.bean.BaseResponse;
 import com.crazy.portal.bean.price.EnquiryApprovalBean;
-import com.crazy.portal.bean.price.EnquiryApprovalQueryVO;
+import com.crazy.portal.bean.price.EnquiryPriceVO;
 import com.crazy.portal.controller.BaseController;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,11 +31,11 @@ public class EnquiryApprovalController extends BaseController {
 
     /**
      * 审批列表查询
-     * @param enquiryApprovalQueryVO
+     * @param enquiryPriceVO
      * @return
      */
     @PostMapping("/query")
-    public BaseResponse query(@RequestBody EnquiryApprovalQueryVO enquiryApprovalQueryVO){
+    public BaseResponse query(@RequestBody EnquiryPriceVO enquiryPriceVO){
 
         return super.successResult();
     }
