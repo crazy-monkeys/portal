@@ -53,7 +53,7 @@ public class Enums {
 
         private int code;
 
-        YES_NO(Integer roleType){
+        YES_NO(Integer code){
             this.code = code;
         }
 
@@ -150,17 +150,20 @@ public class Enums {
     }
 
     /**
-     * 客户业务类型
+     * A01 - Account Market（直供）；A02 - Account Market（非直供）；A03 - Mass Market；A04 - 代理商
      */
     public enum CUSTOMER_BUSINESS_TYPE{
-        mass_market((short)1),
-        account_market((short)2);
+        account_market_z("A01"),
+        account_market("A02"),
+        mass_market("A03"),
+        dealer("A04");
 
-        private final Short code;
-        CUSTOMER_BUSINESS_TYPE(Short code){
+
+        private final String code;
+        CUSTOMER_BUSINESS_TYPE(String code){
             this.code = code;
         }
-        public Short getCode(){
+        public String getCode(){
             return code;
         }
     }
@@ -209,19 +212,15 @@ public class Enums {
         }
     }
 
+    /**
+     *报备状态 0-初始化 1-已报备 2-可报备 3-报备中 4-驳回
+     */
     public enum CUSTOMER_APPROVE_STATUS{
-
-
-
-
-        WAIT_SUBMIT(1, "待提交"),
-        WAIT_APPROVAL(2, "待审批"),
-        NORMAL(3, "正常"),
-        REJECT(4, "被驳回"),
-        SALES_FROZEN(5, "销售支持冻结"),
-        DELIVERY_FROZEN(6, "交货冻结"),
-        ORDER(7, "订单冻结"),
-        INVOICE(8, "开票冻结");
+        WAIT_SUBMIT(0, "初始化"),
+        WAIT_APPROVAL(3, "报备中"),
+        REPORT(1," 已报备"),
+        WAIT_REPORT(2,"可报备"),
+        REJECT(4, "被驳回");
 
         private Integer code;
         private String desc;
@@ -236,7 +235,6 @@ public class Enums {
             return desc;
         }
     }
-
     //</editor-fold>
 
     public enum RATE_TYPE{

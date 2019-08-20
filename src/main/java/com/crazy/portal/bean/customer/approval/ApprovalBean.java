@@ -3,21 +3,26 @@ package com.crazy.portal.bean.customer.approval;
 import lombok.Data;
 
 /**
- * @Description TODO
+ * @Description
  * @Author Shawn
  * @Date 2019-08-09 21:52
  * @Modify by
  */
 @Data
 public class ApprovalBean {
-    //客户ID
-    private Integer id;
-    //代理商ID
-    private Integer dealerId;
-    //销售ID
-    private Integer salesId;
-    //审批信息
-    private String approvalRemark;
+    /*审批类型 1 通过  2驳回*/
+    private Integer approvalType;
+    //报备Id
+    private Integer reportId;
+    //审批人Id
+    private Integer approveUser;
+    //客户Id
+    private Integer custId;
+    //审批意见
+    private String remark;
 
-    private Integer userId;
+    //分配代理商
+    private Integer salesId;
+    //分配销售
+    private Integer dealerId;
 }

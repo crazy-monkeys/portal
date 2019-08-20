@@ -1,0 +1,586 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.crazy.portal.dao.customer.CustomerInfoMapper">
+  <resultMap id="BaseResultMap" type="com.crazy.portal.entity.cusotmer.CustomerInfo">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="cust_type" jdbcType="INTEGER" property="custType" />
+    <result column="in_code" jdbcType="VARCHAR" property="inCode" />
+    <result column="out_code" jdbcType="VARCHAR" property="outCode" />
+    <result column="cust_name" jdbcType="VARCHAR" property="custName" />
+    <result column="cust_en_name" jdbcType="VARCHAR" property="custEnName" />
+    <result column="cust_abbreviation" jdbcType="VARCHAR" property="custAbbreviation" />
+    <result column="cust_status" jdbcType="INTEGER" property="custStatus" />
+    <result column="business_type" jdbcType="VARCHAR" property="businessType" />
+    <result column="is_license" jdbcType="INTEGER" property="isLicense" />
+    <result column="cust_role" jdbcType="INTEGER" property="custRole" />
+    <result column="cust_mobile" jdbcType="VARCHAR" property="custMobile" />
+    <result column="cust_email" jdbcType="VARCHAR" property="custEmail" />
+    <result column="cust_web" jdbcType="VARCHAR" property="custWeb" />
+    <result column="is_white" jdbcType="INTEGER" property="isWhite" />
+    <result column="regist_time" jdbcType="TIMESTAMP" property="registTime" />
+    <result column="corportae_assets" jdbcType="DECIMAL" property="corportaeAssets" />
+    <result column="staff_number" jdbcType="INTEGER" property="staffNumber" />
+    <result column="developers_number" jdbcType="INTEGER" property="developersNumber" />
+    <result column="business_introduction" jdbcType="VARCHAR" property="businessIntroduction" />
+    <result column="advantages_introduction" jdbcType="VARCHAR" property="advantagesIntroduction" />
+    <result column="active" jdbcType="INTEGER" property="active" />
+    <result column="create_user" jdbcType="INTEGER" property="createUser" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_user" jdbcType="INTEGER" property="updateUser" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, cust_type, in_code, out_code, cust_name, cust_en_name, cust_abbreviation, cust_status, 
+    business_type, is_license, cust_role, cust_mobile, cust_email, cust_web, is_white, 
+    regist_time, corportae_assets, staff_number, developers_number, business_introduction, 
+    advantages_introduction, active, create_user, create_time, update_user, update_time
+  </sql>
+
+  <!--代理商result-->
+  <resultMap id="DealerResultMap" type="com.crazy.portal.entity.cusotmer.CustomerInfo" extends="BaseResultMap">
+    <association property="basicBank" resultMap="com.crazy.portal.dao.basic.BasicBankInfoMapper.BaseResultMap" />
+    <collection property="assetsInformations" resultMap="com.crazy.portal.dao.customer.AssetsInformationMapper.BaseResultMap" />
+    <collection property="businessInformations" resultMap="com.crazy.portal.dao.customer.BusinessInformationMapper.BaseResultMap" />
+    <collection property="customerAgents" resultMap="com.crazy.portal.dao.customer.CustomerAgentMapper.BaseResultMap" />
+    <collection property="customerContacts" resultMap="com.crazy.portal.dao.customer.CustomerContactMapper.BaseResultMap" />
+    <collection property="files" resultMap="com.crazy.portal.dao.customer.CustomerFileMapper.BaseResultMap" />
+    <collection property="relationships" resultMap="com.crazy.portal.dao.basic.BasicCorporateRelationshipMapper.BaseResultMap" />
+    <collection property="invoiceInfos" resultMap="com.crazy.portal.dao.basic.BasicInvoiceInfoMapper.BaseResultMap" />
+    <collection property="sales" resultMap="com.crazy.portal.dao.basic.BasicSalesMapper.BaseResultMap" />
+    <collection property="addresses" resultMap="com.crazy.portal.dao.customer.CustomerAddressMapper.BaseResultMap" />
+  </resultMap>
+
+  <!--客户result-->
+  <resultMap id="CustomerResultMap" type="com.crazy.portal.entity.cusotmer.CustomerInfo" extends="BaseResultMap">
+    <association property="basicBank" resultMap="com.crazy.portal.dao.basic.BasicBankInfoMapper.BaseResultMap" />
+    <collection property="customerProducts" resultMap="com.crazy.portal.dao.customer.CustomerProductMapper.BaseResultMap" />
+    <collection property="customerAgents" resultMap="com.crazy.portal.dao.customer.CustomerAgentMapper.BaseResultMap" />
+    <collection property="customerContacts" resultMap="com.crazy.portal.dao.customer.CustomerContactMapper.BaseResultMap" />
+    <collection property="files" resultMap="com.crazy.portal.dao.customer.CustomerFileMapper.BaseResultMap" />
+    <collection property="relationships" resultMap="com.crazy.portal.dao.basic.BasicCorporateRelationshipMapper.BaseResultMap" />
+    <collection property="invoiceInfos" resultMap="com.crazy.portal.dao.basic.BasicInvoiceInfoMapper.BaseResultMap" />
+    <collection property="sales" resultMap="com.crazy.portal.dao.basic.BasicSalesMapper.BaseResultMap" />
+    <collection property="addresses" resultMap="com.crazy.portal.dao.customer.CustomerAddressMapper.BaseResultMap" />
+    <collection property="accountTeams" resultMap="com.crazy.portal.dao.customer.CustomerAccountTeamMapper.BaseResultMap" />
+  </resultMap>
+
+  <!--客户报备-->
+  <resultMap id="ReportResultMap" type="com.crazy.portal.entity.cusotmer.CustomerInfo" extends="BaseResultMap">
+    <association property="customerReport" resultMap="com.crazy.portal.dao.customer.CustomerReportMapper.BaseResultMap" />
+  </resultMap>
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_customer_info
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_customer_info
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.crazy.portal.entity.cusotmer.CustomerInfo">
+    insert into t_customer_info (id, cust_type, in_code, 
+      out_code, cust_name, cust_en_name, 
+      cust_abbreviation, cust_status, business_type, 
+      is_license, cust_role, cust_mobile, 
+      cust_email, cust_web, is_white, 
+      regist_time, corportae_assets, staff_number, 
+      developers_number, business_introduction, 
+      advantages_introduction, active, create_user, 
+      create_time, update_user, update_time
+      )
+    values (#{id,jdbcType=INTEGER}, #{custType,jdbcType=INTEGER}, #{inCode,jdbcType=VARCHAR}, 
+      #{outCode,jdbcType=VARCHAR}, #{custName,jdbcType=VARCHAR}, #{custEnName,jdbcType=VARCHAR}, 
+      #{custAbbreviation,jdbcType=VARCHAR}, #{custStatus,jdbcType=INTEGER}, #{businessType,jdbcType=VARCHAR}, 
+      #{isLicense,jdbcType=INTEGER}, #{custRole,jdbcType=INTEGER}, #{custMobile,jdbcType=VARCHAR}, 
+      #{custEmail,jdbcType=VARCHAR}, #{custWeb,jdbcType=VARCHAR}, #{isWhite,jdbcType=INTEGER}, 
+      #{registTime,jdbcType=TIMESTAMP}, #{corportaeAssets,jdbcType=DECIMAL}, #{staffNumber,jdbcType=INTEGER}, 
+      #{developersNumber,jdbcType=INTEGER}, #{businessIntroduction,jdbcType=VARCHAR}, 
+      #{advantagesIntroduction,jdbcType=VARCHAR}, #{active,jdbcType=INTEGER}, #{createUser,jdbcType=INTEGER}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateUser,jdbcType=INTEGER}, #{updateTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.crazy.portal.entity.cusotmer.CustomerInfo" useGeneratedKeys="true" keyProperty="id">
+    insert into t_customer_info
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="custType != null">
+        cust_type,
+      </if>
+      <if test="inCode != null">
+        in_code,
+      </if>
+      <if test="outCode != null">
+        out_code,
+      </if>
+      <if test="custName != null">
+        cust_name,
+      </if>
+      <if test="custEnName != null">
+        cust_en_name,
+      </if>
+      <if test="custAbbreviation != null">
+        cust_abbreviation,
+      </if>
+      <if test="custStatus != null">
+        cust_status,
+      </if>
+      <if test="businessType != null">
+        business_type,
+      </if>
+      <if test="isLicense != null">
+        is_license,
+      </if>
+      <if test="custRole != null">
+        cust_role,
+      </if>
+      <if test="custMobile != null">
+        cust_mobile,
+      </if>
+      <if test="custEmail != null">
+        cust_email,
+      </if>
+      <if test="custWeb != null">
+        cust_web,
+      </if>
+      <if test="isWhite != null">
+        is_white,
+      </if>
+      <if test="registTime != null">
+        regist_time,
+      </if>
+      <if test="corportaeAssets != null">
+        corportae_assets,
+      </if>
+      <if test="staffNumber != null">
+        staff_number,
+      </if>
+      <if test="developersNumber != null">
+        developers_number,
+      </if>
+      <if test="businessIntroduction != null">
+        business_introduction,
+      </if>
+      <if test="advantagesIntroduction != null">
+        advantages_introduction,
+      </if>
+      <if test="active != null">
+        active,
+      </if>
+      <if test="createUser != null">
+        create_user,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateUser != null">
+        update_user,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="custType != null">
+        #{custType,jdbcType=INTEGER},
+      </if>
+      <if test="inCode != null">
+        #{inCode,jdbcType=VARCHAR},
+      </if>
+      <if test="outCode != null">
+        #{outCode,jdbcType=VARCHAR},
+      </if>
+      <if test="custName != null">
+        #{custName,jdbcType=VARCHAR},
+      </if>
+      <if test="custEnName != null">
+        #{custEnName,jdbcType=VARCHAR},
+      </if>
+      <if test="custAbbreviation != null">
+        #{custAbbreviation,jdbcType=VARCHAR},
+      </if>
+      <if test="custStatus != null">
+        #{custStatus,jdbcType=INTEGER},
+      </if>
+      <if test="businessType != null">
+        #{businessType,jdbcType=VARCHAR},
+      </if>
+      <if test="isLicense != null">
+        #{isLicense,jdbcType=INTEGER},
+      </if>
+      <if test="custRole != null">
+        #{custRole,jdbcType=INTEGER},
+      </if>
+      <if test="custMobile != null">
+        #{custMobile,jdbcType=VARCHAR},
+      </if>
+      <if test="custEmail != null">
+        #{custEmail,jdbcType=VARCHAR},
+      </if>
+      <if test="custWeb != null">
+        #{custWeb,jdbcType=VARCHAR},
+      </if>
+      <if test="isWhite != null">
+        #{isWhite,jdbcType=INTEGER},
+      </if>
+      <if test="registTime != null">
+        #{registTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="corportaeAssets != null">
+        #{corportaeAssets,jdbcType=DECIMAL},
+      </if>
+      <if test="staffNumber != null">
+        #{staffNumber,jdbcType=INTEGER},
+      </if>
+      <if test="developersNumber != null">
+        #{developersNumber,jdbcType=INTEGER},
+      </if>
+      <if test="businessIntroduction != null">
+        #{businessIntroduction,jdbcType=VARCHAR},
+      </if>
+      <if test="advantagesIntroduction != null">
+        #{advantagesIntroduction,jdbcType=VARCHAR},
+      </if>
+      <if test="active != null">
+        #{active,jdbcType=INTEGER},
+      </if>
+      <if test="createUser != null">
+        #{createUser,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null">
+        #{updateUser,jdbcType=INTEGER},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.crazy.portal.entity.cusotmer.CustomerInfo">
+    update t_customer_info
+    <set>
+      <if test="custType != null">
+        cust_type = #{custType,jdbcType=INTEGER},
+      </if>
+      <if test="inCode != null">
+        in_code = #{inCode,jdbcType=VARCHAR},
+      </if>
+      <if test="outCode != null">
+        out_code = #{outCode,jdbcType=VARCHAR},
+      </if>
+      <if test="custName != null">
+        cust_name = #{custName,jdbcType=VARCHAR},
+      </if>
+      <if test="custEnName != null">
+        cust_en_name = #{custEnName,jdbcType=VARCHAR},
+      </if>
+      <if test="custAbbreviation != null">
+        cust_abbreviation = #{custAbbreviation,jdbcType=VARCHAR},
+      </if>
+      <if test="custStatus != null">
+        cust_status = #{custStatus,jdbcType=INTEGER},
+      </if>
+      <if test="businessType != null">
+        business_type = #{businessType,jdbcType=VARCHAR},
+      </if>
+      <if test="isLicense != null">
+        is_license = #{isLicense,jdbcType=INTEGER},
+      </if>
+      <if test="custRole != null">
+        cust_role = #{custRole,jdbcType=INTEGER},
+      </if>
+      <if test="custMobile != null">
+        cust_mobile = #{custMobile,jdbcType=VARCHAR},
+      </if>
+      <if test="custEmail != null">
+        cust_email = #{custEmail,jdbcType=VARCHAR},
+      </if>
+      <if test="custWeb != null">
+        cust_web = #{custWeb,jdbcType=VARCHAR},
+      </if>
+      <if test="isWhite != null">
+        is_white = #{isWhite,jdbcType=INTEGER},
+      </if>
+      <if test="registTime != null">
+        regist_time = #{registTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="corportaeAssets != null">
+        corportae_assets = #{corportaeAssets,jdbcType=DECIMAL},
+      </if>
+      <if test="staffNumber != null">
+        staff_number = #{staffNumber,jdbcType=INTEGER},
+      </if>
+      <if test="developersNumber != null">
+        developers_number = #{developersNumber,jdbcType=INTEGER},
+      </if>
+      <if test="businessIntroduction != null">
+        business_introduction = #{businessIntroduction,jdbcType=VARCHAR},
+      </if>
+      <if test="advantagesIntroduction != null">
+        advantages_introduction = #{advantagesIntroduction,jdbcType=VARCHAR},
+      </if>
+      <if test="active != null">
+        active = #{active,jdbcType=INTEGER},
+      </if>
+      <if test="createUser != null">
+        create_user = #{createUser,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null">
+        update_user = #{updateUser,jdbcType=INTEGER},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.crazy.portal.entity.cusotmer.CustomerInfo">
+    update t_customer_info
+    set cust_type = #{custType,jdbcType=INTEGER},
+      in_code = #{inCode,jdbcType=VARCHAR},
+      out_code = #{outCode,jdbcType=VARCHAR},
+      cust_name = #{custName,jdbcType=VARCHAR},
+      cust_en_name = #{custEnName,jdbcType=VARCHAR},
+      cust_abbreviation = #{custAbbreviation,jdbcType=VARCHAR},
+      cust_status = #{custStatus,jdbcType=INTEGER},
+      business_type = #{businessType,jdbcType=VARCHAR},
+      is_license = #{isLicense,jdbcType=INTEGER},
+      cust_role = #{custRole,jdbcType=INTEGER},
+      cust_mobile = #{custMobile,jdbcType=VARCHAR},
+      cust_email = #{custEmail,jdbcType=VARCHAR},
+      cust_web = #{custWeb,jdbcType=VARCHAR},
+      is_white = #{isWhite,jdbcType=INTEGER},
+      regist_time = #{registTime,jdbcType=TIMESTAMP},
+      corportae_assets = #{corportaeAssets,jdbcType=DECIMAL},
+      staff_number = #{staffNumber,jdbcType=INTEGER},
+      developers_number = #{developersNumber,jdbcType=INTEGER},
+      business_introduction = #{businessIntroduction,jdbcType=VARCHAR},
+      advantages_introduction = #{advantagesIntroduction,jdbcType=VARCHAR},
+      active = #{active,jdbcType=INTEGER},
+      create_user = #{createUser,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_user = #{updateUser,jdbcType=INTEGER},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <select id="selectDealerInfo" resultMap="DealerResultMap">
+    select cust.in_code,
+    cust.out_code,
+    cust.cust_name,
+    cust.cust_en_name,
+    cust.cust_abbreviation,
+    cust.cust_mobile,
+    cust.cust_email,
+    cust.cust_web,
+    bank.id,
+    bank.cust_id,
+    bank.bank_name,
+    bank.bank_detail_info as bank_address,
+    bank.bank_account,
+    bank.bank_bic,
+    assets.id,
+    assets.cust_id,
+    assets.assets_year,
+    assets.assets_season,
+    assets.assets_total,
+    assets.assets_net,
+    assets.revenue,
+    assets.total_staff,
+    business.id,
+    business.cust_id,
+    business.product_line,
+    business.revenue_pl_one,
+    business.revenue_pl_two,
+    business.revenue_pl_three,
+    agent.id,
+    agent.cust_id,
+    agent.bu,
+    agent.pdt,
+    agent.territory,
+    agent.sales_model,
+    agent.grade,
+    agent.start_date,
+    agent.end_date,
+    file.id,
+    file.cust_id,
+    file.type,
+    file.title,
+    file.file_name,
+    file.file_path,
+    contact.id,
+    contact.cust_id,
+    contact.contact_name,
+    contact.mobile,
+    contact.email,
+    contact.department,
+    contact.sub_department,
+    contact.position,
+    contact.equity_ratio,
+    ship.id,
+    ship.cust_id,
+    ship.corporate_type,
+    ship.corporate_name,
+    invoice.id,
+    invoice.cust_id,
+    invoice.purchasing_unit,
+    invoice.shipping_address,
+    invoice.shipping_mobile,
+    invoice.taxpayer_registration_number,
+    invoice.currency,
+    sales.id,
+    sales.cust_id,
+    sales.sales_organize,
+    sales.distribution_channel,
+    sales.delivery_plant,
+    address.id,
+    address.cust_id,
+    address.address_type,
+    address.country,
+    address.province,
+    address.city,
+    address.district,
+    address.address_detail,
+    account.id,
+    account.cust_id,
+    account.account_mobile,
+    account.role_type,
+    account.account_name
+
+ from t_customer_info cust
+ left join t_basic_bank_info bank on bank.cust_id = cust.id and bank.active=1
+ left join t_assets_information assets on assets.cust_id = cust.id and assets.active=1
+ left join t_business_information business on business.cust_id = cust.id and business.active =1
+ left join t_customer_agent agent on agent.cust_id = cust.id and agent.active=1
+ left join t_customer_file file on file.cust_id = cust.id and file.active=1
+ left join t_customer_contact contact on contact.cust_id = cust.id and contact.active=1
+ left join t_cust_corporate_relationship ship on ship.cust_id = cust.id and ship.active=1
+ left join t_cust_invoice_info invoice on invoice.cust_id = cust.id and invoice.active=1
+ left join t_cust_sales sales on sales.cust_id = cust.id and sales.active=1
+ left join t_customer_address address on address.cust_id = cust.id and address.active=1
+ left join t_customer_account_team account on account.cust_id = cust.id and account.active=1
+  where cust.business_type = 'A04' and cust.active =1 and cust.id=#{id}
+  </select>
+
+  <select id="queryReportInfo" resultMap="CustomerResultMap">
+select cust.in_code,
+    cust.out_code,
+    cust.cust_name,
+    cust.cust_en_name,
+    cust.cust_abbreviation,
+    cust.cust_mobile,
+    cust.cust_email,
+    cust.cust_web,
+    cust.is_license,
+    cust.corportae_assets,
+    cust.staff_number,
+    cust.developers_number,
+    cust.business_introduction,
+    rep.id,
+    rep.customer_id,
+    rep.report_dealer,
+    rep.report_sales,
+    rep.report_status,
+    rep.report_time,
+    pro.id,
+    pro.report_id,
+    pro.cust_id,
+    pro.report_id,
+    pro.product,
+    pro.p_month,
+    pro.product_id,
+    bank.id,
+    bank.report_id,
+    bank.cust_id,
+    bank.bank_name,
+    bank.bank_detail_info as bank_address,
+    bank.bank_account,
+    bank.bank_bic,
+    file.id,
+    file.report_id,
+    file.cust_id,
+    file.type,
+    file.title,
+    file.file_name,
+    file.file_path,
+    contact.id,
+    contact.type,
+    contact.report_id,
+    contact.cust_id,
+    contact.contact_name,
+    contact.mobile,
+    contact.email,
+    contact.department,
+    contact.sub_department,
+    contact.position,
+    contact.equity_ratio,
+    ship.id,
+    ship.report_id,
+    ship.cust_id,
+    ship.corporate_type,
+    ship.corporate_name,
+    invoice.id,
+    invoice.report_id,
+    invoice.cust_id,
+    invoice.purchasing_unit,
+    invoice.shipping_address,
+    invoice.shipping_mobile,
+    invoice.taxpayer_registration_number,
+    invoice.currency,
+    sales.id,
+    sales.report_id,
+    sales.cust_id,
+    sales.sales_organize,
+    sales.distribution_channel,
+    sales.delivery_plant,
+    address.id,
+    address.report_id,
+    address.cust_id,
+    address.address_type,
+    address.country,
+    address.province,
+    address.city,
+    address.district,
+    address.address_detail,
+    account.id,
+    account.report_id,
+    account.cust_id,
+    account.account_mobile,
+    account.role_type,
+    account.account_name
+
+ from t_customer_info cust
+ inner join t_customer_report rep on rep.customer_id = cust.id and rep.active=1
+ left join t_customer_product pro on pro.report_id = rep.id and pro.cust_id=cust.id and pro.active=1
+ left join t_customer_file file on file.cust_id = cust.id and file.report_id = rep.id and file.active=1
+ left join t_customer_contact contact on contact.cust_id = cust.id and contact.report_id = rep.id and contact.active=1
+ left join t_cust_bank_info bank on bank.cust_id = cust.id and bank.report_id = rep.id and bank.active=1
+ left join t_cust_corporate_relationship ship on ship.cust_id = cust.id and ship.report_id = rep.id and ship.active=1
+ left join t_cust_invoice_info invoice on invoice.cust_id = cust.id and invoice.report_id = rep.id and invoice.active=1
+ left join t_cust_sales sales on sales.cust_id = cust.id and sales.report_id = rep.id and sales.active=1
+ left join t_customer_address address on address.cust_id = cust.id and address.active=1
+ left join t_customer_account_team account on account.cust_id = cust.id and account.active=1
+  where cust.id=${custId} and cust.active=1 and rep.id=#{reportId} and rep.report_status in
+    <foreach collection="status" index="index" item="s" separator="," close=")" open="(">
+      #{s}
+    </foreach>
+  </select>
+
+  <select id="selectByCustName" parameterType="java.lang.String" resultMap="ReportResultMap">
+    select * from t_customer_info cust
+    inner join t_customer_report rep on rep.customer_id = cust.id
+    where cust.active=1 and cust.business_type in ('A02','A03') and rep.active =1
+    and cust.cust_name = #{custName}
+  </select>
+</mapper>
