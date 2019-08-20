@@ -180,6 +180,7 @@
     <if test="function != null">
       and p_function = #{function}
     </if>
+    order by insert_time desc
   </select>
 
   <select id="checkValue" resultType="java.lang.Integer">

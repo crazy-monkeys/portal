@@ -11,7 +11,7 @@ import com.crazy.portal.dao.customer.CustomerInfoMapper;
 import com.crazy.portal.entity.business.rebate.BusinessRebate;
 import com.crazy.portal.entity.business.rebate.BusinessRebateFile;
 import com.crazy.portal.entity.business.rebate.BusinessRebateItem;
-import com.crazy.portal.entity.customer.CustomerInfo;
+import com.crazy.portal.entity.cusotmer.CustomerInfo;
 import com.crazy.portal.util.*;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.ImmutableMap;

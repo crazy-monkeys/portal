@@ -29,10 +29,10 @@ public class CallApiUtils {
         ECC_DEALER_CREDIR_URL = eccDealerCredirUrl;
     }
 
-    private static String BI_TEST_URL;
-    @Value("${api.url.bi-test}")
-    public void setBiTestUrl(String biTestUrl) {
-        BI_TEST_URL = biTestUrl;
+    private static String BI_URL;
+    @Value("${api.url.bi}")
+    public String getBiUrl() {
+        return BI_URL;
     }
 
     /**
@@ -73,13 +73,13 @@ public class CallApiUtils {
     }
 
     /**
-     * bi 测试接口
-     * @param fromUrl portal 上传的文件位置 绝对路径
+     * bi 接口
+     * @param fromUrl portal 上传的文件位置 绝对路径 带文件名
      * @param toUrl bi 校验返回的文件位置
      * @return
      */
-    public static String BITest(String fromUrl, String toUrl)throws IOException{
-        String url = BI_TEST_URL+"?sFromUrl"+fromUrl+"&sToUrl"+toUrl;
+    public static String BITest(Enums.BI_FUNCTION_CODE function_code,String fromUrl, String toUrl)throws IOException{
+        String url = BI_URL+function_code+"?"+fromUrl+"&sToUrl"+toUrl;
         String jsonStr = HttpClientUtils.get(url);
         return jsonStr;
     }

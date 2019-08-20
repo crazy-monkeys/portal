@@ -71,7 +71,7 @@ public class ErrorCodes {
         RESOURCE_TYPE_NOT_EXIST(10046,"资源类型不存在",""),
         RESOURCE_EXIST(10047,"资源名称已经存在",""),
 
-        SYS_PARAM_VALUE(10048,"该选项下value已存在",""),
+        SYS_PARAM_VALUE(10048,"该选项下Code已存在",""),
         SYS_BEAN_ERROR(10049,"对象映射异常","")
         ;
 
@@ -140,7 +140,9 @@ public class ErrorCodes {
         CUSTOMER_IS_EMPYT(50000, "没有对应的客户信息", ""),
         CUSTOMER_NAME_EXISTS(50001, "该客户名已存在", ""),
         CUSTOMER_CREDIT(50002,"获取代理商授信额度异常",""),
-
+        CUSTOMER_IS_REPORT(50003,"该客户已被报备",""),
+        CUSTOMER_REPORT_ERROR(50004,"非Mass Market 客户",""),
+        CUSTOMER_REPORT_ERROR1(50005,"客户正在报备中",""),
 
         RATE_BATCH_IS_NOT_NULL(60001,"批次号已存在",""),
         //代理费率
