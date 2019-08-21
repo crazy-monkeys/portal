@@ -1,6 +1,7 @@
 package com.crazy.portal.controller.customer;
 
 import com.crazy.portal.bean.BaseResponse;
+import com.crazy.portal.bean.customer.CustomerQueryBean;
 import com.crazy.portal.bean.customer.approval.ApprovalBean;
 import com.crazy.portal.controller.BaseController;
 import com.crazy.portal.entity.cusotmer.AssetsInformation;
@@ -69,12 +70,22 @@ public class CustomerController extends BaseController{
         return successResult();
     }
 
+    //审批
     @PostMapping("/approval")
     public BaseResponse approval(@RequestBody ApprovalBean bean){
         bean.setApproveUser(this.getCurrentUser().getId());
         customerInfoService.approval(bean);
         return successResult();
     }
+
+    //查询所有客户
+    @PostMapping("/list")
+    public BaseResponse customers(@RequestBody CustomerQueryBean customerQueryBean){
+
+        return successResult();
+    }
+    //查询客户明细
+
 
 /**
     //获取用户列表

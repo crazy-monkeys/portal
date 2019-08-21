@@ -23,6 +23,7 @@ public interface CustomerInfoMapper {
     CustomerInfo selectByCustName(@Param("custName") String custName);
 
     CustomerInfo queryReportInfo(@Param("custId") int custId, @Param("reportId") int reportId, @Param("status")Integer[] status);
+
     List<CustomerInfo> selectNameAndCodeByUserId(@Param("userId") Integer userId);
 
     List<CustomerInfo> selectAllCustomer();

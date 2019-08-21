@@ -13,7 +13,7 @@ public class CustomerQueryBean extends PageBean {
     private String customerOutCode;
     //是否Lincense客户 1-是 0-否
     private Short isLicense;
-    //业务类型 1-massMarket 2-accountMarket
+    //业务类型  A01 - Account Market（直供）；A02 - Account Market（非直供）；A03 - Mass Market；A04 - 代理商
     private Short businessType;
     //报备开始时间
     private String reportStartDate;
@@ -23,9 +23,6 @@ public class CustomerQueryBean extends PageBean {
     private String createStartDate;
     //创建结束时间
     private String createEndDate;
-    //客户状态 1-待提交 2-待审批 3-正常
+    /* 报备状态 0-初始化 1-已报备 2-可报备 3-报备中*/
     private Integer customerStatus;
-    //用户ID
-    private Integer userId;
-
 }

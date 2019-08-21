@@ -1,18 +1,16 @@
 package com.crazy.portal.service.customer;
 
+import com.crazy.portal.bean.customer.CustomerQueryBean;
 import com.crazy.portal.bean.customer.approval.ApprovalBean;
 import com.crazy.portal.bean.customer.dealer.credit.Zsdscredit;
 import com.crazy.portal.dao.customer.*;
 import com.crazy.portal.entity.cusotmer.*;
 import com.crazy.portal.entity.system.User;
-import com.crazy.portal.util.BusinessUtil;
-import com.crazy.portal.util.CallApiUtils;
-import com.crazy.portal.util.Enums;
-import com.crazy.portal.util.ErrorCodes;
+import com.crazy.portal.util.*;
+import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -52,6 +50,12 @@ public class CustomerInfoService {
     private CustomerAccountTeamMapper customerAccountTeamMapper;
     @Resource
     private CustomerReportMapper customerReportMapper;
+
+    public PageInfo<CustomerInfo> queryList(CustomerQueryBean customerQueryBean){
+        PortalUtil.defaultStartPage(customerQueryBean.getPageSize(), customerQueryBean.getPageSize());
+        List<CustomerInfo> customerInfos = null;
+        return new PageInfo<>(customerInfos);
+    }
 
     /**
      * 获取代理商信息
@@ -405,6 +409,4 @@ public class CustomerInfoService {
             }
         });
     }
-
-
 }
