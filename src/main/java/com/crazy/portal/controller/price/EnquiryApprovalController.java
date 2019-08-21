@@ -4,8 +4,12 @@ import com.crazy.portal.bean.BaseResponse;
 import com.crazy.portal.bean.price.EnquiryApprovalBean;
 import com.crazy.portal.bean.price.EnquiryPriceVO;
 import com.crazy.portal.controller.BaseController;
+import com.crazy.portal.entity.price.EnquiryPrice;
+import com.crazy.portal.service.price.EnquiryPriceService;
+import com.github.pagehelper.Page;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -18,6 +22,9 @@ import java.util.List;
 @RequestMapping("/price/enquiryApproval")
 public class EnquiryApprovalController extends BaseController {
 
+    @Resource
+    private EnquiryPriceService enquiryPriceService;
+
     /**
      * 审批
      * @param
@@ -26,6 +33,7 @@ public class EnquiryApprovalController extends BaseController {
     @PostMapping("/approval")
     public BaseResponse approval(@RequestBody List<EnquiryApprovalBean> enquiryApprovalBeans){
 
+        enquiryApprovalBeans.forEach(x->enquiryPriceService.approve(x));
         return super.successResult();
     }
 
@@ -37,19 +45,7 @@ public class EnquiryApprovalController extends BaseController {
     @PostMapping("/query")
     public BaseResponse query(@RequestBody EnquiryPriceVO enquiryPriceVO){
 
-        return super.successResult();
+        Page<EnquiryPrice> enquiryPrices = enquiryPriceService.query(enquiryPriceVO);
+        return super.successResult(enquiryPrices);
     }
-
-    /**
-     * 申请详情
-     * @param applyId
-     * @return
-     */
-    @GetMapping("/detail/{applyId}")
-    public BaseResponse detail(@PathVariable Integer applyId){
-
-        //TODO 需要根据申请id的产品关联出商品的详情
-        return super.successResult();
-    }
-
 }

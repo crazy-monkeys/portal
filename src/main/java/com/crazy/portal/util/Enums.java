@@ -7,6 +7,8 @@ import com.crazy.portal.bean.business.idr.ReturnsEO;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @Desc:
@@ -44,7 +46,16 @@ public class Enums {
      * reject:驳回
      */
     public enum APPROVAL_STATUS {
-        pending,pass,reject
+        pending,pass,reject;
+
+        public static boolean isExists(String approvalStatus){
+            for(Enum status : APPROVAL_STATUS.values()){
+                if(String.valueOf(status).equals(approvalStatus)){
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 
     public enum YES_NO {

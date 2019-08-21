@@ -22,10 +22,6 @@ public class EnquiryPrice {
      */
     private String productModel;
 
-    /**
-     * 客户名称
-     */
-    private String customerName;
 
     /**
      * 申请说明
@@ -63,7 +59,7 @@ public class EnquiryPrice {
     private BigDecimal catalogPrice;
 
     /**
-     * 内部客户
+     * 内部客户名称
      */
     private String inCustomer;
 
