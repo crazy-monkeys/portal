@@ -66,7 +66,7 @@ public class CustomerInfo {
     /**
      * Z001 - 中国客户(Chinese Account); Z002 - 亚太客户(Asia-Pacific Account); Z003 - 北美客户(North American Account); Z010 - 内部客户(Customer); 
      */
-    private Integer custRole;
+    private String custRole;
 
     /**
      * 电话
@@ -135,7 +135,7 @@ public class CustomerInfo {
     //授信额度剩余值
     private BigDecimal creditUnUSE;
 
-    private CustomerReport customerReport;
+    private List<CustomerReport> customerReports;
 
     /*资产信息 季度更新 dealer*/
     private List<AssetsInformation> assetsInformations;

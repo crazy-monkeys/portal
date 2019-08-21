@@ -53,8 +53,12 @@ public class CustomerInfoService {
 
     public PageInfo<CustomerInfo> queryList(CustomerQueryBean customerQueryBean){
         PortalUtil.defaultStartPage(customerQueryBean.getPageSize(), customerQueryBean.getPageSize());
-        List<CustomerInfo> customerInfos = null;
+        List<CustomerInfo> customerInfos = customerInfoMapper.selectCustomerInfo(customerQueryBean);
         return new PageInfo<>(customerInfos);
+    }
+
+    public CustomerInfo queryInfo(Integer reportId, Integer customerId){
+        return customerInfoMapper.queryReportInfo(customerId, reportId);
     }
 
     /**
@@ -93,11 +97,14 @@ public class CustomerInfoService {
             return null;
         }
         //已报备客户不允许报备
-        BusinessUtil.assertFlase(customerInfo.getCustomerReport().getReportStatus()==1, ErrorCodes.BusinessEnum.CUSTOMER_IS_REPORT);
+        List<CustomerReport> reports = customerInfo.getCustomerReports();
+        reports.forEach(e->{
+            BusinessUtil.assertFlase(e.getReportStatus()==1, ErrorCodes.BusinessEnum.CUSTOMER_IS_REPORT);
+        });
 
         //销售报备为被报备的潜在客户时带出客户信息
         if(user.getUserType().equals(Enums.USER_TYPE.internal.toString())&&customerInfo.getCustType()==2){
-            return customerInfoMapper.queryReportInfo(customerInfo.getId(), user.getId(),new Integer[]{0});
+            return customerInfoMapper.queryReportInfo(customerInfo.getId(), user.getId());
         }else{
             //代理商报备 如果客户名称存在  带出客户id
             CustomerInfo reportCustomer = new CustomerInfo();
@@ -188,6 +195,7 @@ public class CustomerInfoService {
         customerReport.setApproveUser(approvalId);
         customerReport.setApproveRemark(remark);
         customerReport.setApproveTime(new Date());
+        customerReport.setActive(0);
         customerReportMapper.updateByPrimaryKeySelective(customerReport);
     }
 
@@ -208,7 +216,7 @@ public class CustomerInfoService {
         customerReport.setReportTime(new Date());
         customerReport.setActive(1);
         customerReportMapper.insertSelective(customerReport);
-        saveCustomerDetail(customerInfo, customerReport.getId(), reportDealer==null?reportSales:reportDealer);
+        saveCustomerDetail(customerInfo, customerReport.getRepId(), reportDealer==null?reportSales:reportDealer);
     }
 
 
