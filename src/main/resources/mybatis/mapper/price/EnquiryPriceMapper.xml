@@ -4,7 +4,6 @@
   <resultMap id="BaseResultMap" type="com.crazy.portal.entity.price.EnquiryPrice">
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="product_model" jdbcType="VARCHAR" property="productModel" />
-    <result column="customer_name" jdbcType="VARCHAR" property="customerName" />
     <result column="apply_remark" jdbcType="VARCHAR" property="applyRemark" />
     <result column="apply_time" jdbcType="TIMESTAMP" property="applyTime" />
     <result column="bu" jdbcType="VARCHAR" property="bu" />
@@ -23,7 +22,7 @@
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, product_model, customer_name, apply_remark, apply_time, bu, pdt, product_type, 
+    id, product_model, apply_remark, apply_time, bu, pdt, product_type,
     platform, catalog_price, in_customer, effect_time, dead_time, modify_time, approval_status, 
     approval_remark, approver, proposer, create_time
   </sql>
@@ -42,8 +41,8 @@
         <if test="productModel != null">
             product_model = #{productModel,jdbcType=VARCHAR},
         </if>
-        <if test="customerName != null">
-            customer_name = #{customerName,jdbcType=VARCHAR},
+        <if test="inCustomer != null">
+            in_customer = #{inCustomer,jdbcType=VARCHAR},
         </if>
         <if test="approvalStatus != null">
             approval_status = #{approvalStatus,jdbcType=VARCHAR},
@@ -67,9 +66,6 @@
       </if>
       <if test="productModel != null">
         product_model,
-      </if>
-      <if test="customerName != null">
-        customer_name,
       </if>
       <if test="applyRemark != null">
         apply_remark,
@@ -127,9 +123,6 @@
       <if test="productModel != null">
         #{productModel,jdbcType=VARCHAR},
       </if>
-      <if test="customerName != null">
-        #{customerName,jdbcType=VARCHAR},
-      </if>
       <if test="applyRemark != null">
         #{applyRemark,jdbcType=VARCHAR},
       </if>
@@ -185,9 +178,6 @@
     <set>
       <if test="productModel != null">
         product_model = #{productModel,jdbcType=VARCHAR},
-      </if>
-      <if test="customerName != null">
-        customer_name = #{customerName,jdbcType=VARCHAR},
       </if>
       <if test="applyRemark != null">
         apply_remark = #{applyRemark,jdbcType=VARCHAR},
