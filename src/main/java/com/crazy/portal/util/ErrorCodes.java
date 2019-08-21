@@ -186,4 +186,31 @@ public class ErrorCodes {
             return enMsg;
         }
     }
+
+
+    public enum PriceEnum implements ErrorInfo {
+
+        PRICE_ENQUIEY_NOT_EXISTS(80000,"询价单未存在"),
+        PRICE_ENQUIEY_APPROVAL_STATUS_NOT_EXISTS(80001,"审批状态不存在"),
+        PRICE_CATALOG_NOT_EXISTS(80002,"目录价格不存在")
+        ;
+
+        private final int code;
+        private final String zhMsg;
+
+        PriceEnum(int code, String zhMsg){
+            this.code = code;
+            this.zhMsg = zhMsg;
+        }
+
+        @Override
+        public int getCode() {
+            return code;
+        }
+
+        @Override
+        public String getZhMsg() {
+            return zhMsg;
+        }
+    }
 }

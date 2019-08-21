@@ -34,37 +34,25 @@
     where id = #{id,jdbcType=INTEGER}
   </select>
 
-
   <select id="selectByParamsWithPage" parameterType="com.crazy.portal.bean.price.EnquiryPriceVO" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from t_enquiry_price
     <where>
-      <if test="bu != null">
-        bu = #{bu,jdbcType=VARCHAR},
-      </if>
-      <if test="pdt != null">
-        pdt = #{pdt,jdbcType=VARCHAR},
-      </if>
-      <if test="platform != null">
-        platform = #{platform,jdbcType=VARCHAR},
-      </if>
-      <if test="productType != null">
-        product_type = #{productType,jdbcType=VARCHAR},
-      </if>
-      <if test="proposer != null">
-        proposer = #{proposer,jdbcType=VARCHAR},
-      </if>
-      <if test="applyBeginTime != null">
-        apply_time &gt;= #{applyBeginTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="applyEndTime != null">
-        apply_time &lt;= #{applyEndTime,jdbcType=TIMESTAMP},
-      </if>
+        <if test="productModel != null">
+            product_model = #{productModel,jdbcType=VARCHAR},
+        </if>
+        <if test="customerName != null">
+            customer_name = #{customerName,jdbcType=VARCHAR},
+        </if>
+        <if test="approvalStatus != null">
+            approval_status = #{approvalStatus,jdbcType=VARCHAR},
+        </if>
+        <if test="proposer != null">
+            proposer = #{proposer,jdbcType=VARCHAR},
+        </if>
     </where>
   </select>
-
-
 
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from t_enquiry_price

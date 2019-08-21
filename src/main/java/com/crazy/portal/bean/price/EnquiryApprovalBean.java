@@ -17,7 +17,13 @@ public class EnquiryApprovalBean {
     private Integer applyId;
 
     /**
-     * 1:申请通过  -1:申请驳回
+     * @see  com.crazy.portal.util.Enums.APPROVAL_STATUS
      */
-    private Integer status;
+    private String approvalStatus;
+
+    //审批人
+    private String approver;
+
+    //审批说明
+    private String approvalRemark;
 }

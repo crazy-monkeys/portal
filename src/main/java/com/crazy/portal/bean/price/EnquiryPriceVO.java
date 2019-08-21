@@ -1,8 +1,8 @@
 package com.crazy.portal.bean.price;
 
+import com.crazy.portal.bean.common.PageBean;
 import lombok.Data;
 
-import java.util.Date;
 
 /**
  * @Desc:
@@ -11,31 +11,41 @@ import java.util.Date;
  * @Modified by:
  */
 @Data
-public class EnquiryPriceVO {
-    /** 新建申请 start **/
+public class EnquiryPriceVO extends PageBean {
+
+    /**
+     * 产品型号
+     */
     private String productModel;
 
+    /**
+     * 客户名称
+     */
     private String customerName;
 
-    private String remark;
-
-
-    /** 查询参数 start **/
-    private String bu;
-
-    private String pdt;
-
-    private String platform;
-
-    private String productType;
-
-    /** @see com.crazy.portal.util.Enums.APPROVAL_STATUS **/
-    private String approvalStatus;
-
-    private Date applyBeginTime;
-
-    private Date applyEndTime;
-
+    /**
+     * 申请人
+     */
     private String proposer;
 
+    /**
+     * 申请说明
+     */
+    private String remark;
+
+    /**
+     * 审批状态
+     * @see com.crazy.portal.util.Enums.APPROVAL_STATUS
+     **/
+    private String approvalStatus;
+
+    /**
+     * 审批人
+     */
+    private String approver;
+
+    /**
+     * 审批说明
+     */
+    private String approvalRemark;
 }
