@@ -44,19 +44,19 @@
     <include refid="Base_Column_List" />
     from t_catalog_price
     where 1=1
-    <if test="bu != null">
+    <if test="bu != null and bu != ''">
       and bu = #{bu,jdbcType=VARCHAR}
     </if>
-    <if test="pdt != null">
+    <if test="pdt != null and pdt != ''">
       and pdt = #{pdt,jdbcType=VARCHAR}
     </if>
-    <if test="productType != null">
+    <if test="productType != null and productType != ''">
       and product_type = #{productType,jdbcType=VARCHAR}
     </if>
-    <if test="platform != null">
+    <if test="platform != null and platform != '' ">
       and platform = #{platform,jdbcType=VARCHAR}
     </if>
-    <if test="productModel != null">
+    <if test="productModel != null and productModel != '' ">
       and product_model = #{productModel,jdbcType=VARCHAR}
     </if>
     <if test="effectBeginTime != null">
