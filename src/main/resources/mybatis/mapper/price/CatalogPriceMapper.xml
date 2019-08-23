@@ -22,32 +22,6 @@
     effective_time, dead_time, modify_time, remark, create_time
   </sql>
 
-  <sql id="Base_Where_Query_List">
-    <where>
-      <if test="bu != null">
-        bu = #{bu,jdbcType=VARCHAR},
-      </if>
-      <if test="pdt != null">
-        pdt = #{pdt,jdbcType=VARCHAR},
-      </if>
-      <if test="productType != null">
-        product_type = #{productType,jdbcType=VARCHAR},
-      </if>
-      <if test="platform != null">
-        platform = #{platform,jdbcType=VARCHAR},
-      </if>
-      <if test="productModel != null">
-        product_model = #{productModel,jdbcType=VARCHAR},
-      </if>
-      <if test="effectBeginTime != null">
-        effective_time &gt;= #{effectBeginTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="effectEndTime != null">
-        effective_time &lt;= #{effectEndTime,jdbcType=TIMESTAMP},
-      </if>
-    </where>
-  </sql>
-
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
@@ -69,7 +43,28 @@
     select
     <include refid="Base_Column_List" />
     from t_catalog_price
-    <include refid="Base_Where_Query_List" />
+    where 1=1
+    <if test="bu != null">
+      and bu = #{bu,jdbcType=VARCHAR}
+    </if>
+    <if test="pdt != null">
+      and pdt = #{pdt,jdbcType=VARCHAR}
+    </if>
+    <if test="productType != null">
+      and product_type = #{productType,jdbcType=VARCHAR}
+    </if>
+    <if test="platform != null">
+      and platform = #{platform,jdbcType=VARCHAR}
+    </if>
+    <if test="productModel != null">
+      and product_model = #{productModel,jdbcType=VARCHAR}
+    </if>
+    <if test="effectBeginTime != null">
+      and effective_time &gt;= #{effectBeginTime,jdbcType=TIMESTAMP}
+    </if>
+    <if test="effectEndTime != null">
+      and effective_time &lt;= #{effectEndTime,jdbcType=TIMESTAMP}
+    </if>
   </select>
 
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
