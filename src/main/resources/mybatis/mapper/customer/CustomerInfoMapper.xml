@@ -622,4 +622,19 @@ select cust.in_code,
     where cust.active=1 and cust.business_type in ('A02','A03') and rep.active =1
     and cust.cust_name = #{custName}
   </select>
+
+  <select id="selectNameAndCodeByUserId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select cust_name, in_code from t_customer_info
+    where active = 1 and create_user = #{userId}
+  </select>
+
+  <select id="selectAllCustomer" resultMap="BaseResultMap">
+    select id, out_code, cust_name from t_customer_info
+    order by create_time desc
+  </select>
+
+  <select id="selectEmailByCustName" parameterType="java.lang.String" resultType="java.lang.String">
+    select cust_email from t_customer_info
+    where cust_name = #{custName} and active = 1
+  </select>
 </mapper>
