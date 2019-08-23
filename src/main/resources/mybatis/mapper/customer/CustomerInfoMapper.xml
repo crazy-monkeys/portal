@@ -12,7 +12,7 @@
     <result column="cust_status" jdbcType="INTEGER" property="custStatus" />
     <result column="business_type" jdbcType="VARCHAR" property="businessType" />
     <result column="is_license" jdbcType="INTEGER" property="isLicense" />
-    <result column="cust_role" jdbcType="INTEGER" property="custRole" />
+    <result column="cust_role" jdbcType="VARCHAR" property="custRole" />
     <result column="cust_mobile" jdbcType="VARCHAR" property="custMobile" />
     <result column="cust_email" jdbcType="VARCHAR" property="custEmail" />
     <result column="cust_web" jdbcType="VARCHAR" property="custWeb" />
@@ -38,35 +38,35 @@
 
   <!--代理商result-->
   <resultMap id="DealerResultMap" type="com.crazy.portal.entity.cusotmer.CustomerInfo" extends="BaseResultMap">
-    <association property="basicBank" resultMap="com.crazy.portal.dao.basic.BasicBankInfoMapper.BaseResultMap" />
+    <association property="custBankInfo" resultMap="com.crazy.portal.dao.customer.CustBankInfoMapper.BaseResultMap" />
     <collection property="assetsInformations" resultMap="com.crazy.portal.dao.customer.AssetsInformationMapper.BaseResultMap" />
     <collection property="businessInformations" resultMap="com.crazy.portal.dao.customer.BusinessInformationMapper.BaseResultMap" />
     <collection property="customerAgents" resultMap="com.crazy.portal.dao.customer.CustomerAgentMapper.BaseResultMap" />
     <collection property="customerContacts" resultMap="com.crazy.portal.dao.customer.CustomerContactMapper.BaseResultMap" />
     <collection property="files" resultMap="com.crazy.portal.dao.customer.CustomerFileMapper.BaseResultMap" />
-    <collection property="relationships" resultMap="com.crazy.portal.dao.basic.BasicCorporateRelationshipMapper.BaseResultMap" />
-    <collection property="invoiceInfos" resultMap="com.crazy.portal.dao.basic.BasicInvoiceInfoMapper.BaseResultMap" />
-    <collection property="sales" resultMap="com.crazy.portal.dao.basic.BasicSalesMapper.BaseResultMap" />
+    <collection property="relationships" resultMap="com.crazy.portal.dao.customer.CustCorporateRelationshipMapper.BaseResultMap" />
+    <collection property="invoiceInfos" resultMap="com.crazy.portal.dao.customer.CustInvoiceInfoMapper.BaseResultMap" />
+    <collection property="sales" resultMap="com.crazy.portal.dao.customer.CustSalesMapper.BaseResultMap" />
     <collection property="addresses" resultMap="com.crazy.portal.dao.customer.CustomerAddressMapper.BaseResultMap" />
   </resultMap>
 
   <!--客户result-->
   <resultMap id="CustomerResultMap" type="com.crazy.portal.entity.cusotmer.CustomerInfo" extends="BaseResultMap">
     <association property="basicBank" resultMap="com.crazy.portal.dao.basic.BasicBankInfoMapper.BaseResultMap" />
+    <collection property="customerReports" resultMap="com.crazy.portal.dao.customer.CustomerReportMapper.BaseResultMap" />
     <collection property="customerProducts" resultMap="com.crazy.portal.dao.customer.CustomerProductMapper.BaseResultMap" />
     <collection property="customerAgents" resultMap="com.crazy.portal.dao.customer.CustomerAgentMapper.BaseResultMap" />
     <collection property="customerContacts" resultMap="com.crazy.portal.dao.customer.CustomerContactMapper.BaseResultMap" />
     <collection property="files" resultMap="com.crazy.portal.dao.customer.CustomerFileMapper.BaseResultMap" />
-    <collection property="relationships" resultMap="com.crazy.portal.dao.basic.BasicCorporateRelationshipMapper.BaseResultMap" />
-    <collection property="invoiceInfos" resultMap="com.crazy.portal.dao.basic.BasicInvoiceInfoMapper.BaseResultMap" />
-    <collection property="sales" resultMap="com.crazy.portal.dao.basic.BasicSalesMapper.BaseResultMap" />
+    <collection property="relationships" resultMap="com.crazy.portal.dao.customer.CustCorporateRelationshipMapper.BaseResultMap" />
+    <collection property="invoiceInfos" resultMap="com.crazy.portal.dao.customer.CustInvoiceInfoMapper.BaseResultMap" />
+    <collection property="sales" resultMap="com.crazy.portal.dao.customer.CustSalesMapper.BaseResultMap" />
     <collection property="addresses" resultMap="com.crazy.portal.dao.customer.CustomerAddressMapper.BaseResultMap" />
     <collection property="accountTeams" resultMap="com.crazy.portal.dao.customer.CustomerAccountTeamMapper.BaseResultMap" />
   </resultMap>
 
-  <!--客户报备-->
-  <resultMap id="ReportResultMap" type="com.crazy.portal.entity.cusotmer.CustomerInfo" extends="BaseResultMap">
-    <association property="customerReport" resultMap="com.crazy.portal.dao.customer.CustomerReportMapper.BaseResultMap" />
+  <resultMap id="CustomerListResultMap" type="com.crazy.portal.entity.cusotmer.CustomerInfo" extends="BaseResultMap">
+    <collection property="customerReports" resultMap="com.crazy.portal.dao.customer.CustomerReportMapper.BaseResultMap" />
   </resultMap>
 
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
@@ -79,28 +79,6 @@
     delete from t_customer_info
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.crazy.portal.entity.cusotmer.CustomerInfo">
-    insert into t_customer_info (id, cust_type, in_code, 
-      out_code, cust_name, cust_en_name, 
-      cust_abbreviation, cust_status, business_type, 
-      is_license, cust_role, cust_mobile, 
-      cust_email, cust_web, is_white, 
-      regist_time, corportae_assets, staff_number, 
-      developers_number, business_introduction, 
-      advantages_introduction, active, create_user, 
-      create_time, update_user, update_time
-      )
-    values (#{id,jdbcType=INTEGER}, #{custType,jdbcType=INTEGER}, #{inCode,jdbcType=VARCHAR}, 
-      #{outCode,jdbcType=VARCHAR}, #{custName,jdbcType=VARCHAR}, #{custEnName,jdbcType=VARCHAR}, 
-      #{custAbbreviation,jdbcType=VARCHAR}, #{custStatus,jdbcType=INTEGER}, #{businessType,jdbcType=VARCHAR}, 
-      #{isLicense,jdbcType=INTEGER}, #{custRole,jdbcType=INTEGER}, #{custMobile,jdbcType=VARCHAR}, 
-      #{custEmail,jdbcType=VARCHAR}, #{custWeb,jdbcType=VARCHAR}, #{isWhite,jdbcType=INTEGER}, 
-      #{registTime,jdbcType=TIMESTAMP}, #{corportaeAssets,jdbcType=DECIMAL}, #{staffNumber,jdbcType=INTEGER}, 
-      #{developersNumber,jdbcType=INTEGER}, #{businessIntroduction,jdbcType=VARCHAR}, 
-      #{advantagesIntroduction,jdbcType=VARCHAR}, #{active,jdbcType=INTEGER}, #{createUser,jdbcType=INTEGER}, 
-      #{createTime,jdbcType=TIMESTAMP}, #{updateUser,jdbcType=INTEGER}, #{updateTime,jdbcType=TIMESTAMP}
-      )
-  </insert>
   <insert id="insertSelective" parameterType="com.crazy.portal.entity.cusotmer.CustomerInfo" useGeneratedKeys="true" keyProperty="id">
     insert into t_customer_info
     <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -215,7 +193,7 @@
         #{isLicense,jdbcType=INTEGER},
       </if>
       <if test="custRole != null">
-        #{custRole,jdbcType=INTEGER},
+        #{custRole,jdbcType=VARCHAR},
       </if>
       <if test="custMobile != null">
         #{custMobile,jdbcType=VARCHAR},
@@ -295,7 +273,7 @@
         is_license = #{isLicense,jdbcType=INTEGER},
       </if>
       <if test="custRole != null">
-        cust_role = #{custRole,jdbcType=INTEGER},
+        cust_role = #{custRole,jdbcType=VARCHAR},
       </if>
       <if test="custMobile != null">
         cust_mobile = #{custMobile,jdbcType=VARCHAR},
@@ -356,7 +334,7 @@
       cust_status = #{custStatus,jdbcType=INTEGER},
       business_type = #{businessType,jdbcType=VARCHAR},
       is_license = #{isLicense,jdbcType=INTEGER},
-      cust_role = #{custRole,jdbcType=INTEGER},
+      cust_role = #{custRole,jdbcType=VARCHAR},
       cust_mobile = #{custMobile,jdbcType=VARCHAR},
       cust_email = #{custEmail,jdbcType=VARCHAR},
       cust_web = #{custWeb,jdbcType=VARCHAR},
@@ -459,7 +437,7 @@
     account.account_name
 
  from t_customer_info cust
- left join t_basic_bank_info bank on bank.cust_id = cust.id and bank.active=1
+ left join t_cust_bank_info bank on bank.cust_id = cust.id and bank.active=1
  left join t_assets_information assets on assets.cust_id = cust.id and assets.active=1
  left join t_business_information business on business.cust_id = cust.id and business.active =1
  left join t_customer_agent agent on agent.cust_id = cust.id and agent.active=1
@@ -562,22 +540,83 @@ select cust.in_code,
 
  from t_customer_info cust
  inner join t_customer_report rep on rep.customer_id = cust.id and rep.active=1
- left join t_customer_product pro on pro.report_id = rep.id and pro.cust_id=cust.id and pro.active=1
- left join t_customer_file file on file.cust_id = cust.id and file.report_id = rep.id and file.active=1
- left join t_customer_contact contact on contact.cust_id = cust.id and contact.report_id = rep.id and contact.active=1
- left join t_cust_bank_info bank on bank.cust_id = cust.id and bank.report_id = rep.id and bank.active=1
- left join t_cust_corporate_relationship ship on ship.cust_id = cust.id and ship.report_id = rep.id and ship.active=1
- left join t_cust_invoice_info invoice on invoice.cust_id = cust.id and invoice.report_id = rep.id and invoice.active=1
- left join t_cust_sales sales on sales.cust_id = cust.id and sales.report_id = rep.id and sales.active=1
- left join t_customer_address address on address.cust_id = cust.id and address.active=1
- left join t_customer_account_team account on account.cust_id = cust.id and account.active=1
-  where cust.id=${custId} and cust.active=1 and rep.id=#{reportId} and rep.report_status in
-    <foreach collection="status" index="index" item="s" separator="," close=")" open="(">
-      #{s}
-    </foreach>
+ left join t_customer_product pro on pro.report_id = rep.rep_id and pro.cust_id=cust.id and pro.active=1
+ left join t_customer_file file on file.cust_id = cust.id and file.report_id = rep.rep_id and file.active=1
+ left join t_customer_contact contact on contact.cust_id = cust.id and contact.report_id = rep.rep_id and contact.active=1
+ left join t_cust_bank_info bank on bank.cust_id = cust.id and bank.report_id = rep.rep_id and bank.active=1
+ left join t_cust_corporate_relationship ship on ship.cust_id = cust.id and ship.report_id = rep.rep_id and ship.active=1
+ left join t_cust_invoice_info invoice on invoice.cust_id = cust.id and invoice.report_id = rep.rep_id and invoice.active=1
+ left join t_cust_sales sales on sales.cust_id = cust.id and sales.report_id = rep.rep_id and sales.active=1
+ left join t_customer_address address on address.cust_id = cust.id and address.active=1 and address.report_id = rep.rep_id
+ left join t_customer_account_team account on account.cust_id = cust.id and account.active=1 and account.report_id = rep_i
+  where cust.id=${custId} and cust.active=1 and rep.id=#{reportId}
   </select>
 
-  <select id="selectByCustName" parameterType="java.lang.String" resultMap="ReportResultMap">
+  <select id="selectCustomerInfo" resultMap="CustomerListResultMap">
+    select cust.id,
+	cust.out_code,
+	cust.cust_name,
+	cust.cust_en_name,
+	cust.cust_abbreviation,
+	case cust.business_type when 'A01' then 'Account Market（直供)'
+	when 'A02' then 'Account Market（非直供)'
+	when 'A03' then 'Mass Market'
+	else '未知' end business_type,
+	cust.is_license,
+	case cust.cust_role when 'Z001' then '中国客户(Chinese Account)'
+	when 'Z002' then '亚太客户(Asia-Pacific Account)'
+	when 'Z003' then '北美客户(North American Account)'
+	when 'Z010' then '内部客户(Customer)'
+	else '未知' end cust_role,
+	cust.regist_time,
+	rep.rep_id,
+	rep.customer_id,
+	rep.report_dealer,
+	rep.report_sales,
+    rep.approve_time,
+	rep.report_status
+    from t_customer_info cust
+     inner join t_customer_report rep on rep.customer_id = cust.id
+    where cust.business_type != 'A04' and cust.active=1 and rep.active=1
+    <if test="custName != null ">
+      and cust.cust_name like '%${custName}%'
+    </if>
+    <if test="outCode != null">
+      and cust.out_code like '%${outCode}%'
+    </if>
+    <if test="custAbbreviation != null">
+      and cust.cust_abbreviation like '%${custAbbreviation}%'
+    </if>
+    <if test="businessType != null">
+      and cust.business_type = ${businessType}
+    </if>
+    <if test="isLicense != null">
+      and cust.is_license = ${isLicense}
+    </if>
+    <if test=" custRole != null">
+      and cust.cust_role = ${custRole}
+    </if>
+    <if test="registStartTime != null ">
+      and cust.regist_time > ${registStartTime}
+    </if>
+    <if test=" registEndTime != null">
+      <![CDATA[ and cust.regist_time  <  ${registEndTime}]]>
+    </if>
+    <if test="registStartTime != null and registEndTime != null">
+      and cust.regist_time BETWEEN registStartTime and registEndTime
+    </if>
+    <if test="reportStartDate != null ">
+      and rep.approve_time> ${reportStartDate}
+    </if>
+    <if test=" reportEndDate != null">
+      and rep.approve_time   <![CDATA[<]]>  ${approveEndTime}
+    </if>
+    <if test="reportStartDate != null and reportEndDate != null">
+      and rep.approve_time BETWEEN reportStartDate and reportEndDate
+    </if>
+  </select>
+
+  <select id="selectByCustName" parameterType="java.lang.String" resultMap="CustomerListResultMap">
     select * from t_customer_info cust
     inner join t_customer_report rep on rep.customer_id = cust.id
     where cust.active=1 and cust.business_type in ('A02','A03') and rep.active =1

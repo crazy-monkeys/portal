@@ -5,7 +5,7 @@ import java.util.Date;
 
 @Data
 public class CustomerReport {
-    private Integer id;
+    private Integer repId;
 
     private Integer reportDealer;
 

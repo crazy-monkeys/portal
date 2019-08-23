@@ -1,5 +1,6 @@
 package com.crazy.portal.dao.customer;
 
+import com.crazy.portal.bean.customer.CustomerQueryBean;
 import com.crazy.portal.entity.cusotmer.CustomerInfo;
 import org.apache.ibatis.annotations.Param;
 
@@ -22,9 +23,11 @@ public interface CustomerInfoMapper {
 
     CustomerInfo selectByCustName(@Param("custName") String custName);
 
-    CustomerInfo queryReportInfo(@Param("custId") int custId, @Param("reportId") int reportId, @Param("status")Integer[] status);
+    CustomerInfo queryReportInfo(@Param("custId") int custId, @Param("reportId") int reportId);
 
     List<CustomerInfo> selectNameAndCodeByUserId(@Param("userId") Integer userId);
 
     List<CustomerInfo> selectAllCustomer();
+
+    List<CustomerInfo> selectCustomerInfo(CustomerQueryBean record);
 }

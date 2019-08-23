@@ -80,13 +80,15 @@ public class CustomerController extends BaseController{
 
     //查询所有客户
     @PostMapping("/list")
-    public BaseResponse customers(@RequestBody CustomerQueryBean customerQueryBean){
-
-        return successResult();
+    public BaseResponse list(@RequestBody CustomerQueryBean customerQueryBean){
+        return successResult(customerInfoService.queryList(customerQueryBean));
     }
+
     //查询客户明细
-
-
+    @GetMapping("/info/{reportId}/{custId}")
+    public BaseResponse info(@PathVariable Integer reportId, @PathVariable Integer custId){
+        return successResult(customerInfoService.queryInfo(reportId,custId));
+    }
 /**
     //获取用户列表
     @GetMapping("/list")
