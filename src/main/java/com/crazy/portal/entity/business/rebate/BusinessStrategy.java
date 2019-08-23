@@ -22,9 +22,9 @@ public class BusinessStrategy {
     private String customerAbbr;
 
     private String productMode;
-
+    @JSONField(format="yyyy-MM-dd HH:mm:ss")
     private Date validStartDate;
-
+    @JSONField(format="yyyy-MM-dd HH:mm:ss")
     private Date validEndDate;
 
     private BigDecimal actualPrice;
