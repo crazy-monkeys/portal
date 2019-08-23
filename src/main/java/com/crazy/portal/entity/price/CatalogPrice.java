@@ -61,13 +61,13 @@ public class CatalogPrice {
     /**
      * 生效时间
      */
-    @JSONField(format="yyyy-MM-dd HH:mm:ss")
+    @JSONField(format="yyyy-MM-dd")
     private Date effectiveTime;
 
     /**
      * 失效时间
      */
-    @JSONField(format="yyyy-MM-dd HH:mm:ss")
+    @JSONField(format="yyyy-MM-dd")
     private Date deadTime;
 
     /**

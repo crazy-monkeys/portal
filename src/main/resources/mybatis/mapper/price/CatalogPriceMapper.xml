@@ -33,7 +33,7 @@
     select
     <include refid="Base_Column_List" />
     from t_catalog_price
-    where product_model = #{product_model,jdbcType=VARCHAR}
+    where product_model = #{productModel,jdbcType=VARCHAR}
     <if test="insideCustomer != null and insideCustomer != ''">
       and inside_customer = #{insideCustomer,jdbcType=VARCHAR}
     </if>

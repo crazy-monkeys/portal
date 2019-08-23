@@ -43,32 +43,31 @@
     select
     <include refid="Base_Column_List" />
     from t_actual_price
-    <where>
-      <if test="bu != null">
-        #{bu,jdbcType=VARCHAR},
-      </if>
-      <if test="pdt != null">
-        #{pdt,jdbcType=VARCHAR},
-      </if>
-      <if test="productModel != null">
-        #{product_model,jdbcType=VARCHAR},
-      </if>
-      <if test="relationProductModel != null">
-        #{relation_product_model,jdbcType=VARCHAR},
-      </if>
-      <if test="status != null">
-        #{status,jdbcType=VARCHAR},
-      </if>
-      <if test="priceProposer != null">
-        #{priceProposer,jdbcType=VARCHAR},
-      </if>
-      <if test="effectBeginTime != null">
-        effect_time &gt;= #{effectBeginTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="effectEndTime != null">
-        effect_time &lt;= #{effectEndTime,jdbcType=TIMESTAMP},
-      </if>
-    </where>
+    where 1=1
+    <if test="bu != null and bu != '' ">
+      and bu = #{bu,jdbcType=VARCHAR}
+    </if>
+    <if test="pdt != null and pdt != '' ">
+      and pdt = #{pdt,jdbcType=VARCHAR}
+    </if>
+    <if test="productModel != null and productModel != '' ">
+      and product_model = #{productModel,jdbcType=VARCHAR}
+    </if>
+    <if test="relationProductModel != null and relationProductModel != '' ">
+      and relation_product_model = #{relationProductModel,jdbcType=VARCHAR}
+    </if>
+    <if test="status != null and status != '' ">
+      and status = #{status,jdbcType=VARCHAR}
+    </if>
+    <if test="priceProposer != null and priceProposer != '' ">
+      and price_proposer = #{priceProposer,jdbcType=VARCHAR}
+    </if>
+    <if test="effectBeginTime != null">
+      and effect_time &gt;= #{effectBeginTime,jdbcType=TIMESTAMP}
+    </if>
+    <if test="effectEndTime != null">
+      and effect_time &lt;= #{effectEndTime,jdbcType=TIMESTAMP}
+    </if>
   </select>
 
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">

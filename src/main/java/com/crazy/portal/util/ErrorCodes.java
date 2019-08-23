@@ -192,7 +192,8 @@ public class ErrorCodes {
 
         PRICE_ENQUIEY_NOT_EXISTS(80000,"询价单未存在"),
         PRICE_ENQUIEY_APPROVAL_STATUS_NOT_EXISTS(80001,"审批状态不存在"),
-        PRICE_CATALOG_NOT_EXISTS(80002,"目录价格不存在")
+        PRICE_CATALOG_NOT_EXISTS(80002,"产品型号不存在"),
+        PRICE_CATALOG_CUSTOMER_NOT_EXISTS(80003,"内部客户下产品型号不存在")
         ;
 
         private final int code;

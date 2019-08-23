@@ -86,13 +86,13 @@ public class PriceStrategy {
     /**
      * 生效时间
      */
-    @JSONField(format="yyyy-MM-dd HH:mm:ss")
+    @JSONField(format="yyyy-MM-dd")
     private Date effectTime;
 
     /**
      * 失效时间
      */
-    @JSONField(format="yyyy-MM-dd HH:mm:ss")
+    @JSONField(format="yyyy-MM-dd")
     private Date deadTime;
 
     /**

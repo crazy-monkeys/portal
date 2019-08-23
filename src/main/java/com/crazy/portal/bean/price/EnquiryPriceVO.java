@@ -21,7 +21,7 @@ public class EnquiryPriceVO extends PageBean {
     /**
      * 客户名称
      */
-    private String customerName;
+    private String inCustomer;
 
     /**
      * 申请人
@@ -31,7 +31,7 @@ public class EnquiryPriceVO extends PageBean {
     /**
      * 申请说明
      */
-    private String remark;
+    private String applyRemark;
 
     /**
      * 审批状态
