@@ -129,9 +129,9 @@ public class RebateService {
     }
 
     private void sendConfirmEmail(RebateConfirmBean bean) {
-        CustomerInfo custInfo = customerInfoMapper.selectByCustName(bean.getExecutor());
+        String email = customerInfoMapper.selectEmailByCustName(bean.getExecutor());
         MailBean mailBean = new MailBean();
-        mailBean.setTos(custInfo.getCustEmail());
+        mailBean.setTos(email);
         mailBean.setSubject("Rebate确认函");
         mailBean.setParams(ImmutableMap.of("customerName", bean.getExecutor(), "amount", bean.getSurplusRebateAmount().toString()));
         mailBean.setTemplateName(Enums.MAIL_TEMPLATE.REBATE_CONFIRM.getTemplateName());
