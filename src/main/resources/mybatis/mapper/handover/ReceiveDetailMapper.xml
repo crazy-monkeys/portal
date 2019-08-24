@@ -241,4 +241,8 @@
     where record_id = #{recordId} and error_msg is not null
   </select>
 
+  <delete id="deleteByRecordId" >
+    delete from t_receive_detail where record_id = #{recordId}
+  </delete>
+
 </mapper>

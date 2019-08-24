@@ -2,6 +2,9 @@ package com.crazy.portal.controller.handover;
 
 import com.crazy.portal.bean.BaseResponse;
 import com.crazy.portal.controller.BaseController;
+import com.crazy.portal.entity.handover.DeliverDetail;
+import com.crazy.portal.entity.handover.ReceiveDetail;
+import com.crazy.portal.service.handover.HandoverServiceContext;
 import com.crazy.portal.service.handover.HandoverService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -10,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -21,6 +25,8 @@ public class HandoverController extends BaseController {
 
     @Resource
     private HandoverService handoverService;
+    @Resource
+    private HandoverServiceContext handoverServiceContext;
 
     /**
      * 出货数据查询
@@ -53,12 +59,12 @@ public class HandoverController extends BaseController {
 
     @GetMapping(value = "/handover/dealer/detail")
     public BaseResponse getDetailList(Integer dealerId, String type, Integer pageNum, Integer pageSize) {
-        return super.successResult(handoverService.getDetailList(type, dealerId, pageNum, pageSize));
+        return super.successResult(handoverServiceContext.getService(type).getDetailList(dealerId, pageNum, pageSize));
     }
 
     @GetMapping(value = "/handover/dealer/reject/download")
     public void downloadRejectData(Integer recordId, String type, HttpServletResponse response) {
-        handoverService.downloadRejectData(recordId, type, response);
+        handoverServiceContext.getService(type).downloadRejectData(recordId, response);
     }
 
     /**
@@ -68,7 +74,7 @@ public class HandoverController extends BaseController {
      */
     @GetMapping(value = "/handover/detail/{id}")
     public BaseResponse getDetailInfo(@PathVariable Integer id, String type, Integer pageNum, Integer pageSize) {
-        return super.successResult(handoverService.getDetailInfo(id, type, pageNum, pageSize));
+        return super.successResult(handoverServiceContext.getService(type).getDetailInfo(id, pageNum, pageSize));
     }
 
     /**
@@ -93,7 +99,18 @@ public class HandoverController extends BaseController {
      */
     @GetMapping(value = "/handover/template")
     public void downloadTemplate(String type, HttpServletResponse response) {
-        handoverService.downloadTemplate(response, type);
+        List<DeliverDetail> list = new ArrayList<>();
+        DeliverDetail data = new DeliverDetail();
+        data.setId(1);
+        list.add(data);
+        handoverServiceContext.getService("deliver").verificationData(list, 1);
+
+        List<ReceiveDetail> list2 = new ArrayList<>();
+        ReceiveDetail data2 = new ReceiveDetail();
+        data.setId(2);
+        list2.add(data2);
+        handoverServiceContext.getService("receive").verificationData(list2, 1);
+//        handoverService.downloadTemplate(response, type);
     }
 
     /**
@@ -103,8 +120,8 @@ public class HandoverController extends BaseController {
      */
     @PostMapping(value = "/handover/template")
     public BaseResponse uploadTemplateData(MultipartFile excel, String type) {
-        List<?> data = handoverService.uploadTemplateData(excel, getCurrentUser().getId(), type);
-        return super.successResult(handoverService.verificationData(data, getCurrentUser().getId(), type));
+        List<?> data = handoverServiceContext.getService(type).uploadTemplateData(excel, getCurrentUser().getId());
+        return super.successResult(handoverServiceContext.getService(type).verificationData(data, getCurrentUser().getId()));
     }
 
     /**
@@ -116,8 +133,8 @@ public class HandoverController extends BaseController {
      */
     @PostMapping(value = "/handover/error/retry")
     public BaseResponse modifyErrorData(MultipartFile excel, String type, Integer recordId) {
-        List<?> data = handoverService.uploadTemplateData(excel, getCurrentUser().getId(), type);
-        return super.successResult(handoverService.verificationDataByErrorData(data, getCurrentUser().getId(), type, recordId));
+        List<?> data = handoverServiceContext.getService(type).uploadTemplateData(excel, getCurrentUser().getId());
+        return super.successResult(handoverServiceContext.getService(type).verificationDataByErrorData(data, getCurrentUser().getId(), recordId));
     }
 
     /**
@@ -126,7 +143,7 @@ public class HandoverController extends BaseController {
      */
     @GetMapping(value = "/handover/error")
     public void downloadError(HttpServletResponse response, String type, String fileName) {
-        handoverService.downloadError(response, fileName, type);
+        handoverServiceContext.getService(type).downloadError(response, fileName);
     }
 
     /**

@@ -26,4 +26,6 @@ public interface ReceiveDetailMapper {
     List<ReceiveTemplateBean> selectErrorDataByRecord(@Param(value = "recordId") Integer recordId);
 
     int countErrorData(@Param(value = "recordId") Integer recordId);
+
+    int deleteByRecordId(@Param(value = "recordId") Integer recordId);
 }
