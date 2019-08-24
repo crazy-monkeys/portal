@@ -4,17 +4,22 @@ import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.excel.metadata.BaseRowModel;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
+
+/**
+ * 
+ * @author lee
+ * @date   2019-08-24 23:05::42
+ */
 
 @Data
 public class DeliverDetail extends BaseRowModel {
 
-    private String dealerName;
-
     private Integer id;
-    /** 上传时间 */
-    @ExcelProperty(index = 0, value = "上传时间")
-    private Date uploadTime;
+
+    @ExcelProperty(index = 0, value = "代理全称")
+    private String dealerName;
 
     /** 客户外部号 */
     @ExcelProperty(index = 1, value = "客户外部号")
@@ -54,15 +59,15 @@ public class DeliverDetail extends BaseRowModel {
 
     /** Sale Price */
     @ExcelProperty(index = 10, value = "Sale Price")
-    private Long salePrice;
+    private BigDecimal salePrice;
 
     /** Po Price */
     @ExcelProperty(index = 11, value = "Po Price")
-    private Long poPrice;
+    private BigDecimal poPrice;
 
     /** Margin */
     @ExcelProperty(index = 12, value = "Margin")
-    private String margin;
+    private BigDecimal margin;
 
     /** 币种 */
     @ExcelProperty(index = 13, value = "币种")
@@ -70,11 +75,11 @@ public class DeliverDetail extends BaseRowModel {
 
     /** 客户订单号 */
     @ExcelProperty(index = 14, value = "客户订单号")
-    private Integer customerOrderNumber;
+    private String customerOrderNumber;
 
     /** 出货类型 */
     @ExcelProperty(index = 15, value = "出货类型")
-    private Integer deliveryType;
+    private String deliveryType;
 
     /** 订单月份 */
     @ExcelProperty(index = 16, value = "订单月份")
@@ -88,7 +93,11 @@ public class DeliverDetail extends BaseRowModel {
     @ExcelProperty(index = 18, value = "备注")
     private String remark;
 
+    @ExcelProperty(index = 19, value = "错误信息")
     private String errorMsg;
+
+    @ExcelProperty(index = 20, value = "ID")
+    private Integer thirdId;
 
     private Integer recordId;
 

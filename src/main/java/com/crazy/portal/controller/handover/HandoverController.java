@@ -2,8 +2,6 @@ package com.crazy.portal.controller.handover;
 
 import com.crazy.portal.bean.BaseResponse;
 import com.crazy.portal.controller.BaseController;
-import com.crazy.portal.entity.handover.DeliverDetail;
-import com.crazy.portal.entity.handover.ReceiveDetail;
 import com.crazy.portal.service.handover.HandoverServiceContext;
 import com.crazy.portal.service.handover.HandoverService;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,7 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -99,18 +96,7 @@ public class HandoverController extends BaseController {
      */
     @GetMapping(value = "/handover/template")
     public void downloadTemplate(String type, HttpServletResponse response) {
-        List<DeliverDetail> list = new ArrayList<>();
-        DeliverDetail data = new DeliverDetail();
-        data.setId(1);
-        list.add(data);
-        handoverServiceContext.getService("deliver").verificationData(list, 1);
-
-        List<ReceiveDetail> list2 = new ArrayList<>();
-        ReceiveDetail data2 = new ReceiveDetail();
-        data.setId(2);
-        list2.add(data2);
-        handoverServiceContext.getService("receive").verificationData(list2, 1);
-//        handoverService.downloadTemplate(response, type);
+        handoverServiceContext.getService(type).downloadTemplate(response);
     }
 
     /**
@@ -122,6 +108,7 @@ public class HandoverController extends BaseController {
     public BaseResponse uploadTemplateData(MultipartFile excel, String type) {
         List<?> data = handoverServiceContext.getService(type).uploadTemplateData(excel, getCurrentUser().getId());
         return super.successResult(handoverServiceContext.getService(type).verificationData(data, getCurrentUser().getId()));
+//        return super.successResult();
     }
 
     /**

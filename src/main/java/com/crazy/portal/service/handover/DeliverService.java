@@ -3,11 +3,9 @@ package com.crazy.portal.service.handover;
 import com.alibaba.fastjson.JSONObject;
 import com.crazy.portal.bean.handover.DeliverTemplateBean;
 import com.crazy.portal.bean.handover.HandoverUploadVO;
-import com.crazy.portal.bean.handover.ReceiveTemplateBean;
 import com.crazy.portal.dao.handover.DeliverDetailMapper;
 import com.crazy.portal.entity.handover.DeliverDetail;
 import com.crazy.portal.entity.handover.DeliverReceiveRecord;
-import com.crazy.portal.entity.handover.ReceiveDetail;
 import com.crazy.portal.util.BusinessUtil;
 import com.crazy.portal.util.ExcelUtils;
 import com.crazy.portal.util.FileUtil;
@@ -31,6 +29,7 @@ import static com.crazy.portal.util.ErrorCodes.BusinessEnum.HANDOVER_NOT_DEALER;
 
 @Slf4j
 @Service("deliver")
+//@Transactional
 public class DeliverService extends AbstractHandover implements IHandover<DeliverDetail> {
 
     @Resource
@@ -47,18 +46,17 @@ public class DeliverService extends AbstractHandover implements IHandover<Delive
     @Value("${file.path.deliver.local}")
     private String deliverLocalPath;
 
+
     @Override
     public HandoverUploadVO verificationData(List<DeliverDetail> deliverData, Integer userId) {
         //数据包装，生成第三方需要的文件
         String thirdFileName = ExcelUtils.writeExcel(deliverPushPath, deliverData, DeliverDetail.class);
         //请求了第三方，并拿到了结果
         BiCheckResult checkResult = callBiServer(CHECK_SALES_IMPORT_FILE, (deliverPushPath+thirdFileName), deliverPullPath);
-        List<DeliverTemplateBean> responseData = ExcelUtils.readExcel(checkResult.getFilePath(), DeliverTemplateBean.class);
+        List<DeliverDetail> responseData = ExcelUtils.readExcel(checkResult.getFilePath(), DeliverDetail.class);
         //批次记录表
-        DeliverReceiveRecord record = handoverService.genRecord("模拟出货的代理商名字", userId, 1);
-        for(DeliverTemplateBean templateBean : responseData){
-            DeliverDetail detail = JSONObject.parseObject(JSONObject.toJSONString(templateBean), DeliverDetail.class);
-            detail.setErrorMsg(templateBean.getThirdErrorMsg());
+        DeliverReceiveRecord record = handoverService.genRecord("湘海电子（香港）有限公司", userId, 1);
+        for(DeliverDetail detail : responseData){
             detail.setRecordId(record.getId());
             deliverDetailMapper.insertSelective(detail);
         }
@@ -70,7 +68,7 @@ public class DeliverService extends AbstractHandover implements IHandover<Delive
         List<DeliverTemplateBean> errorList = (List<DeliverTemplateBean>) data;
         for(DeliverTemplateBean errorData : errorList) {
             DeliverDetail dbRecord = deliverDetailMapper.selectByPrimaryKey(errorData.getErrorId());
-            //Excel内的ID未找到记录则不尽兴处理
+            //Excel内的ID未找到记录则不进行处理
             BusinessUtil.assertFlase(null == dbRecord || recordId != dbRecord.getRecordId(), HANDOVER_DATA_NOT_EXISTS);
             DeliverDetail detail = JSONObject.parseObject(JSONObject.toJSONString(errorData), DeliverDetail.class);
             detail.setId(dbRecord.getId());
@@ -84,11 +82,9 @@ public class DeliverService extends AbstractHandover implements IHandover<Delive
         List<DeliverDetail> fullData = deliverDetailMapper.selectByRecordId(recordId);
         String thirdFileName = ExcelUtils.writeExcel(deliverPushPath, fullData, DeliverDetail.class);
         BiCheckResult checkResult = callBiServer(CHECK_SALES_IMPORT_FILE, (deliverPushPath+thirdFileName), deliverPullPath);
-        List<DeliverTemplateBean> responseData = ExcelUtils.readExcel(checkResult.getFilePath(), DeliverTemplateBean.class);
+        List<DeliverDetail> responseData = ExcelUtils.readExcel(checkResult.getFilePath(), DeliverDetail.class);
         deliverDetailMapper.deleteByRecordId(recordId);
-        for(DeliverTemplateBean templateBean : responseData){
-            DeliverDetail detail = JSONObject.parseObject(JSONObject.toJSONString(templateBean), DeliverDetail.class);
-            detail.setErrorMsg(templateBean.getThirdErrorMsg());
+        for(DeliverDetail detail : responseData){
             detail.setRecordId(recordId);
             deliverDetailMapper.insertSelective(detail);
         }
@@ -140,12 +136,12 @@ public class DeliverService extends AbstractHandover implements IHandover<Delive
         BusinessUtil.assertFlase(false, HANDOVER_NOT_DEALER);
         List<DeliverTemplateBean> deliverData =  ExcelUtils.readExcel(excel, DeliverTemplateBean.class , 1);
         for(DeliverTemplateBean templateBean : deliverData){
-            templateBean.setDealerName("模拟出货的代理商名字");
+            templateBean.setDealerName("湘海电子（香港）有限公司");
         }
         return deliverData;
     }
 
-    private HandoverUploadVO genThirdResult(BiCheckResult checkResult, List<DeliverTemplateBean> responseData, Integer recordId) {
+    private HandoverUploadVO genThirdResult(BiCheckResult checkResult, List<DeliverDetail> responseData, Integer recordId) {
         HandoverUploadVO resultInfo = new HandoverUploadVO();
         resultInfo.setRecordId(recordId);
         resultInfo.setIsError(checkResult.isSuccess() ? 0 : 1);

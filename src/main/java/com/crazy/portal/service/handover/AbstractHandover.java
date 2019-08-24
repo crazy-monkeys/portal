@@ -27,13 +27,14 @@ public abstract class AbstractHandover {
      */
     protected BiCheckResult callBiServer(Enums.BI_FUNCTION_CODE functionCode, String pushPath, String pullPath) {
         try {
-            String response = mockThirdResult() ? "\"OK:/Users/lee/Documents/job_code/portal_file/pull_thrid/ok.xlsx\"" :
-                    "\"NG:/Users/lee/Documents/job_code/portal_file/pull_thrid/error.xlsx\"";
+            String response = mockThirdResult() ? "\"OK:/Users/lee/Documents/job_code/portal_file/pull_thrid/deliver/ok.xlsx\"" :
+                    "\"NG:/Users/lee/Documents/job_code/portal_file/pull_thrid/deliver/error.xlsx\"";
 //            String response = CallApiUtils.BITest(functionCode, pushPath, pullPath);
             if(StringUtils.isEmpty(response)){
                 log.error("{} -> {}", HANDOVER_BI_RESPONSE_EXCEPTION.getZhMsg(), response);
                 throw new BusinessException(HANDOVER_BI_RESPONSE_EXCEPTION);
             }
+            response = response.replace("\"", "");
             if(log.isDebugEnabled()){
                 log.debug("Bi server response info -> pushPath:[{}], pullPath:[{}], response:[{}]", pushPath, pullPath, response);
             }

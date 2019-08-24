@@ -21,6 +21,7 @@ import java.util.Map;
 
 import static com.crazy.portal.util.ErrorCodes.BusinessEnum.EXCEL_READ_ERROR;
 import static com.crazy.portal.util.ErrorCodes.BusinessEnum.EXCEL_TYPE_ERROR;
+import static com.crazy.portal.util.ErrorCodes.BusinessEnum.EXCEL_WRITE_ERROR;
 
 /**
  * @Description EasyExcel工具类
@@ -71,8 +72,8 @@ public class ExcelUtils {
             writer.finish();
             return fileName;
         }catch (Exception ex) {
-            log.error("", ex);
-            return "";
+            log.error(EXCEL_WRITE_ERROR.getZhMsg(), ex);
+            throw new BusinessException(EXCEL_WRITE_ERROR);
         }finally {
             IOUtils.closeQuietly(out);
         }
@@ -124,7 +125,7 @@ public class ExcelUtils {
         try {
             return readExcel(in, clazz, fileName, sheetNo, headLineNum);
         }catch (Exception ex) {
-            log.error("Read excel exception", ex);
+            log.error(EXCEL_READ_ERROR.getZhMsg(), ex);
             throw new BusinessException(EXCEL_READ_ERROR);
         }
     }
@@ -148,7 +149,7 @@ public class ExcelUtils {
         try {
             return readExcel(in, clazz, fullFilePath, sheetNo, headLineNum);
         }catch (Exception ex) {
-            log.error("Read excel exception", ex);
+            log.error(EXCEL_READ_ERROR.getZhMsg(), ex);
             throw new BusinessException(EXCEL_READ_ERROR);
         }
     }
@@ -193,7 +194,7 @@ public class ExcelUtils {
         try {
             return readExcel(excel.getInputStream(), clazz, excel.getOriginalFilename(), sheetNo, headLineNum);
         }catch (Exception ex) {
-            log.error("Read excel exception", ex);
+            log.error(EXCEL_READ_ERROR.getZhMsg(), ex);
             throw new BusinessException(EXCEL_READ_ERROR);
         }
     }

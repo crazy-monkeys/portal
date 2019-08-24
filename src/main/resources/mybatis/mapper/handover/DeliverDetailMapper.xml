@@ -3,7 +3,7 @@
 <mapper namespace="com.crazy.portal.dao.handover.DeliverDetailMapper">
   <resultMap id="BaseResultMap" type="com.crazy.portal.entity.handover.DeliverDetail">
     <id column="id" jdbcType="INTEGER" property="id" />
-    <result column="upload_time" jdbcType="TIMESTAMP" property="uploadTime" />
+    <result column="third_id" jdbcType="INTEGER" property="thirdId" />
     <result column="customer_external_number" jdbcType="VARCHAR" property="customerExternalNumber" />
     <result column="customer_full_name" jdbcType="VARCHAR" property="customerFullName" />
     <result column="sales" jdbcType="VARCHAR" property="sales" />
@@ -15,15 +15,15 @@
     <result column="deliver_number" jdbcType="INTEGER" property="deliverNumber" />
     <result column="sale_price" jdbcType="DECIMAL" property="salePrice" />
     <result column="po_price" jdbcType="DECIMAL" property="poPrice" />
-    <result column="margin" jdbcType="VARCHAR" property="margin" />
+    <result column="margin" jdbcType="DECIMAL" property="margin" />
     <result column="currency" jdbcType="VARCHAR" property="currency" />
-    <result column="customer_order_number" jdbcType="INTEGER" property="customerOrderNumber" />
-    <result column="delivery_type" jdbcType="INTEGER" property="deliveryType" />
+    <result column="customer_order_number" jdbcType="VARCHAR" property="customerOrderNumber" />
+    <result column="delivery_type" jdbcType="VARCHAR" property="deliveryType" />
     <result column="order_month" jdbcType="VARCHAR" property="orderMonth" />
     <result column="delivery_company" jdbcType="VARCHAR" property="deliveryCompany" />
     <result column="remark" jdbcType="VARCHAR" property="remark" />
-    <result column="error_msg" jdbcType="VARCHAR" property="errorMsg" />
     <result column="record_id" jdbcType="INTEGER" property="recordId" />
+    <result column="error_msg" jdbcType="VARCHAR" property="errorMsg" />
   </resultMap>
 
   <resultMap id="errorResultMap" extends="BaseResultMap" type="com.crazy.portal.bean.handover.DeliverTemplateBean" >
@@ -32,10 +32,10 @@
   </resultMap>
 
   <sql id="Base_Column_List">
-    id, upload_time, customer_external_number, customer_full_name, sales, category_one, 
+    id, third_id, customer_external_number, customer_full_name, sales, category_one, 
     category_tow, category_three, product_model, delivery_date, deliver_number, sale_price, 
     po_price, margin, currency, customer_order_number, delivery_type, order_month, delivery_company, 
-    remark, error_msg, record_id
+    remark, record_id, error_msg
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -48,22 +48,22 @@
     where id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.crazy.portal.entity.handover.DeliverDetail">
-    insert into t_deliver_detail (id, upload_time, customer_external_number, 
+    insert into t_deliver_detail (id, third_id, customer_external_number, 
       customer_full_name, sales, category_one, 
       category_tow, category_three, product_model, 
       delivery_date, deliver_number, sale_price, 
       po_price, margin, currency, 
       customer_order_number, delivery_type, order_month, 
-      delivery_company, remark, error_msg, 
-      record_id)
-    values (#{id,jdbcType=INTEGER}, #{uploadTime,jdbcType=TIMESTAMP}, #{customerExternalNumber,jdbcType=VARCHAR}, 
+      delivery_company, remark, record_id
+      )
+    values (#{id,jdbcType=INTEGER}, #{thirdId,jdbcType=INTEGER}, #{customerExternalNumber,jdbcType=VARCHAR}, 
       #{customerFullName,jdbcType=VARCHAR}, #{sales,jdbcType=VARCHAR}, #{categoryOne,jdbcType=VARCHAR}, 
       #{categoryTow,jdbcType=VARCHAR}, #{categoryThree,jdbcType=VARCHAR}, #{productModel,jdbcType=VARCHAR}, 
       #{deliveryDate,jdbcType=TIMESTAMP}, #{deliverNumber,jdbcType=INTEGER}, #{salePrice,jdbcType=DECIMAL}, 
-      #{poPrice,jdbcType=DECIMAL}, #{margin,jdbcType=VARCHAR}, #{currency,jdbcType=VARCHAR}, 
-      #{customerOrderNumber,jdbcType=INTEGER}, #{deliveryType,jdbcType=INTEGER}, #{orderMonth,jdbcType=VARCHAR}, 
-      #{deliveryCompany,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, #{errorMsg,jdbcType=VARCHAR}, 
-      #{recordId,jdbcType=INTEGER})
+      #{poPrice,jdbcType=DECIMAL}, #{margin,jdbcType=DECIMAL}, #{currency,jdbcType=VARCHAR}, 
+      #{customerOrderNumber,jdbcType=VARCHAR}, #{deliveryType,jdbcType=VARCHAR}, #{orderMonth,jdbcType=VARCHAR}, 
+      #{deliveryCompany,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, #{recordId,jdbcType=INTEGER}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.crazy.portal.entity.handover.DeliverDetail">
     insert into t_deliver_detail
@@ -71,8 +71,8 @@
       <if test="id != null">
         id,
       </if>
-      <if test="uploadTime != null">
-        upload_time,
+      <if test="thirdId != null">
+        third_id,
       </if>
       <if test="customerExternalNumber != null">
         customer_external_number,
@@ -128,19 +128,19 @@
       <if test="remark != null">
         remark,
       </if>
-      <if test="errorMsg != null">
-        error_msg,
-      </if>
       <if test="recordId != null">
         record_id,
+      </if>
+      <if test="errorMsg != null" >
+        error_msg,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
         #{id,jdbcType=INTEGER},
       </if>
-      <if test="uploadTime != null">
-        #{uploadTime,jdbcType=TIMESTAMP},
+      <if test="thirdId != null">
+        #{thirdId,jdbcType=INTEGER},
       </if>
       <if test="customerExternalNumber != null">
         #{customerExternalNumber,jdbcType=VARCHAR},
@@ -176,16 +176,16 @@
         #{poPrice,jdbcType=DECIMAL},
       </if>
       <if test="margin != null">
-        #{margin,jdbcType=VARCHAR},
+        #{margin,jdbcType=DECIMAL},
       </if>
       <if test="currency != null">
         #{currency,jdbcType=VARCHAR},
       </if>
       <if test="customerOrderNumber != null">
-        #{customerOrderNumber,jdbcType=INTEGER},
+        #{customerOrderNumber,jdbcType=VARCHAR},
       </if>
       <if test="deliveryType != null">
-        #{deliveryType,jdbcType=INTEGER},
+        #{deliveryType,jdbcType=VARCHAR},
       </if>
       <if test="orderMonth != null">
         #{orderMonth,jdbcType=VARCHAR},
@@ -196,19 +196,19 @@
       <if test="remark != null">
         #{remark,jdbcType=VARCHAR},
       </if>
-      <if test="errorMsg != null">
-        #{errorMsg,jdbcType=VARCHAR},
-      </if>
       <if test="recordId != null">
         #{recordId,jdbcType=INTEGER},
+      </if>
+      <if test="errorMsg != null" >
+        #{errorMsg,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.crazy.portal.entity.handover.DeliverDetail">
     update t_deliver_detail
     <set>
-      <if test="uploadTime != null">
-        upload_time = #{uploadTime,jdbcType=TIMESTAMP},
+      <if test="thirdId != null">
+        third_id = #{thirdId,jdbcType=INTEGER},
       </if>
       <if test="customerExternalNumber != null">
         customer_external_number = #{customerExternalNumber,jdbcType=VARCHAR},
@@ -244,16 +244,16 @@
         po_price = #{poPrice,jdbcType=DECIMAL},
       </if>
       <if test="margin != null">
-        margin = #{margin,jdbcType=VARCHAR},
+        margin = #{margin,jdbcType=DECIMAL},
       </if>
       <if test="currency != null">
         currency = #{currency,jdbcType=VARCHAR},
       </if>
       <if test="customerOrderNumber != null">
-        customer_order_number = #{customerOrderNumber,jdbcType=INTEGER},
+        customer_order_number = #{customerOrderNumber,jdbcType=VARCHAR},
       </if>
       <if test="deliveryType != null">
-        delivery_type = #{deliveryType,jdbcType=INTEGER},
+        delivery_type = #{deliveryType,jdbcType=VARCHAR},
       </if>
       <if test="orderMonth != null">
         order_month = #{orderMonth,jdbcType=VARCHAR},
@@ -264,9 +264,6 @@
       <if test="remark != null">
         remark = #{remark,jdbcType=VARCHAR},
       </if>
-      <if test="errorMsg != null">
-        error_msg = #{errorMsg,jdbcType=VARCHAR},
-      </if>
       <if test="recordId != null">
         record_id = #{recordId,jdbcType=INTEGER},
       </if>
@@ -275,7 +272,7 @@
   </update>
   <update id="updateByPrimaryKey" parameterType="com.crazy.portal.entity.handover.DeliverDetail">
     update t_deliver_detail
-    set upload_time = #{uploadTime,jdbcType=TIMESTAMP},
+    set third_id = #{thirdId,jdbcType=INTEGER},
       customer_external_number = #{customerExternalNumber,jdbcType=VARCHAR},
       customer_full_name = #{customerFullName,jdbcType=VARCHAR},
       sales = #{sales,jdbcType=VARCHAR},
@@ -287,14 +284,13 @@
       deliver_number = #{deliverNumber,jdbcType=INTEGER},
       sale_price = #{salePrice,jdbcType=DECIMAL},
       po_price = #{poPrice,jdbcType=DECIMAL},
-      margin = #{margin,jdbcType=VARCHAR},
+      margin = #{margin,jdbcType=DECIMAL},
       currency = #{currency,jdbcType=VARCHAR},
-      customer_order_number = #{customerOrderNumber,jdbcType=INTEGER},
-      delivery_type = #{deliveryType,jdbcType=INTEGER},
+      customer_order_number = #{customerOrderNumber,jdbcType=VARCHAR},
+      delivery_type = #{deliveryType,jdbcType=VARCHAR},
       order_month = #{orderMonth,jdbcType=VARCHAR},
       delivery_company = #{deliveryCompany,jdbcType=VARCHAR},
       remark = #{remark,jdbcType=VARCHAR},
-      error_msg = #{errorMsg,jdbcType=VARCHAR},
       record_id = #{recordId,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
   </update>
@@ -309,7 +305,7 @@
   </select>
 
   <select id="selectErrorDataByRecord" resultMap="errorResultMap" >
-    select upload_time, customer_external_number, customer_full_name, sales, category_one,
+    select customer_external_number, customer_full_name, sales, category_one,
     category_tow, category_three, product_model, delivery_date, deliver_number, sale_price,
     po_price, margin, currency, customer_order_number, delivery_type, order_month, delivery_company,
     remark,id as error_id,error_msg as third_error_msg

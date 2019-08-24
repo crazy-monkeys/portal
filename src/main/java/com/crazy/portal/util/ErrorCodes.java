@@ -116,6 +116,7 @@ public class ErrorCodes {
         FILE_DOWNLOAD_FILE_NOT_FOUND(20002, "未找到需要下载的文件", ""),
         EXCEL_READ_ERROR(21001, "Excel数据读取异常", ""),
         EXCEL_TYPE_ERROR(21002, "请上传正确Excel文件", ""),
+        EXCEL_WRITE_ERROR(21003, "Excel数据写入异常", ""),
 
         //公告模块
         ANNOUNCEMENT_FILE_LIST_PARAM_EMPTY(30000, "请上传正确文件参数", ""),
