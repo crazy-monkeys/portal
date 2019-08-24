@@ -41,7 +41,8 @@ import java.util.Arrays;
 public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
     private static final String[] permissiveUrl = new String[]{"/user/login","/logout","/announcement/file/**","/", "/file/**","/webservice/invoke"
-                                                , "/scheduleJob/list", "/login", "/static/**", "/loginCheck", "/scheduleJob/**", "/ajax/scheduleJob/**"};
+                                                , "/scheduleJob/list", "/login", "/static/**", "/loginCheck", "/scheduleJob/**", "/ajax/scheduleJob/**"
+                                                , "/webservice/**"};
 
     @Value("${app.service-principal}")
     private String servicePrincipal;

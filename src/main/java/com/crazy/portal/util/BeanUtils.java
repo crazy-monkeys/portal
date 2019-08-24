@@ -74,4 +74,59 @@ public class BeanUtils {
             return null;
         }
     }
+
+
+    /**
+     * 将map转成bean
+     * @param map
+     * @param obj
+     */
+    public static void transMapBean(Map<String, Object> map, Object obj) {
+        try {
+            BeanInfo beanInfo = Introspector.getBeanInfo(obj.getClass());
+            PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();
+
+            for (PropertyDescriptor property : propertyDescriptors) {
+                String key = property.getName();
+
+                if (map.containsKey(key)) {
+                    Object value = map.get(key);
+                    // 得到property对应的setter方法
+                    Method setter = property.getWriteMethod();
+                    setter.invoke(obj, value);
+                }
+            }
+
+        } catch (Exception e) {
+            logger.error("transMap2Bean",e);
+        }
+    }
+
+    public static Map<String, String> transBeanMapStr(Object obj) {
+        if(obj == null){
+            return null;
+        }
+        Map<String, String> map = new HashMap<>();
+        try {
+            BeanInfo beanInfo = Introspector.getBeanInfo(obj.getClass());
+            PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();
+            for (PropertyDescriptor property : propertyDescriptors) {
+                String key = property.getName();
+
+                // 过滤class属性
+                if (!key.equals("class")) {
+                    // 得到property对应的getter方法
+                    Method getter = property.getReadMethod();
+                    String value = "";
+                    if(getter.invoke(obj) != null){
+                        value = getter.invoke(obj).toString();
+                    }
+                    map.put(key, value);
+                }
+            }
+        } catch (Exception e) {
+            logger.error("transBean2Map",e);
+        }
+        return map;
+    }
 }

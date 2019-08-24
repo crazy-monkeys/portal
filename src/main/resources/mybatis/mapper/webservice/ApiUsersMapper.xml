@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.crazy.portal.dao.webservice.ApiUsersMapper">
+  <resultMap id="BaseResultMap" type="com.crazy.portal.entity.webservice.ApiUsers">
+    <id column="api_user_id" jdbcType="INTEGER" property="apiUserId" />
+    <result column="api_users_name" jdbcType="VARCHAR" property="apiUsersName" />
+    <result column="api_secret" jdbcType="VARCHAR" property="apiSecret" />
+    <result column="active" jdbcType="INTEGER" property="active" />
+    <result column="create_id" jdbcType="INTEGER" property="createId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_id" jdbcType="INTEGER" property="updateId" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    api_user_id, api_users_name, api_secret, active, create_id, create_time, update_id, 
+    update_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_api_users
+    where api_user_id = #{apiUserId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_api_users
+    where api_user_id = #{apiUserId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.crazy.portal.entity.webservice.ApiUsers">
+    insert into t_api_users (api_user_id, api_users_name, api_secret, 
+      active, create_id, create_time, 
+      update_id, update_time)
+    values (#{apiUserId,jdbcType=INTEGER}, #{apiUsersName,jdbcType=VARCHAR}, #{apiSecret,jdbcType=VARCHAR}, 
+      #{active,jdbcType=INTEGER}, #{createId,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{updateId,jdbcType=INTEGER}, #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.crazy.portal.entity.webservice.ApiUsers">
+    insert into t_api_users
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="apiUserId != null">
+        api_user_id,
+      </if>
+      <if test="apiUsersName != null">
+        api_users_name,
+      </if>
+      <if test="apiSecret != null">
+        api_secret,
+      </if>
+      <if test="active != null">
+        active,
+      </if>
+      <if test="createId != null">
+        create_id,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateId != null">
+        update_id,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="apiUserId != null">
+        #{apiUserId,jdbcType=INTEGER},
+      </if>
+      <if test="apiUsersName != null">
+        #{apiUsersName,jdbcType=VARCHAR},
+      </if>
+      <if test="apiSecret != null">
+        #{apiSecret,jdbcType=VARCHAR},
+      </if>
+      <if test="active != null">
+        #{active,jdbcType=INTEGER},
+      </if>
+      <if test="createId != null">
+        #{createId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateId != null">
+        #{updateId,jdbcType=INTEGER},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.crazy.portal.entity.webservice.ApiUsers">
+    update t_api_users
+    <set>
+      <if test="apiUsersName != null">
+        api_users_name = #{apiUsersName,jdbcType=VARCHAR},
+      </if>
+      <if test="apiSecret != null">
+        api_secret = #{apiSecret,jdbcType=VARCHAR},
+      </if>
+      <if test="active != null">
+        active = #{active,jdbcType=INTEGER},
+      </if>
+      <if test="createId != null">
+        create_id = #{createId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateId != null">
+        update_id = #{updateId,jdbcType=INTEGER},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where api_user_id = #{apiUserId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.crazy.portal.entity.webservice.ApiUsers">
+    update t_api_users
+    set api_users_name = #{apiUsersName,jdbcType=VARCHAR},
+      api_secret = #{apiSecret,jdbcType=VARCHAR},
+      active = #{active,jdbcType=INTEGER},
+      create_id = #{createId,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_id = #{updateId,jdbcType=INTEGER},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where api_user_id = #{apiUserId,jdbcType=INTEGER}
+  </update>
+</mapper>
