@@ -24,8 +24,6 @@ public class ProductInfoDO {
 
     private String lifeCycle;
 
-    private BigDecimal mpq;
-
     private String subCategory;
 
     private String platform;
@@ -37,6 +35,8 @@ public class ProductInfoDO {
     private String sapMid;
 
     private String type;
+
+    private String mpq;
 
     private Integer proStatus;
 

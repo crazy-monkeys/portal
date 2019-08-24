@@ -56,6 +56,9 @@ public class CustomerInfoService {
         List<CustomerInfo> customerInfos = customerInfoMapper.selectCustomerInfo(customerQueryBean);
         return new PageInfo<>(customerInfos);
     }
+    /* 报备状态 0-初始化 1-已报备 2-可报备 3-报备中*/
+
+
 
     public CustomerInfo queryInfo(Integer reportId, Integer customerId){
         return customerInfoMapper.queryReportInfo(customerId, reportId);

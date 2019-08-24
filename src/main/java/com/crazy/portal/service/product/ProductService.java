@@ -15,6 +15,7 @@ import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import javax.annotation.Resource;
 import java.util.Date;
 import java.util.List;
@@ -61,6 +62,7 @@ public class ProductService {
                 productInfoDOMapper.insertSelective(infoDO);
                 saveProductSub(infoDO, vo);
             }
+            productInfoDOMapper.updateProductMpq();
         }catch (Exception e){
             log.error("产品每日同步异常，MSG：",e);
             throw new BusinessException(ErrorCodes.BusinessEnum.PRODUCT_SYNC_ERROR);

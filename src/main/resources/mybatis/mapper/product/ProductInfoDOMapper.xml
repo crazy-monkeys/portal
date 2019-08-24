@@ -7,7 +7,7 @@
     <result column="sn" jdbcType="INTEGER" property="sn" />
     <result column="product" jdbcType="VARCHAR" property="product" />
     <result column="life_cycle" jdbcType="VARCHAR" property="lifeCycle" />
-    <result column="mpq" jdbcType="NUMERIC" property="mpq" />
+    <result column="mpq" jdbcType="VARCHAR" property="mpq" />
     <result column="bu" jdbcType="VARCHAR" property="bu" />
     <result column="pdt" jdbcType="VARCHAR" property="pdt" />
     <result column="category" jdbcType="VARCHAR" property="category" />
@@ -245,7 +245,13 @@
       update_time = #{updateTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
-
+  <update id="updateProductMpq">
+    update t_product_info info
+    inner join t_product_info_mpq mpq on info.product = mpq.product
+    set info.mpq = CONCAT(mpq.mpq,'')
+    where info.active =1
+  </update>
+  
   <select id="selectProductInfo" resultMap="ProductResultMap">
     select
     pro.id,
@@ -259,6 +265,7 @@
     pro.bu_header,
     pro.manager,
     pro.sap_mid,
+    pro.mpq,
     sub.sub_mid,
     sub.sub_number
     from t_product_batch batch

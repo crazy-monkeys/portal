@@ -18,4 +18,6 @@ public interface ProductInfoDOMapper {
     int updateByPrimaryKey(ProductInfoDO record);
 
     List<ProductInfoDO> selectProductInfo(ProductInfoDO record);
+
+    int updateProductMpq();
 }
