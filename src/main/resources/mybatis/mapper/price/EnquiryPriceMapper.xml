@@ -19,12 +19,12 @@
     <result column="approval_remark" jdbcType="VARCHAR" property="approvalRemark" />
     <result column="approver" jdbcType="VARCHAR" property="approver" />
     <result column="proposer" jdbcType="VARCHAR" property="proposer" />
-    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="remark" jdbcType="VARCHAR" property="proposer" />
   </resultMap>
   <sql id="Base_Column_List">
     id, product_model, apply_remark, apply_time, bu, pdt, product_type,
     platform, catalog_price, in_customer, effect_time, dead_time, modify_time, approval_status, 
-    approval_remark, approver, proposer, create_time
+    approval_remark, approver, proposer,remark
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -38,17 +38,18 @@
     <include refid="Base_Column_List" />
     from t_enquiry_price
     <where>
-        <if test="productModel != null">
-            product_model = #{productModel,jdbcType=VARCHAR},
+        1=1
+        <if test="productModel != null and productModel != ''">
+            and product_model = #{productModel,jdbcType=VARCHAR}
         </if>
-        <if test="inCustomer != null">
-            in_customer = #{inCustomer,jdbcType=VARCHAR},
+        <if test="inCustomer != null and inCustomer != ''">
+            and in_customer = #{inCustomer,jdbcType=VARCHAR}
         </if>
-        <if test="approvalStatus != null">
-            approval_status = #{approvalStatus,jdbcType=VARCHAR},
+        <if test="approvalStatus != null and approvalStatus != ''">
+            and approval_status = #{approvalStatus,jdbcType=VARCHAR}
         </if>
-        <if test="proposer != null">
-            proposer = #{proposer,jdbcType=VARCHAR},
+        <if test="proposer != null and proposer != '' ">
+            and proposer = #{proposer,jdbcType=VARCHAR}
         </if>
     </where>
   </select>
@@ -112,8 +113,8 @@
       <if test="proposer != null">
         proposer,
       </if>
-      <if test="createTime != null">
-        create_time,
+      <if test="remark != null">
+        remark,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -168,8 +169,8 @@
       <if test="proposer != null">
         #{proposer,jdbcType=VARCHAR},
       </if>
-      <if test="createTime != null">
-        #{createTime,jdbcType=TIMESTAMP},
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -224,8 +225,8 @@
       <if test="proposer != null">
         proposer = #{proposer,jdbcType=VARCHAR},
       </if>
-      <if test="createTime != null">
-        create_time = #{createTime,jdbcType=TIMESTAMP},
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
       </if>
     </set>
     where id = #{id,jdbcType=INTEGER}

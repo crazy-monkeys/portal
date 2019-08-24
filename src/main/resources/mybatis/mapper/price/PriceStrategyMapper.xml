@@ -43,29 +43,30 @@
     <include refid="Base_Column_List" />
     from t_price_strategy
     <where>
-      <if test="bu != null">
-        #{bu,jdbcType=VARCHAR},
+      1=1
+      <if test="bu != null and bu != ''">
+        and bu = #{bu,jdbcType=VARCHAR}
       </if>
-      <if test="pdt != null">
-        #{pdt,jdbcType=VARCHAR},
+      <if test="pdt != null and pdt != ''">
+        and pdt = #{pdt,jdbcType=VARCHAR}
       </if>
-      <if test="productType != null">
-        #{productType,jdbcType=VARCHAR},
+      <if test="productType != null and productType != ''">
+        and productType = #{productType,jdbcType=VARCHAR}
       </if>
-      <if test="productModel != null">
-        #{productModel,jdbcType=VARCHAR},
+      <if test="productModel != null and productModel != '' ">
+        and product_model = #{productModel,jdbcType=VARCHAR}
       </if>
-      <if test="productStatus != null">
-        #{productStatus,jdbcType=VARCHAR},
+      <if test="productStatus != null and productStatus != ''">
+        and product_status = #{productStatus,jdbcType=VARCHAR}
       </if>
-      <if test="platform != null">
-        #{platform,jdbcType=VARCHAR},
+      <if test="platform != null and platform != ''">
+        and platform = #{platform,jdbcType=VARCHAR}
       </if>
       <if test="effectBeginTime != null">
-        effect_time &gt;= #{effectBeginTime,jdbcType=TIMESTAMP},
+        and effect_time &gt;= #{effectBeginTime,jdbcType=TIMESTAMP}
       </if>
       <if test="effectEndTime != null">
-        effect_time &lt;= #{effectEndTime,jdbcType=TIMESTAMP},
+        and effect_time &lt;= #{effectEndTime,jdbcType=TIMESTAMP}
       </if>
     </where>
   </select>

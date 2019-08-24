@@ -1,5 +1,6 @@
 package com.crazy.portal.entity.price;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -31,6 +32,7 @@ public class EnquiryPrice {
     /**
      * 申请时间
      */
+    @JSONField(format="yyyy-MM-dd HH:mm:ss")
     private Date applyTime;
 
     /**
@@ -66,16 +68,19 @@ public class EnquiryPrice {
     /**
      * 生效时间
      */
+    @JSONField(format="yyyy-MM-dd")
     private Date effectTime;
 
     /**
      * 失效时间
      */
+    @JSONField(format="yyyy-MM-dd")
     private Date deadTime;
 
     /**
      * 更新时间
      */
+    @JSONField(format="yyyy-MM-dd HH:mm:ss")
     private Date modifyTime;
 
     /**
@@ -99,7 +104,7 @@ public class EnquiryPrice {
     private String proposer;
 
     /**
-     * 创建时间
+     * 备注
      */
-    private Date createTime;
+    private String remark;
 }

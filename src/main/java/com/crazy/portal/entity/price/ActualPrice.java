@@ -1,5 +1,6 @@
 package com.crazy.portal.entity.price;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -80,11 +81,13 @@ public class ActualPrice {
     /**
      * 生效时间
      */
+    @JSONField(format="yyyy-MM-dd")
     private Date effectTime;
 
     /**
      * 失效时间
      */
+    @JSONField(format="yyyy-MM-dd")
     private Date deadTime;
 
     /**

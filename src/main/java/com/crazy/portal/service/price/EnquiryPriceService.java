@@ -9,8 +9,10 @@ import com.crazy.portal.entity.price.EnquiryPrice;
 import com.crazy.portal.util.BusinessUtil;
 import com.crazy.portal.util.Enums;
 import com.crazy.portal.util.ErrorCodes;
+import com.crazy.portal.util.StringUtil;
 import com.github.pagehelper.Page;
 import org.springframework.stereotype.Service;
+
 import javax.annotation.Resource;
 import java.util.Date;
 
@@ -35,15 +37,25 @@ public class EnquiryPriceService {
      * @return
      */
     public void apply(EnquiryPriceVO vo, String currentUser){
+
+        String productModel = vo.getProductModel();
+        String inCustomer = vo.getInCustomer();
+        BusinessUtil.assertEmpty(productModel,ErrorCodes.PriceEnum.PRICE_CATALOG_NOT_EXISTS);
+
+        CatalogPrice catalogPrice = catalogPriceMapper.selectByProductModelAndCustomerName(productModel,inCustomer);
+        BusinessUtil.notNull(catalogPrice,
+                StringUtil.isEmpty(inCustomer)
+                        ?ErrorCodes.PriceEnum.PRICE_CATALOG_NOT_EXISTS
+                        :ErrorCodes.PriceEnum.PRICE_CATALOG_CUSTOMER_NOT_EXISTS);
+
         Date now = new Date();
         EnquiryPrice enquiryPrice = new EnquiryPrice();
-        enquiryPrice.setInCustomer(vo.getCustomerName());
+        enquiryPrice.setInCustomer(vo.getInCustomer());
         enquiryPrice.setProductModel(vo.getProductModel());
-        enquiryPrice.setApplyRemark(vo.getRemark());
+        enquiryPrice.setApplyRemark(vo.getApplyRemark());
         enquiryPrice.setApplyTime(now);
         enquiryPrice.setProposer(currentUser);
         enquiryPrice.setApprovalStatus(Enums.APPROVAL_STATUS.pending.toString());
-        enquiryPrice.setCreateTime(new Date());
         int result = enquiryPriceMapper.insertSelective(enquiryPrice);
         BusinessUtil.assertTrue(result > 0, ErrorCodes.CommonEnum.SYSTEM_EXCEPTION);
     }

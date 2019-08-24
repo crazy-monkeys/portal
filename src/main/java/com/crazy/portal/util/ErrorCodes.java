@@ -134,7 +134,9 @@ public class ErrorCodes {
         HANDOVER_NOT_CONFIRM(40005, "请勿操作非【待确认】状态数据", ""),
         HANDOVER_INVALID_PARAM(40006, "请使用有效参数进行操作", ""),
         HANDOVER_DATA_NOT_EXISTS(40007, "未找到数据记录，请重试", ""),
-        HANDOVER_NOT_REJECT(40005, "数据已提交，无法驳回", ""),
+        HANDOVER_NOT_REJECT(40008, "数据已提交，无法驳回", ""),
+        HANDOVER_BI_SERVER_EXCEPTION(40009, "BI服务异常，请联系管理员", ""),
+        HANDOVER_BI_RESPONSE_EXCEPTION(40009, "BI处理结果解析异常，请联系管理员", ""),
 
         //客户模块
         CUSTOMER_IS_EMPYT(50000, "没有对应的客户信息", ""),
@@ -192,7 +194,8 @@ public class ErrorCodes {
 
         PRICE_ENQUIEY_NOT_EXISTS(80000,"询价单未存在"),
         PRICE_ENQUIEY_APPROVAL_STATUS_NOT_EXISTS(80001,"审批状态不存在"),
-        PRICE_CATALOG_NOT_EXISTS(80002,"目录价格不存在")
+        PRICE_CATALOG_NOT_EXISTS(80002,"产品型号不存在"),
+        PRICE_CATALOG_CUSTOMER_NOT_EXISTS(80003,"内部客户下产品型号不存在")
         ;
 
         private final int code;

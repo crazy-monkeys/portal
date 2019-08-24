@@ -11,12 +11,10 @@ import com.crazy.portal.dao.handover.ReceiveDetailMapper;
 import com.crazy.portal.entity.handover.DeliverDetail;
 import com.crazy.portal.entity.handover.DeliverReceiveRecord;
 import com.crazy.portal.entity.handover.ReceiveDetail;
-import com.crazy.portal.util.BusinessUtil;
-import com.crazy.portal.util.ExcelUtils;
-import com.crazy.portal.util.FileUtil;
-import com.crazy.portal.util.PortalUtil;
+import com.crazy.portal.util.*;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,6 +27,8 @@ import java.util.List;
 import java.util.Map;
 
 import static com.crazy.portal.util.ErrorCodes.BusinessEnum.*;
+import static com.crazy.portal.util.Enums.*;
+import static com.crazy.portal.util.Enums.BI_FUNCTION_CODE.*;
 /**
  * Created by lee on 2019/8/10.
  */
@@ -65,6 +65,9 @@ public class HandoverService {
 
     private String deliver_type = "deliver";
     private String receive_type = "receive";
+
+    private String SUCCESS_COEE = "OK";
+    private String ERROR_CODE = "NG";
 
     /**
      * 进出货记录分页列表
@@ -226,14 +229,13 @@ public class HandoverService {
         return record;
     }
 
-    private HandoverUploadVO genThirdResult(Map<String, String> result, List<?> responseData, Integer recordId, String type) {
+    private HandoverUploadVO genThirdResult(BiCheckResult checkResult, List<?> responseData, Integer recordId, String type) {
         HandoverUploadVO resultInfo = new HandoverUploadVO();
-        boolean condition = "ok".equals(result.get("status"));
         resultInfo.setRecordId(recordId);
-        resultInfo.setIsError(condition ? 0 : 1);
+        resultInfo.setIsError(checkResult.isSuccess() ? 0 : 1);
         if(deliver_type.equals(type)){
             resultInfo.setDeliverDetails(responseData);
-            if(!condition){
+            if(!checkResult.isSuccess()){
                 List<DeliverTemplateBean> errorData = deliverDetailMapper.selectErrorDataByRecord(recordId);
                 String errorDataFileName = ExcelUtils.writeExcel(deliverPullPath, errorData, DeliverTemplateBean.class);
                 resultInfo.setErrorFileName(errorDataFileName);
@@ -241,13 +243,13 @@ public class HandoverService {
         }
         if(receive_type.equals(type)){
             resultInfo.setReceiveDetails(responseData);
-            if(!condition){
+            if(!checkResult.isSuccess()){
                 List<ReceiveTemplateBean> errorData = receiveDetailMapper.selectErrorDataByRecord(recordId);
                 String errorDataFileName = ExcelUtils.writeExcel(receivePullPath, errorData, ReceiveTemplateBean.class);
                 resultInfo.setErrorFileName(errorDataFileName);
             }
         }
-        resultInfo.setMsg(condition ? null : "请点击【下载错误数据】，并将更新后的数据重新上传");
+        resultInfo.setMsg(checkResult.isSuccess() ? null : "请点击【下载错误数据】，并将更新后的数据重新上传");
         return resultInfo;
     }
 
@@ -269,9 +271,9 @@ public class HandoverService {
 //            BusinessUtil.assertFlase(errorCnt > 0, HANDOVER_DELIVER_EXISTS_DATA_ERROR);
             //重新生成数据
             List<DeliverDetail> fullData = deliverDetailMapper.selectByRecordId(recordId);
-//            String thridFileName = ExcelUtils.writeExcel(deliverPushPath, fullData, DeliverDetail.class);
-            Map<String, String> result = reqThridServer();
-            List<DeliverTemplateBean> responseData = ExcelUtils.readExcel(deliverPullPath, result.get("fileName"), DeliverTemplateBean.class);
+            String thirdFileName = ExcelUtils.writeExcel(deliverPushPath, fullData, DeliverDetail.class);
+            BiCheckResult checkResult = callBiServer(CHECK_SALES_IMPORT_FILE, (deliverPushPath+thirdFileName), deliverPullPath);
+            List<DeliverTemplateBean> responseData = ExcelUtils.readExcel(checkResult.getFilePath(), DeliverTemplateBean.class);
             deliverDetailMapper.deleteByRecordId(recordId);
             for(DeliverTemplateBean templateBean : responseData){
                 DeliverDetail detail = JSONObject.parseObject(JSONObject.toJSONString(templateBean), DeliverDetail.class);
@@ -279,7 +281,7 @@ public class HandoverService {
                 detail.setRecordId(recordId);
                 deliverDetailMapper.insertSelective(detail);
             }
-            return genThirdResult(result, responseData, recordId, type);
+            return genThirdResult(checkResult, responseData, recordId, type);
         }
         if(receive_type.equals(type)){
             List<ReceiveTemplateBean> errorList = (List<ReceiveTemplateBean>) data;
@@ -294,9 +296,9 @@ public class HandoverService {
             }
 
             List<ReceiveDetail> fullData = receiveDetailMapper.selectByRecordId(recordId);
-//            String thridFileName = ExcelUtils.writeExcel(receivePushPath, fullData, ReceiveDetail.class);
-            Map<String, String> result = reqThridServer();
-            List<ReceiveTemplateBean> responseData = ExcelUtils.readExcel(receivePullPath, result.get("fileName"), ReceiveTemplateBean.class);
+            String thirdFileName = ExcelUtils.writeExcel(receivePushPath, fullData, ReceiveDetail.class);
+            BiCheckResult checkResult = callBiServer(CHECK_INVENTORY_IMPORT_FILE, (receivePushPath+thirdFileName), receivePullPath);
+            List<ReceiveTemplateBean> responseData = ExcelUtils.readExcel(checkResult.getFilePath(), ReceiveTemplateBean.class);
             deliverDetailMapper.deleteByRecordId(recordId);
             for(ReceiveTemplateBean templateBean : responseData){
                 ReceiveDetail detail = JSONObject.parseObject(JSONObject.toJSONString(templateBean), ReceiveDetail.class);
@@ -304,7 +306,7 @@ public class HandoverService {
                 detail.setRecordId(recordId);
                 receiveDetailMapper.insertSelective(detail);
             }
-            return genThirdResult(result, responseData, recordId, type);
+            return genThirdResult(checkResult, responseData, recordId, type);
         }
         return null;
     }
@@ -318,19 +320,14 @@ public class HandoverService {
      */
     @Transactional
     public HandoverUploadVO verificationData(List<?> data, Integer userId, String type) {
-        //需要给到第三方的文件
-        String thridFileName = null;
-        Map<String, String> result = null;
         String dealerName = "模拟出来的代理商名字";
         if(deliver_type.equals(type)){
-            /*
             List<DeliverDetail> deliverData = (List<DeliverDetail>) data;
             //数据包装，生成第三方需要的文件
-            thridFileName = ExcelUtils.writeExcel(deliverPushPath, deliverData, DeliverDetail.class);
-            //假设请求了第三方，并拿到了结果
-            */
-            result = reqThridServer();
-            List<DeliverTemplateBean> responseData = ExcelUtils.readExcel(deliverPullPath, result.get("fileName"), DeliverTemplateBean.class);
+            String thridFileName = ExcelUtils.writeExcel(deliverPushPath, deliverData, DeliverDetail.class);
+            //请求了第三方，并拿到了结果
+            BiCheckResult checkResult = callBiServer(CHECK_SALES_IMPORT_FILE, (deliverPushPath+thridFileName), deliverPullPath);
+            List<DeliverTemplateBean> responseData = ExcelUtils.readExcel(checkResult.getFilePath(), DeliverTemplateBean.class);
             //批次记录表
             DeliverReceiveRecord record = genRecord(dealerName, userId, 1);
             for(DeliverTemplateBean templateBean : responseData){
@@ -339,11 +336,13 @@ public class HandoverService {
                 detail.setRecordId(record.getId());
                 deliverDetailMapper.insertSelective(detail);
             }
-            return genThirdResult(result, responseData, record.getId(), type);
+            return genThirdResult(checkResult, responseData, record.getId(), type);
         }
         if(receive_type.equals(type)){
-            result = reqThridServer();
-            List<ReceiveTemplateBean> responseData = ExcelUtils.readExcel(receivePullPath, result.get("fileName"), ReceiveTemplateBean.class);
+            List<ReceiveDetail> receiveData = (List<ReceiveDetail>) data;
+            String thridFileName = ExcelUtils.writeExcel(receivePushPath, receiveData, DeliverDetail.class);
+            BiCheckResult checkResult = callBiServer(CHECK_INVENTORY_IMPORT_FILE, (receivePushPath+thridFileName), receivePullPath);
+            List<ReceiveTemplateBean> responseData = ExcelUtils.readExcel(checkResult.getFilePath(), ReceiveTemplateBean.class);
             //批次记录表
             DeliverReceiveRecord record = genRecord(dealerName, userId, 2);
             for(ReceiveTemplateBean templateBean : responseData){
@@ -352,7 +351,7 @@ public class HandoverService {
                 detail.setRecordId(record.getId());
                 receiveDetailMapper.insertSelective(detail);
             }
-            return genThirdResult(result, responseData, record.getId(), type);
+            return genThirdResult(checkResult, responseData, record.getId(), type);
         }
         return null;
     }
@@ -415,12 +414,39 @@ public class HandoverService {
         return map;
     }
 
-    private Map<String, String> reqThridServer() {
-        Map<String, String> response = new HashMap<>();
-        response.put("status", mockThridResult() ? "ok" : "no");
-        response.put("fileName", mockThridResult() ? "ok.xlsx" : "error.xlsx");
-        response.put("msg", "这是一个描述");
-        return response;
+    /**
+     *
+     * @param functionCode
+     * @param pushPath
+     * @param pullPath
+     * @return
+     */
+    private BiCheckResult callBiServer(BI_FUNCTION_CODE functionCode, String pushPath, String pullPath) {
+        try {
+            String response = mockThridResult() ? "\"OK:/Users/lee/Documents/job_code/portal_file/pull_thrid/ok.xlsx\"" :
+                    "\"NG:/Users/lee/Documents/job_code/portal_file/pull_thrid/error.xlsx\"";
+//            String response = CallApiUtils.BITest(functionCode, pushPath, pullPath);
+            if(StringUtils.isEmpty(response)){
+                log.error("{} -> {}", HANDOVER_BI_RESPONSE_EXCEPTION.getZhMsg(), response);
+                throw new BusinessException(HANDOVER_BI_RESPONSE_EXCEPTION);
+            }
+            if(log.isDebugEnabled()){
+                log.debug("Bi server response info -> pushPath:[{}], pullPath:[{}], response:[{}]", pushPath, pullPath, response);
+            }
+            String fileName = response.split(":")[1];
+            if(response.contains(SUCCESS_COEE)){
+                return new BiCheckResult(true, fileName);
+            }
+            if(response.contains(ERROR_CODE)){
+                return new BiCheckResult(false, fileName);
+            }
+            log.error(HANDOVER_BI_RESPONSE_EXCEPTION.getZhMsg(), response);
+            throw new BusinessException(HANDOVER_BI_RESPONSE_EXCEPTION);
+
+        }catch (Exception ex) {
+            log.error(HANDOVER_BI_SERVER_EXCEPTION.getZhMsg(), ex);
+            throw new BusinessException(HANDOVER_BI_SERVER_EXCEPTION);
+        }
     }
 
     private boolean checkTimeline() {
@@ -437,6 +463,30 @@ public class HandoverService {
         int len = time.length();
         int i = Integer.parseInt(String.valueOf(time.charAt(len - 1)));
         return i > 4;
+    }
+
+    class BiCheckResult {
+
+        //是否成功处理
+        private boolean isSuccess = false;
+        //文件地址（完整路径+文件名称）
+        private String filePath;
+
+        BiCheckResult() {
+        }
+
+        public BiCheckResult(boolean isSuccess, String filePath) {
+            this.isSuccess = isSuccess;
+            this.filePath = filePath;
+        }
+
+        public boolean isSuccess() {
+            return isSuccess;
+        }
+
+        public String getFilePath() {
+            return filePath;
+        }
     }
 
 }

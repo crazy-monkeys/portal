@@ -1,16 +1,13 @@
 package com.crazy.portal.controller.price;
 
 import com.crazy.portal.bean.BaseResponse;
-import com.crazy.portal.bean.price.EnquiryApprovalBean;
 import com.crazy.portal.bean.price.EnquiryPriceVO;
 import com.crazy.portal.controller.BaseController;
 import com.crazy.portal.entity.price.EnquiryPrice;
 import com.crazy.portal.service.price.EnquiryPriceService;
 import com.github.pagehelper.Page;
 import org.springframework.web.bind.annotation.*;
-
 import javax.annotation.Resource;
-import java.util.List;
 
 /**
  * @Desc: 询价

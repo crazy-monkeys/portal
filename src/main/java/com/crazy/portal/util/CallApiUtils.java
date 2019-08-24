@@ -79,7 +79,7 @@ public class CallApiUtils {
      * @return
      */
     public static String BITest(Enums.BI_FUNCTION_CODE function_code,String fromUrl, String toUrl)throws IOException{
-        String url = BI_URL+function_code+"?"+fromUrl+"&sToUrl"+toUrl;
+        String url = BI_URL+function_code+"?sFromUrl="+fromUrl+"&sToUrl="+toUrl;
         String jsonStr = HttpClientUtils.get(url);
         return jsonStr;
     }
