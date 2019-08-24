@@ -129,6 +129,30 @@ public class ExcelUtils {
         }
     }
 
+    public static<T> List<T> readExcel(String fullFilePath, Class clazz) {
+        return readExcel(fullFilePath, clazz, 1);
+    }
+
+    public static<T> List<T> readExcel(String fullFilePath, Class clazz, int sheetNo) {
+        return readExcel(fullFilePath, clazz, sheetNo, 1);
+    }
+
+    public static<T> List<T> readExcel(String fullFilePath, Class clazz, int sheetNo, int headLineNum){
+        FileInputStream in;
+        try {
+            in = new FileInputStream(fullFilePath);
+        }catch (FileNotFoundException ex) {
+            log.warn("File does not exist, fullFilePath:[{}]", fullFilePath);
+            return Collections.emptyList();
+        }
+        try {
+            return readExcel(in, clazz, fullFilePath, sheetNo, headLineNum);
+        }catch (Exception ex) {
+            log.error("Read excel exception", ex);
+            throw new BusinessException(EXCEL_READ_ERROR);
+        }
+    }
+
     /**
      * 默认读取第一个sheet页，并从数据第二行开始读取数据，适用于第一行作为表头的Excel文档
      * @param excel
