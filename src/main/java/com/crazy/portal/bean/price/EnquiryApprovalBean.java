@@ -2,6 +2,9 @@ package com.crazy.portal.bean.price;
 
 import lombok.Data;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @Desc:
  * @Author: Bill
@@ -14,7 +17,7 @@ public class EnquiryApprovalBean {
     /**
      * 询价申请id
      */
-    private Integer applyId;
+    private List<Integer> applyIds = new ArrayList<>();
 
     /**
      * @see  com.crazy.portal.util.Enums.APPROVAL_STATUS

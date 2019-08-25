@@ -3,6 +3,7 @@ package com.crazy.portal.config.security.handler;
 import com.alibaba.fastjson.JSON;
 import com.crazy.portal.bean.BaseResponse;
 import com.crazy.portal.config.security.JwtUserService;
+import com.crazy.portal.controller.BaseController;
 import com.crazy.portal.dao.system.UserMapper;
 import com.crazy.portal.entity.system.User;
 import com.crazy.portal.service.system.PermissionService;
@@ -13,6 +14,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.OutputStream;
@@ -33,15 +35,19 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
 
     public static final String PERMISSIONS = "permissions";
     public static final String USER = "user";
+    public static final String POSITION = "position";
 
-    @javax.annotation.Resource
+    @Resource
     private JwtUserService jwtUserService;
 
-    @javax.annotation.Resource
+    @Resource
     private PermissionService permissionService;
 
-    @javax.annotation.Resource
+    @Resource
     private UserMapper userMapper;
+
+    @Resource
+    private BaseController baseController;
 
     /**
      * 获取当前登录人拥有的菜单
@@ -59,6 +65,7 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
         List<com.crazy.portal.entity.system.Resource> permissions = permissionService.findAllPerMissionByUserId(userDetails.getUsername());
         map.put(PERMISSIONS,permissionService.resourceTree(permissions));
         map.put(USER,user);
+        map.put(POSITION,baseController.getCurrentUserPosition());
         return map;
     }
 

@@ -46,6 +46,11 @@ public class EnquiryPrice {
     private String pdt;
 
     /**
+     * 状态
+     */
+    private String status;
+
+    /**
      * 产品类型
      */
     private String productType;

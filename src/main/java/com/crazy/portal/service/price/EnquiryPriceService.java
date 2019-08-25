@@ -1,20 +1,21 @@
 package com.crazy.portal.service.price;
 
+import com.crazy.portal.bean.price.CatalogPriceVO;
 import com.crazy.portal.bean.price.EnquiryApprovalBean;
 import com.crazy.portal.bean.price.EnquiryPriceVO;
 import com.crazy.portal.dao.price.CatalogPriceMapper;
 import com.crazy.portal.dao.price.EnquiryPriceMapper;
 import com.crazy.portal.entity.price.CatalogPrice;
 import com.crazy.portal.entity.price.EnquiryPrice;
-import com.crazy.portal.util.BusinessUtil;
-import com.crazy.portal.util.Enums;
-import com.crazy.portal.util.ErrorCodes;
-import com.crazy.portal.util.StringUtil;
+import com.crazy.portal.util.*;
 import com.github.pagehelper.Page;
+import com.github.pagehelper.PageInfo;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @Desc:
@@ -23,6 +24,7 @@ import java.util.Date;
  * @Modified by:
  */
 @Service
+@Slf4j
 public class EnquiryPriceService {
 
     @Resource
@@ -62,50 +64,63 @@ public class EnquiryPriceService {
 
     /**
      * 列表查询(申请列表跟审批列表冗余在一起)
-     * @param enquiryPriceVO
      * @return
      */
-    public Page<EnquiryPrice> query(EnquiryPriceVO enquiryPriceVO){
-        return enquiryPriceMapper.selectByParamsWithPage(enquiryPriceVO);
+    public PageInfo<EnquiryPrice> query(EnquiryPriceVO enquiryPriceVO){
+        PortalUtil.defaultStartPage(enquiryPriceVO.getPageIndex(), enquiryPriceVO.getPageSize());
+        Page<EnquiryPrice> enquiryPrices = enquiryPriceMapper.selectByParamsWithPage(enquiryPriceVO);
+        return new PageInfo<>(enquiryPrices);
     }
 
     /**
      * 审批
      */
     public void approve(EnquiryApprovalBean enquiryApprovalBean){
-        EnquiryPrice enquiryPrice = enquiryPriceMapper.selectByPrimaryKey(enquiryApprovalBean.getApplyId());
-        BusinessUtil.notNull(enquiryPrice, ErrorCodes.PriceEnum.PRICE_ENQUIEY_NOT_EXISTS);
+        List<Integer> applyIds = enquiryApprovalBean.getApplyIds();
+        BusinessUtil.assertFlase(applyIds.isEmpty(), ErrorCodes.PriceEnum.PRICE_EMPTY_APPLYIDS);
 
         String approvalStatus = enquiryApprovalBean.getApprovalStatus();
-        BusinessUtil.assertTrue(Enums.APPROVAL_STATUS.isExists(approvalStatus),
-                ErrorCodes.PriceEnum.PRICE_ENQUIEY_APPROVAL_STATUS_NOT_EXISTS);
+        String approvalRemark = enquiryApprovalBean.getApprovalRemark();
+        String approver = enquiryApprovalBean.getApprover();
 
+        applyIds.forEach(applyId->{
+            log.info("用户[{}] 进行 [{}] 审批操作,审批状态为[{}]",approver,applyId,approvalStatus);
+            EnquiryPrice enquiryPrice = enquiryPriceMapper.selectByPrimaryKey(applyId);
+            BusinessUtil.notNull(enquiryPrice, ErrorCodes.PriceEnum.PRICE_ENQUIEY_NOT_EXISTS);
 
-        enquiryPrice.setApprovalStatus(Enums.APPROVAL_STATUS.pass.toString());
-        enquiryPrice.setApprovalRemark(enquiryApprovalBean.getApprovalRemark());
-        enquiryPrice.setApprover(enquiryApprovalBean.getApprover());
+            BusinessUtil.assertTrue(Enums.APPROVAL_STATUS.isExists(approvalStatus),
+                    ErrorCodes.PriceEnum.PRICE_ENQUIEY_APPROVAL_STATUS_NOT_EXISTS);
 
-        if(approvalStatus.equals(Enums.APPROVAL_STATUS.pass)){
-            //如果是通过,查询出目录商品信息到询价单
-            String productModel = enquiryPrice.getProductModel();
-            String inCustomer = enquiryPrice.getInCustomer();
-            CatalogPrice catalogPrice = catalogPriceMapper.selectByProductModelAndCustomerName(productModel,inCustomer);
-            BusinessUtil.notNull(enquiryPrice, ErrorCodes.PriceEnum.PRICE_CATALOG_NOT_EXISTS);
+            //如果不是待审批的询价单,抛出异常
+            boolean checkApprovalStatus = enquiryPrice.getApprovalStatus().equals(Enums.APPROVAL_STATUS.pending.toString());
+            BusinessUtil.assertTrue(checkApprovalStatus,ErrorCodes.PriceEnum.PRICE_NON_PENGDING_STATUS);
 
-            enquiryPrice.setBu(catalogPrice.getBu());
-            enquiryPrice.setPdt(catalogPrice.getPdt());
-            enquiryPrice.setProductType(catalogPrice.getProductType());
-            enquiryPrice.setPlatform(catalogPrice.getPlatform());
-            enquiryPrice.setCatalogPrice(catalogPrice.getCatalogPrice());
-            enquiryPrice.setEffectTime(catalogPrice.getEffectiveTime());
-            enquiryPrice.setDeadTime(catalogPrice.getDeadTime());
-            enquiryPrice.setModifyTime(catalogPrice.getModifyTime());
+            enquiryPrice.setApprovalStatus(approvalStatus);
+            enquiryPrice.setApprovalRemark(approvalRemark);
+            enquiryPrice.setApprover(approver);
 
-            enquiryPriceMapper.insertSelective(enquiryPrice);
-        }else{
-            //更新审批信息
+            //如果是通过状态，查询出目录价格
+            if(approvalStatus.equals(Enums.APPROVAL_STATUS.pass.toString())) {
+                //如果是通过,查询出目录商品信息到询价单
+                String productModel = enquiryPrice.getProductModel();
+                String inCustomer = enquiryPrice.getInCustomer();
+                CatalogPrice catalogPrice = catalogPriceMapper.selectByProductModelAndCustomerName(productModel, inCustomer);
+                BusinessUtil.notNull(enquiryPrice, ErrorCodes.PriceEnum.PRICE_CATALOG_NOT_EXISTS);
+
+                enquiryPrice.setBu(catalogPrice.getBu());
+                enquiryPrice.setPdt(catalogPrice.getPdt());
+                enquiryPrice.setStatus(catalogPrice.getStatus());
+                enquiryPrice.setInCustomer(catalogPrice.getInsideCustomer());
+                enquiryPrice.setRemark(catalogPrice.getRemark());
+                enquiryPrice.setProductType(catalogPrice.getProductType());
+                enquiryPrice.setPlatform(catalogPrice.getPlatform());
+                enquiryPrice.setCatalogPrice(catalogPrice.getCatalogPrice());
+                enquiryPrice.setEffectTime(catalogPrice.getEffectiveTime());
+                enquiryPrice.setDeadTime(catalogPrice.getDeadTime());
+                enquiryPrice.setModifyTime(catalogPrice.getModifyTime());
+            }
             enquiryPriceMapper.updateByPrimaryKeySelective(enquiryPrice);
-        }
+        });
     }
 
     /**
