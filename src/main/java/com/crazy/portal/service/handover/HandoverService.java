@@ -21,6 +21,7 @@ import static com.crazy.portal.util.ErrorCodes.BusinessEnum.*;
 
 @Slf4j
 @Service
+@Transactional
 public class HandoverService extends AbstractHandover {
 
     @Resource
@@ -100,35 +101,24 @@ public class HandoverService extends AbstractHandover {
         return record;
     }
 
+    public void updateStatus(Integer recordId, Integer status){
+        deliverReceiveRecordMapper.updateStatusById(recordId, status);
+    }
+
     /**
      * 将校验通过的出货数据提交至第三方
-     * @param id
+     * @param recordId
      */
-    public void submitData(Integer id, String type) {
-        checkTypeValue(type);
-        DeliverReceiveRecord record = deliverReceiveRecordMapper.selectByPrimaryKey(id);
+    public void checkDataStatus(Integer recordId) {
+        DeliverReceiveRecord record = deliverReceiveRecordMapper.selectByPrimaryKey(recordId);
         BusinessUtil.assertFlase(null == record, HANDOVER_INVALID_PARAM);
         BusinessUtil.assertFlase(record.getStatus() == -1, HANDOVER_WAITING_CONFIRM);
         BusinessUtil.assertFlase(record.getStatus() == 2, HANDOVER_ALREADY_CONFIRM);
-        if(checkTimeline() && record.getStatus() != 1){
+        /*if(checkTimeline() && record.getStatus() != 1){
             record.setStatus(-1);//置为待确认状态
             deliverReceiveRecordMapper.updateByPrimaryKeySelective(record);
             throw new BusinessException(HANDOVER_WAITING_CONFIRM);
-        }
-        if(deliver_type.equals(type)){
-            int errorCnt = deliverDetailMapper.countErrorData(id);
-            BusinessUtil.assertFlase(errorCnt > 0, HANDOVER_EXISTS_DATA_ERROR);
-            //TODO 生成文件 并 请求第三方提交数据接口
-//        List<DeliverDetail> deliverData = null;
-//        String newFileName = ExcelUtils.writeExcel(pushPath, deliverData, DeliverTemplateBean.class);
-        }
-        if(receive_type.equals(type)){
-            int errorCnt = receiveDetailMapper.countErrorData(id);
-            BusinessUtil.assertFlase(errorCnt > 0, HANDOVER_EXISTS_DATA_ERROR);
-        }
-        //提交给第三方 并更新状态
-        record.setStatus(2);
-        deliverReceiveRecordMapper.updateByPrimaryKeySelective(record);
+        }*/
     }
 
     private void checkTypeValue(String type) {

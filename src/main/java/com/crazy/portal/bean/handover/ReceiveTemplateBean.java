@@ -4,6 +4,7 @@ import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.excel.metadata.BaseRowModel;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -25,7 +26,7 @@ public class ReceiveTemplateBean extends BaseRowModel {
 
     /** 库存单价 */
     @ExcelProperty(index = 2, value = "库存单价")
-    private Long inventoryUnitPrice;
+    private BigDecimal inventoryUnitPrice;
 
     /** 仓储地 */
     @ExcelProperty(index = 3, value = "仓储地")
@@ -41,7 +42,7 @@ public class ReceiveTemplateBean extends BaseRowModel {
 
     /** 提货数量 */
     @ExcelProperty(index = 6, value = "提货数量")
-    private Integer deliveryNum;
+    private String deliveryNum;
 
     /** 发货公司 */
     @ExcelProperty(index = 7, value = "发货公司")
@@ -61,6 +62,6 @@ public class ReceiveTemplateBean extends BaseRowModel {
 
     /** 错误信息在portal中的数据ID */
     @ExcelProperty(index = 11, value = "错误ID")
-    private Integer errorId;
+    private String errorId;
 
 }

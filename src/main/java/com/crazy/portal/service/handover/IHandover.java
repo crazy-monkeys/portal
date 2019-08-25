@@ -17,7 +17,7 @@ public interface IHandover<T> {
 
     HandoverUploadVO verificationDataByErrorData(List<?> data, Integer userId, Integer recordId);
 
-    void submitData(Integer id, String type);
+    HandoverUploadVO saveData(Integer id, Integer userId);
 
     void downloadError(HttpServletResponse response, String fileName);
 

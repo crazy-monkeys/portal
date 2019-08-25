@@ -14,14 +14,15 @@ import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 import static com.crazy.portal.util.Enums.BI_FUNCTION_CODE.CHECK_SALES_IMPORT_FILE;
-import static com.crazy.portal.util.ErrorCodes.BusinessEnum.HANDOVER_DATA_NOT_EXISTS;
-import static com.crazy.portal.util.ErrorCodes.BusinessEnum.HANDOVER_NOT_DEALER;
+import static com.crazy.portal.util.Enums.BI_FUNCTION_CODE.SAVE_SALES_IMPORT_FILE;
+import static com.crazy.portal.util.ErrorCodes.BusinessEnum.*;
 
 /**
  * Created by lee on 2019/8/24.
@@ -29,7 +30,7 @@ import static com.crazy.portal.util.ErrorCodes.BusinessEnum.HANDOVER_NOT_DEALER;
 
 @Slf4j
 @Service("deliver")
-//@Transactional
+@Transactional
 public class DeliverService extends AbstractHandover implements IHandover<DeliverDetail> {
 
     @Resource
@@ -67,9 +68,9 @@ public class DeliverService extends AbstractHandover implements IHandover<Delive
     public HandoverUploadVO verificationDataByErrorData(List<?> data, Integer userId, Integer recordId) {
         List<DeliverTemplateBean> errorList = (List<DeliverTemplateBean>) data;
         for(DeliverTemplateBean errorData : errorList) {
-            DeliverDetail dbRecord = deliverDetailMapper.selectByPrimaryKey(errorData.getErrorId());
+            DeliverDetail dbRecord = deliverDetailMapper.selectByPrimaryKey(Integer.parseInt(errorData.getErrorId()));
             //Excel内的ID未找到记录则不进行处理
-            BusinessUtil.assertFlase(null == dbRecord || recordId != dbRecord.getRecordId(), HANDOVER_DATA_NOT_EXISTS);
+            BusinessUtil.assertFlase(null == dbRecord || !dbRecord.getRecordId().equals(recordId), HANDOVER_DATA_NOT_EXISTS);
             DeliverDetail detail = JSONObject.parseObject(JSONObject.toJSONString(errorData), DeliverDetail.class);
             detail.setId(dbRecord.getId());
             detail.setErrorMsg(null);
@@ -92,8 +93,23 @@ public class DeliverService extends AbstractHandover implements IHandover<Delive
     }
 
     @Override
-    public void submitData(Integer id, String type) {
-
+    public HandoverUploadVO saveData(Integer recordId, Integer userId) {
+        int errorCnt = deliverDetailMapper.countErrorData(recordId);
+        BusinessUtil.assertFlase(errorCnt > 0, HANDOVER_EXISTS_DATA_ERROR);
+        List<DeliverDetail> deliverData = deliverDetailMapper.selectByRecordId(recordId);
+        String thirdFileName = ExcelUtils.writeExcel(deliverPushPath, deliverData, DeliverDetail.class);
+        BiCheckResult checkResult = callBiServer(SAVE_SALES_IMPORT_FILE, (deliverPushPath+thirdFileName), deliverPullPath);
+        if(checkResult.isSuccess()){
+            handoverService.updateStatus(recordId, 2);
+            return null;
+        }
+        List<DeliverDetail> responseData = ExcelUtils.readExcel(checkResult.getFilePath(), DeliverDetail.class);
+        deliverDetailMapper.deleteByRecordId(recordId);
+        for(DeliverDetail detail : responseData){
+            detail.setRecordId(recordId);
+            deliverDetailMapper.insertSelective(detail);
+        }
+        return genThirdResult(checkResult, responseData, recordId);
     }
 
     @Override

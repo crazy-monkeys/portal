@@ -50,7 +50,7 @@ public class DeliverTemplateBean extends BaseRowModel {
 
     /** 数量 */
     @ExcelProperty(index = 8, value = "数量")
-    private Integer deliverNumber;
+    private String deliverNumber;
 
     /** Sale Price */
     @ExcelProperty(index = 9, value = "Sale Price")
@@ -94,6 +94,6 @@ public class DeliverTemplateBean extends BaseRowModel {
 
     /** 错误信息在portal中的数据ID */
     @ExcelProperty(index = 19, value = "错误ID")
-    private Integer errorId;
+    private String errorId;
 
 }

@@ -4,6 +4,7 @@ import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.excel.metadata.BaseRowModel;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 @Data
@@ -24,7 +25,7 @@ public class ReceiveDetail extends BaseRowModel {
 
     /** 库存单价 */
     @ExcelProperty(index = 3, value = "库存单价")
-    private Long inventoryUnitPrice;
+    private BigDecimal inventoryUnitPrice;
 
     /** 仓储地 */
     @ExcelProperty(index = 4, value = "仓储地")
@@ -40,7 +41,7 @@ public class ReceiveDetail extends BaseRowModel {
 
     /** 提货数量 */
     @ExcelProperty(index = 7, value = "提货数量")
-    private Integer deliveryNum;
+    private String deliveryNum;
 
     /** 发货公司 */
     @ExcelProperty(index = 8, value = "发货公司")

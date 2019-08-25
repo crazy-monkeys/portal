@@ -14,6 +14,7 @@ import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
@@ -21,6 +22,7 @@ import java.util.List;
 
 import static com.crazy.portal.util.Enums.BI_FUNCTION_CODE.CHECK_INVENTORY_IMPORT_FILE;
 import static com.crazy.portal.util.ErrorCodes.BusinessEnum.HANDOVER_DATA_NOT_EXISTS;
+import static com.crazy.portal.util.ErrorCodes.BusinessEnum.HANDOVER_EXISTS_DATA_ERROR;
 import static com.crazy.portal.util.ErrorCodes.BusinessEnum.HANDOVER_NOT_DEALER;
 
 /**
@@ -29,6 +31,7 @@ import static com.crazy.portal.util.ErrorCodes.BusinessEnum.HANDOVER_NOT_DEALER;
 
 @Slf4j
 @Service("receive")
+@Transactional
 public class ReceiveService extends AbstractHandover implements IHandover<ReceiveDetail> {
 
     @Resource
@@ -64,9 +67,9 @@ public class ReceiveService extends AbstractHandover implements IHandover<Receiv
     public HandoverUploadVO verificationDataByErrorData(List<?> data, Integer userId, Integer recordId) {
         List<ReceiveTemplateBean> errorList = (List<ReceiveTemplateBean>) data;
         for(ReceiveTemplateBean errorData : errorList){
-            ReceiveDetail dbRecord = receiveDetailMapper.selectByPrimaryKey(errorData.getErrorId());
+            ReceiveDetail dbRecord = receiveDetailMapper.selectByPrimaryKey(Integer.parseInt(errorData.getErrorId()));
             //Excel内的ID未找到记录则不尽兴处理
-            BusinessUtil.assertFlase(null == dbRecord || recordId != dbRecord.getRecordId(), HANDOVER_DATA_NOT_EXISTS);
+            BusinessUtil.assertFlase(null == dbRecord || !dbRecord.getRecordId().equals(recordId), HANDOVER_DATA_NOT_EXISTS);
             ReceiveDetail detail = JSONObject.parseObject(JSONObject.toJSONString(errorData), ReceiveDetail.class);
             detail.setId(dbRecord.getId());
             detail.setErrorMsg(null);
@@ -86,8 +89,23 @@ public class ReceiveService extends AbstractHandover implements IHandover<Receiv
     }
 
     @Override
-    public void submitData(Integer id, String type) {
-
+    public HandoverUploadVO saveData(Integer recordId, Integer userId) {
+        int errorCnt = receiveDetailMapper.countErrorData(recordId);
+        BusinessUtil.assertFlase(errorCnt > 0, HANDOVER_EXISTS_DATA_ERROR);
+        List<ReceiveDetail> receiveData = receiveDetailMapper.selectByRecordId(recordId);
+        String thirdFileName = ExcelUtils.writeExcel(receivePushPath, receiveData, ReceiveDetail.class);
+        BiCheckResult checkResult = callBiServer(CHECK_INVENTORY_IMPORT_FILE, (receivePushPath+thirdFileName), receivePullPath);
+        List<ReceiveDetail> responseData = ExcelUtils.readExcel(checkResult.getFilePath(), ReceiveDetail.class);
+        if(checkResult.isSuccess()){
+            handoverService.updateStatus(recordId, 2);
+            return null;
+        }
+        receiveDetailMapper.deleteByRecordId(recordId);
+        for(ReceiveDetail detail : responseData){
+            detail.setRecordId(recordId);
+            receiveDetailMapper.insertSelective(detail);
+        }
+        return genThirdResult(checkResult, responseData, recordId);
     }
 
     @Override

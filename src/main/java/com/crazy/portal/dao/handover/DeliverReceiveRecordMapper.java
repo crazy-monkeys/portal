@@ -24,4 +24,7 @@ public interface DeliverReceiveRecordMapper {
                                               @Param(value = "dealerId") Integer dealerId,
                                               @Param(value = "type") Integer type);
 
+    int updateStatusById(@Param(value = "id") Integer id,
+                         @Param(value = "status") Integer status);
+
 }

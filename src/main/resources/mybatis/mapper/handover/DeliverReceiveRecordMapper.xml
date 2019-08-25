@@ -191,4 +191,8 @@
     order by create_time desc
   </select>
 
+  <update id="updateStatusById" >
+    update t_deliver_receive_record set status = #{status} where id = #{id}
+  </update>
+
 </mapper>

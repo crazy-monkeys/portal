@@ -139,8 +139,8 @@ public class HandoverController extends BaseController {
      */
     @PostMapping(value = "/handover/detail")
     public BaseResponse submitData(Integer recordId, String type) {
-        handoverService.submitData(recordId, type);
-        return super.successResult();
+        handoverService.checkDataStatus(recordId);
+        return super.successResult(handoverServiceContext.getService(type).saveData(recordId, getCurrentUser().getId()));
     }
 
 }

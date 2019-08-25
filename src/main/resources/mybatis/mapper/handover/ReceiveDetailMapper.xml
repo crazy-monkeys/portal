@@ -16,10 +16,12 @@
     <result column="remark" jdbcType="VARCHAR" property="remark" />
     <result column="error_msg" jdbcType="VARCHAR" property="errorMsg" />
     <result column="record_id" jdbcType="INTEGER" property="recordId" />
+    <result column="dealer_name" jdbcType="VARCHAR" property="dealerName" />
   </resultMap>
 
   <resultMap id="errorResultMap" extends="BaseResultMap" type="com.crazy.portal.bean.handover.ReceiveTemplateBean" >
-    <result column="error_id" jdbcType="INTEGER" property="errorId" />
+    <result column="purchase_number_str" jdbcType="VARCHAR" property="purchaseNumber" />
+    <result column="error_id_str" jdbcType="VARCHAR" property="errorId" />
     <result column="third_error_msg" jdbcType="VARCHAR" property="thirdErrorMsg" />
   </resultMap>
 
@@ -207,13 +209,15 @@
   </update>
 
   <select id="selectByRecordId" resultMap="BaseResultMap" >
-    select * from t_receive_detail where record_id = #{recordId}
+    select d.dealer_name,t.* from t_receive_detail t
+    inner join t_deliver_receive_record d on t.record_id = d.id
+    where record_id = #{recordId}
   </select>
 
   <select id="selectErrorDataByRecord" resultMap="errorResultMap" >
     select product_model, inventory_category, inventory_unit_price,
     warehouse, delivery_time, invoice_number, delivery_num, delivery_company, purchase_number,
-    remark,id as error_id,error_msg as third_error_msg
+    remark,id as error_id_str,error_msg as third_error_msg
     from t_receive_detail
     where record_id = #{recordId} and error_msg is not null
   </select>
