@@ -84,8 +84,8 @@ public class JwtUserService implements UserDetailsService {
             user.setLoginPwd(passwordEncoder.encode(PortalUtil.generateRandomPassword()));
             user.setActive((short)1);
             user.setUserStatus(1);
-            //域账号密码过期跟随ad域,这里设置为永久
-            user.setPwdInvalidTime(DateUtil.addDays(new Date(),3650));
+            //域账号密码过期跟随ad域,这里设置为20年过期
+            user.setPwdInvalidTime(DateUtil.addDays(new Date(),365 * 20));
             user.setRegTime(new Date());
             user.setUserType(Enums.USER_TYPE.internal.toString());
             user.setCreateUserId(1);

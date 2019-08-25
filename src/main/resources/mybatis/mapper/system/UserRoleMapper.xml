@@ -19,6 +19,11 @@
     from t_user_role
     where user_id = #{userId,jdbcType=INTEGER}
   </select>
+
+  <select id="countByRoleId" resultType="java.lang.Integer">
+    select count(1) from  t_user_role where role_id = #{roleId}
+  </select>
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from t_user_role
     where id = #{id,jdbcType=INTEGER}

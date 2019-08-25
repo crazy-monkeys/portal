@@ -113,4 +113,15 @@ public class RoleController extends BaseController {
         roleService.saveRole(role);
         return super.successResult();
     }
+
+    /**
+     * 删除角色
+     * @param roleId
+     * @return
+     */
+    @DeleteMapping("/delete/{roleId}")
+    public BaseResponse delete(@PathVariable Integer roleId){
+        roleService.deleteRole(roleId);
+        return super.successResult();
+    }
 }

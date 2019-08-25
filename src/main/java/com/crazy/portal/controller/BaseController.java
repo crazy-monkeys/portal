@@ -6,6 +6,7 @@ import com.crazy.portal.dao.system.RoleMapper;
 import com.crazy.portal.entity.system.Role;
 import com.crazy.portal.entity.system.User;
 import com.crazy.portal.util.Enums;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -76,7 +77,7 @@ public class BaseController {
         //如果不是内部账号返回null
         User user = this.getCurrentUser();
         if(!user.getUserType().equals(Enums.USER_TYPE.internal.toString())){
-            return null;
+            return StringUtils.EMPTY;
         }
         return "";
     }

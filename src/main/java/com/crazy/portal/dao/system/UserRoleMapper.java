@@ -18,7 +18,7 @@ public interface UserRoleMapper {
     int updateByPrimaryKey(UserRole record);
 
 
-    int deleteByUserId(Integer userId);
+    Integer countByRoleId(Integer roleId);
     /**
      * 查询用户角色关系
      * @param userId 用户ID

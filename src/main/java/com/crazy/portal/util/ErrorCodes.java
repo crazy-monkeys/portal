@@ -45,7 +45,7 @@ public class ErrorCodes {
     public enum SystemManagerEnum implements ErrorInfo {
         ACCOUNT_ERROR(10001,"登录名或密码错误",""),
         LOCKED(10002,"账户锁定",""),
-        PASSWORD_INVALID(10003,"密码过期",""),
+        PASSWORD_INVALID(10003,"密码过期,请联系管理员重置",""),
         AUTH_ERROR(10004,"权限不足",""),
         TOKEN_INVALID(10005,"会话已经过期,请重新登录",""),
         USER_EXISTS(10010,"登录名已经存在",""),
@@ -62,6 +62,7 @@ public class ErrorCodes {
         ROLE_SAVE_FAILED(10025,"角色保存失败",""),
         ROLE_CODE_EXISTS(10026,"角色编码已经存在",""),
         ROLE_EMPTY_TYPE(10027,"角色类型不能为空",""),
+        ROLE_DELETE_NOT_ALLOWED(10028,"该角色已经绑定在用户上,不允许删除",""),
 
         RESOURCE_ILLEGAL(10040,"资源必填项不能为空",""),
         RESOURCE_NOT_EXIST(10041,"资源不存在",""),

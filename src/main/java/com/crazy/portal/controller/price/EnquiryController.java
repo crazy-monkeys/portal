@@ -5,7 +5,6 @@ import com.crazy.portal.bean.price.EnquiryPriceVO;
 import com.crazy.portal.controller.BaseController;
 import com.crazy.portal.entity.price.EnquiryPrice;
 import com.crazy.portal.service.price.EnquiryPriceService;
-import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
 import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;

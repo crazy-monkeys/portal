@@ -121,7 +121,7 @@ public class UserService {
         user.setRegTime(new Date());
         user.setCreateUserId(userId);
         user.setCreateTime(new Date());
-        user.setPwdInvalidTime(DateUtil.addDays(new Date(),3650));
+        user.setPwdInvalidTime(DateUtil.addDays(new Date(),365 * 10));
         user.setActive((short)1);
         user.setUserStatus(1);
         int result = userMapper.insertSelective(user);
@@ -222,8 +222,7 @@ public class UserService {
 
     /**
      * 获取 customer的内外部客户
-     * @param customerId
-     * @param type
+     * @param dealerId
      */
     public CustomerShipBean getUserShips(Integer dealerId){
         return customerInfoService.selectDealerShip(dealerId);

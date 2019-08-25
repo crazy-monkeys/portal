@@ -2,8 +2,10 @@ package com.crazy.portal.service.system;
 
 import com.crazy.portal.config.exception.BusinessException;
 import com.crazy.portal.dao.system.RoleMapper;
+import com.crazy.portal.dao.system.UserRoleMapper;
 import com.crazy.portal.entity.system.Role;
 import com.crazy.portal.util.BeanUtils;
+import com.crazy.portal.util.BusinessUtil;
 import com.crazy.portal.util.ErrorCodes;
 import com.crazy.portal.util.PortalUtil;
 import com.github.pagehelper.PageInfo;
@@ -25,6 +27,8 @@ public class RoleService {
 
     @Resource
     private RoleMapper roleMapper;
+    @Resource
+    private UserRoleMapper userRoleMapper;
 
     /**
      * 分页获取角色列表
@@ -96,7 +100,14 @@ public class RoleService {
      * @return
      */
     public int deleteRole(Integer roleId){
-        return 0;
+
+        Integer roleBinds = userRoleMapper.countByRoleId(roleId);
+        BusinessUtil.assertTrue(roleBinds > 0,ErrorCodes.SystemManagerEnum.ROLE_DELETE_NOT_ALLOWED);
+
+        Role role = roleMapper.findById(roleId);
+        BusinessUtil.notNull(role,ErrorCodes.SystemManagerEnum.ROLE_NOT_EXIST);
+
+        return roleMapper.deleteByPrimaryKey(role.getId());
     }
 
 }
