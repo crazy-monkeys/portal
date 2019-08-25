@@ -182,7 +182,7 @@ public class IDRService {
 
         clearDiscardFile(bean.getFiles(), userId);
 
-        submitApprovalToBPM(bean);
+//        submitApprovalToBPM(bean);
     }
 
     public void saveExtendsInfo(List<? extends IdrBaseEntity> list, IdrBaseMapper mapper, BusinessIdrInfo bean){
