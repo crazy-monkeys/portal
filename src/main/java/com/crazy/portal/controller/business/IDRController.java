@@ -81,7 +81,7 @@ public class IDRController extends BaseController {
      * @return
      */
     @PostMapping("/submit")
-    public BaseResponse submit(@RequestBody @Valid BusinessIdrInfo bean){
+    public BaseResponse submit(@RequestBody @Valid BusinessIdrInfo bean) throws Exception{
         idrService.save(bean, this.getCurrentUser().getId());
         return super.successResult();
     }

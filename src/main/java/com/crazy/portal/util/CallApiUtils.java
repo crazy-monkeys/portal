@@ -83,4 +83,13 @@ public class CallApiUtils {
         String jsonStr = HttpClientUtils.get(url);
         return jsonStr;
     }
+
+    /**
+     * 提交保差退审批到BPM
+     * @param requestBody 请求体
+     * @return
+     */
+    public static String portalSubmitApprovalToBPM(String requestBody) throws IOException{
+        return HttpClientUtils.post("", requestBody);
+    }
 }
