@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.crazy.portal.dao.customer.CustomerAddressMapper">
   <resultMap id="BaseResultMap" type="com.crazy.portal.entity.cusotmer.CustomerAddress">
-    <id column="id" jdbcType="INTEGER" property="id" />
+    <id column="address_id" jdbcType="INTEGER" property="addressId" />
     <result column="report_id" jdbcType="INTEGER" property="reportId" />
     <result column="cust_id" jdbcType="INTEGER" property="custId" />
     <result column="address_type" jdbcType="VARCHAR" property="addressType" />
@@ -22,7 +22,7 @@
     <result column="active" jdbcType="INTEGER" property="active" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, report_id, cust_id, address_type, country, province, city, district, address_detail, 
+    address_id, report_id, cust_id, address_type, country, province, city, district, address_detail,
     is_default, contact, mobile, eamil, create_time, crate_user, update_time, update_user, 
     active
   </sql>
@@ -30,21 +30,21 @@
     select 
     <include refid="Base_Column_List" />
     from t_customer_address
-    where id = #{id,jdbcType=INTEGER}
+    where address_id = #{addressId,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from t_customer_address
-    where id = #{id,jdbcType=INTEGER}
+    where address_id = #{addressId,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.crazy.portal.entity.cusotmer.CustomerAddress">
-    insert into t_customer_address (id, report_id, cust_id, 
+    insert into t_customer_address (address_id, report_id, cust_id,
       address_type, country, province, 
       city, district, address_detail, 
       is_default, contact, mobile, 
       eamil, create_time, crate_user, 
       update_time, update_user, active
       )
-    values (#{id,jdbcType=INTEGER}, #{reportId,jdbcType=INTEGER}, #{custId,jdbcType=INTEGER}, 
+    values (#{addressId,jdbcType=INTEGER}, #{reportId,jdbcType=INTEGER}, #{custId,jdbcType=INTEGER},
       #{addressType,jdbcType=VARCHAR}, #{country,jdbcType=VARCHAR}, #{province,jdbcType=VARCHAR}, 
       #{city,jdbcType=VARCHAR}, #{district,jdbcType=VARCHAR}, #{addressDetail,jdbcType=VARCHAR}, 
       #{isDefault,jdbcType=INTEGER}, #{contact,jdbcType=VARCHAR}, #{mobile,jdbcType=VARCHAR}, 
@@ -55,8 +55,8 @@
   <insert id="insertSelective" parameterType="com.crazy.portal.entity.cusotmer.CustomerAddress">
     insert into t_customer_address
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        id,
+      <if test="addressId != null">
+        address_id,
       </if>
       <if test="reportId != null">
         report_id,
@@ -111,8 +111,8 @@
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        #{id,jdbcType=INTEGER},
+      <if test="addressId != null">
+        #{addressId,jdbcType=INTEGER},
       </if>
       <if test="reportId != null">
         #{reportId,jdbcType=INTEGER},
@@ -222,7 +222,7 @@
         active = #{active,jdbcType=INTEGER},
       </if>
     </set>
-    where id = #{id,jdbcType=INTEGER}
+    where address_id = #{addressId,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.crazy.portal.entity.cusotmer.CustomerAddress">
     update t_customer_address
@@ -243,6 +243,6 @@
       update_time = #{updateTime,jdbcType=TIMESTAMP},
       update_user = #{updateUser,jdbcType=INTEGER},
       active = #{active,jdbcType=INTEGER}
-    where id = #{id,jdbcType=INTEGER}
+    where address_id = #{addressId,jdbcType=INTEGER}
   </update>
 </mapper>

@@ -283,7 +283,7 @@ public class CustomerInfoService {
         if(null == bankInfo){
             return;
         }
-        if(null == bankInfo.getId()){
+        if(null == bankInfo.getBankId()){
             bankInfo.setReportId(reportId);
             bankInfo.setCreateUser(userId);
             custBankInfoMapper.insertSelective(bankInfo);
@@ -373,7 +373,7 @@ public class CustomerInfoService {
             return;
         }
         relationships.forEach(e->{
-            if(null == e.getId()){
+            if(null == e.getShipId()){
                 e.setReportId(reportId);
                 e.setCreateUser(userId);
                 custCorporateRelationshipMapper.insertSelective(e);
@@ -389,7 +389,7 @@ public class CustomerInfoService {
             return;
         }
         invoiceInfos.forEach(e->{
-            if(null == e.getId()){
+            if(null == e.getInvoiceId()){
                 e.setReportId(reportId);
                 e.setCreateUser(userId);
                 custInvoiceInfoMapper.insertSelective(e);
@@ -405,7 +405,7 @@ public class CustomerInfoService {
             return;
         }
         basicSales.forEach(e->{
-            if(null == e.getId()){
+            if(null == e.getSalesId()){
                 e.setReportId(reportId);
                 e.setCreateUser(userId);
                 custSalesMapper.insertSelective(e);
@@ -421,7 +421,7 @@ public class CustomerInfoService {
             return;
         }
         addresses.forEach(e->{
-            if(null == e.getId()){
+            if(null == e.getAddressId()){
                 e.setReportId(reportId);
                 e.setCrateUser(userId);
                 customerAddressMapper.insertSelective(e);
@@ -437,7 +437,7 @@ public class CustomerInfoService {
             return;
         }
         accountTeams.forEach(e->{
-            if(null == e.getId()){
+            if(null == e.getTeamId()){
                 e.setReportId(reportId);
                 e.setCreateUser(userId);
                 customerAccountTeamMapper.insertSelective(e);

@@ -24,10 +24,21 @@ public class Enums {
     }
 
     public enum SYS_PARAM{
-        ANNOUNCEMENT_TYPE(1,1),   //附件类型
-        CUSTOMER_BUSINESS_TYPE(2,1), //客户业务类型
-        CUSOTMER_ROLE(2,2),          //客户角色
-        DEALER_MAPPING_MODEL(3,1);         //代理商关联cs 模块
+        //附件类型
+        ANNOUNCEMENT_TYPE(1,1),
+        //客户业务类型
+        CUSTOMER_BUSINESS_TYPE(2,1),
+        //客户角色
+        CUSOTMER_ROLE(2,2),
+        //代理商关联cs 模块
+        DEALER_MAPPING_MODEL(3,1),
+        //出货期限  H
+        DEALER_SALES_DATE(3,2),
+        //收货期限 H
+        DEALER_INVOICE_DATE(3,3),
+        // 预测期限 D
+        DEALER_FORECAST_DATE(3,4)
+        ;
 
         private Integer model;
         private Integer function;

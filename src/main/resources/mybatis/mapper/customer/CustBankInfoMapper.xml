@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.crazy.portal.dao.customer.CustBankInfoMapper">
   <resultMap id="BaseResultMap" type="com.crazy.portal.entity.cusotmer.CustBankInfo">
-    <id column="id" jdbcType="INTEGER" property="id" />
+    <id column="bank_id" jdbcType="INTEGER" property="bankId" />
     <result column="report_id" jdbcType="INTEGER" property="reportId" />
     <result column="cust_id" jdbcType="INTEGER" property="custId" />
     <result column="bank_name" jdbcType="VARCHAR" property="bankName" />
@@ -22,7 +22,7 @@
     <result column="bank_detail_info" jdbcType="LONGVARCHAR" property="bankDetailInfo" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, report_id, cust_id, bank_name, bank_account, bank_bic, bank_country, bank_province, 
+    bank_id, report_id, cust_id, bank_name, bank_account, bank_bic, bank_country, bank_province,
     bank_city, bank_district, create_user, create_time, update_user, update_time, active
   </sql>
   <sql id="Blob_Column_List">
@@ -34,20 +34,20 @@
     ,
     <include refid="Blob_Column_List" />
     from t_cust_bank_info
-    where id = #{id,jdbcType=INTEGER}
+    where bank_id = #{bankId,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from t_cust_bank_info
-    where id = #{id,jdbcType=INTEGER}
+    where bank_id = #{bankId,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.crazy.portal.entity.cusotmer.CustBankInfo">
-    insert into t_cust_bank_info (id, report_id, cust_id, 
+    insert into t_cust_bank_info (bank_id, report_id, cust_id,
       bank_name, bank_account, bank_bic, 
       bank_country, bank_province, bank_city, 
       bank_district, create_user, create_time, 
       update_user, update_time, active, 
       bank_detail_info)
-    values (#{id,jdbcType=INTEGER}, #{reportId,jdbcType=INTEGER}, #{custId,jdbcType=INTEGER}, 
+    values (#{bankId,jdbcType=INTEGER}, #{reportId,jdbcType=INTEGER}, #{custId,jdbcType=INTEGER},
       #{bankName,jdbcType=VARCHAR}, #{bankAccount,jdbcType=VARCHAR}, #{bankBic,jdbcType=VARCHAR}, 
       #{bankCountry,jdbcType=VARCHAR}, #{bankProvince,jdbcType=VARCHAR}, #{bankCity,jdbcType=VARCHAR}, 
       #{bankDistrict,jdbcType=VARCHAR}, #{createUser,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, 
@@ -57,8 +57,8 @@
   <insert id="insertSelective" parameterType="com.crazy.portal.entity.cusotmer.CustBankInfo">
     insert into t_cust_bank_info
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        id,
+      <if test="bankId != null">
+        bank_id,
       </if>
       <if test="reportId != null">
         report_id,
@@ -107,8 +107,8 @@
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        #{id,jdbcType=INTEGER},
+      <if test="bankId != null">
+        #{bankId,jdbcType=INTEGER},
       </if>
       <if test="reportId != null">
         #{reportId,jdbcType=INTEGER},
@@ -206,7 +206,7 @@
         bank_detail_info = #{bankDetailInfo,jdbcType=LONGVARCHAR},
       </if>
     </set>
-    where id = #{id,jdbcType=INTEGER}
+    where bank_id = #{bankId,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.crazy.portal.entity.cusotmer.CustBankInfo">
     update t_cust_bank_info
@@ -225,7 +225,7 @@
       update_time = #{updateTime,jdbcType=TIMESTAMP},
       active = #{active,jdbcType=INTEGER},
       bank_detail_info = #{bankDetailInfo,jdbcType=LONGVARCHAR}
-    where id = #{id,jdbcType=INTEGER}
+    where bank_id = #{bankId,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.crazy.portal.entity.cusotmer.CustBankInfo">
     update t_cust_bank_info
@@ -243,6 +243,6 @@
       update_user = #{updateUser,jdbcType=INTEGER},
       update_time = #{updateTime,jdbcType=TIMESTAMP},
       active = #{active,jdbcType=INTEGER}
-    where id = #{id,jdbcType=INTEGER}
+    where bank_id = #{bankId,jdbcType=INTEGER}
   </update>
 </mapper>
