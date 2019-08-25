@@ -2,6 +2,8 @@ package com.crazy.portal.dao.customer;
 
 import com.crazy.portal.entity.cusotmer.CustCorporateRelationship;
 
+import java.util.List;
+
 public interface CustCorporateRelationshipMapper {
     int deleteByPrimaryKey(Integer id);
 
@@ -14,4 +16,6 @@ public interface CustCorporateRelationshipMapper {
     int updateByPrimaryKeySelective(CustCorporateRelationship record);
 
     int updateByPrimaryKey(CustCorporateRelationship record);
+
+    List<CustCorporateRelationship> selectDealerShip(Integer dealerId);
 }

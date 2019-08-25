@@ -23,6 +23,28 @@ public class Enums {
         FORECAST_APPROVE; //上传、修改调整和最终审批
     }
 
+    public enum SYS_PARAM{
+        ANNOUNCEMENT_TYPE(1,1),   //附件类型
+        CUSTOMER_BUSINESS_TYPE(2,1), //客户业务类型
+        CUSOTMER_ROLE(2,2),          //客户角色
+        DEALER_MAPPING_MODEL(3,1);         //代理商关联cs 模块
+
+        private Integer model;
+        private Integer function;
+        SYS_PARAM(Integer model, Integer function){
+            this.model = model;
+            this.function = function;
+        }
+
+        public Integer getModel() {
+            return model;
+        }
+
+        public Integer getFunction() {
+            return function;
+        }
+    }
+
     public enum MAIL_TEMPLATE {
         USER_CREATE("createSubAgent"),
         RESET_PWD("resetPwdTemplate"),
@@ -144,21 +166,6 @@ public class Enums {
     }
 
     //<editor-fold desc="客户枚举">
-    /**
-     * 用户类型
-     */
-    public enum CUSTOMER_TYPE{
-        dealer(1),   //代理商
-        customer(2); //客户
-
-        private final int code;
-        CUSTOMER_TYPE(int code){
-            this.code = code;
-        }
-        public int getCode(){
-            return code;
-        }
-    }
 
     /**
      * A01 - Account Market（直供）；A02 - Account Market（非直供）；A03 - Mass Market；A04 - 代理商
@@ -179,47 +186,19 @@ public class Enums {
         }
     }
 
-    /**
-     * 客户角色
-     */
-    public enum CUSTOMER_ROLE{
-        potential_customer(0),      //潜在客户
-        in_customer(1),             //内部客户
-        out_customer(2);            //外部客户
+    public enum CUSTOMER_SHIP_TYPE{
+        out_customer("Z001"),
+        in_customer("Z002"),
+        dealer("Z003");
 
-        private final int code;
-        CUSTOMER_ROLE(int code){
-            this.code = code;
+        private String code;
+
+        CUSTOMER_SHIP_TYPE(String code){
+            this.code =code;
         }
-        public int getCode(){
+
+        public String getCode() {
             return code;
-        }
-    }
-
-    /**
-     * 客户状态
-     */
-    public enum CustomerStatus{
-        WAIT_SUBMIT(1, "待提交"),
-        WAIT_APPROVAL(2, "待审批"),
-        NORMAL(3, "正常"),
-        REJECT(4, "被驳回"),
-        SALES_FROZEN(5, "销售支持冻结"),
-        DELIVERY_FROZEN(6, "交货冻结"),
-        ORDER(7, "订单冻结"),
-        INVOICE(8, "开票冻结");
-
-        private Integer code;
-        private String desc;
-        CustomerStatus(Integer code, String desc){
-            this.code = code;
-            this.desc = desc;
-        }
-        public Integer getCode(){
-            return code;
-        }
-        public String getDesc(){
-            return desc;
         }
     }
 
@@ -259,63 +238,6 @@ public class Enums {
 
         public int getCode() {
             return code;
-        }
-    }
-
-    /**
-     * 代理状态
-     */
-    public enum DealerStatus{
-        TAKE_EFFECT(1, "生效"),
-        FROZEN(0, "冻结");
-
-        private Integer code;
-        private String desc;
-
-        DealerStatus(Integer code, String desc){
-            this.code = code;
-            this.desc = desc;
-        }
-        public Integer getCode(){
-            return code;
-        }
-        public String getDesc(){
-            return desc;
-        }
-    }
-
-    /**
-     * 联系人类型
-     */
-    public enum ContactType{
-        C01("CO1", "出货数据确认人"),
-        C02("C02", "Rebate确认人");
-
-        private String code;
-        private String desc;
-
-        ContactType(String code, String desc){
-            this.code = code;
-            this.desc = desc;
-        }
-        public String getCode(){
-            return code;
-        }
-        public String getDesc(){
-            return desc;
-        }
-    }
-
-    /**
-     * 币种
-     */
-    public enum Currency{
-        RMB,
-        USD,
-        HDK;
-
-        Currency(){
-
         }
     }
 

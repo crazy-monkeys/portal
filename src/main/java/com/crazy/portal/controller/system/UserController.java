@@ -86,6 +86,15 @@ public class UserController extends BaseController {
         return super.successResult();
     }
 
+    /**
+     * 获取代理商的内外部客户
+     * @return
+     */
+    @GetMapping(value = "/ships")
+    public BaseResponse selectShips(){
+        return successResult(userService.getUserShips(getCurrentUser().getDealerId()));
+    }
+
     private Map<String, Boolean> valid(Boolean valid) {
         Map<String, Boolean> map = new HashMap<>();
         map.put("valid", valid);

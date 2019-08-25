@@ -161,4 +161,9 @@
       active = #{active,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <select id="selectDealerShip" resultMap="BaseResultMap">
+    select * from t_cust_corporate_relationship
+    where cust_id=#{dealerId} and active=1
+  </select>
 </mapper>
