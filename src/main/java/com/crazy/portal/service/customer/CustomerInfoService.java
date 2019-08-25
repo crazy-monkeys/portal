@@ -276,6 +276,8 @@ public class CustomerInfoService {
         saveSales(customerInfo.getSales(), reportId, userId);
         saveAddress(customerInfo.getAddresses(), reportId, userId);
         saveAccountTeam(customerInfo.getAccountTeams(), reportId, userId);
+        saveAssetsInformation(customerInfo.getAssetsInformations());
+        saveBusinessInformation(customerInfo.getBusinessInformations());
     }
 
     /*银行账号信息*/
@@ -297,7 +299,7 @@ public class CustomerInfoService {
      * 季度更新 资产信息
      * @param assetsInformations
      */
-    public void updateAssetsInformation(List<AssetsInformation> assetsInformations){
+    private void saveAssetsInformation(List<AssetsInformation> assetsInformations){
         assetsInformations.forEach(x->{
             if(null != x.getAsseteInfoId()){
                 assetsInformationMapper.updateByPrimaryKeySelective(x);
@@ -311,7 +313,7 @@ public class CustomerInfoService {
      * 季度更新代理商 业务介绍
      * @param businessInformations
      */
-    public void updateBusinessInformation(List<BusinessInformation> businessInformations){
+    private void saveBusinessInformation(List<BusinessInformation> businessInformations){
         businessInformations.forEach(x->{
             if(null != x.getBusInfoId()){
                 businessInformationMapper.updateByPrimaryKeySelective(x);
