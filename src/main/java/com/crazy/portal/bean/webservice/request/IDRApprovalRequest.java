@@ -2,6 +2,7 @@ package com.crazy.portal.bean.webservice.request;
 
 import com.crazy.portal.bean.webservice.AbstractRequest;
 import com.crazy.portal.bean.webservice.IRequest;
+import com.crazy.portal.util.StringUtil;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.ArrayUtils;
@@ -44,7 +45,22 @@ public class IDRApprovalRequest extends AbstractRequest implements IRequest<IDRA
         }
         Map<String, String> paramsMaps = super.getParamsValue();
         List<String> errorMsgLists = new ArrayList<String>();
-
+        if(StringUtil.isBlank(paramsMaps.get("type"))){
+            errorMsgLists.add("type 不能为空");
+            return errorMsgLists;
+        }
+        if(StringUtil.isBlank(paramsMaps.get("orderNumber"))){
+            errorMsgLists.add("orderNumber 不能为空");
+            return errorMsgLists;
+        }
+        if(StringUtil.isBlank(paramsMaps.get("reviewedPeople"))){
+            errorMsgLists.add("reviewedPeople 不能为空");
+            return errorMsgLists;
+        }
+        if(StringUtil.isBlank(paramsMaps.get("reviewStatus"))){
+            errorMsgLists.add("reviewStatus 不能为空");
+            return errorMsgLists;
+        }
         return errorMsgLists;
     }
 

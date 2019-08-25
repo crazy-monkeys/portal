@@ -51,7 +51,9 @@ public class HttpClientUtils {
     public static String get(String url) throws IOException {
         return get(url, CHARSET,authString, null, null);
     }
-
+    public static String post(String url, String body) throws IOException{
+        return post(url, body, null, "application/json", "utf-8", CONNECT_TIMEOUT, READ_TIMEOUT);
+    }
     public static String postHeader(String url, String params) throws IOException {
         return post(url, params, authString, MIMETYPE_JSON, null, null, null);
     }
@@ -88,8 +90,9 @@ public class HttpClientUtils {
                 customReqConf.setSocketTimeout(readTimeout);
             }
             post.setConfig(customReqConf.build());
-
-            post.setHeader("Authorization", header);
+            if(header != null) {
+                post.setHeader("Authorization", header);
+            }
             HttpResponse res;
             if (url.startsWith("https")) {
                 // 执行 Https 请求.

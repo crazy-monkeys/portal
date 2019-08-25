@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.crazy.portal.dao.business.idr.BusinessIdrApprovalMapper">
+  <resultMap id="BaseResultMap" type="com.crazy.portal.entity.business.idr.BusinessIdrApproval">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="idr_info_id" jdbcType="INTEGER" property="idrInfoId" />
+    <result column="order_no" jdbcType="VARCHAR" property="orderNo" />
+    <result column="order_tye" jdbcType="VARCHAR" property="orderTye" />
+    <result column="reviewedPeople" jdbcType="VARCHAR" property="reviewedpeople" />
+    <result column="currentReviewer" jdbcType="VARCHAR" property="currentreviewer" />
+    <result column="reviewStatus" jdbcType="VARCHAR" property="reviewstatus" />
+    <result column="comment" jdbcType="VARCHAR" property="comment" />
+    <result column="message" jdbcType="VARCHAR" property="message" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, idr_info_id, order_no, order_tye, reviewedPeople, currentReviewer, reviewStatus, 
+    comment, message, create_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_business_idr_approval
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_business_idr_approval
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+
+  <insert id="insertSelective" parameterType="com.crazy.portal.entity.business.idr.BusinessIdrApproval">
+    insert into t_business_idr_approval
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="idrInfoId != null">
+        idr_info_id,
+      </if>
+      <if test="orderNo != null">
+        order_no,
+      </if>
+      <if test="orderTye != null">
+        order_tye,
+      </if>
+      <if test="reviewedpeople != null">
+        reviewedPeople,
+      </if>
+      <if test="currentreviewer != null">
+        currentReviewer,
+      </if>
+      <if test="reviewstatus != null">
+        reviewStatus,
+      </if>
+      <if test="comment != null">
+        comment,
+      </if>
+      <if test="message != null">
+        message,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="idrInfoId != null">
+        #{idrInfoId,jdbcType=INTEGER},
+      </if>
+      <if test="orderNo != null">
+        #{orderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="orderTye != null">
+        #{orderTye,jdbcType=VARCHAR},
+      </if>
+      <if test="reviewedpeople != null">
+        #{reviewedpeople,jdbcType=VARCHAR},
+      </if>
+      <if test="currentreviewer != null">
+        #{currentreviewer,jdbcType=VARCHAR},
+      </if>
+      <if test="reviewstatus != null">
+        #{reviewstatus,jdbcType=VARCHAR},
+      </if>
+      <if test="comment != null">
+        #{comment,jdbcType=VARCHAR},
+      </if>
+      <if test="message != null">
+        #{message,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.crazy.portal.entity.business.idr.BusinessIdrApproval">
+    update t_business_idr_approval
+    <set>
+      <if test="idrInfoId != null">
+        idr_info_id = #{idrInfoId,jdbcType=INTEGER},
+      </if>
+      <if test="orderNo != null">
+        order_no = #{orderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="orderTye != null">
+        order_tye = #{orderTye,jdbcType=VARCHAR},
+      </if>
+      <if test="reviewedpeople != null">
+        reviewedPeople = #{reviewedpeople,jdbcType=VARCHAR},
+      </if>
+      <if test="currentreviewer != null">
+        currentReviewer = #{currentreviewer,jdbcType=VARCHAR},
+      </if>
+      <if test="reviewstatus != null">
+        reviewStatus = #{reviewstatus,jdbcType=VARCHAR},
+      </if>
+      <if test="comment != null">
+        comment = #{comment,jdbcType=VARCHAR},
+      </if>
+      <if test="message != null">
+        message = #{message,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <select id="selectByOrderNo" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_business_idr_approval
+    where order_no = #{orderNo,jdbcType=VARCHAR}
+    limit 1
+  </select>
+
+</mapper>
