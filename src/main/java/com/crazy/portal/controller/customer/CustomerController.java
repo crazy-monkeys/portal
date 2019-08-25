@@ -46,17 +46,6 @@ public class CustomerController extends BaseController{
         return successResult();
     }
 
-    @PostMapping("/updateAssetsInformation")
-    public BaseResponse updateAssetsInformation(@RequestBody List<AssetsInformation> assetsInformations){
-        customerInfoService.updateAssetsInformation(assetsInformations);
-        return successResult();
-    }
-
-    @PostMapping("/updateBusinessInformation")
-    public BaseResponse updateBusinessInformation(@RequestBody List<BusinessInformation> businessInformations){
-        customerInfoService.updateBusinessInformation(businessInformations);
-        return successResult();
-    }
     //校验客户是否可报备
     @GetMapping(value = "/check/{customerName}")
     public BaseResponse checkCustomer(@PathVariable String customerName){
