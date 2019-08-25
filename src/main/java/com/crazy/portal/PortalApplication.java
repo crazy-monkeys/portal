@@ -17,7 +17,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 
 
-@EnableTransactionManagement
+@EnableTransactionManagement(proxyTargetClass = true)
 @EntityScan
 @EnableCaching
 @EnableScheduling
