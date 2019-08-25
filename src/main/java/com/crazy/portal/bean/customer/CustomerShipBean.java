@@ -13,5 +13,5 @@ import java.util.List;
 @Data
 public class CustomerShipBean {
     private CustCorporateRelationship inShip;
-    private List<CustCorporateRelationship> outShops;
+    private List<CustCorporateRelationship> outShips;
 }

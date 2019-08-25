@@ -221,9 +221,8 @@ public class UserService {
 
 
     /**
-     * 获取 customer的内外部客户
-     * @param customerId
-     * @param type
+     * 获取 代理商的内外部客户
+     * @param dealerId
      */
     public CustomerShipBean getUserShips(Integer dealerId){
         return customerInfoService.selectDealerShip(dealerId);

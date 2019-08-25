@@ -3,6 +3,7 @@ package com.crazy.portal.controller.system;
 import com.crazy.portal.bean.BaseResponse;
 import com.crazy.portal.controller.BaseController;
 import com.crazy.portal.entity.system.SysParameter;
+import com.crazy.portal.service.group.SalesGroupService;
 import com.crazy.portal.service.system.SysParamService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +19,8 @@ import javax.annotation.Resource;
 public class SysParamController extends BaseController {
     @Resource
     private SysParamService sysParamService;
+    @Resource
+    private SalesGroupService salesGroupService;
 
     @GetMapping("/selectAll")
     public BaseResponse selectAll(@RequestParam(required = false) Integer pModel,
@@ -39,4 +42,12 @@ public class SysParamController extends BaseController {
         return super.successResult();
     }
 
+    /**
+     * 获取销售组织
+     * @return
+     */
+    @GetMapping(value = "/list")
+    public BaseResponse getList(){
+        return successResult(salesGroupService.selectSalesGroup());
+    }
 }

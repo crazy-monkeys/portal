@@ -7,7 +7,7 @@ import java.util.Date;
 
 @Data
 public class AssetsInformation {
-    private Integer id;
+    private Integer asseteInfoId;
 
     private Integer custId;
 

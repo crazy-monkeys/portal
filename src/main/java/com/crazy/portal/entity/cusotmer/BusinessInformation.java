@@ -15,7 +15,7 @@ public class BusinessInformation {
     /**
      * 
      */
-    private Integer id;
+    private Integer busInfoId;
 
     /**
      * 
