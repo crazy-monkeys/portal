@@ -5,6 +5,7 @@ import com.crazy.portal.config.security.JwtUser;
 import com.crazy.portal.dao.system.RoleMapper;
 import com.crazy.portal.entity.system.Role;
 import com.crazy.portal.entity.system.User;
+import com.crazy.portal.util.Enums;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -65,6 +66,19 @@ public class BaseController {
         //目前只支持用户单角色
         String roleCode = list.get(0);
         return roleMapper.findRoleByCode(roleCode);
+    }
+
+    /**
+     * 获取当前登录用户所属职位
+     * @return
+     */
+    public String getCurrentUserPosition(){
+        //如果不是内部账号返回null
+        User user = this.getCurrentUser();
+        if(!user.getUserType().equals(Enums.USER_TYPE.internal.toString())){
+            return null;
+        }
+        return "";
     }
 
     protected BaseResponse successResult() {

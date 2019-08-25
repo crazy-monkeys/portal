@@ -27,7 +27,7 @@ public class JwtRefreshSuccessHandler implements AuthenticationSuccessHandler{
     @Resource
     private JwtUserService jwtUserService;
 
-    //刷新间隔15分钟
+    //刷新间隔10分钟
     private static final int tokenRefreshInterval = 60 * 10;
 
     public JwtRefreshSuccessHandler(JwtUserService jwtUserService) {

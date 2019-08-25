@@ -6,6 +6,7 @@ import com.crazy.portal.controller.BaseController;
 import com.crazy.portal.entity.price.EnquiryPrice;
 import com.crazy.portal.service.price.EnquiryPriceService;
 import com.github.pagehelper.Page;
+import com.github.pagehelper.PageInfo;
 import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 
@@ -39,7 +40,7 @@ public class EnquiryController extends BaseController {
      */
     @PostMapping("/query")
     public BaseResponse query(@RequestBody EnquiryPriceVO enquiryPriceVO){
-        Page<EnquiryPrice> enquiryPrices = enquiryPriceService.query(enquiryPriceVO);
+        PageInfo<EnquiryPrice> enquiryPrices = enquiryPriceService.query(enquiryPriceVO);
         return super.successResult(enquiryPrices);
     }
 

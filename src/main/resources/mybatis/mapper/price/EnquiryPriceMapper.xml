@@ -8,6 +8,7 @@
     <result column="apply_time" jdbcType="TIMESTAMP" property="applyTime" />
     <result column="bu" jdbcType="VARCHAR" property="bu" />
     <result column="pdt" jdbcType="VARCHAR" property="pdt" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
     <result column="product_type" jdbcType="VARCHAR" property="productType" />
     <result column="platform" jdbcType="VARCHAR" property="platform" />
     <result column="catalog_price" jdbcType="DECIMAL" property="catalogPrice" />
@@ -19,10 +20,10 @@
     <result column="approval_remark" jdbcType="VARCHAR" property="approvalRemark" />
     <result column="approver" jdbcType="VARCHAR" property="approver" />
     <result column="proposer" jdbcType="VARCHAR" property="proposer" />
-    <result column="remark" jdbcType="VARCHAR" property="proposer" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, product_model, apply_remark, apply_time, bu, pdt, product_type,
+    id, product_model, apply_remark, apply_time, bu, pdt,status, product_type,
     platform, catalog_price, in_customer, effect_time, dead_time, modify_time, approval_status, 
     approval_remark, approver, proposer,remark
   </sql>
@@ -80,6 +81,9 @@
       <if test="pdt != null">
         pdt,
       </if>
+      <if test="status != null">
+        status,
+      </if>
       <if test="productType != null">
         product_type,
       </if>
@@ -136,6 +140,9 @@
       <if test="pdt != null">
         #{pdt,jdbcType=VARCHAR},
       </if>
+      <if test="status != null">
+        #{status,jdbcType=VARCHAR},
+      </if>
       <if test="productType != null">
         #{productType,jdbcType=VARCHAR},
       </if>
@@ -191,6 +198,9 @@
       </if>
       <if test="pdt != null">
         pdt = #{pdt,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=VARCHAR},
       </if>
       <if test="productType != null">
         product_type = #{productType,jdbcType=VARCHAR},

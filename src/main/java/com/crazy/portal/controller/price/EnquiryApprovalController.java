@@ -1,5 +1,6 @@
 package com.crazy.portal.controller.price;
 
+import com.alibaba.fastjson.JSON;
 import com.crazy.portal.bean.BaseResponse;
 import com.crazy.portal.bean.price.EnquiryApprovalBean;
 import com.crazy.portal.bean.price.EnquiryPriceVO;
@@ -7,6 +8,8 @@ import com.crazy.portal.controller.BaseController;
 import com.crazy.portal.entity.price.EnquiryPrice;
 import com.crazy.portal.service.price.EnquiryPriceService;
 import com.github.pagehelper.Page;
+import com.github.pagehelper.PageInfo;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -20,6 +23,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/price/enquiryApproval")
+@Slf4j
 public class EnquiryApprovalController extends BaseController {
 
     @Resource
@@ -31,9 +35,9 @@ public class EnquiryApprovalController extends BaseController {
      * @return
      */
     @PostMapping("/approval")
-    public BaseResponse approval(@RequestBody List<EnquiryApprovalBean> enquiryApprovalBeans){
-
-        enquiryApprovalBeans.forEach(x->enquiryPriceService.approve(x));
+    public BaseResponse approval(@RequestBody EnquiryApprovalBean enquiryApprovalBean){
+        enquiryApprovalBean.setApprover(super.getCurrentUser().getLoginName());
+        enquiryPriceService.approve(enquiryApprovalBean);
         return super.successResult();
     }
 
@@ -45,7 +49,7 @@ public class EnquiryApprovalController extends BaseController {
     @PostMapping("/query")
     public BaseResponse query(@RequestBody EnquiryPriceVO enquiryPriceVO){
 
-        Page<EnquiryPrice> enquiryPrices = enquiryPriceService.query(enquiryPriceVO);
+        PageInfo<EnquiryPrice> enquiryPrices = enquiryPriceService.query(enquiryPriceVO);
         return super.successResult(enquiryPrices);
     }
 }
