@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.crazy.portal.bean.handover.HandoverUploadVO;
 import com.crazy.portal.bean.handover.ReceiveTemplateBean;
 import com.crazy.portal.dao.handover.ReceiveDetailMapper;
-import com.crazy.portal.entity.handover.DeliverDetail;
 import com.crazy.portal.entity.handover.DeliverReceiveRecord;
 import com.crazy.portal.entity.handover.ReceiveDetail;
 import com.crazy.portal.util.BusinessUtil;
@@ -49,14 +48,12 @@ public class ReceiveService extends AbstractHandover implements IHandover<Receiv
 
     @Override
     public HandoverUploadVO verificationData(List<ReceiveDetail> receiveData, Integer userId) {
-        String thridFileName = ExcelUtils.writeExcel(receivePushPath, receiveData, DeliverDetail.class);
-        BiCheckResult checkResult = callBiServer(CHECK_INVENTORY_IMPORT_FILE, (receivePushPath+thridFileName), receivePullPath);
-        List<ReceiveTemplateBean> responseData = ExcelUtils.readExcel(checkResult.getFilePath(), ReceiveTemplateBean.class);
+        String thirdFileName = ExcelUtils.writeExcel(receivePushPath, receiveData, ReceiveDetail.class);
+        BiCheckResult checkResult = callBiServer(CHECK_INVENTORY_IMPORT_FILE, (receivePushPath+thirdFileName), receivePullPath);
+        List<ReceiveDetail> responseData = ExcelUtils.readExcel(checkResult.getFilePath(), ReceiveDetail.class);
         //批次记录表
         DeliverReceiveRecord record = handoverService.genRecord("模拟收货的代理商名字", userId, 2);
-        for(ReceiveTemplateBean templateBean : responseData){
-            ReceiveDetail detail = JSONObject.parseObject(JSONObject.toJSONString(templateBean), ReceiveDetail.class);
-            detail.setErrorMsg(templateBean.getThirdErrorMsg());
+        for(ReceiveDetail detail : responseData){
             detail.setRecordId(record.getId());
             receiveDetailMapper.insertSelective(detail);
         }
@@ -79,11 +76,9 @@ public class ReceiveService extends AbstractHandover implements IHandover<Receiv
         List<ReceiveDetail> fullData = receiveDetailMapper.selectByRecordId(recordId);
         String thirdFileName = ExcelUtils.writeExcel(receivePushPath, fullData, ReceiveDetail.class);
         BiCheckResult checkResult = callBiServer(CHECK_INVENTORY_IMPORT_FILE, (receivePushPath+thirdFileName), receivePullPath);
-        List<ReceiveTemplateBean> responseData = ExcelUtils.readExcel(checkResult.getFilePath(), ReceiveTemplateBean.class);
+        List<ReceiveDetail> responseData = ExcelUtils.readExcel(checkResult.getFilePath(), ReceiveDetail.class);
         receiveDetailMapper.deleteByRecordId(recordId);
-        for(ReceiveTemplateBean templateBean : responseData){
-            ReceiveDetail detail = JSONObject.parseObject(JSONObject.toJSONString(templateBean), ReceiveDetail.class);
-            detail.setErrorMsg(templateBean.getThirdErrorMsg());
+        for(ReceiveDetail detail : responseData){
             detail.setRecordId(recordId);
             receiveDetailMapper.insertSelective(detail);
         }

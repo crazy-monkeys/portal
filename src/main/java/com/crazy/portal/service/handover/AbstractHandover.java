@@ -27,8 +27,14 @@ public abstract class AbstractHandover {
      */
     protected BiCheckResult callBiServer(Enums.BI_FUNCTION_CODE functionCode, String pushPath, String pullPath) {
         try {
-            String response = mockThirdResult() ? "\"OK:/Users/lee/Documents/job_code/portal_file/pull_thrid/deliver/ok.xlsx\"" :
-                    "\"NG:/Users/lee/Documents/job_code/portal_file/pull_thrid/deliver/error.xlsx\"";
+            String response;
+            if(functionCode == Enums.BI_FUNCTION_CODE.CHECK_SALES_IMPORT_FILE){
+                response = mockThirdResult() ? "\"OK:/Users/lee/Documents/job_code/portal_file/pull_thrid/deliver/ok.xlsx\"" :
+                        "\"NG:/Users/lee/Documents/job_code/portal_file/pull_thrid/deliver/error.xlsx\"";
+            }else{
+                response = mockThirdResult() ? "\"OK:/Users/lee/Documents/job_code/portal_file/pull_thrid/receive/ok.xlsx\"" :
+                        "\"NG:/Users/lee/Documents/job_code/portal_file/pull_thrid/receive/error.xlsx\"";
+            }
 //            String response = CallApiUtils.BITest(functionCode, pushPath, pullPath);
             if(StringUtils.isEmpty(response)){
                 log.error("{} -> {}", HANDOVER_BI_RESPONSE_EXCEPTION.getZhMsg(), response);
