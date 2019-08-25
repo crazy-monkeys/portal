@@ -644,4 +644,10 @@ select
     select cust_email from t_customer_info
     where cust_name = #{custName} and active = 1
   </select>
+
+  <select id="getDealerByUser" resultMap="BaseResultMap">
+    select * from t_customer_info cust
+    inner join t_user u on cust.id = u.dealer_id
+    where u.id=#{userId}
+  </select>
 </mapper>

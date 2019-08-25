@@ -32,4 +32,6 @@ public interface CustomerInfoMapper {
     String selectEmailByCustName(@Param("custName")String custName);
 
     List<CustomerInfo> selectCustomerInfo(CustomerQueryBean record);
+
+    CustomerInfo getDealerByUser(Integer userId);
 }

@@ -19,11 +19,8 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import javax.annotation.Resource;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @Desc:
@@ -228,8 +225,12 @@ public class UserService {
         return customerInfoService.selectDealerShip(dealerId);
     }
 
-    public Boolean checkUser(Integer userId, Enums.SYS_MODEL model){
-
-        return true;
+    /**
+     * 获取登陆用户的负责代理商
+     * @param userId
+     * @return
+     */
+    public List<Integer> getUserDealers(Integer userId){
+        return Arrays.asList(1);
     }
 }

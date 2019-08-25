@@ -87,6 +87,15 @@ public class CustomerInfoService {
         return mappingVO(dealerInfo);
     }
 
+    /**
+     * 获取代理商的客户信息
+     * @param userId
+     * @return
+     */
+    public CustomerInfo getDealerByUser(Integer userId){
+        return customerInfoMapper.getDealerByUser(userId);
+    }
+
     private CustomerInfo mappingVO(CustomerInfo dealer){
         //授信额度初始值
         Zsdscredit zsdscredit = CallApiUtils.callECCCreditApi(dealer.getOutCode());
