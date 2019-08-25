@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.crazy.portal.dao.customer.CustomerAccountTeamMapper">
   <resultMap id="BaseResultMap" type="com.crazy.portal.entity.cusotmer.CustomerAccountTeam">
-    <id column="id" jdbcType="INTEGER" property="id" />
+    <id column="team_id" jdbcType="INTEGER" property="teamId" />
     <result column="report_id" jdbcType="INTEGER" property="reportId" />
     <result column="cust_id" jdbcType="INTEGER" property="custId" />
     <result column="role_type" jdbcType="VARCHAR" property="roleType" />
@@ -15,25 +15,25 @@
     <result column="active" jdbcType="INTEGER" property="active" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, report_id, cust_id, role_type, account_name, account_mobile, create_time, create_user, 
+    team_id, report_id, cust_id, role_type, account_name, account_mobile, create_time, create_user,
     update_time, update_user, active
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from t_customer_account_team
-    where id = #{id,jdbcType=INTEGER}
+    where team_id = #{teamId,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from t_customer_account_team
-    where id = #{id,jdbcType=INTEGER}
+    where team_id = #{teamId,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.crazy.portal.entity.cusotmer.CustomerAccountTeam">
-    insert into t_customer_account_team (id, report_id, cust_id, 
+    insert into t_customer_account_team (team_id, report_id, cust_id,
       role_type, account_name, account_mobile, 
       create_time, create_user, update_time, 
       update_user, active)
-    values (#{id,jdbcType=INTEGER}, #{reportId,jdbcType=INTEGER}, #{custId,jdbcType=INTEGER}, 
+    values (#{teamId,jdbcType=INTEGER}, #{reportId,jdbcType=INTEGER}, #{custId,jdbcType=INTEGER},
       #{roleType,jdbcType=VARCHAR}, #{accountName,jdbcType=VARCHAR}, #{accountMobile,jdbcType=VARCHAR}, 
       #{createTime,jdbcType=TIMESTAMP}, #{createUser,jdbcType=INTEGER}, #{updateTime,jdbcType=TIMESTAMP}, 
       #{updateUser,jdbcType=INTEGER}, #{active,jdbcType=INTEGER})
@@ -41,8 +41,8 @@
   <insert id="insertSelective" parameterType="com.crazy.portal.entity.cusotmer.CustomerAccountTeam">
     insert into t_customer_account_team
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        id,
+      <if test="teamId != null">
+        team_id,
       </if>
       <if test="reportId != null">
         report_id,
@@ -76,8 +76,8 @@
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        #{id,jdbcType=INTEGER},
+      <if test="teamId != null">
+        #{teamId,jdbcType=INTEGER},
       </if>
       <if test="reportId != null">
         #{reportId,jdbcType=INTEGER},
@@ -145,7 +145,7 @@
         active = #{active,jdbcType=INTEGER},
       </if>
     </set>
-    where id = #{id,jdbcType=INTEGER}
+    where team_id = #{teamId,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.crazy.portal.entity.cusotmer.CustomerAccountTeam">
     update t_customer_account_team
@@ -159,6 +159,6 @@
       update_time = #{updateTime,jdbcType=TIMESTAMP},
       update_user = #{updateUser,jdbcType=INTEGER},
       active = #{active,jdbcType=INTEGER}
-    where id = #{id,jdbcType=INTEGER}
+    where team_id = #{teamId,jdbcType=INTEGER}
   </update>
 </mapper>

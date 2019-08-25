@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.crazy.portal.dao.customer.CustCorporateRelationshipMapper">
   <resultMap id="BaseResultMap" type="com.crazy.portal.entity.cusotmer.CustCorporateRelationship">
-    <id column="id" jdbcType="INTEGER" property="id" />
+    <id column="ship_id" jdbcType="INTEGER" property="shipId" />
     <result column="report_id" jdbcType="INTEGER" property="reportId" />
     <result column="cust_id" jdbcType="INTEGER" property="custId" />
     <result column="corporate_id" jdbcType="INTEGER" property="corporateId" />
@@ -15,25 +15,25 @@
     <result column="active" jdbcType="INTEGER" property="active" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, report_id, cust_id, corporate_id, corporate_name, corporate_type, create_user, 
+    ship_id, report_id, cust_id, corporate_id, corporate_name, corporate_type, create_user,
     create_time, update_user, update_time, active
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from t_cust_corporate_relationship
-    where id = #{id,jdbcType=INTEGER}
+    where ship_id = #{shipId,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from t_cust_corporate_relationship
-    where id = #{id,jdbcType=INTEGER}
+    where ship_id = #{shipId,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.crazy.portal.entity.cusotmer.CustCorporateRelationship">
-    insert into t_cust_corporate_relationship (id, report_id, cust_id, 
+    insert into t_cust_corporate_relationship (ship_id, report_id, cust_id,
       corporate_id, corporate_name, corporate_type, 
       create_user, create_time, update_user, 
       update_time, active)
-    values (#{id,jdbcType=INTEGER}, #{reportId,jdbcType=INTEGER}, #{custId,jdbcType=INTEGER}, 
+    values (#{shipId,jdbcType=INTEGER}, #{reportId,jdbcType=INTEGER}, #{custId,jdbcType=INTEGER},
       #{corporateId,jdbcType=INTEGER}, #{corporateName,jdbcType=VARCHAR}, #{corporateType,jdbcType=VARCHAR}, 
       #{createUser,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{updateUser,jdbcType=INTEGER}, 
       #{updateTime,jdbcType=TIMESTAMP}, #{active,jdbcType=INTEGER})
@@ -41,8 +41,8 @@
   <insert id="insertSelective" parameterType="com.crazy.portal.entity.cusotmer.CustCorporateRelationship">
     insert into t_cust_corporate_relationship
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        id,
+      <if test="shipId != null">
+        ship_id,
       </if>
       <if test="reportId != null">
         report_id,
@@ -76,8 +76,8 @@
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        #{id,jdbcType=INTEGER},
+      <if test="shipId != null">
+        #{shipId,jdbcType=INTEGER},
       </if>
       <if test="reportId != null">
         #{reportId,jdbcType=INTEGER},
@@ -145,7 +145,7 @@
         active = #{active,jdbcType=INTEGER},
       </if>
     </set>
-    where id = #{id,jdbcType=INTEGER}
+    where ship_id = #{shipId,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.crazy.portal.entity.cusotmer.CustCorporateRelationship">
     update t_cust_corporate_relationship
@@ -159,7 +159,7 @@
       update_user = #{updateUser,jdbcType=INTEGER},
       update_time = #{updateTime,jdbcType=TIMESTAMP},
       active = #{active,jdbcType=INTEGER}
-    where id = #{id,jdbcType=INTEGER}
+    where ship_id = #{shipId,jdbcType=INTEGER}
   </update>
 
   <select id="selectDealerShip" resultMap="BaseResultMap">
