@@ -4,7 +4,6 @@
   <resultMap id="BaseResultMap" type="com.crazy.portal.entity.handover.ReceiveDetail">
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="third_id" jdbcType="INTEGER" property="thirdId" />
-    <result column="upload_time" jdbcType="TIMESTAMP" property="uploadTime" />
     <result column="product_model" jdbcType="VARCHAR" property="productModel" />
     <result column="inventory_category" jdbcType="VARCHAR" property="inventoryCategory" />
     <result column="inventory_unit_price" jdbcType="DECIMAL" property="inventoryUnitPrice" />
@@ -25,7 +24,7 @@
   </resultMap>
 
   <sql id="Base_Column_List">
-    id, third_id, upload_time, product_model, inventory_category, inventory_unit_price, 
+    id, third_id, product_model, inventory_category, inventory_unit_price,
     warehouse, delivery_time, invoice_number, delivery_num, delivery_company, purchase_number, 
     remark, error_msg, record_id
   </sql>
@@ -40,13 +39,13 @@
     where id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.crazy.portal.entity.handover.ReceiveDetail">
-    insert into t_receive_detail (id, third_id, upload_time, 
+    insert into t_receive_detail (id, third_id,
       product_model, inventory_category, inventory_unit_price, 
       warehouse, delivery_time, invoice_number, 
       delivery_num, delivery_company, purchase_number, 
       remark, error_msg, record_id
       )
-    values (#{id,jdbcType=INTEGER}, #{thirdId,jdbcType=INTEGER}, #{uploadTime,jdbcType=TIMESTAMP}, 
+    values (#{id,jdbcType=INTEGER}, #{thirdId,jdbcType=INTEGER},
       #{productModel,jdbcType=VARCHAR}, #{inventoryCategory,jdbcType=VARCHAR}, #{inventoryUnitPrice,jdbcType=DECIMAL}, 
       #{warehouse,jdbcType=VARCHAR}, #{deliveryTime,jdbcType=TIMESTAMP}, #{invoiceNumber,jdbcType=VARCHAR}, 
       #{deliveryNum,jdbcType=INTEGER}, #{deliveryCompany,jdbcType=VARCHAR}, #{purchaseNumber,jdbcType=VARCHAR}, 
@@ -61,9 +60,6 @@
       </if>
       <if test="thirdId != null">
         third_id,
-      </if>
-      <if test="uploadTime != null">
-        upload_time,
       </if>
       <if test="productModel != null">
         product_model,
@@ -109,9 +105,6 @@
       <if test="thirdId != null">
         #{thirdId,jdbcType=INTEGER},
       </if>
-      <if test="uploadTime != null">
-        #{uploadTime,jdbcType=TIMESTAMP},
-      </if>
       <if test="productModel != null">
         #{productModel,jdbcType=VARCHAR},
       </if>
@@ -156,9 +149,6 @@
       <if test="thirdId != null">
         third_id = #{thirdId,jdbcType=INTEGER},
       </if>
-      <if test="uploadTime != null">
-        upload_time = #{uploadTime,jdbcType=TIMESTAMP},
-      </if>
       <if test="productModel != null">
         product_model = #{productModel,jdbcType=VARCHAR},
       </if>
@@ -201,7 +191,6 @@
   <update id="updateByPrimaryKey" parameterType="com.crazy.portal.entity.handover.ReceiveDetail">
     update t_receive_detail
     set third_id = #{thirdId,jdbcType=INTEGER},
-      upload_time = #{uploadTime,jdbcType=TIMESTAMP},
       product_model = #{productModel,jdbcType=VARCHAR},
       inventory_category = #{inventoryCategory,jdbcType=VARCHAR},
       inventory_unit_price = #{inventoryUnitPrice,jdbcType=DECIMAL},
@@ -222,7 +211,7 @@
   </select>
 
   <select id="selectErrorDataByRecord" resultMap="errorResultMap" >
-    select upload_time, product_model, inventory_category, inventory_unit_price,
+    select product_model, inventory_category, inventory_unit_price,
     warehouse, delivery_time, invoice_number, delivery_num, delivery_company, purchase_number,
     remark,id as error_id,error_msg as third_error_msg
     from t_receive_detail

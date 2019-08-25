@@ -1,5 +1,6 @@
 package com.crazy.portal.service.system;
 
+import com.crazy.portal.bean.customer.CustomerShipBean;
 import com.crazy.portal.bean.system.MailBean;
 import com.crazy.portal.bean.system.SubAgentVO;
 import com.crazy.portal.config.email.EmailHelper;
@@ -10,6 +11,7 @@ import com.crazy.portal.dao.system.UserRoleMapper;
 import com.crazy.portal.entity.system.Role;
 import com.crazy.portal.entity.system.User;
 import com.crazy.portal.entity.system.UserRole;
+import com.crazy.portal.service.customer.CustomerInfoService;
 import com.crazy.portal.util.*;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
@@ -41,6 +43,9 @@ public class UserService {
     private RoleMapper roleMapper;
     @Resource
     private EmailHelper emailHelper;
+    @Resource
+    private CustomerInfoService customerInfoService;
+
 
     private PasswordEncoder passwordEncoder =
             PasswordEncoderFactories.createDelegatingPasswordEncoder();
@@ -212,6 +217,16 @@ public class UserService {
         user.setUpdateTime(new Date());
         user.setUpdateUserId(userId);
         userMapper.updateByPrimaryKeySelective(user);
+    }
+
+
+    /**
+     * 获取 customer的内外部客户
+     * @param customerId
+     * @param type
+     */
+    public CustomerShipBean getUserShips(Integer dealerId){
+        return customerInfoService.selectDealerShip(dealerId);
     }
 
     public Boolean checkUser(Integer userId, Enums.SYS_MODEL model){

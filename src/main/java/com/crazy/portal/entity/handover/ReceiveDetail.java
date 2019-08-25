@@ -9,15 +9,10 @@ import java.util.Date;
 @Data
 public class ReceiveDetail extends BaseRowModel {
 
-    private String dealerName;
-
     private Integer id;
 
-    private Integer thirdId;
-
-    /** 上传时间 */
-    @ExcelProperty(index = 0, value = "上传时间")
-    private Date uploadTime;
+    @ExcelProperty(index = 0, value = "代理全称")
+    private String dealerName;
 
     /** 产品型号 */
     @ExcelProperty(index = 1, value = "产品型号")
@@ -59,7 +54,11 @@ public class ReceiveDetail extends BaseRowModel {
     @ExcelProperty(index = 10, value = "备注")
     private String remark;
 
+    @ExcelProperty(index = 11, value = "错误信息")
     private String errorMsg;
+
+    @ExcelProperty(index = 12, value = "ID")
+    private Integer thirdId;
 
     private Integer recordId;
 

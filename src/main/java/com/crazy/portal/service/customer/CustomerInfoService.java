@@ -1,6 +1,7 @@
 package com.crazy.portal.service.customer;
 
 import com.crazy.portal.bean.customer.CustomerQueryBean;
+import com.crazy.portal.bean.customer.CustomerShipBean;
 import com.crazy.portal.bean.customer.approval.ApprovalBean;
 import com.crazy.portal.bean.customer.dealer.credit.Zsdscredit;
 import com.crazy.portal.dao.customer.*;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -51,6 +53,11 @@ public class CustomerInfoService {
     @Resource
     private CustomerReportMapper customerReportMapper;
 
+    /**
+     * 分页查询客户信息
+     * @param customerQueryBean
+     * @return
+     */
     public PageInfo<CustomerInfo> queryList(CustomerQueryBean customerQueryBean){
         PortalUtil.defaultStartPage(customerQueryBean.getPageSize(), customerQueryBean.getPageSize());
         List<CustomerInfo> customerInfos = customerInfoMapper.selectCustomerInfo(customerQueryBean);
@@ -59,7 +66,12 @@ public class CustomerInfoService {
     /* 报备状态 0-初始化 1-已报备 2-可报备 3-报备中*/
 
 
-
+    /**
+     * 查询客户明细
+     * @param reportId
+     * @param customerId
+     * @return
+     */
     public CustomerInfo queryInfo(Integer reportId, Integer customerId){
         return customerInfoMapper.queryReportInfo(customerId, reportId);
     }
@@ -147,6 +159,26 @@ public class CustomerInfoService {
         //TODO 同步C4
     }
 
+    public void customerReport(CustomerInfo customerInfo, Integer reportDealer, Integer reportSales){
+        CustomerReport customerReport = customerReportMapper.selectUserReport(customerInfo.getId(), reportDealer,reportSales);
+        BusinessUtil.assertFlase(null != customerReport && customerReport.getReportStatus()!= Enums.CUSTOMER_APPROVE_STATUS.REJECT.getCode()
+                , ErrorCodes.BusinessEnum.CUSTOMER_REPORT_ERROR1);
+
+        saveCustomerInfo(customerInfo, reportDealer==null?reportSales:reportDealer);
+
+        if(null == customerReport){
+            customerReport = new CustomerReport();
+        }
+        customerReport.setCustomerId(customerInfo.getId());
+        customerReport.setReportDealer(reportDealer);
+        customerReport.setReportSales(reportSales);
+        customerReport.setReportStatus(Enums.CUSTOMER_APPROVE_STATUS.WAIT_APPROVAL.getCode());
+        customerReport.setReportTime(new Date());
+        customerReport.setActive(1);
+        customerReportMapper.insertSelective(customerReport);
+        saveCustomerDetail(customerInfo, customerReport.getRepId(), reportDealer==null?reportSales:reportDealer);
+    }
+
     /**
      * 审批报备
      * 通过 同时报备的其他驳回
@@ -202,31 +234,26 @@ public class CustomerInfoService {
         customerReportMapper.updateByPrimaryKeySelective(customerReport);
     }
 
-    public void customerReport(CustomerInfo customerInfo, Integer reportDealer, Integer reportSales){
-        CustomerReport customerReport = customerReportMapper.selectUserReport(customerInfo.getId(), reportDealer,reportSales);
-        BusinessUtil.assertFlase(null != customerReport && customerReport.getReportStatus()!= Enums.CUSTOMER_APPROVE_STATUS.REJECT.getCode()
-                , ErrorCodes.BusinessEnum.CUSTOMER_REPORT_ERROR1);
-
-        saveCustomerInfo(customerInfo, reportDealer==null?reportSales:reportDealer);
-
-        if(null == customerReport){
-            customerReport = new CustomerReport();
-        }
-        customerReport.setCustomerId(customerInfo.getId());
-        customerReport.setReportDealer(reportDealer);
-        customerReport.setReportSales(reportSales);
-        customerReport.setReportStatus(Enums.CUSTOMER_APPROVE_STATUS.WAIT_APPROVAL.getCode());
-        customerReport.setReportTime(new Date());
-        customerReport.setActive(1);
-        customerReportMapper.insertSelective(customerReport);
-        saveCustomerDetail(customerInfo, customerReport.getRepId(), reportDealer==null?reportSales:reportDealer);
-    }
-
-
     @Transactional
     public void updateCustomerInfo(CustomerInfo customerInfo, Integer userId){
         saveCustomerInfo(customerInfo, userId);
         saveCustomerDetail(customerInfo, null, userId);
+    }
+
+    //查询客户的内外部客户
+    public CustomerShipBean selectDealerShip(Integer dealerId){
+        List<CustCorporateRelationship> relationships = custCorporateRelationshipMapper.selectDealerShip(dealerId);
+        CustomerShipBean shipBean = new CustomerShipBean();
+        List<CustCorporateRelationship> resultShips = new ArrayList<>();
+        relationships.forEach(e->{
+            if(e.getCorporateType().equals(Enums.CUSTOMER_SHIP_TYPE.in_customer.getCode())){
+                shipBean.setInShip(e);
+            }else{
+                resultShips.add(e);
+            }
+        });
+        shipBean.setOutShops(resultShips);
+        return shipBean;
     }
 
     private void saveCustomerInfo(CustomerInfo customerInfo, Integer userId){
