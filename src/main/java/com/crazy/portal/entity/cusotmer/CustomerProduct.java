@@ -15,7 +15,7 @@ public class CustomerProduct {
     /**
      * 
      */
-    private Integer id;
+    private Integer proId;
 
     /**
      * 

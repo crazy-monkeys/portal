@@ -19,25 +19,34 @@
             <property name="forceBigDecimals" value="false"/>  
         </javaTypeResolver>
 
-        <javaModelGenerator targetPackage="com.crazy.portal.entity.price" targetProject="src/main/java">
+        <javaModelGenerator targetPackage="com.crazy.portal.entity.group" targetProject="src/main/java">
             <property name="enableSubPackages" value="true"/>  
             <property name="trimStrings" value="true"/>  
         </javaModelGenerator>
 
-        <sqlMapGenerator targetPackage="mybatis/mapper/price" targetProject="src/main/resources">
+        <sqlMapGenerator targetPackage="mybatis/mapper/group" targetProject="src/main/resources">
             <property name="enableSubPackages" value="true"/>  
         </sqlMapGenerator>  
 
-        <javaClientGenerator type="XMLMAPPER" targetPackage="com.crazy.portal.dao.price" targetProject="src/main/java">
+        <javaClientGenerator type="XMLMAPPER" targetPackage="com.crazy.portal.dao.group" targetProject="src/main/java">
             <property name="enableSubPackages" value="true"/>
         </javaClientGenerator>
 
-        <table tableName="t_enquiry_price" domainObjectName="EnquiryPrice"
+        <table tableName="t_sales_group" domainObjectName="SalesGroup"
                enableCountByExample="false"
                enableUpdateByExample="false"
                enableDeleteByExample="false"
                enableSelectByExample="false"
                selectByExampleQueryId="false"></table>
+
+        <table tableName="t_sales_group_office" domainObjectName="SalesGroupOffice"
+               enableCountByExample="false"
+               enableUpdateByExample="false"
+               enableDeleteByExample="false"
+               enableSelectByExample="false"
+               selectByExampleQueryId="false"></table>
+
+
     </context>
 
 </generatorConfiguration>  

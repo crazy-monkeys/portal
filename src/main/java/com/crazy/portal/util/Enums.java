@@ -273,8 +273,10 @@ public class Enums {
     }
 
     public enum BusinessIdrStatus{
-        SUBMIT(1, "已提交"),
-        FINISHED(2, "已完结");
+        APPROVAL_SUBMIT(1, "审批中"),
+        APPROVAL_OVER(2, "审批结束"),
+        FINISHED(3, "已完结"),
+        REJECT(4, "已驳回");
 
         private Integer code;
         private String desc;
@@ -306,6 +308,57 @@ public class Enums {
             this.desc = desc;
         }
         public Integer getCode(){
+            return code;
+        }
+        public String getDesc(){
+            return desc;
+        }
+    }
+
+    public enum BusinessIdrApprovalSubmitType{
+        //保价
+        KP,
+        //差价
+        CP,
+        //退货
+        TH,
+        //换货
+        HH;
+        BusinessIdrApprovalSubmitType(){
+        }
+    }
+
+    public enum BusinessIdrApprovalSubmitResult{
+        SUCCESS(1, "导入成功"),
+        FAILED(0, "导入失败");
+
+        private Integer code;
+        private String desc;
+
+        BusinessIdrApprovalSubmitResult(Integer code, String desc){
+            this.code = code;
+            this.desc = desc;
+        }
+        public Integer getCode(){
+            return code;
+        }
+        public String getDesc(){
+            return desc;
+        }
+    }
+
+    public enum BusinessIdrApprovalStatus{
+        AGREE("Agree", "同意"),
+        REJECT("Reject", "驳回");
+
+        private String code;
+        private String desc;
+
+        BusinessIdrApprovalStatus(String code, String desc){
+            this.code = code;
+            this.desc = desc;
+        }
+        public String getCode(){
             return code;
         }
         public String getDesc(){

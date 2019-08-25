@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.crazy.portal.dao.customer.CustomerFileMapper">
   <resultMap id="BaseResultMap" type="com.crazy.portal.entity.cusotmer.CustomerFile">
-    <id column="id" jdbcType="INTEGER" property="id" />
+    <id column="file_id" jdbcType="INTEGER" property="fileId" />
     <result column="report_id" jdbcType="INTEGER" property="reportId" />
     <result column="cust_id" jdbcType="INTEGER" property="custId" />
     <result column="cust_code" jdbcType="VARCHAR" property="custCode" />
@@ -14,24 +14,24 @@
     <result column="file_path" jdbcType="VARCHAR" property="filePath" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, report_id, cust_id, cust_code, type, title, upload_time, active, file_name, file_path
+    file_id, report_id, cust_id, cust_code, type, title, upload_time, active, file_name, file_path
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from t_customer_file
-    where id = #{id,jdbcType=INTEGER}
+    where file_id = #{fileId,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from t_customer_file
-    where id = #{id,jdbcType=INTEGER}
+    where file_id = #{fileId,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.crazy.portal.entity.cusotmer.CustomerFile">
-    insert into t_customer_file (id, report_id, cust_id, 
+    insert into t_customer_file (file_id, report_id, cust_id,
       cust_code, type, title, 
       upload_time, active, file_name, 
       file_path)
-    values (#{id,jdbcType=INTEGER}, #{reportId,jdbcType=INTEGER}, #{custId,jdbcType=INTEGER}, 
+    values (#{fileId,jdbcType=INTEGER}, #{reportId,jdbcType=INTEGER}, #{custId,jdbcType=INTEGER},
       #{custCode,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR}, #{title,jdbcType=VARCHAR}, 
       #{uploadTime,jdbcType=TIMESTAMP}, #{active,jdbcType=INTEGER}, #{fileName,jdbcType=VARCHAR}, 
       #{filePath,jdbcType=VARCHAR})
@@ -39,8 +39,8 @@
   <insert id="insertSelective" parameterType="com.crazy.portal.entity.cusotmer.CustomerFile">
     insert into t_customer_file
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        id,
+      <if test="fileId != null">
+        file_id,
       </if>
       <if test="reportId != null">
         report_id,
@@ -71,8 +71,8 @@
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        #{id,jdbcType=INTEGER},
+      <if test="fileId != null">
+        #{file_id,jdbcType=INTEGER},
       </if>
       <if test="reportId != null">
         #{reportId,jdbcType=INTEGER},
@@ -134,7 +134,7 @@
         file_path = #{filePath,jdbcType=VARCHAR},
       </if>
     </set>
-    where id = #{id,jdbcType=INTEGER}
+    where file_id = #{fileId,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.crazy.portal.entity.cusotmer.CustomerFile">
     update t_customer_file
@@ -147,6 +147,6 @@
       active = #{active,jdbcType=INTEGER},
       file_name = #{fileName,jdbcType=VARCHAR},
       file_path = #{filePath,jdbcType=VARCHAR}
-    where id = #{id,jdbcType=INTEGER}
+    where file_id = #{fileId,jdbcType=INTEGER}
   </update>
 </mapper>

@@ -252,7 +252,7 @@ public class CustomerInfoService {
                 resultShips.add(e);
             }
         });
-        shipBean.setOutShops(resultShips);
+        shipBean.setOutShips(resultShips);
         return shipBean;
     }
 
@@ -299,7 +299,7 @@ public class CustomerInfoService {
      */
     public void updateAssetsInformation(List<AssetsInformation> assetsInformations){
         assetsInformations.forEach(x->{
-            if(null != x.getId()){
+            if(null != x.getAsseteInfoId()){
                 assetsInformationMapper.updateByPrimaryKeySelective(x);
             }else{
                 assetsInformationMapper.insertSelective(x);
@@ -313,7 +313,7 @@ public class CustomerInfoService {
      */
     public void updateBusinessInformation(List<BusinessInformation> businessInformations){
         businessInformations.forEach(x->{
-            if(null != x.getId()){
+            if(null != x.getBusInfoId()){
                 businessInformationMapper.updateByPrimaryKeySelective(x);
             }else{
                 businessInformationMapper.insertSelective(x);
@@ -327,7 +327,7 @@ public class CustomerInfoService {
             return;
         }
         customerContacts.forEach(e->{
-            if(null == e.getId()){
+            if(null == e.getContactId()){
                 e.setReportId(reportId);
                 e.setInsertUser(userId);
                 customerContactMapper.insertSelective(e);
@@ -343,7 +343,7 @@ public class CustomerInfoService {
             return;
         }
         customerProducts.forEach(e->{
-            if(null == e.getId()){
+            if(null == e.getProId()){
                 e.setReportId(reportId);
                 e.setInsertUser(userId);
                 customerProductMapper.insertSelective(e);
@@ -359,7 +359,7 @@ public class CustomerInfoService {
             return;
         }
         customerFiles.forEach(e->{
-            if(null == e.getId()){
+            if(null == e.getFileId()){
                 e.setReportId(reportId);
                 customerFileMapper.insertSelective(e);
             }else{

@@ -26,16 +26,12 @@ public abstract class AbstractRequest {
 	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractRequest.class);
 	
 	private static final long INTERVAL = 300000L;
-	//#老代码
+
 	protected String signature;          //签名
 	protected String reqCode;            //请求代码
 	protected String apiUserId;          //接口用户
 	protected String timestamp;          //时间戳(ms)
 	protected String apiSecret;          //秘钥
-
-	protected String shopId;           //店铺ID
-	protected Long apiMerchantId;      //商户
-	protected Long memberId;           //会员ID
 
 	@JSONField(serialize = false)
 	protected Map<String,String> paramsValue;
@@ -75,19 +71,20 @@ public abstract class AbstractRequest {
     public List<String> checkParams(){
 		setParamsValue(BeanUtils.transBeanMapStr(this));
     	List<String>  list = new ArrayList<String>();
-		if(StringUtil.isBlank(reqCode) && StringUtil.isBlank(shopId.toString())){
-			list.add(String.format("shopId 不能为空"));
+		if(StringUtil.isNotBlank(reqCode)){
+			list.add(String.format("reqCode 不能为空"));
 			return list;
 		}
-		if(StringUtil.isNotBlank(reqCode)){
-			if(StringUtil.isBlank(apiUserId)){
-				list.add(String.format("apiUserId 不能为空"));
-				return list;
-			}
-			if(StringUtil.isBlank(signature)){
-				list.add(String.format("signature 不能为空"));
-				return list;
-			}
+		if(StringUtil.isBlank(apiUserId)){
+			list.add(String.format("apiUserId 不能为空"));
+			return list;
+		}
+		if(StringUtil.isBlank(signature)){
+			list.add(String.format("signature 不能为空"));
+			return list;
+		}
+		if(StringUtil.isBlank(timestamp)){
+			list.add(String.format("timestamp 不能为空"));
 			return list;
 		}
     	return list;
