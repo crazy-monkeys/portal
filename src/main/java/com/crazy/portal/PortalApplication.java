@@ -16,12 +16,11 @@ import javax.annotation.Resource;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 
-
-@EnableTransactionManagement(proxyTargetClass = true)
 @EntityScan
 @EnableCaching
 @EnableScheduling
 @SpringBootApplication
+@EnableTransactionManagement(proxyTargetClass = true)
 public class PortalApplication extends SpringBootServletInitializer {
 
 	@Resource
