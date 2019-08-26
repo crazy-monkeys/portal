@@ -37,11 +37,11 @@ public class ADController extends BaseController {
     public BaseResponse index(HttpServletResponse response) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         //用户kerberos认证成功之后，再次点击，应该返回用户当前权限
-        Map<String,?> currentMenu = loginSuccessHandler.getCurrentMenu();
+        Map<String,?> userPermissions = loginSuccessHandler.getUserPermissions();
         UserDetails userDetails = (UserDetails)authentication.getPrincipal();
         response.setContentType("application/json;charset=utf-8");
         response.setHeader("Authorization", jwtUserService.generateToken(userDetails));
-        return super.successResult(currentMenu);
+        return super.successResult(userPermissions);
     }
 
     @GetMapping("/forward")

@@ -5,6 +5,7 @@ import com.crazy.portal.bean.BaseResponse;
 import com.crazy.portal.config.security.JwtUserService;
 import com.crazy.portal.controller.BaseController;
 import com.crazy.portal.dao.system.UserMapper;
+import com.crazy.portal.entity.system.InternalUser;
 import com.crazy.portal.entity.system.User;
 import com.crazy.portal.service.system.PermissionService;
 import lombok.extern.slf4j.Slf4j;
@@ -13,7 +14,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
-
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -53,7 +53,7 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
      * 获取当前登录人拥有的菜单
      * @return
      */
-    public Map<String,?> getCurrentMenu(){
+    public Map<String,?> getUserPermissions(){
         Authentication authentication= SecurityContextHolder.getContext().getAuthentication();
         //获取当前登录用户
         UserDetails userDetails = (UserDetails)authentication.getPrincipal();
@@ -65,7 +65,8 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
         List<com.crazy.portal.entity.system.Resource> permissions = permissionService.findAllPerMissionByUserId(userDetails.getUsername());
         map.put(PERMISSIONS,permissionService.resourceTree(permissions));
         map.put(USER,user);
-        map.put(POSITION,baseController.getCurrentUserPosition());
+        InternalUser currentUserPosition = baseController.getCurrentUserPosition();
+        map.put(POSITION,currentUserPosition == null?null:currentUserPosition.getUserPositionCode());
         return map;
     }
 
@@ -74,7 +75,7 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
                                         Authentication authentication) {
 
         //获取当前登录用户的菜单列表
-        Map<String,?> currentMenu = this.getCurrentMenu();
+        Map<String,?> userPermissions = this.getUserPermissions();
         //获取当前登录用户
         UserDetails userDetails = (UserDetails)authentication.getPrincipal();
         //生成token，并把token加密相关信息缓存，具体请看实现类
@@ -84,7 +85,7 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
         response.setHeader("Authorization", token);
         response.setContentType("application/json;charset=utf-8");
         BaseResponse baseResponse = new BaseResponse();
-        baseResponse.success(currentMenu);
+        baseResponse.success(userPermissions);
         //获取权限资源
         try(OutputStream out = response.getOutputStream()){
             out.write(JSON.toJSONString(baseResponse).getBytes());

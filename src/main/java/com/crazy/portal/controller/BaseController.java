@@ -3,9 +3,12 @@ package com.crazy.portal.controller;
 import com.crazy.portal.bean.BaseResponse;
 import com.crazy.portal.config.security.JwtUser;
 import com.crazy.portal.dao.system.RoleMapper;
+import com.crazy.portal.entity.system.InternalUser;
 import com.crazy.portal.entity.system.Role;
 import com.crazy.portal.entity.system.User;
+import com.crazy.portal.service.system.UserService;
 import com.crazy.portal.util.Enums;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -15,6 +18,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.Resource;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -24,10 +28,13 @@ import java.util.stream.Collectors;
  * @Modified by:t
  */
 @Component
+@Slf4j
 public class BaseController {
 
     @Resource
     private RoleMapper roleMapper;
+    @Resource
+    private UserService userService;
 
     /**
      * 获取当前登录用户
@@ -73,13 +80,18 @@ public class BaseController {
      * 获取当前登录用户所属职位
      * @return
      */
-    public String getCurrentUserPosition(){
+    public InternalUser getCurrentUserPosition(){
         //如果不是内部账号返回null
         User user = this.getCurrentUser();
         if(!user.getUserType().equals(Enums.USER_TYPE.internal.toString())){
-            return StringUtils.EMPTY;
+            return null;
         }
-        return "";
+        InternalUser userPosition = userService.getUserPosition(user.getId());
+        if(Objects.isNull(userPosition)){
+            log.error("Internal customer position is null");
+            return null;
+        }
+        return userPosition;
     }
 
     protected BaseResponse successResult() {
