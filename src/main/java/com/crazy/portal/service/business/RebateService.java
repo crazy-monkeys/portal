@@ -11,12 +11,12 @@ import com.crazy.portal.dao.customer.CustomerInfoMapper;
 import com.crazy.portal.entity.business.rebate.BusinessRebate;
 import com.crazy.portal.entity.business.rebate.BusinessRebateFile;
 import com.crazy.portal.entity.business.rebate.BusinessRebateItem;
-import com.crazy.portal.entity.cusotmer.CustomerInfo;
 import com.crazy.portal.util.*;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.ImmutableMap;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -100,6 +100,7 @@ public class RebateService {
         BusinessUtil.notNull(info, ErrorCodes.BusinessEnum.REBATE_RECORD_NOT_FOUND);
         BusinessUtil.assertFlase(bean.getSurplusRebateAmount().compareTo(info.getSurplusRebateAmount()) > 0, ErrorCodes.BusinessEnum.REBATE_SURPLUS_AMOUNT_BIG);
         saveRebateItem(bean, userId, info);
+        updateRebateMasterInfo(bean, userId, info);
         sendConfirmEmail(bean);
     }
 
@@ -118,7 +119,9 @@ public class RebateService {
         item.setCreateId(userId);
         item.setCreateTime(DateUtil.getCurrentTS());
         businessRebateItemMapper.insertSelective(item);
+    }
 
+    private void updateRebateMasterInfo(RebateConfirmBean bean, Integer userId, BusinessRebate info) {
         BigDecimal releaseAmount = info.getReleaseAmount().add(bean.getSurplusRebateAmount());
         BigDecimal surplusRebateAmount = info.getSurplusRebateAmount().subtract(bean.getSurplusRebateAmount());
         info.setReleaseAmount(releaseAmount);
@@ -148,17 +151,34 @@ public class RebateService {
     public FileVO fileUpload(Integer rebateItemId, Integer userId, MultipartFile file){
         BusinessUtil.notNull(rebateItemId, ErrorCodes.BusinessEnum.REBATE_ITEM_ID_IS_NULL);
         BusinessUtil.notNull(file, ErrorCodes.BusinessEnum.REBATE_FILE_NOT_FOUND);
-        //保存文件信息
+
         FileVO fileInfo = FileUtil.upload(file, getCustFilePath());
-        BusinessRebateFile rebateFile = new BusinessRebateFile();
-        rebateFile.setRebateItemId(rebateItemId);
-        rebateFile.setFileName(fileInfo.getFileName());
-        rebateFile.setFilePath(fileInfo.getFullPath());
-        rebateFile.setActive(Constant.ACTIVE);
-        rebateFile.setCreateId(userId);
-        rebateFile.setCreateTime(DateUtil.getCurrentTS());
-        businessRebateFileMapper.insertSelective(rebateFile);
+        //保存文件信息
+        saveRebateFile(rebateItemId, userId, fileInfo);
         //更新item状态
+        Integer rebateId = updateRebateItemStatus(rebateItemId, userId);
+        //更新主rebate状态
+        updateRebateMasterStatus(userId, rebateId);
+        return fileInfo;
+    }
+
+    @Async
+    private void updateRebateMasterStatus(Integer userId, Integer rebateId) {
+        List<BusinessRebateItem> items = businessRebateItemMapper.selectByRebateId(rebateId);
+        BigDecimal total = items.stream()
+                                .filter(e->e.getStatus().equals(Enums.BusinessRebateItemStatus.FINISHED.getCode()))
+                                .map(BusinessRebateItem::getRebateAmount)
+                                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        BusinessRebate record = businessRebateMapper.selectByPrimaryKey(rebateId);
+        if(total.compareTo(record.getRebateAmount()) == 0) {
+            record.setStatus(Enums.BusinessRebateStatus.FINISHED.getCode());
+            record.setUpdateId(userId);
+            record.setUpdateTime(DateUtil.getCurrentTS());
+            businessRebateMapper.updateByPrimaryKeySelective(record);
+        }
+    }
+
+    private Integer updateRebateItemStatus(Integer rebateItemId, Integer userId) {
         BusinessRebateItem item = businessRebateItemMapper.selectByPrimaryKey(rebateItemId);
         if(item.getStatus().equals(Enums.BusinessRebateItemStatus.WAIT_CONFIRM.getCode())){
             item.setStatus(Enums.BusinessRebateItemStatus.USED_CONFIRM.getCode());
@@ -167,22 +187,21 @@ public class RebateService {
             item.setStatus(Enums.BusinessRebateItemStatus.FINISHED.getCode());
         }
         item.setUpdateId(userId);
-        item.setUpdateTime(rebateFile.getCreateTime());
+        item.setUpdateTime(DateUtil.getCurrentTS());
         businessRebateItemMapper.updateByPrimaryKeySelective(item);
-        //更新主rebate状态
-        List<BusinessRebateItem> items = businessRebateItemMapper.selectByRebateId(item.getRebateId());
-        BigDecimal total = items.stream()
-                                .filter(e->e.getStatus().equals(Enums.BusinessRebateItemStatus.FINISHED.getCode()))
-                                .map(BusinessRebateItem::getRebateAmount)
-                                .reduce(BigDecimal.ZERO, BigDecimal::add);
-        BusinessRebate record = businessRebateMapper.selectByPrimaryKey(item.getRebateId());
-        if(total.compareTo(record.getRebateAmount()) == 0) {
-            record.setStatus(Enums.BusinessRebateStatus.FINISHED.getCode());
-            record.setUpdateId(userId);
-            record.setUpdateTime(DateUtil.getCurrentTS());
-            businessRebateMapper.updateByPrimaryKeySelective(record);
-        }
-        return fileInfo;
+        return item.getRebateId();
+    }
+
+    private BusinessRebateFile saveRebateFile(Integer rebateItemId, Integer userId, FileVO fileInfo) {
+        BusinessRebateFile rebateFile = new BusinessRebateFile();
+        rebateFile.setRebateItemId(rebateItemId);
+        rebateFile.setFileName(fileInfo.getFileName());
+        rebateFile.setFilePath(fileInfo.getFullPath());
+        rebateFile.setActive(Constant.ACTIVE);
+        rebateFile.setCreateId(userId);
+        rebateFile.setCreateTime(DateUtil.getCurrentTS());
+        businessRebateFileMapper.insertSelective(rebateFile);
+        return rebateFile;
     }
 
     /**

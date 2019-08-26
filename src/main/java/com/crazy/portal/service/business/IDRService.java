@@ -112,23 +112,15 @@ public class IDRService {
      * @return
      */
     public BusinessFileUploadBean upload(Integer id, Integer type, Integer fileType, BigDecimal crAmount, MultipartFile file, Integer userId) throws Exception{
-    BusinessUtil.notNull(fileType, ErrorCodes.BusinessEnum.BUSINESS_FILE_TYPE_IS_NULL);
-        BusinessUtil.notNull(file, ErrorCodes.BusinessEnum.BUSINESS_FILE_IS_NULL);
-        if(fileType.equals(Enums.BusinessFileType.FINANCIAL_CLOSURE.getCode())){
-            BusinessUtil.notNull(id, ErrorCodes.BusinessEnum.BUSINESS_IDR_ID_IS_NULL);
-        }
-        if(fileType.equals(Enums.BusinessFileType.IDR.getCode())){
-            BusinessUtil.notNull(type, ErrorCodes.BusinessEnum.BUSINESS_TYPE_IS_NULL);
-        }
+        checkFileUploadParam(id, type, fileType, file);
         BusinessFileUploadBean result = new BusinessFileUploadBean();
+        FileVO fileVo = FileUtil.upload(file, getIdrFilePath());
         if(fileType.equals(Enums.BusinessFileType.IDR.getCode())){
             Enums.BusinessIdrType idrType = Enums.BusinessIdrType.getDescByCode(type);
             List<BaseRowModel> records = ExcelUtils.readExcel(file, idrType.getType().getClass());
             result.setIdrList(records);
         }
-        FileVO fileVo = FileUtil.upload(file, getIdrFilePath());
         if(fileType.equals(Enums.BusinessFileType.FINANCIAL_CLOSURE.getCode())){
-
             financialClosure(id, fileType, crAmount, userId, fileVo);
         }
         result.setFileName(fileVo.getFileName());
@@ -137,7 +129,23 @@ public class IDRService {
         return result;
     }
 
+    private void checkFileUploadParam(Integer id, Integer type, Integer fileType, MultipartFile file) {
+        BusinessUtil.notNull(fileType, ErrorCodes.BusinessEnum.BUSINESS_FILE_TYPE_IS_NULL);
+        BusinessUtil.notNull(file, ErrorCodes.BusinessEnum.BUSINESS_FILE_IS_NULL);
+        if(fileType.equals(Enums.BusinessFileType.FINANCIAL_CLOSURE.getCode())){
+            BusinessUtil.notNull(id, ErrorCodes.BusinessEnum.BUSINESS_IDR_ID_IS_NULL);
+        }
+        if(fileType.equals(Enums.BusinessFileType.IDR.getCode())){
+            BusinessUtil.notNull(type, ErrorCodes.BusinessEnum.BUSINESS_TYPE_IS_NULL);
+        }
+    }
+
     private void financialClosure(Integer id, Integer fileType, BigDecimal crAmount, Integer userId, FileVO fileVo) {
+        saveBusinessFile(id, fileType, userId, fileVo);
+        updateIdrInfoStatus(id, crAmount, userId);
+    }
+
+    private void updateIdrInfoStatus(Integer id, BigDecimal crAmount, Integer userId) {
         BusinessIdrInfo info = businessIdrInfoMapper.selectByPrimaryKey(id);
         BusinessUtil.assertTrue(info.getStatus().equals(Enums.BusinessIdrStatus.APPROVAL_OVER.getCode()), ErrorCodes.BusinessEnum.BUSINESS_IDR_STATUS_NOT_APPROVAL);
         info.setId(id);
@@ -146,7 +154,9 @@ public class IDRService {
         info.setUpdateId(userId);
         info.setUpdateTime(DateUtil.getCurrentTS());
         businessIdrInfoMapper.updateByPrimaryKeySelective(info);
+    }
 
+    private void saveBusinessFile(Integer id, Integer fileType, Integer userId, FileVO fileVo) {
         BusinessFile businessFile = new BusinessFile();
         businessFile.setIdrInfoId(id);
         businessFile.setFileName(fileVo.getFileName());
@@ -155,8 +165,6 @@ public class IDRService {
         businessFile.setCreateId(userId);
         businessFile.setCreateTime(DateUtil.getCurrentTS());
         businessFileMapper.insertSelective(businessFile);
-
-
     }
 
     public String getIdrFilePath(){
