@@ -160,7 +160,7 @@ public class ErrorCodes {
         BUSINESS_IDR_STATUS_NOT_APPROVAL(70007, "该申请还未通过审核，请成功后再进行上传", ""),
         BUSINESS_IDR_SUBMIT_RESULT_IS_NULL(70008, "提交至BPM审批返回为空", ""),
         BUSINESS_IDR_SUBMIT_RESULT_FAIL(70009, "提交至BPM审批返回失败", ""),
-        BUSINESS_IDR_APPROVAL_ORDERNO_NOT_FOUND(70010, "审批通过通知orderNo不存在", ""),
+        BUSINESS_IDR_APPROVAL_ORDERNO_NOT_FOUND(70010, "审批结果同步[orderNo不存在]", ""),
         //商务管理-客户rebate
         REBATE_RECORD_NOT_FOUND(70101, "Rebate信息不存在", ""),
         REBATE_SURPLUS_AMOUNT_BIG(70103, "释放金额不能大于rebate金额", ""),

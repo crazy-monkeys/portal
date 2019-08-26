@@ -240,10 +240,10 @@ public class IDRService {
                 returnGood.setReturnPlatform(e.getPlatform());
                 returnGood.setReturnProModel(e.getProductModel());
                 returnGood.setReturnQuantity(e.getNum());
-                returnGood.setReturnPrice(e.getPrice().floatValue());
+                returnGood.setReturnPrice(e.getPrice() != null ? e.getPrice().floatValue() : null);
                 //TODO 代理费率，接口获取
                 returnGood.setAgenceRate(null);
-                returnGood.setReturnAmount(e.getAmount().floatValue());
+                returnGood.setReturnAmount(e.getAmount() != null ? e.getAmount().floatValue() : null);
                 returnGood.setReturnRemark(e.getRemark());
                 returnGoods.add(returnGood);
             }
@@ -264,8 +264,8 @@ public class IDRService {
                 refundPrice.setProductModel(e.getProductModel());
                 refundPrice.setShipmentTime(e.getShipmentDate() != null ? DateUtil.parseDate(e.getShipmentDate(), DateUtil.NEW_FORMAT) : null);
                 refundPrice.setQuantity(e.getNum());
-                refundPrice.setCusPickPrice(e.getCustomerPrice().floatValue());
-                refundPrice.setAgentPickPrice(e.getAgentPrice().floatValue());
+                refundPrice.setCusPickPrice(e.getCustomerPrice() != null ? e.getCustomerPrice().floatValue() : null);
+                refundPrice.setAgentPickPrice(e.getAgentPrice() != null ? e.getAgentPrice().floatValue() : null);
                 //TODO 代理费率，接口获取
                 refundPrice.setAgenceRate(null);
                 refundPrice.setDifferencePrice(e.getDifferenceAmount().floatValue());
@@ -304,22 +304,22 @@ public class IDRService {
     private void saveApprovalRecord(BusinessIdrInfo bean, IdrApprovalSubmitBean submitBean, IdrApprovalSubmitResultBean resultBean) {
         BusinessIdrApproval approvalRecord = new BusinessIdrApproval();
         approvalRecord.setIdrInfoId(bean.getId());
-        approvalRecord.setOrderTye(submitBean.getType());
+        approvalRecord.setOrderType(submitBean.getType());
         approvalRecord.setOrderNo(resultBean.getOrderNO());
-        approvalRecord.setCurrentreviewer(resultBean.getReviewer());
+        approvalRecord.setCurrentReviewer(resultBean.getReviewer());
         approvalRecord.setMessage(resultBean.getMessage());
         approvalRecord.setCreateTime(DateUtil.getCurrentTS());
         businessIdrApprovalMapper.insertSelective(approvalRecord);
     }
 
     public String getApprovalSubmitType(Integer type){
-        if (type.equals(Enums.BusinessIdrType.INSURANCE)) {
+        if (type.equals(Enums.BusinessIdrType.INSURANCE.getCode())) {
             return Enums.BusinessIdrApprovalSubmitType.KP.toString();
         }
-        if(type.equals(Enums.BusinessIdrType.DIFF_PRICE)){
+        if(type.equals(Enums.BusinessIdrType.DIFF_PRICE.getCode())){
             return Enums.BusinessIdrApprovalSubmitType.CP.toString();
         }
-        if(type.equals(Enums.BusinessIdrType.RETURNS)){
+        if(type.equals(Enums.BusinessIdrType.RETURNS.getCode())){
             return Enums.BusinessIdrApprovalSubmitType.TH.toString();
         }
         return null;
@@ -328,27 +328,36 @@ public class IDRService {
     public void receiveApproval(IDRApprovalRequest request) {
         BusinessIdrApproval histortRecord = businessIdrApprovalMapper.selectByOrderNo(request.getOrderNumber());
         BusinessUtil.notNull(histortRecord, ErrorCodes.BusinessEnum.BUSINESS_IDR_APPROVAL_ORDERNO_NOT_FOUND);
-        BusinessIdrApproval record = new BusinessIdrApproval();
-        record.setIdrInfoId(histortRecord.getIdrInfoId());
-        record.setOrderTye(histortRecord.getOrderTye());
-        record.setOrderNo(histortRecord.getOrderNo());
-        record.setCurrentreviewer(request.getCurrentReviewer());
-        record.setReviewedpeople(request.getReviewedPeople());
-        record.setComment(request.getComment());
-        record.setReviewstatus(request.getReviewStatus());
-        record.setCreateTime(DateUtil.getCurrentTS());
-        businessIdrApprovalMapper.insertSelective(record);
+        saveIdrApprovalRecord(request, histortRecord);
 
-        BusinessIdrInfo idrInfo = businessIdrInfoMapper.selectByPrimaryKey(histortRecord.getIdrInfoId());
-        if(record.getReviewstatus().equals(Enums.BusinessIdrApprovalStatus.AGREE.getCode())){
-            if(StringUtil.isBlank(record.getCurrentreviewer())){
-                idrInfo.setStatus(Enums.BusinessIdrStatus.APPROVAL_OVER.getCode());
-                businessIdrInfoMapper.updateByPrimaryKeySelective(idrInfo);
-            }
+        BusinessIdrInfo idrInfo = updateIdrInfoByApproval(request, histortRecord);
+        if(request.getReviewStatus().equals(Enums.BusinessIdrApprovalStatus.AGREE.getCode()) && StringUtil.isBlank(request.getCurrentReviewer())){
+            idrInfo.setStatus(Enums.BusinessIdrStatus.APPROVAL_OVER.getCode());
+            businessIdrInfoMapper.updateByPrimaryKeySelective(idrInfo);
         }
-        if(record.getReviewstatus().equals(Enums.BusinessIdrApprovalStatus.REJECT.getCode())){
+        if(request.getReviewStatus().equals(Enums.BusinessIdrApprovalStatus.REJECT.getCode())){
             idrInfo.setStatus(Enums.BusinessIdrStatus.REJECT.getCode());
             businessIdrInfoMapper.updateByPrimaryKeySelective(idrInfo);
         }
+    }
+
+    private BusinessIdrInfo updateIdrInfoByApproval(IDRApprovalRequest request, BusinessIdrApproval histortRecord) {
+        BusinessIdrInfo idrInfo = businessIdrInfoMapper.selectByPrimaryKey(histortRecord.getIdrInfoId());
+        idrInfo.setUpdateId(Integer.valueOf(request.getApiUserId()));
+        idrInfo.setUpdateTime(DateUtil.getCurrentTS());
+        return idrInfo;
+    }
+
+    private void saveIdrApprovalRecord(IDRApprovalRequest request, BusinessIdrApproval histortRecord) {
+        BusinessIdrApproval record = new BusinessIdrApproval();
+        record.setIdrInfoId(histortRecord.getIdrInfoId());
+        record.setOrderType(histortRecord.getOrderType());
+        record.setOrderNo(histortRecord.getOrderNo());
+        record.setCurrentReviewer(request.getCurrentReviewer());
+        record.setReviewedPeople(request.getReviewedPeople());
+        record.setComment(request.getComment());
+        record.setReviewStatus(request.getReviewStatus());
+        record.setCreateTime(DateUtil.getCurrentTS());
+        businessIdrApprovalMapper.insertSelective(record);
     }
 }

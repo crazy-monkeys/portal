@@ -5,16 +5,16 @@
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="idr_info_id" jdbcType="INTEGER" property="idrInfoId" />
     <result column="order_no" jdbcType="VARCHAR" property="orderNo" />
-    <result column="order_tye" jdbcType="VARCHAR" property="orderTye" />
-    <result column="reviewedPeople" jdbcType="VARCHAR" property="reviewedpeople" />
-    <result column="currentReviewer" jdbcType="VARCHAR" property="currentreviewer" />
-    <result column="reviewStatus" jdbcType="VARCHAR" property="reviewstatus" />
+    <result column="order_type" jdbcType="VARCHAR" property="orderType" />
+    <result column="reviewed_people" jdbcType="VARCHAR" property="reviewedPeople" />
+    <result column="current_reviewer" jdbcType="VARCHAR" property="currentReviewer" />
+    <result column="review_status" jdbcType="VARCHAR" property="reviewStatus" />
     <result column="comment" jdbcType="VARCHAR" property="comment" />
     <result column="message" jdbcType="VARCHAR" property="message" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, idr_info_id, order_no, order_tye, reviewedPeople, currentReviewer, reviewStatus, 
+    id, idr_info_id, order_no, order_type, reviewed_people, current_reviewer, review_status,
     comment, message, create_time
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
@@ -40,17 +40,17 @@
       <if test="orderNo != null">
         order_no,
       </if>
-      <if test="orderTye != null">
-        order_tye,
+      <if test="orderType != null">
+        order_type,
       </if>
-      <if test="reviewedpeople != null">
-        reviewedPeople,
+      <if test="reviewedPeople != null">
+        reviewed_people,
       </if>
-      <if test="currentreviewer != null">
-        currentReviewer,
+      <if test="currentReviewer != null">
+        current_reviewer,
       </if>
-      <if test="reviewstatus != null">
-        reviewStatus,
+      <if test="reviewStatus != null">
+        review_status,
       </if>
       <if test="comment != null">
         comment,
@@ -72,17 +72,17 @@
       <if test="orderNo != null">
         #{orderNo,jdbcType=VARCHAR},
       </if>
-      <if test="orderTye != null">
-        #{orderTye,jdbcType=VARCHAR},
+      <if test="orderType != null">
+        #{orderType,jdbcType=VARCHAR},
       </if>
-      <if test="reviewedpeople != null">
-        #{reviewedpeople,jdbcType=VARCHAR},
+      <if test="reviewedPeople != null">
+        #{reviewedPeople,jdbcType=VARCHAR},
       </if>
-      <if test="currentreviewer != null">
-        #{currentreviewer,jdbcType=VARCHAR},
+      <if test="currentReviewer != null">
+        #{currentReviewer,jdbcType=VARCHAR},
       </if>
-      <if test="reviewstatus != null">
-        #{reviewstatus,jdbcType=VARCHAR},
+      <if test="reviewStatus != null">
+        #{reviewStatus,jdbcType=VARCHAR},
       </if>
       <if test="comment != null">
         #{comment,jdbcType=VARCHAR},
@@ -104,17 +104,17 @@
       <if test="orderNo != null">
         order_no = #{orderNo,jdbcType=VARCHAR},
       </if>
-      <if test="orderTye != null">
-        order_tye = #{orderTye,jdbcType=VARCHAR},
+      <if test="orderType != null">
+        order_type = #{orderType,jdbcType=VARCHAR},
       </if>
-      <if test="reviewedpeople != null">
-        reviewedPeople = #{reviewedpeople,jdbcType=VARCHAR},
+      <if test="reviewedPeople != null">
+        reviewed_people = #{reviewedPeople,jdbcType=VARCHAR},
       </if>
-      <if test="currentreviewer != null">
-        currentReviewer = #{currentreviewer,jdbcType=VARCHAR},
+      <if test="currentReviewer != null">
+        current_reviewer = #{currentReviewer,jdbcType=VARCHAR},
       </if>
-      <if test="reviewstatus != null">
-        reviewStatus = #{reviewstatus,jdbcType=VARCHAR},
+      <if test="reviewStatus != null">
+        review_status = #{reviewStatus,jdbcType=VARCHAR},
       </if>
       <if test="comment != null">
         comment = #{comment,jdbcType=VARCHAR},

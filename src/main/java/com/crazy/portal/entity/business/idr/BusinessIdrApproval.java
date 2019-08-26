@@ -29,22 +29,22 @@ public class BusinessIdrApproval {
     /**
      * 单据类型,KP(报价),CP（差价）,TH（退货）,HH（换货）
      */
-    private String orderTye;
+    private String orderType;
 
     /**
      * 审批人
      */
-    private String reviewedpeople;
+    private String reviewedPeople;
 
     /**
      * 下一位审批人
      */
-    private String currentreviewer;
+    private String currentReviewer;
 
     /**
      * 审批状态 Agree(同意)，Reject(驳回)
      */
-    private String reviewstatus;
+    private String reviewStatus;
 
     /**
      * 审批意见
