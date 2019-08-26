@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.crazy.portal.dao.system.InternalUserMapper">
+  <resultMap id="BaseResultMap" type="com.crazy.portal.entity.system.InternalUser">
+    <id column="in_user_id" jdbcType="INTEGER" property="inUserId" />
+    <result column="user_no" jdbcType="VARCHAR" property="userNo" />
+    <result column="user_name" jdbcType="VARCHAR" property="userName" />
+    <result column="user_mail" jdbcType="VARCHAR" property="userMail" />
+    <result column="user_mobile" jdbcType="VARCHAR" property="userMobile" />
+    <result column="user_department_code" jdbcType="VARCHAR" property="userDepartmentCode" />
+    <result column="user_department_name" jdbcType="VARCHAR" property="userDepartmentName" />
+    <result column="user_position_code" jdbcType="VARCHAR" property="userPositionCode" />
+    <result column="user_position_name" jdbcType="VARCHAR" property="userPositionName" />
+    <result column="insert_time" jdbcType="TIMESTAMP" property="insertTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="active" jdbcType="INTEGER" property="active" />
+  </resultMap>
+  
+  <resultMap id="InUserResultMap" type="com.crazy.portal.entity.system.InternalUser" extends="BaseResultMap">
+    <association property="user" resultMap="com.crazy.portal.dao.system.UserMapper.BaseResultMap" />
+    <association property="organizationalStructure" resultMap="com.crazy.portal.dao.system.OrganizationalStructureMapper.BaseResultMap" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    in_user_id, user_no, user_name, user_mail, user_mobile, user_department_code, user_department_name, 
+    user_position_code, user_position_name, insert_time, update_time, active
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_internal_user
+    where in_user_id = #{inUserId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_internal_user
+    where in_user_id = #{inUserId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.crazy.portal.entity.system.InternalUser">
+    insert into t_internal_user (in_user_id, user_no, user_name, 
+      user_mail, user_mobile, user_department_code, 
+      user_department_name, user_position_code, user_position_name, 
+      insert_time, update_time, active
+      )
+    values (#{inUserId,jdbcType=INTEGER}, #{userNo,jdbcType=VARCHAR}, #{userName,jdbcType=VARCHAR}, 
+      #{userMail,jdbcType=VARCHAR}, #{userMobile,jdbcType=VARCHAR}, #{userDepartmentCode,jdbcType=VARCHAR}, 
+      #{userDepartmentName,jdbcType=VARCHAR}, #{userPositionCode,jdbcType=VARCHAR}, #{userPositionName,jdbcType=VARCHAR}, 
+      #{insertTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{active,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.crazy.portal.entity.system.InternalUser">
+    insert into t_internal_user
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="inUserId != null">
+        in_user_id,
+      </if>
+      <if test="userNo != null">
+        user_no,
+      </if>
+      <if test="userName != null">
+        user_name,
+      </if>
+      <if test="userMail != null">
+        user_mail,
+      </if>
+      <if test="userMobile != null">
+        user_mobile,
+      </if>
+      <if test="userDepartmentCode != null">
+        user_department_code,
+      </if>
+      <if test="userDepartmentName != null">
+        user_department_name,
+      </if>
+      <if test="userPositionCode != null">
+        user_position_code,
+      </if>
+      <if test="userPositionName != null">
+        user_position_name,
+      </if>
+      <if test="insertTime != null">
+        insert_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="active != null">
+        active,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="inUserId != null">
+        #{inUserId,jdbcType=INTEGER},
+      </if>
+      <if test="userNo != null">
+        #{userNo,jdbcType=VARCHAR},
+      </if>
+      <if test="userName != null">
+        #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="userMail != null">
+        #{userMail,jdbcType=VARCHAR},
+      </if>
+      <if test="userMobile != null">
+        #{userMobile,jdbcType=VARCHAR},
+      </if>
+      <if test="userDepartmentCode != null">
+        #{userDepartmentCode,jdbcType=VARCHAR},
+      </if>
+      <if test="userDepartmentName != null">
+        #{userDepartmentName,jdbcType=VARCHAR},
+      </if>
+      <if test="userPositionCode != null">
+        #{userPositionCode,jdbcType=VARCHAR},
+      </if>
+      <if test="userPositionName != null">
+        #{userPositionName,jdbcType=VARCHAR},
+      </if>
+      <if test="insertTime != null">
+        #{insertTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="active != null">
+        #{active,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.crazy.portal.entity.system.InternalUser">
+    update t_internal_user
+    <set>
+      <if test="userNo != null">
+        user_no = #{userNo,jdbcType=VARCHAR},
+      </if>
+      <if test="userName != null">
+        user_name = #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="userMail != null">
+        user_mail = #{userMail,jdbcType=VARCHAR},
+      </if>
+      <if test="userMobile != null">
+        user_mobile = #{userMobile,jdbcType=VARCHAR},
+      </if>
+      <if test="userDepartmentCode != null">
+        user_department_code = #{userDepartmentCode,jdbcType=VARCHAR},
+      </if>
+      <if test="userDepartmentName != null">
+        user_department_name = #{userDepartmentName,jdbcType=VARCHAR},
+      </if>
+      <if test="userPositionCode != null">
+        user_position_code = #{userPositionCode,jdbcType=VARCHAR},
+      </if>
+      <if test="userPositionName != null">
+        user_position_name = #{userPositionName,jdbcType=VARCHAR},
+      </if>
+      <if test="insertTime != null">
+        insert_time = #{insertTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="active != null">
+        active = #{active,jdbcType=INTEGER},
+      </if>
+    </set>
+    where in_user_id = #{inUserId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.crazy.portal.entity.system.InternalUser">
+    update t_internal_user
+    set user_no = #{userNo,jdbcType=VARCHAR},
+      user_name = #{userName,jdbcType=VARCHAR},
+      user_mail = #{userMail,jdbcType=VARCHAR},
+      user_mobile = #{userMobile,jdbcType=VARCHAR},
+      user_department_code = #{userDepartmentCode,jdbcType=VARCHAR},
+      user_department_name = #{userDepartmentName,jdbcType=VARCHAR},
+      user_position_code = #{userPositionCode,jdbcType=VARCHAR},
+      user_position_name = #{userPositionName,jdbcType=VARCHAR},
+      insert_time = #{insertTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      active = #{active,jdbcType=INTEGER}
+    where in_user_id = #{inUserId,jdbcType=INTEGER}
+  </update>
+
+  <select id="selectByUserId" resultMap="InUserResultMap">
+    select * from t_internal_user  iu
+    inner join t_user u on iu.user_mail = u.customer_name
+    inner join t_organizational_structure os on os.seq = iu.user_department_code
+    where iu.active =1 and u.active =1 and os.active=1 and u.id=#{userId}
+  </select>
+</mapper>

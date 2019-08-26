@@ -73,8 +73,10 @@ public class ErrorCodes {
         RESOURCE_EXIST(10047,"资源名称已经存在",""),
 
         SYS_PARAM_VALUE(10048,"该选项下Code已存在",""),
-        SYS_BEAN_ERROR(10049,"对象映射异常","")
+        SYS_BEAN_ERROR(10049,"对象映射异常",""),
+        SYS_IN_USER_ERROR(10050,"没有对应的内部员工信息","")
         ;
+
 
 
         private final int code;

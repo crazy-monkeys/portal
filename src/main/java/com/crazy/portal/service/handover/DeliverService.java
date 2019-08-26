@@ -6,6 +6,7 @@ import com.crazy.portal.bean.handover.HandoverUploadVO;
 import com.crazy.portal.dao.handover.DeliverDetailMapper;
 import com.crazy.portal.entity.handover.DeliverDetail;
 import com.crazy.portal.entity.handover.DeliverReceiveRecord;
+import com.crazy.portal.service.customer.CustomerInfoService;
 import com.crazy.portal.util.BusinessUtil;
 import com.crazy.portal.util.ExcelUtils;
 import com.crazy.portal.util.FileUtil;
@@ -37,6 +38,8 @@ public class DeliverService extends AbstractHandover implements IHandover<Delive
     private HandoverService handoverService;
     @Resource
     private DeliverDetailMapper deliverDetailMapper;
+    @Resource
+    private CustomerInfoService customerInfoService;
 
     @Value("${file.path.deliver.template}")
     private String deliverTemplatePath;
@@ -56,7 +59,7 @@ public class DeliverService extends AbstractHandover implements IHandover<Delive
         BiCheckResult checkResult = callBiServer(CHECK_SALES_IMPORT_FILE, (deliverPushPath+thirdFileName), deliverPullPath);
         List<DeliverDetail> responseData = ExcelUtils.readExcel(checkResult.getFilePath(), DeliverDetail.class);
         //批次记录表
-        DeliverReceiveRecord record = handoverService.genRecord("湘海电子（香港）有限公司", userId, 1);
+        DeliverReceiveRecord record = handoverService.genRecord(customerInfoService.getDealerByUser(userId).getCustName(), userId, 1);
         for(DeliverDetail detail : responseData){
             detail.setRecordId(record.getId());
             deliverDetailMapper.insertSelective(detail);
@@ -152,7 +155,7 @@ public class DeliverService extends AbstractHandover implements IHandover<Delive
         BusinessUtil.assertFlase(false, HANDOVER_NOT_DEALER);
         List<DeliverTemplateBean> deliverData =  ExcelUtils.readExcel(excel, DeliverTemplateBean.class , 1);
         for(DeliverTemplateBean templateBean : deliverData){
-            templateBean.setDealerName("湘海电子（香港）有限公司");
+            templateBean.setDealerName(customerInfoService.getDealerByUser(userId).getCustName());
         }
         return deliverData;
     }

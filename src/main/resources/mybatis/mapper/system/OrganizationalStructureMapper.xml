@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.crazy.portal.dao.system.OrganizationalStructureMapper">
+  <resultMap id="BaseResultMap" type="com.crazy.portal.entity.system.OrganizationalStructure">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="seq" jdbcType="INTEGER" property="seq" />
+    <result column="org_name" jdbcType="VARCHAR" property="orgName" />
+    <result column="valid_time" jdbcType="VARCHAR" property="validTime" />
+    <result column="invalid_time" jdbcType="VARCHAR" property="invalidTime" />
+    <result column="parent_org" jdbcType="INTEGER" property="parentOrg" />
+    <result column="parent_org_name" jdbcType="VARCHAR" property="parentOrgName" />
+    <result column="pm" jdbcType="VARCHAR" property="pm" />
+    <result column="is_sales" jdbcType="VARCHAR" property="isSales" />
+    <result column="insert_time" jdbcType="TIMESTAMP" property="insertTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="active" jdbcType="INTEGER" property="active" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, seq, org_name, valid_time, invalid_time, parent_org, parent_org_name, pm, is_sales, 
+    insert_time, update_time, active
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_organizational_structure
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_organizational_structure
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.crazy.portal.entity.system.OrganizationalStructure">
+    insert into t_organizational_structure (id, seq, org_name, 
+      valid_time, invalid_time, parent_org, 
+      parent_org_name, pm, is_sales, 
+      insert_time, update_time, active
+      )
+    values (#{id,jdbcType=INTEGER}, #{seq,jdbcType=INTEGER}, #{orgName,jdbcType=VARCHAR}, 
+      #{validTime,jdbcType=VARCHAR}, #{invalidTime,jdbcType=VARCHAR}, #{parentOrg,jdbcType=INTEGER}, 
+      #{parentOrgName,jdbcType=VARCHAR}, #{pm,jdbcType=VARCHAR}, #{isSales,jdbcType=VARCHAR}, 
+      #{insertTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{active,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.crazy.portal.entity.system.OrganizationalStructure">
+    insert into t_organizational_structure
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="seq != null">
+        seq,
+      </if>
+      <if test="orgName != null">
+        org_name,
+      </if>
+      <if test="validTime != null">
+        valid_time,
+      </if>
+      <if test="invalidTime != null">
+        invalid_time,
+      </if>
+      <if test="parentOrg != null">
+        parent_org,
+      </if>
+      <if test="parentOrgName != null">
+        parent_org_name,
+      </if>
+      <if test="pm != null">
+        pm,
+      </if>
+      <if test="isSales != null">
+        is_sales,
+      </if>
+      <if test="insertTime != null">
+        insert_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="active != null">
+        active,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="seq != null">
+        #{seq,jdbcType=INTEGER},
+      </if>
+      <if test="orgName != null">
+        #{orgName,jdbcType=VARCHAR},
+      </if>
+      <if test="validTime != null">
+        #{validTime,jdbcType=VARCHAR},
+      </if>
+      <if test="invalidTime != null">
+        #{invalidTime,jdbcType=VARCHAR},
+      </if>
+      <if test="parentOrg != null">
+        #{parentOrg,jdbcType=INTEGER},
+      </if>
+      <if test="parentOrgName != null">
+        #{parentOrgName,jdbcType=VARCHAR},
+      </if>
+      <if test="pm != null">
+        #{pm,jdbcType=VARCHAR},
+      </if>
+      <if test="isSales != null">
+        #{isSales,jdbcType=VARCHAR},
+      </if>
+      <if test="insertTime != null">
+        #{insertTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="active != null">
+        #{active,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.crazy.portal.entity.system.OrganizationalStructure">
+    update t_organizational_structure
+    <set>
+      <if test="seq != null">
+        seq = #{seq,jdbcType=INTEGER},
+      </if>
+      <if test="orgName != null">
+        org_name = #{orgName,jdbcType=VARCHAR},
+      </if>
+      <if test="validTime != null">
+        valid_time = #{validTime,jdbcType=VARCHAR},
+      </if>
+      <if test="invalidTime != null">
+        invalid_time = #{invalidTime,jdbcType=VARCHAR},
+      </if>
+      <if test="parentOrg != null">
+        parent_org = #{parentOrg,jdbcType=INTEGER},
+      </if>
+      <if test="parentOrgName != null">
+        parent_org_name = #{parentOrgName,jdbcType=VARCHAR},
+      </if>
+      <if test="pm != null">
+        pm = #{pm,jdbcType=VARCHAR},
+      </if>
+      <if test="isSales != null">
+        is_sales = #{isSales,jdbcType=VARCHAR},
+      </if>
+      <if test="insertTime != null">
+        insert_time = #{insertTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="active != null">
+        active = #{active,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.crazy.portal.entity.system.OrganizationalStructure">
+    update t_organizational_structure
+    set seq = #{seq,jdbcType=INTEGER},
+      org_name = #{orgName,jdbcType=VARCHAR},
+      valid_time = #{validTime,jdbcType=VARCHAR},
+      invalid_time = #{invalidTime,jdbcType=VARCHAR},
+      parent_org = #{parentOrg,jdbcType=INTEGER},
+      parent_org_name = #{parentOrgName,jdbcType=VARCHAR},
+      pm = #{pm,jdbcType=VARCHAR},
+      is_sales = #{isSales,jdbcType=VARCHAR},
+      insert_time = #{insertTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      active = #{active,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

@@ -77,5 +77,4 @@ public class User {
      * dealer 用户同步进用户表 关联上dealerId
      */
     private Integer dealerId;
-
 }

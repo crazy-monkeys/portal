@@ -3,11 +3,14 @@ package com.crazy.portal.service.system;
 import com.crazy.portal.bean.customer.CustomerShipBean;
 import com.crazy.portal.bean.system.MailBean;
 import com.crazy.portal.bean.system.SubAgentVO;
+import com.crazy.portal.bean.system.UserPositionBean;
 import com.crazy.portal.config.email.EmailHelper;
 import com.crazy.portal.config.exception.BusinessException;
+import com.crazy.portal.dao.system.InternalUserMapper;
 import com.crazy.portal.dao.system.RoleMapper;
 import com.crazy.portal.dao.system.UserMapper;
 import com.crazy.portal.dao.system.UserRoleMapper;
+import com.crazy.portal.entity.system.InternalUser;
 import com.crazy.portal.entity.system.Role;
 import com.crazy.portal.entity.system.User;
 import com.crazy.portal.entity.system.UserRole;
@@ -42,6 +45,8 @@ public class UserService {
     private EmailHelper emailHelper;
     @Resource
     private CustomerInfoService customerInfoService;
+    @Resource
+    private InternalUserMapper internalUserMapper;
 
 
     private PasswordEncoder passwordEncoder =
@@ -232,5 +237,9 @@ public class UserService {
      */
     public List<Integer> getUserDealers(Integer userId){
         return Arrays.asList(1);
+    }
+
+    public InternalUser getUserPosition(Integer userId){
+        return internalUserMapper.selectByUserId(userId);
     }
 }

@@ -6,6 +6,7 @@ import com.crazy.portal.bean.handover.ReceiveTemplateBean;
 import com.crazy.portal.dao.handover.ReceiveDetailMapper;
 import com.crazy.portal.entity.handover.DeliverReceiveRecord;
 import com.crazy.portal.entity.handover.ReceiveDetail;
+import com.crazy.portal.service.customer.CustomerInfoService;
 import com.crazy.portal.util.BusinessUtil;
 import com.crazy.portal.util.ExcelUtils;
 import com.crazy.portal.util.FileUtil;
@@ -38,6 +39,8 @@ public class ReceiveService extends AbstractHandover implements IHandover<Receiv
     private HandoverService handoverService;
     @Resource
     private ReceiveDetailMapper receiveDetailMapper;
+    @Resource
+    private CustomerInfoService customerInfoService;
 
     @Value("${file.path.receive.template}")
     private String receiveTemplatePath;
@@ -55,7 +58,7 @@ public class ReceiveService extends AbstractHandover implements IHandover<Receiv
         BiCheckResult checkResult = callBiServer(CHECK_INVENTORY_IMPORT_FILE, (receivePushPath+thirdFileName), receivePullPath);
         List<ReceiveDetail> responseData = ExcelUtils.readExcel(checkResult.getFilePath(), ReceiveDetail.class);
         //批次记录表
-        DeliverReceiveRecord record = handoverService.genRecord("模拟收货的代理商名字", userId, 2);
+        DeliverReceiveRecord record = handoverService.genRecord(customerInfoService.getDealerByUser(userId).getCustName(), userId, 2);
         for(ReceiveDetail detail : responseData){
             detail.setRecordId(record.getId());
             receiveDetailMapper.insertSelective(detail);
@@ -148,7 +151,7 @@ public class ReceiveService extends AbstractHandover implements IHandover<Receiv
         BusinessUtil.assertFlase(false, HANDOVER_NOT_DEALER);
         List<ReceiveTemplateBean> receiveData =  ExcelUtils.readExcel(excel, ReceiveTemplateBean.class , 1);
         for(ReceiveTemplateBean templateBean : receiveData){
-            templateBean.setDealerName("模拟收货的代理商名字");
+            templateBean.setDealerName(customerInfoService.getDealerByUser(userId).getCustName());
         }
         return receiveData;
     }

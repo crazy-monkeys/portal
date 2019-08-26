@@ -71,7 +71,7 @@ public abstract class AbstractRequest {
     public List<String> checkParams(){
 		setParamsValue(BeanUtils.transBeanMapStr(this));
     	List<String>  list = new ArrayList<String>();
-		if(StringUtil.isNotBlank(reqCode)){
+		if(StringUtil.isBlank(reqCode)){
 			list.add(String.format("reqCode 不能为空"));
 			return list;
 		}
