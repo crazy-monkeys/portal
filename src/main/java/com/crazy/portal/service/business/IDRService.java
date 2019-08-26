@@ -329,23 +329,20 @@ public class IDRService {
         BusinessIdrApproval histortRecord = businessIdrApprovalMapper.selectByOrderNo(request.getOrderNumber());
         BusinessUtil.notNull(histortRecord, ErrorCodes.BusinessEnum.BUSINESS_IDR_APPROVAL_ORDERNO_NOT_FOUND);
         saveIdrApprovalRecord(request, histortRecord);
-
-        BusinessIdrInfo idrInfo = updateIdrInfoByApproval(request, histortRecord);
         if(request.getReviewStatus().equals(Enums.BusinessIdrApprovalStatus.AGREE.getCode()) && StringUtil.isBlank(request.getCurrentReviewer())){
-            idrInfo.setStatus(Enums.BusinessIdrStatus.APPROVAL_OVER.getCode());
-            businessIdrInfoMapper.updateByPrimaryKeySelective(idrInfo);
+            updateIdrInfoByApproval(request.getApiUserId(), histortRecord.getIdrInfoId(), Enums.BusinessIdrStatus.APPROVAL_OVER.getCode());
         }
         if(request.getReviewStatus().equals(Enums.BusinessIdrApprovalStatus.REJECT.getCode())){
-            idrInfo.setStatus(Enums.BusinessIdrStatus.REJECT.getCode());
-            businessIdrInfoMapper.updateByPrimaryKeySelective(idrInfo);
+            updateIdrInfoByApproval(request.getApiUserId(), histortRecord.getIdrInfoId(), Enums.BusinessIdrStatus.REJECT.getCode());
         }
     }
 
-    private BusinessIdrInfo updateIdrInfoByApproval(IDRApprovalRequest request, BusinessIdrApproval histortRecord) {
-        BusinessIdrInfo idrInfo = businessIdrInfoMapper.selectByPrimaryKey(histortRecord.getIdrInfoId());
-        idrInfo.setUpdateId(Integer.valueOf(request.getApiUserId()));
+    private void updateIdrInfoByApproval(String apiUserId, Integer IdrInfoId, Integer status) {
+        BusinessIdrInfo idrInfo = businessIdrInfoMapper.selectByPrimaryKey(IdrInfoId);
+        idrInfo.setUpdateId(Integer.valueOf(apiUserId));
         idrInfo.setUpdateTime(DateUtil.getCurrentTS());
-        return idrInfo;
+        idrInfo.setStatus(status);
+        businessIdrInfoMapper.updateByPrimaryKeySelective(idrInfo);
     }
 
     private void saveIdrApprovalRecord(IDRApprovalRequest request, BusinessIdrApproval histortRecord) {
