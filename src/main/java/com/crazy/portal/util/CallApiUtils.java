@@ -37,7 +37,7 @@ public class CallApiUtils {
     }
 
     private static String BPM_IDR_APPROVAL_URL;
-    @Value("${bpm.idr.approval}")
+    @Value("${api.url.bpm.idr.approval}")
     private void setBpmIdrApprovalUrl(String bpmIdrApprovalUrl){ BPM_IDR_APPROVAL_URL = bpmIdrApprovalUrl;}
     /**
      * 同步产品信息
