@@ -8,7 +8,7 @@
     <result column="inventory_category" jdbcType="VARCHAR" property="inventoryCategory" />
     <result column="inventory_unit_price" jdbcType="DECIMAL" property="inventoryUnitPrice" />
     <result column="warehouse" jdbcType="VARCHAR" property="warehouse" />
-    <result column="delivery_time" jdbcType="TIMESTAMP" property="deliveryTime" />
+    <result column="delivery_time" jdbcType="VARCHAR" property="deliveryTime" />
     <result column="invoice_number" jdbcType="VARCHAR" property="invoiceNumber" />
     <result column="delivery_num" jdbcType="INTEGER" property="deliveryNum" />
     <result column="delivery_company" jdbcType="VARCHAR" property="deliveryCompany" />
@@ -49,7 +49,7 @@
       )
     values (#{id,jdbcType=INTEGER}, #{thirdId,jdbcType=INTEGER},
       #{productModel,jdbcType=VARCHAR}, #{inventoryCategory,jdbcType=VARCHAR}, #{inventoryUnitPrice,jdbcType=DECIMAL}, 
-      #{warehouse,jdbcType=VARCHAR}, #{deliveryTime,jdbcType=TIMESTAMP}, #{invoiceNumber,jdbcType=VARCHAR}, 
+      #{warehouse,jdbcType=VARCHAR}, #{deliveryTime,jdbcType=VARCHAR}, #{invoiceNumber,jdbcType=VARCHAR},
       #{deliveryNum,jdbcType=INTEGER}, #{deliveryCompany,jdbcType=VARCHAR}, #{purchaseNumber,jdbcType=VARCHAR}, 
       #{remark,jdbcType=VARCHAR}, #{errorMsg,jdbcType=VARCHAR}, #{recordId,jdbcType=INTEGER}
       )
@@ -120,7 +120,7 @@
         #{warehouse,jdbcType=VARCHAR},
       </if>
       <if test="deliveryTime != null">
-        #{deliveryTime,jdbcType=TIMESTAMP},
+        #{deliveryTime,jdbcType=VARCHAR},
       </if>
       <if test="invoiceNumber != null">
         #{invoiceNumber,jdbcType=VARCHAR},
@@ -164,7 +164,7 @@
         warehouse = #{warehouse,jdbcType=VARCHAR},
       </if>
       <if test="deliveryTime != null">
-        delivery_time = #{deliveryTime,jdbcType=TIMESTAMP},
+        delivery_time = #{deliveryTime,jdbcType=VARCHAR},
       </if>
       <if test="invoiceNumber != null">
         invoice_number = #{invoiceNumber,jdbcType=VARCHAR},
@@ -197,7 +197,7 @@
       inventory_category = #{inventoryCategory,jdbcType=VARCHAR},
       inventory_unit_price = #{inventoryUnitPrice,jdbcType=DECIMAL},
       warehouse = #{warehouse,jdbcType=VARCHAR},
-      delivery_time = #{deliveryTime,jdbcType=TIMESTAMP},
+      delivery_time = #{deliveryTime,jdbcType=VARCHAR},
       invoice_number = #{invoiceNumber,jdbcType=VARCHAR},
       delivery_num = #{deliveryNum,jdbcType=INTEGER},
       delivery_company = #{deliveryCompany,jdbcType=VARCHAR},

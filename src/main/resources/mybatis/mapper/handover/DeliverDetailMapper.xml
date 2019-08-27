@@ -11,7 +11,7 @@
     <result column="category_tow" jdbcType="VARCHAR" property="categoryTow" />
     <result column="category_three" jdbcType="VARCHAR" property="categoryThree" />
     <result column="product_model" jdbcType="VARCHAR" property="productModel" />
-    <result column="delivery_date" jdbcType="TIMESTAMP" property="deliveryDate" />
+    <result column="delivery_date" jdbcType="VARCHAR" property="deliveryDate" />
     <result column="deliver_number" jdbcType="INTEGER" property="deliverNumber" />
     <result column="sale_price" jdbcType="DECIMAL" property="salePrice" />
     <result column="po_price" jdbcType="DECIMAL" property="poPrice" />
@@ -61,7 +61,7 @@
     values (#{id,jdbcType=INTEGER}, #{thirdId,jdbcType=INTEGER}, #{customerExternalNumber,jdbcType=VARCHAR}, 
       #{customerFullName,jdbcType=VARCHAR}, #{sales,jdbcType=VARCHAR}, #{categoryOne,jdbcType=VARCHAR}, 
       #{categoryTow,jdbcType=VARCHAR}, #{categoryThree,jdbcType=VARCHAR}, #{productModel,jdbcType=VARCHAR}, 
-      #{deliveryDate,jdbcType=TIMESTAMP}, #{deliverNumber,jdbcType=INTEGER}, #{salePrice,jdbcType=DECIMAL}, 
+      #{deliveryDate,jdbcType=VARCHAR}, #{deliverNumber,jdbcType=INTEGER}, #{salePrice,jdbcType=DECIMAL},
       #{poPrice,jdbcType=DECIMAL}, #{margin,jdbcType=DECIMAL}, #{currency,jdbcType=VARCHAR}, 
       #{customerOrderNumber,jdbcType=VARCHAR}, #{deliveryType,jdbcType=VARCHAR}, #{orderMonth,jdbcType=VARCHAR}, 
       #{deliveryCompany,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, #{recordId,jdbcType=INTEGER}
@@ -166,7 +166,7 @@
         #{productModel,jdbcType=VARCHAR},
       </if>
       <if test="deliveryDate != null">
-        #{deliveryDate,jdbcType=TIMESTAMP},
+        #{deliveryDate,jdbcType=VARCHAR},
       </if>
       <if test="deliverNumber != null">
         #{deliverNumber,jdbcType=INTEGER},
@@ -234,7 +234,7 @@
         product_model = #{productModel,jdbcType=VARCHAR},
       </if>
       <if test="deliveryDate != null">
-        delivery_date = #{deliveryDate,jdbcType=TIMESTAMP},
+        delivery_date = #{deliveryDate,jdbcType=VARCHAR},
       </if>
       <if test="deliverNumber != null">
         deliver_number = #{deliverNumber,jdbcType=INTEGER},
@@ -282,7 +282,7 @@
       category_tow = #{categoryTow,jdbcType=VARCHAR},
       category_three = #{categoryThree,jdbcType=VARCHAR},
       product_model = #{productModel,jdbcType=VARCHAR},
-      delivery_date = #{deliveryDate,jdbcType=TIMESTAMP},
+      delivery_date = #{deliveryDate,jdbcType=VARCHAR},
       deliver_number = #{deliverNumber,jdbcType=INTEGER},
       sale_price = #{salePrice,jdbcType=DECIMAL},
       po_price = #{poPrice,jdbcType=DECIMAL},

@@ -1,9 +1,6 @@
 package com.crazy.portal.service.handover;
 
-import com.crazy.portal.config.exception.BusinessException;
-import com.crazy.portal.dao.handover.DeliverDetailMapper;
 import com.crazy.portal.dao.handover.DeliverReceiveRecordMapper;
-import com.crazy.portal.dao.handover.ReceiveDetailMapper;
 import com.crazy.portal.entity.handover.DeliverReceiveRecord;
 import com.crazy.portal.util.*;
 import com.github.pagehelper.PageInfo;
@@ -26,10 +23,6 @@ public class HandoverService extends AbstractHandover {
 
     @Resource
     private DeliverReceiveRecordMapper deliverReceiveRecordMapper;
-    @Resource
-    private DeliverDetailMapper deliverDetailMapper;
-    @Resource
-    private ReceiveDetailMapper receiveDetailMapper;
 
     private String deliver_type = "deliver";
     private String receive_type = "receive";

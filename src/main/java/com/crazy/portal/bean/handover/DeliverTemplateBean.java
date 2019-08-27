@@ -46,7 +46,7 @@ public class DeliverTemplateBean extends BaseRowModel {
 
     /** 出货日期 */
     @ExcelProperty(index = 7, value = "出货日期")
-    private Date deliveryDate;
+    private String deliveryDate;
 
     /** 数量 */
     @ExcelProperty(index = 8, value = "数量")

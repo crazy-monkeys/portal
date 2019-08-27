@@ -51,7 +51,7 @@ public class DeliverDetail extends BaseRowModel {
 
     /** 出货日期 */
     @ExcelProperty(index = 8, value = "出货日期")
-    private Date deliveryDate;
+    private String deliveryDate;
 
     /** 数量 */
     @ExcelProperty(index = 9, value = "数量")

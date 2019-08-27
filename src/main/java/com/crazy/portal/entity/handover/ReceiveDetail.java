@@ -33,7 +33,7 @@ public class ReceiveDetail extends BaseRowModel {
 
     /** 提货时间 */
     @ExcelProperty(index = 5, value = "提货时间")
-    private Date deliveryTime;
+    private String deliveryTime;
 
     /** 提货发票号 */
     @ExcelProperty(index = 6, value = "提货发票号")
