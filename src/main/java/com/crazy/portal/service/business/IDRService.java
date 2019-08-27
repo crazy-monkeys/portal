@@ -3,6 +3,7 @@ package com.crazy.portal.service.business;
 import com.alibaba.excel.metadata.BaseRowModel;
 import com.alibaba.excel.support.ExcelTypeEnum;
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.crazy.portal.bean.business.idr.BusinessFileUploadBean;
 import com.crazy.portal.bean.business.idr.BusinessIdrQueryBean;
 import com.crazy.portal.bean.business.idr.IdrApprovalSubmitBean;
@@ -229,9 +230,15 @@ public class IDRService {
         submitBean.setInsuredPriceItem(getInsuredProceItem(bean));
         submitBean.setRefundPriceItem(getRefundPriceItem(bean));
         submitBean.setReturnGoods(getReturnGoods(bean));
-        String responseBody = CallApiUtils.portalSubmitApprovalToBPM(JSON.toJSONString(submitBean));
+        JSONObject requestBodyJson = new JSONObject();
+        requestBodyJson.put("data", submitBean);
+        String requestBody = JSON.toJSONString(requestBodyJson);
+        log.info("IDR审批申请提交至BPM");
+        log.info("requestBody:" + requestBody);
+        String responseBody = CallApiUtils.portalSubmitApprovalToBPM(requestBody);
+        log.info("responseBody:" + responseBody);
         BusinessUtil.assertTrue(StringUtil.isNotBlank(responseBody), ErrorCodes.BusinessEnum.BUSINESS_IDR_SUBMIT_RESULT_IS_NULL);
-        IdrApprovalSubmitResultBean resultBean = JSON.toJavaObject(JSON.parseObject(responseBody), IdrApprovalSubmitResultBean.class);
+        IdrApprovalSubmitResultBean resultBean = JSON.toJavaObject(JSON.parseObject(responseBody).getJSONObject("d"), IdrApprovalSubmitResultBean.class);
         if(resultBean.getResult().equals(Enums.BusinessIdrApprovalSubmitResult.FAILED.getCode())){
             throw new BusinessException(ErrorCodes.BusinessEnum.BUSINESS_IDR_SUBMIT_RESULT_FAIL.getCode(), resultBean.getMessage());
         }

@@ -7,6 +7,7 @@ import com.crazy.portal.bean.product.BaseProResponseVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
 import java.io.IOException;
 
 /**
@@ -35,6 +36,9 @@ public class CallApiUtils {
         BI_URL = biUrl;
     }
 
+    private static String BPM_IDR_APPROVAL_URL;
+    @Value("${bpm.idr.approval}")
+    private void setBpmIdrApprovalUrl(String bpmIdrApprovalUrl){ BPM_IDR_APPROVAL_URL = bpmIdrApprovalUrl;}
     /**
      * 同步产品信息
      * @return
@@ -92,6 +96,6 @@ public class CallApiUtils {
      * @return
      */
     public static String portalSubmitApprovalToBPM(String requestBody) throws IOException{
-        return HttpClientUtils.post("", requestBody);
+        return HttpClientUtils.post(BPM_IDR_APPROVAL_URL, requestBody);
     }
 }

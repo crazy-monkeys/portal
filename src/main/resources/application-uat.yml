@@ -49,3 +49,4 @@ api:
     bi-test: https://e600180-hcioem.hcisbt.cn1.hana.ondemand.com/http/
     mdm-product: https://e600180-hcioem.hcisbt.cn1.hana.ondemand.com/http/MDMProductMaster
     ecc-credit: https://e600180-hcioem.hcisbt.cn1.hana.ondemand.com:443/cxf/CUSTOMERCREDIT
+    bpm.idr.approval: https://e600180-hcioem.hcisbt.cn1.hana.ondemand.com/http/PORTAL/BPM/PROJECT_WEB_SUBMIT
