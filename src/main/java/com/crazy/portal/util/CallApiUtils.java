@@ -39,6 +39,14 @@ public class CallApiUtils {
     private static String BPM_IDR_APPROVAL_URL;
     @Value("${api.url.bpm.idr.approval}")
     private void setBpmIdrApprovalUrl(String bpmIdrApprovalUrl){ BPM_IDR_APPROVAL_URL = bpmIdrApprovalUrl;}
+
+    private static String REBATE_PRICE_ROLE_URL;
+    @Value("${api.url.rebate.price.role}")
+    private void setRebatePriceRoleUrl(String rebatePriceRoleUrl){ REBATE_PRICE_ROLE_URL = rebatePriceRoleUrl;}
+
+    private static String REBATE_SALES_DETAILS_URL;
+    @Value("${api.url.rebate.sales.details}")
+    public void setRebateSalesDetailsUrl(String rebateSalesDetailsUrl){ REBATE_SALES_DETAILS_URL = rebateSalesDetailsUrl;}
     /**
      * 同步产品信息
      * @return
@@ -97,5 +105,29 @@ public class CallApiUtils {
      */
     public static String portalSubmitApprovalToBPM(String requestBody) throws IOException{
         return HttpClientUtils.post(BPM_IDR_APPROVAL_URL, requestBody);
+    }
+
+    /**
+     * 同步rebate金额信息
+     * @param startDate 起始年月
+     * @param endDate 结束年月
+     * @return
+     * @throws IOException
+     */
+    public static String syncRebatePriceRoleData(String startDate, String endDate) throws IOException{
+        //TODO 用户名密码
+        return HttpClientUtils.get(REBATE_PRICE_ROLE_URL.concat("?sStartYearMonth=").concat(startDate).concat("&sEndYearMonth=").concat(endDate));
+    }
+
+    /**
+     * 同步rebate商品明细
+     * @param startDate 起始年月
+     * @param endDate 结束年月
+     * @return
+     * @throws IOException
+     */
+    public static String syncRebatePriceSalesDetails(String startDate, String endDate) throws IOException{
+        //TODO 用户名密码
+        return HttpClientUtils.get(REBATE_SALES_DETAILS_URL.concat("?sStartYearMonth=").concat(startDate).concat("&sEndYearMonth=").concat(endDate));
     }
 }

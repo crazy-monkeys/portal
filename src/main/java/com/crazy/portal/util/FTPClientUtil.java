@@ -4,21 +4,28 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPReply;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import java.io.*;
 
 @Slf4j
 @Data
+@Component
 public class FTPClientUtil {
 
-   private String         host;
-   private Integer        port;
-   private String         username;     
-   private String         password;     
+   @Value("${ftp.host}")
+   private String host;
+   @Value("${ftp.port}")
+   private Integer port;
+   @Value("${ftp.username}")
+   private String username;
+   @Value("${ftp.password}")
+   private String password;
    
    private Boolean        binaryTransfer = true;
    private Boolean        passiveMode    = true;
-   private String         encoding       = "UTF-8";     
+   private String         encoding       = "UTF-8";
    private Integer        clientTimeout  = 3000;
    private Boolean        flag           = true;
    
@@ -35,7 +42,7 @@ public class FTPClientUtil {
 
     /**   
      * 返回一个FTPClient实例   
-     *    
+     *
      */
     private FTPClient getFTPClient()  throws IOException {
         //构造一个FtpClient实例
@@ -341,8 +348,7 @@ public class FTPClientUtil {
         }     
     }     
     public boolean isExist(String remoteFilePath)throws IOException{  
-          
-         FTPClient ftpClient = null;     
+         FTPClient ftpClient = null;
         try{  
             ftpClient = getFTPClient();  
             File file=new File(remoteFilePath);  
@@ -374,7 +380,7 @@ public class FTPClientUtil {
 
     public static void main(String[] args) {
         try {
-        FTPClientUtil ftp = new FTPClientUtil("10.8.6.32", 21, "test", "Bill%%123");
+        FTPClientUtil ftp = new FTPClientUtil("127.0.0.1", 21, "test", "test");
         ftp.put("/20180803.zip", "C:/Users/xin.xia/Desktop/20180803.zip");
         }catch (Exception e){
             e.printStackTrace();
