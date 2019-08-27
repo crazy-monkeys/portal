@@ -1,22 +1,34 @@
 package com.crazy.portal.service.customer;
 
+import com.alibaba.excel.EasyExcelFactory;
+import com.alibaba.excel.metadata.BaseRowModel;
+import com.alibaba.excel.metadata.Sheet;
+import com.crazy.portal.bean.common.Constant;
 import com.crazy.portal.bean.customer.CustomerQueryBean;
 import com.crazy.portal.bean.customer.CustomerShipBean;
 import com.crazy.portal.bean.customer.approval.ApprovalBean;
+import com.crazy.portal.bean.customer.basic.FileVO;
 import com.crazy.portal.bean.customer.dealer.credit.Zsdscredit;
+import com.crazy.portal.bean.customer.visitRecord.CustomerCodeEO;
+import com.crazy.portal.bean.customer.visitRecord.VisitRecordEO;
+import com.crazy.portal.bean.customer.visitRecord.VisitRecordQueryBean;
 import com.crazy.portal.dao.customer.*;
 import com.crazy.portal.entity.cusotmer.*;
+import com.crazy.portal.entity.customer.VisitRecord;
 import com.crazy.portal.entity.system.User;
 import com.crazy.portal.util.*;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * @ClassName: CustomerInfoService
@@ -52,6 +64,13 @@ public class CustomerInfoService {
     private CustomerAccountTeamMapper customerAccountTeamMapper;
     @Resource
     private CustomerReportMapper customerReportMapper;
+    @Resource
+    private VisitRecordMapper visitRecordMapper;
+
+    @Value("${file.path.root}")
+    private String filePath;
+
+    private static final String CUST_FILE_PATH = "custfile";
 
     /**
      * 分页查询客户信息
@@ -459,5 +478,80 @@ public class CustomerInfoService {
                 customerAccountTeamMapper.updateByPrimaryKeySelective(e);
             }
         });
+    }
+
+    /**
+     * 下载客户拜访模板
+     * @param userId
+     * @return
+     */
+    public Map<String, List<? extends BaseRowModel>> downloadTemplate(Integer userId){
+        Map<String, List<? extends BaseRowModel>> resultMap = new HashMap<>();
+        List<CustomerInfo> custList = customerInfoMapper.selectNameAndCodeByUserId(userId);
+        List<CustomerCodeEO> custCodeList = new ArrayList<>();
+        custList.forEach(cust -> {
+            CustomerCodeEO eo = new CustomerCodeEO();
+            eo.setCustomerName(cust.getCustName());
+            eo.setCustomerCode(cust.getInCode());
+            custCodeList.add(eo);
+        });
+        List<VisitRecordEO> visitRecordList = new ArrayList<>();
+        visitRecordList.add(new VisitRecordEO());
+        resultMap.put("模板", visitRecordList);
+        resultMap.put("客户", custCodeList);
+        return resultMap;
+    }
+
+    /**
+     * 查询客户拜访记录
+     * @param bean
+     * @return
+     */
+    public PageInfo<VisitRecord> selectVisitRecordPage(VisitRecordQueryBean bean){
+        PortalUtil.defaultStartPage(bean.getPageIndex(), bean.getPageSize());
+        List<VisitRecord> records = visitRecordMapper.selectByPage(bean);
+        return new PageInfo<>(records);
+    }
+
+    /**
+     * 上传客户拜访记录
+     * @param files
+     * @param userId
+     * @throws Exception
+     **/
+
+    public void uploadVisitRecord(MultipartFile[] files, Integer userId) throws Exception{
+        for (MultipartFile file : files) {
+            List<Object> records = EasyExcelFactory.read(file.getInputStream(), new Sheet(1, 1,VisitRecordEO.class));
+            records.forEach(e->{
+                try {
+                    VisitRecord record = new VisitRecord();
+                    BeanUtils.copyNotNullFields(e , record);
+                    String excelVisitDate = BeanUtils.getFieldValueByName("visitDate", e).toString();
+                    record.setVisitDate(DateUtil.getFlexibleDate(excelVisitDate));
+                    record.setActive(Constant.ACTIVE);
+                    record.setCreateUserId(userId);
+                    record.setCreateTime(DateUtil.getCurrentTS());
+                    visitRecordMapper.insertSelective(record);
+                } catch (Exception ex) {
+                    log.error("保存拜访记录异常", ex);
+                }
+            });
+
+        }
+    }
+
+    /**
+     * 文件上传
+     * @param files
+     * @return
+     **/
+    public List<FileVO> fileUpload(MultipartFile[] files){
+        List<FileVO> fileList = FileUtil.upload(files, getCustFilePath());
+        return fileList;
+    }
+
+    public String getCustFilePath(){
+        return filePath.concat(File.separator).concat(CUST_FILE_PATH);
     }
 }

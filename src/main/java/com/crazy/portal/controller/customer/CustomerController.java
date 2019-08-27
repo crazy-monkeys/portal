@@ -1,18 +1,25 @@
 package com.crazy.portal.controller.customer;
 
+import com.alibaba.excel.metadata.BaseRowModel;
+import com.alibaba.excel.support.ExcelTypeEnum;
 import com.crazy.portal.bean.BaseResponse;
 import com.crazy.portal.bean.customer.CustomerQueryBean;
 import com.crazy.portal.bean.customer.approval.ApprovalBean;
+import com.crazy.portal.bean.customer.visitRecord.VisitRecordQueryBean;
 import com.crazy.portal.controller.BaseController;
 import com.crazy.portal.entity.cusotmer.AssetsInformation;
 import com.crazy.portal.entity.cusotmer.BusinessInformation;
 import com.crazy.portal.entity.cusotmer.CustomerInfo;
 import com.crazy.portal.service.customer.CustomerInfoService;
+import com.crazy.portal.util.ExcelUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Description 客户管理
@@ -79,6 +86,34 @@ public class CustomerController extends BaseController{
     public BaseResponse info(@PathVariable Integer reportId, @PathVariable Integer custId){
         return successResult(customerInfoService.queryInfo(reportId,custId));
     }
+
+    @GetMapping("/visitRecord/list")
+    public BaseResponse visitRecordList(VisitRecordQueryBean bean){
+        bean.setUserId(this.getCurrentUser().getId());
+        return successResult(customerInfoService.selectVisitRecordPage(bean));
+    }
+
+    @GetMapping("/visitRecord/download")
+    public void visitRecordDownload(HttpServletResponse response){
+        try {
+            Map<String, List<? extends BaseRowModel>> resultMap = customerInfoService.downloadTemplate(this.getCurrentUser().getId());
+            ExcelUtils.createExcelStreamMutilByEaysExcel(response, resultMap, "拜访记录", ExcelTypeEnum.XLSX);
+        }catch (Exception ex){
+            log.error("下载模板异常", ex);
+        }
+    }
+
+    @PostMapping("/visitRecord/upload")
+    public BaseResponse visitRecordUpload(MultipartFile[] files) throws Exception{
+        customerInfoService.uploadVisitRecord(files, this.getCurrentUser().getId());
+        return successResult();
+    }
+
+    @PostMapping("/file")
+    public BaseResponse fileUpload(MultipartFile[] files){
+        return successResult(customerInfoService.fileUpload(files));
+    }
+
 /**
     //获取用户列表
     @GetMapping("/list")

@@ -239,6 +239,11 @@ public class UserService {
         return Arrays.asList(1);
     }
 
+    /**
+     * 获取用户的权限职位信息
+     * @param userId
+     * @return
+     */
     public InternalUser getUserPosition(Integer userId){
         return internalUserMapper.selectByUserId(userId);
     }

@@ -30,9 +30,9 @@ public class CallApiUtils {
     }
 
     private static String BI_URL;
-    @Value("${api.url.bi}")
-    public String getBiUrl() {
-        return BI_URL;
+    @Value("${api.url.bi-test}")
+    public void setBiUrl(String biUrl) {
+        BI_URL = biUrl;
     }
 
     /**
@@ -80,7 +80,9 @@ public class CallApiUtils {
      */
     public static String BITest(Enums.BI_FUNCTION_CODE function_code,String fromUrl, String toUrl)throws IOException{
         String url = BI_URL+function_code+"?sFromUrl="+fromUrl+"&sToUrl="+toUrl;
+        log.info("call bi url:======================="+url);
         String jsonStr = HttpClientUtils.get(url);
+        log.info("bi response:======================"+jsonStr);
         return jsonStr;
     }
 

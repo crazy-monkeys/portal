@@ -57,7 +57,7 @@ public class Enums {
     }
 
     public enum MAIL_TEMPLATE {
-        USER_CREATE("createSubAgent"),
+        USER_CREATE("mail/createSubAgent"),
         RESET_PWD("resetPwdTemplate"),
         REBATE_CONFIRM("confirmLetter");
 
