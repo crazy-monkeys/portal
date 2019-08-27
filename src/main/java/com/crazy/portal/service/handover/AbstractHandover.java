@@ -1,7 +1,9 @@
 package com.crazy.portal.service.handover;
 
+import com.alibaba.fastjson.JSONObject;
 import com.crazy.portal.config.exception.BusinessException;
 import com.crazy.portal.util.Enums;
+import com.crazy.portal.util.FTPClientUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import java.util.Date;
@@ -17,6 +19,41 @@ public abstract class AbstractHandover {
 
     private String SUCCESS_CODE = "OK";
     private String ERROR_CODE = "NG";
+
+    FTPClientUtil ftp = new FTPClientUtil("10.11.14.50", 22, "vmuser", "");
+
+    protected abstract String pushFtpPath();
+
+    protected abstract String pullLocalPath();
+
+    protected BiCheckResult callBiServerByFtp(Enums.BI_FUNCTION_CODE functionCode, String filePath, String fileName, String pullPath) {
+        try {
+            //推送文件的地址信息
+            String pushServerFile = String.format("%s%s", pushFtpPath(), fileName);
+            String pushLocalFile = String.format("%s%s", filePath, fileName);
+            if(log.isDebugEnabled()) {
+                log.debug("Portal to BI >> Ftp file path:{} , Local file path:{}", pushServerFile, pushLocalFile);
+            }
+            ftp.put(pushServerFile, pushLocalFile);
+            BiCheckResult result = callBiServer(functionCode, pushServerFile, pullLocalPath());
+            log.info("BI handle result info >> {}", JSONObject.toJSONString(result));
+            //获取文件的地址信息
+            String biFileName = result.getFilePath().substring(result.getFilePath().lastIndexOf("/") + 1);
+            String pullLocalFile = String.format("%s%s", pullPath, biFileName);
+            if(log.isDebugEnabled()) {
+                log.debug("BI to Portal info >> Ftp file path:{} , Local file path:{}", result.getFilePath(), pullLocalFile);
+            }
+            ftp.get(result.getFilePath(), pullLocalFile);
+            result.setFilePath(pullLocalFile);
+            return result;
+        }catch (Exception ex) {
+            throw new RuntimeException("Ftp exception or bi server exception", ex);
+        }
+    }
+
+    public static void main(String[] args) {
+        System.out.println("/a/b/c/d.txt".substring("/a/b/c/d.txt".lastIndexOf("/") + 1));
+    }
 
     /**
      *
@@ -93,6 +130,10 @@ public abstract class AbstractHandover {
 
         public String getFilePath() {
             return filePath;
+        }
+
+        public void setFilePath(String filePath) {
+            this.filePath = filePath;
         }
     }
 

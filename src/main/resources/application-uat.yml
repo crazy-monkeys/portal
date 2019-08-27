@@ -58,3 +58,5 @@ ftp:
   port:
   username:
   password:
+  path:
+    handover: /

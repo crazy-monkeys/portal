@@ -7,10 +7,7 @@ import com.crazy.portal.dao.handover.DeliverDetailMapper;
 import com.crazy.portal.entity.handover.DeliverDetail;
 import com.crazy.portal.entity.handover.DeliverReceiveRecord;
 import com.crazy.portal.service.customer.CustomerInfoService;
-import com.crazy.portal.util.BusinessUtil;
-import com.crazy.portal.util.ExcelUtils;
-import com.crazy.portal.util.FileUtil;
-import com.crazy.portal.util.PortalUtil;
+import com.crazy.portal.util.*;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -49,6 +46,8 @@ public class DeliverService extends AbstractHandover implements IHandover<Delive
     private String deliverPullPath;
     @Value("${file.path.deliver.local}")
     private String deliverLocalPath;
+    @Value("${ftp.path.handover}")
+    private String ftpPushPath;
 
 
     @Override
@@ -56,7 +55,7 @@ public class DeliverService extends AbstractHandover implements IHandover<Delive
         //数据包装，生成第三方需要的文件
         String thirdFileName = ExcelUtils.writeExcel(deliverPushPath, deliverData, DeliverDetail.class);
         //请求了第三方，并拿到了结果
-        BiCheckResult checkResult = callBiServer(CHECK_SALES_IMPORT_FILE, (deliverPushPath+thirdFileName), deliverPullPath);
+        BiCheckResult checkResult = callBiServerByFtp(CHECK_SALES_IMPORT_FILE, deliverPushPath , thirdFileName, deliverPullPath);
         List<DeliverDetail> responseData = ExcelUtils.readExcel(checkResult.getFilePath(), DeliverDetail.class);
         //批次记录表
         DeliverReceiveRecord record = handoverService.genRecord(customerInfoService.getDealerByUser(userId).getCustName(), userId, 1);
@@ -85,7 +84,7 @@ public class DeliverService extends AbstractHandover implements IHandover<Delive
         //重新生成数据
         List<DeliverDetail> fullData = deliverDetailMapper.selectByRecordId(recordId);
         String thirdFileName = ExcelUtils.writeExcel(deliverPushPath, fullData, DeliverDetail.class);
-        BiCheckResult checkResult = callBiServer(CHECK_SALES_IMPORT_FILE, (deliverPushPath+thirdFileName), deliverPullPath);
+        BiCheckResult checkResult = callBiServerByFtp(CHECK_SALES_IMPORT_FILE, deliverPushPath , thirdFileName, deliverPullPath);
         List<DeliverDetail> responseData = ExcelUtils.readExcel(checkResult.getFilePath(), DeliverDetail.class);
         deliverDetailMapper.deleteByRecordId(recordId);
         for(DeliverDetail detail : responseData){
@@ -101,7 +100,7 @@ public class DeliverService extends AbstractHandover implements IHandover<Delive
         BusinessUtil.assertFlase(errorCnt > 0, HANDOVER_EXISTS_DATA_ERROR);
         List<DeliverDetail> deliverData = deliverDetailMapper.selectByRecordId(recordId);
         String thirdFileName = ExcelUtils.writeExcel(deliverPushPath, deliverData, DeliverDetail.class);
-        BiCheckResult checkResult = callBiServer(SAVE_SALES_IMPORT_FILE, (deliverPushPath+thirdFileName), deliverPullPath);
+        BiCheckResult checkResult = callBiServerByFtp(SAVE_SALES_IMPORT_FILE, deliverPushPath, thirdFileName, deliverPullPath);
         if(checkResult.isSuccess()){
             handoverService.updateStatus(recordId, 2);
             return null;
@@ -172,5 +171,15 @@ public class DeliverService extends AbstractHandover implements IHandover<Delive
         }
         resultInfo.setMsg(checkResult.isSuccess() ? null : "请点击【下载错误数据】，并将更新后的数据重新上传");
         return resultInfo;
+    }
+
+    @Override
+    protected String pushFtpPath() {
+        return ftpPushPath;
+    }
+
+    @Override
+    protected String pullLocalPath() {
+        return deliverPullPath;
     }
 }

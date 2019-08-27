@@ -52,7 +52,9 @@ api:
     rebate.sales.details: https://e600180-hcioem.hcisbt.cn1.hana.ondemand.com/http/BI/PORTAL/GET_CALCULATED_ALL_REBATE_DATA_SALES_DETAILS
 
 ftp:
-  host:
-  port:
-  username:
+  host: 10.11.14.50
+  port: 22
+  username: vmuser
   password:
+  path:
+    handover: /

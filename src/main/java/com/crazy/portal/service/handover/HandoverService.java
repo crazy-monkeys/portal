@@ -19,7 +19,7 @@ import static com.crazy.portal.util.ErrorCodes.BusinessEnum.*;
 @Slf4j
 @Service
 @Transactional
-public class HandoverService extends AbstractHandover {
+public class HandoverService {
 
     @Resource
     private DeliverReceiveRecordMapper deliverReceiveRecordMapper;

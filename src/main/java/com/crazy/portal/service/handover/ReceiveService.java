@@ -50,12 +50,13 @@ public class ReceiveService extends AbstractHandover implements IHandover<Receiv
     private String receivePullPath;
     @Value("${file.path.receive.local}")
     private String receiveLocalPath;
-
+    @Value("${ftp.path.handover}")
+    private String ftpPushPath;
 
     @Override
     public HandoverUploadVO verificationData(List<ReceiveDetail> receiveData, Integer userId) {
         String thirdFileName = ExcelUtils.writeExcel(receivePushPath, receiveData, ReceiveDetail.class);
-        BiCheckResult checkResult = callBiServer(CHECK_INVENTORY_IMPORT_FILE, (receivePushPath+thirdFileName), receivePullPath);
+        BiCheckResult checkResult = callBiServerByFtp(CHECK_INVENTORY_IMPORT_FILE, receivePushPath, thirdFileName, receivePullPath);
         List<ReceiveDetail> responseData = ExcelUtils.readExcel(checkResult.getFilePath(), ReceiveDetail.class);
         //批次记录表
         DeliverReceiveRecord record = handoverService.genRecord(customerInfoService.getDealerByUser(userId).getCustName(), userId, 2);
@@ -81,7 +82,7 @@ public class ReceiveService extends AbstractHandover implements IHandover<Receiv
 
         List<ReceiveDetail> fullData = receiveDetailMapper.selectByRecordId(recordId);
         String thirdFileName = ExcelUtils.writeExcel(receivePushPath, fullData, ReceiveDetail.class);
-        BiCheckResult checkResult = callBiServer(CHECK_INVENTORY_IMPORT_FILE, (receivePushPath+thirdFileName), receivePullPath);
+        BiCheckResult checkResult = callBiServerByFtp(CHECK_INVENTORY_IMPORT_FILE, receivePushPath, thirdFileName, receivePullPath);
         List<ReceiveDetail> responseData = ExcelUtils.readExcel(checkResult.getFilePath(), ReceiveDetail.class);
         receiveDetailMapper.deleteByRecordId(recordId);
         for(ReceiveDetail detail : responseData){
@@ -97,7 +98,7 @@ public class ReceiveService extends AbstractHandover implements IHandover<Receiv
         BusinessUtil.assertFlase(errorCnt > 0, HANDOVER_EXISTS_DATA_ERROR);
         List<ReceiveDetail> receiveData = receiveDetailMapper.selectByRecordId(recordId);
         String thirdFileName = ExcelUtils.writeExcel(receivePushPath, receiveData, ReceiveDetail.class);
-        BiCheckResult checkResult = callBiServer(CHECK_INVENTORY_IMPORT_FILE, (receivePushPath+thirdFileName), receivePullPath);
+        BiCheckResult checkResult = callBiServerByFtp(CHECK_INVENTORY_IMPORT_FILE, receivePushPath, thirdFileName, receivePullPath);
         List<ReceiveDetail> responseData = ExcelUtils.readExcel(checkResult.getFilePath(), ReceiveDetail.class);
         if(checkResult.isSuccess()){
             handoverService.updateStatus(recordId, 2);
@@ -168,5 +169,15 @@ public class ReceiveService extends AbstractHandover implements IHandover<Receiv
         }
         resultInfo.setMsg(checkResult.isSuccess() ? null : "请点击【下载错误数据】，并将更新后的数据重新上传");
         return resultInfo;
+    }
+
+    @Override
+    protected String pushFtpPath() {
+        return ftpPushPath;
+    }
+
+    @Override
+    protected String pullLocalPath() {
+        return receivePullPath;
     }
 }
