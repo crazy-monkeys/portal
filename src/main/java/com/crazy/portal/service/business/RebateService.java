@@ -44,9 +44,9 @@ public class RebateService {
     @Resource
     private BusinessRebateFileMapper businessRebateFileMapper;
     @Resource
-    private BusinessAccountDetailMapper businessAccountDetailMapper;
+    private BusinessSalesDetailMapper businessSalesDetailMapper;
     @Resource
-    private BusinessStrategyMapper businessStrategyMapper;
+    private BusinessPriceRoleMapper businessPriceRoleMapper;
     @Resource
     private EmailHelper emailHelper;
     @Resource
@@ -85,8 +85,8 @@ public class RebateService {
     public BusinessRebate find(Integer id){
         BusinessRebate info = businessRebateMapper.selectByPrimaryKey(id);
         BusinessUtil.notNull(info, ErrorCodes.BusinessEnum.REBATE_RECORD_NOT_FOUND);
-        info.setAccountDetailList(businessAccountDetailMapper.selectByRebateId(id));
-        info.setStrategyList(businessStrategyMapper.selectByRebateId(id));
+        info.setSalesDetails(businessSalesDetailMapper.selectByRebateId(id));
+        info.setPriceRoles(businessPriceRoleMapper.selectByRebateId(id));
         return info;
     }
 

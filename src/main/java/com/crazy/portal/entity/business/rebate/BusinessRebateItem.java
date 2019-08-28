@@ -22,7 +22,7 @@ public class BusinessRebateItem {
     private String executor;
 
     private String executeStyle;
-
+    @JSONField(format="yyyy-MM-dd HH:mm:ss")
     private Date noticeDate;
 
     private String remark;
