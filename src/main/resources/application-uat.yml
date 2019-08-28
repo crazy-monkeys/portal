@@ -27,8 +27,8 @@ file:
   path:
     root: /home/crmpor #公用基础路径
     root-local: ${file.path.root}/portal_file/local #portal系统内文件地址入口
-    root-thrid-push: /home/crmftp/bitest/upload #portal对接第三方文件出口地址
-    root-thrid-pull: /home/crmftp/bitest/download #第三方传输文件至portal入口地址
+    root-thrid-push: ${file.path.root}/bitest/upload #portal对接第三方文件出口地址
+    root-thrid-pull: ${file.path.root}/bitest/download #第三方传输文件至portal入口地址
     root-template: ${file.path.root}/portal_file/template #portal功能模版文件地址
     announcement: #公告管理模块
       local: ${file.path.root-local}/announcement/
@@ -54,11 +54,11 @@ api:
     rebate.sales.details: https://e600180-hcioem.hcisbt.cn1.hana.ondemand.com/http/BI/PORTAL/GET_CALCULATED_ALL_REBATE_DATA_SALES_DETAILS
 
 ftp:
-  host:
-  port:
-  username:
-  password:
+  host: 10.29.24.20
+  port: 21
+  username: crmftp
+  password: 123@qwe
   path:
     handover:
-      push: /handover/push/
-      pull: /handover/pull/
+      push: /bitest/upload/
+      pull: /bitest/download/
