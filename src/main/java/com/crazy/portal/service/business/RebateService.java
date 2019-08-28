@@ -163,7 +163,7 @@ public class RebateService {
     }
 
     @Async
-    private void updateRebateMasterStatus(Integer userId, Integer rebateId) {
+    public void updateRebateMasterStatus(Integer userId, Integer rebateId) {
         List<BusinessRebateItem> items = businessRebateItemMapper.selectByRebateId(rebateId);
         BigDecimal total = items.stream()
                                 .filter(e->e.getStatus().equals(Enums.BusinessRebateItemStatus.FINISHED.getCode()))

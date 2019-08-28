@@ -8,13 +8,11 @@ import com.crazy.portal.entity.webservice.ApiUsers;
 import com.crazy.portal.service.webservice.ApiUsersService;
 import com.crazy.portal.util.AopTargetUtils;
 import com.crazy.portal.util.SHA1;
-import com.crazy.portal.util.SpringBeanTool;
 import com.crazy.portal.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.ContextLoader;
-import org.springframework.web.context.WebApplicationContext;
 
 import javax.annotation.Resource;
 import java.util.*;
@@ -27,6 +25,8 @@ import java.util.*;
 @RequestMapping("/webservice")
 public class EntranceController extends BaseController{
 
+    @Resource
+    private ApplicationContext applicationContext;
     @Resource
     private ApiUsersService apiUsersService;
 
@@ -156,7 +156,7 @@ public class EntranceController extends BaseController{
      */
     @SuppressWarnings("rawtypes")
     public IHandler getHandlerInstance(String code) throws BeansException {
-        IHandler handler = (IHandler) SpringBeanTool.getBean(code);
+        IHandler handler = (IHandler) applicationContext.getBean(code);
         return handler;
     }
 
