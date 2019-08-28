@@ -7,8 +7,6 @@ import com.crazy.portal.bean.customer.CustomerQueryBean;
 import com.crazy.portal.bean.customer.approval.ApprovalBean;
 import com.crazy.portal.bean.customer.visitRecord.VisitRecordQueryBean;
 import com.crazy.portal.controller.BaseController;
-import com.crazy.portal.entity.cusotmer.AssetsInformation;
-import com.crazy.portal.entity.cusotmer.BusinessInformation;
 import com.crazy.portal.entity.cusotmer.CustomerInfo;
 import com.crazy.portal.service.customer.CustomerInfoService;
 import com.crazy.portal.util.ExcelUtils;
@@ -216,10 +214,12 @@ public class CustomerController extends BaseController{
     public void fileDownload(HttpServletResponse response, @PathVariable Integer id){
         customersService.fileDownload(response, id);
     }
+    */
 
     @GetMapping("/all")
     public BaseResponse queryAllCustomer(){
-        return successResult(customersService.queryAllCustomer());
+        return successResult(customerInfoService.selectAllCustomer());
     }
-    }*/
+
+
 }

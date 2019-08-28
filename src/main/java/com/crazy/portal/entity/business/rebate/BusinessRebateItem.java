@@ -26,7 +26,7 @@ public class BusinessRebateItem {
     private Date noticeDate;
 
     private String remark;
-
+    //状态 1-审核中 2-客户待确认 3-客户已确认 4-执行完成
     private Integer status;
     @JsonIgnore
     @JSONField(serialize = false)
