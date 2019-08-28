@@ -141,7 +141,7 @@ public class UserService {
         map.put("loginName",user.getLoginName());
         map.put("password",password);
         mailBean.setParams(map);
-        mailBean.setTemplateName(Enums.MAIL_TEMPLATE.USER_CREATE.getTemplateName());
+        mailBean.setTemplateName(EmailHelper.MAIL_TEMPLATE.USER_CREATE.getTemplateName());
         emailHelper.sendHtmlMail(mailBean);
     }
 

@@ -11,17 +11,17 @@ import java.util.List;
 @Data
 public class BusinessRebate {
     private Integer id;
-
+    //代理商名称
     private String dealerName;
-
+    //客户名称
     private String customerName;
-
+    //rebate金额
     private BigDecimal rebateAmount;
-
+    //释放金额
     private BigDecimal releaseAmount;
-
+    //剩余释放金额
     private BigDecimal surplusRebateAmount;
-
+    //状态 1-已提交 2-已结束
     private Integer status;
 
     private String dealerCode;
@@ -44,9 +44,9 @@ public class BusinessRebate {
     private Date updateTime;
 
 
-    List<BusinessAccountDetail> accountDetailList;
+    List<BusinessSalesDetail> salesDetails;
 
-    List<BusinessStrategy> strategyList;
+    List<BusinessPriceRole> priceRoles;
 
     List<BusinessRebateItem> itemList;
 }
