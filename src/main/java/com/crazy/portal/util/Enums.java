@@ -58,8 +58,8 @@ public class Enums {
 
     public enum MAIL_TEMPLATE {
         USER_CREATE("mail/createSubAgent"),
-        RESET_PWD("resetPwdTemplate"),
-        REBATE_CONFIRM("confirmLetter");
+        RESET_PWD("mail/resetPwdTemplate"),
+        REBATE_CONFIRM("mail/rebate/confirmLetter");
 
         private String templateName;
 
