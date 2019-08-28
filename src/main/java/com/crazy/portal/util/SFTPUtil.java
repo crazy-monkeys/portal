@@ -15,7 +15,7 @@ import java.util.Vector;
  * @modify 2018-08-02
  */
 @Slf4j
-public class SFTPClientUtil {
+public class SFTPUtil {
     private ChannelSftp sftp;
 
     private Session session;
@@ -38,7 +38,7 @@ public class SFTPClientUtil {
      * @param host
      * @param port
      */
-    public SFTPClientUtil(String host, int port, String username, String password) {
+    public SFTPUtil(String host, int port, String username, String password) {
         this.username = username;
         this.password = password;
         this.host = host;
@@ -55,14 +55,14 @@ public class SFTPClientUtil {
      * @param port
      * @param privateKey
      */
-    public SFTPClientUtil(String username, String host, int port, String privateKey) {
+    public SFTPUtil(String username, String host, int port, String privateKey) {
         this.username = username;
         this.host = host;
         this.port = port;
         this.privateKey = privateKey;
     }
 
-    public SFTPClientUtil(){}
+    public SFTPUtil(){}
 
     /**
      * 连接sftp服务器
@@ -228,7 +228,7 @@ public class SFTPClientUtil {
 
     public static void main(String[] args) throws SftpException, IOException {
         try {
-            SFTPClientUtil sftp = new SFTPClientUtil("10.11.15.32", 22, "crm01", "crm01@1234");
+            SFTPUtil sftp = new SFTPUtil("10.11.15.32", 22, "crm01", "crm01@1234");
             sftp.login();
             File file = new File("C:\\Users\\xsh12148\\Desktop\\sql0826.txt");
             InputStream is = new FileInputStream(file);

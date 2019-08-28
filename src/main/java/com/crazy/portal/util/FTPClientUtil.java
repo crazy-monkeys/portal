@@ -60,7 +60,7 @@ public class FTPClientUtil {
             setFileType(ftpClient);
             ftpClient.setSoTimeout(clientTimeout);
 		} catch (IOException e) {
-			 throw new IOException("getFTPClient() error.", e);     
+			 throw e;
 		}
         return ftpClient;     
     }     
@@ -88,37 +88,37 @@ public class FTPClientUtil {
      * @param ftpClient   
      * @return 连接成功返回true，否则返回false   
      */
-    public boolean connect(FTPClient ftpClient) throws IOException {     
-        try {     
-            ftpClient.connect(host, port);     
-    
-            // 连接后检测返回码来校验连接是否成功      
-            int reply = ftpClient.getReplyCode();     
-    
-            if (FTPReply.isPositiveCompletion(reply)) {     
-                //登陆到ftp服务器      
-                if (ftpClient.login(username, password)) {     
-                    setFileType(ftpClient);     
-                    return true;     
-                }     
-            } else {     
-                ftpClient.disconnect();     
-                throw new IOException("FTP server refused connection.");     
-            }     
-        } catch (IOException e) {     
-            if (ftpClient.isConnected()) {     
+    public void connect(FTPClient ftpClient) throws IOException {
+        try {
+            ftpClient.connect(host, port);
+
+            // 连接后检测返回码来校验连接是否成功
+            int reply = ftpClient.getReplyCode();
+
+            if (FTPReply.isPositiveCompletion(reply)) {
+                //登陆到ftp服务器
+                if (ftpClient.login(username, password)) {
+                    setFileType(ftpClient);
+                }else{
+                    throw new IOException("FTP username or password is wrong.");
+                }
+            } else {
+                ftpClient.disconnect();
+                throw new IOException("FTP server refused connection.");
+            }
+        } catch (IOException e) {
+            if (ftpClient.isConnected()) {
                 try {
                     //断开连接
                     ftpClient.disconnect();
-                } catch (IOException e1) {     
-                    throw new IOException("Could not disconnect from server.", e);     
-                }     
-    
-            }     
-            throw new IOException("Could not connect to server.", e);     
-        }     
-        return false;     
-    }     
+                } catch (IOException e1) {
+                    throw new IOException("Could not disconnect from server.", e);
+                }
+
+            }
+            throw new IOException("Could not connect to server.", e);
+        }
+    }
     
     /**   
      * 断开ftp连接   
@@ -180,8 +180,8 @@ public class FTPClientUtil {
             return true;
         } catch (FileNotFoundException e) {     
             throw new IOException("local file not found.", e);     
-        } catch (IOException e) {     
-            throw new IOException("Could not put file to server.", e);     
+        } catch (IOException e) {
+            throw e;
         } finally {     
             try {     
                 if (input != null) {     
@@ -191,7 +191,6 @@ public class FTPClientUtil {
                 throw new IOException("Couldn't close FileInputStream.", e);     
             }     
             if (ftpClient != null) {
-                //断开连接
                 disconnect(ftpClient);
             }     
         }     
@@ -380,8 +379,8 @@ public class FTPClientUtil {
 
     public static void main(String[] args) {
         try {
-        FTPClientUtil ftp = new FTPClientUtil("127.0.0.1", 21, "test", "test");
-        ftp.put("/20180803.zip", "C:/Users/xin.xia/Desktop/20180803.zip");
+            FTPClientUtil ftp = new FTPClientUtil("10.45.80.12", 21, "ftp_test", "!QAZ2wsx");
+            ftp.put("/sql0826.txt", "C:\\Users\\xsh12148\\Desktop\\sql0826.txt");
         }catch (Exception e){
             e.printStackTrace();
         }
