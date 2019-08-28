@@ -554,4 +554,8 @@ public class CustomerInfoService {
     public String getCustFilePath(){
         return filePath.concat(File.separator).concat(CUST_FILE_PATH);
     }
+
+    public List<CustomerInfo> selectAllCustomer(){
+        return customerInfoMapper.selectAllCustomer();
+    }
 }
