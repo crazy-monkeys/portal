@@ -59,4 +59,6 @@ ftp:
   username:
   password:
   path:
-    handover: /
+    handover:
+      push: /handover/push/
+      pull: /handover/pull/

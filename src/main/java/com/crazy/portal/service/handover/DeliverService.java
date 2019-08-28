@@ -46,8 +46,10 @@ public class DeliverService extends AbstractHandover implements IHandover<Delive
     private String deliverPullPath;
     @Value("${file.path.deliver.local}")
     private String deliverLocalPath;
-    @Value("${ftp.path.handover}")
+    @Value("${ftp.path.handover.push}")
     private String ftpPushPath;
+    @Value("${ftp.path.handover.pull}")
+    private String ftpPullPath;
 
 
     @Override
@@ -180,6 +182,6 @@ public class DeliverService extends AbstractHandover implements IHandover<Delive
 
     @Override
     protected String pullLocalPath() {
-        return deliverPullPath;
+        return ftpPullPath;
     }
 }

@@ -20,7 +20,7 @@ public abstract class AbstractHandover {
     private String SUCCESS_CODE = "OK";
     private String ERROR_CODE = "NG";
 
-    FTPClientUtil ftp = new FTPClientUtil("10.11.14.50", 22, "vmuser", "");
+    FTPClientUtil ftp = new FTPClientUtil("10.45.80.12", 21, "ftp_test", "!QAZ2wsx");
 
     protected abstract String pushFtpPath();
 
@@ -51,10 +51,6 @@ public abstract class AbstractHandover {
         }
     }
 
-    public static void main(String[] args) {
-        System.out.println("/a/b/c/d.txt".substring("/a/b/c/d.txt".lastIndexOf("/") + 1));
-    }
-
     /**
      *
      * @param functionCode
@@ -66,11 +62,11 @@ public abstract class AbstractHandover {
         try {
             String response;
             if(functionCode == Enums.BI_FUNCTION_CODE.CHECK_SALES_IMPORT_FILE){
-                response = mockThirdResult() ? "\"OK:/Users/lee/Documents/job_code/portal_file/pull_thrid/deliver/ok.xlsx\"" :
-                        "\"NG:/Users/lee/Documents/job_code/portal_file/pull_thrid/deliver/error.xlsx\"";
+                response = mockThirdResult() ? "\"OK:/handover/pull/deliver_ok.xlsx\"" :
+                        "\"NG:/handover/pull/deliver_error.xlsx\"";
             }else{
-                response = mockThirdResult() ? "\"OK:/Users/lee/Documents/job_code/portal_file/pull_thrid/receive/ok.xlsx\"" :
-                        "\"NG:/Users/lee/Documents/job_code/portal_file/pull_thrid/receive/error.xlsx\"";
+                response = mockThirdResult() ? "\"OK:/handover/pull/receive_ok.xlsx\"" :
+                        "\"NG:/handover/pull/receive_error.xlsx\"";
             }
 //            String response = CallApiUtils.BITest(functionCode, pushPath, pullPath);
             if(StringUtils.isEmpty(response)){

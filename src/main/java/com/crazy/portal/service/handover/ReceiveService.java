@@ -50,8 +50,10 @@ public class ReceiveService extends AbstractHandover implements IHandover<Receiv
     private String receivePullPath;
     @Value("${file.path.receive.local}")
     private String receiveLocalPath;
-    @Value("${ftp.path.handover}")
+    @Value("${ftp.path.handover.push}")
     private String ftpPushPath;
+    @Value("${ftp.path.handover.pull}")
+    private String ftpPullPath;
 
     @Override
     public HandoverUploadVO verificationData(List<ReceiveDetail> receiveData, Integer userId) {
@@ -178,6 +180,6 @@ public class ReceiveService extends AbstractHandover implements IHandover<Receiv
 
     @Override
     protected String pullLocalPath() {
-        return receivePullPath;
+        return ftpPullPath;
     }
 }
