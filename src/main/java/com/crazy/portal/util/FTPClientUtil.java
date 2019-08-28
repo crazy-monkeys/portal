@@ -94,10 +94,11 @@ public class FTPClientUtil {
 
             // 连接后检测返回码来校验连接是否成功
             int reply = ftpClient.getReplyCode();
-
+            log.info(">>>Ftp reply code : {}", reply);
             if (FTPReply.isPositiveCompletion(reply)) {
                 //登陆到ftp服务器
                 if (ftpClient.login(username, password)) {
+                    log.info(">>>Ftp reply str : {}", ftpClient.getReplyString());
                     setFileType(ftpClient);
                 }else{
                     throw new IOException("FTP username or password is wrong.");
@@ -166,10 +167,14 @@ public class FTPClientUtil {
             // 处理传输      
             input = new FileInputStream(localFile);
             System.out.println("pwd:"+ftpClient.pwd());
+            log.info(">>>Ftp directory : {}", ftpClient.printWorkingDirectory());
             Boolean bo = ftpClient.changeWorkingDirectory(serverFile.substring(0, serverFile.lastIndexOf("/")));
             log.info("bo      文件夹是否存在   ================="+bo);
             if(!bo){
-            	ftpClient.makeDirectory(serverFile.substring(0, serverFile.lastIndexOf("/")));
+            	boolean result = ftpClient.makeDirectory(serverFile.substring(0, serverFile.lastIndexOf("/")));
+            	log.info("Make dir result : {}", result);
+            	log.info("Change dir result : {}", ftpClient.changeWorkingDirectory(serverFile.substring(0, serverFile.lastIndexOf("/"))));
+
             }
             log.info("serverFile--------------"+serverFile+";===========localFile=="+localFile);
             ftpClient.storeFile(serverFile, input);     

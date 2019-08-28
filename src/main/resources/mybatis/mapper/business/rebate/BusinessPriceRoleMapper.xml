@@ -1,0 +1,349 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.crazy.portal.dao.business.rebate.BusinessPriceRoleMapper">
+  <resultMap id="BaseResultMap" type="com.crazy.portal.entity.business.rebate.BusinessPriceRole">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="rebate_id" jdbcType="INTEGER" property="rebateId" />
+    <result column="customer_code" jdbcType="VARCHAR" property="customerCode" />
+    <result column="customer_name" jdbcType="VARCHAR" property="customerName" />
+    <result column="customer_incode" jdbcType="VARCHAR" property="customerIncode" />
+    <result column="customer_short_name" jdbcType="VARCHAR" property="customerShortName" />
+    <result column="product" jdbcType="VARCHAR" property="product" />
+    <result column="start_date" jdbcType="TIMESTAMP" property="startDate" />
+    <result column="end_date" jdbcType="TIMESTAMP" property="endDate" />
+    <result column="price" jdbcType="DECIMAL" property="price" />
+    <result column="sales_limit_lower" jdbcType="DECIMAL" property="salesLimitLower" />
+    <result column="sales_limit_upper" jdbcType="DECIMAL" property="salesLimitUpper" />
+    <result column="calculate_type" jdbcType="VARCHAR" property="calculateType" />
+    <result column="rebate_excute_mode" jdbcType="VARCHAR" property="rebateExcuteMode" />
+    <result column="price_proposer" jdbcType="VARCHAR" property="priceProposer" />
+    <result column="shipment_type" jdbcType="VARCHAR" property="shipmentType" />
+    <result column="related_customer_code" jdbcType="VARCHAR" property="relatedCustomerCode" />
+    <result column="related_customer_name" jdbcType="VARCHAR" property="relatedCustomerName" />
+    <result column="related_product" jdbcType="VARCHAR" property="relatedProduct" />
+    <result column="price_strategy_number" jdbcType="VARCHAR" property="priceStrategyNumber" />
+    <result column="active" jdbcType="INTEGER" property="active" />
+    <result column="create_id" jdbcType="INTEGER" property="createId" />
+    <result column="create_time" jdbcType="VARCHAR" property="createTime" />
+    <result column="update_id" jdbcType="INTEGER" property="updateId" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="insert_time" jdbcType="TIMESTAMP" property="insertTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, rebate_id, customer_code, customer_name, customer_incode, customer_short_name, 
+    product, start_date, end_date, price, sales_limit_lower, sales_limit_upper, calculate_type, 
+    rebate_excute_mode, price_proposer, shipment_type, related_customer_code, related_customer_name, 
+    related_product, price_strategy_number, active, create_id, create_time, update_id, 
+    update_time, insert_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_business_price_role
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_business_price_role
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.crazy.portal.entity.business.rebate.BusinessPriceRole">
+    insert into t_business_price_role (id, rebate_id, customer_code, 
+      customer_name, customer_incode, customer_short_name, 
+      product, start_date, end_date, 
+      price, sales_limit_lower, sales_limit_upper, 
+      calculate_type, rebate_excute_mode, price_proposer, 
+      shipment_type, related_customer_code, related_customer_name, 
+      related_product, price_strategy_number, active, 
+      create_id, create_time, update_id, 
+      update_time, insert_time)
+    values (#{id,jdbcType=INTEGER}, #{rebateId,jdbcType=INTEGER}, #{customerCode,jdbcType=VARCHAR}, 
+      #{customerName,jdbcType=VARCHAR}, #{customerIncode,jdbcType=VARCHAR}, #{customerShortName,jdbcType=VARCHAR}, 
+      #{product,jdbcType=VARCHAR}, #{startDate,jdbcType=TIMESTAMP}, #{endDate,jdbcType=TIMESTAMP}, 
+      #{price,jdbcType=DECIMAL}, #{salesLimitLower,jdbcType=DECIMAL}, #{salesLimitUpper,jdbcType=DECIMAL}, 
+      #{calculateType,jdbcType=VARCHAR}, #{rebateExcuteMode,jdbcType=VARCHAR}, #{priceProposer,jdbcType=VARCHAR}, 
+      #{shipmentType,jdbcType=VARCHAR}, #{relatedCustomerCode,jdbcType=VARCHAR}, #{relatedCustomerName,jdbcType=VARCHAR}, 
+      #{relatedProduct,jdbcType=VARCHAR}, #{priceStrategyNumber,jdbcType=VARCHAR}, #{active,jdbcType=INTEGER}, 
+      #{createId,jdbcType=INTEGER}, #{createTime,jdbcType=VARCHAR}, #{updateId,jdbcType=INTEGER}, 
+      #{updateTime,jdbcType=TIMESTAMP}, #{insertTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.crazy.portal.entity.business.rebate.BusinessPriceRole">
+    insert into t_business_price_role
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="rebateId != null">
+        rebate_id,
+      </if>
+      <if test="customerCode != null">
+        customer_code,
+      </if>
+      <if test="customerName != null">
+        customer_name,
+      </if>
+      <if test="customerIncode != null">
+        customer_incode,
+      </if>
+      <if test="customerShortName != null">
+        customer_short_name,
+      </if>
+      <if test="product != null">
+        product,
+      </if>
+      <if test="startDate != null">
+        start_date,
+      </if>
+      <if test="endDate != null">
+        end_date,
+      </if>
+      <if test="price != null">
+        price,
+      </if>
+      <if test="salesLimitLower != null">
+        sales_limit_lower,
+      </if>
+      <if test="salesLimitUpper != null">
+        sales_limit_upper,
+      </if>
+      <if test="calculateType != null">
+        calculate_type,
+      </if>
+      <if test="rebateExcuteMode != null">
+        rebate_excute_mode,
+      </if>
+      <if test="priceProposer != null">
+        price_proposer,
+      </if>
+      <if test="shipmentType != null">
+        shipment_type,
+      </if>
+      <if test="relatedCustomerCode != null">
+        related_customer_code,
+      </if>
+      <if test="relatedCustomerName != null">
+        related_customer_name,
+      </if>
+      <if test="relatedProduct != null">
+        related_product,
+      </if>
+      <if test="priceStrategyNumber != null">
+        price_strategy_number,
+      </if>
+      <if test="active != null">
+        active,
+      </if>
+      <if test="createId != null">
+        create_id,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateId != null">
+        update_id,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="insertTime != null">
+        insert_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="rebateId != null">
+        #{rebateId,jdbcType=INTEGER},
+      </if>
+      <if test="customerCode != null">
+        #{customerCode,jdbcType=VARCHAR},
+      </if>
+      <if test="customerName != null">
+        #{customerName,jdbcType=VARCHAR},
+      </if>
+      <if test="customerIncode != null">
+        #{customerIncode,jdbcType=VARCHAR},
+      </if>
+      <if test="customerShortName != null">
+        #{customerShortName,jdbcType=VARCHAR},
+      </if>
+      <if test="product != null">
+        #{product,jdbcType=VARCHAR},
+      </if>
+      <if test="startDate != null">
+        #{startDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endDate != null">
+        #{endDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="price != null">
+        #{price,jdbcType=DECIMAL},
+      </if>
+      <if test="salesLimitLower != null">
+        #{salesLimitLower,jdbcType=DECIMAL},
+      </if>
+      <if test="salesLimitUpper != null">
+        #{salesLimitUpper,jdbcType=DECIMAL},
+      </if>
+      <if test="calculateType != null">
+        #{calculateType,jdbcType=VARCHAR},
+      </if>
+      <if test="rebateExcuteMode != null">
+        #{rebateExcuteMode,jdbcType=VARCHAR},
+      </if>
+      <if test="priceProposer != null">
+        #{priceProposer,jdbcType=VARCHAR},
+      </if>
+      <if test="shipmentType != null">
+        #{shipmentType,jdbcType=VARCHAR},
+      </if>
+      <if test="relatedCustomerCode != null">
+        #{relatedCustomerCode,jdbcType=VARCHAR},
+      </if>
+      <if test="relatedCustomerName != null">
+        #{relatedCustomerName,jdbcType=VARCHAR},
+      </if>
+      <if test="relatedProduct != null">
+        #{relatedProduct,jdbcType=VARCHAR},
+      </if>
+      <if test="priceStrategyNumber != null">
+        #{priceStrategyNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="active != null">
+        #{active,jdbcType=INTEGER},
+      </if>
+      <if test="createId != null">
+        #{createId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=VARCHAR},
+      </if>
+      <if test="updateId != null">
+        #{updateId,jdbcType=INTEGER},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="insertTime != null">
+        #{insertTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.crazy.portal.entity.business.rebate.BusinessPriceRole">
+    update t_business_price_role
+    <set>
+      <if test="rebateId != null">
+        rebate_id = #{rebateId,jdbcType=INTEGER},
+      </if>
+      <if test="customerCode != null">
+        customer_code = #{customerCode,jdbcType=VARCHAR},
+      </if>
+      <if test="customerName != null">
+        customer_name = #{customerName,jdbcType=VARCHAR},
+      </if>
+      <if test="customerIncode != null">
+        customer_incode = #{customerIncode,jdbcType=VARCHAR},
+      </if>
+      <if test="customerShortName != null">
+        customer_short_name = #{customerShortName,jdbcType=VARCHAR},
+      </if>
+      <if test="product != null">
+        product = #{product,jdbcType=VARCHAR},
+      </if>
+      <if test="startDate != null">
+        start_date = #{startDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endDate != null">
+        end_date = #{endDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="price != null">
+        price = #{price,jdbcType=DECIMAL},
+      </if>
+      <if test="salesLimitLower != null">
+        sales_limit_lower = #{salesLimitLower,jdbcType=DECIMAL},
+      </if>
+      <if test="salesLimitUpper != null">
+        sales_limit_upper = #{salesLimitUpper,jdbcType=DECIMAL},
+      </if>
+      <if test="calculateType != null">
+        calculate_type = #{calculateType,jdbcType=VARCHAR},
+      </if>
+      <if test="rebateExcuteMode != null">
+        rebate_excute_mode = #{rebateExcuteMode,jdbcType=VARCHAR},
+      </if>
+      <if test="priceProposer != null">
+        price_proposer = #{priceProposer,jdbcType=VARCHAR},
+      </if>
+      <if test="shipmentType != null">
+        shipment_type = #{shipmentType,jdbcType=VARCHAR},
+      </if>
+      <if test="relatedCustomerCode != null">
+        related_customer_code = #{relatedCustomerCode,jdbcType=VARCHAR},
+      </if>
+      <if test="relatedCustomerName != null">
+        related_customer_name = #{relatedCustomerName,jdbcType=VARCHAR},
+      </if>
+      <if test="relatedProduct != null">
+        related_product = #{relatedProduct,jdbcType=VARCHAR},
+      </if>
+      <if test="priceStrategyNumber != null">
+        price_strategy_number = #{priceStrategyNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="active != null">
+        active = #{active,jdbcType=INTEGER},
+      </if>
+      <if test="createId != null">
+        create_id = #{createId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=VARCHAR},
+      </if>
+      <if test="updateId != null">
+        update_id = #{updateId,jdbcType=INTEGER},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="insertTime != null">
+        insert_time = #{insertTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.crazy.portal.entity.business.rebate.BusinessPriceRole">
+    update t_business_price_role
+    set rebate_id = #{rebateId,jdbcType=INTEGER},
+      customer_code = #{customerCode,jdbcType=VARCHAR},
+      customer_name = #{customerName,jdbcType=VARCHAR},
+      customer_incode = #{customerIncode,jdbcType=VARCHAR},
+      customer_short_name = #{customerShortName,jdbcType=VARCHAR},
+      product = #{product,jdbcType=VARCHAR},
+      start_date = #{startDate,jdbcType=TIMESTAMP},
+      end_date = #{endDate,jdbcType=TIMESTAMP},
+      price = #{price,jdbcType=DECIMAL},
+      sales_limit_lower = #{salesLimitLower,jdbcType=DECIMAL},
+      sales_limit_upper = #{salesLimitUpper,jdbcType=DECIMAL},
+      calculate_type = #{calculateType,jdbcType=VARCHAR},
+      rebate_excute_mode = #{rebateExcuteMode,jdbcType=VARCHAR},
+      price_proposer = #{priceProposer,jdbcType=VARCHAR},
+      shipment_type = #{shipmentType,jdbcType=VARCHAR},
+      related_customer_code = #{relatedCustomerCode,jdbcType=VARCHAR},
+      related_customer_name = #{relatedCustomerName,jdbcType=VARCHAR},
+      related_product = #{relatedProduct,jdbcType=VARCHAR},
+      price_strategy_number = #{priceStrategyNumber,jdbcType=VARCHAR},
+      active = #{active,jdbcType=INTEGER},
+      create_id = #{createId,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=VARCHAR},
+      update_id = #{updateId,jdbcType=INTEGER},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      insert_time = #{insertTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <select id="selectByRebateId" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_business_price_role
+    where rebate_id = #{rebateId,jdbcType=INTEGER}
+  </select>
+</mapper>
