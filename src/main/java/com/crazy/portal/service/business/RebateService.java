@@ -101,7 +101,7 @@ public class RebateService {
         BusinessUtil.assertFlase(bean.getSurplusRebateAmount().compareTo(info.getSurplusRebateAmount()) > 0, ErrorCodes.BusinessEnum.REBATE_SURPLUS_AMOUNT_BIG);
         saveRebateItem(bean, userId, info);
         updateRebateMasterInfo(bean, userId, info);
-        sendConfirmEmail(bean);
+//        sendConfirmEmail(bean);
     }
 
     private void saveRebateItem(RebateConfirmBean bean, Integer userId, BusinessRebate info) {
@@ -162,7 +162,6 @@ public class RebateService {
         return fileInfo;
     }
 
-    @Async
     public void updateRebateMasterStatus(Integer userId, Integer rebateId) {
         List<BusinessRebateItem> items = businessRebateItemMapper.selectByRebateId(rebateId);
         BigDecimal total = items.stream()

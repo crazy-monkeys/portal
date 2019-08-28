@@ -118,7 +118,7 @@ public class IDRService {
         FileVO fileVo = FileUtil.upload(file, getIdrFilePath());
         if(fileType.equals(Enums.BusinessFileType.IDR.getCode())){
             Enums.BusinessIdrType idrType = Enums.BusinessIdrType.getDescByCode(type);
-            List<BaseRowModel> records = ExcelUtils.readExcel(file, idrType.getType().getClass());
+            List<BaseRowModel> records = ExcelUtils.readExcel(fileVo.getFullPath(), idrType.getType().getClass());
             result.setIdrList(records);
         }
         if(fileType.equals(Enums.BusinessFileType.FINANCIAL_CLOSURE.getCode())){
@@ -206,7 +206,6 @@ public class IDRService {
         });
     }
 
-    @Async
     public void clearDiscardFile(List<BusinessFile> files, Integer userId){
         if(files == null){
             return;
