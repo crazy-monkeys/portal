@@ -135,7 +135,11 @@ public class FileUtil {
         }
         String[] array = fileName.split("\\.");
         long currentTime = System.currentTimeMillis();
-        return String.format("%s_%s.%s", array[0], currentTime, array[1]);
+        if(array.length == 1){
+            return String.format("%s_%s", array[0], currentTime);
+        }else{
+            return String.format("%s_%s.%s", array[0], currentTime, array[1]);
+        }
     }
 
     private static void pushResultInfo(List<FileVO> result, String fileName, String filePath, String fullPath) {
