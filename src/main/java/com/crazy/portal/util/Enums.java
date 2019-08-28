@@ -56,22 +56,6 @@ public class Enums {
         }
     }
 
-    public enum MAIL_TEMPLATE {
-        USER_CREATE("mail/createSubAgent"),
-        RESET_PWD("mail/resetPwdTemplate"),
-        REBATE_CONFIRM("mail/rebate/confirmLetter");
-
-        private String templateName;
-
-        MAIL_TEMPLATE(String templateName){
-            this.templateName = templateName;
-        }
-
-        public String getTemplateName() {
-            return templateName;
-        }
-    }
-
     /**
      * 审批状态
      * pending:待审批
