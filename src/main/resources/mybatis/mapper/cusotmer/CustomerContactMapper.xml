@@ -220,4 +220,12 @@
       active = #{active,jdbcType=INTEGER}
     where contact_id = #{contactId,jdbcType=INTEGER}
   </update>
+
+  <select id="selectByCustId" resultMap="BaseResultMap">
+    select * from t_customer_contact where active =1 and cust_id = #{custId}
+  </select>
+
+  <delete id="deleteByCustId">
+      update t_customer_contact set active = 0 where active=1 and cust_id = #{custId}
+  </delete>
 </mapper>

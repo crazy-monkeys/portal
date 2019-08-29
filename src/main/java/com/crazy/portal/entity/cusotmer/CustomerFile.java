@@ -1,5 +1,7 @@
 package com.crazy.portal.entity.cusotmer;
 
+import lombok.Data;
+
 import java.util.Date;
 
 /**
@@ -7,6 +9,7 @@ import java.util.Date;
  * @author weiying
  * @date   2019-08-29 16:10::00
  */
+@Data
 public class CustomerFile {
     /**
      * 
@@ -53,76 +56,4 @@ public class CustomerFile {
      * 
      */
     private String filePath;
-
-    public Integer getFileId() {
-        return fileId;
-    }
-
-    public void setFileId(Integer fileId) {
-        this.fileId = fileId;
-    }
-
-    public Integer getCustId() {
-        return custId;
-    }
-
-    public void setCustId(Integer custId) {
-        this.custId = custId;
-    }
-
-    public String getCustCode() {
-        return custCode;
-    }
-
-    public void setCustCode(String custCode) {
-        this.custCode = custCode == null ? null : custCode.trim();
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type == null ? null : type.trim();
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title == null ? null : title.trim();
-    }
-
-    public Date getUploadTime() {
-        return uploadTime;
-    }
-
-    public void setUploadTime(Date uploadTime) {
-        this.uploadTime = uploadTime;
-    }
-
-    public Integer getActive() {
-        return active;
-    }
-
-    public void setActive(Integer active) {
-        this.active = active;
-    }
-
-    public String getFileName() {
-        return fileName;
-    }
-
-    public void setFileName(String fileName) {
-        this.fileName = fileName == null ? null : fileName.trim();
-    }
-
-    public String getFilePath() {
-        return filePath;
-    }
-
-    public void setFilePath(String filePath) {
-        this.filePath = filePath == null ? null : filePath.trim();
-    }
 }

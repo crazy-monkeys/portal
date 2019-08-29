@@ -200,6 +200,10 @@ public class CustomerInfo {
     /*银行账号信息*/
     private CustBankInfo custBankInfo;
 
+    public CustBankInfo getCustBankInfo() {
+        return custBankInfo==null?new CustBankInfo():custBankInfo;
+    }
+
     /**关系**/
     private List<CustCorporateRelationship> relationships;
 

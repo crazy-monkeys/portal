@@ -36,6 +36,21 @@
     <result column="update_user" jdbcType="INTEGER" property="updateUser" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
+
+  <!--代理商result-->
+  <resultMap id="DealerResultMap" type="com.crazy.portal.entity.cusotmer.CustomerInfo" extends="BaseResultMap">
+    <association property="custBankInfo" resultMap="com.crazy.portal.dao.cusotmer.CustBankInfoMapper.BaseResultMap" />
+    <collection property="assetsInformations" resultMap="com.crazy.portal.dao.cusotmer.CustAssetsInformationMapper.BaseResultMap" />
+    <collection property="businessInformations" resultMap="com.crazy.portal.dao.cusotmer.CustBusinessInformationMapper.BaseResultMap" />
+    <collection property="customerAgents" resultMap="com.crazy.portal.dao.cusotmer.CustomerAgentMapper.BaseResultMap" />
+    <collection property="customerContacts" resultMap="com.crazy.portal.dao.cusotmer.CustomerContactMapper.BaseResultMap" />
+    <collection property="files" resultMap="com.crazy.portal.dao.cusotmer.CustomerFileMapper.BaseResultMap" />
+    <collection property="relationships" resultMap="com.crazy.portal.dao.cusotmer.CustCorporateRelationshipMapper.BaseResultMap" />
+    <collection property="invoiceInfos" resultMap="com.crazy.portal.dao.cusotmer.CustInvoiceInfoMapper.BaseResultMap" />
+    <collection property="sales" resultMap="com.crazy.portal.dao.cusotmer.CustSalesMapper.BaseResultMap" />
+    <collection property="addresses" resultMap="com.crazy.portal.dao.cusotmer.CustomerAddressMapper.BaseResultMap" />
+  </resultMap>
+
   <sql id="Base_Column_List">
     id, cust_type, in_code, out_code, cust_name, cust_en_name, cust_abbreviation, frozen_sales, 
     frozen_delivery, frozen_order, frozen_Invoice, business_type, is_license, cust_role, 
@@ -80,7 +95,7 @@
       #{createUser,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{updateUser,jdbcType=INTEGER}, 
       #{updateTime,jdbcType=TIMESTAMP})
   </insert>
-  <insert id="insertSelective" parameterType="com.crazy.portal.entity.cusotmer.CustomerInfo">
+  <insert id="insertSelective" parameterType="com.crazy.portal.entity.cusotmer.CustomerInfo" useGeneratedKeys="true" keyProperty="id">
     insert into t_customer_info
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -284,7 +299,7 @@
         #{updateTime,jdbcType=TIMESTAMP},
       </if>
     </trim>
-  </insert>
+  </insert >
   <update id="updateByPrimaryKeySelective" parameterType="com.crazy.portal.entity.cusotmer.CustomerInfo">
     update t_customer_info
     <set>
@@ -423,4 +438,111 @@
       update_time = #{updateTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <select id="selectDealerInfo" resultMap="DealerResultMap">
+    select
+    cust.id,
+    cust.in_code,
+    cust.out_code,
+    cust.cust_name,
+    cust.cust_en_name,
+    cust.cust_abbreviation,
+    cust.cust_mobile,
+    cust.cust_email,
+    cust.cust_web,
+    cust.corportae_assets,
+    cust.staff_number,
+    cust.regist_time,
+    cust.advantages_introduction,
+    bank.bank_id,
+    bank.cust_id,
+    bank.bank_name,
+    bank.bank_country,
+    bank.bank_province,
+    bank.bank_detail_info,
+    bank.bank_account,
+    bank.bank_bic,
+    assets.assete_info_id,
+    assets.cust_id,
+    assets.assets_year,
+    assets.assets_season,
+    assets.assets_total,
+    assets.assets_net,
+    assets.revenue,
+    assets.total_staff,
+    business.bus_info_id,
+    business.cust_id,
+    business.business_year,
+    business.product_line,
+    business.revenue_pl_one,
+    business.revenue_pl_two,
+    business.revenue_pl_three,
+    agent.agent_id,
+    agent.cust_id,
+    agent.bu,
+    agent.pdt,
+    agent.territory,
+    agent.sales_model,
+    agent.grade,
+    agent.start_date,
+    agent.end_date,
+    file.file_id,
+    file.cust_id,
+    file.type,
+    file.title,
+    file.file_name,
+    file.file_path,
+    contact.contact_id,
+    contact.cust_id,
+    contact.contact_name,
+    contact.mobile,
+    contact.email,
+    contact.department,
+    contact.sub_department,
+    contact.position,
+    contact.equity_ratio,
+    ship.ship_id,
+    ship.cust_id,
+    ship.corporate_type,
+    ship.corporate_name,
+    invoice.invoice_id,
+    invoice.cust_id,
+    invoice.purchasing_unit,
+    invoice.shipping_address,
+    invoice.shipping_mobile,
+    invoice.taxpayer_registration_number,
+    invoice.currency,
+    sales.sales_id,
+    sales.cust_id,
+    sales.sales_organize,
+    sales.distribution_channel,
+    sales.delivery_plant,
+    address.address_id,
+    address.cust_id,
+    address.address_type,
+    address.country,
+    address.province,
+    address.city,
+    address.district,
+    address.address_detail,
+    account.team_id,
+    account.cust_id,
+    account.account_mobile,
+    account.role_type,
+    account.account_name
+
+ from t_customer_info cust
+ left join t_cust_bank_info bank on bank.cust_id = cust.id and bank.active=1
+ left join t_cust_assets_information assets on assets.cust_id = cust.id and assets.active=1
+ left join t_cust_business_information business on business.cust_id = cust.id and business.active =1
+ left join t_customer_agent agent on agent.cust_id = cust.id and agent.active=1
+ left join t_customer_file file on file.cust_id = cust.id and file.active=1
+ left join t_customer_contact contact on contact.cust_id = cust.id and contact.active=1
+ left join t_cust_corporate_relationship ship on ship.cust_id = cust.id and ship.active=1
+ left join t_cust_invoice_info invoice on invoice.cust_id = cust.id and invoice.active=1
+ left join t_cust_sales sales on sales.cust_id = cust.id and sales.active=1
+ left join t_customer_address address on address.cust_id = cust.id and address.active=1
+ left join t_customer_account_team account on account.cust_id = cust.id and account.active=1
+  where cust.business_type = 'A04' and cust.active =1 and cust.id=#{id}
+  </select>
 </mapper>

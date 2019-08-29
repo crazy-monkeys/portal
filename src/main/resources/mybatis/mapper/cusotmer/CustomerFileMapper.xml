@@ -138,4 +138,13 @@
       file_path = #{filePath,jdbcType=VARCHAR}
     where file_id = #{fileId,jdbcType=INTEGER}
   </update>
+
+  <select id="selectByCustId" resultMap="BaseResultMap">
+    select * from t_customer_file where active =1 and cust_id = #{custId}
+  </select>
+
+  <delete id="deleteByCustId">
+    update t_customer_file set active = 0
+    where active =1 and cust_id = #{cust_id,jdbcType=INTEGER}
+  </delete>
 </mapper>

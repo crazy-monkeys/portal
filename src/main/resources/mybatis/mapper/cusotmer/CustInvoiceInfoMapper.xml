@@ -174,4 +174,12 @@
       active = #{active,jdbcType=INTEGER}
     where invoice_id = #{invoiceId,jdbcType=INTEGER}
   </update>
+
+  <select id="selectByCustId" resultMap="BaseResultMap">
+    select * from t_cust_invoice_info where active =1 and cust_id = #{custId}
+  </select>
+
+  <delete id="deleteByCustId">
+    update t_cust_invoice_info set active = 1 where active =1 and cust_id = #{custId}
+  </delete>
 </mapper>

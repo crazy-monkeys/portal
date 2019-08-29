@@ -155,4 +155,8 @@
     select * from t_cust_corporate_relationship
     where cust_id=#{dealerId} and active=1
   </select>
+  
+  <delete id="deleteByCstId">
+    update t_cust_corporate_relationship set active = 0 where active =1 and cust_id = #{custId}
+  </delete>
 </mapper>

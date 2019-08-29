@@ -150,4 +150,12 @@
       active = #{active,jdbcType=INTEGER}
     where assete_info_id = #{asseteInfoId,jdbcType=INTEGER}
   </update>
+  
+  <select id="selectByCustId" resultMap="BaseResultMap">
+    select * from t_cust_assets_information where active =1 and cust_id = #{custId}
+  </select>
+
+  <delete id="deleteByCustId">
+    update t_cust_assets_information set active = 0 where active =1 and cust_id = #{custId}
+  </delete>
 </mapper>
