@@ -2,10 +2,13 @@ package com.crazy.portal.service.handover;
 
 import com.alibaba.fastjson.JSONObject;
 import com.crazy.portal.config.exception.BusinessException;
+import com.crazy.portal.util.CallApiUtils;
 import com.crazy.portal.util.Enums;
 import com.crazy.portal.util.FTPClientUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+
+import javax.annotation.Resource;
 import java.util.Date;
 
 import static com.crazy.portal.util.ErrorCodes.BusinessEnum.*;
@@ -16,11 +19,11 @@ import static com.crazy.portal.util.ErrorCodes.BusinessEnum.*;
 
 @Slf4j
 public abstract class AbstractHandover {
+    @Resource
+    private FTPClientUtil ftpClientUtil;
 
     private String SUCCESS_CODE = "OK";
     private String ERROR_CODE = "NG";
-
-    FTPClientUtil ftp = new FTPClientUtil("10.45.80.12", 21, "ftp_test", "!QAZ2wsx");
 
     protected abstract String pushFtpPath();
 
@@ -28,13 +31,14 @@ public abstract class AbstractHandover {
 
     protected BiCheckResult callBiServerByFtp(Enums.BI_FUNCTION_CODE functionCode, String filePath, String fileName, String pullPath) {
         try {
+            log.info("ftp path:======================"+filePath+"/"+pullPath);
             //推送文件的地址信息
             String pushServerFile = String.format("%s%s", pushFtpPath(), fileName);
             String pushLocalFile = String.format("%s%s", filePath, fileName);
             if(log.isDebugEnabled()) {
                 log.debug("Portal to BI >> Ftp file path:{} , Local file path:{}", pushServerFile, pushLocalFile);
             }
-            ftp.put(pushServerFile, pushLocalFile);
+            ftpClientUtil.put(pushServerFile, pushLocalFile);
             BiCheckResult result = callBiServer(functionCode, pushServerFile, pullLocalPath());
             log.info("BI handle result info >> {}", JSONObject.toJSONString(result));
             //获取文件的地址信息
@@ -43,14 +47,13 @@ public abstract class AbstractHandover {
             if(log.isDebugEnabled()) {
                 log.debug("BI to Portal info >> Ftp file path:{} , Local file path:{}", result.getFilePath(), pullLocalFile);
             }
-            ftp.get(result.getFilePath(), pullLocalFile);
+            ftpClientUtil.get(result.getFilePath(), pullLocalFile);
             result.setFilePath(pullLocalFile);
             return result;
         }catch (Exception ex) {
             throw new RuntimeException("Ftp exception or bi server exception", ex);
         }
     }
-
     /**
      *
      * @param functionCode
@@ -60,15 +63,15 @@ public abstract class AbstractHandover {
      */
     protected BiCheckResult callBiServer(Enums.BI_FUNCTION_CODE functionCode, String pushPath, String pullPath) {
         try {
-            String response;
+            /*String response;
             if(functionCode == Enums.BI_FUNCTION_CODE.CHECK_SALES_IMPORT_FILE){
-                response = mockThirdResult() ? "\"OK:/handover/pull/deliver_ok.xlsx\"" :
-                        "\"NG:/handover/pull/deliver_error.xlsx\"";
+                response = mockThirdResult() ? "\"OK:/Users/lee/Documents/job_code/portal_file/pull_thrid/deliver/ok.xlsx\"" :
+                        "\"NG:/Users/lee/Documents/job_code/portal_file/pull_thrid/deliver/error.xlsx\"";
             }else{
-                response = mockThirdResult() ? "\"OK:/handover/pull/receive_ok.xlsx\"" :
-                        "\"NG:/handover/pull/receive_error.xlsx\"";
-            }
-//            String response = CallApiUtils.BITest(functionCode, pushPath, pullPath);
+                response = mockThirdResult() ? "\"OK:/Users/lee/Documents/job_code/portal_file/pull_thrid/receive/ok.xlsx\"" :
+                        "\"NG:/Users/lee/Documents/job_code/portal_file/pull_thrid/receive/error.xlsx\"";
+            }*/
+            String response = CallApiUtils.BITest(functionCode, pushPath, pullPath);
             if(StringUtils.isEmpty(response)){
                 log.error("{} -> {}", HANDOVER_BI_RESPONSE_EXCEPTION.getZhMsg(), response);
                 throw new BusinessException(HANDOVER_BI_RESPONSE_EXCEPTION);

@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.crazy.portal.dao.cusotmer.CustSalesMapper">
+  <resultMap id="BaseResultMap" type="com.crazy.portal.entity.cusotmer.CustSales">
+    <id column="sales_id" jdbcType="INTEGER" property="salesId" />
+    <result column="cust_id" jdbcType="INTEGER" property="custId" />
+    <result column="sales_organize" jdbcType="VARCHAR" property="salesOrganize" />
+    <result column="distribution_channel" jdbcType="VARCHAR" property="distributionChannel" />
+    <result column="product_group" jdbcType="VARCHAR" property="productGroup" />
+    <result column="currency" jdbcType="VARCHAR" property="currency" />
+    <result column="shipping_conditions" jdbcType="VARCHAR" property="shippingConditions" />
+    <result column="delivery_plant" jdbcType="VARCHAR" property="deliveryPlant" />
+    <result column="max_partial_delivery" jdbcType="VARCHAR" property="maxPartialDelivery" />
+    <result column="internal_customers" jdbcType="VARCHAR" property="internalCustomers" />
+    <result column="account_group" jdbcType="VARCHAR" property="accountGroup" />
+    <result column="cust_group" jdbcType="VARCHAR" property="custGroup" />
+    <result column="tax_classification" jdbcType="VARCHAR" property="taxClassification" />
+    <result column="active" jdbcType="INTEGER" property="active" />
+    <result column="create_user" jdbcType="INTEGER" property="createUser" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_user" jdbcType="INTEGER" property="updateUser" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    sales_id, cust_id, sales_organize, distribution_channel, product_group, currency, 
+    shipping_conditions, delivery_plant, max_partial_delivery, internal_customers, account_group, 
+    cust_group, tax_classification, active, create_user, create_time, update_user, update_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_cust_sales
+    where sales_id = #{salesId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_cust_sales
+    where sales_id = #{salesId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.crazy.portal.entity.cusotmer.CustSales">
+    insert into t_cust_sales (sales_id, cust_id, sales_organize, 
+      distribution_channel, product_group, currency, 
+      shipping_conditions, delivery_plant, max_partial_delivery, 
+      internal_customers, account_group, cust_group, 
+      tax_classification, active, create_user, 
+      create_time, update_user, update_time
+      )
+    values (#{salesId,jdbcType=INTEGER}, #{custId,jdbcType=INTEGER}, #{salesOrganize,jdbcType=VARCHAR}, 
+      #{distributionChannel,jdbcType=VARCHAR}, #{productGroup,jdbcType=VARCHAR}, #{currency,jdbcType=VARCHAR}, 
+      #{shippingConditions,jdbcType=VARCHAR}, #{deliveryPlant,jdbcType=VARCHAR}, #{maxPartialDelivery,jdbcType=VARCHAR}, 
+      #{internalCustomers,jdbcType=VARCHAR}, #{accountGroup,jdbcType=VARCHAR}, #{custGroup,jdbcType=VARCHAR}, 
+      #{taxClassification,jdbcType=VARCHAR}, #{active,jdbcType=INTEGER}, #{createUser,jdbcType=INTEGER}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateUser,jdbcType=INTEGER}, #{updateTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.crazy.portal.entity.cusotmer.CustSales">
+    insert into t_cust_sales
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="salesId != null">
+        sales_id,
+      </if>
+      <if test="custId != null">
+        cust_id,
+      </if>
+      <if test="salesOrganize != null">
+        sales_organize,
+      </if>
+      <if test="distributionChannel != null">
+        distribution_channel,
+      </if>
+      <if test="productGroup != null">
+        product_group,
+      </if>
+      <if test="currency != null">
+        currency,
+      </if>
+      <if test="shippingConditions != null">
+        shipping_conditions,
+      </if>
+      <if test="deliveryPlant != null">
+        delivery_plant,
+      </if>
+      <if test="maxPartialDelivery != null">
+        max_partial_delivery,
+      </if>
+      <if test="internalCustomers != null">
+        internal_customers,
+      </if>
+      <if test="accountGroup != null">
+        account_group,
+      </if>
+      <if test="custGroup != null">
+        cust_group,
+      </if>
+      <if test="taxClassification != null">
+        tax_classification,
+      </if>
+      <if test="active != null">
+        active,
+      </if>
+      <if test="createUser != null">
+        create_user,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateUser != null">
+        update_user,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="salesId != null">
+        #{salesId,jdbcType=INTEGER},
+      </if>
+      <if test="custId != null">
+        #{custId,jdbcType=INTEGER},
+      </if>
+      <if test="salesOrganize != null">
+        #{salesOrganize,jdbcType=VARCHAR},
+      </if>
+      <if test="distributionChannel != null">
+        #{distributionChannel,jdbcType=VARCHAR},
+      </if>
+      <if test="productGroup != null">
+        #{productGroup,jdbcType=VARCHAR},
+      </if>
+      <if test="currency != null">
+        #{currency,jdbcType=VARCHAR},
+      </if>
+      <if test="shippingConditions != null">
+        #{shippingConditions,jdbcType=VARCHAR},
+      </if>
+      <if test="deliveryPlant != null">
+        #{deliveryPlant,jdbcType=VARCHAR},
+      </if>
+      <if test="maxPartialDelivery != null">
+        #{maxPartialDelivery,jdbcType=VARCHAR},
+      </if>
+      <if test="internalCustomers != null">
+        #{internalCustomers,jdbcType=VARCHAR},
+      </if>
+      <if test="accountGroup != null">
+        #{accountGroup,jdbcType=VARCHAR},
+      </if>
+      <if test="custGroup != null">
+        #{custGroup,jdbcType=VARCHAR},
+      </if>
+      <if test="taxClassification != null">
+        #{taxClassification,jdbcType=VARCHAR},
+      </if>
+      <if test="active != null">
+        #{active,jdbcType=INTEGER},
+      </if>
+      <if test="createUser != null">
+        #{createUser,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null">
+        #{updateUser,jdbcType=INTEGER},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.crazy.portal.entity.cusotmer.CustSales">
+    update t_cust_sales
+    <set>
+      <if test="custId != null">
+        cust_id = #{custId,jdbcType=INTEGER},
+      </if>
+      <if test="salesOrganize != null">
+        sales_organize = #{salesOrganize,jdbcType=VARCHAR},
+      </if>
+      <if test="distributionChannel != null">
+        distribution_channel = #{distributionChannel,jdbcType=VARCHAR},
+      </if>
+      <if test="productGroup != null">
+        product_group = #{productGroup,jdbcType=VARCHAR},
+      </if>
+      <if test="currency != null">
+        currency = #{currency,jdbcType=VARCHAR},
+      </if>
+      <if test="shippingConditions != null">
+        shipping_conditions = #{shippingConditions,jdbcType=VARCHAR},
+      </if>
+      <if test="deliveryPlant != null">
+        delivery_plant = #{deliveryPlant,jdbcType=VARCHAR},
+      </if>
+      <if test="maxPartialDelivery != null">
+        max_partial_delivery = #{maxPartialDelivery,jdbcType=VARCHAR},
+      </if>
+      <if test="internalCustomers != null">
+        internal_customers = #{internalCustomers,jdbcType=VARCHAR},
+      </if>
+      <if test="accountGroup != null">
+        account_group = #{accountGroup,jdbcType=VARCHAR},
+      </if>
+      <if test="custGroup != null">
+        cust_group = #{custGroup,jdbcType=VARCHAR},
+      </if>
+      <if test="taxClassification != null">
+        tax_classification = #{taxClassification,jdbcType=VARCHAR},
+      </if>
+      <if test="active != null">
+        active = #{active,jdbcType=INTEGER},
+      </if>
+      <if test="createUser != null">
+        create_user = #{createUser,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null">
+        update_user = #{updateUser,jdbcType=INTEGER},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where sales_id = #{salesId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.crazy.portal.entity.cusotmer.CustSales">
+    update t_cust_sales
+    set cust_id = #{custId,jdbcType=INTEGER},
+      sales_organize = #{salesOrganize,jdbcType=VARCHAR},
+      distribution_channel = #{distributionChannel,jdbcType=VARCHAR},
+      product_group = #{productGroup,jdbcType=VARCHAR},
+      currency = #{currency,jdbcType=VARCHAR},
+      shipping_conditions = #{shippingConditions,jdbcType=VARCHAR},
+      delivery_plant = #{deliveryPlant,jdbcType=VARCHAR},
+      max_partial_delivery = #{maxPartialDelivery,jdbcType=VARCHAR},
+      internal_customers = #{internalCustomers,jdbcType=VARCHAR},
+      account_group = #{accountGroup,jdbcType=VARCHAR},
+      cust_group = #{custGroup,jdbcType=VARCHAR},
+      tax_classification = #{taxClassification,jdbcType=VARCHAR},
+      active = #{active,jdbcType=INTEGER},
+      create_user = #{createUser,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_user = #{updateUser,jdbcType=INTEGER},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where sales_id = #{salesId,jdbcType=INTEGER}
+  </update>
+</mapper>

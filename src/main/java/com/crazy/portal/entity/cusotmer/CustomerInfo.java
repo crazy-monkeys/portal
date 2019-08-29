@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * 客户主信息表
  * @author weiying
- * @date   2019-08-18 15:59::19
+ * @date   2019-08-29 16:28::04
  */
 @Data
 public class CustomerInfo {
@@ -19,9 +19,9 @@ public class CustomerInfo {
     private Integer id;
 
     /**
-     * 用户类型 0-潜在客户 1-open 客户 2-已报备客户
+     * 用户类型 0-潜在客户 1-未报备 2-已报备
      */
-    private String custType;
+    private Integer custType;
 
     /**
      * 内部客户号
@@ -49,9 +49,24 @@ public class CustomerInfo {
     private String custAbbreviation;
 
     /**
-     * 用户状态 1-销售支持冻结 2-交货冻结 3-订单冻结 4-开票冻结
+     * 销售支持冻结 0 否 1 是
      */
-    private Integer custStatus;
+    private Integer frozenSales;
+
+    /**
+     * 交货冻结 0 否 1 是
+     */
+    private Integer frozenDelivery;
+
+    /**
+     * 订单冻结 0 否 1 是
+     */
+    private Integer frozenOrder;
+
+    /**
+     * 开票冻结 0 否 1 是
+     */
+    private Integer frozenInvoice;
 
     /**
      * A01 - Account Market（直供）；A02 - Account Market（非直供）；A03 - Mass Market；A04 - 代理商
@@ -99,7 +114,7 @@ public class CustomerInfo {
     private BigDecimal corportaeAssets;
 
     /**
-     * 员工人数(customer)
+     * 员工人数
      */
     private Integer staffNumber;
 
@@ -118,35 +133,57 @@ public class CustomerInfo {
      */
     private String advantagesIntroduction;
 
+    /**
+     * 审批人
+     */
+    private Integer approveUser;
+
+    /**
+     * 审批状态
+     */
+    private Integer approveStatus;
+
+    /**
+     * 
+     */
+    private Date approveTime;
+
+    /**
+     * 审批意见
+     */
+    private String approveRemark;
+
+    /**
+     * 
+     */
     private Integer active;
 
+    /**
+     * 
+     */
     private Integer createUser;
 
+    /**
+     * 
+     */
     private Date createTime;
 
+    /**
+     * 
+     */
     private Integer updateUser;
 
+    /**
+     * 
+     */
     private Date updateTime;
 
-    //授信额度初始值
-    private BigDecimal credit;
-    //授信额度占用值
-    private BigDecimal creditUSE;
-    //授信额度剩余值
-    private BigDecimal creditUnUSE;
-
-    private Integer repId;
-    private String approveStatus;
-    private String approveTime;
-    private String approveUser;
-
-    private List<CustomerReport> customerReports;
 
     /*资产信息 季度更新 dealer*/
-    private List<AssetsInformation> assetsInformations;
+    private List<CustAssetsInformation> assetsInformations;
 
     /*业务介绍 年度更新 dealer*/
-    private List<BusinessInformation> businessInformations;
+    private List<CustBusinessInformation> businessInformations;
 
     /*分级分类信息 dealer*/
     private List<CustomerAgent> customerAgents;
@@ -158,7 +195,7 @@ public class CustomerInfo {
     private List<CustomerProduct> customerProducts;
 
     /*客户附件*/
-   private List<CustomerFile> files;
+    private List<CustomerFile> files;
 
     /*银行账号信息*/
     private CustBankInfo custBankInfo;
@@ -178,4 +215,11 @@ public class CustomerInfo {
     /*客户团队*/
     private List<CustomerAccountTeam> accountTeams;
 
+
+    //授信额度初始值
+    private BigDecimal credit;
+    //授信额度占用值
+    private BigDecimal creditUSE;
+    //授信额度剩余值
+    private BigDecimal creditUnUSE;
 }

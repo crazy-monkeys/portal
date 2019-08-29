@@ -1,3 +1,4 @@
+/*
 package com.crazy.portal.controller.customer;
 
 import com.alibaba.excel.metadata.BaseRowModel;
@@ -7,7 +8,6 @@ import com.crazy.portal.bean.customer.CustomerQueryBean;
 import com.crazy.portal.bean.customer.approval.ApprovalBean;
 import com.crazy.portal.bean.customer.visitRecord.VisitRecordQueryBean;
 import com.crazy.portal.controller.BaseController;
-import com.crazy.portal.entity.cusotmer.CustomerInfo;
 import com.crazy.portal.service.customer.CustomerInfoService;
 import com.crazy.portal.util.ExcelUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -19,12 +19,14 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Map;
 
+*/
 /**
  * @Description 客户管理
  * @Author Shawn
  * @Date 2019-07-11 22:00
  * @Modify by
- */
+ *//*
+
 @Slf4j
 @RestController
 @RequestMapping("/customer")
@@ -32,20 +34,24 @@ public class CustomerController extends BaseController{
     @Resource
     private CustomerInfoService customerInfoService;
 
-    /**
+    */
+/**
      * 获取Dealer的个人信息
      * 取当前用户
      * @return
-     */
+     *//*
+
     @GetMapping("/getDealerInfo")
     public BaseResponse getDealerInfo(){
         return super.successResult(customerInfoService.getDealerInfo(this.getCurrentUser().getDealerId()));
     }
 
-    /**
+    */
+/**
      * 修改Dealer信息
      * //TODO 季度年度更新提醒
-     */
+     *//*
+
     @PostMapping("/updateDealerInfo")
     public BaseResponse updateDealerInfo(@RequestBody CustomerInfo vo){
         customerInfoService.updateCustomerInfo(vo, this.getCurrentUser().getId());
@@ -112,6 +118,7 @@ public class CustomerController extends BaseController{
         return successResult(customerInfoService.fileUpload(files));
     }
 
+*/
 /**
     //获取用户列表
     @GetMapping("/list")
@@ -214,7 +221,8 @@ public class CustomerController extends BaseController{
     public void fileDownload(HttpServletResponse response, @PathVariable Integer id){
         customersService.fileDownload(response, id);
     }
-    */
+    *//*
+
 
     @GetMapping("/all")
     public BaseResponse queryAllCustomer(){
@@ -223,3 +231,4 @@ public class CustomerController extends BaseController{
 
 
 }
+*/
