@@ -21,6 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
@@ -112,6 +113,7 @@ public class IDRService {
      * @param file 文件
      * @return
      */
+    @Transactional
     public BusinessFileUploadBean upload(Integer id, Integer type, Integer fileType, BigDecimal crAmount, MultipartFile file, Integer userId) throws Exception{
         checkFileUploadParam(id, type, fileType, file);
         BusinessFileUploadBean result = new BusinessFileUploadBean();
@@ -119,6 +121,7 @@ public class IDRService {
         if(fileType.equals(Enums.BusinessFileType.IDR.getCode())){
             Enums.BusinessIdrType idrType = Enums.BusinessIdrType.getDescByCode(type);
             List<BaseRowModel> records = ExcelUtils.readExcel(fileVo.getFullPath(), idrType.getType().getClass());
+            BusinessUtil.assertTrue((records != null && records.size() > 0), ErrorCodes.BusinessEnum.BUSINESS_FILE_IS_NULL);
             result.setIdrList(records);
         }
         if(fileType.equals(Enums.BusinessFileType.FINANCIAL_CLOSURE.getCode())){
