@@ -1,17 +1,20 @@
 package com.crazy.portal.controller.webservice;
 
 import com.alibaba.fastjson.JSON;
+import com.crazy.portal.bean.task.TaskBean;
 import com.crazy.portal.bean.webservice.*;
 import com.crazy.portal.config.exception.BusinessException;
 import com.crazy.portal.controller.BaseController;
 import com.crazy.portal.entity.webservice.ApiUsers;
 import com.crazy.portal.service.webservice.ApiUsersService;
 import com.crazy.portal.util.AopTargetUtils;
+import com.crazy.portal.util.BusinessUtil;
 import com.crazy.portal.util.SHA1;
 import com.crazy.portal.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
+import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -34,36 +37,23 @@ public class EntranceController extends BaseController{
     @ResponseBody
     public String getAccessToken(@RequestBody Map<String,String> parameterMap){
         String apiSecret = null;
-        ArrayList<String> list = new ArrayList<String>();
+        List<String> list = new ArrayList<>();
         for (Map.Entry<String,String> entry : parameterMap.entrySet()) {
             if(entry.getKey().equals("apiSecret")){
                 apiSecret = entry.getValue();
                 continue;
             }
-            list.add((String)entry.getValue());
+            list.add(entry.getValue());
         }
-        if(apiSecret == null){
-            throw new IllegalArgumentException("apiSecret is require!");
-        }
-        Collections.sort(list, new Comparator<String>() {
-            @Override
-            public int compare(String o1, String o2) {
-                if(o1==null){o1="";}
-                if(o2==null){o2="";}
-                return o1.compareTo(o2);
-            }
-        });
-        StringBuffer sb = new StringBuffer();
-        sb.append(apiSecret);
-        for (int i = 0; i < list.size(); i++) {
-            sb.append(list.get(i));
-        }
+        Assert.notNull(apiSecret, "apiSecret is require");
+        Collections.sort(list);
+        StringBuffer sb = new StringBuffer(apiSecret);
+        list.forEach(x->sb.append(x));
         sb.append(apiSecret);
         log.info("-----加密前字符串--------"+sb.toString());
         return SHA1.encode(sb.toString());
     }
 
-    @SuppressWarnings({ "rawtypes", "unchecked"})
     @RequestMapping(value="/invoke.html",method= RequestMethod.POST)
     public @ResponseBody IResponse authentication(@RequestBody Map<String, String> paramJson){
         Date startDate = new Date();
@@ -144,9 +134,9 @@ public class EntranceController extends BaseController{
             return setResponse(INTERFACE_CODE.CODE1002.getValue(),INTERFACE_CODE.CODE1002.getZh_desc());
         }
         //超过5分钟视为非法访问
-//		if(!request.checkVerifyTime()){
-//			return setResponse(INTERFACE_CODE.CODE1007.getValue(),INTERFACE_CODE.CODE1007.getZh_desc());
-//		}
+		if(!request.checkVerifyTime()){
+			return setResponse(INTERFACE_CODE.CODE1007.getValue(),INTERFACE_CODE.CODE1007.getZh_desc());
+		}
         commonResp.setResultCode(INTERFACE_CODE.SUCCESS.getValue());
         return commonResp;
     }

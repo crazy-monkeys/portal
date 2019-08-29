@@ -35,8 +35,8 @@ public enum INTERFACE_CODE {
     private final int value;          //code值
     private final String zh_desc;     //中文描述
     private final String en_desc;     //英文描述
-    
-    private INTERFACE_CODE(int value,String zh_desc,String en_desc) {
+
+    INTERFACE_CODE(int value,String zh_desc,String en_desc) {
         this.value = value;
         this.zh_desc  = zh_desc;
         this.en_desc  = en_desc;
