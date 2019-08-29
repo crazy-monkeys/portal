@@ -202,10 +202,10 @@
     <if test="status != null">
       and status = #{status}
     </if>
-    <if test="executor != null">
+    <if test="executor != null and executor != ''">
       and executor = #{executor}
     </if>
-    <if test="executeStyle != null">
+    <if test="executeStyle != null and executeStyle != ''">
       and execute_style = #{executeStyle}
     </if>
     <if test="noticeBeginDate != null and noticeBeginDate != ''">
