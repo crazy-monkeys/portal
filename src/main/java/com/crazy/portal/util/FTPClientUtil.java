@@ -167,17 +167,18 @@ public class FTPClientUtil {
             ftpClient = getFTPClient();     
             // 处理传输      
             input = new FileInputStream(localFile);
-            System.out.println("pwd:"+ftpClient.pwd());
             log.info(">>>Ftp directory : {}", ftpClient.printWorkingDirectory());
-            Boolean bo = ftpClient.changeWorkingDirectory(serverFile.substring(0, serverFile.lastIndexOf("/")));
-            log.info("bo      文件夹是否存在   ================="+bo+"===="+serverFile.substring(0, serverFile.lastIndexOf("/")));
+            int lastIndex = serverFile.lastIndexOf("/");
+            String subStr = serverFile.substring(0, lastIndex);
+            Boolean bo = ftpClient.changeWorkingDirectory(subStr);
+            log.info(">>>Ftp directory : {}", ftpClient.printWorkingDirectory());
             if(!bo){
             	boolean result = ftpClient.makeDirectory(serverFile.substring(0, serverFile.lastIndexOf("/")));
             	log.info("Make dir result : {}", result);
             	log.info("Change dir result : {}", ftpClient.changeWorkingDirectory(serverFile.substring(0, serverFile.lastIndexOf("/"))));
 
             }
-            log.info("serverFile--------------"+serverFile+";===========localFile=="+localFile);
+            log.info("serverFile is {}",serverFile);
             ftpClient.storeFile(serverFile, input);     
             input.close();
             if (delFile) {     
@@ -200,7 +201,7 @@ public class FTPClientUtil {
                 disconnect(ftpClient);
             }     
         }     
-    }     
+    }
     
     /**   
      * 下载一个远程文件到本地的指定文件   
