@@ -23,7 +23,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-
 import javax.annotation.Resource;
 import java.io.File;
 import java.math.BigDecimal;
@@ -40,27 +39,27 @@ public class CustomerInfoService {
     @Resource
     private CustomerInfoMapper customerInfoMapper;
     @Resource
-    private CustAssetsInformationMapper assetsInformationMapper;
+    private CustAssetsInformationService custAssetsInformationService;
     @Resource
-    private CustBusinessInformationMapper businessInformationMapper;
+    private CustBusinessInformationService custBusinessInformationService;
     @Resource
-    private CustomerContactMapper customerContactMapper;
+    private CustomerContactService customerContactService;
     @Resource
-    private CustomerProductMapper customerProductMapper;
+    private CustomerProductService customerProductService;
     @Resource
-    private CustomerFileMapper customerFileMapper;
+    private CustomerFileService customerFileService;
     @Resource
     private CustBankInfoMapper custBankInfoMapper;
     @Resource
-    private CustCorporateRelationshipMapper custCorporateRelationshipMapper;
+    private CustCorporateRelationshipService custCorporateRelationshipService;
     @Resource
-    private CustInvoiceInfoMapper custInvoiceInfoMapper;
+    private CustInvoiceInfoService custInvoiceInfoService;
     @Resource
-    private CustSalesMapper custSalesMapper;
+    private CustSalesService custSalesService;
     @Resource
-    private CustomerAddressMapper customerAddressMapper;
+    private CustomerAddressService customerAddressService;
     @Resource
-    private CustomerAccountTeamMapper customerAccountTeamMapper;
+    private CustomerAccountTeamService customerAccountTeamService;
     @Resource
     private VisitRecordMapper visitRecordMapper;
 
@@ -268,14 +267,14 @@ public class CustomerInfoService {
     }*/
 
     @Transactional
-    public void updateCustomerInfo(CustomerInfo customerInfo, Integer userId){
+    public void updateDealerInfo(CustomerInfo customerInfo, Integer userId){
         saveCustomerInfo(customerInfo, userId);
         saveCustomerDetail(customerInfo, userId);
     }
 
     //查询客户的内外部客户
     public CustomerShipBean selectDealerShip(Integer dealerId){
-        List<CustCorporateRelationship> relationships = custCorporateRelationshipMapper.selectDealerShip(dealerId);
+        List<CustCorporateRelationship> relationships = custCorporateRelationshipService.selectByCustId(dealerId);
         CustomerShipBean shipBean = new CustomerShipBean();
         List<CustCorporateRelationship> resultShips = new ArrayList<>();
         relationships.forEach(e->{
@@ -292,6 +291,7 @@ public class CustomerInfoService {
     private void saveCustomerInfo(CustomerInfo customerInfo, Integer userId){
         if(null == customerInfo.getId()){
             customerInfo.setCreateUser(userId);
+            customerInfo.setActive(1);
             customerInfoMapper.insertSelective(customerInfo);
         }else{
             customerInfo.setUpdateUser(userId);
@@ -309,8 +309,8 @@ public class CustomerInfoService {
         saveSales(customerInfo.getSales(), customerInfo.getId(), userId);
         saveAddress(customerInfo.getAddresses(), customerInfo.getId(), userId);
         saveAccountTeam(customerInfo.getAccountTeams(), customerInfo.getId(), userId);
-        saveAssetsInformation(customerInfo.getAssetsInformations());
-        saveBusinessInformation(customerInfo.getBusinessInformations());
+        saveAssetsInformation(customerInfo.getAssetsInformations(), customerInfo.getId());
+        saveBusinessInformation(customerInfo.getBusinessInformations(), customerInfo.getId());
     }
 
     /*银行账号信息*/
@@ -331,157 +331,72 @@ public class CustomerInfoService {
      * 季度更新 资产信息
      * @param assetsInformations
      */
-    private void saveAssetsInformation(List<CustAssetsInformation> assetsInformations){
-        assetsInformations.forEach(x->{
-            if(null != x.getAsseteInfoId()){
-                assetsInformationMapper.updateByPrimaryKeySelective(x);
-            }else{
-                assetsInformationMapper.insertSelective(x);
-            }
-        });
+    private void saveAssetsInformation(List<CustAssetsInformation> assetsInformations, Integer custId){
+        List<CustAssetsInformation> results = custAssetsInformationService.selectByCustId(custId);
+        custAssetsInformationService.deleteByCustId(assetsInformations, results, custId);
+        custAssetsInformationService.saveOrUpdate(assetsInformations, custId);
     }
 
     /**
      * 季度更新代理商 业务介绍
      * @param businessInformations
      */
-    private void saveBusinessInformation(List<CustBusinessInformation> businessInformations){
-        businessInformations.forEach(x->{
-            if(null != x.getBusInfoId()){
-                businessInformationMapper.updateByPrimaryKeySelective(x);
-            }else{
-                businessInformationMapper.insertSelective(x);
-            }
-        });
+    private void saveBusinessInformation(List<CustBusinessInformation> businessInformations, Integer custId){
+        List<CustBusinessInformation> results = custBusinessInformationService.selectByCustId(custId);
+        custBusinessInformationService.deleteByCustId(businessInformations, results, custId);
+        custBusinessInformationService.saveOrUpdate(businessInformations, custId);
     }
 
 
 
     /*联系人信息*/
     private void saveContact(List<CustomerContact> customerContacts, Integer custId, Integer userId){
-        if(null == customerContacts || customerContacts.isEmpty()){
-            return;
-        }
-        customerContacts.forEach(e->{
-            if(null == e.getContactId()){
-                e.setCustId(custId);
-                e.setInsertUser(userId);
-                customerContactMapper.insertSelective(e);
-            }else{
-                e.setUpdateUser(userId);
-                customerContactMapper.updateByPrimaryKeySelective(e);
-            }
-        });
+        List<CustomerContact> results = customerContactService.selectByCustId(custId);
+        customerContactService.deleteByCustId(customerContacts, results, custId);
+        customerContactService.saveOrUpdate(customerContacts, custId, userId);
     }
+
     /*产品信息*/
     private void saveProduct(List<CustomerProduct> customerProducts, Integer custId, Integer userId){
-        if(null == customerProducts || customerProducts.isEmpty()){
-            return;
-        }
-        customerProducts.forEach(e->{
-            if(null == e.getProId()){
-                e.setCustId(custId);
-                e.setInsertUser(userId);
-                customerProductMapper.insertSelective(e);
-            }else{
-                e.setUpdateUser(userId);
-                customerProductMapper.updateByPrimaryKeySelective(e);
-            }
-        });
+        List<CustomerProduct> results = customerProductService.selectByCustId(custId);
+        customerProductService.deleteByCustId(customerProducts, results, custId);
+        customerProductService.saveOrUpdate(customerProducts, custId, userId);
     }
     /*客户附件*/
     private void saveFile(List<CustomerFile> customerFiles, Integer custId){
-        if(null == customerFiles || customerFiles.isEmpty()){
-            return;
-        }
-        customerFiles.forEach(e->{
-            if(null == e.getFileId()){
-                e.setCustId(custId);
-                customerFileMapper.insertSelective(e);
-            }else{
-                customerFileMapper.updateByPrimaryKeySelective(e);
-            }
-        });
+        List<CustomerFile> results = customerFileService.selectByCustId(custId);
+        customerFileService.deleteByCustId(customerFiles, results, custId);
+        customerFileService.saveOrUpdate(customerFiles, custId);
     }
     /**关系**/
     private void saveRelationship(List<CustCorporateRelationship> relationships, Integer custId, Integer userId){
-        if(null == relationships || relationships.isEmpty()){
-            return;
-        }
-        relationships.forEach(e->{
-            if(null == e.getShipId()){
-                e.setCustId(custId);
-                e.setCreateUser(userId);
-                custCorporateRelationshipMapper.insertSelective(e);
-            }else{
-                e.setUpdateUser(userId);
-                custCorporateRelationshipMapper.updateByPrimaryKeySelective(e);
-            }
-        });
+        List<CustCorporateRelationship> results = custCorporateRelationshipService.selectByCustId(custId);
+        custCorporateRelationshipService.deleteByCustId(relationships, results, custId);
+        custCorporateRelationshipService.saveOrUpdate(relationships, custId, userId);
     }
     /**开票信息**/
     private void saveInvoice(List<CustInvoiceInfo> invoiceInfos, Integer custId, Integer userId){
-        if(null == invoiceInfos || invoiceInfos.isEmpty()){
-            return;
-        }
-        invoiceInfos.forEach(e->{
-            if(null == e.getInvoiceId()){
-                e.setCustId(custId);
-                e.setCreateUser(userId);
-                custInvoiceInfoMapper.insertSelective(e);
-            }else{
-                e.setUpdateUser(userId);
-                custInvoiceInfoMapper.updateByPrimaryKeySelective(e);
-            }
-        });
+        List<CustInvoiceInfo> results = custInvoiceInfoService.selectByCustId(custId);
+        custInvoiceInfoService.deleteByCustId(invoiceInfos, results, custId);
+        custInvoiceInfoService.saveOrUpdate(invoiceInfos, custId, userId);
     }
     /**销售信息**/
     private void saveSales(List<CustSales> basicSales, Integer custId, Integer userId){
-        if(null == basicSales || basicSales.isEmpty()){
-            return;
-        }
-        basicSales.forEach(e->{
-            if(null == e.getSalesId()){
-                e.setCustId(custId);
-                e.setCreateUser(userId);
-                custSalesMapper.insertSelective(e);
-            }else{
-                e.setUpdateUser(userId);
-                custSalesMapper.updateByPrimaryKeySelective(e);
-            }
-        });
+        List<CustSales> results = custSalesService.selectByCustId(custId);
+        custSalesService.deleteByCustId(basicSales, results, custId);
+        custSalesService.saveOrUpdate(basicSales, custId, userId);
     }
     /**地址信息**/
     private void saveAddress(List<CustomerAddress> addresses, Integer custId, Integer userId){
-        if(null == addresses || addresses.isEmpty()){
-            return;
-        }
-        addresses.forEach(e->{
-            if(null == e.getAddressId()){
-                e.setCustId(custId);
-                e.setCrateUser(userId);
-                customerAddressMapper.insertSelective(e);
-            }else{
-                e.setUpdateUser(userId);
-                customerAddressMapper.updateByPrimaryKeySelective(e);
-            }
-        });
+        List<CustomerAddress> results = customerAddressService.selectByCustId(custId);
+        customerAddressService.deleteByCustId(addresses, results, custId);
+        customerAddressService.saveOrUpdate(addresses, custId, userId);
     }
     /*客户团队*/
     private void saveAccountTeam(List<CustomerAccountTeam> accountTeams, Integer custId, Integer userId){
-        if(null == accountTeams || accountTeams.isEmpty()){
-            return;
-        }
-        accountTeams.forEach(e->{
-            if(null == e.getTeamId()){
-                e.setCustId(custId);
-                e.setCreateUser(userId);
-                customerAccountTeamMapper.insertSelective(e);
-            }else{
-                e.setUpdateUser(userId);
-                customerAccountTeamMapper.updateByPrimaryKeySelective(e);
-            }
-        });
+        List<CustomerAccountTeam> results = customerAccountTeamService.selectByCustId(custId);
+        customerAccountTeamService.deleteByCustId(accountTeams, results, custId);
+        customerAccountTeamService.saveOrUpdate(accountTeams, custId, userId);
     }
 
     /**

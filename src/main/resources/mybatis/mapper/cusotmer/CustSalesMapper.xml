@@ -245,4 +245,12 @@
       update_time = #{updateTime,jdbcType=TIMESTAMP}
     where sales_id = #{salesId,jdbcType=INTEGER}
   </update>
+
+  <select id="selectByCustId" resultMap="BaseResultMap">
+    select * from t_cust_sales where active =1 and cust_id = #{custId}
+  </select>
+
+  <delete id="deleteByCustId">
+    update t_cust_sales set active = 0 where active =1 and cust_id = #{custId}
+  </delete>
 </mapper>

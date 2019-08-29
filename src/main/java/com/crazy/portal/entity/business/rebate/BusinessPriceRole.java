@@ -117,6 +117,11 @@ public class BusinessPriceRole {
     private String priceStrategyNumber;
 
     /**
+     * 创建时间
+     */
+    private String createTime;
+
+    /**
      * 
      */
     @JsonIgnore
@@ -130,10 +135,7 @@ public class BusinessPriceRole {
     @JSONField(serialize = false)
     private Integer createId;
 
-    /**
-     * 创建时间
-     */
-    private String createTime;
+
 
     /**
      * 

@@ -18,4 +18,8 @@ public interface CustCorporateRelationshipMapper {
     int updateByPrimaryKey(CustCorporateRelationship record);
 
     List<CustCorporateRelationship> selectDealerShip(Integer dealerId);
+
+    List<CustCorporateRelationship> selectByCustId(Integer custId);
+
+    int deleteByCustId(Integer custId);
 }

@@ -13,19 +13,20 @@ import org.quartz.JobExecutionException;
 import javax.annotation.Resource;
 
 
-@Task(value = "test",scheduleCode = "test")
+@Task(value = "rebate数据同步",scheduleCode = "rebate_sync")
 @DisallowConcurrentExecution
 @Slf4j
-public class TestJob implements Job{
+public class RebateSyncJob implements Job{
+
     @Resource
     private ScheduleJobService scheduleJobService;
 
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
-        ScheduleJob scheduleJob = scheduleJobService.selectByJobCode("xxx");
-            try {
-                log.info("==============> test正在执行");
-            }catch (Exception e){
-            }
+        try {
+
+        }catch (Exception e){
+            log.error("rebate同步异常", e);
+        }
     }
 }

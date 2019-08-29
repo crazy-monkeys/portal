@@ -2,6 +2,8 @@ package com.crazy.portal.dao.cusotmer;
 
 import com.crazy.portal.entity.cusotmer.CustomerContact;
 
+import java.util.List;
+
 public interface CustomerContactMapper {
     int deleteByPrimaryKey(Integer contactId);
 
@@ -14,4 +16,8 @@ public interface CustomerContactMapper {
     int updateByPrimaryKeySelective(CustomerContact record);
 
     int updateByPrimaryKey(CustomerContact record);
+
+    List<CustomerContact> selectByCustId(Integer custId);
+
+    int deleteByCustId(Integer custId);
 }

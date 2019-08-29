@@ -9,6 +9,7 @@
     <result column="bank_bic" jdbcType="VARCHAR" property="bankBic" />
     <result column="bank_country" jdbcType="VARCHAR" property="bankCountry" />
     <result column="bank_province" jdbcType="VARCHAR" property="bankProvince" />
+    <result column="bank_address" jdbcType="VARCHAR" property="bankAddress" />
     <result column="create_user" jdbcType="INTEGER" property="createUser" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_user" jdbcType="INTEGER" property="updateUser" />

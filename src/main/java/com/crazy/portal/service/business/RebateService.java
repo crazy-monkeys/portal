@@ -94,6 +94,7 @@ public class RebateService {
      * @param bean
      * @param userId
      */
+    @Transactional
     public void confirm(RebateConfirmBean bean, Integer userId){
         BusinessRebate info = businessRebateMapper.selectByPrimaryKey(bean.getId());
         BusinessUtil.notNull(info, ErrorCodes.BusinessEnum.REBATE_RECORD_NOT_FOUND);
@@ -147,6 +148,7 @@ public class RebateService {
      * @param file
      * @return
      */
+    @Transactional
     public FileVO fileUpload(Integer rebateItemId, Integer userId, MultipartFile file){
         BusinessUtil.notNull(rebateItemId, ErrorCodes.BusinessEnum.REBATE_ITEM_ID_IS_NULL);
         BusinessUtil.notNull(file, ErrorCodes.BusinessEnum.REBATE_FILE_NOT_FOUND);
@@ -216,4 +218,15 @@ public class RebateService {
     public String getCustFilePath(){
         return filePath.concat(File.separator).concat(REBATE_FILE_PATH).concat(File.separator);
     }
+
+    /**
+     * rebate数据同步
+     * BI -> portal
+     *
+     */
+    @Transactional
+    public void rebateDataSync(){
+
+    }
+
 }

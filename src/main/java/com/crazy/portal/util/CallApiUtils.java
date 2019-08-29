@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import javax.validation.Valid;
 import java.io.IOException;
 
 /**
@@ -47,6 +48,14 @@ public class CallApiUtils {
     private static String REBATE_SALES_DETAILS_URL;
     @Value("${api.url.rebate.sales.details}")
     public void setRebateSalesDetailsUrl(String rebateSalesDetailsUrl){ REBATE_SALES_DETAILS_URL = rebateSalesDetailsUrl;}
+
+    private static String REBATE_USERNAME;
+    @Value("${api.auth.rebate.username}")
+    public void setRebateUsername(String rebateUsername){ REBATE_USERNAME = rebateUsername;}
+
+    private static String REBATE_PASSWORD;
+    @Value("${api.auth.rebate.password}")
+    public void setRebatePassword(String rebatePassword){ REBATE_PASSWORD = rebatePassword;}
     /**
      * 同步产品信息
      * @return
@@ -115,8 +124,8 @@ public class CallApiUtils {
      * @throws IOException
      */
     public static String syncRebatePriceRoleData(String startDate, String endDate) throws IOException{
-        //TODO 用户名密码
-        return HttpClientUtils.get(REBATE_PRICE_ROLE_URL.concat("?sStartYearMonth=").concat(startDate).concat("&sEndYearMonth=").concat(endDate));
+        String url = REBATE_PRICE_ROLE_URL.concat("?sStartYearMonth=").concat(startDate).concat("&sEndYearMonth=").concat(endDate);
+        return HttpClientUtils.get(url, REBATE_USERNAME, REBATE_PASSWORD);
     }
 
     /**
@@ -127,7 +136,7 @@ public class CallApiUtils {
      * @throws IOException
      */
     public static String syncRebatePriceSalesDetails(String startDate, String endDate) throws IOException{
-        //TODO 用户名密码
-        return HttpClientUtils.get(REBATE_SALES_DETAILS_URL.concat("?sStartYearMonth=").concat(startDate).concat("&sEndYearMonth=").concat(endDate));
+        String url = REBATE_SALES_DETAILS_URL.concat("?sStartYearMonth=").concat(startDate).concat("&sEndYearMonth=").concat(endDate);
+        return HttpClientUtils.get(url, REBATE_USERNAME, REBATE_PASSWORD);
     }
 }
