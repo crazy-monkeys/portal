@@ -18,6 +18,8 @@
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="status" jdbcType="INTEGER" property="status" />
     <result column="company" jdbcType="VARCHAR" property="company" />
+    <result column="reviewed_people" jdbcType="VARCHAR" property="reviewedPeople"></result>
+    <result column="current_reviewer" jdbcType="VARCHAR" property="currentReviewer"></result>
   </resultMap>
   <sql id="Base_Column_List">
     id, shipper_code, apply_time, currency, cr_amount, in_customer_name, dealer_id, reson, 
@@ -191,8 +193,14 @@
 
   <select id="selectByPage" resultMap="BaseResultMap" parameterType="com.crazy.portal.bean.business.idr.BusinessIdrQueryBean">
     select
-    <include refid="Base_Column_List" />
-    from t_business_idr_info
+    a.id, a.shipper_code, a.apply_time, a.currency, a.cr_amount, a.in_customer_name, a.dealer_id, a.reson,
+    a.remark, a.type, a.create_id, a.create_time, a.update_id, a.update_time, a.status, a.company, b.reviewed_people,
+    b.current_reviewer
+    from t_business_idr_info a
+    inner join (
+        select b.idr_info_id, b.reviewed_people, b.current_reviewer from t_business_idr_approval b
+        where b.id = (select max(c.id) from t_business_idr_approval c where c.idr_info_id = b.idr_info_id group by c.idr_info_id)
+    ) b on b.idr_info_id = a.id
     where 1=1
     <if test="type != null">
       and type = #{type,jdbcType=INTEGER}

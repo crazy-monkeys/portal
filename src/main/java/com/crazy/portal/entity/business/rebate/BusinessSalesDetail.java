@@ -80,22 +80,22 @@ public class BusinessSalesDetail {
     private Integer qty;
 
     /**
-     * 
+     * 销售价格
      */
     private BigDecimal salesPrice;
 
     /**
-     * 
+     * po价格
      */
     private BigDecimal poPrice;
 
     /**
-     * 
+     * 实际价格
      */
     private BigDecimal actualPrice;
 
     /**
-     * 
+     * rebate金额
      */
     private BigDecimal rebateAmount;
 
@@ -110,7 +110,7 @@ public class BusinessSalesDetail {
     private String shipmentYearMonth;
 
     /**
-     * 
+     * 出货日期
      */
     private String shipmentDate;
 

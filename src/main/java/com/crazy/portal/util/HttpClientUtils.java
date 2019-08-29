@@ -26,6 +26,8 @@ import java.net.SocketTimeoutException;
 import java.security.GeneralSecurityException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.util.Base64;
+
 /**
  * Created by weiying on 2019/7/29.
  */
@@ -49,7 +51,10 @@ public class HttpClientUtils {
     }
 
     public static String get(String url) throws IOException {
-        return get(url, CHARSET,authString, null, null);
+        return get(url, CHARSET, authString, null, null);
+    }
+    public static String get(String url, String username, String password) throws IOException{
+        return get(url, CHARSET, getBasicAuth(username, password), null, null);
     }
     public static String post(String url, String body) throws IOException{
         return post(url, body, authString, "application/json", "utf-8", CONNECT_TIMEOUT, READ_TIMEOUT);
@@ -216,5 +221,14 @@ public class HttpClientUtils {
         } catch (GeneralSecurityException e) {
             throw e;
         }
+    }
+
+    /**
+     * 获取BasicAuth
+     * @param username 用户名
+     * @param password 密码
+     */
+    public static String getBasicAuth(String username, String password){
+        return "Basic " + Base64.getUrlEncoder().encodeToString((username + ":" + password).getBytes());
     }
 }
