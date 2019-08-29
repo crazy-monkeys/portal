@@ -44,9 +44,9 @@ public class RebateService {
     @Resource
     private BusinessRebateFileMapper businessRebateFileMapper;
     @Resource
-    private BusinessAccountDetailMapper businessAccountDetailMapper;
+    private BusinessSalesDetailMapper businessSalesDetailMapper;
     @Resource
-    private BusinessStrategyMapper businessStrategyMapper;
+    private BusinessPriceRoleMapper businessPriceRoleMapper;
     @Resource
     private EmailHelper emailHelper;
     @Resource
@@ -85,8 +85,8 @@ public class RebateService {
     public BusinessRebate find(Integer id){
         BusinessRebate info = businessRebateMapper.selectByPrimaryKey(id);
         BusinessUtil.notNull(info, ErrorCodes.BusinessEnum.REBATE_RECORD_NOT_FOUND);
-        info.setAccountDetailList(businessAccountDetailMapper.selectByRebateId(id));
-        info.setStrategyList(businessStrategyMapper.selectByRebateId(id));
+        info.setSalesDetails(businessSalesDetailMapper.selectByRebateId(id));
+        info.setPriceRoles(businessPriceRoleMapper.selectByRebateId(id));
         return info;
     }
 
@@ -101,7 +101,7 @@ public class RebateService {
         BusinessUtil.assertFlase(bean.getSurplusRebateAmount().compareTo(info.getSurplusRebateAmount()) > 0, ErrorCodes.BusinessEnum.REBATE_SURPLUS_AMOUNT_BIG);
         saveRebateItem(bean, userId, info);
         updateRebateMasterInfo(bean, userId, info);
-        sendConfirmEmail(bean);
+//        sendConfirmEmail(bean);
     }
 
     private void saveRebateItem(RebateConfirmBean bean, Integer userId, BusinessRebate info) {
@@ -137,7 +137,7 @@ public class RebateService {
         mailBean.setTos(email);
         mailBean.setSubject("Rebate确认函");
         mailBean.setParams(ImmutableMap.of("customerName", bean.getExecutor(), "amount", bean.getSurplusRebateAmount().toString()));
-        mailBean.setTemplateName(Enums.MAIL_TEMPLATE.REBATE_CONFIRM.getTemplateName());
+        mailBean.setTemplateName(EmailHelper.MAIL_TEMPLATE.REBATE_CONFIRM.getTemplateName());
         emailHelper.sendHtmlMail(mailBean);
     }
 
@@ -162,7 +162,6 @@ public class RebateService {
         return fileInfo;
     }
 
-    @Async
     public void updateRebateMasterStatus(Integer userId, Integer rebateId) {
         List<BusinessRebateItem> items = businessRebateItemMapper.selectByRebateId(rebateId);
         BigDecimal total = items.stream()

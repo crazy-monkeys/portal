@@ -22,6 +22,7 @@ public class HandoverConfig {
     @Resource
     private ReceiveService receiveService;
 
+
     @Bean
     public Map<String, IHandover> handoverServiceMap() {
         Map<String, IHandover> serviceMap = new HashMap<>();
@@ -29,4 +30,6 @@ public class HandoverConfig {
         serviceMap.put("receive", receiveService);
         return serviceMap;
     }
+
+
 }

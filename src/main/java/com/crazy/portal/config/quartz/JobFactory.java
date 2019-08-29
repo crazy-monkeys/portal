@@ -3,9 +3,13 @@ package com.crazy.portal.config.quartz;
 import org.quartz.spi.TriggerFiredBundle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
-import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.quartz.AdaptableJobFactory;
+import org.springframework.scheduling.quartz.SchedulerFactoryBean;
+
+import javax.annotation.Resource;
+import java.util.Properties;
 
 /**
  * <p>
@@ -19,10 +23,13 @@ import org.springframework.scheduling.quartz.AdaptableJobFactory;
  * @date 2017年6月2日 下午5:11:42
  */
 @Configuration
-@ComponentScan
 public class JobFactory extends AdaptableJobFactory {
+
     @Autowired
     private AutowireCapableBeanFactory capableBeanFactory;
+
+    @Resource
+    private JobFactory jobFactory;
 
     @Override
     protected Object createJobInstance(TriggerFiredBundle bundle) throws Exception {
@@ -31,6 +38,16 @@ public class JobFactory extends AdaptableJobFactory {
         //进行注入
         capableBeanFactory.autowireBean(jobInstance);
         return jobInstance;
+    }
+
+    @Bean
+    public SchedulerFactoryBean schedulerFactoryBean(){
+        SchedulerFactoryBean factory = new SchedulerFactoryBean();
+        factory.setJobFactory(jobFactory);
+        Properties properties = new Properties();
+        properties.setProperty("org.quartz.scheduler.skipUpdateCheck","true");
+        factory.setQuartzProperties(properties);
+        return factory;
     }
 
 
