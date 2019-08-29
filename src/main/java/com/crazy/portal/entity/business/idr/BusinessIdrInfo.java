@@ -43,7 +43,10 @@ public class BusinessIdrInfo {
     private Integer type;
     //状态 1：已提交  2：已完结
     private Integer status;
-
+    //当前已审批人
+    private String reviewedPeople;
+    //下一位审批人
+    private String currentReviewer;
 
     @JsonIgnore
     @JSONField(serialize = false)
