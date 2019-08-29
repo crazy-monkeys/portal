@@ -295,8 +295,8 @@ public class IDRService {
         if(bean.getType().equals(Enums.BusinessIdrType.INSURANCE.getCode())){
             for(BusinessInsuranceInfo e : bean.getIList()){
                 IdrApprovalSubmitBean.InsuredPrice insuredPrice = new IdrApprovalSubmitBean.InsuredPrice();
-                insuredPrice.setDeliveryTime(e.getReceiveGoodsDate() != null ? DateUtil.parseDate(e.getReceiveGoodsDate(), DateUtil.NEW_FORMAT) : null);
-                insuredPrice.setAdjustPriceTime(e.getAdjustDate() != null ? DateUtil.parseDate(e.getAdjustDate(), DateUtil.NEW_FORMAT) : null);
+                insuredPrice.setDeliveryTime(e.getReceiveGoodsDate() != null ? DateUtil.parseDate(e.getReceiveGoodsDate(), DateUtil.WEB_FORMAT) : null);
+                insuredPrice.setAdjustPriceTime(e.getAdjustDate() != null ? DateUtil.parseDate(e.getAdjustDate(), DateUtil.WEB_FORMAT) : null);
                 insuredPrice.setBU(e.getBu());
                 insuredPrice.setPDT(e.getPdt());
                 insuredPrice.setProductType(e.getProductType());
@@ -307,7 +307,7 @@ public class IDRService {
                 insuredPrice.setInventoryPrice(e.getPrice() != null ? Float.valueOf(e.getPrice()) : null);
                 insuredPrice.setNewPrice(e.getNewPrice() != null ? Float.valueOf(e.getNewPrice()) : null);
                 insuredPrice.setInsured(e.getInsuranceAmount() != null ? Float.valueOf(e.getInsuranceAmount()) : null);
-                insuredPrice.setAdjustTime(e.getModifyDate() != null ? DateUtil.parseDate(e.getModifyDate(), DateUtil.NEW_FORMAT) : null);
+                insuredPrice.setAdjustTime(e.getModifyDate() != null ? DateUtil.parseDate(e.getModifyDate(), DateUtil.WEB_FORMAT) : null);
                 insuredPrice.setInsuredRemark(e.getRemark());
                 insuredPriceItem.add(insuredPrice);
             }
