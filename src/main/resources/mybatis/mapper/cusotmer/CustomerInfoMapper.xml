@@ -545,4 +545,16 @@
  left join t_customer_account_team account on account.cust_id = cust.id and account.active=1
   where cust.business_type = 'A04' and cust.active =1 and cust.id=#{id}
   </select>
+
+  <select id="selectByCustName" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select * from t_customer_info cust
+    where cust.active=1 and cust.business_type in ('A02','A03')
+    and cust.cust_name = #{custName}
+  </select>
+
+  <select id="getDealerByUser" resultMap="BaseResultMap">
+    select * from t_customer_info cust
+    inner join t_user u on cust.id = u.dealer_id
+    where u.id=#{userId}
+  </select>
 </mapper>
