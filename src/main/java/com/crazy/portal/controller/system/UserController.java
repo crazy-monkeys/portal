@@ -2,8 +2,11 @@ package com.crazy.portal.controller.system;
 
 import com.crazy.portal.bean.BaseResponse;
 import com.crazy.portal.bean.system.SubAgentVO;
+import com.crazy.portal.bean.system.UserCustomerMappingBean;
 import com.crazy.portal.controller.BaseController;
 import com.crazy.portal.entity.system.User;
+import com.crazy.portal.entity.system.UserCustomerMapping;
+import com.crazy.portal.service.system.UserCustomerMappingService;
 import com.crazy.portal.service.system.UserService;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +29,8 @@ public class UserController extends BaseController {
 
     @Resource
     private UserService userService;
+    @Resource
+    private UserCustomerMappingService userCustomerMappingService;
 
     /**
      * 分页查询
@@ -95,6 +100,16 @@ public class UserController extends BaseController {
         return successResult(userService.getUserShips(getCurrentUser().getDealerId()));
     }
 
+    @PostMapping(value = "/mapping")
+    public BaseResponse getList(@RequestBody UserCustomerMappingBean bean){
+        return successResult(userCustomerMappingService.selectByPage(bean));
+    }
+
+    @PostMapping(value = "/createMapping")
+    public BaseResponse createMapping(@RequestBody UserCustomerMapping mapping){
+        userCustomerMappingService.saveOrUpdateMapping(mapping, this.getCurrentUserId());
+        return successResult();
+    }
     private Map<String, Boolean> valid(Boolean valid) {
         Map<String, Boolean> map = new HashMap<>();
         map.put("valid", valid);

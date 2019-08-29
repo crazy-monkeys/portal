@@ -150,4 +150,21 @@
       active = #{active,jdbcType=INTEGER}
     where mapping_id = #{mappingId,jdbcType=INTEGER}
   </update>
+
+  <select id="selectByPage" parameterType="com.crazy.portal.bean.system.UserCustomerMappingBean" resultMap="BaseResultMap">
+    select * from t_user_customer_mapping
+    where active=1
+    <if test="mappingModel!=null">
+      and mapping_model = #{mappingModel}
+    </if>
+    <if test="cdUserId !=null">
+      and cd_user_id = #{cdUserId}
+    </if>
+    <if test="dealerUserId !=null">
+      and dealer_user_id = #{dealerUserId}
+    </if>
+    <if test="custId !=null">
+      and cust_id like '%'+#{mappingModel}+'%'
+    </if>
+  </select>
 </mapper>

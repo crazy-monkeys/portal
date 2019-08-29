@@ -1,7 +1,7 @@
 package com.crazy.portal.dao.customer;
 
 import com.crazy.portal.bean.customer.visitRecord.VisitRecordQueryBean;
-import com.crazy.portal.entity.customer.VisitRecord;
+import com.crazy.portal.entity.cusotmer.VisitRecord;
 
 import java.util.List;
 

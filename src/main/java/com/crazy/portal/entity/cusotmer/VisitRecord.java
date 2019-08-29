@@ -1,4 +1,4 @@
-package com.crazy.portal.entity.customer;
+package com.crazy.portal.entity.cusotmer;
 
 import java.util.Date;
 

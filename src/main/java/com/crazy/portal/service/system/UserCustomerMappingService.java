@@ -24,13 +24,14 @@ public class UserCustomerMappingService {
 
     public PageInfo<UserCustomerMapping> selectByPage(UserCustomerMappingBean bean){
         PortalUtil.defaultStartPage(bean.getPageIndex(), bean.getPageSize());
-        List<UserCustomerMapping> results = new ArrayList<>();
+        List<UserCustomerMapping> results = userCustomerMappingMapper.selectByPage(bean);
         return new PageInfo<>(results);
 
     }
 
     public void saveOrUpdateMapping(UserCustomerMapping userCustomerMapping, Integer userId){
         if(null != userCustomerMapping.getMappingId()){
+            userCustomerMapping.setActive(1);
             userCustomerMapping.setUpdateUserId(userId);
             userCustomerMappingMapper.updateByPrimaryKeySelective(userCustomerMapping);
         }else{

@@ -57,8 +57,8 @@ ftp:
   host: 10.29.24.20
   port: 21
   username: crmftp
-  password: 123@qwe
+  password: '123@qwe'
   path:
     handover:
-      push: /bitest/upload/
-      pull: /bitest/download/
+      push: bitest/upload/
+      pull: bitest/download/

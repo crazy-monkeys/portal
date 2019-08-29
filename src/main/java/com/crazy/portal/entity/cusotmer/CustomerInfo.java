@@ -19,9 +19,9 @@ public class CustomerInfo {
     private Integer id;
 
     /**
-     * 用户类型 1-正常客户 2-潜在客户
+     * 用户类型 0-潜在客户 1-open 客户 2-已报备客户
      */
-    private Integer custType;
+    private String custType;
 
     /**
      * 内部客户号
@@ -134,6 +134,11 @@ public class CustomerInfo {
     private BigDecimal creditUSE;
     //授信额度剩余值
     private BigDecimal creditUnUSE;
+
+    private Integer repId;
+    private String approveStatus;
+    private String approveTime;
+    private String approveUser;
 
     private List<CustomerReport> customerReports;
 

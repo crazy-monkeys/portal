@@ -72,7 +72,7 @@ public class ExcelUtils {
             writer.finish();
             return fileName;
         }catch (Exception ex) {
-            log.error(EXCEL_WRITE_ERROR.getZhMsg(), ex);
+            log.error(EXCEL_WRITE_ERROR.getZhMsg()+filePath, ex);
             throw new BusinessException(EXCEL_WRITE_ERROR);
         }finally {
             IOUtils.closeQuietly(out);

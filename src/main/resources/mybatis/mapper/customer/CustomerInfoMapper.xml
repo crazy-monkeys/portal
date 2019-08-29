@@ -3,7 +3,7 @@
 <mapper namespace="com.crazy.portal.dao.customer.CustomerInfoMapper">
   <resultMap id="BaseResultMap" type="com.crazy.portal.entity.cusotmer.CustomerInfo">
     <id column="id" jdbcType="INTEGER" property="id" />
-    <result column="cust_type" jdbcType="INTEGER" property="custType" />
+    <result column="cust_type" jdbcType="VARCHAR" property="custType" />
     <result column="in_code" jdbcType="VARCHAR" property="inCode" />
     <result column="out_code" jdbcType="VARCHAR" property="outCode" />
     <result column="cust_name" jdbcType="VARCHAR" property="custName" />
@@ -52,7 +52,7 @@
 
   <!--客户result-->
   <resultMap id="CustomerResultMap" type="com.crazy.portal.entity.cusotmer.CustomerInfo" extends="BaseResultMap">
-    <association property="basicBank" resultMap="com.crazy.portal.dao.basic.BasicBankInfoMapper.BaseResultMap" />
+    <association property="custBankInfo" resultMap="com.crazy.portal.dao.customer.CustBankInfoMapper.BaseResultMap" />
     <collection property="customerReports" resultMap="com.crazy.portal.dao.customer.CustomerReportMapper.BaseResultMap" />
     <collection property="customerProducts" resultMap="com.crazy.portal.dao.customer.CustomerProductMapper.BaseResultMap" />
     <collection property="customerAgents" resultMap="com.crazy.portal.dao.customer.CustomerAgentMapper.BaseResultMap" />
@@ -457,6 +457,9 @@
   </select>
 
   <select id="queryReportInfo" resultMap="CustomerResultMap">
+
+
+
 select
     cust.id,
     cust.in_code,
@@ -472,7 +475,7 @@ select
     cust.staff_number,
     cust.developers_number,
     cust.business_introduction,
-    rep.id,
+    rep.rep_id,
     rep.customer_id,
     rep.report_dealer,
     rep.report_sales,
@@ -555,36 +558,45 @@ select
  left join t_cust_invoice_info invoice on invoice.cust_id = cust.id and invoice.report_id = rep.rep_id and invoice.active=1
  left join t_cust_sales sales on sales.cust_id = cust.id and sales.report_id = rep.rep_id and sales.active=1
  left join t_customer_address address on address.cust_id = cust.id and address.active=1 and address.report_id = rep.rep_id
- left join t_customer_account_team account on account.cust_id = cust.id and account.active=1 and account.report_id = rep_i
-  where cust.id=${custId} and cust.active=1 and rep.id=#{reportId}
+ left join t_customer_account_team account on account.cust_id = cust.id and account.active=1 and account.report_id = rep_id
+where cust.id=${custId} and cust.active=1 and rep.rep_id=#{reportId}
   </select>
 
-  <select id="selectCustomerInfo" resultMap="CustomerListResultMap">
+  <select id="selectCustomerInfo" resultMap="BaseResultMap">
     select cust.id,
-	cust.out_code,
-	cust.cust_name,
-	cust.cust_en_name,
-	cust.cust_abbreviation,
-	case cust.business_type when 'A01' then 'Account Market（直供)'
-	when 'A02' then 'Account Market（非直供)'
-	when 'A03' then 'Mass Market'
-	else '未知' end business_type,
-	cust.is_license,
-	case cust.cust_role when 'Z001' then '中国客户(Chinese Account)'
-	when 'Z002' then '亚太客户(Asia-Pacific Account)'
-	when 'Z003' then '北美客户(North American Account)'
-	when 'Z010' then '内部客户(Customer)'
-	else '未知' end cust_role,
-	cust.regist_time,
-	rep.rep_id,
-	rep.customer_id,
-	rep.report_dealer,
-	rep.report_sales,
-    rep.approve_time,
-	rep.report_status
+    case cust.cust_type when 0 then '潜在客户'
+    when 1 then 'open 客户'
+    when 2 then '已报备客户'
+    else '未知客户' end cust_type,
+    cust.out_code,
+    cust.cust_name,
+    cust.cust_en_name,
+    cust.cust_abbreviation,
+    case cust.business_type when 'A01' then 'Account Market（直供)'
+    when 'A02' then 'Account Market（非直供)'
+    when 'A03' then 'Mass Market'
+    else '未知' end business_type,
+    cust.is_license,
+    case cust.cust_role when 'Z001' then '中国客户(Chinese Account)'
+    when 'Z002' then '亚太客户(Asia-Pacific Account)'
+    when 'Z003' then '北美客户(North American Account)'
+    when 'Z010' then '内部客户(Customer)'
+    else '未知' end cust_role,
+    rep.rep_id,
+    case rep.report_status when 1 then '可报备'
+    when 2 then '审批中'
+    when 3 then '审批通过'
+    when 4 then '审批驳回'
+    else '初始化' end approve_status,
+    ui.user_name approve_user,
+    rep.approve_remark,
+    rep.approve_time
+
     from t_customer_info cust
-     inner join t_customer_report rep on rep.customer_id = cust.id
-    where cust.business_type != 'A04' and cust.active=1 and rep.active=1
+    left join t_customer_report rep on rep.customer_id = cust.id and rep.active=1
+    left join t_user u on u.id = rep.approve_user
+    left join t_internal_user ui on ui.user_mail = u.login_name
+    where cust.business_type != 'A04' and cust.active=1 and(rep.report_status = 3 or cust.cust_type in (2,3))
     <if test="custName != null ">
       and cust.cust_name like '%${custName}%'
     </if>

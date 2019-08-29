@@ -104,7 +104,7 @@ public class CallApiUtils {
      * @return
      */
     public static String portalSubmitApprovalToBPM(String requestBody) throws IOException{
-        return HttpClientUtils.post(BPM_IDR_APPROVAL_URL, requestBody);
+        return HttpClientUtils.postHeader(BPM_IDR_APPROVAL_URL, requestBody);
     }
 
     /**

@@ -52,7 +52,7 @@ public class HttpClientUtils {
         return get(url, CHARSET,authString, null, null);
     }
     public static String post(String url, String body) throws IOException{
-        return post(url, body, null, "application/json", "utf-8", CONNECT_TIMEOUT, READ_TIMEOUT);
+        return post(url, body, authString, "application/json", "utf-8", CONNECT_TIMEOUT, READ_TIMEOUT);
     }
     public static String postHeader(String url, String params) throws IOException {
         return post(url, params, authString, MIMETYPE_JSON, null, null, null);

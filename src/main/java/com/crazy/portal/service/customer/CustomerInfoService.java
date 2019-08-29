@@ -14,7 +14,7 @@ import com.crazy.portal.bean.customer.visitRecord.VisitRecordEO;
 import com.crazy.portal.bean.customer.visitRecord.VisitRecordQueryBean;
 import com.crazy.portal.dao.customer.*;
 import com.crazy.portal.entity.cusotmer.*;
-import com.crazy.portal.entity.customer.VisitRecord;
+import com.crazy.portal.entity.cusotmer.VisitRecord;
 import com.crazy.portal.entity.system.User;
 import com.crazy.portal.util.*;
 import com.github.pagehelper.PageInfo;
@@ -25,7 +25,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.math.BigDecimal;
 import java.util.*;
@@ -73,17 +72,45 @@ public class CustomerInfoService {
     private static final String CUST_FILE_PATH = "custfile";
 
     /**
-     * 分页查询客户信息
+     * 分页查询客户信息  TODO 权限控制
      * @param customerQueryBean
      * @return
+     *  报备状态 0-初始化 1-已报备 2-可报备 3-报备中
      */
     public PageInfo<CustomerInfo> queryList(CustomerQueryBean customerQueryBean){
-        PortalUtil.defaultStartPage(customerQueryBean.getPageSize(), customerQueryBean.getPageSize());
+        PortalUtil.defaultStartPage(customerQueryBean.getPageIndex(), customerQueryBean.getPageSize());
         List<CustomerInfo> customerInfos = customerInfoMapper.selectCustomerInfo(customerQueryBean);
         return new PageInfo<>(customerInfos);
     }
-    /* 报备状态 0-初始化 1-已报备 2-可报备 3-报备中*/
 
+    /**
+     * 客户查询页面
+     * @param customerInfos
+     * @param result
+     * @return
+     */
+    private List<CustomerInfo> mappingCustomerQuery(List<CustomerInfo> customerInfos, List<CustomerInfo> result){
+        customerInfos.forEach(e->{
+            if(e.getCustomerReports().isEmpty()){
+                e.setApproveStatus(Enums.CUSTOMER_APPROVE_STATUS.UNREPORT.getDesc());
+                result.add(e);
+            }else{
+                e.getCustomerReports().forEach(r->{
+                    if(r.getReportStatus()==3){
+                        e.setRepId(r.getRepId());
+                        e.setApproveStatus(Enums.CUSTOMER_APPROVE_STATUS.REPORT.getDesc());
+                        e.setApproveTime(DateUtil.format(r.getApproveTime(),DateUtil.NEW_FORMAT));
+                        e.setApproveUser(r.getApproveUser().toString());
+                        return;
+                    }else{
+                        e.setApproveStatus(Enums.CUSTOMER_APPROVE_STATUS.UNREPORT.getDesc());
+                    }
+                });
+                result.add(e);
+            }
+        });
+        return result;
+    }
 
     /**
      * 查询客户明细
@@ -137,16 +164,18 @@ public class CustomerInfoService {
         //查询客户的报备状态
         CustomerInfo customerInfo = customerInfoMapper.selectByCustName(customerName.trim());
         if(null == customerInfo){
-            return null;
+            customerInfo = new CustomerInfo();
+            customerInfo.setCustName(customerName);
+            return customerInfo;
         }
         //已报备客户不允许报备
         List<CustomerReport> reports = customerInfo.getCustomerReports();
         reports.forEach(e->{
-            BusinessUtil.assertFlase(e.getReportStatus()==1, ErrorCodes.BusinessEnum.CUSTOMER_IS_REPORT);
+            BusinessUtil.assertFlase(e.getReportStatus()==3, ErrorCodes.BusinessEnum.CUSTOMER_IS_REPORT);
         });
 
         //销售报备为被报备的潜在客户时带出客户信息
-        if(user.getUserType().equals(Enums.USER_TYPE.internal.toString())&&customerInfo.getCustType()==2){
+        if(user.getUserType().equals(Enums.USER_TYPE.internal.toString())&&customerInfo.getCustType().equals("0")){
             return customerInfoMapper.queryReportInfo(customerInfo.getId(), user.getId());
         }else{
             //代理商报备 如果客户名称存在  带出客户id
@@ -176,7 +205,7 @@ public class CustomerInfoService {
 
         if(null == customerInfo.getId()){
             customerInfo.setBusinessType(businessType);
-            customerInfo.setCustType(Enums.YES_NO.YES.getCode());
+            customerInfo.setCustType(String.valueOf(Enums.YES_NO.YES.getCode()));
         }else{
             customerInfo = customerInfoMapper.selectByPrimaryKey(customerInfo.getId());
             if(!user.getUserType().equals(Enums.USER_TYPE.internal)){
@@ -189,7 +218,7 @@ public class CustomerInfoService {
 
     public void customerReport(CustomerInfo customerInfo, Integer reportDealer, Integer reportSales){
         CustomerReport customerReport = customerReportMapper.selectUserReport(customerInfo.getId(), reportDealer,reportSales);
-        BusinessUtil.assertFlase(null != customerReport && customerReport.getReportStatus()!= Enums.CUSTOMER_APPROVE_STATUS.REJECT.getCode()
+        BusinessUtil.assertFlase(null != customerReport && customerReport.getReportStatus()!= Enums.CUSTOMER_APPROVE_STATUS.WAIT_APPROVAL.getCode()
                 , ErrorCodes.BusinessEnum.CUSTOMER_REPORT_ERROR1);
 
         saveCustomerInfo(customerInfo, reportDealer==null?reportSales:reportDealer);
@@ -214,6 +243,7 @@ public class CustomerInfoService {
      * @param approvalBean
      */
     //TODO 邮件通知
+    @Transactional
     public void approval(ApprovalBean approvalBean){
         //通过
         if(Enums.YES_NO.YES.getCode() == approvalBean.getApprovalType()){
@@ -224,7 +254,6 @@ public class CustomerInfoService {
     }
 
     //审批通过
-    @Transactional
     private void approvalYes(ApprovalBean approvalBean){
         CustomerReport customerReport = customerReportMapper.selectByPrimaryKey(approvalBean.getReportId());
         customerReport.setApproveUser(approvalBean.getApproveUser());
@@ -234,13 +263,12 @@ public class CustomerInfoService {
         }else{
             customerReport.setReportSales(approvalBean.getSalesId());
         }
-        customerReport.setReportStatus(Enums.CUSTOMER_APPROVE_STATUS.REPORT.getCode());
+        customerReport.setReportStatus(Enums.CUSTOMER_APPROVE_STATUS.APPROVAL.getCode());
         customerReportMapper.updateByPrimaryKey(customerReport);
         approvalNo(approvalBean);
     }
 
     //审批驳回
-    @Transactional
     private void approvalNo(ApprovalBean approvalBean){
         if(Enums.YES_NO.YES.getCode() == approvalBean.getApprovalType()){
             List<CustomerReport> customerReports = customerReportMapper.selectReject(approvalBean.getCustId(), approvalBean.getReportId());
@@ -295,15 +323,15 @@ public class CustomerInfoService {
     }
 
     private void saveCustomerDetail(CustomerInfo customerInfo, Integer reportId, Integer userId){
-        saveContact(customerInfo.getCustomerContacts(), reportId, userId);
-        saveProduct(customerInfo.getCustomerProducts(), reportId, userId);
-        saveFile(customerInfo.getFiles(), reportId);
+        saveContact(customerInfo.getCustomerContacts(), customerInfo.getId(), reportId, userId);
+        saveProduct(customerInfo.getCustomerProducts(), customerInfo.getId(), reportId, userId);
+        saveFile(customerInfo.getFiles(), customerInfo.getId(), reportId);
         saveBank(customerInfo.getCustBankInfo(), reportId, userId);
-        saveRelationship(customerInfo.getRelationships(), reportId, userId);
-        saveInvoice(customerInfo.getInvoiceInfos(), reportId, userId);
-        saveSales(customerInfo.getSales(), reportId, userId);
-        saveAddress(customerInfo.getAddresses(), reportId, userId);
-        saveAccountTeam(customerInfo.getAccountTeams(), reportId, userId);
+        saveRelationship(customerInfo.getRelationships(), customerInfo.getId(), reportId, userId);
+        saveInvoice(customerInfo.getInvoiceInfos(), customerInfo.getId(), reportId, userId);
+        saveSales(customerInfo.getSales(), customerInfo.getId(), reportId, userId);
+        saveAddress(customerInfo.getAddresses(), customerInfo.getId(), reportId, userId);
+        saveAccountTeam(customerInfo.getAccountTeams(), customerInfo.getId(), reportId, userId);
         saveAssetsInformation(customerInfo.getAssetsInformations());
         saveBusinessInformation(customerInfo.getBusinessInformations());
     }
@@ -354,12 +382,13 @@ public class CustomerInfoService {
 
 
     /*联系人信息*/
-    private void saveContact(List<CustomerContact> customerContacts, Integer reportId, Integer userId){
+    private void saveContact(List<CustomerContact> customerContacts, Integer custId, Integer reportId, Integer userId){
         if(null == customerContacts || customerContacts.isEmpty()){
             return;
         }
         customerContacts.forEach(e->{
             if(null == e.getContactId()){
+                e.setCustId(custId);
                 e.setReportId(reportId);
                 e.setInsertUser(userId);
                 customerContactMapper.insertSelective(e);
@@ -370,12 +399,13 @@ public class CustomerInfoService {
         });
     }
     /*产品信息*/
-    private void saveProduct(List<CustomerProduct> customerProducts, Integer reportId, Integer userId){
+    private void saveProduct(List<CustomerProduct> customerProducts, Integer custId, Integer reportId, Integer userId){
         if(null == customerProducts || customerProducts.isEmpty()){
             return;
         }
         customerProducts.forEach(e->{
             if(null == e.getProId()){
+                e.setCustId(custId);
                 e.setReportId(reportId);
                 e.setInsertUser(userId);
                 customerProductMapper.insertSelective(e);
@@ -386,12 +416,13 @@ public class CustomerInfoService {
         });
     }
     /*客户附件*/
-    private void saveFile(List<CustomerFile> customerFiles, Integer reportId){
+    private void saveFile(List<CustomerFile> customerFiles, Integer custId, Integer reportId){
         if(null == customerFiles || customerFiles.isEmpty()){
             return;
         }
         customerFiles.forEach(e->{
             if(null == e.getFileId()){
+                e.setCustId(custId);
                 e.setReportId(reportId);
                 customerFileMapper.insertSelective(e);
             }else{
@@ -400,12 +431,13 @@ public class CustomerInfoService {
         });
     }
     /**关系**/
-    private void saveRelationship(List<CustCorporateRelationship> relationships, Integer reportId, Integer userId){
+    private void saveRelationship(List<CustCorporateRelationship> relationships, Integer custId, Integer reportId, Integer userId){
         if(null == relationships || relationships.isEmpty()){
             return;
         }
         relationships.forEach(e->{
             if(null == e.getShipId()){
+                e.setCustId(custId);
                 e.setReportId(reportId);
                 e.setCreateUser(userId);
                 custCorporateRelationshipMapper.insertSelective(e);
@@ -416,12 +448,13 @@ public class CustomerInfoService {
         });
     }
     /**开票信息**/
-    private void saveInvoice(List<CustInvoiceInfo> invoiceInfos, Integer reportId, Integer userId){
+    private void saveInvoice(List<CustInvoiceInfo> invoiceInfos, Integer custId, Integer reportId, Integer userId){
         if(null == invoiceInfos || invoiceInfos.isEmpty()){
             return;
         }
         invoiceInfos.forEach(e->{
             if(null == e.getInvoiceId()){
+                e.setCustId(custId);
                 e.setReportId(reportId);
                 e.setCreateUser(userId);
                 custInvoiceInfoMapper.insertSelective(e);
@@ -432,12 +465,13 @@ public class CustomerInfoService {
         });
     }
     /**销售信息**/
-    private void saveSales(List<CustSales> basicSales, Integer reportId, Integer userId){
+    private void saveSales(List<CustSales> basicSales, Integer custId, Integer reportId, Integer userId){
         if(null == basicSales || basicSales.isEmpty()){
             return;
         }
         basicSales.forEach(e->{
             if(null == e.getSalesId()){
+                e.setCustId(custId);
                 e.setReportId(reportId);
                 e.setCreateUser(userId);
                 custSalesMapper.insertSelective(e);
@@ -448,12 +482,13 @@ public class CustomerInfoService {
         });
     }
     /**地址信息**/
-    private void saveAddress(List<CustomerAddress> addresses, Integer reportId, Integer userId){
+    private void saveAddress(List<CustomerAddress> addresses, Integer custId,Integer reportId, Integer userId){
         if(null == addresses || addresses.isEmpty()){
             return;
         }
         addresses.forEach(e->{
             if(null == e.getAddressId()){
+                e.setCustId(custId);
                 e.setReportId(reportId);
                 e.setCrateUser(userId);
                 customerAddressMapper.insertSelective(e);
@@ -464,12 +499,13 @@ public class CustomerInfoService {
         });
     }
     /*客户团队*/
-    private void saveAccountTeam(List<CustomerAccountTeam> accountTeams, Integer reportId, Integer userId){
+    private void saveAccountTeam(List<CustomerAccountTeam> accountTeams, Integer custId, Integer reportId, Integer userId){
         if(null == accountTeams || accountTeams.isEmpty()){
             return;
         }
         accountTeams.forEach(e->{
             if(null == e.getTeamId()){
+                e.setCustId(custId);
                 e.setReportId(reportId);
                 e.setCreateUser(userId);
                 customerAccountTeamMapper.insertSelective(e);

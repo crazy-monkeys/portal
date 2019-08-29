@@ -198,14 +198,17 @@ public class Enums {
     }
 
     /**
-     *报备状态 0-初始化 1-已报备 2-可报备 3-报备中 4-驳回
+     *报备状态 0-初始化 1-可报备 2-审批中 3-审批通过 4-审批驳回
      */
     public enum CUSTOMER_APPROVE_STATUS{
         WAIT_SUBMIT(0, "初始化"),
-        WAIT_APPROVAL(3, "报备中"),
-        REPORT(1," 已报备"),
-        WAIT_REPORT(2,"可报备"),
-        REJECT(4, "被驳回");
+        WAIT_REPORT(1,"可报备"),
+        WAIT_APPROVAL(2, "审批中"),
+        APPROVAL(3," 审批通过"),
+        REJECT(4, "审批驳回"),
+
+        REPORT(5,"已报备"),
+        UNREPORT(6,"未报备"),;
 
         private Integer code;
         private String desc;

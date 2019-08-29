@@ -13,7 +13,7 @@ public class CustomerReport {
 
     private Integer customerId;
 
-   /* 报备状态 0-初始化 1-已报备 2-可报备 3-报备中*/
+   /* 报备状态 0-初始化 1-可报备 2-报备中 3-审批通过 4-审批驳回*/
     private Integer reportStatus;
 
     private Date reportTime;

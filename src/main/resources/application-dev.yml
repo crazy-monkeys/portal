@@ -24,7 +24,7 @@ spring:
 
 file:
   path:
-    root: /Users/lee/Documents/job_code/portal_file #公用基础路径
+    root: /Users/weiying/Documents/job_code/portal_file #公用基础路径
     root-local: ${file.path.root}/local #portal系统内文件地址入口
     root-thrid-push: ${file.path.root}/push_thrid #portal对接第三方文件出口地址
     root-thrid-pull: ${file.path.root}/pull_thrid #第三方传输文件至portal入口地址
@@ -47,15 +47,15 @@ api:
     bi-test: https://e600180-hcioem.hcisbt.cn1.hana.ondemand.com/http/
     mdm-product: https://e600180-hcioem.hcisbt.cn1.hana.ondemand.com/http/MDMProductMaster
     ecc-credit: https://e600180-hcioem.hcisbt.cn1.hana.ondemand.com:443/cxf/CUSTOMERCREDIT
-    bpm.idr.approval: http://shbpmqa:7780/ProjectWeb/Service/IPSEService.asmx/DoSubmit
+    bpm.idr.approval: https://e600180-hcioem.hcisbt.cn1.hana.ondemand.com/http/PORTAL/BPM/PROJECT_WEB_SUBMIT
     rebate.price.role: https://e600180-hcioem.hcisbt.cn1.hana.ondemand.com/http/BI/PORTAL/GET_CALCULATED_ALL_REBATE_DATA_PRICE_ROLE
     rebate.sales.details: https://e600180-hcioem.hcisbt.cn1.hana.ondemand.com/http/BI/PORTAL/GET_CALCULATED_ALL_REBATE_DATA_SALES_DETAILS
 
 ftp:
-  host: 10.45.80.12
+  host: 10.29.24.20
   port: 21
-  username: ftp_test
-  password: '!QAZ2wsx'
+  username: crmftp
+  password: '123@qwe'
   path:
     handover:
       push: /handover/push/
