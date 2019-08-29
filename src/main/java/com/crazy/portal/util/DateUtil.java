@@ -958,4 +958,18 @@ public class DateUtil {
 		}
 		return format(date, WEB_FORMAT);
 	}
+
+	/**
+	 * 获取下一个月
+	 * @return
+	 */
+	public static String getPerMonth() {
+		SimpleDateFormat dft = new SimpleDateFormat("yyyyMM");
+		Calendar calendar = Calendar.getInstance();
+		calendar.add(Calendar.MONTH, 1);
+		return dft.format(calendar.getTime());
+	}
+
+
+
 }

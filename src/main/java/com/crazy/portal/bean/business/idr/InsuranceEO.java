@@ -66,4 +66,16 @@ public class InsuranceEO extends BaseRowModel {
         }
         return null;
     }
+
+    public String getReceiveGoodsDate() {
+        if(StringUtil.isNotBlank(receiveGoodsDate)){
+            try{
+                return DateUtil.getFlexibleDate(receiveGoodsDate);
+            }catch (Exception e){
+                log.error("get flexible date error:", e);
+                return modifyDate;
+            }
+        }
+        return null;
+    }
 }

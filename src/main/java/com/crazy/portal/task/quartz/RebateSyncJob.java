@@ -3,6 +3,7 @@ package com.crazy.portal.task.quartz;
 
 import com.crazy.portal.config.quartz.annotation.Task;
 import com.crazy.portal.entity.task.ScheduleJob;
+import com.crazy.portal.service.business.RebateService;
 import com.crazy.portal.service.task.ScheduleJobService;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.DisallowConcurrentExecution;
@@ -20,11 +21,13 @@ public class RebateSyncJob implements Job{
 
     @Resource
     private ScheduleJobService scheduleJobService;
+    @Resource
+    private RebateService rebateService;
 
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
         try {
-
+            rebateService.rebateDataSync();
         }catch (Exception e){
             log.error("rebate同步异常", e);
         }
