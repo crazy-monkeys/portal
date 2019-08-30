@@ -63,5 +63,5 @@ ftp:
   password: '123@qwe'
   path:
     handover:
-      push: bitest/upload/
-      pull: bitest/download/
+      push: /home/crmftp/bitest/upload/
+      pull: /home/crmftp/bitest/download/
