@@ -23,9 +23,9 @@ public class AgencyRate {
     //产品类型
     private String productType;
     //基准代理费率
-    private String basicAgencyRate;
+    private Float basicAgencyRate;
     //浮动代理费率
-    private String floatAgencyRate;
+    private Float floatAgencyRate;
     //有效开始时间
     private String validStartDate;
     @JsonIgnore

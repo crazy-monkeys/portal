@@ -1,7 +1,9 @@
 package com.crazy.portal.service.rate;
 
 import com.alibaba.excel.EasyExcelFactory;
+import com.alibaba.excel.metadata.BaseRowModel;
 import com.alibaba.excel.metadata.Sheet;
+import com.alibaba.excel.support.ExcelTypeEnum;
 import com.crazy.portal.bean.common.Constant;
 import com.crazy.portal.bean.rate.AgencyRateQueryBean;
 import com.crazy.portal.config.exception.BusinessException;
@@ -15,9 +17,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * @Describe 代理商费率
@@ -42,12 +44,12 @@ public class AgencyRateService {
         agencyRateMapper.inActive();
         List<AgencyRate> results = new ArrayList<>();
         for (MultipartFile file : files) {
-            List<Object> records = EasyExcelFactory.read(file.getInputStream(), new Sheet(1, 1, AgencyRateQueryBean.class));
+            List<Object> records = ExcelUtils.readExcel(file, AgencyRateQueryBean.class);
             records.forEach(e->{
                 try {
                     AgencyRate record = new AgencyRate();
                     BeanUtils.copyNotNullFields(e , record);
-                    if(record.getCustomerType().equals("B1")){
+                    if(record.getCustomerType() != null && record.getCustomerType().equals("B1")){
                         record.setCustomerType("Account Market");
                     }else{
                         record.setCustomerType("Mass Market");
@@ -68,5 +70,15 @@ public class AgencyRateService {
 
     public void approveRate(){
         agencyRateMapper.approve();
+    }
+
+    /**
+     * 模板下载
+     * @param response
+     */
+    public void templateDownload(HttpServletResponse response) throws Exception{
+        Map<String, List<? extends BaseRowModel>> resultMap = new HashMap<>();
+        resultMap.put("sheet1", Collections.singletonList(new AgencyRateQueryBean()));
+        ExcelUtils.createExcelStreamMutilByEaysExcel(response, resultMap, "代理费率", ExcelTypeEnum.XLSX);
     }
 }

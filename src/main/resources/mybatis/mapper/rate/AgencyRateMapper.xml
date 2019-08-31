@@ -9,8 +9,8 @@
     <result column="product_level_two" jdbcType="VARCHAR" property="productLevelTwo" />
     <result column="product_level_three" jdbcType="VARCHAR" property="productLevelThree" />
     <result column="product_type" jdbcType="VARCHAR" property="productType" />
-    <result column="basic_agency_rate" jdbcType="VARCHAR" property="basicAgencyRate" />
-    <result column="float_agency_rate" jdbcType="VARCHAR" property="floatAgencyRate" />
+    <result column="basic_agency_rate" jdbcType="DECIMAL" property="basicAgencyRate" />
+    <result column="float_agency_rate" jdbcType="DECIMAL" property="floatAgencyRate" />
     <result column="valid_start_date" jdbcType="VARCHAR" property="validStartDate" />
     <result column="active" jdbcType="INTEGER" property="active" />
     <result column="create_user_id" jdbcType="INTEGER" property="createUserId" />
@@ -106,10 +106,10 @@
         #{productType,jdbcType=VARCHAR},
       </if>
       <if test="basicAgencyRate != null">
-        #{basicAgencyRate,jdbcType=VARCHAR},
+        #{basicAgencyRate,jdbcType=DECIMAL},
       </if>
       <if test="floatAgencyRate != null">
-        #{floatAgencyRate,jdbcType=VARCHAR},
+        #{floatAgencyRate,jdbcType=DECIMAL},
       </if>
       <if test="validStartDate != null">
         #{validStartDate,jdbcType=VARCHAR},
@@ -153,10 +153,10 @@
         product_type = #{productType,jdbcType=VARCHAR},
       </if>
       <if test="basicAgencyRate != null">
-        basic_agency_rate = #{basicAgencyRate,jdbcType=VARCHAR},
+        basic_agency_rate = #{basicAgencyRate,jdbcType=DECIMAL},
       </if>
       <if test="floatAgencyRate != null">
-        float_agency_rate = #{floatAgencyRate,jdbcType=VARCHAR},
+        float_agency_rate = #{floatAgencyRate,jdbcType=DECIMAL},
       </if>
       <if test="validStartDate != null">
         valid_start_date = #{validStartDate,jdbcType=VARCHAR},
@@ -203,10 +203,10 @@
     <if test="productType != null and productType != ''">
       and product_type = #{productType}
     </if>
-    <if test="basicAgencyRate != null and basicAgencyRate != ''">
+    <if test="basicAgencyRate != null">
       and basic_agency_rate = #{basicAgencyRate}
     </if>
-    <if test="floatAgencyRate != null and floatAgencyRate != ''">
+    <if test="floatAgencyRate != null">
       and float_agency_rate = #{floatAgencyRate}
     </if>
     <if test="validStartDate != null and validStartDate != ''">

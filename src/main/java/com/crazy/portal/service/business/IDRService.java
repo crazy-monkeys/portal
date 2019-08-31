@@ -121,7 +121,6 @@ public class IDRService {
         if(fileType.equals(Enums.BusinessFileType.IDR.getCode())){
             Enums.BusinessIdrType idrType = Enums.BusinessIdrType.getDescByCode(type);
             List<BaseRowModel> records = ExcelUtils.readExcel(fileVo.getFullPath(), idrType.getType().getClass());
-
             result.setIdrList(records);
         }
         if(fileType.equals(Enums.BusinessFileType.FINANCIAL_CLOSURE.getCode())){
