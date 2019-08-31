@@ -2,6 +2,7 @@ package com.crazy.portal.bean.rate;
 
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.excel.metadata.BaseRowModel;
+import com.crazy.portal.config.exception.BusinessException;
 import com.crazy.portal.util.DateUtil;
 import com.crazy.portal.util.StringUtil;
 import lombok.Data;
@@ -39,15 +40,7 @@ public class AgencyRateQueryBean extends BaseRowModel {
     private String endTime;
 
 
-    public String getValidStartDate() {
-        if(StringUtil.isNotBlank(validStartDate)){
-            try{
-                return DateUtil.getFlexibleDate(validStartDate);
-            }catch (Exception e){
-                log.error("get flexible date error:", e);
-                return validStartDate;
-            }
-        }
-        return null;
+    public void setValidStartDate(String validStartDate) {
+        this.validStartDate = DateUtil.getFlexDate(validStartDate);
     }
 }

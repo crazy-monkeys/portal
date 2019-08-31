@@ -27,7 +27,6 @@ import java.util.*;
  * @Date 2019-08-10
  */
 @Slf4j
-@Transactional
 @Service
 public class AgencyRateService {
 
@@ -40,6 +39,7 @@ public class AgencyRateService {
         return new PageInfo<>(list);
     }
 
+    @Transactional
     public List<AgencyRate> uploadAgencyRateFile(MultipartFile[] files, Integer userId) throws Exception {
         agencyRateMapper.inActive();
         List<AgencyRate> results = new ArrayList<>();
@@ -48,10 +48,10 @@ public class AgencyRateService {
             records.forEach(e->{
                 try {
                     AgencyRate record = new AgencyRate();
-                    BeanUtils.copyNotNullFields(e , record);
-                    if(record.getCustomerType() != null && record.getCustomerType().equals("B1")){
+                    BeanUtils.copyNotNullFields(e, record);
+                    if (record.getCustomerType() != null && record.getCustomerType().equals("B1")) {
                         record.setCustomerType("Account Market");
-                    }else{
+                    } else {
                         record.setCustomerType("Mass Market");
                     }
                     results.add(record);
@@ -59,6 +59,8 @@ public class AgencyRateService {
                     record.setCreateUserId(userId);
                     record.setCreateTime(DateUtil.getCurrentTS());
                     agencyRateMapper.insertSelective(record);
+                } catch (BusinessException ex){
+                    throw ex;
                 } catch (Exception ex) {
                     log.error("保存代理费率异常", ex);
                     throw new BusinessException(ErrorCodes.BusinessEnum.AGENCY_RATE_UPLOAD_EXCEPTION);

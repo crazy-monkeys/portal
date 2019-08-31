@@ -39,16 +39,8 @@ public class DiffPriceEO extends BaseRowModel {
     private String customerName;
 
     @SuppressWarnings("all")
-    public String getShipmentDate() {
-        if(StringUtil.isNotBlank(shipmentDate)){
-            try{
-                return DateUtil.getFlexibleDate(shipmentDate);
-            }catch (Exception e){
-                log.error("get flexible date error:", e);
-                return shipmentDate;
-            }
-        }
-        return null;
+    public void setShipmentDate(String shipmentDate) {
+        this.shipmentDate = DateUtil.getFlexDate(shipmentDate);
     }
 
 }

@@ -7,6 +7,8 @@ import com.crazy.portal.util.StringUtil;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.Date;
+
 @Slf4j
 @Data
 public class InsuranceEO extends BaseRowModel {
@@ -42,40 +44,17 @@ public class InsuranceEO extends BaseRowModel {
     @ExcelProperty(value = "备注", index = 14)
     private String remark;
 
+
     @SuppressWarnings("all")
-    public String getAdjustDate() {
-        if(StringUtil.isNotBlank(adjustDate)){
-            try{
-                return DateUtil.getFlexibleDate(adjustDate);
-            }catch (Exception e){
-                log.error("get flexible date error:", e);
-                return adjustDate;
-            }
-        }
-        return null;
+    public void setAdjustDate(String adjustDate) {
+        this.adjustDate = DateUtil.getFlexDate(adjustDate);
     }
     @SuppressWarnings("all")
-    public String getModifyDate() {
-        if(StringUtil.isNotBlank(modifyDate)){
-            try{
-                return DateUtil.getFlexibleDate(modifyDate);
-            }catch (Exception e){
-                log.error("get flexible date error:", e);
-                return modifyDate;
-            }
-        }
-        return null;
+    public void setModifyDate(String modifyDate) {
+        this.modifyDate = DateUtil.getFlexDate(modifyDate);
     }
 
-    public String getReceiveGoodsDate() {
-        if(StringUtil.isNotBlank(receiveGoodsDate)){
-            try{
-                return DateUtil.getFlexibleDate(receiveGoodsDate);
-            }catch (Exception e){
-                log.error("get flexible date error:", e);
-                return modifyDate;
-            }
-        }
-        return null;
+    public void setReceiveGoodsDate(String receiveGoodsDate) {
+        this.receiveGoodsDate = DateUtil.getFlexDate(receiveGoodsDate);
     }
 }
