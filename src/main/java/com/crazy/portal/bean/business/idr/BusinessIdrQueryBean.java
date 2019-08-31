@@ -25,7 +25,7 @@ public class BusinessIdrQueryBean extends PageBean {
     private String currency;
     //内部客户名
     private String inCustomerName;
-    //外部客户ID
-    private Integer outCustomerName;
+    //外部客户名
+    private String outCustomerName;
 
 }

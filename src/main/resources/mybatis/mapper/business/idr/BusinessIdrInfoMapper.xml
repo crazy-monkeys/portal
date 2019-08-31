@@ -8,6 +8,7 @@
     <result column="currency" jdbcType="VARCHAR" property="currency" />
     <result column="cr_amount" jdbcType="DECIMAL" property="crAmount" />
     <result column="in_customer_name" jdbcType="VARCHAR" property="inCustomerName" />
+    <result column="out_customer_name" jdbcType="VARCHAR" property="outCustomerName" />
     <result column="dealer_id" jdbcType="INTEGER" property="dealerId" />
     <result column="reson" jdbcType="VARCHAR" property="reson" />
     <result column="remark" jdbcType="VARCHAR" property="remark" />
@@ -22,7 +23,8 @@
     <result column="current_reviewer" jdbcType="VARCHAR" property="currentReviewer"></result>
   </resultMap>
   <sql id="Base_Column_List">
-    id, shipper_code, apply_time, currency, cr_amount, in_customer_name, dealer_id, reson, 
+    id, shipper_code, apply_time, currency, cr_amount, in_customer_name, out_customer_name,
+    dealer_id, reson,
     remark, type, create_id, create_time, update_id, update_time, status, company
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
@@ -56,6 +58,9 @@
       </if>
       <if test="inCustomerName != null">
         in_customer_name,
+      </if>
+      <if test="outCustomerName != null">
+        out_customer_name,
       </if>
       <if test="dealerId != null">
         dealer_id,
@@ -107,6 +112,9 @@
       <if test="inCustomerName != null">
         #{inCustomerName,jdbcType=VARCHAR},
       </if>
+      <if test="outCustomerName != null">
+        #{outCustomerName,jdbcType=VARCHAR},
+      </if>
       <if test="dealerId != null">
         #{dealerId,jdbcType=INTEGER},
       </if>
@@ -157,6 +165,9 @@
       <if test="inCustomerName != null">
         in_customer_name = #{inCustomerName,jdbcType=VARCHAR},
       </if>
+      <if test="outCustomerName != null">
+        out_customer_name = #{outCustomerName,jdbcType=VARCHAR},
+      </if>
       <if test="dealerId != null">
         dealer_id = #{dealerId,jdbcType=INTEGER},
       </if>
@@ -193,7 +204,7 @@
 
   <select id="selectByPage" resultMap="BaseResultMap" parameterType="com.crazy.portal.bean.business.idr.BusinessIdrQueryBean">
     select
-    a.id, a.shipper_code, a.apply_time, a.currency, a.cr_amount, a.in_customer_name, a.dealer_id, a.reson,
+    a.id, a.shipper_code, a.apply_time, a.currency, a.cr_amount, a.in_customer_name, a.out_customer_name, a.dealer_id, a.reson,
     a.remark, a.type, a.create_id, a.create_time, a.update_id, a.update_time, a.status, a.company, b.reviewed_people,
     b.current_reviewer
     from t_business_idr_info a
@@ -224,7 +235,10 @@
       and currency = #{currency}
     </if>
     <if test="inCustomerName != null and inCustomerName != ''">
-      and in_customer_name = #{inCustomerName}
+      and in_customer_name like concat('%',#{inCustomerName},'%')
+    </if>
+    <if test="outCustomerName != null and outCustomerName != ''">
+      and out_customer_name like concat('%',#{outCustomerName},'%')
     </if>
     order by create_time desc
   </select>

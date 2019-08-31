@@ -5,6 +5,7 @@ import com.crazy.portal.entity.cusotmer.CustomerInfo;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 public interface CustomerInfoMapper {
     int deleteByPrimaryKey(Integer id);
@@ -27,7 +28,7 @@ public interface CustomerInfoMapper {
 
     List<CustomerInfo> selectNameAndCodeByUserId(@Param("userId") Integer userId);
 
-    List<CustomerInfo> selectAllCustomer();
+    List<Map<String, Object>> selectAllCustomer();
 
     String selectEmailByCustName(@Param("custName")String custName);
 

@@ -129,6 +129,7 @@ public class IDRService {
         }
         result.setFileName(fileVo.getFileName());
         result.setFilePath(fileVo.getFullPath());
+        result.setFileType(fileType);
         fileCache.put(userId, fileVo.getFullPath());
         return result;
     }

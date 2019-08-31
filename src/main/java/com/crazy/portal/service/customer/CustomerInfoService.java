@@ -474,7 +474,7 @@ public class CustomerInfoService {
         return filePath.concat(File.separator).concat(CUST_FILE_PATH);
     }
 
-    public List<CustomerInfo> selectAllCustomer(){
+    public List<Map<String, Object>> selectAllCustomer(){
         return customerInfoMapper.selectAllCustomer();
     }
 }

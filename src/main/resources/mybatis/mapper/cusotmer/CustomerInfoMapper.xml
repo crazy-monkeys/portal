@@ -557,4 +557,9 @@
     inner join t_user u on cust.id = u.dealer_id
     where u.id=#{userId}
   </select>
+
+  <select id="selectAllCustomer" resultType="java.util.LinkedHashMap">
+    select id, out_code as outCode, cust_name as custName from t_customer_info
+    order by create_time desc
+  </select>
 </mapper>
