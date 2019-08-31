@@ -114,14 +114,14 @@ public class IDRService {
      * @return
      */
     @Transactional
-    public BusinessFileUploadBean upload(Integer id, Integer type, Integer fileType, BigDecimal crAmount, MultipartFile file, Integer userId) throws Exception{
+    public BusinessFileUploadBean upload(Integer id, Integer type, Integer fileType, BigDecimal crAmount, MultipartFile file, Integer userId){
         checkFileUploadParam(id, type, fileType, file);
         BusinessFileUploadBean result = new BusinessFileUploadBean();
         FileVO fileVo = FileUtil.upload(file, getIdrFilePath());
         if(fileType.equals(Enums.BusinessFileType.IDR.getCode())){
             Enums.BusinessIdrType idrType = Enums.BusinessIdrType.getDescByCode(type);
             List<BaseRowModel> records = ExcelUtils.readExcel(fileVo.getFullPath(), idrType.getType().getClass());
-            BusinessUtil.assertTrue((records != null && records.size() > 0), ErrorCodes.BusinessEnum.BUSINESS_FILE_IS_NULL);
+
             result.setIdrList(records);
         }
         if(fileType.equals(Enums.BusinessFileType.FINANCIAL_CLOSURE.getCode())){

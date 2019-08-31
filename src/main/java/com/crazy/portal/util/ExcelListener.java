@@ -17,7 +17,14 @@ public class ExcelListener<T> extends AnalysisEventListener<T> {
 
     @Override
     public void invoke(T t, AnalysisContext context) {
+        checkPropertyLength(t, context);
         data.add(t);
+    }
+
+    private void checkPropertyLength(T t, AnalysisContext context) {
+        int headCount = context.getExcelHeadProperty().getColumnPropertyList().size();
+        int classFieldCount = t.getClass().getDeclaredFields().length;
+        BusinessUtil.assertTrue(headCount == classFieldCount, ErrorCodes.BusinessEnum.EXCEL_PROPERTY_DIFF);
     }
 
     @Override

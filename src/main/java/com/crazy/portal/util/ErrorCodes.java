@@ -120,6 +120,7 @@ public class ErrorCodes {
         EXCEL_READ_ERROR(21001, "Excel数据读取异常", ""),
         EXCEL_TYPE_ERROR(21002, "请上传正确Excel文件", ""),
         EXCEL_WRITE_ERROR(21003, "Excel数据写入异常", ""),
+        EXCEL_PROPERTY_DIFF(21004, "Excel数据与此功能接收不一致，请核对", ""),
 
         //公告模块
         ANNOUNCEMENT_FILE_LIST_PARAM_EMPTY(30000, "请上传正确文件参数", ""),
@@ -156,7 +157,7 @@ public class ErrorCodes {
         //商务管理-保差退
         BUSINESS_TYPE_IS_NULL(70002, "保差退类型不能为空", ""),
         BUSINESS_FILE_TYPE_IS_NULL(70003, "文件类型不能为空", ""),
-        BUSINESS_FILE_IS_NULL(70004, "文件不能为空", ""),
+        BUSINESS_FILE_IS_NULL(70004, "文件数据不能为空", ""),
         BUSINESS_IDR_ID_IS_NULL(70005, "记录ID不能为空", ""),
         BUSINESS_IDRINFO_IS_NULL(70006, "信息不存在", ""),
         BUSINESS_IDR_STATUS_NOT_APPROVAL(70007, "该申请还未通过审核，请成功后再进行上传", ""),
