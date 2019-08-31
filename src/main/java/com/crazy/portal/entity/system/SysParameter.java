@@ -11,7 +11,7 @@ public class SysParameter {
 
     private Integer pFunction;
 
-    private Integer pValue;
+    private String pValue;
 
     private String zhName;
 

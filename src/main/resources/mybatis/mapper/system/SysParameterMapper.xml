@@ -5,7 +5,7 @@
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="p_model" jdbcType="INTEGER" property="pModel" />
     <result column="p_function" jdbcType="INTEGER" property="pFunction" />
-    <result column="p_value" jdbcType="INTEGER" property="pValue" />
+    <result column="p_value" jdbcType="VARCHAR" property="pValue" />
     <result column="zh_name" jdbcType="VARCHAR" property="zhName" />
     <result column="en_name" jdbcType="VARCHAR" property="enName" />
     <result column="active" jdbcType="INTEGER" property="active" />
@@ -89,7 +89,7 @@
         #{pFunction,jdbcType=INTEGER},
       </if>
       <if test="pValue != null">
-        #{pValue,jdbcType=INTEGER},
+        #{pValue,jdbcType=VARCHAR},
       </if>
       <if test="zhName != null">
         #{zhName,jdbcType=VARCHAR},
@@ -124,7 +124,7 @@
         p_function = #{pFunction,jdbcType=INTEGER},
       </if>
       <if test="pValue != null">
-        p_value = #{pValue,jdbcType=INTEGER},
+        p_value = #{pValue,jdbcType=VARCHAR},
       </if>
       <if test="zhName != null">
         zh_name = #{zhName,jdbcType=VARCHAR},
@@ -148,7 +148,7 @@
     update t_sys_parameter
     set p_model = #{pModel,jdbcType=INTEGER},
       p_function = #{pFunction,jdbcType=INTEGER},
-      p_value = #{pValue,jdbcType=INTEGER},
+      p_value = #{pValue,jdbcType=VARCHAR},
       zh_name = #{zhName,jdbcType=VARCHAR},
       en_name = #{enName,jdbcType=VARCHAR},
       active = #{active,jdbcType=INTEGER},
