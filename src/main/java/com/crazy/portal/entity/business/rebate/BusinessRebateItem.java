@@ -12,19 +12,28 @@ public class BusinessRebateItem {
     private Integer id;
 
     private Integer rebateId;
-
+    //代理商名
     private String dealerName;
-
+    //客户名称
     private String customerName;
-
+    //核算年月
+    private String accountYearMonth;
+    //出货年月
+    private String shipmentYearMonth;
+    //产品型号
+    private String product;
+    //平台
+    private String platform;
+    //释放金额
     private BigDecimal rebateAmount;
-
+    //执行方
     private String executor;
-
+    //执行方式
     private String executeStyle;
+    //通知日期
     @JSONField(format="yyyy-MM-dd HH:mm:ss")
     private Date noticeDate;
-
+    //备注
     private String remark;
     //状态 1-审核中 2-客户待确认 3-客户已确认 4-执行完成
     private Integer status;

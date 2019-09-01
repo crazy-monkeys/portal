@@ -6,6 +6,10 @@
     <result column="rebate_id" jdbcType="INTEGER" property="rebateId" />
     <result column="dealer_name" jdbcType="VARCHAR" property="dealerName" />
     <result column="customer_name" jdbcType="VARCHAR" property="customerName" />
+    <result column="account_year_month" jdbcType="VARCHAR" property="accountYearMonth" />
+    <result column="shipment_year_month" jdbcType="VARCHAR" property="shipmentYearMonth" />
+    <result column="product" jdbcType="VARCHAR" property="product"/>
+    <result column="platform" jdbcType="VARCHAR" property="platform"/>
     <result column="rebate_amount" jdbcType="DECIMAL" property="rebateAmount" />
     <result column="executor" jdbcType="VARCHAR" property="executor"/>
     <result column="execute_style" jdbcType="VARCHAR" property="executeStyle" />
@@ -19,7 +23,10 @@
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, rebate_id, dealer_name, customer_name, rebate_amount, executor, execute_style,
+    id, rebate_id, dealer_name, customer_name,
+    account_year_month, shipment_year_month,
+    product, platform,
+    rebate_amount, executor, execute_style,
     notice_date, remark,
     status, active, create_id, create_time, update_id, update_time
   </sql>
@@ -48,6 +55,18 @@
       </if>
       <if test="customerName != null">
         customer_name,
+      </if>
+      <if test="accountYearMonth != null">
+        account_year_month,
+      </if>
+      <if test="shipmentYearMonth != null">
+        shipment_year_month,
+      </if>
+      <if test="product != null">
+        product,
+      </if>
+      <if test="platform != null">
+        platform,
       </if>
       <if test="rebateAmount != null">
         rebate_amount,
@@ -96,6 +115,18 @@
       <if test="customerName != null">
         #{customerName,jdbcType=VARCHAR},
       </if>
+      <if test="accountYearMonth != null">
+        #{accountYearMonth,jdbcType=VARCHAR},
+      </if>
+      <if test="shipmentYearMonth != null">
+        #{shipmentYearMonth,jdbcType=VARCHAR},
+      </if>
+      <if test="product != null">
+        #{product,jdbcType=VARCHAR},
+      </if>
+      <if test="platform != null">
+        #{platform,jdbcType=VARCHAR},
+      </if>
       <if test="rebateAmount != null">
         #{rebateAmount,jdbcType=DECIMAL},
       </if>
@@ -142,6 +173,18 @@
       </if>
       <if test="customerName != null">
         customer_name = #{customerName,jdbcType=VARCHAR},
+      </if>
+      <if test="accountYearMonth != null">
+        account_year_month = #{accountYearMonth,jdbcType=VARCHAR},
+      </if>
+      <if test="shipmentYearMonth != null">
+        shipment_year_month = #{shipmentYearMonth,jdbcType=VARCHAR},
+      </if>
+      <if test="product != null">
+        product = #{product,jdbcType=VARCHAR},
+      </if>
+      <if test="platform != null">
+        platform = #{platform,jdbcType=VARCHAR},
       </if>
       <if test="rebateAmount != null">
         rebate_amount = #{rebateAmount,jdbcType=DECIMAL},

@@ -117,6 +117,26 @@ public class CallApiUtils {
     }
 
     /**
+     * 排除JSON字符串中的"和\字符
+     * @param message
+     * @return
+     */
+    public static String getJsonMessage(String message){
+        if(StringUtil.isBlank(message)){
+            return message;
+        }
+        String firstChar = message.substring(0, 1);
+        String lastChar = message.substring(message.length() - 1, message.length());
+        if(firstChar.equals("\"") && lastChar.equals("\"")){
+            message = message.substring(1, message.length() - 1);
+        }
+        if(message.indexOf("\\") != -1){
+            message = message.replaceAll("\\\\", "");
+        }
+        return message;
+    }
+
+    /**
      * 同步rebate金额信息
      * @param startDate 起始年月
      * @param endDate 结束年月
@@ -125,7 +145,7 @@ public class CallApiUtils {
      */
     public static String syncRebatePriceRoleData(String startDate, String endDate) throws IOException{
         String url = REBATE_PRICE_ROLE_URL.concat("?sStartYearMonth=").concat(startDate).concat("&sEndYearMonth=").concat(endDate);
-        return HttpClientUtils.get(url, REBATE_USERNAME, REBATE_PASSWORD);
+        return getJsonMessage(HttpClientUtils.get(url, REBATE_USERNAME, REBATE_PASSWORD));
     }
 
     /**
@@ -137,6 +157,6 @@ public class CallApiUtils {
      */
     public static String syncRebatePriceSalesDetails(String startDate, String endDate) throws IOException{
         String url = REBATE_SALES_DETAILS_URL.concat("?sStartYearMonth=").concat(startDate).concat("&sEndYearMonth=").concat(endDate);
-        return HttpClientUtils.get(url, REBATE_USERNAME, REBATE_PASSWORD);
+        return getJsonMessage(HttpClientUtils.get(url, REBATE_USERNAME, REBATE_PASSWORD));
     }
 }

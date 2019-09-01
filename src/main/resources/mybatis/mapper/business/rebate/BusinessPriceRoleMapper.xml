@@ -3,7 +3,6 @@
 <mapper namespace="com.crazy.portal.dao.business.rebate.BusinessPriceRoleMapper">
   <resultMap id="BaseResultMap" type="com.crazy.portal.entity.business.rebate.BusinessPriceRole">
     <id column="id" jdbcType="INTEGER" property="id" />
-    <result column="rebate_id" jdbcType="INTEGER" property="rebateId" />
     <result column="customer_code" jdbcType="VARCHAR" property="customerCode" />
     <result column="customer_name" jdbcType="VARCHAR" property="customerName" />
     <result column="customer_incode" jdbcType="VARCHAR" property="customerIncode" />
@@ -30,7 +29,7 @@
     <result column="insert_time" jdbcType="TIMESTAMP" property="insertTime" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, rebate_id, customer_code, customer_name, customer_incode, customer_short_name, 
+    id, customer_code, customer_name, customer_incode, customer_short_name,
     product, start_date, end_date, price, sales_limit_lower, sales_limit_upper, calculate_type, 
     rebate_excute_mode, price_proposer, shipment_type, related_customer_code, related_customer_name, 
     related_product, price_strategy_number, active, create_id, create_time, update_id, 
@@ -42,38 +41,22 @@
     from t_business_price_role
     where id = #{id,jdbcType=INTEGER}
   </select>
+
+  <select id="selectCountByPrimaryKey" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+    select count(1) from t_business_price_role
+    where id = #{id,jdbcType=INTEGER} and active = 1
+  </select>
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from t_business_price_role
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.crazy.portal.entity.business.rebate.BusinessPriceRole">
-    insert into t_business_price_role (id, rebate_id, customer_code, 
-      customer_name, customer_incode, customer_short_name, 
-      product, start_date, end_date, 
-      price, sales_limit_lower, sales_limit_upper, 
-      calculate_type, rebate_excute_mode, price_proposer, 
-      shipment_type, related_customer_code, related_customer_name, 
-      related_product, price_strategy_number, active, 
-      create_id, create_time, update_id, 
-      update_time, insert_time)
-    values (#{id,jdbcType=INTEGER}, #{rebateId,jdbcType=INTEGER}, #{customerCode,jdbcType=VARCHAR}, 
-      #{customerName,jdbcType=VARCHAR}, #{customerIncode,jdbcType=VARCHAR}, #{customerShortName,jdbcType=VARCHAR}, 
-      #{product,jdbcType=VARCHAR}, #{startDate,jdbcType=TIMESTAMP}, #{endDate,jdbcType=TIMESTAMP}, 
-      #{price,jdbcType=DECIMAL}, #{salesLimitLower,jdbcType=DECIMAL}, #{salesLimitUpper,jdbcType=DECIMAL}, 
-      #{calculateType,jdbcType=VARCHAR}, #{rebateExcuteMode,jdbcType=VARCHAR}, #{priceProposer,jdbcType=VARCHAR}, 
-      #{shipmentType,jdbcType=VARCHAR}, #{relatedCustomerCode,jdbcType=VARCHAR}, #{relatedCustomerName,jdbcType=VARCHAR}, 
-      #{relatedProduct,jdbcType=VARCHAR}, #{priceStrategyNumber,jdbcType=VARCHAR}, #{active,jdbcType=INTEGER}, 
-      #{createId,jdbcType=INTEGER}, #{createTime,jdbcType=VARCHAR}, #{updateId,jdbcType=INTEGER}, 
-      #{updateTime,jdbcType=TIMESTAMP}, #{insertTime,jdbcType=TIMESTAMP})
-  </insert>
+
   <insert id="insertSelective" parameterType="com.crazy.portal.entity.business.rebate.BusinessPriceRole">
     insert into t_business_price_role
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
-      </if>
-      <if test="rebateId != null">
-        rebate_id,
       </if>
       <if test="customerCode != null">
         customer_code,
@@ -152,9 +135,6 @@
       <if test="id != null">
         #{id,jdbcType=INTEGER},
       </if>
-      <if test="rebateId != null">
-        #{rebateId,jdbcType=INTEGER},
-      </if>
       <if test="customerCode != null">
         #{customerCode,jdbcType=VARCHAR},
       </if>
@@ -232,9 +212,6 @@
   <update id="updateByPrimaryKeySelective" parameterType="com.crazy.portal.entity.business.rebate.BusinessPriceRole">
     update t_business_price_role
     <set>
-      <if test="rebateId != null">
-        rebate_id = #{rebateId,jdbcType=INTEGER},
-      </if>
       <if test="customerCode != null">
         customer_code = #{customerCode,jdbcType=VARCHAR},
       </if>
@@ -310,40 +287,15 @@
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.crazy.portal.entity.business.rebate.BusinessPriceRole">
-    update t_business_price_role
-    set rebate_id = #{rebateId,jdbcType=INTEGER},
-      customer_code = #{customerCode,jdbcType=VARCHAR},
-      customer_name = #{customerName,jdbcType=VARCHAR},
-      customer_incode = #{customerIncode,jdbcType=VARCHAR},
-      customer_short_name = #{customerShortName,jdbcType=VARCHAR},
-      product = #{product,jdbcType=VARCHAR},
-      start_date = #{startDate,jdbcType=TIMESTAMP},
-      end_date = #{endDate,jdbcType=TIMESTAMP},
-      price = #{price,jdbcType=DECIMAL},
-      sales_limit_lower = #{salesLimitLower,jdbcType=DECIMAL},
-      sales_limit_upper = #{salesLimitUpper,jdbcType=DECIMAL},
-      calculate_type = #{calculateType,jdbcType=VARCHAR},
-      rebate_excute_mode = #{rebateExcuteMode,jdbcType=VARCHAR},
-      price_proposer = #{priceProposer,jdbcType=VARCHAR},
-      shipment_type = #{shipmentType,jdbcType=VARCHAR},
-      related_customer_code = #{relatedCustomerCode,jdbcType=VARCHAR},
-      related_customer_name = #{relatedCustomerName,jdbcType=VARCHAR},
-      related_product = #{relatedProduct,jdbcType=VARCHAR},
-      price_strategy_number = #{priceStrategyNumber,jdbcType=VARCHAR},
-      active = #{active,jdbcType=INTEGER},
-      create_id = #{createId,jdbcType=INTEGER},
-      create_time = #{createTime,jdbcType=VARCHAR},
-      update_id = #{updateId,jdbcType=INTEGER},
-      update_time = #{updateTime,jdbcType=TIMESTAMP},
-      insert_time = #{insertTime,jdbcType=TIMESTAMP}
-    where id = #{id,jdbcType=INTEGER}
-  </update>
 
   <select id="selectByRebateId" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from t_business_price_role
-    where rebate_id = #{rebateId,jdbcType=INTEGER}
+    where id in (
+      select price_role_id from t_business_sales_detail
+      where rebate_id = #{rebateId,jdbcType=INTEGER} and active = 1
+    ) and active = 1
+    order by insert_time desc
   </select>
 </mapper>

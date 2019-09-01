@@ -221,51 +221,80 @@ public class IDRService {
 
     public void submitApprovalToBPM(BusinessIdrInfo bean) throws Exception{
         IdrApprovalSubmitBean submitBean = new IdrApprovalSubmitBean();
-        submitBean.setType(getApprovalSubmitType(bean.getType()));
-        submitBean.setShipperCode(bean.getShipperCode());
-        submitBean.setCompany(bean.getCompany());
-        submitBean.setCurrency(bean.getCurrency());
-        submitBean.setInternalCustomer(bean.getInCustomerName());
-        submitBean.setExternalCustomer(bean.getOutCustomerName());
-        submitBean.setReason(bean.getReson());
-        submitBean.setSumRemark(bean.getRemark());
-        submitBean.setInsuredPriceItem(getInsuredProceItem(bean));
-        submitBean.setRefundPriceItem(getRefundPriceItem(bean));
-        submitBean.setReturnGoods(getReturnGoods(bean));
-        JSONObject requestBodyJson = new JSONObject();
-        requestBodyJson.put("data", submitBean);
-        String requestBody = JSON.toJSONString(requestBodyJson);
-        log.info("IDR审批申请提交至BPM");
-        log.info("requestBody:" + requestBody);
-        String responseBody = CallApiUtils.portalSubmitApprovalToBPM(requestBody);
-        log.info("responseBody:" + responseBody);
-        BusinessUtil.assertTrue(StringUtil.isNotBlank(responseBody), ErrorCodes.BusinessEnum.BUSINESS_IDR_SUBMIT_RESULT_IS_NULL);
-        IdrApprovalSubmitResultBean resultBean = JSON.toJavaObject(JSON.parseObject(responseBody).getJSONObject("d"), IdrApprovalSubmitResultBean.class);
-        if(resultBean.getResult().equals(Enums.BusinessIdrApprovalSubmitResult.FAILED.getCode())){
-            throw new BusinessException(ErrorCodes.BusinessEnum.BUSINESS_IDR_SUBMIT_RESULT_FAIL.getCode(), resultBean.getMessage());
+        Set<String> typeSet = getApprovalSubmitType(bean);
+        for(String type : typeSet){
+            submitBean.setType(type);
+            submitBean.setShipperCode(bean.getShipperCode());
+            submitBean.setCompany(bean.getCompany());
+            submitBean.setCurrency(bean.getCurrency());
+            submitBean.setInternalCustomer(bean.getInCustomerName());
+            submitBean.setExternalCustomer(bean.getOutCustomerName());
+            submitBean.setReason(bean.getReson());
+            submitBean.setSumRemark(bean.getRemark());
+            submitBean.setInsuredPriceItem(getInsuredProceItem(bean));
+            submitBean.setRefundPriceItem(getRefundPriceItem(bean));
+            submitBean.setReturnGoods(getReturnGoods(bean));
+            submitBean.setExchangeGoods(getExchangeGoods(bean));
+            JSONObject requestBodyJson = new JSONObject();
+            requestBodyJson.put("data", submitBean);
+            String requestBody = JSON.toJSONString(requestBodyJson);
+            log.info("IDR审批申请提交至BPM");
+            log.info("requestBody:" + requestBody);
+            String responseBody = CallApiUtils.portalSubmitApprovalToBPM(requestBody);
+            log.info("responseBody:" + responseBody);
+            BusinessUtil.assertTrue(StringUtil.isNotBlank(responseBody), ErrorCodes.BusinessEnum.BUSINESS_IDR_SUBMIT_RESULT_IS_NULL);
+            IdrApprovalSubmitResultBean resultBean = JSON.toJavaObject(JSON.parseObject(responseBody).getJSONObject("d"), IdrApprovalSubmitResultBean.class);
+            if(resultBean.getResult().equals(Enums.BusinessIdrApprovalSubmitResult.FAILED.getCode())){
+                throw new BusinessException(ErrorCodes.BusinessEnum.BUSINESS_IDR_SUBMIT_RESULT_FAIL.getCode(), resultBean.getMessage());
+            }
+            saveApprovalRecord(bean, submitBean, resultBean);
         }
-        saveApprovalRecord(bean, submitBean, resultBean);
     }
 
     private List<IdrApprovalSubmitBean.ReturnGood> getReturnGoods(BusinessIdrInfo bean) {
         List<IdrApprovalSubmitBean.ReturnGood> returnGoods = new ArrayList<>();
         if(bean.getType().equals(Enums.BusinessIdrType.RETURNS.getCode())){
             for(BusinessReturnsInfo e : bean.getRList()){
-                IdrApprovalSubmitBean.ReturnGood returnGood = new IdrApprovalSubmitBean.ReturnGood();
-                returnGood.setReturnBU(e.getBu());
-                returnGood.setReturnPDT(e.getPdt());
-                returnGood.setReturnPlatform(e.getPlatform());
-                returnGood.setReturnProModel(e.getProductModel());
-                returnGood.setReturnQuantity(e.getNum());
-                returnGood.setReturnPrice(e.getPrice() != null ? e.getPrice().floatValue() : null);
-                //TODO 代理费率，接口获取
-                returnGood.setAgenceRate(null);
-                returnGood.setReturnAmount(e.getAmount() != null ? e.getAmount().floatValue() : null);
-                returnGood.setReturnRemark(e.getRemark());
-                returnGoods.add(returnGood);
+                if(Enums.BusinessIdrReturnType.TH.getDesc().equals(e.getType())) {
+                    IdrApprovalSubmitBean.ReturnGood returnGood = new IdrApprovalSubmitBean.ReturnGood();
+                    returnGood.setReturnBU(e.getBu());
+                    returnGood.setReturnPDT(e.getPdt());
+                    returnGood.setReturnPlatform(e.getPlatform());
+                    returnGood.setReturnProModel(e.getProductModel());
+                    returnGood.setReturnQuantity(e.getNum());
+                    returnGood.setReturnPrice(e.getPrice() != null ? e.getPrice().floatValue() : null);
+                    //TODO 代理费率，接口获取
+                    returnGood.setAgenceRate(null);
+                    returnGood.setReturnAmount(e.getAmount() != null ? e.getAmount().floatValue() : null);
+                    returnGood.setReturnRemark(e.getRemark());
+                    returnGoods.add(returnGood);
+                }
             }
         }
         return returnGoods;
+    }
+
+    private List<IdrApprovalSubmitBean.ExchangeGood> getExchangeGoods(BusinessIdrInfo bean) {
+        List<IdrApprovalSubmitBean.ExchangeGood> exchangeGoods = new ArrayList<>();
+        if(bean.getType().equals(Enums.BusinessIdrType.RETURNS.getCode())){
+            for(BusinessReturnsInfo e : bean.getRList()){
+                if(Enums.BusinessIdrReturnType.HH.getDesc().equals(e.getType())) {
+                    IdrApprovalSubmitBean.ExchangeGood exchangeGood = new IdrApprovalSubmitBean.ExchangeGood();
+                    exchangeGood.setExchangeBU(e.getBu());
+                    exchangeGood.setExchangePDT(e.getPdt());
+                    exchangeGood.setExchangePlatform(e.getPlatform());
+                    exchangeGood.setExchangeProModel(e.getProductModel());
+                    exchangeGood.setExchangeQuantity(e.getNum());
+                    exchangeGood.setExchangePrice(e.getPrice() != null ? e.getPrice().floatValue() : null);
+                    //TODO 代理费率，接口获取
+                    exchangeGood.setAgenceRate(null);
+                    exchangeGood.setExchangeAmount(e.getAmount() != null ? e.getAmount().floatValue() : null);
+                    exchangeGood.setExchangeRemark(e.getRemark());
+                    exchangeGoods.add(exchangeGood);
+                }
+            }
+        }
+        return exchangeGoods;
     }
 
     private List<IdrApprovalSubmitBean.RefundPrice> getRefundPriceItem(BusinessIdrInfo bean) throws ParseException {
@@ -329,17 +358,29 @@ public class IDRService {
         businessIdrApprovalMapper.insertSelective(approvalRecord);
     }
 
-    public String getApprovalSubmitType(Integer type){
-        if (type.equals(Enums.BusinessIdrType.INSURANCE.getCode())) {
-            return Enums.BusinessIdrApprovalSubmitType.KP.toString();
+    public Set<String> getApprovalSubmitType(BusinessIdrInfo bean){
+        Set<String> set = new HashSet<>();
+        if (bean.getType().equals(Enums.BusinessIdrType.INSURANCE.getCode())) {
+            set.add(Enums.BusinessIdrApprovalSubmitType.KP.toString());
         }
-        if(type.equals(Enums.BusinessIdrType.DIFF_PRICE.getCode())){
-            return Enums.BusinessIdrApprovalSubmitType.CP.toString();
+        if(bean.getType().equals(Enums.BusinessIdrType.DIFF_PRICE.getCode())){
+            set.add(Enums.BusinessIdrApprovalSubmitType.CP.toString());
         }
-        if(type.equals(Enums.BusinessIdrType.RETURNS.getCode())){
-            return Enums.BusinessIdrApprovalSubmitType.TH.toString();
+        if(bean.getType().equals(Enums.BusinessIdrType.RETURNS.getCode())){
+            return isReturnOrChange(bean, set);
         }
-        return null;
+        return set;
+    }
+    public Set<String> isReturnOrChange(BusinessIdrInfo bean, Set<String> set){
+        bean.getRList().forEach(e->{
+            if(Enums.BusinessIdrReturnType.HH.getDesc().equals(e.getType())){
+                set.add(Enums.BusinessIdrApprovalSubmitType.HH.toString());
+            }
+            if(Enums.BusinessIdrReturnType.TH.getDesc().equals(e.getType())){
+                set.add(Enums.BusinessIdrApprovalSubmitType.TH.toString());
+            }
+        });
+        return set;
     }
 
     public void receiveApproval(IDRApprovalRequest request) {

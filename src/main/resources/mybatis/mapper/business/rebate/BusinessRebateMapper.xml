@@ -5,6 +5,10 @@
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="dealer_name" jdbcType="VARCHAR" property="dealerName" />
     <result column="customer_name" jdbcType="VARCHAR" property="customerName" />
+    <result column="account_year_month" jdbcType="VARCHAR" property="accountYearMonth" />
+    <result column="shipment_year_month" jdbcType="VARCHAR" property="shipmentYearMonth" />
+    <result column="product" jdbcType="VARCHAR" property="product"/>
+    <result column="platform" jdbcType="VARCHAR" property="platform"/>
     <result column="rebate_amount" jdbcType="DECIMAL" property="rebateAmount" />
     <result column="release_amount" jdbcType="DECIMAL" property="releaseAmount" />
     <result column="surplus_rebate_amount" jdbcType="DECIMAL" property="surplusRebateAmount" />
@@ -16,19 +20,24 @@
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_id" jdbcType="INTEGER" property="updateId" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
-    <collection property="itemList" ofType="com.crazy.portal.entity.business.rebate.BusinessRebateItem">
-      <id column="item_id" jdbcType="INTEGER" property="id" />
-      <result column="item_dealer_name" jdbcType="VARCHAR" property="dealerName" />
-      <result column="item_customer_name" jdbcType="VARCHAR" property="customerName" />
-      <result column="item_rebate_amount" jdbcType="DECIMAL" property="rebateAmount" />
-      <result column="item_executor" jdbcType="VARCHAR" property="executor"/>
-      <result column="item_execute_style" jdbcType="VARCHAR" property="executeStyle" />
-      <result column="item_remark" jdbcType="VARCHAR" property="remark" />
-      <result column="item_status" jdbcType="INTEGER" property="status" />
-    </collection>
+<!--    <collection property="itemList" ofType="com.crazy.portal.entity.business.rebate.BusinessRebateItem">-->
+<!--      <id column="item_id" jdbcType="INTEGER" property="id" />-->
+<!--      <result column="item_dealer_name" jdbcType="VARCHAR" property="dealerName" />-->
+<!--      <result column="item_customer_name" jdbcType="VARCHAR" property="customerName" />-->
+<!--      <result column="item_account_year_month" jdbcType="VARCHAR" property="accountYearMonth"/>-->
+<!--      <result column="item_shipment_year_month" jdbcType="VARCHAR" property="shipmentYearMonth" />-->
+<!--      <result column="item_product" jdbcType="VARCHAR" property="product"/>-->
+<!--      <result column="item_platform" jdbcType="VARCHAR" property="platform"/>-->
+<!--      <result column="item_rebate_amount" jdbcType="DECIMAL" property="rebateAmount" />-->
+<!--      <result column="item_executor" jdbcType="VARCHAR" property="executor"/>-->
+<!--      <result column="item_execute_style" jdbcType="VARCHAR" property="executeStyle" />-->
+<!--      <result column="item_remark" jdbcType="VARCHAR" property="remark" />-->
+<!--      <result column="item_status" jdbcType="INTEGER" property="status" />-->
+<!--    </collection>-->
   </resultMap>
   <sql id="Base_Column_List">
-    id, dealer_name, customer_name, rebate_amount, release_amount,
+    id, dealer_name, customer_name, account_year_month, shipment_year_month,
+    product, platform, rebate_amount, release_amount,
     surplus_rebate_amount, status, dealer_code, customer_code,
     active, create_id, create_time, update_id, update_time
   </sql>
@@ -43,7 +52,7 @@
     where id = #{id,jdbcType=INTEGER}
   </delete>
 
-  <insert id="insertSelective" parameterType="com.crazy.portal.entity.business.rebate.BusinessRebate">
+  <insert id="insertSelective" keyProperty="id" useGeneratedKeys="true" parameterType="com.crazy.portal.entity.business.rebate.BusinessRebate">
     insert into t_business_rebate
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -54,6 +63,18 @@
       </if>
       <if test="customerName != null">
         customer_name,
+      </if>
+      <if test="accountYearMonth != null">
+        account_year_month,
+      </if>
+      <if test="shipmentYearMonth != null">
+        shipment_year_month,
+      </if>
+      <if test="product != null">
+        product,
+      </if>
+      <if test="platform != null">
+        platform,
       </if>
       <if test="rebateAmount != null">
         rebate_amount,
@@ -99,6 +120,18 @@
       <if test="customerName != null">
         #{customerName,jdbcType=VARCHAR},
       </if>
+      <if test="accountYearMonth != null">
+        #{accountYearMonth,jdbcType=VARCHAR},
+      </if>
+      <if test="shipmentYearMonth != null">
+        #{shipmentYearMonth,jdbcType=VARCHAR},
+      </if>
+      <if test="product != null">
+        #{product,jdbcType=VARCHAR},
+      </if>
+      <if test="platform != null">
+        #{platform,jdbcType=VARCHAR},
+      </if>
       <if test="rebateAmount != null">
         #{rebateAmount,jdbcType=DECIMAL},
       </if>
@@ -143,6 +176,18 @@
       <if test="customerName != null">
         customer_name = #{customerName,jdbcType=VARCHAR},
       </if>
+      <if test="accountYearMonth != null">
+        account_year_month = #{accountYearMonth,jdbcType=VARCHAR},
+      </if>
+      <if test="shipmentYearMonth != null">
+        shipment_year_month = #{shipmentYearMonth,jdbcType=VARCHAR},
+      </if>
+      <if test="product != null">
+        product = #{product,jdbcType=VARCHAR},
+      </if>
+      <if test="platform != null">
+        platform = #{platform,jdbcType=VARCHAR},
+      </if>
       <if test="rebateAmount != null">
         rebate_amount = #{rebateAmount,jdbcType=DECIMAL},
       </if>
@@ -182,17 +227,21 @@
 
   <select id="selectByPage" parameterType="com.crazy.portal.bean.business.rebate.RebateQueryBean" resultMap="BaseResultMap">
     select
-    a.*,
-    b.id as item_id,
-    b.dealer_name as item_dealer_name,
-    b.customer_name as item_customer_name,
-    b.rebate_amount as item_rebate_amount,
-    b.executor as item_executor,
-    b.execute_style as item_execute_style,
-    b.remark as item_remark,
-    b.status as item_status
+    a.*
+<!--    b.id as item_id,-->
+<!--    b.dealer_name as item_dealer_name,-->
+<!--    b.customer_name as item_customer_name,-->
+<!--    b.account_year_month as item_account_year_month,-->
+<!--    b.shipment_year_month as item_shipment_year_month,-->
+<!--    b.product as item_product,-->
+<!--    b.platform as item_platform,-->
+<!--    b.rebate_amount as item_rebate_amount,-->
+<!--    b.executor as item_executor,-->
+<!--    b.execute_style as item_execute_style,-->
+<!--    b.remark as item_remark,-->
+<!--    b.status as item_status-->
     from t_business_rebate a
-    left join t_business_rebate_item b on b.rebate_id = a.id
+<!--    left join t_business_rebate_item b on b.rebate_id = a.id-->
     where a.active = 1
     <if test="dealerName != null and dealerName != ''">
       and a.dealer_name like concat('%',#{dealerName},'%')
@@ -205,4 +254,18 @@
     </if>
     order by a.create_time desc
   </select>
+
+  <select id="selectRebateIdByGroupParam" resultType="java.lang.Integer" parameterType="com.crazy.portal.bean.business.rebate.RebateGroupParam">
+    select id from t_business_rebate
+    where active = 1
+      and dealer_name = #{agencyShortName}
+      and customer_name = #{customerShortName}
+      and product = #{product}
+      and shipment_year_month = #{shipmentYearMonth}
+      and account_year_month = #{accountYearMonth}
+      and platform = #{platform}
+  </select>
+
+
+
 </mapper>

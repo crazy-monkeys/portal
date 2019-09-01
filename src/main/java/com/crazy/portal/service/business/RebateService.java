@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.crazy.portal.bean.business.rebate.RebateConfirmBean;
+import com.crazy.portal.bean.business.rebate.RebateGroupParam;
 import com.crazy.portal.bean.business.rebate.RebateQueryBean;
 import com.crazy.portal.bean.common.Constant;
 import com.crazy.portal.bean.customer.basic.FileVO;
@@ -26,6 +27,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -113,6 +115,10 @@ public class RebateService {
         item.setRebateId(bean.getId());
         item.setCustomerName(info.getCustomerName());
         item.setDealerName(info.getDealerName());
+        item.setAccountYearMonth(info.getAccountYearMonth());
+        item.setShipmentYearMonth(info.getShipmentYearMonth());
+        item.setProduct(info.getProduct());
+        item.setPlatform(info.getPlatform());
         item.setExecutor(bean.getExecutor());
         item.setExecuteStyle(bean.getExecuteStyle());
         item.setRebateAmount(bean.getSurplusRebateAmount());
@@ -229,16 +235,60 @@ public class RebateService {
      * 每天0点
      */
     @Transactional
-    public void rebateDataSync() throws IOException {
-        String currMonth = DateUtil.format(new Date(), DateUtil.MONTH_FORMAT);
+    public void rebateDataSync(String param) throws IOException {
+        String currMonth = StringUtil.isBlank(param) ? DateUtil.format(new Date(), DateUtil.MONTH_FORMAT) : param;
         String preMonth = DateUtil.getPerMonth();
+
+        Date currDate = DateUtil.getCurrentTS();
+
+        batchUpdateSalesDetail(currMonth, preMonth, currDate);
+
+        batchUpdateRebate(currMonth, preMonth, currDate);
+
+        batchUpdatePriceRole(currMonth, preMonth, currDate);
+
+    }
+
+    private void batchUpdateRebate(String currMonth, String preMonth, Date currDate) {
+        List<RebateGroupParam> groupParams = businessSalesDetailMapper.selectGroupParamList(currMonth, preMonth);
+        List<Integer> rebateIds = new ArrayList<>();
+        groupParams.forEach(e->{
+            Integer rebateId = businessRebateMapper.selectRebateIdByGroupParam(e);
+            if(rebateId == null){
+                BusinessRebate rebateRecord = new BusinessRebate();
+                rebateRecord.setDealerName(e.getAgencyShortName());
+                rebateRecord.setCustomerName(e.getCustomerShortName());
+                rebateRecord.setAccountYearMonth(e.getAccountYearMonth());
+                rebateRecord.setShipmentYearMonth(e.getShipmentYearMonth());
+                rebateRecord.setProduct(e.getProduct());
+                rebateRecord.setPlatform(e.getPlatform());
+                rebateRecord.setRebateAmount(BigDecimal.ZERO);
+                rebateRecord.setReleaseAmount(BigDecimal.ZERO);
+                rebateRecord.setSurplusRebateAmount(BigDecimal.ZERO);
+                rebateRecord.setStatus(Enums.BusinessRebateStatus.EXECUTE_PROCESS.getCode());
+                rebateRecord.setActive(Constant.ACTIVE);
+                rebateRecord.setCreateId(Constant.TASK_DEFAULT_USER_ID);
+                rebateRecord.setCreateTime(currDate);
+                businessRebateMapper.insertSelective(rebateRecord);
+                rebateId = rebateRecord.getId();
+            }
+            rebateIds.add(rebateId);
+        });
+        businessSalesDetailMapper.updateRebateId();
+        rebateIds.forEach(e-> businessSalesDetailMapper.updateRebateAmountByRebateId(e));
+    }
+
+    private void batchUpdateSalesDetail(String currMonth, String preMonth, Date currDate) throws IOException {
         String salesDetails = CallApiUtils.syncRebatePriceSalesDetails(currMonth, preMonth);
         JSONArray salesDetailResult = JSON.parseArray(salesDetails);
         Iterator item = salesDetailResult.iterator();
-        Date currDate = DateUtil.getCurrentTS();
         while (item.hasNext()){
             JSONObject e = (JSONObject) item.next();
             BusinessSalesDetail sd = new BusinessSalesDetail();
+            if(e.getInteger("sales_report_id") == null){
+                continue;
+            }
+            sd.setId(e.getInteger("sales_report_id"));
             sd.setAgencyShortName(e.getString("agency_short_name"));
             sd.setAgencyName(e.getString("agency_name"));
             sd.setCustomerShortName(e.getString("customer_short_name"));
@@ -258,24 +308,37 @@ public class RebateService {
             sd.setShipmentYearMonth(e.getString("shipment_year_month"));
             sd.setShipmentDate(e.getString("shipment_date"));
             sd.setOrderMonth(e.getString("order_month"));
-            sd.setSalesReportId(e.getString("sales_report_id"));
             sd.setPriceRoleId(e.getString("price_role_id"));
-            sd.setPriceStrategyNumber(e.getString("price_strategy_number"));
             sd.setShipmentCompany(e.getString("shipment_company"));
             sd.setRebateType(e.getString("rebate_type"));
             sd.setClass3(e.getString("class3"));
             sd.setActive(Constant.ACTIVE);
-            sd.setCreateId(1);
-            sd.setCreateTime(currDate);
-            businessSalesDetailMapper.insertSelective(sd);
-        }
 
+            int recordCount = businessSalesDetailMapper.selectCountByPrimaryKey(sd.getId());
+            if(recordCount == 0){
+                sd.setCreateId(Constant.TASK_DEFAULT_USER_ID);
+                sd.setCreateTime(currDate);
+                businessSalesDetailMapper.insertSelective(sd);
+            }else{
+                sd.setUpdateId(Constant.TASK_DEFAULT_USER_ID);
+                sd.setUpdateTime(currDate);
+                businessSalesDetailMapper.updateByPrimaryKeySelective(sd);
+            }
+
+        }
+    }
+
+    private void batchUpdatePriceRole(String currMonth, String preMonth, Date currDate) throws IOException {
         String priceRoles = CallApiUtils.syncRebatePriceRoleData(currMonth, preMonth);
         JSONArray priceRoleResult = JSON.parseArray(priceRoles);
         Iterator prs = priceRoleResult.iterator();
         while (prs.hasNext()){
             JSONObject e = (JSONObject) prs.next();
             BusinessPriceRole pr = new BusinessPriceRole();
+            if(e.getInteger("id") == null){
+                continue;
+            }
+            pr.setId(e.getInteger("id"));
             pr.setCustomerCode(e.getString("customer_code"));
             pr.setCustomerName(e.getString("customer_name"));
             pr.setCustomerIncode(e.getString("customer_incode"));
@@ -293,16 +356,21 @@ public class RebateService {
             pr.setRelatedCustomerCode(e.getString("related_customer_code"));
             pr.setRelatedCustomerName(e.getString("related_customer_name"));
             pr.setRelatedProduct(e.getString("related_product"));
-            pr.setPriceStrategyNumber(e.getString("price_strategy_number"));
             pr.setCreateTime(e.getString("create_time"));
             pr.setActive(Constant.ACTIVE);
-            pr.setCreateId(1);
-            pr.setInsertTime(currDate);
-            businessPriceRoleMapper.insertSelective(pr);
+
+            int recordCount = businessPriceRoleMapper.selectCountByPrimaryKey(pr.getId());
+            if(recordCount == 0){
+                pr.setCreateId(Constant.TASK_DEFAULT_USER_ID);
+                pr.setInsertTime(currDate);
+                businessPriceRoleMapper.insertSelective(pr);
+            }else{
+                pr.setUpdateId(Constant.TASK_DEFAULT_USER_ID);
+                pr.setUpdateTime(currDate);
+                businessPriceRoleMapper.updateByPrimaryKeySelective(pr);
+            }
         }
-
     }
-
 
 
 }
