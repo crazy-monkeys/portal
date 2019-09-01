@@ -4,6 +4,7 @@ import com.crazy.portal.bean.BaseResponse;
 import com.crazy.portal.config.security.JwtUserService;
 import com.crazy.portal.config.security.handler.LoginSuccessHandler;
 import com.crazy.portal.controller.BaseController;
+import com.crazy.portal.util.BusinessUtil;
 import com.crazy.portal.util.ErrorCodes;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -29,7 +30,8 @@ public class ADController extends BaseController {
     private JwtUserService jwtUserService;
 
     /**
-     * Kerberos\Spnego Negotiation 登录成功之后获取资源列表
+     * Kerberos  / Spnego Negotiation 登录成功之后获取资源列表
+     * @see com.crazy.portal.config.security.config.SecurityConfig KerberosServiceAuthenticationProvider
      * @param response
      * @return
      */
@@ -45,10 +47,9 @@ public class ADController extends BaseController {
     }
 
     @GetMapping("/forward")
-    public BaseResponse authTicket(HttpServletResponse response){
+    public void authTicket(HttpServletResponse response){
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
         response.setContentType("application/json;charset=utf-8");
-        return new BaseResponse(ErrorCodes.SystemManagerEnum.ACCOUNT_ERROR.getCode(),
-                ErrorCodes.SystemManagerEnum.ACCOUNT_ERROR.getZhMsg());
+        BusinessUtil.assertTrue(false, ErrorCodes.SystemManagerEnum.ACCOUNT_ERROR);
     }
 }
