@@ -56,13 +56,13 @@ public class CatalogPrice {
     /**
      * 内部客户
      */
-    private String insideCustomer;
+    private String inCustomer;
 
     /**
      * 生效时间
      */
     @JSONField(format="yyyy-MM-dd")
-    private Date effectiveTime;
+    private Date effectTime;
 
     /**
      * 失效时间

@@ -110,12 +110,12 @@ public class EnquiryPriceService {
                 enquiryPrice.setBu(catalogPrice.getBu());
                 enquiryPrice.setPdt(catalogPrice.getPdt());
                 enquiryPrice.setStatus(catalogPrice.getStatus());
-                enquiryPrice.setInCustomer(catalogPrice.getInsideCustomer());
+                enquiryPrice.setInCustomer(catalogPrice.getInCustomer());
                 enquiryPrice.setRemark(catalogPrice.getRemark());
                 enquiryPrice.setProductType(catalogPrice.getProductType());
                 enquiryPrice.setPlatform(catalogPrice.getPlatform());
                 enquiryPrice.setCatalogPrice(catalogPrice.getCatalogPrice());
-                enquiryPrice.setEffectTime(catalogPrice.getEffectiveTime());
+                enquiryPrice.setEffectTime(catalogPrice.getEffectTime());
                 enquiryPrice.setDeadTime(catalogPrice.getDeadTime());
                 enquiryPrice.setModifyTime(catalogPrice.getModifyTime());
             }

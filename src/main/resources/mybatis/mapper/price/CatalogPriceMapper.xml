@@ -10,16 +10,16 @@
     <result column="platform" jdbcType="VARCHAR" property="platform" />
     <result column="product_model" jdbcType="VARCHAR" property="productModel" />
     <result column="catalog_price" jdbcType="DECIMAL" property="catalogPrice" />
-    <result column="inside_customer" jdbcType="VARCHAR" property="insideCustomer" />
-    <result column="effective_time" jdbcType="TIMESTAMP" property="effectiveTime" />
+    <result column="in_customer" jdbcType="VARCHAR" property="inCustomer" />
+    <result column="effect_time" jdbcType="TIMESTAMP" property="effectTime" />
     <result column="dead_time" jdbcType="TIMESTAMP" property="deadTime" />
     <result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime" />
     <result column="remark" jdbcType="VARCHAR" property="remark" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, status, bu, pdt, product_type, platform, product_model, catalog_price, inside_customer, 
-    effective_time, dead_time, modify_time, remark, create_time
+    id, status, bu, pdt, product_type, platform, product_model, catalog_price, in_customer,
+    effect_time, dead_time, modify_time, remark, create_time
   </sql>
 
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
@@ -34,8 +34,8 @@
     <include refid="Base_Column_List" />
     from t_catalog_price
     where product_model = #{productModel,jdbcType=VARCHAR}
-    <if test="insideCustomer != null and insideCustomer != ''">
-      and inside_customer = #{insideCustomer,jdbcType=VARCHAR}
+    <if test="inCustomer != null and inCustomer != ''">
+      and in_customer = #{inCustomer,jdbcType=VARCHAR}
     </if>
   </select>
 
@@ -60,10 +60,10 @@
       and product_model = #{productModel,jdbcType=VARCHAR}
     </if>
     <if test="effectBeginTime != null">
-      and effective_time &gt;= #{effectBeginTime,jdbcType=TIMESTAMP}
+      and effect_time &gt;= #{effectBeginTime,jdbcType=TIMESTAMP}
     </if>
     <if test="effectEndTime != null">
-      and effective_time &lt;= #{effectEndTime,jdbcType=TIMESTAMP}
+      and effect_time &lt;= #{effectEndTime,jdbcType=TIMESTAMP}
     </if>
   </select>
 
@@ -99,11 +99,11 @@
       <if test="catalogPrice != null">
         catalog_price,
       </if>
-      <if test="insideCustomer != null">
-        inside_customer,
+      <if test="inCustomer != null">
+        in_customer,
       </if>
-      <if test="effectiveTime != null">
-        effective_time,
+      <if test="effectTime != null">
+        effect_time,
       </if>
       <if test="deadTime != null">
         dead_time,
@@ -143,11 +143,11 @@
       <if test="catalogPrice != null">
         #{catalogPrice,jdbcType=DECIMAL},
       </if>
-      <if test="insideCustomer != null">
-        #{insideCustomer,jdbcType=VARCHAR},
+      <if test="inCustomer != null">
+        #{inCustomer,jdbcType=VARCHAR},
       </if>
-      <if test="effectiveTime != null">
-        #{effectiveTime,jdbcType=TIMESTAMP},
+      <if test="effectTime != null">
+        #{effectTime,jdbcType=TIMESTAMP},
       </if>
       <if test="deadTime != null">
         #{deadTime,jdbcType=TIMESTAMP},
@@ -188,11 +188,11 @@
       <if test="catalogPrice != null">
         catalog_price = #{catalogPrice,jdbcType=DECIMAL},
       </if>
-      <if test="insideCustomer != null">
-        inside_customer = #{insideCustomer,jdbcType=VARCHAR},
+      <if test="inCustomer != null">
+        in_customer = #{inCustomer,jdbcType=VARCHAR},
       </if>
-      <if test="effectiveTime != null">
-        effective_time = #{effectiveTime,jdbcType=TIMESTAMP},
+      <if test="effectTime != null">
+        effect_time = #{effectTime,jdbcType=TIMESTAMP},
       </if>
       <if test="deadTime != null">
         dead_time = #{deadTime,jdbcType=TIMESTAMP},
