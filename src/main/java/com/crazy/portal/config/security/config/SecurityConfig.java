@@ -183,7 +183,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
             "/logout",
             "/announcement/file/**",
             "/file/**",
-            "/webservice/invoke",
             "/scheduleJob/list",
             "/login",
             "/static/**",
