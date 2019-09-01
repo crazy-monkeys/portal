@@ -232,10 +232,10 @@
 						<id>generate-sources</id>
 						<phase>generate-sources</phase>
 						<configuration>
-							<sourceRoot>generated-sources</sourceRoot>
+							<sourceRoot>wsdl2java</sourceRoot>
 							<wsdlOptions>
 								<wsdlOption>
-									<wsdl>generated-sources/npwsdl/CPI-PORTAL TO ECC - CREATE DELIVERY.wsdl</wsdl>
+									<wsdl>wsdl2java/npwsdl/CPI-PORTAL TO ECC - CREATE DELIVERY.wsdl</wsdl>
 									<extraargs>
 										<extraarg>-p</extraarg>
 										<extraarg>npcxf</extraarg>
