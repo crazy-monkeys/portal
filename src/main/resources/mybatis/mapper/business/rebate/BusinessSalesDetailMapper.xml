@@ -23,7 +23,6 @@
     <result column="shipment_year_month" jdbcType="VARCHAR" property="shipmentYearMonth" />
     <result column="shipment_date" jdbcType="VARCHAR" property="shipmentDate" />
     <result column="order_month" jdbcType="VARCHAR" property="orderMonth" />
-    <result column="sales_report_id" jdbcType="VARCHAR" property="salesReportId" />
     <result column="price_role_id" jdbcType="VARCHAR" property="priceRoleId" />
     <result column="price_strategy_number" jdbcType="VARCHAR" property="priceStrategyNumber" />
     <result column="shipment_company" jdbcType="VARCHAR" property="shipmentCompany" />
@@ -35,11 +34,19 @@
     <result column="update_id" jdbcType="INTEGER" property="updateId" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
+  <resultMap id="GroupParamResult" type="com.crazy.portal.bean.business.rebate.RebateGroupParam">
+    <result column="agency_short_name" jdbcType="VARCHAR" property="agencyShortName" />
+    <result column="customer_short_name" jdbcType="VARCHAR" property="customerShortName" />
+    <result column="product" jdbcType="VARCHAR" property="product" />
+    <result column="account_year_month" jdbcType="VARCHAR" property="accountYearMonth" />
+    <result column="shipment_year_month" jdbcType="VARCHAR" property="shipmentYearMonth" />
+    <result column="class3" jdbcType="VARCHAR" property="platform" />
+  </resultMap>
   <sql id="Base_Column_List">
     id, rebate_id, agency_short_name, agency_name, customer_short_name, customer_code,
     customer_type, ameba_header, ameba_department, bu, product, shipment_type, qty, sales_price,
     po_price, actual_price, rebate_amount, account_year_month, shipment_year_month, shipment_date,
-    order_month, sales_report_id, price_role_id, price_strategy_number, shipment_company,
+    order_month, price_role_id, price_strategy_number, shipment_company,
     rebate_type, class3, active, create_id, create_time, update_id, update_time
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
@@ -48,34 +55,17 @@
     from t_business_sales_detail
     where id = #{id,jdbcType=INTEGER}
   </select>
+
+  <select id="selectCountByPrimaryKey" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+    select count(1) from t_business_sales_detail
+    where id = #{id,jdbcType=INTEGER} and active = 1
+  </select>
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from t_business_sales_detail
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.crazy.portal.entity.business.rebate.BusinessSalesDetail">
-    insert into t_business_sales_detail (id, rebate_id, agency_short_name,
-      agency_name, customer_short_name, customer_code,
-      customer_type, ameba_header, ameba_department,
-      bu, product, shipment_type,
-      qty, sales_price, po_price,
-      actual_price, rebate_amount, account_year_month,
-      shipment_year_month, shipment_date, order_month,
-      sales_report_id, price_role_id, price_strategy_number,
-      shipment_company, rebate_type, class3,
-      active, create_id, create_time,
-      update_id, update_time)
-    values (#{id,jdbcType=INTEGER}, #{rebateId,jdbcType=INTEGER}, #{agencyShortName,jdbcType=VARCHAR},
-      #{agencyName,jdbcType=VARCHAR}, #{customerShortName,jdbcType=VARCHAR}, #{customerCode,jdbcType=VARCHAR},
-      #{customerType,jdbcType=VARCHAR}, #{amebaHeader,jdbcType=VARCHAR}, #{amebaDepartment,jdbcType=VARCHAR},
-      #{bu,jdbcType=VARCHAR}, #{product,jdbcType=VARCHAR}, #{shipmentType,jdbcType=VARCHAR},
-      #{qty,jdbcType=INTEGER}, #{salesPrice,jdbcType=DECIMAL}, #{poPrice,jdbcType=DECIMAL},
-      #{actualPrice,jdbcType=DECIMAL}, #{rebateAmount,jdbcType=DECIMAL}, #{accountYearMonth,jdbcType=VARCHAR},
-      #{shipmentYearMonth,jdbcType=VARCHAR}, #{shipmentDate,jdbcType=VARCHAR}, #{orderMonth,jdbcType=VARCHAR},
-      #{salesReportId,jdbcType=VARCHAR}, #{priceRoleId,jdbcType=VARCHAR}, #{priceStrategyNumber,jdbcType=VARCHAR},
-      #{shipmentCompany,jdbcType=VARCHAR}, #{rebateType,jdbcType=VARCHAR}, #{class3,jdbcType=VARCHAR},
-      #{active,jdbcType=INTEGER}, #{createId,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP},
-      #{updateId,jdbcType=INTEGER}, #{updateTime,jdbcType=TIMESTAMP})
-  </insert>
+
   <insert id="insertSelective" parameterType="com.crazy.portal.entity.business.rebate.BusinessSalesDetail">
     insert into t_business_sales_detail
     <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -141,9 +131,6 @@
       </if>
       <if test="orderMonth != null">
         order_month,
-      </if>
-      <if test="salesReportId != null">
-        sales_report_id,
       </if>
       <if test="priceRoleId != null">
         price_role_id,
@@ -240,9 +227,6 @@
       <if test="orderMonth != null">
         #{orderMonth,jdbcType=VARCHAR},
       </if>
-      <if test="salesReportId != null">
-        #{salesReportId,jdbcType=VARCHAR},
-      </if>
       <if test="priceRoleId != null">
         #{priceRoleId,jdbcType=VARCHAR},
       </if>
@@ -338,9 +322,6 @@
       <if test="orderMonth != null">
         order_month = #{orderMonth,jdbcType=VARCHAR},
       </if>
-      <if test="salesReportId != null">
-        sales_report_id = #{salesReportId,jdbcType=VARCHAR},
-      </if>
       <if test="priceRoleId != null">
         price_role_id = #{priceRoleId,jdbcType=VARCHAR},
       </if>
@@ -374,46 +355,56 @@
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.crazy.portal.entity.business.rebate.BusinessSalesDetail">
-    update t_business_sales_detail
-    set rebate_id = #{rebateId,jdbcType=INTEGER},
-      agency_short_name = #{agencyShortName,jdbcType=VARCHAR},
-      agency_name = #{agencyName,jdbcType=VARCHAR},
-      customer_short_name = #{customerShortName,jdbcType=VARCHAR},
-      customer_code = #{customerCode,jdbcType=VARCHAR},
-      customer_type = #{customerType,jdbcType=VARCHAR},
-      ameba_header = #{amebaHeader,jdbcType=VARCHAR},
-      ameba_department = #{amebaDepartment,jdbcType=VARCHAR},
-      bu = #{bu,jdbcType=VARCHAR},
-      product = #{product,jdbcType=VARCHAR},
-      shipment_type = #{shipmentType,jdbcType=VARCHAR},
-      qty = #{qty,jdbcType=INTEGER},
-      sales_price = #{salesPrice,jdbcType=DECIMAL},
-      po_price = #{poPrice,jdbcType=DECIMAL},
-      actual_price = #{actualPrice,jdbcType=DECIMAL},
-      rebate_amount = #{rebateAmount,jdbcType=DECIMAL},
-      account_year_month = #{accountYearMonth,jdbcType=VARCHAR},
-      shipment_year_month = #{shipmentYearMonth,jdbcType=VARCHAR},
-      shipment_date = #{shipmentDate,jdbcType=VARCHAR},
-      order_month = #{orderMonth,jdbcType=VARCHAR},
-      sales_report_id = #{salesReportId,jdbcType=VARCHAR},
-      price_role_id = #{priceRoleId,jdbcType=VARCHAR},
-      price_strategy_number = #{priceStrategyNumber,jdbcType=VARCHAR},
-      shipment_company = #{shipmentCompany,jdbcType=VARCHAR},
-      rebate_type = #{rebateType,jdbcType=VARCHAR},
-      class3 = #{class3,jdbcType=VARCHAR},
-      active = #{active,jdbcType=INTEGER},
-      create_id = #{createId,jdbcType=INTEGER},
-      create_time = #{createTime,jdbcType=TIMESTAMP},
-      update_id = #{updateId,jdbcType=INTEGER},
-      update_time = #{updateTime,jdbcType=TIMESTAMP}
-    where id = #{id,jdbcType=INTEGER}
-  </update>
+
 
   <select id="selectByRebateId" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from t_business_sales_detail
-    where rebate_id = #{rebateId,jdbcType=INTEGER}
+    where rebate_id = #{rebateId,jdbcType=INTEGER} and active = 1
+    order by create_time desc
   </select>
+
+  <select id="selectGroupParamList" resultMap="GroupParamResult">
+    select
+      agency_short_name,
+      customer_short_name,
+      product,
+      account_year_month,
+      shipment_year_month,
+      class3
+    from t_business_sales_detail
+    where account_year_month >= #{beginMonth} and account_year_month &lt; #{endMonth}
+    group by
+      agency_short_name,
+      customer_short_name,
+      product,
+      account_year_month,
+      shipment_year_month,
+      class3
+  </select>
+
+  <update id="updateRebateId">
+    update t_business_sales_detail a
+    inner join t_business_rebate b on b.dealer_name = a.agency_short_name
+      and b.customer_name = a.customer_short_name
+      and b.product = a.product
+      and b.account_year_month = a.account_year_month
+      and b.shipment_year_month = a.shipment_year_month
+      and b.platform = a.class3
+      set a.rebate_id = b.id
+    where a.rebate_id is null
+  </update>
+
+  <update id="updateRebateAmountByRebateId" parameterType="java.lang.Integer">
+    update t_business_rebate a
+    inner join (
+      select b.rebate_id, sum(b.qty * b.actual_price) as rebate_amount from t_business_sales_detail b
+      where b.rebate_id = #{rebateId}
+      group by b.rebate_id
+    ) b on b.rebate_id = a.id
+    set a.rebate_amount = b.rebate_amount, a.surplus_rebate_amount = (b.rebate_amount - a.release_amount)
+    where a.id = #{rebateId}
+  </update>
+
 </mapper>

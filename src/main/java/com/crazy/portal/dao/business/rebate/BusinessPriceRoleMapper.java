@@ -8,15 +8,13 @@ import java.util.List;
 public interface BusinessPriceRoleMapper {
     int deleteByPrimaryKey(Integer id);
 
-    int insert(BusinessPriceRole record);
-
     int insertSelective(BusinessPriceRole record);
 
     BusinessPriceRole selectByPrimaryKey(Integer id);
 
-    int updateByPrimaryKeySelective(BusinessPriceRole record);
+    int selectCountByPrimaryKey(Integer id);
 
-    int updateByPrimaryKey(BusinessPriceRole record);
+    int updateByPrimaryKeySelective(BusinessPriceRole record);
 
     List<BusinessPriceRole> selectByRebateId(@Param("rebateId")Integer rebateId);
 }

@@ -60,7 +60,7 @@ public class BusinessSalesDetail {
     private String amebaDepartment;
 
     /**
-     * 
+     * BU
      */
     private String bu;
 
@@ -115,17 +115,12 @@ public class BusinessSalesDetail {
     private String shipmentDate;
 
     /**
-     * 
+     * 订单月份
      */
     private String orderMonth;
 
     /**
-     * 订单序号
-     */
-    private String salesReportId;
-
-    /**
-     * 
+     * 价格策略ID
      */
     private String priceRoleId;
 
@@ -145,41 +140,22 @@ public class BusinessSalesDetail {
     private String rebateType;
 
     /**
-     * 
+     * 平台
      */
     private String class3;
 
-    /**
-     * 
-     */
     @JsonIgnore
     @JSONField(serialize = false)
     private Integer active;
-
-    /**
-     * 
-     */
     @JsonIgnore
     @JSONField(serialize = false)
     private Integer createId;
-
-    /**
-     * 
-     */
     @JsonIgnore
     @JSONField(serialize = false)
     private Date createTime;
-
-    /**
-     * 
-     */
     @JsonIgnore
     @JSONField(serialize = false)
     private Integer updateId;
-
-    /**
-     * 
-     */
     @JsonIgnore
     @JSONField(serialize = false)
     private Date updateTime;

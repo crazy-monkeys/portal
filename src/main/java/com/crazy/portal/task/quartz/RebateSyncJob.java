@@ -27,7 +27,10 @@ public class RebateSyncJob implements Job{
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
         try {
-            rebateService.rebateDataSync();
+            log.info("rebate数据同步Begin");
+            ScheduleJob scheduleJob = scheduleJobService.selectByJobCode("rebate_sync");
+            rebateService.rebateDataSync(scheduleJob.getJobConfigParams());
+            log.info("rebate数据同步End");
         }catch (Exception e){
             log.error("rebate同步异常", e);
         }

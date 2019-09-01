@@ -20,11 +20,6 @@ public class BusinessPriceRole {
     private Integer id;
 
     /**
-     * 
-     */
-    private Integer rebateId;
-
-    /**
      * 客户外部号
      */
     private String customerCode;

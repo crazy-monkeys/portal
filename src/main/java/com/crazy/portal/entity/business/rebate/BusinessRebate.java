@@ -15,6 +15,14 @@ public class BusinessRebate {
     private String dealerName;
     //客户名称
     private String customerName;
+    //核算年月
+    private String accountYearMonth;
+    //出货年月
+    private String shipmentYearMonth;
+    //产品型号
+    private String product;
+    //平台
+    private String platform;
     //rebate金额
     private BigDecimal rebateAmount;
     //释放金额

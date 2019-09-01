@@ -313,6 +313,20 @@ public class Enums {
         }
     }
 
+    public enum BusinessIdrReturnType{
+        TH("退货"),
+        HH("换货");
+
+        private String desc;
+
+        BusinessIdrReturnType(String desc){
+            this.desc = desc;
+        }
+        public String getDesc(){
+            return desc;
+        }
+    }
+
     public enum BusinessIdrApprovalSubmitType{
         //保价
         KP,
