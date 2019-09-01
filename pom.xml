@@ -222,13 +222,13 @@
 				<version>${cxf.version}</version>
 				<executions>
 					<execution>
-						<phase>none</phase>
 						<id>generate-sources</id>
+						<phase>generate-sources</phase>
 						<configuration>
-							<sourceRoot>${basedir}/generated-sources/cxf</sourceRoot>
+							<sourceRoot>generated-sources/cxf</sourceRoot>
 							<wsdlOptions>
 								<wsdlOption>
-									<wsdl>${basedir}/generated-sources/</wsdl>
+									<wsdl>generated-sources/wsdl/CPI-PORTAL TO ECC - CREATE DELIVERY.wsdl</wsdl>
 								</wsdlOption>
 							</wsdlOptions>
 						</configuration>
