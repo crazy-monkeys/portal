@@ -219,6 +219,7 @@
 				<configuration>
 					<excludes>
 						<exclude>**/npcxf/*</exclude>
+						<exclude>**/npwsdl/*</exclude>
 					</excludes>
 				</configuration>
 			</plugin>
@@ -234,7 +235,7 @@
 							<sourceRoot>generated-sources</sourceRoot>
 							<wsdlOptions>
 								<wsdlOption>
-									<wsdl>generated-sources/wsdl/CPI-PORTAL TO ECC - CREATE DELIVERY.wsdl</wsdl>
+									<wsdl>generated-sources/npwsdl/CPI-PORTAL TO ECC - CREATE DELIVERY.wsdl</wsdl>
 									<extraargs>
 										<extraarg>-p</extraarg>
 										<extraarg>npcxf</extraarg>
