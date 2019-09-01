@@ -1,6 +1,7 @@
 package com.crazy.portal.config.security.handler;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.crazy.portal.bean.common.Constant;
 import com.crazy.portal.config.security.JwtAuthenticationToken;
 import com.crazy.portal.config.security.JwtUserService;
 import org.springframework.security.core.Authentication;
@@ -41,7 +42,7 @@ public class JwtRefreshSuccessHandler implements AuthenticationSuccessHandler{
         boolean shouldRefresh = shouldTokenRefresh(jwt.getIssuedAt());
         if(shouldRefresh) {
             String newToken = jwtUserService.generateToken((UserDetails) authentication.getPrincipal());
-            response.setHeader("Authorization", newToken);
+            response.setHeader(Constant.Authorization, newToken);
         }
     }
 

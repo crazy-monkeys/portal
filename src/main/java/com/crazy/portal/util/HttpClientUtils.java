@@ -1,5 +1,6 @@
 package com.crazy.portal.util;
 
+import com.crazy.portal.bean.common.Constant;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.cxf.helpers.IOUtils;
@@ -96,7 +97,7 @@ public class HttpClientUtils {
             }
             post.setConfig(customReqConf.build());
             if(header != null) {
-                post.setHeader("Authorization", header);
+                post.setHeader(Constant.Authorization, header);
             }
             HttpResponse res;
             if (url.startsWith("https")) {
@@ -152,7 +153,7 @@ public class HttpClientUtils {
             }
             get.setConfig(customReqConf.build());
             if(StringUtil.isNotEmpty(header)){
-                get.setHeader("Authorization",header);
+                get.setHeader(Constant.Authorization,header);
             }
             HttpResponse res = null;
             if (url.startsWith("https")) {
@@ -162,7 +163,7 @@ public class HttpClientUtils {
                     res = client.execute(get);
                 }
             } else {
-                //conn.setRequestProperty("Authorization", "Basic " + authStringEnc);
+                //conn.setRequestProperty(Constant.Authorization, "Basic " + authStringEnc);
                 // 执行 Http 请求.
                 client = HttpClientUtils.client;
                 res = client.execute(get);

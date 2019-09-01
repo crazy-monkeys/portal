@@ -1,5 +1,6 @@
 package com.crazy.portal.config.security.config;
 
+import com.crazy.portal.bean.common.Constant;
 import com.crazy.portal.config.security.JwtUserService;
 import com.crazy.portal.config.security.filter.JwtAuthenticationProvider;
 import com.crazy.portal.config.security.filter.RequestFilter;
@@ -91,7 +92,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                 .and()
                 .headers().addHeaderWriter(new StaticHeadersWriter(Arrays.asList(
                     new Header("Access-Control-Allow-Origin","*"),
-                    new Header("Access-Control-Expose-Headers","Authorization"))))
+                    new Header("Access-Control-Expose-Headers", Constant.Authorization))))
                 .frameOptions().disable()
                 .and()
                 //拦截OPTIONS请求，直接返回header

@@ -1,6 +1,7 @@
 package com.crazy.portal.controller.system;
 
 import com.crazy.portal.bean.BaseResponse;
+import com.crazy.portal.bean.common.Constant;
 import com.crazy.portal.config.security.JwtUserService;
 import com.crazy.portal.config.security.handler.LoginSuccessHandler;
 import com.crazy.portal.controller.BaseController;
@@ -42,7 +43,7 @@ public class ADController extends BaseController {
         Map<String,?> userPermissions = loginSuccessHandler.getUserPermissions();
         UserDetails userDetails = (UserDetails)authentication.getPrincipal();
         response.setContentType("application/json;charset=utf-8");
-        response.setHeader("Authorization", jwtUserService.generateToken(userDetails));
+        response.setHeader(Constant.Authorization, jwtUserService.generateToken(userDetails));
         return super.successResult(userPermissions);
     }
 

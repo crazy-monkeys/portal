@@ -2,6 +2,7 @@ package com.crazy.portal.config.security.handler;
 
 import com.alibaba.fastjson.JSON;
 import com.crazy.portal.bean.BaseResponse;
+import com.crazy.portal.bean.common.Constant;
 import com.crazy.portal.config.security.JwtUserService;
 import com.crazy.portal.controller.BaseController;
 import com.crazy.portal.dao.system.UserMapper;
@@ -84,7 +85,7 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
         String token = jwtUserService.generateToken(userDetails);
 
         response.reset();
-        response.setHeader("Authorization", token);
+        response.setHeader(Constant.Authorization, token);
         response.setContentType("application/json;charset=utf-8");
         BaseResponse baseResponse = new BaseResponse();
         baseResponse.success(userPermissions);

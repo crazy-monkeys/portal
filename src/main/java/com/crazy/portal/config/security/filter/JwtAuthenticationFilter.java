@@ -2,6 +2,7 @@ package com.crazy.portal.config.security.filter;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.exceptions.JWTDecodeException;
+import com.crazy.portal.bean.common.Constant;
 import com.crazy.portal.config.security.JwtAuthenticationToken;
 import com.crazy.portal.service.system.PermissionService;
 import lombok.extern.slf4j.Slf4j;
@@ -134,7 +135,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
      * @return
      */
     protected String getToken(HttpServletRequest request) {
-        String authInfo = request.getHeader("Authorization");
+        String authInfo = request.getHeader(Constant.Authorization);
         return StringUtils.removeStart(authInfo, "Bearer ");
     }
 
