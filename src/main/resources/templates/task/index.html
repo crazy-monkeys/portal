@@ -73,7 +73,7 @@ html, body {
             <div class="todo-search">
               	<form id="form1" th:action="@{/scheduleJob/list}" method="post" >
 					 <select id="searchObjGroupSelect" name="jobGroup" data-toggle="select" class="select select-sm select-inverse">
-					 	<option th:each="jg:${jobGroupList}" th:selected="${jg.groupCode} == ${jobGroup}" th:value="${jg.groupCode}" th:text="${jg.groupName}"></option>
+                         <option  value="partition1" >分区一</option>
 					 </select>
 					 <a onclick="fun_add();" class="btn btn-sm btn-inverse add_section " data-toggle="modal" >
 				 	 	<span class="fui-plus"></span>&nbsp;&nbsp;新增定时任务
@@ -138,7 +138,7 @@ html, body {
                 <label class="col-sm-3 control-label">任务分组</label>
                  <div class="col-sm-9">
 					  <select name="jobGroup" data-toggle="select" class="select select-inverse" style="width: 300px;" >
-						 <option th:each="jg:${jobGroupList}" th:value="${jg.groupCode}" th:text="${jg.groupName}"></option>
+						 <option  value="partition1" >分区一</option>
 					  </select>
                 </div>
               </div>

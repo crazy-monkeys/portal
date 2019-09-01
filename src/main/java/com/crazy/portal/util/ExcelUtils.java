@@ -2,6 +2,8 @@ package com.crazy.portal.util;
 
 import com.alibaba.excel.ExcelReader;
 import com.alibaba.excel.ExcelWriter;
+import com.alibaba.excel.exception.ExcelAnalysisException;
+import com.alibaba.excel.exception.ExcelGenerateException;
 import com.alibaba.excel.metadata.BaseRowModel;
 import com.alibaba.excel.metadata.Sheet;
 import com.alibaba.excel.support.ExcelTypeEnum;
@@ -148,12 +150,37 @@ public class ExcelUtils {
         }
         try {
             return readExcel(in, clazz, fullFilePath, sheetNo, headLineNum);
-        }catch (Exception ex) {
+        } catch (BusinessException e){
+            throw e;
+        } catch (ExcelAnalysisException e) {
+            BusinessExceptionHandler(e);
+            log.error(EXCEL_READ_ERROR.getZhMsg(), e);
+            throw new BusinessException(EXCEL_READ_ERROR);
+        } catch (Exception ex) {
             log.error(EXCEL_READ_ERROR.getZhMsg(), ex);
             throw new BusinessException(EXCEL_READ_ERROR);
         }
     }
 
+    private static void BusinessExceptionHandler(ExcelAnalysisException e) {
+        if(e.getCause() instanceof BusinessException){
+            throw new BusinessException(((BusinessException) e.getCause()).getErrorCode(), e.getCause().getMessage());
+        }
+        if(e.getCause() instanceof ExcelGenerateException){
+            String message = null;
+            if(e.getCause().getCause() instanceof NumberFormatException){
+                message = "转换为数字类型错误：".concat(getIndexMessage(e.getCause().getCause().getMessage()));
+            }
+            if(e.getCause().getCause() instanceof BusinessException){
+                throw (BusinessException)e.getCause().getCause();
+            }
+            throw new BusinessException(ErrorCodes.BusinessEnum.EXCEL_PARAM_FAIL.getCode(), ErrorCodes.BusinessEnum.EXCEL_PARAM_FAIL.getZhMsg().concat(message));
+        }
+    }
+
+    public static String getIndexMessage(String message){
+        return message.substring(message.indexOf("\"") + 1, message.lastIndexOf("\""));
+    }
     /**
      * 默认读取第一个sheet页，并从数据第二行开始读取数据，适用于第一行作为表头的Excel文档
      * @param excel
@@ -193,6 +220,10 @@ public class ExcelUtils {
         }
         try {
             return readExcel(excel.getInputStream(), clazz, excel.getOriginalFilename(), sheetNo, headLineNum);
+        } catch (ExcelAnalysisException e) {
+            BusinessExceptionHandler(e);
+            log.error(EXCEL_READ_ERROR.getZhMsg(), e);
+            throw new BusinessException(EXCEL_READ_ERROR);
         }catch (Exception ex) {
             log.error(EXCEL_READ_ERROR.getZhMsg(), ex);
             throw new BusinessException(EXCEL_READ_ERROR);
@@ -205,7 +236,9 @@ public class ExcelUtils {
         ExcelReader reader = getReader(in, excelListener);
         Sheet sheet = new Sheet(sheetNo, headLineNum, clazz);
         reader.read(sheet);
-        return excelListener.getData();
+        List<T> data = excelListener.getData();
+        BusinessUtil.assertTrue((data != null && data.size() > 0), ErrorCodes.BusinessEnum.BUSINESS_FILE_IS_NULL);
+        return data;
     }
 
     private static ExcelReader getReader(InputStream in, ExcelListener excelListener) throws IOException {

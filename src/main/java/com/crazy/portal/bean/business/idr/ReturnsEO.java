@@ -42,27 +42,11 @@ public class ReturnsEO extends BaseRowModel {
     private String remark;
 
     @SuppressWarnings("all")
-    public String getTakeGoodsDate() {
-        if(StringUtil.isNotBlank(takeGoodsDate)){
-            try{
-                return DateUtil.getFlexibleDate(takeGoodsDate);
-            }catch (Exception e){
-                log.error("get takeGoodsDate flexible date error:", e);
-                return takeGoodsDate;
-            }
-        }
-        return null;
+    public void setTakeGoodsDate(String takeGoodsDate) {
+        this.takeGoodsDate = DateUtil.getFlexDate(takeGoodsDate);
     }
     @SuppressWarnings("all")
-    public String getReplacementDate() {
-        if(StringUtil.isNotBlank(replacementDate)){
-            try{
-                return DateUtil.getFlexibleDate(replacementDate);
-            }catch (Exception e){
-                log.error("get replacementDate flexible date error:", e);
-                return replacementDate;
-            }
-        }
-        return null;
+    public void setReplacementDate(String replacementDate) {
+        this.replacementDate = DateUtil.getFlexDate(replacementDate);
     }
 }

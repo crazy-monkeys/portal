@@ -1,5 +1,6 @@
 package com.crazy.portal.util;
 
+import com.crazy.portal.config.exception.BusinessException;
 import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,6 +44,9 @@ public class DateUtil {
 	public static final String END_HOUR_MIN_SEC = "23:59:59";
 
 	private static final String PARSE_MSG = "length too little";
+
+	private static final long validDate = -28800000L;
+	private static final long invalidDate = 2524579200000L;
 
 	public static DateFormat getNewDateFormat(String pattern) {
 		DateFormat df = new SimpleDateFormat(pattern);
@@ -944,21 +948,39 @@ public class DateUtil {
 				date = toDate(Double.valueOf(dateStr));
 			} else if (dateStr.indexOf('-') != -1) {
 				if (dateStr.indexOf(':') != -1) {
-					date = DateUtil.parseDate(dateStr, NEW_FORMAT);
+					date = parseDate(dateStr, NEW_FORMAT);
 				} else {
-					date = DateUtil.parseDate(dateStr, WEB_FORMAT);
+					date = parseDate(dateStr, WEB_FORMAT);
 				}
 			} else if (dateStr.indexOf('/') != -1) {
 				if (dateStr.indexOf(':') != -1) {
-					date = DateUtil.parseDate(dateStr, OLD_LONG_FORMAT);
+					date = parseDate(dateStr, OLD_LONG_FORMAT);
 				} else {
-					date = DateUtil.parseDate(dateStr, OLD_FORMAT);
+					date = parseDate(dateStr, OLD_FORMAT);
 				}
 			}
 		}
+		checkDateValid(date);
 		return format(date, WEB_FORMAT);
 	}
 
+	public static void checkDateValid(Date date){
+		BusinessUtil.assertTrue(date.getTime() >= validDate && date.getTime() <= invalidDate, ErrorCodes.BusinessEnum.EXCEL_PARAM_DATE_FAIL);
+	}
+
+	public static String getFlexDate(String date){
+		if(StringUtil.isNotBlank(date)){
+			try {
+				return getFlexibleDate(date);
+			}catch (BusinessException e){
+				throw e;
+			}catch (Exception e){
+				log.error("get flexible date error:", e);
+				return date;
+			}
+		}
+		return "";
+	}
 	/**
 	 * 获取下一个月
 	 * @return

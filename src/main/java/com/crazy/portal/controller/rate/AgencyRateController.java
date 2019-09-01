@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * @Describe 代理费率
@@ -38,5 +39,10 @@ public class AgencyRateController extends BaseController {
     public BaseResponse approve(){
         agencyRateService.approveRate();
         return successResult();
+    }
+
+    @GetMapping("/download")
+    public void download(HttpServletResponse response) throws Exception{
+        agencyRateService.templateDownload(response);
     }
 }
