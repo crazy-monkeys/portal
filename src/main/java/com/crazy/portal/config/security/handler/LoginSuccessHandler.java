@@ -9,11 +9,13 @@ import com.crazy.portal.entity.system.InternalUser;
 import com.crazy.portal.entity.system.User;
 import com.crazy.portal.service.system.PermissionService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -66,7 +68,7 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
         map.put(PERMISSIONS,permissionService.resourceTree(permissions));
         map.put(USER,user);
         InternalUser currentUserPosition = baseController.getCurrentUserPosition();
-        map.put(POSITION,currentUserPosition == null?null:currentUserPosition.getUserPositionCode());
+        map.put(POSITION,currentUserPosition == null ? StringUtils.EMPTY : currentUserPosition.getUserPositionCode());
         return map;
     }
 
