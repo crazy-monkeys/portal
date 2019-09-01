@@ -40,10 +40,6 @@ import java.util.Arrays;
 @Slf4j
 public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
-    private static final String[] permissiveUrl = new String[]{"/user/login","/logout","/announcement/file/**","/", "/file/**","/webservice/invoke"
-                                                , "/scheduleJob/list", "/login", "/static/**", "/loginCheck", "/scheduleJob/**", "/ajax/scheduleJob/**"
-                                                , "/webservice/**"};
-
     @Value("${app.service-principal}")
     private String servicePrincipal;
 
@@ -180,4 +176,20 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
     public SpnegoEntryPoint spnegoEntryPoint() {
         return new SpnegoEntryPoint("/ad/forward");
     }
+
+    private static final String[] permissiveUrl = new String[]{
+            "/",
+            "/user/login",
+            "/logout",
+            "/announcement/file/**",
+            "/file/**",
+            "/webservice/invoke",
+            "/scheduleJob/list",
+            "/login",
+            "/static/**",
+            "/loginCheck",
+            "/scheduleJob/**",
+            "/ajax/scheduleJob/**",
+            "/webservice/**"
+    };
 }
