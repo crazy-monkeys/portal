@@ -14,6 +14,7 @@
     <result column="catalog_price" jdbcType="DECIMAL" property="catalogPrice" />
     <result column="permission_price" jdbcType="DECIMAL" property="permissionPrice" />
     <result column="bottom_line_price" jdbcType="DECIMAL" property="bottomLinePrice" />
+    <result column="standard_cost" jdbcType="DECIMAL" property="standardCost" />
     <result column="depreciation_cost" jdbcType="DECIMAL" property="depreciationCost" />
     <result column="in_customer" jdbcType="VARCHAR" property="inCustomer" />
     <result column="effect_time" jdbcType="TIMESTAMP" property="effectTime" />
@@ -27,7 +28,7 @@
 
   <sql id="Base_Column_List">
     id, status, bu, pdt, product_type, platform, product_model, upper_number, lower_number, 
-    catalog_price, permission_price, bottom_line_price, depreciation_cost, in_customer, 
+    catalog_price, permission_price, bottom_line_price, standard_cost,depreciation_cost, in_customer,
     effect_time, dead_time, modify_time, product_status, product_belong_to, remark, create_time
   </sql>
 
@@ -115,6 +116,9 @@
       <if test="bottomLinePrice != null">
         bottom_line_price,
       </if>
+      <if test="standardCost != null">
+        standard_cost,
+      </if>
       <if test="depreciationCost != null">
         depreciation_cost,
       </if>
@@ -180,6 +184,9 @@
       <if test="bottomLinePrice != null">
         #{bottomLinePrice,jdbcType=DECIMAL},
       </if>
+      <if test="standardCost != null">
+        #{standardCost,jdbcType=DECIMAL},
+      </if>
       <if test="depreciationCost != null">
         #{depreciationCost,jdbcType=DECIMAL},
       </if>
@@ -244,6 +251,9 @@
       </if>
       <if test="bottomLinePrice != null">
         bottom_line_price = #{bottomLinePrice,jdbcType=DECIMAL},
+      </if>
+      <if test="standardCost != null">
+        standard_cost = #{standardCost,jdbcType=DECIMAL},
       </if>
       <if test="depreciationCost != null">
         depreciation_cost = #{depreciationCost,jdbcType=DECIMAL},

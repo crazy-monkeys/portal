@@ -74,6 +74,11 @@ public class PriceStrategy {
     private BigDecimal bottomLinePrice;
 
     /**
+     * 标准成本
+     */
+    private BigDecimal standardCost;
+
+    /**
      * 减值成本
      */
     private Long depreciationCost;
