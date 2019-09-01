@@ -83,7 +83,7 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
         UserDetails userDetails = (UserDetails)authentication.getPrincipal();
         //生成token，并把token加密相关信息缓存，具体请看实现类
         String token = jwtUserService.generateToken(userDetails);
-
+        log.info("用户 {} 成功登陆到系统",userDetails.getUsername());
         response.reset();
         response.setHeader(Constant.Authorization, token);
         response.setContentType("application/json;charset=utf-8");
