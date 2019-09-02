@@ -23,7 +23,8 @@ public class GlobalExceptionHandler {
     @ResponseBody
     @ExceptionHandler(value = Exception.class)
     public BaseResponse parameterExceptionHandler(Exception exception) {
-        log.error(exception.getMessage(), exception);
+
+        log.error("", exception);
         BaseResponse response = new BaseResponse();
         if(exception instanceof MethodArgumentNotValidException){
             MethodArgumentNotValidException paramException = (MethodArgumentNotValidException) exception;
@@ -40,14 +41,6 @@ public class GlobalExceptionHandler {
             return response;
         }
 
-        if(exception instanceof IllegalArgumentException
-                | exception instanceof MissingServletRequestParameterException){
-
-            response.fail(-1, exception.getMessage());
-            return response;
-        }
-
-        log.error("系统异常：", exception);
         response.systemException();
         return response;
     }
