@@ -9,14 +9,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
 
 import javax.annotation.Resource;
 
 
 @Task(value = "rebate数据同步",scheduleCode = "rebate_sync")
-@DisallowConcurrentExecution
 @Slf4j
+@DisallowConcurrentExecution
 public class RebateSyncJob implements Job{
 
     @Resource
@@ -25,7 +24,7 @@ public class RebateSyncJob implements Job{
     private RebateService rebateService;
 
     @Override
-    public void execute(JobExecutionContext context) throws JobExecutionException {
+    public void execute(JobExecutionContext context) {
         try {
             log.info("rebate数据同步Begin");
             ScheduleJob scheduleJob = scheduleJobService.selectByJobCode("rebate_sync");

@@ -17,22 +17,17 @@ import javax.annotation.Resource;
  * @Author: God Man Qiu~
  * @Date: 2019/8/11 21:09
  */
+
 @Task(value = "产品同步",scheduleCode = "productSync")
-@DisallowConcurrentExecution
 @Slf4j
+@DisallowConcurrentExecution
 public class ProductJob implements Job{
-    @Resource
-    private ScheduleJobService scheduleJobService;
     @Resource
     private ProductService productService;
 
     @Override
-    public void execute(JobExecutionContext context) throws JobExecutionException {
-        ScheduleJob scheduleJob = scheduleJobService.selectByJobCode("productSync");
-        try {
-            productService.syncProduct();
-        }catch (Exception e){
-            log.error("产品信息同步异常！",e);
-        }
+    public void execute(JobExecutionContext context){
+        log.info("Starting product synchronization");
+        productService.syncProduct();
     }
 }
