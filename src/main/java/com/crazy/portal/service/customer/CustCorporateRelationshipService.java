@@ -2,6 +2,8 @@ package com.crazy.portal.service.customer;
 
 import com.crazy.portal.dao.cusotmer.CustCorporateRelationshipMapper;
 import com.crazy.portal.entity.cusotmer.CustCorporateRelationship;
+import com.crazy.portal.entity.system.User;
+import com.crazy.portal.util.Enums;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -58,6 +60,22 @@ public class CustCorporateRelationshipService {
                     }
                 }
             }
+        }
+    }
+
+    /**
+     * 维护代理商和客户的关系
+     * @param custId
+     */
+    public void UpdateCustShip(Integer custId, User user){
+        if(!user.getUserType().equals(Enums.USER_TYPE.internal.toString())) {
+            CustCorporateRelationship ship = new CustCorporateRelationship();
+            ship.setCustId(custId);
+            ship.setCorporateType("Z001");
+            ship.setCorporateId(user.getId());
+            ship.setCreateUser(user.getId());
+            ship.setActive(1);
+            custCorporateRelationshipMapper.insertSelective(ship);
         }
     }
 }

@@ -12,7 +12,12 @@
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="update_user" jdbcType="INTEGER" property="updateUser" />
     <result column="active" jdbcType="INTEGER" property="active" />
-    <result column="p_number" jdbcType="DECIMAL" property="pNumber" />
+    <result column="p_number_one" jdbcType="DECIMAL" property="pNumberOne" />
+    <result column="p_number_two" jdbcType="DECIMAL" property="pNumberTwo" />
+    <result column="p_number_three" jdbcType="DECIMAL" property="pNumberThree" />
+    <result column="p_number_four" jdbcType="DECIMAL" property="pNumberFour" />
+    <result column="p_number_five" jdbcType="DECIMAL" property="pNumberFive" />
+    <result column="p_number_six" jdbcType="DECIMAL" property="pNumberSix" />
   </resultMap>
   <sql id="Base_Column_List">
     pro_id, cust_id, product_id, product, p_month, insert_time, insert_user, update_time, 
@@ -71,8 +76,23 @@
       <if test="active != null">
         active,
       </if>
-      <if test="pNumber != null">
-        p_number,
+      <if test="pNumberOne != null">
+        p_number_one,
+      </if>
+      <if test="pNumberTwo != null">
+        p_number_two,
+      </if>
+      <if test="pNumberThree != null">
+        p_number_three,
+      </if>
+      <if test="pNumberFour != null">
+        p_number_four,
+      </if>
+      <if test="pNumberFive != null">
+        p_number_five,
+      </if>
+      <if test="pNumberSix != null">
+        p_number_six,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -106,8 +126,23 @@
       <if test="active != null">
         #{active,jdbcType=INTEGER},
       </if>
-      <if test="pNumber != null">
-        #{pNumber,jdbcType=DECIMAL},
+      <if test="pNumberOne != null">
+        #{pNumberOne,jdbcType=DECIMAL},
+      </if>
+      <if test="pNumberTwo != null">
+        #{pNumberTwo,jdbcType=DECIMAL},
+      </if>
+      <if test="pNumberThree != null">
+        #{pNumberThree,jdbcType=DECIMAL},
+      </if>
+      <if test="pNumberFour != null">
+        #{pNumberFour,jdbcType=DECIMAL},
+      </if>
+      <if test="pNumberFive != null">
+        #{pNumberFive,jdbcType=DECIMAL},
+      </if>
+      <if test="pNumberSix != null">
+        #{pNumberSix,jdbcType=DECIMAL},
       </if>
     </trim>
   </insert>
@@ -141,8 +176,23 @@
       <if test="active != null">
         active = #{active,jdbcType=INTEGER},
       </if>
-      <if test="pNumber != null">
-        p_number = #{pNumber,jdbcType=DECIMAL},
+      <if test="pNumberOne != null">
+        p_number_one = #{pNumberOne,jdbcType=DECIMAL},
+      </if>
+      <if test="pNumberTwo != null">
+        p_number_two = #{pNumberTwo,jdbcType=DECIMAL},
+      </if>
+      <if test="pNumberThree != null">
+        p_number_three = #{pNumberThree,jdbcType=DECIMAL},
+      </if>
+      <if test="pNumberFour != null">
+        p_number_four=#{pNumberFour,jdbcType=DECIMAL},
+      </if>
+      <if test="pNumberFive != null">
+        p_number_five = #{pNumberFive,jdbcType=DECIMAL},
+      </if>
+      <if test="pNumberSix != null">
+        p_number_six = #{pNumberSix,jdbcType=DECIMAL},
       </if>
     </set>
     where pro_id = #{proId,jdbcType=INTEGER}

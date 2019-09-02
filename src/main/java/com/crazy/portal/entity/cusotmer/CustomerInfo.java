@@ -1,6 +1,9 @@
 package com.crazy.portal.entity.cusotmer;
 
+import com.alibaba.fastjson.annotation.JSONField;
+import com.crazy.portal.bean.customer.basic.UploadFileVO;
 import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -106,7 +109,7 @@ public class CustomerInfo {
     /**
      * 注册时间
      */
-    private Date registTime;
+    private String registTime;
 
     /**
      * 公司资产(customer)
@@ -133,6 +136,8 @@ public class CustomerInfo {
      */
     private String advantagesIntroduction;
 
+    private String reportDealerName;
+    private String reportSalesName;
     /**
      * 审批人
      */
@@ -146,6 +151,7 @@ public class CustomerInfo {
     /**
      * 
      */
+    @JSONField(format="yyyy-MM-dd HH:mm:ss")
     private Date approveTime;
 
     /**
@@ -166,6 +172,7 @@ public class CustomerInfo {
     /**
      * 
      */
+    @JSONField(format="yyyy-MM-dd HH:mm:ss")
     private Date createTime;
 
     /**

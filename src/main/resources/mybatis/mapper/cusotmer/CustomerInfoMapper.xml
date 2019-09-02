@@ -20,7 +20,7 @@
     <result column="cust_email" jdbcType="VARCHAR" property="custEmail" />
     <result column="cust_web" jdbcType="VARCHAR" property="custWeb" />
     <result column="is_white" jdbcType="INTEGER" property="isWhite" />
-    <result column="regist_time" jdbcType="TIMESTAMP" property="registTime" />
+    <result column="regist_time" jdbcType="VARCHAR" property="registTime" />
     <result column="corportae_assets" jdbcType="DECIMAL" property="corportaeAssets" />
     <result column="staff_number" jdbcType="INTEGER" property="staffNumber" />
     <result column="developers_number" jdbcType="INTEGER" property="developersNumber" />
@@ -35,6 +35,8 @@
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_user" jdbcType="INTEGER" property="updateUser" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="report_dealer_name" jdbcType="VARCHAR" property="reportDealerName" />
+    <result column="report_sales_name" jdbcType="VARCHAR" property="reportSalesName" />
   </resultMap>
 
   <!--代理商result-->
@@ -49,6 +51,20 @@
     <collection property="invoiceInfos" resultMap="com.crazy.portal.dao.cusotmer.CustInvoiceInfoMapper.BaseResultMap" />
     <collection property="sales" resultMap="com.crazy.portal.dao.cusotmer.CustSalesMapper.BaseResultMap" />
     <collection property="addresses" resultMap="com.crazy.portal.dao.cusotmer.CustomerAddressMapper.BaseResultMap" />
+  </resultMap>
+
+  <!--客户 result-->
+  <resultMap id="CustomerResultMap" type="com.crazy.portal.entity.cusotmer.CustomerInfo" extends="BaseResultMap">
+    <association property="custBankInfo" resultMap="com.crazy.portal.dao.cusotmer.CustBankInfoMapper.BaseResultMap" />
+    <collection property="customerContacts" resultMap="com.crazy.portal.dao.cusotmer.CustomerContactMapper.BaseResultMap" />
+    <collection property="files" resultMap="com.crazy.portal.dao.cusotmer.CustomerFileMapper.BaseResultMap" />
+    <collection property="relationships" resultMap="com.crazy.portal.dao.cusotmer.CustCorporateRelationshipMapper.BaseResultMap" />
+    <collection property="invoiceInfos" resultMap="com.crazy.portal.dao.cusotmer.CustInvoiceInfoMapper.BaseResultMap" />
+    <collection property="sales" resultMap="com.crazy.portal.dao.cusotmer.CustSalesMapper.BaseResultMap" />
+    <collection property="addresses" resultMap="com.crazy.portal.dao.cusotmer.CustomerAddressMapper.BaseResultMap" />
+
+    <collection property="accountTeams" resultMap="com.crazy.portal.dao.cusotmer.CustomerAccountTeamMapper.BaseResultMap" />
+    <collection property="customerProducts" resultMap="com.crazy.portal.dao.cusotmer.CustomerProductMapper.BaseResultMap" />
   </resultMap>
 
   <sql id="Base_Column_List">
@@ -254,7 +270,7 @@
         #{isWhite,jdbcType=INTEGER},
       </if>
       <if test="registTime != null">
-        #{registTime,jdbcType=TIMESTAMP},
+        #{registTime,jdbcType=VARCHAR},
       </if>
       <if test="corportaeAssets != null">
         #{corportaeAssets,jdbcType=DECIMAL},
@@ -355,7 +371,7 @@
         is_white = #{isWhite,jdbcType=INTEGER},
       </if>
       <if test="registTime != null">
-        regist_time = #{registTime,jdbcType=TIMESTAMP},
+        regist_time = #{registTime,jdbcType=VARCHAR},
       </if>
       <if test="corportaeAssets != null">
         corportae_assets = #{corportaeAssets,jdbcType=DECIMAL},
@@ -545,6 +561,142 @@
  left join t_customer_account_team account on account.cust_id = cust.id and account.active=1
   where cust.business_type = 'A04' and cust.active =1 and cust.id=#{id}
   </select>
+  
+  <select id="queryCustomerInfo" resultMap="CustomerResultMap">
+    select
+    cust.id,
+    cust.in_code,
+    cust.out_code,
+    cust.cust_role,
+    cust.business_type,
+    cust.is_license,
+    cust.cust_name,
+    cust.cust_en_name,
+    cust.cust_abbreviation,
+    cust.cust_mobile,
+    cust.cust_email,
+    cust.cust_web,
+    cust.corportae_assets,
+    cust.staff_number,
+    cust.developers_number,
+    cust.regist_time,
+    cust.advantages_introduction,
+    cust.business_introduction,
+    bank.bank_id,
+    bank.cust_id,
+    bank.bank_name,
+    bank.bank_country,
+    bank.bank_province,
+    bank.bank_detail_info,
+    bank.bank_account,
+    bank.bank_bic,
+    file.file_id,
+    file.cust_id,
+    file.type,
+    file.title,
+    file.file_name,
+    file.file_path,
+    contact.contact_id,
+    contact.cust_id,
+    contact.contact_name,
+    contact.mobile,
+    contact.email,
+    contact.department,
+    contact.sub_department,
+    contact.position,
+    contact.equity_ratio,
+    ship.ship_id,
+    ship.cust_id,
+    ship.corporate_type,
+    ship.corporate_name,
+    invoice.invoice_id,
+    invoice.cust_id,
+    invoice.purchasing_unit,
+    invoice.shipping_address,
+    invoice.shipping_mobile,
+    invoice.taxpayer_registration_number,
+    invoice.currency,
+    sales.sales_id,
+    sales.cust_id,
+    sales.sales_organize,
+    sales.distribution_channel,
+    sales.delivery_plant,
+    address.address_id,
+    address.cust_id,
+    address.address_type,
+    address.country,
+    address.province,
+    address.city,
+    address.district,
+    address.address_detail,
+    account.team_id,
+    account.cust_id,
+    account.account_mobile,
+    account.role_type,
+    account.account_name,
+    product.pro_id,
+    product.cust_id,
+    product.product,
+    product.p_number_one,
+    product.p_number_two,
+    product.p_number_three,
+    product.p_number_four,
+    product.p_number_five,
+    product.p_number_six
+
+    from t_customer_info cust
+    left join t_cust_bank_info bank on bank.cust_id = cust.id and bank.active=1
+    left join t_customer_file file on file.cust_id = cust.id and file.active=1
+    left join t_customer_contact contact on contact.cust_id = cust.id and contact.active=1
+    left join t_cust_corporate_relationship ship on ship.cust_id = cust.id and ship.active=1
+    left join t_cust_invoice_info invoice on invoice.cust_id = cust.id and invoice.active=1
+    left join t_cust_sales sales on sales.cust_id = cust.id and sales.active=1
+    left join t_customer_address address on address.cust_id = cust.id and address.active=1
+    left join t_customer_account_team account on account.cust_id = cust.id and account.active=1
+    left join t_customer_product product on product.cust_id = cust.id and product.active =1
+    where cust.active =1 and cust.id=#{custId}
+  </select>
+
+  <select id="selectCustomer" resultMap="BaseResultMap">
+      select
+        cust.id,
+        cust_type,
+        case cust.business_type when 'A01' then 'Account Market（直供）'
+        when 'A02' then 'Account Market（非直供）'
+        when 'A03' then 'Mass Market'
+        when 'A04' then '代理商'
+        else '未知' end business_type,
+        cust.approve_status,
+        out_code,
+        cust.is_license,
+        cust_name,
+        cust_en_name,
+        cust_abbreviation,
+        business_type,
+        cust_role,
+        team.account_name report_sales_name,
+        ship.user_name report_dealer_name,
+        team.user_name approve_user_name,
+        cust.approve_remark,
+        cust.approve_time,
+        cust.create_time
+        from t_customer_info cust
+        left join (select team.team_id,team.cust_id,team.account_name,ins.user_name from t_customer_account_team team
+        left join t_user u on u.id = team.account_name and team.active=1
+        left join t_internal_user ins on ins.user_mail = u.login_name
+        where team.role_type = '142'
+        ) team on team.cust_id = cust.id
+        left join (select s.ship_id,s.cust_id,s.corporate_id,ins.user_name from t_cust_corporate_relationship s
+        left join t_user u on u.id = s.corporate_id and s.active=1
+        left join t_internal_user ins on ins.user_mail = u.login_name where s.corporate_type = 'Z001') ship on ship.cust_id = cust.id
+        where cust.active =1 and cust.cust_type!='A04'
+        <if test="reportDealer!=null">
+          and ship.corporate_id = #{reportDealer}
+        </if>
+        <if test="reportSales != null">
+          and team.account_name = #{reportSales}
+        </if>
+  </select>
 
   <select id="selectByCustName" parameterType="java.lang.String" resultMap="BaseResultMap">
     select * from t_customer_info cust
@@ -558,8 +710,7 @@
     where u.id=#{userId}
   </select>
 
-  <select id="selectAllCustomer" resultType="java.util.LinkedHashMap">
-    select id, out_code as outCode, cust_name as custName from t_customer_info
-    order by create_time desc
+  <select id="selectAllCustomer" resultMap="BaseResultMap">
+      select * from t_customer_info where active = 1
   </select>
 </mapper>

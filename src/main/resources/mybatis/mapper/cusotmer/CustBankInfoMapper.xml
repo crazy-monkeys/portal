@@ -10,6 +10,7 @@
     <result column="bank_country" jdbcType="VARCHAR" property="bankCountry" />
     <result column="bank_province" jdbcType="VARCHAR" property="bankProvince" />
     <result column="bank_address" jdbcType="VARCHAR" property="bankAddress" />
+    <result column="bank_detail_info" jdbcType="VARCHAR" property="bankDetailInfo" />
     <result column="create_user" jdbcType="INTEGER" property="createUser" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_user" jdbcType="INTEGER" property="updateUser" />
@@ -208,4 +209,8 @@
       active = #{active,jdbcType=INTEGER}
     where bank_id = #{bankId,jdbcType=INTEGER}
   </update>
+
+  <select id="selectByCustId" resultMap="BaseResultMap">
+    SELECT * from t_cust_bank_info where active =1 and cust_id = #{custId}
+  </select>
 </mapper>

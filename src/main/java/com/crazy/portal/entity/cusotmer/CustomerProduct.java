@@ -1,5 +1,7 @@
 package com.crazy.portal.entity.cusotmer;
 
+import lombok.Data;
+
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -8,6 +10,7 @@ import java.util.Date;
  * @author weiying
  * @date   2019-08-29 16:10::00
  */
+@Data
 public class CustomerProduct {
     /**
      * 
@@ -62,93 +65,10 @@ public class CustomerProduct {
     /**
      * 
      */
-    private BigDecimal pNumber;
-
-    public Integer getProId() {
-        return proId;
-    }
-
-    public void setProId(Integer proId) {
-        this.proId = proId;
-    }
-
-    public Integer getCustId() {
-        return custId;
-    }
-
-    public void setCustId(Integer custId) {
-        this.custId = custId;
-    }
-
-    public String getProductId() {
-        return productId;
-    }
-
-    public void setProductId(String productId) {
-        this.productId = productId == null ? null : productId.trim();
-    }
-
-    public String getProduct() {
-        return product;
-    }
-
-    public void setProduct(String product) {
-        this.product = product == null ? null : product.trim();
-    }
-
-    public String getpMonth() {
-        return pMonth;
-    }
-
-    public void setpMonth(String pMonth) {
-        this.pMonth = pMonth == null ? null : pMonth.trim();
-    }
-
-    public Date getInsertTime() {
-        return insertTime;
-    }
-
-    public void setInsertTime(Date insertTime) {
-        this.insertTime = insertTime;
-    }
-
-    public Integer getInsertUser() {
-        return insertUser;
-    }
-
-    public void setInsertUser(Integer insertUser) {
-        this.insertUser = insertUser;
-    }
-
-    public Date getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(Date updateTime) {
-        this.updateTime = updateTime;
-    }
-
-    public Integer getUpdateUser() {
-        return updateUser;
-    }
-
-    public void setUpdateUser(Integer updateUser) {
-        this.updateUser = updateUser;
-    }
-
-    public Integer getActive() {
-        return active;
-    }
-
-    public void setActive(Integer active) {
-        this.active = active;
-    }
-
-    public BigDecimal getpNumber() {
-        return pNumber;
-    }
-
-    public void setpNumber(BigDecimal pNumber) {
-        this.pNumber = pNumber;
-    }
+    private BigDecimal pNumberOne;
+    private BigDecimal pNumberTwo;
+    private BigDecimal pNumberThree;
+    private BigDecimal pNumberFour;
+    private BigDecimal pNumberFive;
+    private BigDecimal pNumberSix;
 }

@@ -148,7 +148,8 @@ public class ErrorCodes {
         CUSTOMER_IS_EMPYT(50000, "没有对应的客户信息", ""),
         CUSTOMER_NAME_EXISTS(50001, "该客户名已存在", ""),
         CUSTOMER_CREDIT(50002,"获取代理商授信额度异常",""),
-        CUSTOMER_IS_REPORT(50003,"该客户已被报备",""),
+        CUSTOMER_IS_APPEROVE(50003,"该客户已被报备",""),
+        CUSTOMER_IS_REPORT(50003,"您已提交报备申请，请等待审批",""),
         CUSTOMER_REPORT_ERROR(50004,"非Mass Market 客户",""),
         CUSTOMER_REPORT_ERROR1(50005,"客户正在报备中",""),
 

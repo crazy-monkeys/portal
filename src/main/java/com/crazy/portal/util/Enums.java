@@ -29,7 +29,10 @@ public class Enums {
         //客户业务类型
         CUSTOMER_BUSINESS_TYPE(2,1),
         //客户角色
-        CUSOTMER_ROLE(2,2),
+        CUSTOMER_ROLE(2,2),
+        //分级维护
+        CUSTOMER_UNIT(2,3),
+        CUSTOMER_PDT(2,4),
         //代理商关联cs 模块
         DEALER_MAPPING_MODEL(3,1),
         //出货期限  H
@@ -196,7 +199,24 @@ public class Enums {
             return code;
         }
     }
+    public enum CUSTOMER_TYPE{
+        WAIT_SUBMIT(0, "潜在客户"),
+        WAIT_REPORT(1,"未报备"),
+        WAIT_APPROVAL(2, "已报备");
 
+        private Integer code;
+        private String desc;
+        CUSTOMER_TYPE(Integer code, String desc){
+            this.code = code;
+            this.desc = desc;
+        }
+        public Integer getCode(){
+            return code;
+        }
+        public String getDesc(){
+            return desc;
+        }
+    }
     /**
      *报备状态 0-初始化 1-可报备 2-审批中 3-审批通过 4-审批驳回
      */

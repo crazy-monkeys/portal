@@ -22,17 +22,17 @@ public interface CustomerInfoMapper {
 
     CustomerInfo selectDealerInfo(Integer id);
 
-    CustomerInfo selectByCustName(@Param("custName") String custName);
+    List<CustomerInfo> selectByCustName(@Param("custName") String custName);
 
-    CustomerInfo queryReportInfo(@Param("custId") int custId, @Param("reportId") int reportId);
+    CustomerInfo queryCustomerInfo(@Param("custId") int custId);
 
     List<CustomerInfo> selectNameAndCodeByUserId(@Param("userId") Integer userId);
 
-    List<Map<String, Object>> selectAllCustomer();
+    List<CustomerInfo> selectAllCustomer();
 
     String selectEmailByCustName(@Param("custName")String custName);
 
-    List<CustomerInfo> selectCustomerInfo(CustomerQueryBean record);
+    List<CustomerInfo> selectCustomer(CustomerQueryBean record);
 
     CustomerInfo getDealerByUser(Integer userId);
 }

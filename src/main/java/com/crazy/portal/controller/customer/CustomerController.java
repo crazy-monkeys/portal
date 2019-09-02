@@ -52,6 +52,11 @@ public class CustomerController extends BaseController{
         return successResult();
     }
 
+    @PostMapping("/file")
+    public BaseResponse fileUpload(MultipartFile file, Integer index){
+        return successResult(customerInfoService.fileUpload(file, getCurrentUserId(), index));
+    }
+
     //校验客户是否可报备
     @GetMapping(value = "/check/{customerName}")
     public BaseResponse checkCustomer(@PathVariable String customerName){
@@ -60,29 +65,29 @@ public class CustomerController extends BaseController{
 
     //报备客户
     @PostMapping(value = "/report")
-    public BaseResponse reportCustomer(@RequestBody CustomerInfo customerInfo){
-        customerInfoService.reportCustomer(customerInfo, getCurrentUser());
+    public BaseResponse reportCustomer(CustomerInfo customerInfo){
+        customerInfoService.report(customerInfo, getCurrentUser());
         return successResult();
     }
 
     //审批
-    @PostMapping("/approval")
-    public BaseResponse approval(@RequestBody ApprovalBean bean){
+    @GetMapping("/approval")
+    public BaseResponse approval(ApprovalBean bean){
         bean.setApproveUser(this.getCurrentUser().getId());
         customerInfoService.approval(bean);
         return successResult();
     }
 
     //查询所有客户
-    @PostMapping("/list")
-    public BaseResponse list(@RequestBody CustomerQueryBean customerQueryBean){
-        return successResult(customerInfoService.queryList(customerQueryBean));
+    @GetMapping("/list")
+    public BaseResponse list(CustomerQueryBean customerQueryBean){
+        return successResult(customerInfoService.queryList(customerQueryBean, getCurrentUser()));
     }
 
     //查询客户明细
-    @GetMapping("/info/{reportId}/{custId}")
-    public BaseResponse info(@PathVariable Integer reportId, @PathVariable Integer custId){
-        return successResult(customerInfoService.queryInfo(reportId,custId));
+    @GetMapping("/info/{custId}")
+    public BaseResponse info(@PathVariable Integer custId){
+        return successResult(customerInfoService.queryInfo(custId));
     }
 
     @GetMapping("/visitRecord/list")
@@ -107,10 +112,7 @@ public class CustomerController extends BaseController{
         return successResult();
     }
 
-    @PostMapping("/file")
-    public BaseResponse fileUpload(MultipartFile[] files){
-        return successResult(customerInfoService.fileUpload(files));
-    }
+
 
 /**
     //获取用户列表
@@ -215,11 +217,11 @@ public class CustomerController extends BaseController{
         customersService.fileDownload(response, id);
     }
     */
-
+/*
     @GetMapping("/all")
     public BaseResponse queryAllCustomer(){
         return successResult(customerInfoService.selectAllCustomer());
-    }
+    }*/
 
 
 }

@@ -1,6 +1,7 @@
 package com.crazy.portal.entity.cusotmer;
 
 import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Date;
 
@@ -56,4 +57,11 @@ public class CustomerFile {
      * 
      */
     private String filePath;
+
+
+    private String fileType;
+
+    private MultipartFile file;
+
+    private Integer index;
 }

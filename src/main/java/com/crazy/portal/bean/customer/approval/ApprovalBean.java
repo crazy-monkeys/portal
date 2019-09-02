@@ -12,8 +12,6 @@ import lombok.Data;
 public class ApprovalBean {
     /*审批类型 1 通过  2驳回*/
     private Integer approvalType;
-    //报备Id
-    private Integer reportId;
     //审批人Id
     private Integer approveUser;
     //客户Id

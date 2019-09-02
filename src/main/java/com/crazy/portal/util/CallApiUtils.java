@@ -93,6 +93,10 @@ public class CallApiUtils {
         return zsdscredit;
     }
 
+    public static void main(String[] args) {
+        System.out.println(XMLUtil.convertToXml(Zsdscredit.class));
+    }
+
     /**
      * bi 接口
      * @param fromUrl portal 上传的文件位置 绝对路径 带文件名

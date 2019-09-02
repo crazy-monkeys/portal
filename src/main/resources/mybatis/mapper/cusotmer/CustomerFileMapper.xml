@@ -35,7 +35,7 @@
       #{active,jdbcType=INTEGER}, #{fileName,jdbcType=VARCHAR}, #{filePath,jdbcType=VARCHAR}
       )
   </insert>
-  <insert id="insertSelective" parameterType="com.crazy.portal.entity.cusotmer.CustomerFile">
+  <insert id="insertSelective" parameterType="com.crazy.portal.entity.cusotmer.CustomerFile" useGeneratedKeys="true" keyProperty="fileId">
     insert into t_customer_file
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="fileId != null">

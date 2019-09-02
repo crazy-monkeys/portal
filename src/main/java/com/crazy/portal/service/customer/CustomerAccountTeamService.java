@@ -3,6 +3,8 @@ package com.crazy.portal.service.customer;
 import com.crazy.portal.dao.cusotmer.CustomerAccountTeamMapper;
 import com.crazy.portal.entity.cusotmer.CustomerAccountTeam;
 import com.crazy.portal.entity.cusotmer.CustomerContact;
+import com.crazy.portal.entity.system.User;
+import com.crazy.portal.util.Enums;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -59,6 +61,21 @@ public class CustomerAccountTeamService {
                     }
                 }
             }
+        }
+    }
+
+    /**
+     * 销售报备客户
+     */
+    public void updateTeam(Integer custId, String mobile, User user){
+        if(user.getUserType().equals(Enums.USER_TYPE.internal.toString())) {
+            CustomerAccountTeam team = new CustomerAccountTeam();
+            team.setCustId(custId);
+            team.setAccountMobile(mobile);
+            team.setRoleType("142");//142:负责销售 211：客户团队成员 46：销售人员 213：合作伙伴联系人
+            team.setCreateUser(user.getId());
+            team.setActive(1);
+            customerAccountTeamMapper.insertSelective(team);
         }
     }
 }

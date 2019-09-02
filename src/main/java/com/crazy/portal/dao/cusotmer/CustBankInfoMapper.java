@@ -16,4 +16,6 @@ public interface CustBankInfoMapper {
     int updateByPrimaryKeyWithBLOBs(CustBankInfo record);
 
     int updateByPrimaryKey(CustBankInfo record);
+
+    CustBankInfo selectByCustId(Integer custId);
 }

@@ -30,4 +30,8 @@ public class CustomerQueryBean extends PageBean {
 
     /*1-客户查询 2-审批查询 3-报备查询*/
     private Integer queryType;
+    /**代理商报备查询**/
+    private Integer reportDealer;
+    /**销售报备查询**/
+    private Integer reportSales;
 }
