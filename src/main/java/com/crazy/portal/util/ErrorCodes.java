@@ -173,7 +173,10 @@ public class ErrorCodes {
         REBATE_ITEM_ID_IS_NULL(70104, "rebateItemId不能为空", ""),
 
         PRODUCT_QUERY_ERROR(70501,"产品查询异常",""),
-        PRODUCT_SYNC_ERROR(70502,"产品同步异常","");
+        PRODUCT_SYNC_ERROR(70502,"产品同步异常",""),
+
+        //
+        FORECAST_YEAR_MONTH_FORMAT_ERROR(80000, "月份格式不符合要求，请重新输入", "");
 
         private final int code;
         private final String zhMsg;

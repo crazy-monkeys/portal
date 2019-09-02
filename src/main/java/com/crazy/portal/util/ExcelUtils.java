@@ -59,6 +59,28 @@ public class ExcelUtils {
         }
     }
 
+    public static void writeExcel(HttpServletResponse response, List<? extends BaseRowModel> data, Class clazz) {
+        OutputStream out = null;
+        String fileName = String.format("%s.%s", System.currentTimeMillis(), ".xlsx");
+        try {
+            response.setContentType("application/vnd.ms-excel");
+            response.setHeader("Content-disposition", "attachment;filename=" + fileName);
+            response.setCharacterEncoding("UTF-8");
+            Sheet sheet1 = new Sheet(1, 0, clazz);
+            sheet1.setSheetName("Sheet1");
+
+            out = response.getOutputStream();
+            ExcelWriter writer = new ExcelWriter(out, ExcelTypeEnum.XLSX, true);
+            writer.write(data, sheet1);
+            writer.finish();
+        }catch (Exception ex) {
+            log.error(EXCEL_WRITE_ERROR.getZhMsg(), ex);
+            throw new BusinessException(EXCEL_WRITE_ERROR);
+        }finally {
+            IOUtils.closeQuietly(out);
+        }
+    }
+
     public static String writeExcel(String filePath, List<? extends BaseRowModel> data, Class clazz) {
         FileOutputStream out = null;
         try {

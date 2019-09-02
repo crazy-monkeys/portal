@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.crazy.portal.dao.forecast.ForecastLineMapper">
+  <resultMap id="BaseResultMap" type="com.crazy.portal.entity.forecast.ForecastLine">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="f_id" jdbcType="INTEGER" property="fId" />
+    <result column="sort_num" jdbcType="INTEGER" property="sortNum" />
+    <result column="forecast_month" jdbcType="VARCHAR" property="forecastMonth" />
+    <result column="last_write" jdbcType="VARCHAR" property="lastWrite" />
+    <result column="current_write" jdbcType="VARCHAR" property="currentWrite" />
+    <result column="gap" jdbcType="VARCHAR" property="gap" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="amb_adjustment" jdbcType="VARCHAR" property="ambAdjustment" />
+    <result column="amb_remark" jdbcType="VARCHAR" property="ambRemark" />
+    <result column="sd_adjustment" jdbcType="VARCHAR" property="sdAdjustment" />
+    <result column="sd_remark" jdbcType="VARCHAR" property="sdRemark" />
+  </resultMap>
+
+  <resultMap id="agencyTemplateMap" type="com.crazy.portal.entity.forecast.ForecastLine">
+    <result column="sort_num" jdbcType="INTEGER" property="sortNum" />
+    <result column="forecast_month" jdbcType="VARCHAR" property="forecastMonth" />
+    <result column="last_write" jdbcType="VARCHAR" property="lastWrite" />
+    <result column="current_write" jdbcType="VARCHAR" property="currentWrite" />
+    <result column="gap" jdbcType="VARCHAR" property="gap" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    id, f_id, sort_num, forecast_month, last_write, current_write, gap, remark, amb_adjustment, 
+    amb_remark, sd_adjustment, sd_remark
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_forecast_line
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_forecast_line
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.crazy.portal.entity.forecast.ForecastLine">
+    insert into t_forecast_line (id, f_id, sort_num, 
+      forecast_month, last_write, current_write, 
+      gap, remark, amb_adjustment, 
+      amb_remark, sd_adjustment, sd_remark
+      )
+    values (#{id,jdbcType=INTEGER}, #{fId,jdbcType=INTEGER}, #{sortNum,jdbcType=INTEGER}, 
+      #{forecastMonth,jdbcType=VARCHAR}, #{lastWrite,jdbcType=VARCHAR}, #{currentWrite,jdbcType=VARCHAR}, 
+      #{gap,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, #{ambAdjustment,jdbcType=VARCHAR}, 
+      #{ambRemark,jdbcType=VARCHAR}, #{sdAdjustment,jdbcType=VARCHAR}, #{sdRemark,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.crazy.portal.entity.forecast.ForecastLine">
+    insert into t_forecast_line
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="fId != null">
+        f_id,
+      </if>
+      <if test="sortNum != null">
+        sort_num,
+      </if>
+      <if test="forecastMonth != null">
+        forecast_month,
+      </if>
+      <if test="lastWrite != null">
+        last_write,
+      </if>
+      <if test="currentWrite != null">
+        current_write,
+      </if>
+      <if test="gap != null">
+        gap,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+      <if test="ambAdjustment != null">
+        amb_adjustment,
+      </if>
+      <if test="ambRemark != null">
+        amb_remark,
+      </if>
+      <if test="sdAdjustment != null">
+        sd_adjustment,
+      </if>
+      <if test="sdRemark != null">
+        sd_remark,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="fId != null">
+        #{fId,jdbcType=INTEGER},
+      </if>
+      <if test="sortNum != null">
+        #{sortNum,jdbcType=INTEGER},
+      </if>
+      <if test="forecastMonth != null">
+        #{forecastMonth,jdbcType=VARCHAR},
+      </if>
+      <if test="lastWrite != null">
+        #{lastWrite,jdbcType=VARCHAR},
+      </if>
+      <if test="currentWrite != null">
+        #{currentWrite,jdbcType=VARCHAR},
+      </if>
+      <if test="gap != null">
+        #{gap,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="ambAdjustment != null">
+        #{ambAdjustment,jdbcType=VARCHAR},
+      </if>
+      <if test="ambRemark != null">
+        #{ambRemark,jdbcType=VARCHAR},
+      </if>
+      <if test="sdAdjustment != null">
+        #{sdAdjustment,jdbcType=VARCHAR},
+      </if>
+      <if test="sdRemark != null">
+        #{sdRemark,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.crazy.portal.entity.forecast.ForecastLine">
+    update t_forecast_line
+    <set>
+      <if test="fId != null">
+        f_id = #{fId,jdbcType=INTEGER},
+      </if>
+      <if test="sortNum != null">
+        sort_num = #{sortNum,jdbcType=INTEGER},
+      </if>
+      <if test="forecastMonth != null">
+        forecast_month = #{forecastMonth,jdbcType=VARCHAR},
+      </if>
+      <if test="lastWrite != null">
+        last_write = #{lastWrite,jdbcType=VARCHAR},
+      </if>
+      <if test="currentWrite != null">
+        current_write = #{currentWrite,jdbcType=VARCHAR},
+      </if>
+      <if test="gap != null">
+        gap = #{gap,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="ambAdjustment != null">
+        amb_adjustment = #{ambAdjustment,jdbcType=VARCHAR},
+      </if>
+      <if test="ambRemark != null">
+        amb_remark = #{ambRemark,jdbcType=VARCHAR},
+      </if>
+      <if test="sdAdjustment != null">
+        sd_adjustment = #{sdAdjustment,jdbcType=VARCHAR},
+      </if>
+      <if test="sdRemark != null">
+        sd_remark = #{sdRemark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.crazy.portal.entity.forecast.ForecastLine">
+    update t_forecast_line
+    set f_id = #{fId,jdbcType=INTEGER},
+      sort_num = #{sortNum,jdbcType=INTEGER},
+      forecast_month = #{forecastMonth,jdbcType=VARCHAR},
+      last_write = #{lastWrite,jdbcType=VARCHAR},
+      current_write = #{currentWrite,jdbcType=VARCHAR},
+      gap = #{gap,jdbcType=VARCHAR},
+      remark = #{remark,jdbcType=VARCHAR},
+      amb_adjustment = #{ambAdjustment,jdbcType=VARCHAR},
+      amb_remark = #{ambRemark,jdbcType=VARCHAR},
+      sd_adjustment = #{sdAdjustment,jdbcType=VARCHAR},
+      sd_remark = #{sdRemark,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

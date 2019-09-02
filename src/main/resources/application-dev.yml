@@ -24,7 +24,7 @@ spring:
 
 file:
   path:
-    root: /Users/zhangxiujuan/Desktop/portal_file #公用基础路径
+    root: /Users/lee/Documents/job_code/portal_file #公用基础路径
     root-local: ${file.path.root}/local #portal系统内文件地址入口
     root-thrid-push: ${file.path.root}/push_thrid #portal对接第三方文件出口地址
     root-thrid-pull: ${file.path.root}/pull_thrid #第三方传输文件至portal入口地址
@@ -41,6 +41,9 @@ file:
       push: ${file.path.root-thrid-push}/receive/
       pull: ${file.path.root-thrid-pull}/receive/
       local: ${file.path.root-local}/receive/
+    forecast:
+      push: ${file.path.root-thrid-push}/forecast/
+      pull: ${file.path.root-thrid-pull}/forecast/
 
 api:
   url:
