@@ -61,7 +61,7 @@ public class ExcelUtils {
 
     public static void writeExcel(HttpServletResponse response, List<? extends BaseRowModel> data, Class clazz) {
         OutputStream out = null;
-        String fileName = String.format("%s.%s", System.currentTimeMillis(), ".xlsx");
+        String fileName = String.format("%s.%s", System.currentTimeMillis(), ExcelTypeEnum.XLSX);
         try {
             response.setContentType("application/vnd.ms-excel");
             response.setHeader("Content-disposition", "attachment;filename=" + fileName);
