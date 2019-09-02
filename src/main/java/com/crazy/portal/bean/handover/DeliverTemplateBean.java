@@ -33,7 +33,7 @@ public class DeliverTemplateBean extends BaseRowModel {
     private String categoryOne;
 
     /** 类别二(子类) */
-    @ExcelProperty(index = 4, value = "类别二(子类)")
+    @ExcelProperty(index = 4, value = "类别二(子类型)")
     private String categoryTow;
 
     /** 类别三(平台) */

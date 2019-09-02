@@ -38,7 +38,7 @@ public class DeliverDetail extends BaseRowModel {
     private String categoryOne;
 
     /** 类别二(子类) */
-    @ExcelProperty(index = 5, value = "类别二(子类)")
+    @ExcelProperty(index = 5, value = "类别二(子类型)")
     private String categoryTow;
 
     /** 类别三(平台) */
@@ -58,7 +58,7 @@ public class DeliverDetail extends BaseRowModel {
     private Integer deliverNumber;
 
     /** Sale Price */
-    @ExcelProperty(index = 10, value = "Sale Price")
+    @ExcelProperty(index = 10, value = "Sales Price")
     private BigDecimal salePrice;
 
     /** Po Price */
@@ -66,11 +66,11 @@ public class DeliverDetail extends BaseRowModel {
     private BigDecimal poPrice;
 
     /** Margin */
-    @ExcelProperty(index = 12, value = "Margin")
+    @ExcelProperty(index = 12, value = "margin")
     private BigDecimal margin;
 
     /** 币种 */
-    @ExcelProperty(index = 13, value = "币种")
+    @ExcelProperty(index = 13, value = "币别")
     private String currency;
 
     /** 客户订单号 */

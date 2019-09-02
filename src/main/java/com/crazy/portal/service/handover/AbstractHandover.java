@@ -35,11 +35,14 @@ public abstract class AbstractHandover {
             //推送文件的地址信息
             String pushServerFile = String.format("%s%s", pushFtpPath(), fileName);
             String pushLocalFile = String.format("%s%s", filePath, fileName);
+
+            String pushServerFile1 = String.format("%s%s", "bitest/upload/", fileName);
+
             if(log.isDebugEnabled()) {
                 log.debug("Portal to BI >> Ftp file path:{} , Local file path:{}", pushServerFile, pushLocalFile);
             }
             ftpClientUtil.put(pushServerFile, pushLocalFile);
-            BiCheckResult result = callBiServer(functionCode, pushServerFile, pullLocalPath());
+            BiCheckResult result = callBiServer(functionCode, pushServerFile1, "bitest/download/");
             log.info("BI handle result info >> {}", JSONObject.toJSONString(result));
             //获取文件的地址信息
             String biFileName = result.getFilePath().substring(result.getFilePath().lastIndexOf("/") + 1);
