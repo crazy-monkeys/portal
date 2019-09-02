@@ -16,29 +16,19 @@ public class AuthFilter implements Filter{
 	String[] includeUrls = new String[]{"/login", "/static"};
 
 	@Override
-	public void doFilter(ServletRequest request, ServletResponse response,
-			FilterChain filterChain) throws IOException, ServletException {
+	public void doFilter(ServletRequest request, ServletResponse response,FilterChain filterChain)
+									throws IOException, ServletException {
+
 		HttpServletRequest req = (HttpServletRequest)request;
 		HttpServletResponse rep = (HttpServletResponse)response;
-		Boolean isLogin = req.getSession().getAttribute("isLogin")==null?null:(Boolean)req.getSession().getAttribute("isLogin");
+		Object isLoginObj = req.getSession().getAttribute("isLogin");
+		Boolean isLogin = isLoginObj == null ? null : (Boolean) isLoginObj;
 		String uri = req.getRequestURI();
 		if((isLogin!= null && isLogin) || !isNeedFilter(uri)){
 			filterChain.doFilter(request, response);
-		}else{
-			rep.sendRedirect(req.getContextPath()+"/login");
+			return;
 		}
-	}
-
-	@Override
-	public void init(FilterConfig arg0) throws ServletException {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void destroy() {
-		// TODO Auto-generated method stub
-
+		rep.sendRedirect(req.getContextPath()+"/login");
 	}
 
 	/**
