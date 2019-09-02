@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.crazy.portal.dao.cusotmer.CustomerStructureMapper">
+  <resultMap id="BaseResultMap" type="com.crazy.portal.entity.cusotmer.CustomerStructure">
+    <id column="structure_id" jdbcType="INTEGER" property="structureId" />
+    <result column="cust_id" jdbcType="INTEGER" property="custId" />
+    <result column="str_name" jdbcType="VARCHAR" property="strName" />
+    <result column="str_value" jdbcType="DECIMAL" property="strValue" />
+    <result column="str_one" jdbcType="VARCHAR" property="strOne" />
+    <result column="str_two" jdbcType="VARCHAR" property="strTwo" />
+    <result column="str_three" jdbcType="VARCHAR" property="strThree" />
+    <result column="str_four" jdbcType="VARCHAR" property="strFour" />
+    <result column="str_five" jdbcType="VARCHAR" property="strFive" />
+    <result column="str_six" jdbcType="VARCHAR" property="strSix" />
+    <result column="active" jdbcType="INTEGER" property="active" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_user_id" jdbcType="INTEGER" property="createUserId" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_user_id" jdbcType="INTEGER" property="updateUserId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    structure_id, cust_id, str_name, str_value, str_one, str_two, str_three, str_four, 
+    str_five, str_six, active, create_time, create_user_id, update_time, update_user_id
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_customer_structure
+    where structure_id = #{structureId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_customer_structure
+    where structure_id = #{structureId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.crazy.portal.entity.cusotmer.CustomerStructure">
+    insert into t_customer_structure (structure_id, cust_id, str_name, 
+      str_value, str_one, str_two, 
+      str_three, str_four, str_five, 
+      str_six, active, create_time, 
+      create_user_id, update_time, update_user_id
+      )
+    values (#{structureId,jdbcType=INTEGER}, #{custId,jdbcType=INTEGER}, #{strName,jdbcType=VARCHAR}, 
+      #{strValue,jdbcType=DECIMAL}, #{strOne,jdbcType=VARCHAR}, #{strTwo,jdbcType=VARCHAR}, 
+      #{strThree,jdbcType=VARCHAR}, #{strFour,jdbcType=VARCHAR}, #{strFive,jdbcType=VARCHAR}, 
+      #{strSix,jdbcType=VARCHAR}, #{active,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{createUserId,jdbcType=INTEGER}, #{updateTime,jdbcType=TIMESTAMP}, #{updateUserId,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.crazy.portal.entity.cusotmer.CustomerStructure">
+    insert into t_customer_structure
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="structureId != null">
+        structure_id,
+      </if>
+      <if test="custId != null">
+        cust_id,
+      </if>
+      <if test="strName != null">
+        str_name,
+      </if>
+      <if test="strValue != null">
+        str_value,
+      </if>
+      <if test="strOne != null">
+        str_one,
+      </if>
+      <if test="strTwo != null">
+        str_two,
+      </if>
+      <if test="strThree != null">
+        str_three,
+      </if>
+      <if test="strFour != null">
+        str_four,
+      </if>
+      <if test="strFive != null">
+        str_five,
+      </if>
+      <if test="strSix != null">
+        str_six,
+      </if>
+      <if test="active != null">
+        active,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="createUserId != null">
+        create_user_id,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="updateUserId != null">
+        update_user_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="structureId != null">
+        #{structureId,jdbcType=INTEGER},
+      </if>
+      <if test="custId != null">
+        #{custId,jdbcType=INTEGER},
+      </if>
+      <if test="strName != null">
+        #{strName,jdbcType=VARCHAR},
+      </if>
+      <if test="strValue != null">
+        #{strValue,jdbcType=DECIMAL},
+      </if>
+      <if test="strOne != null">
+        #{strOne,jdbcType=VARCHAR},
+      </if>
+      <if test="strTwo != null">
+        #{strTwo,jdbcType=VARCHAR},
+      </if>
+      <if test="strThree != null">
+        #{strThree,jdbcType=VARCHAR},
+      </if>
+      <if test="strFour != null">
+        #{strFour,jdbcType=VARCHAR},
+      </if>
+      <if test="strFive != null">
+        #{strFive,jdbcType=VARCHAR},
+      </if>
+      <if test="strSix != null">
+        #{strSix,jdbcType=VARCHAR},
+      </if>
+      <if test="active != null">
+        #{active,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUserId != null">
+        #{createUserId,jdbcType=INTEGER},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUserId != null">
+        #{updateUserId,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.crazy.portal.entity.cusotmer.CustomerStructure">
+    update t_customer_structure
+    <set>
+      <if test="custId != null">
+        cust_id = #{custId,jdbcType=INTEGER},
+      </if>
+      <if test="strName != null">
+        str_name = #{strName,jdbcType=VARCHAR},
+      </if>
+      <if test="strValue != null">
+        str_value = #{strValue,jdbcType=DECIMAL},
+      </if>
+      <if test="strOne != null">
+        str_one = #{strOne,jdbcType=VARCHAR},
+      </if>
+      <if test="strTwo != null">
+        str_two = #{strTwo,jdbcType=VARCHAR},
+      </if>
+      <if test="strThree != null">
+        str_three = #{strThree,jdbcType=VARCHAR},
+      </if>
+      <if test="strFour != null">
+        str_four = #{strFour,jdbcType=VARCHAR},
+      </if>
+      <if test="strFive != null">
+        str_five = #{strFive,jdbcType=VARCHAR},
+      </if>
+      <if test="strSix != null">
+        str_six = #{strSix,jdbcType=VARCHAR},
+      </if>
+      <if test="active != null">
+        active = #{active,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUserId != null">
+        create_user_id = #{createUserId,jdbcType=INTEGER},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUserId != null">
+        update_user_id = #{updateUserId,jdbcType=INTEGER},
+      </if>
+    </set>
+    where structure_id = #{structureId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.crazy.portal.entity.cusotmer.CustomerStructure">
+    update t_customer_structure
+    set cust_id = #{custId,jdbcType=INTEGER},
+      str_name = #{strName,jdbcType=VARCHAR},
+      str_value = #{strValue,jdbcType=DECIMAL},
+      str_one = #{strOne,jdbcType=VARCHAR},
+      str_two = #{strTwo,jdbcType=VARCHAR},
+      str_three = #{strThree,jdbcType=VARCHAR},
+      str_four = #{strFour,jdbcType=VARCHAR},
+      str_five = #{strFive,jdbcType=VARCHAR},
+      str_six = #{strSix,jdbcType=VARCHAR},
+      active = #{active,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      create_user_id = #{createUserId,jdbcType=INTEGER},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      update_user_id = #{updateUserId,jdbcType=INTEGER}
+    where structure_id = #{structureId,jdbcType=INTEGER}
+  </update>
+
+  <select id="selectByCustId" resultMap="BaseResultMap">
+    select * from t_customer_structure where active =1 and cust_id=#{custId}
+  </select>
+  
+  <select id="deleteByCustId">
+    delete from t_customer_structure where active =1 and cust_id=#{custId}
+  </select>
+</mapper>

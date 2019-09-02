@@ -73,6 +73,7 @@ public class CustCorporateRelationshipService {
             ship.setCustId(custId);
             ship.setCorporateType("Z001");
             ship.setCorporateId(user.getId());
+            ship.setCorporateName(user.getCustomerName());
             ship.setCreateUser(user.getId());
             ship.setActive(1);
             custCorporateRelationshipMapper.insertSelective(ship);

@@ -90,6 +90,13 @@ public class CustomerController extends BaseController{
         return successResult(customerInfoService.queryInfo(custId));
     }
 
+    //删除客户
+    @GetMapping("/delete/{custId}")
+    public BaseResponse delete(@PathVariable Integer custId){
+        customerInfoService.deleteCustomer(custId);
+        return successResult();
+    }
+
     @GetMapping("/visitRecord/list")
     public BaseResponse visitRecordList(VisitRecordQueryBean bean){
         bean.setUserId(this.getCurrentUser().getId());
@@ -111,117 +118,4 @@ public class CustomerController extends BaseController{
         customerInfoService.uploadVisitRecord(files, this.getCurrentUser().getId());
         return successResult();
     }
-
-
-
-/**
-    //获取用户列表
-    @GetMapping("/list")
-    public BaseResponse customers(CustomerQueryBean bean){
-        bean.setUserId(this.getCurrentUser().getId());
-        PageInfo page = customersService.queryCustByPage(bean);
-        return successResult(page);
-    }
-
-    //获取用户明细信息
-    @GetMapping(value="/info/{id}")
-    public BaseResponse getCustomer(@PathVariable Integer id){
-        return successResult(customersService.queryCustDetail(id));
-    }
-
-    //校验客户是否可报备
-    @GetMapping(value = "/check/{customerName}")
-    public BaseResponse checkCustomer(@PathVariable String customerName){
-        return successResult(customersService.checkCustomerReport(customerName,getCurrentUser()));
-    }
-
-    //报备客户
-    @PostMapping("/customer/report")
-    public BaseResponse customerReport(CustomerInfo vo){
-
-        return successResult();
-    }
-
-    //创建用户信息
-    @PostMapping("/info")
-    public BaseResponse customerAdd(CustomerInfo vo){
-        customersService.addOrUpdate(vo, this.getCurrentUser());
-        return successResult();
-    }
-
-    //删除用户信息
-    @DeleteMapping("/info/{id}")
-    public BaseResponse customerDelete(@PathVariable Integer id){
-        customersService.delete(id, this.getCurrentUser().getId());
-        return successResult();
-    }
-
-    //报备
-    @GetMapping("/againReport/{id}")
-    public BaseResponse againReport(@PathVariable Integer id){
-        customersService.againReport(id, this.getCurrentUser().getId());
-        return successResult();
-    }
-
-    //审批
-    @GetMapping("/approval")
-    public BaseResponse approval(ApprovalBean bean){
-        bean.setUserId(this.getCurrentUser().getId());
-        customersService.approval(bean);
-        return successResult();
-    }
-
-    //驳回
-    @GetMapping("/reject")
-    public BaseResponse reject(ApprovalBean bean){
-        bean.setUserId(this.getCurrentUser().getId());
-        customersService.reject(bean);
-        return successResult();
-    }
-
-    @GetMapping("/checkName")
-    public BaseResponse checkName(String custName){
-        customersService.checkCustName(custName);
-        return successResult();
-    }
-
-    @GetMapping("/visitRecord/list")
-    public BaseResponse visitRecordList(VisitRecordQueryBean bean){
-        bean.setUserId(this.getCurrentUser().getId());
-        return successResult(customersService.selectVisitRecordPage(bean));
-    }
-
-    @GetMapping("/visitRecord/download")
-    public void visitRecordDownload(HttpServletResponse response){
-        try {
-            Map<String, List<? extends BaseRowModel>> resultMap = customersService.downloadTemplate(this.getCurrentUser().getId());
-            ExcelUtils.createExcelStreamMutilByEaysExcel(response, resultMap, "拜访记录", ExcelTypeEnum.XLSX);
-        }catch (Exception ex){
-            log.error("下载模板异常", ex);
-        }
-    }
-
-    @PostMapping("/visitRecord/upload")
-    public BaseResponse visitRecordUpload(MultipartFile[] files) throws Exception{
-        customersService.uploadVisitRecord(files, this.getCurrentUser().getId());
-        return successResult();
-    }
-
-    @PostMapping("/file")
-    public BaseResponse fileUpload(MultipartFile[] files){
-        return successResult(customersService.fileUpload(files));
-    }
-
-    @GetMapping("/file/{id}")
-    public void fileDownload(HttpServletResponse response, @PathVariable Integer id){
-        customersService.fileDownload(response, id);
-    }
-    */
-/*
-    @GetMapping("/all")
-    public BaseResponse queryAllCustomer(){
-        return successResult(customerInfoService.selectAllCustomer());
-    }*/
-
-
 }

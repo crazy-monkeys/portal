@@ -226,6 +226,9 @@ public class CustomerInfo {
     /*客户团队*/
     private List<CustomerAccountTeam> accountTeams;
 
+    /*股权结构*/
+    private List<CustomerStructure> custStructure;
+
 
     //授信额度初始值
     private BigDecimal credit;

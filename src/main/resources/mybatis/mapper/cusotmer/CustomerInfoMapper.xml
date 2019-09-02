@@ -696,6 +696,9 @@
         <if test="reportSales != null">
           and team.account_name = #{reportSales}
         </if>
+        <if test="queryType != null and queryType = 2">
+          and cust.approve_status = 2
+        </if>
   </select>
 
   <select id="selectByCustName" parameterType="java.lang.String" resultMap="BaseResultMap">

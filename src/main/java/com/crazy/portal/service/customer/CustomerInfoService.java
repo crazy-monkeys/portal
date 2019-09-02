@@ -61,6 +61,8 @@ public class CustomerInfoService {
     @Resource
     private CustomerAccountTeamService customerAccountTeamService;
     @Resource
+    private CustomerStructureService customerStructureService;
+    @Resource
     private VisitRecordMapper visitRecordMapper;
 
     @Value("${file.path.root}")
@@ -90,6 +92,11 @@ public class CustomerInfoService {
             }else{
                 customerQueryBean.setReportDealer(user.getId());
             }
+        }else if(customerQueryBean.getQueryType()==2){
+            //审批查询
+
+        }else{
+            //客户查询
         }
         List<CustomerInfo> customerInfos = customerInfoMapper.selectCustomer(customerQueryBean);
         return new PageInfo<>(customerInfos);
@@ -105,6 +112,10 @@ public class CustomerInfoService {
         customerInfo.setCustomerProducts(customerProductService.selectByCustId(customerId));
         customerInfo.setAccountTeams(customerAccountTeamService.selectByCustId(customerId));
         return getCustDetail(customerInfo);
+    }
+
+    public void deleteCustomer(Integer custId){
+        customerInfoMapper.deleteByPrimaryKey(custId);
     }
 
     /**
@@ -132,6 +143,7 @@ public class CustomerInfoService {
         customerInfo.setInvoiceInfos(custInvoiceInfoService.selectByCustId(customerInfo.getId()));
         customerInfo.setSales(custSalesService.selectByCustId(customerInfo.getId()));
         customerInfo.setAddresses(customerAddressService.selectByCustId(customerInfo.getId()));
+        customerInfo.setCustStructure(customerStructureService.selectByCustId(customerInfo.getId()));
         return customerInfo;
     }
 
@@ -219,6 +231,7 @@ public class CustomerInfoService {
         saveSales(customerInfo.getSales(), customerInfo.getId(), userId);
         saveAddress(customerInfo.getAddresses(), customerInfo.getId(), userId);
         saveAccountTeam(customerInfo.getAccountTeams(), customerInfo.getId(), userId);
+        saveCustomerStructure(customerInfo.getCustStructure(), customerInfo.getId(), userId);
     }
 
     /**
@@ -400,6 +413,12 @@ public class CustomerInfoService {
         List<CustomerAccountTeam> results = customerAccountTeamService.selectByCustId(custId);
         customerAccountTeamService.deleteByCustId(accountTeams, results, custId);
         customerAccountTeamService.saveOrUpdate(accountTeams, custId, userId);
+    }
+    /**客户股权结构**/
+    private void saveCustomerStructure(List<CustomerStructure> customerStructures, Integer custId, Integer userId){
+        List<CustomerStructure> results = customerStructureService.selectByCustId(custId);
+        customerStructureService.deleteByCustId(customerStructures,results, custId);
+        customerStructureService.saveOrUpdate(customerStructures,custId,userId);
     }
 
     /**
