@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by lee on 2019/6/6.
@@ -25,29 +26,24 @@ public class GlobalExceptionHandler {
         log.error(exception.getMessage(), exception);
         BaseResponse response = new BaseResponse();
         if(exception instanceof MethodArgumentNotValidException){
-            StringBuilder stringBuilder = new StringBuilder();
             MethodArgumentNotValidException paramException = (MethodArgumentNotValidException) exception;
-            List<ObjectError> errorList =  paramException.getBindingResult().getAllErrors();
-            for(ObjectError error : errorList){
-                stringBuilder.append(error.getDefaultMessage());
-                stringBuilder.append(",");
-            }
-            String msg = stringBuilder.replace(stringBuilder.length() - 1, stringBuilder.length(), "").toString();
+            List<ObjectError> errorList = paramException.getBindingResult().getAllErrors();
+            String msg = errorList.stream().map(x->x.getDefaultMessage()).collect(Collectors.joining(","));
             response.fail(-1, msg);
             return response;
         }
-        if(exception instanceof IllegalArgumentException){
-            response.fail(-1, exception.getMessage());
-            return response;
-        }
-        if(exception instanceof MissingServletRequestParameterException){
-            response.fail(-1, exception.getMessage());
-            return response;
-        }
+
         if(exception instanceof BusinessException){
             BusinessException ex = (BusinessException)exception;
             response.setCode(ex.getErrorCode());
             response.setMsg(ex.getMessage());
+            return response;
+        }
+
+        if(exception instanceof IllegalArgumentException
+                | exception instanceof MissingServletRequestParameterException){
+
+            response.fail(-1, exception.getMessage());
             return response;
         }
 
