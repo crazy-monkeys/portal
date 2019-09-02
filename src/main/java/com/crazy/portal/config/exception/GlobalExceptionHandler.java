@@ -28,7 +28,7 @@ public class GlobalExceptionHandler {
         if(exception instanceof MethodArgumentNotValidException){
             MethodArgumentNotValidException paramException = (MethodArgumentNotValidException) exception;
             List<ObjectError> errorList = paramException.getBindingResult().getAllErrors();
-            String msg = errorList.stream().map(x->x.getDefaultMessage()).collect(Collectors.joining(","));
+            String msg = errorList.stream().map(ObjectError::getDefaultMessage).collect(Collectors.joining(","));
             response.fail(-1, msg);
             return response;
         }
