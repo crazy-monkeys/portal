@@ -13,6 +13,7 @@ import com.crazy.portal.util.ExcelUtils;
 import com.crazy.portal.util.PortalUtil;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -328,12 +329,24 @@ public class SaleForecastService {
             }
             ForecastLine line = data.getLine();
             ForecastLine dbLine = forecastLineMapper.selectByPrimaryKey(line.getLineId());
-            dbLine.setCurrentWriteOne(line.getCurrentWriteOne());
-            dbLine.setCurrentWriteTwo(line.getCurrentWriteTwo());
-            dbLine.setCurrentWriteThree(line.getCurrentWriteThree());
-            dbLine.setCurrentWriteFour(line.getCurrentWriteFour());
-            dbLine.setCurrentWriteFive(line.getCurrentWriteFive());
-            dbLine.setCurrentWriteSix(line.getCurrentWriteSix());
+            if(StringUtils.isNotEmpty(line.getCurrentWriteOne())){
+                dbLine.setCurrentWriteOne(line.getCurrentWriteOne());
+            }
+            if(StringUtils.isNotEmpty(line.getCurrentWriteTwo())){
+                dbLine.setCurrentWriteTwo(line.getCurrentWriteTwo());
+            }
+            if(StringUtils.isNotEmpty(line.getCurrentWriteThree())){
+                dbLine.setCurrentWriteThree(line.getCurrentWriteThree());
+            }
+            if(StringUtils.isNotEmpty(line.getCurrentWriteFour())){
+                dbLine.setCurrentWriteFour(line.getCurrentWriteFour());
+            }
+            if(StringUtils.isNotEmpty(line.getCurrentWriteFive())){
+                dbLine.setCurrentWriteFive(line.getCurrentWriteFive());
+            }
+            if(StringUtils.isNotEmpty(line.getCurrentWriteSix())){
+                dbLine.setCurrentWriteSix(line.getCurrentWriteSix());
+            }
             forecastLineMapper.updateByPrimaryKeySelective(dbLine);
             forecast.setUpdateTime(new Date());
             forecast.setUpdateUserId(userId);
