@@ -2,131 +2,466 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.crazy.portal.dao.forecast.ForecastLineMapper">
   <resultMap id="BaseResultMap" type="com.crazy.portal.entity.forecast.ForecastLine">
-    <id column="id" jdbcType="INTEGER" property="id" />
+    <id column="line_id" jdbcType="INTEGER" property="lineId" />
     <result column="f_id" jdbcType="INTEGER" property="fId" />
-    <result column="sort_num" jdbcType="INTEGER" property="sortNum" />
-    <result column="forecast_month" jdbcType="VARCHAR" property="forecastMonth" />
-    <result column="last_write" jdbcType="VARCHAR" property="lastWrite" />
-    <result column="current_write" jdbcType="VARCHAR" property="currentWrite" />
-    <result column="gap" jdbcType="VARCHAR" property="gap" />
-    <result column="remark" jdbcType="VARCHAR" property="remark" />
-    <result column="amb_adjustment" jdbcType="VARCHAR" property="ambAdjustment" />
-    <result column="amb_remark" jdbcType="VARCHAR" property="ambRemark" />
-    <result column="sd_adjustment" jdbcType="VARCHAR" property="sdAdjustment" />
-    <result column="sd_remark" jdbcType="VARCHAR" property="sdRemark" />
+    <result column="forecast_month_one" jdbcType="VARCHAR" property="forecastMonthOne" />
+    <result column="last_write_one" jdbcType="VARCHAR" property="lastWriteOne" />
+    <result column="current_write_one" jdbcType="VARCHAR" property="currentWriteOne" />
+    <result column="gap_one" jdbcType="VARCHAR" property="gapOne" />
+    <result column="remark_one" jdbcType="VARCHAR" property="remarkOne" />
+    <result column="amb_adjustment_one" jdbcType="VARCHAR" property="ambAdjustmentOne" />
+    <result column="amb_remark_one" jdbcType="VARCHAR" property="ambRemarkOne" />
+    <result column="sd_adjustment_one" jdbcType="VARCHAR" property="sdAdjustmentOne" />
+    <result column="sd_remark_one" jdbcType="VARCHAR" property="sdRemarkOne" />
+    <result column="forecast_month_two" jdbcType="VARCHAR" property="forecastMonthTwo" />
+    <result column="last_write_two" jdbcType="VARCHAR" property="lastWriteTwo" />
+    <result column="current_write_two" jdbcType="VARCHAR" property="currentWriteTwo" />
+    <result column="gap_two" jdbcType="VARCHAR" property="gapTwo" />
+    <result column="remark_two" jdbcType="VARCHAR" property="remarkTwo" />
+    <result column="amb_adjustment_two" jdbcType="VARCHAR" property="ambAdjustmentTwo" />
+    <result column="amb_remark_two" jdbcType="VARCHAR" property="ambRemarkTwo" />
+    <result column="sd_adjustment_two" jdbcType="VARCHAR" property="sdAdjustmentTwo" />
+    <result column="sd_remark_two" jdbcType="VARCHAR" property="sdRemarkTwo" />
+    <result column="forecast_month_three" jdbcType="VARCHAR" property="forecastMonthThree" />
+    <result column="last_write_three" jdbcType="VARCHAR" property="lastWriteThree" />
+    <result column="current_write_three" jdbcType="VARCHAR" property="currentWriteThree" />
+    <result column="gap_three" jdbcType="VARCHAR" property="gapThree" />
+    <result column="remark_three" jdbcType="VARCHAR" property="remarkThree" />
+    <result column="amb_adjustment_three" jdbcType="VARCHAR" property="ambAdjustmentThree" />
+    <result column="amb_remark_three" jdbcType="VARCHAR" property="ambRemarkThree" />
+    <result column="sd_adjustment_three" jdbcType="VARCHAR" property="sdAdjustmentThree" />
+    <result column="sd_remark_three" jdbcType="VARCHAR" property="sdRemarkThree" />
+    <result column="forecast_month_four" jdbcType="VARCHAR" property="forecastMonthFour" />
+    <result column="last_write_four" jdbcType="VARCHAR" property="lastWriteFour" />
+    <result column="current_write_four" jdbcType="VARCHAR" property="currentWriteFour" />
+    <result column="gap_four" jdbcType="VARCHAR" property="gapFour" />
+    <result column="remark_four" jdbcType="VARCHAR" property="remarkFour" />
+    <result column="amb_adjustment_four" jdbcType="VARCHAR" property="ambAdjustmentFour" />
+    <result column="amb_remark_four" jdbcType="VARCHAR" property="ambRemarkFour" />
+    <result column="sd_adjustment_four" jdbcType="VARCHAR" property="sdAdjustmentFour" />
+    <result column="sd_remark_four" jdbcType="VARCHAR" property="sdRemarkFour" />
+    <result column="forecast_month_five" jdbcType="VARCHAR" property="forecastMonthFive" />
+    <result column="last_write_five" jdbcType="VARCHAR" property="lastWriteFive" />
+    <result column="current_write_five" jdbcType="VARCHAR" property="currentWriteFive" />
+    <result column="gap_five" jdbcType="VARCHAR" property="gapFive" />
+    <result column="remark_five" jdbcType="VARCHAR" property="remarkFive" />
+    <result column="amb_adjustment_five" jdbcType="VARCHAR" property="ambAdjustmentFive" />
+    <result column="amb_remark_five" jdbcType="VARCHAR" property="ambRemarkFive" />
+    <result column="sd_adjustment_five" jdbcType="VARCHAR" property="sdAdjustmentFive" />
+    <result column="sd_remark_five" jdbcType="VARCHAR" property="sdRemarkFive" />
+    <result column="forecast_month_six" jdbcType="VARCHAR" property="forecastMonthSix" />
+    <result column="last_write_six" jdbcType="VARCHAR" property="lastWriteSix" />
+    <result column="current_write_six" jdbcType="VARCHAR" property="currentWriteSix" />
+    <result column="gap_six" jdbcType="VARCHAR" property="gapSix" />
+    <result column="remark_six" jdbcType="VARCHAR" property="remarkSix" />
+    <result column="amb_adjustment_six" jdbcType="VARCHAR" property="ambAdjustmentSix" />
+    <result column="amb_remark_six" jdbcType="VARCHAR" property="ambRemarkSix" />
+    <result column="sd_adjustment_six" jdbcType="VARCHAR" property="sdAdjustmentSix" />
+    <result column="sd_remark_six" jdbcType="VARCHAR" property="sdRemarkSix" />
   </resultMap>
-
-  <resultMap id="agencyTemplateMap" type="com.crazy.portal.entity.forecast.ForecastLine">
-    <result column="sort_num" jdbcType="INTEGER" property="sortNum" />
-    <result column="forecast_month" jdbcType="VARCHAR" property="forecastMonth" />
-    <result column="last_write" jdbcType="VARCHAR" property="lastWrite" />
-    <result column="current_write" jdbcType="VARCHAR" property="currentWrite" />
-    <result column="gap" jdbcType="VARCHAR" property="gap" />
-    <result column="remark" jdbcType="VARCHAR" property="remark" />
-  </resultMap>
-
   <sql id="Base_Column_List">
-    id, f_id, sort_num, forecast_month, last_write, current_write, gap, remark, amb_adjustment, 
-    amb_remark, sd_adjustment, sd_remark
+    line_id, f_id, forecast_month_one, last_write_one, current_write_one, gap_one, remark_one, 
+    amb_adjustment_one, amb_remark_one, sd_adjustment_one, sd_remark_one, forecast_month_two, 
+    last_write_two, current_write_two, gap_two, remark_two, amb_adjustment_two, amb_remark_two, 
+    sd_adjustment_two, sd_remark_two, forecast_month_three, last_write_three, current_write_three, 
+    gap_three, remark_three, amb_adjustment_three, amb_remark_three, sd_adjustment_three, 
+    sd_remark_three, forecast_month_four, last_write_four, current_write_four, gap_four, 
+    remark_four, amb_adjustment_four, amb_remark_four, sd_adjustment_four, sd_remark_four, 
+    forecast_month_five, last_write_five, current_write_five, gap_five, remark_five, 
+    amb_adjustment_five, amb_remark_five, sd_adjustment_five, sd_remark_five, forecast_month_six, 
+    last_write_six, current_write_six, gap_six, remark_six, amb_adjustment_six, amb_remark_six, 
+    sd_adjustment_six, sd_remark_six
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from t_forecast_line
-    where id = #{id,jdbcType=INTEGER}
+    where line_id = #{lineId,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from t_forecast_line
-    where id = #{id,jdbcType=INTEGER}
+    where line_id = #{lineId,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.crazy.portal.entity.forecast.ForecastLine">
-    insert into t_forecast_line (id, f_id, sort_num, 
-      forecast_month, last_write, current_write, 
-      gap, remark, amb_adjustment, 
-      amb_remark, sd_adjustment, sd_remark
-      )
-    values (#{id,jdbcType=INTEGER}, #{fId,jdbcType=INTEGER}, #{sortNum,jdbcType=INTEGER}, 
-      #{forecastMonth,jdbcType=VARCHAR}, #{lastWrite,jdbcType=VARCHAR}, #{currentWrite,jdbcType=VARCHAR}, 
-      #{gap,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, #{ambAdjustment,jdbcType=VARCHAR}, 
-      #{ambRemark,jdbcType=VARCHAR}, #{sdAdjustment,jdbcType=VARCHAR}, #{sdRemark,jdbcType=VARCHAR}
-      )
+    insert into t_forecast_line (line_id, f_id, forecast_month_one, 
+      last_write_one, current_write_one, gap_one, 
+      remark_one, amb_adjustment_one, amb_remark_one, 
+      sd_adjustment_one, sd_remark_one, forecast_month_two, 
+      last_write_two, current_write_two, gap_two, 
+      remark_two, amb_adjustment_two, amb_remark_two, 
+      sd_adjustment_two, sd_remark_two, forecast_month_three, 
+      last_write_three, current_write_three, gap_three, 
+      remark_three, amb_adjustment_three, amb_remark_three, 
+      sd_adjustment_three, sd_remark_three, forecast_month_four, 
+      last_write_four, current_write_four, gap_four, 
+      remark_four, amb_adjustment_four, amb_remark_four, 
+      sd_adjustment_four, sd_remark_four, forecast_month_five, 
+      last_write_five, current_write_five, gap_five, 
+      remark_five, amb_adjustment_five, amb_remark_five, 
+      sd_adjustment_five, sd_remark_five, forecast_month_six, 
+      last_write_six, current_write_six, gap_six, 
+      remark_six, amb_adjustment_six, amb_remark_six, 
+      sd_adjustment_six, sd_remark_six)
+    values (#{lineId,jdbcType=INTEGER}, #{fId,jdbcType=INTEGER}, #{forecastMonthOne,jdbcType=VARCHAR}, 
+      #{lastWriteOne,jdbcType=VARCHAR}, #{currentWriteOne,jdbcType=VARCHAR}, #{gapOne,jdbcType=VARCHAR}, 
+      #{remarkOne,jdbcType=VARCHAR}, #{ambAdjustmentOne,jdbcType=VARCHAR}, #{ambRemarkOne,jdbcType=VARCHAR}, 
+      #{sdAdjustmentOne,jdbcType=VARCHAR}, #{sdRemarkOne,jdbcType=VARCHAR}, #{forecastMonthTwo,jdbcType=VARCHAR}, 
+      #{lastWriteTwo,jdbcType=VARCHAR}, #{currentWriteTwo,jdbcType=VARCHAR}, #{gapTwo,jdbcType=VARCHAR}, 
+      #{remarkTwo,jdbcType=VARCHAR}, #{ambAdjustmentTwo,jdbcType=VARCHAR}, #{ambRemarkTwo,jdbcType=VARCHAR}, 
+      #{sdAdjustmentTwo,jdbcType=VARCHAR}, #{sdRemarkTwo,jdbcType=VARCHAR}, #{forecastMonthThree,jdbcType=VARCHAR}, 
+      #{lastWriteThree,jdbcType=VARCHAR}, #{currentWriteThree,jdbcType=VARCHAR}, #{gapThree,jdbcType=VARCHAR}, 
+      #{remarkThree,jdbcType=VARCHAR}, #{ambAdjustmentThree,jdbcType=VARCHAR}, #{ambRemarkThree,jdbcType=VARCHAR}, 
+      #{sdAdjustmentThree,jdbcType=VARCHAR}, #{sdRemarkThree,jdbcType=VARCHAR}, #{forecastMonthFour,jdbcType=VARCHAR}, 
+      #{lastWriteFour,jdbcType=VARCHAR}, #{currentWriteFour,jdbcType=VARCHAR}, #{gapFour,jdbcType=VARCHAR}, 
+      #{remarkFour,jdbcType=VARCHAR}, #{ambAdjustmentFour,jdbcType=VARCHAR}, #{ambRemarkFour,jdbcType=VARCHAR}, 
+      #{sdAdjustmentFour,jdbcType=VARCHAR}, #{sdRemarkFour,jdbcType=VARCHAR}, #{forecastMonthFive,jdbcType=VARCHAR}, 
+      #{lastWriteFive,jdbcType=VARCHAR}, #{currentWriteFive,jdbcType=VARCHAR}, #{gapFive,jdbcType=VARCHAR}, 
+      #{remarkFive,jdbcType=VARCHAR}, #{ambAdjustmentFive,jdbcType=VARCHAR}, #{ambRemarkFive,jdbcType=VARCHAR}, 
+      #{sdAdjustmentFive,jdbcType=VARCHAR}, #{sdRemarkFive,jdbcType=VARCHAR}, #{forecastMonthSix,jdbcType=VARCHAR}, 
+      #{lastWriteSix,jdbcType=VARCHAR}, #{currentWriteSix,jdbcType=VARCHAR}, #{gapSix,jdbcType=VARCHAR}, 
+      #{remarkSix,jdbcType=VARCHAR}, #{ambAdjustmentSix,jdbcType=VARCHAR}, #{ambRemarkSix,jdbcType=VARCHAR}, 
+      #{sdAdjustmentSix,jdbcType=VARCHAR}, #{sdRemarkSix,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.crazy.portal.entity.forecast.ForecastLine">
     insert into t_forecast_line
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        id,
+      <if test="lineId != null">
+        line_id,
       </if>
       <if test="fId != null">
         f_id,
       </if>
-      <if test="sortNum != null">
-        sort_num,
+      <if test="forecastMonthOne != null">
+        forecast_month_one,
       </if>
-      <if test="forecastMonth != null">
-        forecast_month,
+      <if test="lastWriteOne != null">
+        last_write_one,
       </if>
-      <if test="lastWrite != null">
-        last_write,
+      <if test="currentWriteOne != null">
+        current_write_one,
       </if>
-      <if test="currentWrite != null">
-        current_write,
+      <if test="gapOne != null">
+        gap_one,
       </if>
-      <if test="gap != null">
-        gap,
+      <if test="remarkOne != null">
+        remark_one,
       </if>
-      <if test="remark != null">
-        remark,
+      <if test="ambAdjustmentOne != null">
+        amb_adjustment_one,
       </if>
-      <if test="ambAdjustment != null">
-        amb_adjustment,
+      <if test="ambRemarkOne != null">
+        amb_remark_one,
       </if>
-      <if test="ambRemark != null">
-        amb_remark,
+      <if test="sdAdjustmentOne != null">
+        sd_adjustment_one,
       </if>
-      <if test="sdAdjustment != null">
-        sd_adjustment,
+      <if test="sdRemarkOne != null">
+        sd_remark_one,
       </if>
-      <if test="sdRemark != null">
-        sd_remark,
+      <if test="forecastMonthTwo != null">
+        forecast_month_two,
+      </if>
+      <if test="lastWriteTwo != null">
+        last_write_two,
+      </if>
+      <if test="currentWriteTwo != null">
+        current_write_two,
+      </if>
+      <if test="gapTwo != null">
+        gap_two,
+      </if>
+      <if test="remarkTwo != null">
+        remark_two,
+      </if>
+      <if test="ambAdjustmentTwo != null">
+        amb_adjustment_two,
+      </if>
+      <if test="ambRemarkTwo != null">
+        amb_remark_two,
+      </if>
+      <if test="sdAdjustmentTwo != null">
+        sd_adjustment_two,
+      </if>
+      <if test="sdRemarkTwo != null">
+        sd_remark_two,
+      </if>
+      <if test="forecastMonthThree != null">
+        forecast_month_three,
+      </if>
+      <if test="lastWriteThree != null">
+        last_write_three,
+      </if>
+      <if test="currentWriteThree != null">
+        current_write_three,
+      </if>
+      <if test="gapThree != null">
+        gap_three,
+      </if>
+      <if test="remarkThree != null">
+        remark_three,
+      </if>
+      <if test="ambAdjustmentThree != null">
+        amb_adjustment_three,
+      </if>
+      <if test="ambRemarkThree != null">
+        amb_remark_three,
+      </if>
+      <if test="sdAdjustmentThree != null">
+        sd_adjustment_three,
+      </if>
+      <if test="sdRemarkThree != null">
+        sd_remark_three,
+      </if>
+      <if test="forecastMonthFour != null">
+        forecast_month_four,
+      </if>
+      <if test="lastWriteFour != null">
+        last_write_four,
+      </if>
+      <if test="currentWriteFour != null">
+        current_write_four,
+      </if>
+      <if test="gapFour != null">
+        gap_four,
+      </if>
+      <if test="remarkFour != null">
+        remark_four,
+      </if>
+      <if test="ambAdjustmentFour != null">
+        amb_adjustment_four,
+      </if>
+      <if test="ambRemarkFour != null">
+        amb_remark_four,
+      </if>
+      <if test="sdAdjustmentFour != null">
+        sd_adjustment_four,
+      </if>
+      <if test="sdRemarkFour != null">
+        sd_remark_four,
+      </if>
+      <if test="forecastMonthFive != null">
+        forecast_month_five,
+      </if>
+      <if test="lastWriteFive != null">
+        last_write_five,
+      </if>
+      <if test="currentWriteFive != null">
+        current_write_five,
+      </if>
+      <if test="gapFive != null">
+        gap_five,
+      </if>
+      <if test="remarkFive != null">
+        remark_five,
+      </if>
+      <if test="ambAdjustmentFive != null">
+        amb_adjustment_five,
+      </if>
+      <if test="ambRemarkFive != null">
+        amb_remark_five,
+      </if>
+      <if test="sdAdjustmentFive != null">
+        sd_adjustment_five,
+      </if>
+      <if test="sdRemarkFive != null">
+        sd_remark_five,
+      </if>
+      <if test="forecastMonthSix != null">
+        forecast_month_six,
+      </if>
+      <if test="lastWriteSix != null">
+        last_write_six,
+      </if>
+      <if test="currentWriteSix != null">
+        current_write_six,
+      </if>
+      <if test="gapSix != null">
+        gap_six,
+      </if>
+      <if test="remarkSix != null">
+        remark_six,
+      </if>
+      <if test="ambAdjustmentSix != null">
+        amb_adjustment_six,
+      </if>
+      <if test="ambRemarkSix != null">
+        amb_remark_six,
+      </if>
+      <if test="sdAdjustmentSix != null">
+        sd_adjustment_six,
+      </if>
+      <if test="sdRemarkSix != null">
+        sd_remark_six,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        #{id,jdbcType=INTEGER},
+      <if test="lineId != null">
+        #{lineId,jdbcType=INTEGER},
       </if>
       <if test="fId != null">
         #{fId,jdbcType=INTEGER},
       </if>
-      <if test="sortNum != null">
-        #{sortNum,jdbcType=INTEGER},
+      <if test="forecastMonthOne != null">
+        #{forecastMonthOne,jdbcType=VARCHAR},
       </if>
-      <if test="forecastMonth != null">
-        #{forecastMonth,jdbcType=VARCHAR},
+      <if test="lastWriteOne != null">
+        #{lastWriteOne,jdbcType=VARCHAR},
       </if>
-      <if test="lastWrite != null">
-        #{lastWrite,jdbcType=VARCHAR},
+      <if test="currentWriteOne != null">
+        #{currentWriteOne,jdbcType=VARCHAR},
       </if>
-      <if test="currentWrite != null">
-        #{currentWrite,jdbcType=VARCHAR},
+      <if test="gapOne != null">
+        #{gapOne,jdbcType=VARCHAR},
       </if>
-      <if test="gap != null">
-        #{gap,jdbcType=VARCHAR},
+      <if test="remarkOne != null">
+        #{remarkOne,jdbcType=VARCHAR},
       </if>
-      <if test="remark != null">
-        #{remark,jdbcType=VARCHAR},
+      <if test="ambAdjustmentOne != null">
+        #{ambAdjustmentOne,jdbcType=VARCHAR},
       </if>
-      <if test="ambAdjustment != null">
-        #{ambAdjustment,jdbcType=VARCHAR},
+      <if test="ambRemarkOne != null">
+        #{ambRemarkOne,jdbcType=VARCHAR},
       </if>
-      <if test="ambRemark != null">
-        #{ambRemark,jdbcType=VARCHAR},
+      <if test="sdAdjustmentOne != null">
+        #{sdAdjustmentOne,jdbcType=VARCHAR},
       </if>
-      <if test="sdAdjustment != null">
-        #{sdAdjustment,jdbcType=VARCHAR},
+      <if test="sdRemarkOne != null">
+        #{sdRemarkOne,jdbcType=VARCHAR},
       </if>
-      <if test="sdRemark != null">
-        #{sdRemark,jdbcType=VARCHAR},
+      <if test="forecastMonthTwo != null">
+        #{forecastMonthTwo,jdbcType=VARCHAR},
+      </if>
+      <if test="lastWriteTwo != null">
+        #{lastWriteTwo,jdbcType=VARCHAR},
+      </if>
+      <if test="currentWriteTwo != null">
+        #{currentWriteTwo,jdbcType=VARCHAR},
+      </if>
+      <if test="gapTwo != null">
+        #{gapTwo,jdbcType=VARCHAR},
+      </if>
+      <if test="remarkTwo != null">
+        #{remarkTwo,jdbcType=VARCHAR},
+      </if>
+      <if test="ambAdjustmentTwo != null">
+        #{ambAdjustmentTwo,jdbcType=VARCHAR},
+      </if>
+      <if test="ambRemarkTwo != null">
+        #{ambRemarkTwo,jdbcType=VARCHAR},
+      </if>
+      <if test="sdAdjustmentTwo != null">
+        #{sdAdjustmentTwo,jdbcType=VARCHAR},
+      </if>
+      <if test="sdRemarkTwo != null">
+        #{sdRemarkTwo,jdbcType=VARCHAR},
+      </if>
+      <if test="forecastMonthThree != null">
+        #{forecastMonthThree,jdbcType=VARCHAR},
+      </if>
+      <if test="lastWriteThree != null">
+        #{lastWriteThree,jdbcType=VARCHAR},
+      </if>
+      <if test="currentWriteThree != null">
+        #{currentWriteThree,jdbcType=VARCHAR},
+      </if>
+      <if test="gapThree != null">
+        #{gapThree,jdbcType=VARCHAR},
+      </if>
+      <if test="remarkThree != null">
+        #{remarkThree,jdbcType=VARCHAR},
+      </if>
+      <if test="ambAdjustmentThree != null">
+        #{ambAdjustmentThree,jdbcType=VARCHAR},
+      </if>
+      <if test="ambRemarkThree != null">
+        #{ambRemarkThree,jdbcType=VARCHAR},
+      </if>
+      <if test="sdAdjustmentThree != null">
+        #{sdAdjustmentThree,jdbcType=VARCHAR},
+      </if>
+      <if test="sdRemarkThree != null">
+        #{sdRemarkThree,jdbcType=VARCHAR},
+      </if>
+      <if test="forecastMonthFour != null">
+        #{forecastMonthFour,jdbcType=VARCHAR},
+      </if>
+      <if test="lastWriteFour != null">
+        #{lastWriteFour,jdbcType=VARCHAR},
+      </if>
+      <if test="currentWriteFour != null">
+        #{currentWriteFour,jdbcType=VARCHAR},
+      </if>
+      <if test="gapFour != null">
+        #{gapFour,jdbcType=VARCHAR},
+      </if>
+      <if test="remarkFour != null">
+        #{remarkFour,jdbcType=VARCHAR},
+      </if>
+      <if test="ambAdjustmentFour != null">
+        #{ambAdjustmentFour,jdbcType=VARCHAR},
+      </if>
+      <if test="ambRemarkFour != null">
+        #{ambRemarkFour,jdbcType=VARCHAR},
+      </if>
+      <if test="sdAdjustmentFour != null">
+        #{sdAdjustmentFour,jdbcType=VARCHAR},
+      </if>
+      <if test="sdRemarkFour != null">
+        #{sdRemarkFour,jdbcType=VARCHAR},
+      </if>
+      <if test="forecastMonthFive != null">
+        #{forecastMonthFive,jdbcType=VARCHAR},
+      </if>
+      <if test="lastWriteFive != null">
+        #{lastWriteFive,jdbcType=VARCHAR},
+      </if>
+      <if test="currentWriteFive != null">
+        #{currentWriteFive,jdbcType=VARCHAR},
+      </if>
+      <if test="gapFive != null">
+        #{gapFive,jdbcType=VARCHAR},
+      </if>
+      <if test="remarkFive != null">
+        #{remarkFive,jdbcType=VARCHAR},
+      </if>
+      <if test="ambAdjustmentFive != null">
+        #{ambAdjustmentFive,jdbcType=VARCHAR},
+      </if>
+      <if test="ambRemarkFive != null">
+        #{ambRemarkFive,jdbcType=VARCHAR},
+      </if>
+      <if test="sdAdjustmentFive != null">
+        #{sdAdjustmentFive,jdbcType=VARCHAR},
+      </if>
+      <if test="sdRemarkFive != null">
+        #{sdRemarkFive,jdbcType=VARCHAR},
+      </if>
+      <if test="forecastMonthSix != null">
+        #{forecastMonthSix,jdbcType=VARCHAR},
+      </if>
+      <if test="lastWriteSix != null">
+        #{lastWriteSix,jdbcType=VARCHAR},
+      </if>
+      <if test="currentWriteSix != null">
+        #{currentWriteSix,jdbcType=VARCHAR},
+      </if>
+      <if test="gapSix != null">
+        #{gapSix,jdbcType=VARCHAR},
+      </if>
+      <if test="remarkSix != null">
+        #{remarkSix,jdbcType=VARCHAR},
+      </if>
+      <if test="ambAdjustmentSix != null">
+        #{ambAdjustmentSix,jdbcType=VARCHAR},
+      </if>
+      <if test="ambRemarkSix != null">
+        #{ambRemarkSix,jdbcType=VARCHAR},
+      </if>
+      <if test="sdAdjustmentSix != null">
+        #{sdAdjustmentSix,jdbcType=VARCHAR},
+      </if>
+      <if test="sdRemarkSix != null">
+        #{sdRemarkSix,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -136,52 +471,228 @@
       <if test="fId != null">
         f_id = #{fId,jdbcType=INTEGER},
       </if>
-      <if test="sortNum != null">
-        sort_num = #{sortNum,jdbcType=INTEGER},
+      <if test="forecastMonthOne != null">
+        forecast_month_one = #{forecastMonthOne,jdbcType=VARCHAR},
       </if>
-      <if test="forecastMonth != null">
-        forecast_month = #{forecastMonth,jdbcType=VARCHAR},
+      <if test="lastWriteOne != null">
+        last_write_one = #{lastWriteOne,jdbcType=VARCHAR},
       </if>
-      <if test="lastWrite != null">
-        last_write = #{lastWrite,jdbcType=VARCHAR},
+      <if test="currentWriteOne != null">
+        current_write_one = #{currentWriteOne,jdbcType=VARCHAR},
       </if>
-      <if test="currentWrite != null">
-        current_write = #{currentWrite,jdbcType=VARCHAR},
+      <if test="gapOne != null">
+        gap_one = #{gapOne,jdbcType=VARCHAR},
       </if>
-      <if test="gap != null">
-        gap = #{gap,jdbcType=VARCHAR},
+      <if test="remarkOne != null">
+        remark_one = #{remarkOne,jdbcType=VARCHAR},
       </if>
-      <if test="remark != null">
-        remark = #{remark,jdbcType=VARCHAR},
+      <if test="ambAdjustmentOne != null">
+        amb_adjustment_one = #{ambAdjustmentOne,jdbcType=VARCHAR},
       </if>
-      <if test="ambAdjustment != null">
-        amb_adjustment = #{ambAdjustment,jdbcType=VARCHAR},
+      <if test="ambRemarkOne != null">
+        amb_remark_one = #{ambRemarkOne,jdbcType=VARCHAR},
       </if>
-      <if test="ambRemark != null">
-        amb_remark = #{ambRemark,jdbcType=VARCHAR},
+      <if test="sdAdjustmentOne != null">
+        sd_adjustment_one = #{sdAdjustmentOne,jdbcType=VARCHAR},
       </if>
-      <if test="sdAdjustment != null">
-        sd_adjustment = #{sdAdjustment,jdbcType=VARCHAR},
+      <if test="sdRemarkOne != null">
+        sd_remark_one = #{sdRemarkOne,jdbcType=VARCHAR},
       </if>
-      <if test="sdRemark != null">
-        sd_remark = #{sdRemark,jdbcType=VARCHAR},
+      <if test="forecastMonthTwo != null">
+        forecast_month_two = #{forecastMonthTwo,jdbcType=VARCHAR},
+      </if>
+      <if test="lastWriteTwo != null">
+        last_write_two = #{lastWriteTwo,jdbcType=VARCHAR},
+      </if>
+      <if test="currentWriteTwo != null">
+        current_write_two = #{currentWriteTwo,jdbcType=VARCHAR},
+      </if>
+      <if test="gapTwo != null">
+        gap_two = #{gapTwo,jdbcType=VARCHAR},
+      </if>
+      <if test="remarkTwo != null">
+        remark_two = #{remarkTwo,jdbcType=VARCHAR},
+      </if>
+      <if test="ambAdjustmentTwo != null">
+        amb_adjustment_two = #{ambAdjustmentTwo,jdbcType=VARCHAR},
+      </if>
+      <if test="ambRemarkTwo != null">
+        amb_remark_two = #{ambRemarkTwo,jdbcType=VARCHAR},
+      </if>
+      <if test="sdAdjustmentTwo != null">
+        sd_adjustment_two = #{sdAdjustmentTwo,jdbcType=VARCHAR},
+      </if>
+      <if test="sdRemarkTwo != null">
+        sd_remark_two = #{sdRemarkTwo,jdbcType=VARCHAR},
+      </if>
+      <if test="forecastMonthThree != null">
+        forecast_month_three = #{forecastMonthThree,jdbcType=VARCHAR},
+      </if>
+      <if test="lastWriteThree != null">
+        last_write_three = #{lastWriteThree,jdbcType=VARCHAR},
+      </if>
+      <if test="currentWriteThree != null">
+        current_write_three = #{currentWriteThree,jdbcType=VARCHAR},
+      </if>
+      <if test="gapThree != null">
+        gap_three = #{gapThree,jdbcType=VARCHAR},
+      </if>
+      <if test="remarkThree != null">
+        remark_three = #{remarkThree,jdbcType=VARCHAR},
+      </if>
+      <if test="ambAdjustmentThree != null">
+        amb_adjustment_three = #{ambAdjustmentThree,jdbcType=VARCHAR},
+      </if>
+      <if test="ambRemarkThree != null">
+        amb_remark_three = #{ambRemarkThree,jdbcType=VARCHAR},
+      </if>
+      <if test="sdAdjustmentThree != null">
+        sd_adjustment_three = #{sdAdjustmentThree,jdbcType=VARCHAR},
+      </if>
+      <if test="sdRemarkThree != null">
+        sd_remark_three = #{sdRemarkThree,jdbcType=VARCHAR},
+      </if>
+      <if test="forecastMonthFour != null">
+        forecast_month_four = #{forecastMonthFour,jdbcType=VARCHAR},
+      </if>
+      <if test="lastWriteFour != null">
+        last_write_four = #{lastWriteFour,jdbcType=VARCHAR},
+      </if>
+      <if test="currentWriteFour != null">
+        current_write_four = #{currentWriteFour,jdbcType=VARCHAR},
+      </if>
+      <if test="gapFour != null">
+        gap_four = #{gapFour,jdbcType=VARCHAR},
+      </if>
+      <if test="remarkFour != null">
+        remark_four = #{remarkFour,jdbcType=VARCHAR},
+      </if>
+      <if test="ambAdjustmentFour != null">
+        amb_adjustment_four = #{ambAdjustmentFour,jdbcType=VARCHAR},
+      </if>
+      <if test="ambRemarkFour != null">
+        amb_remark_four = #{ambRemarkFour,jdbcType=VARCHAR},
+      </if>
+      <if test="sdAdjustmentFour != null">
+        sd_adjustment_four = #{sdAdjustmentFour,jdbcType=VARCHAR},
+      </if>
+      <if test="sdRemarkFour != null">
+        sd_remark_four = #{sdRemarkFour,jdbcType=VARCHAR},
+      </if>
+      <if test="forecastMonthFive != null">
+        forecast_month_five = #{forecastMonthFive,jdbcType=VARCHAR},
+      </if>
+      <if test="lastWriteFive != null">
+        last_write_five = #{lastWriteFive,jdbcType=VARCHAR},
+      </if>
+      <if test="currentWriteFive != null">
+        current_write_five = #{currentWriteFive,jdbcType=VARCHAR},
+      </if>
+      <if test="gapFive != null">
+        gap_five = #{gapFive,jdbcType=VARCHAR},
+      </if>
+      <if test="remarkFive != null">
+        remark_five = #{remarkFive,jdbcType=VARCHAR},
+      </if>
+      <if test="ambAdjustmentFive != null">
+        amb_adjustment_five = #{ambAdjustmentFive,jdbcType=VARCHAR},
+      </if>
+      <if test="ambRemarkFive != null">
+        amb_remark_five = #{ambRemarkFive,jdbcType=VARCHAR},
+      </if>
+      <if test="sdAdjustmentFive != null">
+        sd_adjustment_five = #{sdAdjustmentFive,jdbcType=VARCHAR},
+      </if>
+      <if test="sdRemarkFive != null">
+        sd_remark_five = #{sdRemarkFive,jdbcType=VARCHAR},
+      </if>
+      <if test="forecastMonthSix != null">
+        forecast_month_six = #{forecastMonthSix,jdbcType=VARCHAR},
+      </if>
+      <if test="lastWriteSix != null">
+        last_write_six = #{lastWriteSix,jdbcType=VARCHAR},
+      </if>
+      <if test="currentWriteSix != null">
+        current_write_six = #{currentWriteSix,jdbcType=VARCHAR},
+      </if>
+      <if test="gapSix != null">
+        gap_six = #{gapSix,jdbcType=VARCHAR},
+      </if>
+      <if test="remarkSix != null">
+        remark_six = #{remarkSix,jdbcType=VARCHAR},
+      </if>
+      <if test="ambAdjustmentSix != null">
+        amb_adjustment_six = #{ambAdjustmentSix,jdbcType=VARCHAR},
+      </if>
+      <if test="ambRemarkSix != null">
+        amb_remark_six = #{ambRemarkSix,jdbcType=VARCHAR},
+      </if>
+      <if test="sdAdjustmentSix != null">
+        sd_adjustment_six = #{sdAdjustmentSix,jdbcType=VARCHAR},
+      </if>
+      <if test="sdRemarkSix != null">
+        sd_remark_six = #{sdRemarkSix,jdbcType=VARCHAR},
       </if>
     </set>
-    where id = #{id,jdbcType=INTEGER}
+    where line_id = #{lineId,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.crazy.portal.entity.forecast.ForecastLine">
     update t_forecast_line
     set f_id = #{fId,jdbcType=INTEGER},
-      sort_num = #{sortNum,jdbcType=INTEGER},
-      forecast_month = #{forecastMonth,jdbcType=VARCHAR},
-      last_write = #{lastWrite,jdbcType=VARCHAR},
-      current_write = #{currentWrite,jdbcType=VARCHAR},
-      gap = #{gap,jdbcType=VARCHAR},
-      remark = #{remark,jdbcType=VARCHAR},
-      amb_adjustment = #{ambAdjustment,jdbcType=VARCHAR},
-      amb_remark = #{ambRemark,jdbcType=VARCHAR},
-      sd_adjustment = #{sdAdjustment,jdbcType=VARCHAR},
-      sd_remark = #{sdRemark,jdbcType=VARCHAR}
-    where id = #{id,jdbcType=INTEGER}
+      forecast_month_one = #{forecastMonthOne,jdbcType=VARCHAR},
+      last_write_one = #{lastWriteOne,jdbcType=VARCHAR},
+      current_write_one = #{currentWriteOne,jdbcType=VARCHAR},
+      gap_one = #{gapOne,jdbcType=VARCHAR},
+      remark_one = #{remarkOne,jdbcType=VARCHAR},
+      amb_adjustment_one = #{ambAdjustmentOne,jdbcType=VARCHAR},
+      amb_remark_one = #{ambRemarkOne,jdbcType=VARCHAR},
+      sd_adjustment_one = #{sdAdjustmentOne,jdbcType=VARCHAR},
+      sd_remark_one = #{sdRemarkOne,jdbcType=VARCHAR},
+      forecast_month_two = #{forecastMonthTwo,jdbcType=VARCHAR},
+      last_write_two = #{lastWriteTwo,jdbcType=VARCHAR},
+      current_write_two = #{currentWriteTwo,jdbcType=VARCHAR},
+      gap_two = #{gapTwo,jdbcType=VARCHAR},
+      remark_two = #{remarkTwo,jdbcType=VARCHAR},
+      amb_adjustment_two = #{ambAdjustmentTwo,jdbcType=VARCHAR},
+      amb_remark_two = #{ambRemarkTwo,jdbcType=VARCHAR},
+      sd_adjustment_two = #{sdAdjustmentTwo,jdbcType=VARCHAR},
+      sd_remark_two = #{sdRemarkTwo,jdbcType=VARCHAR},
+      forecast_month_three = #{forecastMonthThree,jdbcType=VARCHAR},
+      last_write_three = #{lastWriteThree,jdbcType=VARCHAR},
+      current_write_three = #{currentWriteThree,jdbcType=VARCHAR},
+      gap_three = #{gapThree,jdbcType=VARCHAR},
+      remark_three = #{remarkThree,jdbcType=VARCHAR},
+      amb_adjustment_three = #{ambAdjustmentThree,jdbcType=VARCHAR},
+      amb_remark_three = #{ambRemarkThree,jdbcType=VARCHAR},
+      sd_adjustment_three = #{sdAdjustmentThree,jdbcType=VARCHAR},
+      sd_remark_three = #{sdRemarkThree,jdbcType=VARCHAR},
+      forecast_month_four = #{forecastMonthFour,jdbcType=VARCHAR},
+      last_write_four = #{lastWriteFour,jdbcType=VARCHAR},
+      current_write_four = #{currentWriteFour,jdbcType=VARCHAR},
+      gap_four = #{gapFour,jdbcType=VARCHAR},
+      remark_four = #{remarkFour,jdbcType=VARCHAR},
+      amb_adjustment_four = #{ambAdjustmentFour,jdbcType=VARCHAR},
+      amb_remark_four = #{ambRemarkFour,jdbcType=VARCHAR},
+      sd_adjustment_four = #{sdAdjustmentFour,jdbcType=VARCHAR},
+      sd_remark_four = #{sdRemarkFour,jdbcType=VARCHAR},
+      forecast_month_five = #{forecastMonthFive,jdbcType=VARCHAR},
+      last_write_five = #{lastWriteFive,jdbcType=VARCHAR},
+      current_write_five = #{currentWriteFive,jdbcType=VARCHAR},
+      gap_five = #{gapFive,jdbcType=VARCHAR},
+      remark_five = #{remarkFive,jdbcType=VARCHAR},
+      amb_adjustment_five = #{ambAdjustmentFive,jdbcType=VARCHAR},
+      amb_remark_five = #{ambRemarkFive,jdbcType=VARCHAR},
+      sd_adjustment_five = #{sdAdjustmentFive,jdbcType=VARCHAR},
+      sd_remark_five = #{sdRemarkFive,jdbcType=VARCHAR},
+      forecast_month_six = #{forecastMonthSix,jdbcType=VARCHAR},
+      last_write_six = #{lastWriteSix,jdbcType=VARCHAR},
+      current_write_six = #{currentWriteSix,jdbcType=VARCHAR},
+      gap_six = #{gapSix,jdbcType=VARCHAR},
+      remark_six = #{remarkSix,jdbcType=VARCHAR},
+      amb_adjustment_six = #{ambAdjustmentSix,jdbcType=VARCHAR},
+      amb_remark_six = #{ambRemarkSix,jdbcType=VARCHAR},
+      sd_adjustment_six = #{sdAdjustmentSix,jdbcType=VARCHAR},
+      sd_remark_six = #{sdRemarkSix,jdbcType=VARCHAR}
+    where line_id = #{lineId,jdbcType=INTEGER}
   </update>
 </mapper>

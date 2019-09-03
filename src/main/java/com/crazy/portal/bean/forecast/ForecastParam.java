@@ -1,6 +1,5 @@
 package com.crazy.portal.bean.forecast;
 
-import com.crazy.portal.entity.forecast.ForecastLine;
 import lombok.Data;
 
 import java.util.List;
@@ -14,6 +13,6 @@ public class ForecastParam {
 
     private Integer forecastId;
 
-    private List<ForecastLine> lines;
+//    private List<ForecastLine> lines;
 
 }

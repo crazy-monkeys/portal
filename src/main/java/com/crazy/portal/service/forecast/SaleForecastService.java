@@ -1,5 +1,6 @@
 package com.crazy.portal.service.forecast;
 
+import com.alibaba.fastjson.JSONObject;
 import com.crazy.portal.bean.forecast.*;
 import com.crazy.portal.config.exception.BusinessException;
 import com.crazy.portal.dao.forecast.ForecastLineMapper;
@@ -54,6 +55,9 @@ public class SaleForecastService {
             throw new BusinessException(FORECAST_YEAR_MONTH_FORMAT_ERROR);
         }
         List<Forecast> forecastList = forecastMapper.selectByYearMonth(lastYearMonth, userId);
+        if(null == forecastList || forecastList.isEmpty()){
+            ExcelUtils.writeExcel(response, null, AgencyTemplate.class);
+        }
         List<AgencyTemplate> templateList = new ArrayList<>();
         for(Forecast forecast : forecastList) {
             AgencyTemplate agencyTemplate = new AgencyTemplate();
@@ -66,51 +70,44 @@ public class SaleForecastService {
             agencyTemplate.setVersion(forecast.getVersion());
             agencyTemplate.setCloseDate(forecast.getCloseDate());
             agencyTemplate.setDelayStock(forecast.getDelayStock());
-            for(ForecastLine line : forecast.getLines()){
-                if(1 == line.getSortNum()){
-                    agencyTemplate.setForecastMonthOne(line.getForecastMonth());
-                    agencyTemplate.setLastWriteOne(line.getLastWrite());
-                    agencyTemplate.setGapOne(line.getGap());
-                    agencyTemplate.setRemarkOne(line.getRemark());
-                }
-                if(2 == line.getSortNum()){
-                    agencyTemplate.setForecastMonthTwo(line.getForecastMonth());
-                    agencyTemplate.setLastWriteTwo(line.getLastWrite());
-                    agencyTemplate.setGapTwo(line.getGap());
-                    agencyTemplate.setRemarkTwo(line.getRemark());
-                }
-                if(3 == line.getSortNum()){
-                    agencyTemplate.setForecastMonthThree(line.getForecastMonth());
-                    agencyTemplate.setLastWriteThree(line.getLastWrite());
-                    agencyTemplate.setGapThree(line.getGap());
-                    agencyTemplate.setRemarkThree(line.getRemark());
-                }
-                if(4 == line.getSortNum()){
-                    agencyTemplate.setForecastMonthFour(line.getForecastMonth());
-                    agencyTemplate.setLastWriteFour(line.getLastWrite());
-                    agencyTemplate.setGapFour(line.getGap());
-                    agencyTemplate.setRemarkFour(line.getRemark());
-                }
-                if(5 == line.getSortNum()){
-                    agencyTemplate.setForecastMonthFive(line.getForecastMonth());
-                    agencyTemplate.setLastWriteFive(line.getLastWrite());
-                    agencyTemplate.setGapFive(line.getGap());
-                    agencyTemplate.setRemarkFive(line.getRemark());
-                }
-                if(6 == line.getSortNum()){
-                    agencyTemplate.setForecastMonthSix(line.getForecastMonth());
-                    agencyTemplate.setLastWriteSix(line.getLastWrite());
-                    agencyTemplate.setGapSix(line.getGap());
-                    agencyTemplate.setRemarkSix(line.getRemark());
-                }
-            }
+            ForecastLine line = forecast.getLine();
+            agencyTemplate.setForecastMonthOne(line.getForecastMonthOne());
+            agencyTemplate.setLastWriteOne(line.getLastWriteOne());
+            agencyTemplate.setGapOne(line.getGapOne());
+            agencyTemplate.setRemarkOne(line.getRemarkOne());
+            agencyTemplate.setForecastMonthTwo(line.getForecastMonthTwo());
+            agencyTemplate.setLastWriteTwo(line.getLastWriteTwo());
+            agencyTemplate.setGapTwo(line.getGapTwo());
+            agencyTemplate.setRemarkTwo(line.getRemarkTwo());
+            agencyTemplate.setForecastMonthThree(line.getForecastMonthThree());
+            agencyTemplate.setLastWriteThree(line.getLastWriteThree());
+            agencyTemplate.setGapThree(line.getGapThree());
+            agencyTemplate.setRemarkThree(line.getRemarkThree());
+            agencyTemplate.setForecastMonthFour(line.getForecastMonthFour());
+            agencyTemplate.setLastWriteFour(line.getLastWriteFour());
+            agencyTemplate.setGapFour(line.getGapFour());
+            agencyTemplate.setRemarkFour(line.getRemarkFour());
+            agencyTemplate.setForecastMonthFive(line.getForecastMonthFive());
+            agencyTemplate.setLastWriteFive(line.getLastWriteFive());
+            agencyTemplate.setGapFive(line.getGapFive());
+            agencyTemplate.setRemarkFive(line.getRemarkFive());
+            agencyTemplate.setForecastMonthSix(line.getForecastMonthSix());
+            agencyTemplate.setLastWriteSix(line.getLastWriteSix());
+            agencyTemplate.setGapSix(line.getGapSix());
+            agencyTemplate.setRemarkSix(line.getRemarkSix());
+
             templateList.add(agencyTemplate);
         }
         ExcelUtils.writeExcel(response, templateList, AgencyTemplate.class);
     }
 
     public ForecastResult uploadAgencyTemplate(MultipartFile excel, Integer userId) {
+        BusinessUtil.notNull(excel, FORECAST_EXCEL_CHECK_ERROR);
         List<AgencyTemplate> agencyForecastList = ExcelUtils.readExcel(excel, AgencyTemplate.class);
+        if(null == agencyForecastList || agencyForecastList.isEmpty()){
+            log.warn(FORECAST_DATA_NOT_EMPTY.getZhMsg());
+            throw new BusinessException(FORECAST_DATA_NOT_EMPTY);
+        }
         String batchNo = generateBathNo();
         for(AgencyTemplate template : agencyForecastList){
             Forecast forecast = new Forecast();
@@ -127,24 +124,39 @@ public class SaleForecastService {
             forecast.setCreateTime(new Date());
             forecast.setBatchNo(batchNo);
             forecastMapper.insertSelective(forecast);
-
-            saveForecastLineData(forecast.getId(), 1, template.getForecastMonthOne(), template.getLastWriteOne(),
-                    template.getCurrentWriteOne(), template.getGapOne(), template.getRemarkOne());
-
-            saveForecastLineData(forecast.getId(), 2, template.getForecastMonthTwo(), template.getLastWriteTwo(),
-                    template.getCurrentWriteTwo(), template.getGapTwo(), template.getRemarkTwo());
-
-            saveForecastLineData(forecast.getId(), 3, template.getForecastMonthThree(), template.getLastWriteThree(),
-                    template.getCurrentWriteThree(), template.getGapThree(), template.getRemarkThree());
-
-            saveForecastLineData(forecast.getId(), 4, template.getForecastMonthFour(), template.getLastWriteFour(),
-                    template.getCurrentWriteFour(), template.getGapFour(), template.getRemarkFour());
-
-            saveForecastLineData(forecast.getId(), 5, template.getForecastMonthFive(), template.getLastWriteFive(),
-                    template.getCurrentWriteFive(), template.getGapFive(), template.getRemarkFive());
-
-            saveForecastLineData(forecast.getId(), 6, template.getForecastMonthSix(), template.getLastWriteSix(),
-                    template.getCurrentWriteSix(), template.getGapSix(), template.getRemarkSix());
+            if(log.isDebugEnabled()){
+                log.debug("[upload data] Save forecast head data , userId:{} , data:{}", userId, JSONObject.toJSON(forecast));
+            }
+            ForecastLine line = new ForecastLine();
+            line.setfId(forecast.getId());
+            line.setForecastMonthOne(template.getForecastMonthOne());
+            line.setLastWriteOne(template.getLastWriteOne());
+            line.setGapOne(template.getGapOne());
+            line.setRemarkOne(template.getRemarkOne());
+            line.setForecastMonthTwo(template.getForecastMonthTwo());
+            line.setLastWriteTwo(template.getLastWriteTwo());
+            line.setGapTwo(template.getGapTwo());
+            line.setRemarkTwo(template.getRemarkTwo());
+            line.setForecastMonthThree(template.getForecastMonthThree());
+            line.setLastWriteThree(template.getLastWriteThree());
+            line.setGapThree(template.getGapThree());
+            line.setRemarkThree(template.getRemarkThree());
+            line.setForecastMonthFour(template.getForecastMonthFour());
+            line.setLastWriteFour(template.getLastWriteFour());
+            line.setGapFour(template.getGapFour());
+            line.setRemarkFour(template.getRemarkFour());
+            line.setForecastMonthFive(template.getForecastMonthFive());
+            line.setLastWriteFive(template.getLastWriteFive());
+            line.setGapFive(template.getGapFive());
+            line.setRemarkFive(template.getRemarkFive());
+            line.setForecastMonthSix(template.getForecastMonthSix());
+            line.setLastWriteSix(template.getLastWriteSix());
+            line.setGapSix(template.getGapSix());
+            line.setRemarkSix(template.getRemarkSix());
+            forecastLineMapper.insertSelective(line);
+            if(log.isDebugEnabled()){
+                log.debug("[upload data] Save forecast line data , userId:{} , data:{}", userId, JSONObject.toJSON(line));
+            }
         }
         List<BiAgencyCheckTemplate> biResponseData = ExcelUtils.readExcel(forecastPullPath + "forecast_check.xlsx", BiAgencyCheckTemplate.class);
         //TODO BI返回的数据录入数据库
@@ -155,7 +167,15 @@ public class SaleForecastService {
     }
 
     public void downloadAgencyError(HttpServletResponse response, String batchNo, Integer userId) {
+        if(log.isDebugEnabled()){
+            log.debug("Download error data file, parameter value : batchNo[{}], userId:[{}]", batchNo, userId);
+        }
+        BusinessUtil.assertEmpty(batchNo, FORECAST_REQ_PARAM_NOT_EMPTY);
+        BusinessUtil.notNull(userId, FORECAST_REQ_PARAM_NOT_EMPTY);
         List<Forecast> errorTemplateList = forecastMapper.selectErrorDataByBatch(batchNo, userId);
+        if(null == errorTemplateList || errorTemplateList.isEmpty()){
+            ExcelUtils.writeExcel(response, null, AgencyErrorTemplate.class);
+        }
         List<AgencyErrorTemplate> errorList = new ArrayList<>();
         for(Forecast forecast : errorTemplateList) {
             AgencyErrorTemplate agencyTemplate = new AgencyErrorTemplate();
@@ -170,55 +190,53 @@ public class SaleForecastService {
             agencyTemplate.setDelayStock(forecast.getDelayStock());
             agencyTemplate.setForecastId(String.valueOf(forecast.getId()));
             agencyTemplate.setErrorMsg(forecast.getErrorMsg());
-            for(ForecastLine line : forecast.getLines()){
-                if(1 == line.getSortNum()){
-                    agencyTemplate.setForecastMonthOne(line.getForecastMonth());
-                    agencyTemplate.setLastWriteOne(line.getLastWrite());
-                    agencyTemplate.setGapOne(line.getGap());
-                    agencyTemplate.setRemarkOne(line.getRemark());
-                }
-                if(2 == line.getSortNum()){
-                    agencyTemplate.setForecastMonthTwo(line.getForecastMonth());
-                    agencyTemplate.setLastWriteTwo(line.getLastWrite());
-                    agencyTemplate.setGapTwo(line.getGap());
-                    agencyTemplate.setRemarkTwo(line.getRemark());
-                }
-                if(3 == line.getSortNum()){
-                    agencyTemplate.setForecastMonthThree(line.getForecastMonth());
-                    agencyTemplate.setLastWriteThree(line.getLastWrite());
-                    agencyTemplate.setGapThree(line.getGap());
-                    agencyTemplate.setRemarkThree(line.getRemark());
-                }
-                if(4 == line.getSortNum()){
-                    agencyTemplate.setForecastMonthFour(line.getForecastMonth());
-                    agencyTemplate.setLastWriteFour(line.getLastWrite());
-                    agencyTemplate.setGapFour(line.getGap());
-                    agencyTemplate.setRemarkFour(line.getRemark());
-                }
-                if(5 == line.getSortNum()){
-                    agencyTemplate.setForecastMonthFive(line.getForecastMonth());
-                    agencyTemplate.setLastWriteFive(line.getLastWrite());
-                    agencyTemplate.setGapFive(line.getGap());
-                    agencyTemplate.setRemarkFive(line.getRemark());
-                }
-                if(6 == line.getSortNum()){
-                    agencyTemplate.setForecastMonthSix(line.getForecastMonth());
-                    agencyTemplate.setLastWriteSix(line.getLastWrite());
-                    agencyTemplate.setGapSix(line.getGap());
-                    agencyTemplate.setRemarkSix(line.getRemark());
-                }
-            }
+            ForecastLine line = forecast.getLine();
+            agencyTemplate.setForecastMonthOne(line.getForecastMonthOne());
+            agencyTemplate.setLastWriteOne(line.getLastWriteOne());
+            agencyTemplate.setGapOne(line.getGapOne());
+            agencyTemplate.setRemarkOne(line.getRemarkOne());
+            agencyTemplate.setForecastMonthTwo(line.getForecastMonthTwo());
+            agencyTemplate.setLastWriteTwo(line.getLastWriteTwo());
+            agencyTemplate.setGapTwo(line.getGapTwo());
+            agencyTemplate.setRemarkTwo(line.getRemarkTwo());
+            agencyTemplate.setForecastMonthThree(line.getForecastMonthThree());
+            agencyTemplate.setLastWriteThree(line.getLastWriteThree());
+            agencyTemplate.setGapThree(line.getGapThree());
+            agencyTemplate.setRemarkThree(line.getRemarkThree());
+            agencyTemplate.setForecastMonthFour(line.getForecastMonthFour());
+            agencyTemplate.setLastWriteFour(line.getLastWriteFour());
+            agencyTemplate.setGapFour(line.getGapFour());
+            agencyTemplate.setRemarkFour(line.getRemarkFour());
+            agencyTemplate.setForecastMonthFive(line.getForecastMonthFive());
+            agencyTemplate.setLastWriteFive(line.getLastWriteFive());
+            agencyTemplate.setGapFive(line.getGapFive());
+            agencyTemplate.setRemarkFive(line.getRemarkFive());
+            agencyTemplate.setForecastMonthSix(line.getForecastMonthSix());
+            agencyTemplate.setLastWriteSix(line.getLastWriteSix());
+            agencyTemplate.setGapSix(line.getGapSix());
+            agencyTemplate.setRemarkSix(line.getRemarkSix());
             errorList.add(agencyTemplate);
         }
         ExcelUtils.writeExcel(response, errorList, AgencyErrorTemplate.class);
     }
 
     public ForecastResult modifyErrorData(MultipartFile excel, String batchNo, Integer userId) {
+        if(log.isDebugEnabled()){
+            log.debug("Modify error data, parameter value : batchNo[{}] , userId:[{}]", batchNo, userId);
+        }
+        BusinessUtil.notNull(excel, FORECAST_EXCEL_CHECK_ERROR);
+        BusinessUtil.assertEmpty(batchNo, FORECAST_REQ_PARAM_NOT_EMPTY);
         List<AgencyErrorTemplate> errorTemplateList = ExcelUtils.readExcel(excel, AgencyErrorTemplate.class);
+        if(null == errorTemplateList || errorTemplateList.isEmpty()){
+            log.warn(FORECAST_DATA_NOT_EMPTY.getZhMsg());
+            throw new BusinessException(FORECAST_DATA_NOT_EMPTY);
+        }
         for(AgencyErrorTemplate errorTemplate : errorTemplateList){
             Forecast dbForecast = forecastMapper.selectByPrimaryKey(Integer.parseInt(errorTemplate.getForecastId()));
             if(null == dbForecast || !dbForecast.getBatchNo().equals(batchNo)){
-                throw new BusinessException("没有记录");
+                log.error("{} , parameter value : batchNo[{}] , dbForecast[{}]", FORECAST_DB_DATA_MISMATCH.getZhMsg(),
+                        batchNo, (null == dbForecast ? dbForecast : JSONObject.toJSON(dbForecast)));
+                throw new BusinessException(FORECAST_DB_DATA_MISMATCH);
             }
             forecastMapper.deleteByPrimaryKey(Integer.parseInt(errorTemplate.getForecastId()));
             Forecast forecast = new Forecast();
@@ -235,23 +253,39 @@ public class SaleForecastService {
             forecast.setCreateUserId(userId);
             forecast.setBatchNo(batchNo);
             forecastMapper.insertSelective(forecast);
-            saveForecastLineData(forecast.getId(), 1, errorTemplate.getForecastMonthOne(), errorTemplate.getLastWriteOne(),
-                    errorTemplate.getCurrentWriteOne(), errorTemplate.getGapOne(), errorTemplate.getRemarkOne());
-
-            saveForecastLineData(forecast.getId(), 2, errorTemplate.getForecastMonthTwo(), errorTemplate.getLastWriteTwo(),
-                    errorTemplate.getCurrentWriteTwo(), errorTemplate.getGapTwo(), errorTemplate.getRemarkTwo());
-
-            saveForecastLineData(forecast.getId(), 3, errorTemplate.getForecastMonthThree(), errorTemplate.getLastWriteThree(),
-                    errorTemplate.getCurrentWriteThree(), errorTemplate.getGapThree(), errorTemplate.getRemarkThree());
-
-            saveForecastLineData(forecast.getId(), 4, errorTemplate.getForecastMonthFour(), errorTemplate.getLastWriteFour(),
-                    errorTemplate.getCurrentWriteFour(), errorTemplate.getGapFour(), errorTemplate.getRemarkFour());
-
-            saveForecastLineData(forecast.getId(), 5, errorTemplate.getForecastMonthFive(), errorTemplate.getLastWriteFive(),
-                    errorTemplate.getCurrentWriteFive(), errorTemplate.getGapFive(), errorTemplate.getRemarkFive());
-
-            saveForecastLineData(forecast.getId(), 6, errorTemplate.getForecastMonthSix(), errorTemplate.getLastWriteSix(),
-                    errorTemplate.getCurrentWriteSix(), errorTemplate.getGapSix(), errorTemplate.getRemarkSix());
+            if(log.isDebugEnabled()){
+                log.debug("[modify data] Save forecast head data , userId:{} , data:{}", userId, JSONObject.toJSON(forecast));
+            }
+            ForecastLine line = new ForecastLine();
+            line.setfId(forecast.getId());
+            line.setForecastMonthOne(errorTemplate.getForecastMonthOne());
+            line.setLastWriteOne(errorTemplate.getLastWriteOne());
+            line.setGapOne(errorTemplate.getGapOne());
+            line.setRemarkOne(errorTemplate.getRemarkOne());
+            line.setForecastMonthTwo(errorTemplate.getForecastMonthTwo());
+            line.setLastWriteTwo(errorTemplate.getLastWriteTwo());
+            line.setGapTwo(errorTemplate.getGapTwo());
+            line.setRemarkTwo(errorTemplate.getRemarkTwo());
+            line.setForecastMonthThree(errorTemplate.getForecastMonthThree());
+            line.setLastWriteThree(errorTemplate.getLastWriteThree());
+            line.setGapThree(errorTemplate.getGapThree());
+            line.setRemarkThree(errorTemplate.getRemarkThree());
+            line.setForecastMonthFour(errorTemplate.getForecastMonthFour());
+            line.setLastWriteFour(errorTemplate.getLastWriteFour());
+            line.setGapFour(errorTemplate.getGapFour());
+            line.setRemarkFour(errorTemplate.getRemarkFour());
+            line.setForecastMonthFive(errorTemplate.getForecastMonthFive());
+            line.setLastWriteFive(errorTemplate.getLastWriteFive());
+            line.setGapFive(errorTemplate.getGapFive());
+            line.setRemarkFive(errorTemplate.getRemarkFive());
+            line.setForecastMonthSix(errorTemplate.getForecastMonthSix());
+            line.setLastWriteSix(errorTemplate.getLastWriteSix());
+            line.setGapSix(errorTemplate.getGapSix());
+            line.setRemarkSix(errorTemplate.getRemarkSix());
+            forecastLineMapper.insertSelective(line);
+            if(log.isDebugEnabled()){
+                log.debug("[modify data] Save forecast line data , userId:{} , data:{}", userId, JSONObject.toJSON(line));
+            }
         }
         List<BiAgencyCheckTemplate> biResponseData = ExcelUtils.readExcel(forecastPullPath + "forecast_check.xlsx", BiAgencyCheckTemplate.class);
         //TODO BI返回的数据录入数据库
@@ -262,9 +296,10 @@ public class SaleForecastService {
     }
 
     public void commitAgencyForecastData(String batchNo, Integer userId) {
-        int cnt = forecastMapper.countErrorDataByBatch(batchNo, userId);
-        if(cnt != 0){
-            throw new BusinessException("");
+        int num = forecastMapper.countErrorDataByBatch(batchNo, userId);
+        if(num != 0){
+            log.error("Check error data num , parameter value : batchNo[{}] , userId:[{}]", batchNo, userId);
+            throw new BusinessException(FORECAST_ERROR_DATA_EXISTS);
         }
         forecastMapper.updateStatus(1, batchNo, userId);
     }
@@ -289,31 +324,18 @@ public class SaleForecastService {
             if(forecast.getStatus() == 2){
                 //TODO 如果数据已经被确认需要重新确认
             }
-            for(ForecastLine line : data.getLines()){
-                ForecastLine dbLine = forecastLineMapper.selectByPrimaryKey(line.getId());
-                if(null == dbLine){
-                    throw new BusinessException("");
-                }
-                dbLine.setCurrentWrite(line.getCurrentWrite());
-                forecastLineMapper.updateByPrimaryKeySelective(dbLine);
-            }
-            forecast.setUpdateTime(new Date());
-            forecast.setUpdateUserId(userId);
-            forecastMapper.updateByPrimaryKey(forecast);
+//            for(ForecastLine line : data.getLines()){
+//                ForecastLine dbLine = forecastLineMapper.selectByPrimaryKey(line.getId());
+//                if(null == dbLine){
+//                    throw new BusinessException("");
+//                }
+//                dbLine.setCurrentWrite(line.getCurrentWrite());
+//                forecastLineMapper.updateByPrimaryKeySelective(dbLine);
+//            }
+//            forecast.setUpdateTime(new Date());
+//            forecast.setUpdateUserId(userId);
+//            forecastMapper.updateByPrimaryKey(forecast);
         }
-    }
-
-    private void saveForecastLineData(Integer fId, Integer sortNum, String forecastMonth, String lastWrite,
-                                      String currentWrite, String gap, String remark) {
-        ForecastLine lineOne = new ForecastLine();
-        lineOne.setfId(fId);
-        lineOne.setSortNum(sortNum);
-        lineOne.setForecastMonth(forecastMonth);
-        lineOne.setLastWrite(lastWrite);
-        lineOne.setCurrentWrite(currentWrite);
-        lineOne.setGap(gap);
-        lineOne.setRemark(remark);
-        forecastLineMapper.insertSelective(lineOne);
     }
 
     private String generateBathNo() {

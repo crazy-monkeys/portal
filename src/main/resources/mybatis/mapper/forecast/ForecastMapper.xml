@@ -35,8 +35,8 @@
     <result column="batch_no" jdbcType="VARCHAR" property="batchNo" />
   </resultMap>
 
-  <resultMap id="agencyTemplateMap" type="com.crazy.portal.entity.forecast.Forecast" extends="BaseResultMap" >
-    <collection property="lines" resultMap="com.crazy.portal.dao.forecast.ForecastLineMapper.agencyTemplateMap" />
+  <resultMap id="fullFieldMap" type="com.crazy.portal.entity.forecast.Forecast" extends="BaseResultMap" >
+    <association property="line" resultMap="com.crazy.portal.dao.forecast.ForecastLineMapper.BaseResultMap" />
   </resultMap>
 
   <sql id="Base_Column_List">
@@ -390,19 +390,17 @@
     where id = #{id,jdbcType=INTEGER}
   </update>
 
-  <select id="selectByYearMonth" resultMap="agencyTemplateMap" >
+  <select id="selectByYearMonth" resultMap="fullFieldMap" >
     select
-    a.*,b.sort_num,b.forecast_month,b.last_write,b.current_write,
-    b.gap,b.remark
+    a.*,b.*
     from t_forecast a
     inner join t_forecast_line b on a.id = b.f_id
     where a.operation_year_month = #{yearMonth}
     and a.create_user_id = #{userId}
   </select>
 
-  <select id="selectErrorDataByBatch" resultMap="agencyTemplateMap" >
-    select a.*,b.sort_num,b.forecast_month,b.last_write,b.current_write,
-    b.gap,b.remark
+  <select id="selectErrorDataByBatch" resultMap="fullFieldMap" >
+    select a.*,b.*
     from t_forecast a
     inner join t_forecast_line b on a.id = b.f_id
     where a.error_msg is not null and a.error_msg != ''
@@ -420,10 +418,8 @@
     where batch_no = #{batchNo} and create_user_id = #{userId}
   </update>
 
-  <select id="selectByUser" resultMap="agencyTemplateMap" >
-    select a.*,
-    b.sort_num,b.forecast_month,b.last_write,b.current_write,
-    b.gap,b.remark
+  <select id="selectByUser" resultMap="fullFieldMap" >
+    select a.*,b.*
     from t_forecast a
     inner join t_forecast_line b on a.id = b.f_id
     where a.create_user_id = #{userId}

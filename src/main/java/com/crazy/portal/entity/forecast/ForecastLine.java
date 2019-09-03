@@ -3,13 +3,13 @@ package com.crazy.portal.entity.forecast;
 /**
  * 
  * @author lee
- * @date   2019-08-31 15:40::38
+ * @date   2019-09-03 21:16::32
  */
 public class ForecastLine {
     /**
      * 
      */
-    private Integer id;
+    private Integer lineId;
 
     /**
      * 
@@ -19,59 +19,279 @@ public class ForecastLine {
     /**
      * 
      */
-    private Integer sortNum;
+    private String forecastMonthOne;
 
     /**
      * 
      */
-    private String forecastMonth;
+    private String lastWriteOne;
 
     /**
      * 
      */
-    private String lastWrite;
+    private String currentWriteOne;
 
     /**
      * 
      */
-    private String currentWrite;
+    private String gapOne;
 
     /**
      * 
      */
-    private String gap;
+    private String remarkOne;
 
     /**
      * 
      */
-    private String remark;
+    private String ambAdjustmentOne;
 
     /**
      * 
      */
-    private String ambAdjustment;
+    private String ambRemarkOne;
 
     /**
      * 
      */
-    private String ambRemark;
+    private String sdAdjustmentOne;
 
     /**
      * 
      */
-    private String sdAdjustment;
+    private String sdRemarkOne;
 
     /**
      * 
      */
-    private String sdRemark;
+    private String forecastMonthTwo;
 
-    public Integer getId() {
-        return id;
+    /**
+     * 
+     */
+    private String lastWriteTwo;
+
+    /**
+     * 
+     */
+    private String currentWriteTwo;
+
+    /**
+     * 
+     */
+    private String gapTwo;
+
+    /**
+     * 
+     */
+    private String remarkTwo;
+
+    /**
+     * 
+     */
+    private String ambAdjustmentTwo;
+
+    /**
+     * 
+     */
+    private String ambRemarkTwo;
+
+    /**
+     * 
+     */
+    private String sdAdjustmentTwo;
+
+    /**
+     * 
+     */
+    private String sdRemarkTwo;
+
+    /**
+     * 
+     */
+    private String forecastMonthThree;
+
+    /**
+     * 
+     */
+    private String lastWriteThree;
+
+    /**
+     * 
+     */
+    private String currentWriteThree;
+
+    /**
+     * 
+     */
+    private String gapThree;
+
+    /**
+     * 
+     */
+    private String remarkThree;
+
+    /**
+     * 
+     */
+    private String ambAdjustmentThree;
+
+    /**
+     * 
+     */
+    private String ambRemarkThree;
+
+    /**
+     * 
+     */
+    private String sdAdjustmentThree;
+
+    /**
+     * 
+     */
+    private String sdRemarkThree;
+
+    /**
+     * 
+     */
+    private String forecastMonthFour;
+
+    /**
+     * 
+     */
+    private String lastWriteFour;
+
+    /**
+     * 
+     */
+    private String currentWriteFour;
+
+    /**
+     * 
+     */
+    private String gapFour;
+
+    /**
+     * 
+     */
+    private String remarkFour;
+
+    /**
+     * 
+     */
+    private String ambAdjustmentFour;
+
+    /**
+     * 
+     */
+    private String ambRemarkFour;
+
+    /**
+     * 
+     */
+    private String sdAdjustmentFour;
+
+    /**
+     * 
+     */
+    private String sdRemarkFour;
+
+    /**
+     * 
+     */
+    private String forecastMonthFive;
+
+    /**
+     * 
+     */
+    private String lastWriteFive;
+
+    /**
+     * 
+     */
+    private String currentWriteFive;
+
+    /**
+     * 
+     */
+    private String gapFive;
+
+    /**
+     * 
+     */
+    private String remarkFive;
+
+    /**
+     * 
+     */
+    private String ambAdjustmentFive;
+
+    /**
+     * 
+     */
+    private String ambRemarkFive;
+
+    /**
+     * 
+     */
+    private String sdAdjustmentFive;
+
+    /**
+     * 
+     */
+    private String sdRemarkFive;
+
+    /**
+     * 
+     */
+    private String forecastMonthSix;
+
+    /**
+     * 
+     */
+    private String lastWriteSix;
+
+    /**
+     * 
+     */
+    private String currentWriteSix;
+
+    /**
+     * 
+     */
+    private String gapSix;
+
+    /**
+     * 
+     */
+    private String remarkSix;
+
+    /**
+     * 
+     */
+    private String ambAdjustmentSix;
+
+    /**
+     * 
+     */
+    private String ambRemarkSix;
+
+    /**
+     * 
+     */
+    private String sdAdjustmentSix;
+
+    /**
+     * 
+     */
+    private String sdRemarkSix;
+
+    public Integer getLineId() {
+        return lineId;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setLineId(Integer lineId) {
+        this.lineId = lineId;
     }
 
     public Integer getfId() {
@@ -82,83 +302,435 @@ public class ForecastLine {
         this.fId = fId;
     }
 
-    public Integer getSortNum() {
-        return sortNum;
+    public String getForecastMonthOne() {
+        return forecastMonthOne;
     }
 
-    public void setSortNum(Integer sortNum) {
-        this.sortNum = sortNum;
+    public void setForecastMonthOne(String forecastMonthOne) {
+        this.forecastMonthOne = forecastMonthOne == null ? null : forecastMonthOne.trim();
     }
 
-    public String getForecastMonth() {
-        return forecastMonth;
+    public String getLastWriteOne() {
+        return lastWriteOne;
     }
 
-    public void setForecastMonth(String forecastMonth) {
-        this.forecastMonth = forecastMonth == null ? null : forecastMonth.trim();
+    public void setLastWriteOne(String lastWriteOne) {
+        this.lastWriteOne = lastWriteOne == null ? null : lastWriteOne.trim();
     }
 
-    public String getLastWrite() {
-        return lastWrite;
+    public String getCurrentWriteOne() {
+        return currentWriteOne;
     }
 
-    public void setLastWrite(String lastWrite) {
-        this.lastWrite = lastWrite == null ? null : lastWrite.trim();
+    public void setCurrentWriteOne(String currentWriteOne) {
+        this.currentWriteOne = currentWriteOne == null ? null : currentWriteOne.trim();
     }
 
-    public String getCurrentWrite() {
-        return currentWrite;
+    public String getGapOne() {
+        return gapOne;
     }
 
-    public void setCurrentWrite(String currentWrite) {
-        this.currentWrite = currentWrite == null ? null : currentWrite.trim();
+    public void setGapOne(String gapOne) {
+        this.gapOne = gapOne == null ? null : gapOne.trim();
     }
 
-    public String getGap() {
-        return gap;
+    public String getRemarkOne() {
+        return remarkOne;
     }
 
-    public void setGap(String gap) {
-        this.gap = gap == null ? null : gap.trim();
+    public void setRemarkOne(String remarkOne) {
+        this.remarkOne = remarkOne == null ? null : remarkOne.trim();
     }
 
-    public String getRemark() {
-        return remark;
+    public String getAmbAdjustmentOne() {
+        return ambAdjustmentOne;
     }
 
-    public void setRemark(String remark) {
-        this.remark = remark == null ? null : remark.trim();
+    public void setAmbAdjustmentOne(String ambAdjustmentOne) {
+        this.ambAdjustmentOne = ambAdjustmentOne == null ? null : ambAdjustmentOne.trim();
     }
 
-    public String getAmbAdjustment() {
-        return ambAdjustment;
+    public String getAmbRemarkOne() {
+        return ambRemarkOne;
     }
 
-    public void setAmbAdjustment(String ambAdjustment) {
-        this.ambAdjustment = ambAdjustment == null ? null : ambAdjustment.trim();
+    public void setAmbRemarkOne(String ambRemarkOne) {
+        this.ambRemarkOne = ambRemarkOne == null ? null : ambRemarkOne.trim();
     }
 
-    public String getAmbRemark() {
-        return ambRemark;
+    public String getSdAdjustmentOne() {
+        return sdAdjustmentOne;
     }
 
-    public void setAmbRemark(String ambRemark) {
-        this.ambRemark = ambRemark == null ? null : ambRemark.trim();
+    public void setSdAdjustmentOne(String sdAdjustmentOne) {
+        this.sdAdjustmentOne = sdAdjustmentOne == null ? null : sdAdjustmentOne.trim();
     }
 
-    public String getSdAdjustment() {
-        return sdAdjustment;
+    public String getSdRemarkOne() {
+        return sdRemarkOne;
     }
 
-    public void setSdAdjustment(String sdAdjustment) {
-        this.sdAdjustment = sdAdjustment == null ? null : sdAdjustment.trim();
+    public void setSdRemarkOne(String sdRemarkOne) {
+        this.sdRemarkOne = sdRemarkOne == null ? null : sdRemarkOne.trim();
     }
 
-    public String getSdRemark() {
-        return sdRemark;
+    public String getForecastMonthTwo() {
+        return forecastMonthTwo;
     }
 
-    public void setSdRemark(String sdRemark) {
-        this.sdRemark = sdRemark == null ? null : sdRemark.trim();
+    public void setForecastMonthTwo(String forecastMonthTwo) {
+        this.forecastMonthTwo = forecastMonthTwo == null ? null : forecastMonthTwo.trim();
+    }
+
+    public String getLastWriteTwo() {
+        return lastWriteTwo;
+    }
+
+    public void setLastWriteTwo(String lastWriteTwo) {
+        this.lastWriteTwo = lastWriteTwo == null ? null : lastWriteTwo.trim();
+    }
+
+    public String getCurrentWriteTwo() {
+        return currentWriteTwo;
+    }
+
+    public void setCurrentWriteTwo(String currentWriteTwo) {
+        this.currentWriteTwo = currentWriteTwo == null ? null : currentWriteTwo.trim();
+    }
+
+    public String getGapTwo() {
+        return gapTwo;
+    }
+
+    public void setGapTwo(String gapTwo) {
+        this.gapTwo = gapTwo == null ? null : gapTwo.trim();
+    }
+
+    public String getRemarkTwo() {
+        return remarkTwo;
+    }
+
+    public void setRemarkTwo(String remarkTwo) {
+        this.remarkTwo = remarkTwo == null ? null : remarkTwo.trim();
+    }
+
+    public String getAmbAdjustmentTwo() {
+        return ambAdjustmentTwo;
+    }
+
+    public void setAmbAdjustmentTwo(String ambAdjustmentTwo) {
+        this.ambAdjustmentTwo = ambAdjustmentTwo == null ? null : ambAdjustmentTwo.trim();
+    }
+
+    public String getAmbRemarkTwo() {
+        return ambRemarkTwo;
+    }
+
+    public void setAmbRemarkTwo(String ambRemarkTwo) {
+        this.ambRemarkTwo = ambRemarkTwo == null ? null : ambRemarkTwo.trim();
+    }
+
+    public String getSdAdjustmentTwo() {
+        return sdAdjustmentTwo;
+    }
+
+    public void setSdAdjustmentTwo(String sdAdjustmentTwo) {
+        this.sdAdjustmentTwo = sdAdjustmentTwo == null ? null : sdAdjustmentTwo.trim();
+    }
+
+    public String getSdRemarkTwo() {
+        return sdRemarkTwo;
+    }
+
+    public void setSdRemarkTwo(String sdRemarkTwo) {
+        this.sdRemarkTwo = sdRemarkTwo == null ? null : sdRemarkTwo.trim();
+    }
+
+    public String getForecastMonthThree() {
+        return forecastMonthThree;
+    }
+
+    public void setForecastMonthThree(String forecastMonthThree) {
+        this.forecastMonthThree = forecastMonthThree == null ? null : forecastMonthThree.trim();
+    }
+
+    public String getLastWriteThree() {
+        return lastWriteThree;
+    }
+
+    public void setLastWriteThree(String lastWriteThree) {
+        this.lastWriteThree = lastWriteThree == null ? null : lastWriteThree.trim();
+    }
+
+    public String getCurrentWriteThree() {
+        return currentWriteThree;
+    }
+
+    public void setCurrentWriteThree(String currentWriteThree) {
+        this.currentWriteThree = currentWriteThree == null ? null : currentWriteThree.trim();
+    }
+
+    public String getGapThree() {
+        return gapThree;
+    }
+
+    public void setGapThree(String gapThree) {
+        this.gapThree = gapThree == null ? null : gapThree.trim();
+    }
+
+    public String getRemarkThree() {
+        return remarkThree;
+    }
+
+    public void setRemarkThree(String remarkThree) {
+        this.remarkThree = remarkThree == null ? null : remarkThree.trim();
+    }
+
+    public String getAmbAdjustmentThree() {
+        return ambAdjustmentThree;
+    }
+
+    public void setAmbAdjustmentThree(String ambAdjustmentThree) {
+        this.ambAdjustmentThree = ambAdjustmentThree == null ? null : ambAdjustmentThree.trim();
+    }
+
+    public String getAmbRemarkThree() {
+        return ambRemarkThree;
+    }
+
+    public void setAmbRemarkThree(String ambRemarkThree) {
+        this.ambRemarkThree = ambRemarkThree == null ? null : ambRemarkThree.trim();
+    }
+
+    public String getSdAdjustmentThree() {
+        return sdAdjustmentThree;
+    }
+
+    public void setSdAdjustmentThree(String sdAdjustmentThree) {
+        this.sdAdjustmentThree = sdAdjustmentThree == null ? null : sdAdjustmentThree.trim();
+    }
+
+    public String getSdRemarkThree() {
+        return sdRemarkThree;
+    }
+
+    public void setSdRemarkThree(String sdRemarkThree) {
+        this.sdRemarkThree = sdRemarkThree == null ? null : sdRemarkThree.trim();
+    }
+
+    public String getForecastMonthFour() {
+        return forecastMonthFour;
+    }
+
+    public void setForecastMonthFour(String forecastMonthFour) {
+        this.forecastMonthFour = forecastMonthFour == null ? null : forecastMonthFour.trim();
+    }
+
+    public String getLastWriteFour() {
+        return lastWriteFour;
+    }
+
+    public void setLastWriteFour(String lastWriteFour) {
+        this.lastWriteFour = lastWriteFour == null ? null : lastWriteFour.trim();
+    }
+
+    public String getCurrentWriteFour() {
+        return currentWriteFour;
+    }
+
+    public void setCurrentWriteFour(String currentWriteFour) {
+        this.currentWriteFour = currentWriteFour == null ? null : currentWriteFour.trim();
+    }
+
+    public String getGapFour() {
+        return gapFour;
+    }
+
+    public void setGapFour(String gapFour) {
+        this.gapFour = gapFour == null ? null : gapFour.trim();
+    }
+
+    public String getRemarkFour() {
+        return remarkFour;
+    }
+
+    public void setRemarkFour(String remarkFour) {
+        this.remarkFour = remarkFour == null ? null : remarkFour.trim();
+    }
+
+    public String getAmbAdjustmentFour() {
+        return ambAdjustmentFour;
+    }
+
+    public void setAmbAdjustmentFour(String ambAdjustmentFour) {
+        this.ambAdjustmentFour = ambAdjustmentFour == null ? null : ambAdjustmentFour.trim();
+    }
+
+    public String getAmbRemarkFour() {
+        return ambRemarkFour;
+    }
+
+    public void setAmbRemarkFour(String ambRemarkFour) {
+        this.ambRemarkFour = ambRemarkFour == null ? null : ambRemarkFour.trim();
+    }
+
+    public String getSdAdjustmentFour() {
+        return sdAdjustmentFour;
+    }
+
+    public void setSdAdjustmentFour(String sdAdjustmentFour) {
+        this.sdAdjustmentFour = sdAdjustmentFour == null ? null : sdAdjustmentFour.trim();
+    }
+
+    public String getSdRemarkFour() {
+        return sdRemarkFour;
+    }
+
+    public void setSdRemarkFour(String sdRemarkFour) {
+        this.sdRemarkFour = sdRemarkFour == null ? null : sdRemarkFour.trim();
+    }
+
+    public String getForecastMonthFive() {
+        return forecastMonthFive;
+    }
+
+    public void setForecastMonthFive(String forecastMonthFive) {
+        this.forecastMonthFive = forecastMonthFive == null ? null : forecastMonthFive.trim();
+    }
+
+    public String getLastWriteFive() {
+        return lastWriteFive;
+    }
+
+    public void setLastWriteFive(String lastWriteFive) {
+        this.lastWriteFive = lastWriteFive == null ? null : lastWriteFive.trim();
+    }
+
+    public String getCurrentWriteFive() {
+        return currentWriteFive;
+    }
+
+    public void setCurrentWriteFive(String currentWriteFive) {
+        this.currentWriteFive = currentWriteFive == null ? null : currentWriteFive.trim();
+    }
+
+    public String getGapFive() {
+        return gapFive;
+    }
+
+    public void setGapFive(String gapFive) {
+        this.gapFive = gapFive == null ? null : gapFive.trim();
+    }
+
+    public String getRemarkFive() {
+        return remarkFive;
+    }
+
+    public void setRemarkFive(String remarkFive) {
+        this.remarkFive = remarkFive == null ? null : remarkFive.trim();
+    }
+
+    public String getAmbAdjustmentFive() {
+        return ambAdjustmentFive;
+    }
+
+    public void setAmbAdjustmentFive(String ambAdjustmentFive) {
+        this.ambAdjustmentFive = ambAdjustmentFive == null ? null : ambAdjustmentFive.trim();
+    }
+
+    public String getAmbRemarkFive() {
+        return ambRemarkFive;
+    }
+
+    public void setAmbRemarkFive(String ambRemarkFive) {
+        this.ambRemarkFive = ambRemarkFive == null ? null : ambRemarkFive.trim();
+    }
+
+    public String getSdAdjustmentFive() {
+        return sdAdjustmentFive;
+    }
+
+    public void setSdAdjustmentFive(String sdAdjustmentFive) {
+        this.sdAdjustmentFive = sdAdjustmentFive == null ? null : sdAdjustmentFive.trim();
+    }
+
+    public String getSdRemarkFive() {
+        return sdRemarkFive;
+    }
+
+    public void setSdRemarkFive(String sdRemarkFive) {
+        this.sdRemarkFive = sdRemarkFive == null ? null : sdRemarkFive.trim();
+    }
+
+    public String getForecastMonthSix() {
+        return forecastMonthSix;
+    }
+
+    public void setForecastMonthSix(String forecastMonthSix) {
+        this.forecastMonthSix = forecastMonthSix == null ? null : forecastMonthSix.trim();
+    }
+
+    public String getLastWriteSix() {
+        return lastWriteSix;
+    }
+
+    public void setLastWriteSix(String lastWriteSix) {
+        this.lastWriteSix = lastWriteSix == null ? null : lastWriteSix.trim();
+    }
+
+    public String getCurrentWriteSix() {
+        return currentWriteSix;
+    }
+
+    public void setCurrentWriteSix(String currentWriteSix) {
+        this.currentWriteSix = currentWriteSix == null ? null : currentWriteSix.trim();
+    }
+
+    public String getGapSix() {
+        return gapSix;
+    }
+
+    public void setGapSix(String gapSix) {
+        this.gapSix = gapSix == null ? null : gapSix.trim();
+    }
+
+    public String getRemarkSix() {
+        return remarkSix;
+    }
+
+    public void setRemarkSix(String remarkSix) {
+        this.remarkSix = remarkSix == null ? null : remarkSix.trim();
+    }
+
+    public String getAmbAdjustmentSix() {
+        return ambAdjustmentSix;
+    }
+
+    public void setAmbAdjustmentSix(String ambAdjustmentSix) {
+        this.ambAdjustmentSix = ambAdjustmentSix == null ? null : ambAdjustmentSix.trim();
+    }
+
+    public String getAmbRemarkSix() {
+        return ambRemarkSix;
+    }
+
+    public void setAmbRemarkSix(String ambRemarkSix) {
+        this.ambRemarkSix = ambRemarkSix == null ? null : ambRemarkSix.trim();
+    }
+
+    public String getSdAdjustmentSix() {
+        return sdAdjustmentSix;
+    }
+
+    public void setSdAdjustmentSix(String sdAdjustmentSix) {
+        this.sdAdjustmentSix = sdAdjustmentSix == null ? null : sdAdjustmentSix.trim();
+    }
+
+    public String getSdRemarkSix() {
+        return sdRemarkSix;
+    }
+
+    public void setSdRemarkSix(String sdRemarkSix) {
+        this.sdRemarkSix = sdRemarkSix == null ? null : sdRemarkSix.trim();
     }
 }
