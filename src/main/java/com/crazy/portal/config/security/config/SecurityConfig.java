@@ -17,6 +17,7 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -115,6 +116,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                 .addFilterBefore(spnegoAuthenticationProcessingFilter(authenticationManagerBean()),BasicAuthenticationFilter.class);
     }
 
+    @Override
+    public void configure(WebSecurity web){
+        //解决静态资源被拦截的问题
+        web.ignoring().antMatchers("/static/**");
+    }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) {
@@ -186,7 +192,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
             "/file/**",
             "/scheduleJob/list",
             "/login",
-            "/static/**",
             "/loginCheck",
             "/scheduleJob/**",
             "/ajax/scheduleJob/**",
