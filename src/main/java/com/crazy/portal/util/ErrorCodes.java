@@ -180,7 +180,7 @@ public class ErrorCodes {
         FORECAST_EXCEL_CHECK_ERROR(80001, "请使用Excel文件上传数据", ""),
         FORECAST_DATA_NOT_EMPTY(80002, "Excel数据解析为空，请重新输入", ""),
         FORECAST_REQ_PARAM_NOT_EMPTY(80003, "请求参数缺失，请检查", ""),
-        FORECAST_DB_DATA_MISMATCH(80004, "Excel数据与参数不匹配，请重新输入", ""),
+        FORECAST_DB_DATA_MISMATCH(80004, "原数据与参数不匹配，请重新输入", ""),
         FORECAST_ERROR_DATA_EXISTS(80005, "存在错误数据，请修正后再进行操作", "");
 
         private final int code;

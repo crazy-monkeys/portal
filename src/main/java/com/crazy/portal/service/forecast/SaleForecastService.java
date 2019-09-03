@@ -316,25 +316,28 @@ public class SaleForecastService {
     }
 
     public void updateAgencyForecastData(List<ForecastParam> list, Integer userId) {
+        BusinessUtil.notNull(list, FORECAST_REQ_PARAM_NOT_EMPTY);
         for(ForecastParam data : list){
             Forecast forecast = forecastMapper.selectByPrimaryKey(data.getForecastId());
             if(null == forecast){
-                throw new BusinessException("");
+                log.error("{} , parameter value : {}", FORECAST_DB_DATA_MISMATCH.getZhMsg(), data);
+                throw new BusinessException(FORECAST_DB_DATA_MISMATCH);
             }
             if(forecast.getStatus() == 2){
                 //TODO 如果数据已经被确认需要重新确认
             }
-//            for(ForecastLine line : data.getLines()){
-//                ForecastLine dbLine = forecastLineMapper.selectByPrimaryKey(line.getId());
-//                if(null == dbLine){
-//                    throw new BusinessException("");
-//                }
-//                dbLine.setCurrentWrite(line.getCurrentWrite());
-//                forecastLineMapper.updateByPrimaryKeySelective(dbLine);
-//            }
-//            forecast.setUpdateTime(new Date());
-//            forecast.setUpdateUserId(userId);
-//            forecastMapper.updateByPrimaryKey(forecast);
+            ForecastLine line = data.getLine();
+            ForecastLine dbLine = forecastLineMapper.selectByPrimaryKey(line.getLineId());
+            dbLine.setCurrentWriteOne(line.getCurrentWriteOne());
+            dbLine.setCurrentWriteTwo(line.getCurrentWriteTwo());
+            dbLine.setCurrentWriteThree(line.getCurrentWriteThree());
+            dbLine.setCurrentWriteFour(line.getCurrentWriteFour());
+            dbLine.setCurrentWriteFive(line.getCurrentWriteFive());
+            dbLine.setCurrentWriteSix(line.getCurrentWriteSix());
+            forecastLineMapper.updateByPrimaryKeySelective(dbLine);
+            forecast.setUpdateTime(new Date());
+            forecast.setUpdateUserId(userId);
+            forecastMapper.updateByPrimaryKey(forecast);
         }
     }
 

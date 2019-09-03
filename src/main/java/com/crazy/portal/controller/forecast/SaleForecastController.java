@@ -95,8 +95,9 @@ public class SaleForecastController extends BaseController {
      * @param list
      */
     @PostMapping
-    public void updateAgencyForecastData(@RequestBody List<ForecastParam> list) {
+    public BaseResponse updateAgencyForecastData(@RequestBody List<ForecastParam> list) {
         saleForecastService.updateAgencyForecastData(list, getCurrentUser().getId());
+        return super.successResult();
     }
 
     //驳回记录查询
