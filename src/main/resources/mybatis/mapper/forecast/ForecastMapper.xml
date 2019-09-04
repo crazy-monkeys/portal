@@ -407,6 +407,14 @@
     and a.batch_no = #{batchNo} and a.create_user_id = #{userId}
   </select>
 
+  <select id="selectNotErrorDataByBatch" resultMap="fullFieldMap" >
+    select a.*,b.*
+    from t_forecast a
+    inner join t_forecast_line b on a.id = b.f_id
+    where (a.error_msg is null or a.error_msg = '')
+    and a.batch_no = #{batchNo} and a.create_user_id = #{userId}
+  </select>
+
   <select id="countErrorDataByBatch" resultType="java.lang.Integer" >
     select count(1) from t_forecast a
     where a.error_msg is not null and a.error_msg != ''
@@ -425,5 +433,19 @@
     where a.create_user_id = #{userId}
     order by a.create_time desc, a.batch_no asc
   </select>
+
+  <select id="selectCntByBatchAndId" resultType="java.lang.Integer" >
+    select count(1) from t_forecast a
+    where a.batch_no = #{batchNo}
+    <foreach collection="list" item="item" index="index" open="and a.id in (" separator="," close=")" >
+       #{item.id}
+    </foreach>
+    and a.create_user_id = #{userId}
+  </select>
+
+  <delete id="deleteByBatchNo" >
+    delete from t_forecast
+    where batch_no = #{batchNo} and create_user_id = #{userId}
+  </delete>
 
 </mapper>

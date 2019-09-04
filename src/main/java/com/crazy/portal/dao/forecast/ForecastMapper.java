@@ -1,5 +1,6 @@
 package com.crazy.portal.dao.forecast;
 
+import com.crazy.portal.bean.forecast.AgencyErrorTemplate;
 import com.crazy.portal.entity.forecast.Forecast;
 import org.apache.ibatis.annotations.Param;
 import java.util.List;
@@ -23,6 +24,9 @@ public interface ForecastMapper {
     List<Forecast> selectErrorDataByBatch(@Param(value = "batchNo") String batchNo,
                                           @Param(value = "userId") Integer userId);
 
+    List<Forecast> selectNotErrorDataByBatch(@Param(value = "batchNo") String batchNo,
+                                             @Param(value = "userId") Integer userId);
+
     int countErrorDataByBatch(@Param(value = "batchNo") String batchNo,
                               @Param(value = "userId") Integer userId);
 
@@ -31,4 +35,11 @@ public interface ForecastMapper {
                      @Param(value = "userId") Integer userId);
 
     List<Forecast> selectByUser(Integer userId);
+
+    int selectCntByBatchAndId(@Param(value = "batchNo") String batchNo,
+                              @Param(value = "list") List<AgencyErrorTemplate> list,
+                              @Param(value = "userId") Integer userId);
+
+    int deleteByBatchNo(@Param(value = "batchNo") String batchNo,
+                        @Param(value = "userId") Integer userId);
 }
