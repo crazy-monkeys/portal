@@ -3,6 +3,7 @@ package com.crazy.portal.util;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.net.ftp.FTPClient;
+import org.apache.commons.net.ftp.FTPFile;
 import org.apache.commons.net.ftp.FTPReply;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -263,9 +264,15 @@ public class FTPClientUtil {
     public boolean get(String serverFile, OutputStream output, boolean delFile) throws IOException {     
         FTPClient ftpClient = null;     
         try {     
-            ftpClient = getFTPClient();     
-            // 处理传输      
-            ftpClient.retrieveFile(serverFile, output);     
+            ftpClient = getFTPClient();
+            if(log.isDebugEnabled()){
+                for(FTPFile ftpFile : ftpClient.listFiles()){
+                    log.debug("FTP文件下载 >>> 请求文件: {}, FTP文件: {}, 匹配结果: {}", serverFile, ftpFile.getName(), serverFile.equals(ftpFile.getName()));
+                }
+            }
+            // 处理传输
+            boolean result = ftpClient.retrieveFile(serverFile, output);
+            log.info("获取FTP文件结果：{} , serverFile : {}", result, serverFile);
             if (delFile) {
                 // 删除远程文件
                 ftpClient.deleteFile(serverFile);     
