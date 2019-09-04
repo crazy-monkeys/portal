@@ -63,12 +63,15 @@ public class HandoverService {
 //        }
         DeliverReceiveRecord record = deliverReceiveRecordMapper.selectByPrimaryKey(id);
         BusinessUtil.assertFlase(null == record, HANDOVER_INVALID_PARAM);
+        BusinessUtil.assertFlase(status == record.getStatus(), HANDOVER_REJECT_REPEAT_ERROR);
         //执行驳回
         if(status == 3){
             BusinessUtil.assertFlase(record.getStatus() == 2, HANDOVER_NOT_REJECT);
+            BusinessUtil.assertEmpty(remark, HANDOVER_REJECT_REMARK_NOT_EMPTY);
         }
         //执行确认
         if(status == 1){
+
             BusinessUtil.assertFlase(record.getStatus() != -1, HANDOVER_NOT_CONFIRM);
         }
         if(false){

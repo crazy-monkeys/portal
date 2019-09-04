@@ -117,7 +117,7 @@ public class ErrorCodes {
         FILE_UPLOAD_PARAM_EMPTY(20000, "上传文件必填参数缺失", ""),
         FILE_DOWNLOAD_PARAM_EMPTY(20001, "下载文件必填参数缺失", ""),
         FILE_DOWNLOAD_FILE_NOT_FOUND(20002, "未找到需要下载的文件", ""),
-        EXCEL_READ_ERROR(21001, "Excel数据读取异常", ""),
+        EXCEL_READ_ERROR(21001, "Excel数据不符合格式要求，请检查", ""),
         EXCEL_TYPE_ERROR(21002, "请上传正确Excel文件", ""),
         EXCEL_WRITE_ERROR(21003, "Excel数据写入异常", ""),
         EXCEL_PROPERTY_DIFF(21004, "Excel数据与此功能接收不一致，请核对", ""),
@@ -143,6 +143,8 @@ public class ErrorCodes {
         HANDOVER_NOT_REJECT(40008, "数据已提交，无法驳回", ""),
         HANDOVER_BI_SERVER_EXCEPTION(40009, "BI服务异常，请联系管理员", ""),
         HANDOVER_BI_RESPONSE_EXCEPTION(40009, "BI处理结果解析异常，请联系管理员", ""),
+        HANDOVER_REJECT_REPEAT_ERROR(40009, "数据已驳回，请勿重复操作", ""),
+        HANDOVER_REJECT_REMARK_NOT_EMPTY(40010, "请填写驳回原因", ""),
 
         //客户模块
         CUSTOMER_IS_EMPYT(50000, "没有对应的客户信息", ""),
