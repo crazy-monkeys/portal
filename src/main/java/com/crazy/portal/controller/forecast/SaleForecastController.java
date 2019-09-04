@@ -85,7 +85,7 @@ public class SaleForecastController extends BaseController {
      * 代理商批量删除数据
      * @param AgencyForecastData
      */
-    @GetMapping
+    @GetMapping(value = "/forecast/agency/data/delete")
     public void deleteAgencyForecastData(Integer[] AgencyForecastData) {
         saleForecastService.deleteAgencyForecastData(AgencyForecastData);
     }
@@ -94,7 +94,7 @@ public class SaleForecastController extends BaseController {
      * 代理商批量修改数据
      * @param list
      */
-    @PostMapping
+    @PostMapping(value = "/forecast/agency/data/update")
     public BaseResponse updateAgencyForecastData(@RequestBody List<ForecastParam> list) {
         saleForecastService.updateAgencyForecastData(list, getCurrentUser().getId());
         return super.successResult();
