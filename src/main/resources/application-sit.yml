@@ -67,3 +67,6 @@ ftp:
     handover:
       push: /handover/push/
       pull: /handover/pull/
+    forecast:
+      push: /bitest/upload/
+      pull: /bitest/download/

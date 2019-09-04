@@ -68,3 +68,6 @@ ftp:
     handover:
       push: /home/crmftp/bitest/upload/
       pull: /home/crmftp/bitest/download/
+    forecast:
+      push: /bitest/upload/
+      pull: /bitest/download/
