@@ -5,6 +5,7 @@ import com.crazy.portal.bean.customer.dealer.credit.ZrfcsdcustomercreditResponse
 import com.crazy.portal.bean.customer.dealer.credit.Zsdscredit;
 import com.crazy.portal.bean.product.BaseProResponseVO;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -99,8 +100,17 @@ public class CallApiUtils {
      * @param toUrl bi 校验返回的文件位置
      * @return
      */
-    public static String BITest(Enums.BI_FUNCTION_CODE function_code,String fromUrl, String toUrl)throws IOException{
-        String url = BI_URL+function_code+"?sFromUrl="+fromUrl+"&sToUrl="+toUrl;
+    public static String callBiApi(Enums.BI_FUNCTION_CODE function_code,String fromUrl, String toUrl) throws IOException{
+        return callBiApi(function_code, null, fromUrl, toUrl);
+    }
+
+    public static String callBiApi(Enums.BI_FUNCTION_CODE function_code, String baseMapping, String fromUrl, String toUrl) throws IOException {
+        String url;
+        if(StringUtils.isNotEmpty(baseMapping)){
+            url = BI_URL + baseMapping + function_code + "?sFromUrl=" + fromUrl + "&sToUrl=" + toUrl;
+        }else{
+            url = BI_URL + function_code + "?sFromUrl=" + fromUrl + "&sToUrl=" + toUrl;
+        }
         log.info("call bi url:======================="+url);
         String jsonStr = HttpClientUtils.get(url);
         log.info("bi response:======================"+jsonStr);

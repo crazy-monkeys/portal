@@ -181,7 +181,9 @@ public class ErrorCodes {
         FORECAST_DATA_NOT_EMPTY(80002, "Excel数据解析为空，请重新输入", ""),
         FORECAST_REQ_PARAM_NOT_EMPTY(80003, "请求参数缺失，请检查", ""),
         FORECAST_DB_DATA_MISMATCH(80004, "原数据与参数不匹配，请重新输入", ""),
-        FORECAST_ERROR_DATA_EXISTS(80005, "存在错误数据，请修正后再进行操作", "");
+        FORECAST_ERROR_DATA_EXISTS(80005, "存在错误数据，请修正后再进行操作", ""),
+        FORECAST_BI_SERVER_EXCEPTION(40009, "BI服务异常，请联系管理员", ""),
+        FORECAST_BI_RESPONSE_EXCEPTION(40009, "BI处理结果解析异常，请联系管理员", ""),;
 
         private final int code;
         private final String zhMsg;

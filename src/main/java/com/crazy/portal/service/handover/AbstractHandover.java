@@ -74,7 +74,7 @@ public abstract class AbstractHandover {
                 response = mockThirdResult() ? "\"OK:/Users/lee/Documents/job_code/portal_file/pull_thrid/receive/ok.xlsx\"" :
                         "\"NG:/Users/lee/Documents/job_code/portal_file/pull_thrid/receive/error.xlsx\"";
             }*/
-            String response = CallApiUtils.BITest(functionCode, pushPath, pullPath);
+            String response = CallApiUtils.callBiApi(functionCode, pushPath, pullPath);
             if(StringUtils.isEmpty(response)){
                 log.error("{} -> {}", HANDOVER_BI_RESPONSE_EXCEPTION.getZhMsg(), response);
                 throw new BusinessException(HANDOVER_BI_RESPONSE_EXCEPTION);
