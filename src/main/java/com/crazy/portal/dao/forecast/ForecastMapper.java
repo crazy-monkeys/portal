@@ -34,7 +34,8 @@ public interface ForecastMapper {
                      @Param(value = "batchNo") String batchNo,
                      @Param(value = "userId") Integer userId);
 
-    List<Forecast> selectByUser(Integer userId);
+    List<Forecast> selectByUser(@Param(value = "userId") Integer userId,
+                                @Param(value = "isReject") Integer isReject);
 
     int selectCntByBatchAndId(@Param(value = "batchNo") String batchNo,
                               @Param(value = "list") List<AgencyErrorTemplate> list,
@@ -42,4 +43,7 @@ public interface ForecastMapper {
 
     int deleteByBatchNo(@Param(value = "batchNo") String batchNo,
                         @Param(value = "userId") Integer userId);
+
+    List<Forecast> selectRejectDataByIds(@Param(value = "ids") Integer[] ids,
+                                         @Param(value = "userId") Integer userId);
 }

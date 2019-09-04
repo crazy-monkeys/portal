@@ -220,9 +220,9 @@ public class SaleForecastService {
         forecastMapper.updateStatus(1, batchNo, userId);
     }
 
-    public PageInfo<Forecast> queryAgencyForecastData(Integer pageNum, Integer pageSize, Integer userId) {
+    public PageInfo<Forecast> queryAgencyForecastData(Integer pageNum, Integer pageSize, Integer userId, Integer isReject) {
         PortalUtil.defaultStartPage(pageNum,pageSize);
-        List<Forecast> result = forecastMapper.selectByUser(userId);
+        List<Forecast> result = forecastMapper.selectByUser(userId, isReject);
         return new PageInfo<>(result);
 
     }
@@ -267,6 +267,24 @@ public class SaleForecastService {
             forecast.setUpdateUserId(userId);
             forecastMapper.updateByPrimaryKey(forecast);
         }
+    }
+
+    public void downloadRejectData(HttpServletResponse response, Integer[] forecastIds, Integer userId) {
+        BusinessUtil.notNull(forecastIds, FORECAST_REQ_PARAM_NOT_EMPTY);
+        List<Forecast> rejectDataList = forecastMapper.selectRejectDataByIds(forecastIds, userId);
+
+        List<AgencyErrorTemplate> errorList = new ArrayList<>();
+        for(Forecast forecast : rejectDataList) {
+            AgencyErrorTemplate agencyTemplate = new AgencyErrorTemplate();
+            try {
+                BeanUtils.copyNotNullFields(forecast, agencyTemplate);
+                BeanUtils.copyNotNullFields(forecast.getLine(), agencyTemplate);
+            }catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            errorList.add(agencyTemplate);
+        }
+        ExcelUtils.writeExcel(response, errorList, AgencyErrorTemplate.class);
     }
 
     private String generateBathNo() {

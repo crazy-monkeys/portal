@@ -78,7 +78,7 @@ public class SaleForecastController extends BaseController {
      */
     @GetMapping(value = "/forecast/agency/data/query")
     public BaseResponse queryAgencyForecastData(Integer pageNum, Integer pageSize) {
-        return super.successResult(saleForecastService.queryAgencyForecastData(pageNum, pageSize, 1));
+        return super.successResult(saleForecastService.queryAgencyForecastData(pageNum, pageSize, 1, 0));
     }
 
     /**
@@ -101,9 +101,17 @@ public class SaleForecastController extends BaseController {
     }
 
     //驳回记录查询
+    @GetMapping(value = "/forecast/agency/data/reject")
+    public BaseResponse queryRejectForecastData(Integer pageNum, Integer pageSize) {
+        return super.successResult(saleForecastService.queryAgencyForecastData(pageNum, pageSize, 1, 1));
+    }
 
     //驳回记录下载
-
+    @GetMapping(value = "/forecast/agency/reject/download")
+    public BaseResponse downloadRejectData(HttpServletResponse response, Integer[] forecastIds) {
+        saleForecastService.downloadRejectData(response, forecastIds, 1);
+        return super.successResult();
+    }
 
 
     //审批数据查询

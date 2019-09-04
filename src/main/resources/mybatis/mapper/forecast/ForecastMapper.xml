@@ -431,6 +431,17 @@
     from t_forecast a
     inner join t_forecast_line b on a.id = b.f_id
     where a.create_user_id = #{userId}
+    <choose>
+        <when test="isReject == 1" >
+            and a.status = -1
+        </when>
+        <when test="isReject == 0" >
+            and  a.status != -1
+        </when>
+        <otherwise>
+            and 1 = 2
+        </otherwise>
+    </choose>
     order by a.create_time desc, a.batch_no asc
   </select>
 
@@ -447,5 +458,16 @@
     delete from t_forecast
     where batch_no = #{batchNo} and create_user_id = #{userId}
   </delete>
+
+  <select id="selectRejectDataByIds" resultMap="fullFieldMap" >
+    select a.*,b.*
+    from t_forecast a
+    inner join t_forecast_line b on a.id = b.f_id
+    where a.create_user_id = #{userId}
+    and a.status = -1
+    <foreach collection="ids" item="item" index="index" open="and a.id in (" separator="," close=")" >
+      #{item}
+    </foreach>
+  </select>
 
 </mapper>
