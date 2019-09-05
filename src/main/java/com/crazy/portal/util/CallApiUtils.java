@@ -117,6 +117,17 @@ public class CallApiUtils {
         return jsonStr;
     }
 
+    public static String callBiPostApi(Enums.BI_FUNCTION_CODE function_code, String baseMapping, String body) throws IOException{
+        String url;
+        if(StringUtils.isNotEmpty(baseMapping)){
+            url = BI_URL + baseMapping + function_code;
+        }else{
+            url = BI_URL + function_code;
+        }
+        String response = HttpClientUtils.post(url, body);
+        return response;
+    }
+
     /**
      * 提交保差退审批到BPM
      * @param requestBody 请求体

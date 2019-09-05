@@ -30,4 +30,6 @@ public interface IHandover<T> {
     void downloadTemplate(HttpServletResponse response);
 
     List<?> uploadTemplateData(MultipartFile excel, Integer userId);
+
+    void batchDeleteData(Integer[] ids, Integer userId);
 }

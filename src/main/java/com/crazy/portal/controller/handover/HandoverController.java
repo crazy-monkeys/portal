@@ -143,4 +143,16 @@ public class HandoverController extends BaseController {
         return super.successResult(handoverServiceContext.getService(type).saveData(recordId, getCurrentUser().getId()));
     }
 
+    /**
+     * 数据删除
+     * @param ids
+     * @param type
+     * @return
+     */
+    @PostMapping(value = "/handover/detail/delete")
+    public BaseResponse deleteData(Integer[] ids, String type) {
+        handoverServiceContext.getService(type).batchDeleteData(ids, getCurrentUser().getId());
+        return super.successResult();
+    }
+
 }

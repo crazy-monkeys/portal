@@ -3,14 +3,12 @@ package com.crazy.portal.service.handover;
 import com.alibaba.fastjson.JSONObject;
 import com.crazy.portal.bean.handover.HandoverUploadVO;
 import com.crazy.portal.bean.handover.ReceiveTemplateBean;
+import com.crazy.portal.config.exception.BusinessException;
 import com.crazy.portal.dao.handover.ReceiveDetailMapper;
 import com.crazy.portal.entity.handover.DeliverReceiveRecord;
 import com.crazy.portal.entity.handover.ReceiveDetail;
 import com.crazy.portal.service.customer.CustomerInfoService;
-import com.crazy.portal.util.BusinessUtil;
-import com.crazy.portal.util.ExcelUtils;
-import com.crazy.portal.util.FileUtil;
-import com.crazy.portal.util.PortalUtil;
+import com.crazy.portal.util.*;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,12 +17,12 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import static com.crazy.portal.util.Enums.BI_FUNCTION_CODE.CHECK_INVENTORY_IMPORT_FILE;
-import static com.crazy.portal.util.ErrorCodes.BusinessEnum.HANDOVER_DATA_NOT_EXISTS;
-import static com.crazy.portal.util.ErrorCodes.BusinessEnum.HANDOVER_EXISTS_DATA_ERROR;
-import static com.crazy.portal.util.ErrorCodes.BusinessEnum.HANDOVER_NOT_DEALER;
+import static com.crazy.portal.util.Enums.BI_FUNCTION_CODE.*;
+import static com.crazy.portal.util.ErrorCodes.BusinessEnum.*;
 
 /**
  * Created by lee on 2019/8/24.
@@ -157,6 +155,33 @@ public class ReceiveService extends AbstractHandover implements IHandover<Receiv
             templateBean.setDealerName(customerInfoService.getDealerByUser(userId).getCustName());
         }
         return receiveData;
+    }
+
+    @Override
+    public void batchDeleteData(Integer[] ids, Integer userId) {
+        StringBuilder sb = new StringBuilder();
+        for(Integer id : ids){
+            ReceiveDetail detail = receiveDetailMapper.selectByPrimaryKey(id);
+            if(null == detail){
+                throw new BusinessException(HANDOVER_DATA_NOT_EXISTS);
+            }else{
+                sb.append(detail.getThirdId());
+                sb.append(",");
+            }
+        }
+        String custName = customerInfoService.getDealerByUser(userId).getCustName();
+        Map<String, String> param = new HashMap<>();
+        param.put("ID", sb.replace(sb.length() - 1, sb.length(), "").toString());
+        param.put("UserName", custName);
+        try {
+            String response = CallApiUtils.callBiPostApi(DELETE_SALES_CASE, "PORTAL/BI/", JSONObject.toJSONString(param));
+            response = response.replace("\"", "");
+            if("删除成功".equals(response)){
+                receiveDetailMapper.batchDeleteByIds(ids);
+            }
+        }catch (Exception ex) {
+            throw new BusinessException(HANDOVER_BI_SERVER_EXCEPTION);
+        }
     }
 
     private HandoverUploadVO genThirdResult(BiCheckResult checkResult, List<?> responseData, Integer recordId) {

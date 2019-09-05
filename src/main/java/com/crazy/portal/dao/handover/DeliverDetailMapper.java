@@ -28,4 +28,6 @@ public interface DeliverDetailMapper {
     List<DeliverTemplateBean> selectErrorDataByRecord(@Param(value = "recordId") Integer recordId);
 
     int deleteByRecordId(@Param(value = "recordId") Integer recordId);
+
+    int batchDeleteByIds(@Param(value = "ids") Integer[] ids);
 }

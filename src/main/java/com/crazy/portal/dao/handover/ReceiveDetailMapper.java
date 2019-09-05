@@ -28,4 +28,7 @@ public interface ReceiveDetailMapper {
     int countErrorData(@Param(value = "recordId") Integer recordId);
 
     int deleteByRecordId(@Param(value = "recordId") Integer recordId);
+
+    int batchDeleteByIds(@Param(value = "ids") Integer[] ids);
+
 }
