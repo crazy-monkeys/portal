@@ -161,4 +161,6 @@ public class Forecast {
 
     private ForecastLine line;
 
+    private String statusDesc;
+
 }

@@ -16,4 +16,7 @@ public class ForecastParam {
 
     private ForecastLine line;
 
+    // 1 ~ 6 分别代表预测的6个月
+    private Integer sortNum;
+
 }

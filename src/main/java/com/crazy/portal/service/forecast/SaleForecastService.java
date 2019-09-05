@@ -287,10 +287,71 @@ public class SaleForecastService {
         ExcelUtils.writeExcel(response, errorList, AgencyErrorTemplate.class);
     }
 
+    public PageInfo<Forecast> queryApprovalForecastData(Integer pageNum, Integer pageSize, Integer userId) {
+        PortalUtil.defaultStartPage(pageNum,pageSize);
+        //TODO 根据登录用户查询他名下可以查看的代理商
+        Integer[] userIds = null;
+        List<Forecast> result = forecastMapper.selectByLeader(userIds);
+        return new PageInfo<>(result);
+    }
+
+    public void updateSingleForecastData(ForecastParam param) {
+        ForecastLine paramLine = param.getLine();
+        ForecastLine dbRecord = forecastLineMapper.selectByPrimaryKey(paramLine.getLineId());
+        if(null == dbRecord){
+            throw new BusinessException("没有记录");
+        }
+        if(param.getSortNum() == 1){
+            dbRecord.setAmbAdjustmentOne(paramLine.getAmbAdjustmentOne());
+            dbRecord.setAmbRemarkOne(paramLine.getRemarkOne());
+            dbRecord.setSdAdjustmentOne(paramLine.getSdAdjustmentOne());
+            dbRecord.setSdRemarkOne(paramLine.getSdRemarkOne());
+        }
+        if(param.getSortNum() == 2){
+            dbRecord.setAmbAdjustmentTwo(paramLine.getAmbAdjustmentTwo());
+            dbRecord.setAmbRemarkTwo(paramLine.getRemarkTwo());
+            dbRecord.setSdAdjustmentTwo(paramLine.getSdAdjustmentTwo());
+            dbRecord.setSdRemarkTwo(paramLine.getSdRemarkTwo());
+        }
+        if(param.getSortNum() == 3){
+            dbRecord.setAmbAdjustmentThree(paramLine.getAmbAdjustmentThree());
+            dbRecord.setAmbRemarkThree(paramLine.getRemarkThree());
+            dbRecord.setSdAdjustmentThree(paramLine.getSdAdjustmentThree());
+            dbRecord.setSdRemarkThree(paramLine.getSdRemarkThree());
+        }
+        if(param.getSortNum() == 4){
+            dbRecord.setAmbAdjustmentFour(paramLine.getAmbAdjustmentFour());
+            dbRecord.setAmbRemarkFour(paramLine.getRemarkFour());
+            dbRecord.setSdAdjustmentFour(paramLine.getSdAdjustmentFour());
+            dbRecord.setSdRemarkFour(paramLine.getSdRemarkFour());
+        }
+        if(param.getSortNum() == 5){
+            dbRecord.setAmbAdjustmentFive(paramLine.getAmbAdjustmentFive());
+            dbRecord.setAmbRemarkFive(paramLine.getRemarkFive());
+            dbRecord.setSdAdjustmentFive(paramLine.getSdAdjustmentFive());
+            dbRecord.setSdRemarkFive(paramLine.getSdRemarkFive());
+        }
+        if(param.getSortNum() == 6){
+            dbRecord.setAmbAdjustmentSix(paramLine.getAmbAdjustmentSix());
+            dbRecord.setAmbRemarkSix(paramLine.getRemarkSix());
+            dbRecord.setSdAdjustmentSix(paramLine.getSdAdjustmentSix());
+            dbRecord.setSdRemarkSix(paramLine.getSdRemarkSix());
+        }
+        forecastLineMapper.updateByPrimaryKeySelective(dbRecord);
+    }
+
+    public void passApprovalForecastData(Integer[] forecastIds, String passMsg) {
+        forecastMapper.updateStatusByIds(forecastIds, 2);
+        //TODO 最终提交给BI
+    }
+
+    public void rejectApprovalForecastData(Integer[] forecastIds, String rejectMsg) {
+        forecastMapper.updateStatusByIds(forecastIds, -1);
+    }
+
     private String generateBathNo() {
         return UUID.randomUUID().toString().toUpperCase();
     }
-
 
     protected BiResponse callBiServerByFtp(Enums.BI_FUNCTION_CODE functionCode, String filePath, String fileName, String pullPath) {
         try {

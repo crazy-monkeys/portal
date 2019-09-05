@@ -46,4 +46,9 @@ public interface ForecastMapper {
 
     List<Forecast> selectRejectDataByIds(@Param(value = "ids") Integer[] ids,
                                          @Param(value = "userId") Integer userId);
+
+    List<Forecast> selectByLeader(@Param(value = "userIds") Integer[] userIds);
+
+    int updateStatusByIds(@Param(value = "ids") Integer[] ids,
+                          @Param(value = "status") Integer status);
 }

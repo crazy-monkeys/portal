@@ -3,6 +3,7 @@ package com.crazy.portal.controller.forecast;
 import com.crazy.portal.bean.BaseResponse;
 import com.crazy.portal.bean.forecast.ForecastParam;
 import com.crazy.portal.controller.BaseController;
+import com.crazy.portal.entity.forecast.ForecastLine;
 import com.crazy.portal.service.forecast.SaleForecastService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -113,18 +114,55 @@ public class SaleForecastController extends BaseController {
         return super.successResult();
     }
 
+    /**
+     * 审批数据查询
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
+    @GetMapping(value = "/forecast/approval/data/query")
+    public BaseResponse queryApprovalForecastData(Integer pageNum, Integer pageSize) {
+        return super.successResult(saleForecastService.queryApprovalForecastData(pageNum, pageSize, 1));
+    }
 
-    //审批数据查询
+    /**
+     * 审批数据批量通过
+     * @param forecastIds
+     * @param passMsg
+     * @return
+     */
+    @GetMapping(value = "/forecast/approval/data/pass")
+    public BaseResponse passApprovalForecastData(Integer[] forecastIds, String passMsg) {
+        saleForecastService.passApprovalForecastData(forecastIds, passMsg);
+        return super.successResult();
+    }
 
-    //审批数据批量通过
-
-    //审批数据批量驳回
+    /**
+     * 审批数据批量驳回
+     * @param forecastIds
+     * @param rejectMsg
+     * @return
+     */
+    @GetMapping(value = "/forecast/approval/data/reject")
+    public BaseResponse rejectApprovalForecastData(Integer[] forecastIds, String rejectMsg) {
+        saleForecastService.rejectApprovalForecastData(forecastIds, rejectMsg);
+        return super.successResult();
+    }
 
     //审批数据批量下载
 
     //审批数据批量上传（ID）
 
-    //审批数据单条修改
+    /**
+     * 审批数据单条修改
+     * @param param
+     * @return
+     */
+    @PostMapping(value = "/forecast/approval/single/update")
+    public BaseResponse updateSingleForecastData(@RequestBody ForecastParam param) {
+        saleForecastService.updateSingleForecastData(param);
+        return super.successResult();
+    }
 
     //预测查询（按年）
 
