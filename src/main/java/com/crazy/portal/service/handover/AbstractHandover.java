@@ -50,7 +50,7 @@ public abstract class AbstractHandover {
             if(log.isDebugEnabled()) {
                 log.debug("BI to Portal info >> Ftp file path:{} , Local file path:{}", result.getFilePath(), pullLocalFile);
             }
-            ftpClientUtil.get(result.getFilePath(), pullLocalFile);
+            ftpClientUtil.get(pullLocalPath() + biFileName, pullLocalFile);
             result.setFilePath(pullLocalFile);
             return result;
         }catch (Exception ex) {
