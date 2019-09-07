@@ -28,6 +28,7 @@
     <result column="shipment_company" jdbcType="VARCHAR" property="shipmentCompany" />
     <result column="rebate_type" jdbcType="VARCHAR" property="rebateType" />
     <result column="class3" jdbcType="VARCHAR" property="class3" />
+    <result column="sales_name" jdbcType="VARCHAR" property="salesName" />
     <result column="active" jdbcType="INTEGER" property="active" />
     <result column="create_id" jdbcType="INTEGER" property="createId" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
@@ -35,11 +36,23 @@
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
   <resultMap id="GroupParamResult" type="com.crazy.portal.bean.business.rebate.RebateGroupParam">
-    <result column="agency_short_name" jdbcType="VARCHAR" property="agencyShortName" />
+    <result column="agency_name" jdbcType="VARCHAR" property="agencyName" />
     <result column="customer_short_name" jdbcType="VARCHAR" property="customerShortName" />
-    <result column="product" jdbcType="VARCHAR" property="product" />
+    <result column="customer_type" jdbcType="VARCHAR" property="customerType"/>
+    <result column="sales_name" jdbcType="VARCHAR" property="salesName"/>
+    <result column="ameba_header" jdbcType="VARCHAR" property="amebaHeader"/>
+    <result column="ameba_department" jdbcType="VARCHAR" property="amebaDepartment"/>
+    <result column="shipment_company" jdbcType="VARCHAR" property="shipmentCompany"/>
     <result column="account_year_month" jdbcType="VARCHAR" property="accountYearMonth" />
+    <result column="order_month" jdbcType="VARCHAR" property="orderMonth"/>
     <result column="shipment_year_month" jdbcType="VARCHAR" property="shipmentYearMonth" />
+    <result column="bu" jdbcType="VARCHAR" property="bu"/>
+    <result column="pdt" jdbcType="VARCHAR" property="pdt"/>
+    <result column="product" jdbcType="VARCHAR" property="product" />
+    <result column="qty" jdbcType="INTEGER" property="qty"/>
+    <result column="sales_price" jdbcType="DECIMAL" property="salesPrice"/>
+    <result column="po_price" jdbcType="DECIMAL" property="poPrice"/>
+    <result column="actual_price" jdbcType="DECIMAL" property="actualPrice"/>
     <result column="class3" jdbcType="VARCHAR" property="platform" />
   </resultMap>
   <sql id="Base_Column_List">
@@ -47,7 +60,7 @@
     customer_type, ameba_header, ameba_department, bu, product, shipment_type, qty, sales_price,
     po_price, actual_price, rebate_amount, account_year_month, shipment_year_month, shipment_date,
     order_month, price_role_id, price_strategy_number, shipment_company,
-    rebate_type, class3, active, create_id, create_time, update_id, update_time
+    rebate_type, class3, sales_name, active, create_id, create_time, update_id, update_time
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select
@@ -147,6 +160,9 @@
       <if test="class3 != null">
         class3,
       </if>
+      <if test="salesName != null">
+        sales_name,
+      </if>
       <if test="active != null">
         active,
       </if>
@@ -241,6 +257,9 @@
       </if>
       <if test="class3 != null">
         #{class3,jdbcType=VARCHAR},
+      </if>
+      <if test="salesName != null">
+        #{salesName,jdbcType=VARCHAR},
       </if>
       <if test="active != null">
         #{active,jdbcType=INTEGER},
@@ -337,6 +356,9 @@
       <if test="class3 != null">
         class3 = #{class3,jdbcType=VARCHAR},
       </if>
+      <if test="salesName != null">
+        sales_name = #{salesName,jdbcType=VARCHAR},
+      </if>
       <if test="active != null">
         active = #{active,jdbcType=INTEGER},
       </if>
@@ -367,30 +389,67 @@
 
   <select id="selectGroupParamList" resultMap="GroupParamResult">
     select
-      agency_short_name,
+      agency_name,
       customer_short_name,
-      product,
+      customer_type,
+      sales_name,
+      ameba_header,
+      ameba_department,
+      shipment_company,
       account_year_month,
+      order_month,
       shipment_year_month,
+      bu,
+      pdt,
+      product,
+      qty,
+      sales_price,
+      po_price,
+      actual_price,
       class3
     from t_business_sales_detail
-    where account_year_month >= #{beginMonth} and account_year_month &lt; #{endMonth}
+    where shipment_year_month >= #{beginMonth} and shipment_year_month &lt; #{endMonth}
     group by
-      agency_short_name,
+      agency_name,
       customer_short_name,
-      product,
+      customer_type,
+      sales_name,
+      ameba_header,
+      ameba_department,
+      shipment_company,
       account_year_month,
+      order_month,
       shipment_year_month,
+      bu,
+      pdt,
+      product,
+      qty,
+      sales_price,
+      po_price,
+      actual_price,
       class3
   </select>
 
   <update id="updateRebateId">
     update t_business_sales_detail a
-    inner join t_business_rebate b on b.dealer_name = a.agency_short_name
-      and b.customer_name = a.customer_short_name
-      and b.product = a.product
+    inner join t_business_rebate b on
+          b.agency_name = a.agency_name
+      and b.customer_short_name = a.customer_short_name
+      and b.customer_type = a.customer_type
+      and b.sales_name = a.sales_name
+      and b.ameba_header = a.ameba_header
+      and b.ameba_department = a.ameba_department
+      and b.shipment_company = a.shipment_company
       and b.account_year_month = a.account_year_month
+      and b.order_month = a.order_month
       and b.shipment_year_month = a.shipment_year_month
+      and b.bu = a.bu
+      and b.pdt = a.pdt
+      and b.product = a.product
+      and b.qty = a.qty
+      and b.sales_price = a.sales_price
+      and b.po_price = a.po_price
+      and b.actual_price = a.actual_price
       and b.platform = a.class3
       set a.rebate_id = b.id
     where a.rebate_id is null
@@ -399,7 +458,7 @@
   <update id="updateRebateAmountByRebateId" parameterType="java.lang.Integer">
     update t_business_rebate a
     inner join (
-      select b.rebate_id, sum(b.qty * b.actual_price) as rebate_amount from t_business_sales_detail b
+      select b.rebate_id, sum(b.rebate_amount) as rebate_amount from t_business_sales_detail b
       where b.rebate_id = #{rebateId}
       group by b.rebate_id
     ) b on b.rebate_id = a.id

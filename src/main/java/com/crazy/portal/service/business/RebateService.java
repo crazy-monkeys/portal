@@ -102,26 +102,41 @@ public class RebateService {
      */
     @Transactional
     public void confirm(RebateConfirmBean bean, Integer userId){
-        BusinessRebate info = businessRebateMapper.selectByPrimaryKey(bean.getId());
-        BusinessUtil.notNull(info, ErrorCodes.BusinessEnum.REBATE_RECORD_NOT_FOUND);
-        BusinessUtil.assertFlase(bean.getSurplusRebateAmount().compareTo(info.getSurplusRebateAmount()) > 0, ErrorCodes.BusinessEnum.REBATE_SURPLUS_AMOUNT_BIG);
-        saveRebateItem(bean, userId, info);
-        updateRebateMasterInfo(bean, userId, info);
+        BusinessUtil.notNull(bean.getRebates(), ErrorCodes.BusinessEnum.REBATE_RECORD_NOT_FOUND);
+        bean.getRebates().forEach(e->{
+            BusinessRebate info = businessRebateMapper.selectByPrimaryKey(e.getId());
+            BusinessUtil.notNull(info, ErrorCodes.BusinessEnum.REBATE_RECORD_NOT_FOUND);
+            BusinessUtil.assertFlase(e.getReleaseAmount().compareTo(info.getSurplusRebateAmount()) > 0, ErrorCodes.BusinessEnum.REBATE_SURPLUS_AMOUNT_BIG);
+            saveRebateItem(bean, e, userId, info);
+            updateRebateMasterInfo(e, userId, info);
 //        sendConfirmEmail(bean);
+        });
     }
 
-    private void saveRebateItem(RebateConfirmBean bean, Integer userId, BusinessRebate info) {
+    private void saveRebateItem(RebateConfirmBean bean, RebateConfirmBean.RebateRecord releaseItem, Integer userId, BusinessRebate info) {
         BusinessRebateItem item = new BusinessRebateItem();
-        item.setRebateId(bean.getId());
-        item.setCustomerName(info.getCustomerName());
-        item.setDealerName(info.getDealerName());
+        item.setRebateId(releaseItem.getId());
+        item.setAgencyName(info.getAgencyName());
+        item.setCustomerShortName(info.getCustomerShortName());
+        item.setCustomerType(info.getCustomerType());
+        item.setSalesName(info.getSalesName());
+        item.setAmebaHeader(info.getAmebaHeader());
+        item.setAmebaDepartment(info.getAmebaDepartment());
+        item.setShipmentCompany(info.getShipmentCompany());
         item.setAccountYearMonth(info.getAccountYearMonth());
+        item.setOrderMonth(info.getOrderMonth());
         item.setShipmentYearMonth(info.getShipmentYearMonth());
+        item.setBu(info.getBu());
+        item.setPdt(info.getPdt());
         item.setProduct(info.getProduct());
+        item.setQty(info.getQty());
+        item.setSalesPrice(info.getSalesPrice());
+        item.setPoPrice(info.getPoPrice());
+        item.setActualPrice(info.getActualPrice());
         item.setPlatform(info.getPlatform());
         item.setExecutor(bean.getExecutor());
         item.setExecuteStyle(bean.getExecuteStyle());
-        item.setRebateAmount(bean.getSurplusRebateAmount());
+        item.setRebateAmount(releaseItem.getReleaseAmount());
         item.setNoticeDate(DateUtil.getCurrentTS());
         item.setRemark(bean.getRemark());
         item.setStatus(Enums.BusinessRebateItemStatus.WAIT_CONFIRM.getCode());
@@ -131,9 +146,9 @@ public class RebateService {
         businessRebateItemMapper.insertSelective(item);
     }
 
-    private void updateRebateMasterInfo(RebateConfirmBean bean, Integer userId, BusinessRebate info) {
-        BigDecimal releaseAmount = info.getReleaseAmount().add(bean.getSurplusRebateAmount());
-        BigDecimal surplusRebateAmount = info.getSurplusRebateAmount().subtract(bean.getSurplusRebateAmount());
+    private void updateRebateMasterInfo(RebateConfirmBean.RebateRecord releaseItem, Integer userId, BusinessRebate info) {
+        BigDecimal releaseAmount = info.getReleaseAmount().add(releaseItem.getReleaseAmount());
+        BigDecimal surplusRebateAmount = info.getSurplusRebateAmount().subtract(releaseItem.getReleaseAmount());
         info.setReleaseAmount(releaseAmount);
         info.setSurplusRebateAmount(surplusRebateAmount);
         info.setUpdateId(userId);
@@ -141,12 +156,23 @@ public class RebateService {
         businessRebateMapper.updateByPrimaryKeySelective(info);
     }
 
-    private void sendConfirmEmail(RebateConfirmBean bean) {
+    private void sendConfirmEmail(RebateConfirmBean bean, RebateConfirmBean.RebateRecord releaseItem) {
+        //TODO
+        /**
+         * 1.每条都会给记录里“队长“”去发，拿到队长姓名，俊国提供一个接口出来，拿队长姓名换邮箱
+         * 2.代理商和客户是执行方，是根据客户表里的类型来区分
+         * 3.CS是俊国提供一个接口出来进行查询
+         */
+
+        /**
+           代理商、CS:发送子表的数据
+           客户、队长：发送汇总的数据
+         **/
         String email = customerInfoMapper.selectEmailByCustName(bean.getExecutor());
         MailBean mailBean = new MailBean();
         mailBean.setTos(email);
         mailBean.setSubject("Rebate确认函");
-        mailBean.setParams(ImmutableMap.of("customerName", bean.getExecutor(), "amount", bean.getSurplusRebateAmount().toString()));
+        mailBean.setParams(ImmutableMap.of("customerName", bean.getExecutor(), "amount", releaseItem.getReleaseAmount().toString()));
         mailBean.setTemplateName(EmailHelper.MAIL_TEMPLATE.REBATE_CONFIRM.getTemplateName());
         emailHelper.sendHtmlMail(mailBean);
     }
@@ -256,11 +282,23 @@ public class RebateService {
             Integer rebateId = businessRebateMapper.selectRebateIdByGroupParam(e);
             if(rebateId == null){
                 BusinessRebate rebateRecord = new BusinessRebate();
-                rebateRecord.setDealerName(e.getAgencyShortName());
-                rebateRecord.setCustomerName(e.getCustomerShortName());
+                rebateRecord.setAgencyName(e.getAgencyName());
+                rebateRecord.setCustomerShortName(e.getCustomerShortName());
+                rebateRecord.setCustomerType(e.getCustomerType());
+                rebateRecord.setSalesName(e.getSalesName());
+                rebateRecord.setAmebaHeader(e.getAmebaHeader());
+                rebateRecord.setAmebaDepartment(e.getAmebaDepartment());
+                rebateRecord.setShipmentCompany(e.getShipmentCompany());
                 rebateRecord.setAccountYearMonth(e.getAccountYearMonth());
+                rebateRecord.setOrderMonth(e.getOrderMonth());
                 rebateRecord.setShipmentYearMonth(e.getShipmentYearMonth());
+                rebateRecord.setBu(e.getBu());
+                rebateRecord.setPdt(e.getPdt());
                 rebateRecord.setProduct(e.getProduct());
+                rebateRecord.setQty(e.getQty());
+                rebateRecord.setSalesPrice(e.getSalesPrice());
+                rebateRecord.setPoPrice(e.getPoPrice());
+                rebateRecord.setActualPrice(e.getActualPrice());
                 rebateRecord.setPlatform(e.getPlatform());
                 rebateRecord.setRebateAmount(BigDecimal.ZERO);
                 rebateRecord.setReleaseAmount(BigDecimal.ZERO);
