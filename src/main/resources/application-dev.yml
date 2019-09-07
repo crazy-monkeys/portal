@@ -24,7 +24,7 @@ spring:
 
 file:
   path:
-    root: /Users/lee/Documents/job_code/portal_file #公用基础路径
+    root: /Users/weiying/Documents/job_code/portal_file #公用基础路径
     root-local: ${file.path.root}/local #portal系统内文件地址入口
     root-thrid-push: ${file.path.root}/push_thrid #portal对接第三方文件出口地址
     root-thrid-pull: ${file.path.root}/pull_thrid #第三方传输文件至portal入口地址
@@ -44,7 +44,6 @@ file:
     forecast:
       push: ${file.path.root-thrid-push}/forecast/
       pull: ${file.path.root-thrid-pull}/forecast/
-
 api:
   url:
     bi-test: https://e600180-hcioem.hcisbt.cn1.hana.ondemand.com/http/
@@ -53,6 +52,8 @@ api:
     bpm.idr.approval: https://e600180-hcioem.hcisbt.cn1.hana.ondemand.com/http/PORTAL/BPM/PROJECT_WEB_SUBMIT
     rebate.price.role: https://e600180-hcioem.hcisbt.cn1.hana.ondemand.com/http/BI/PORTAL/GET_CALCULATED_ALL_REBATE_DATA_PRICE_ROLE
     rebate.sales.details: https://e600180-hcioem.hcisbt.cn1.hana.ondemand.com/http/BI/PORTAL/GET_CALCULATED_ALL_REBATE_DATA_SALES_DETAILS
+    c4c-employe: https://e600180-hcioem.hcisbt.cn1.hana.ondemand.com:443/cxf/C4C/PORTAL/GETEMPLOYEEINFO
+    c4c-orgnation: https://e600180-hcioem.hcisbt.cn1.hana.ondemand.com:443/cxf/C4C/PORTAL/GETORGANISATIONALUNIT
   auth:
     rebate:
       username: S0020469033

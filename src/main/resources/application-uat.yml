@@ -55,6 +55,7 @@ api:
     bpm.idr.approval: https://e600180-hcioem.hcisbt.cn1.hana.ondemand.com/http/PORTAL/BPM/PROJECT_WEB_SUBMIT
     rebate.price.role: https://e600180-hcioem.hcisbt.cn1.hana.ondemand.com/http/BI/PORTAL/GET_CALCULATED_ALL_REBATE_DATA_PRICE_ROLE
     rebate.sales.details: https://e600180-hcioem.hcisbt.cn1.hana.ondemand.com/http/BI/PORTAL/GET_CALCULATED_ALL_REBATE_DATA_SALES_DETAILS
+    c4c-employe: https://e600180-hcioem.hcisbt.cn1.hana.ondemand.com:443/cxf/C4C/PORTAL/GETEMPLOYEEINFO
   auth:
     rebate:
       username: S0020469033
