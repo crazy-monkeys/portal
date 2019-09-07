@@ -120,6 +120,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
     public void configure(WebSecurity web){
         //解决静态资源被拦截的问题
         web.ignoring().antMatchers("/static/**");
+        web.ignoring().antMatchers("/file/**");
     }
 
     @Override
@@ -189,7 +190,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
             "/user/login",
             "/logout",
             "/announcement/file/**",
-            "/file/**",
             "/scheduleJob/list",
             "/login",
             "/loginCheck",

@@ -1,7 +1,5 @@
 package com.crazy.portal.util;
 
-import org.apache.http.util.EncodingUtils;
-
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
@@ -40,5 +38,17 @@ public class JaxbXmlUtil {
         marshaller.marshal(obj, writer);
 
         return writer.toString();
+    }
+
+    public static void main(String[] args) {
+        Zrfcsddeliverycreate zrfcsddeliverycreate = new Zrfcsddeliverycreate();
+        zrfcsddeliverycreate.setDeliverydate("长沙");
+        zrfcsddeliverycreate.setDeliveryloc("fg2112");
+        zrfcsddeliverycreate.setSaporderid("TT1454354354353");
+        try {
+            System.out.println(convertToXml(zrfcsddeliverycreate));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
