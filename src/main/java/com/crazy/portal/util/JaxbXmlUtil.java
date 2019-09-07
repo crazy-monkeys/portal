@@ -1,11 +1,14 @@
 package com.crazy.portal.util;
 
 import org.apache.http.util.EncodingUtils;
+import org.apache.poi.ss.formula.functions.T;
+import org.springframework.context.annotation.Bean;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.soap.MessageFactory;
+import javax.xml.soap.SOAPConstants;
 import javax.xml.soap.SOAPMessage;
 import java.io.ByteArrayInputStream;
 import java.io.StringWriter;
@@ -16,7 +19,14 @@ import java.io.StringWriter;
 public class JaxbXmlUtil {
 
     public static <T> T convertSoapXmlToJavaBean(String xml, Class<T> t) throws Exception {
-        SOAPMessage message = MessageFactory.newInstance().createMessage(null, new ByteArrayInputStream(xml.getBytes()));
+        SOAPMessage message = MessageFactory.newInstance(SOAPConstants.DEFAULT_SOAP_PROTOCOL).createMessage(null, new ByteArrayInputStream(xml.getBytes()));
+        JAXBContext jc = JAXBContext.newInstance(t);
+        Unmarshaller unmarshaller = jc.createUnmarshaller();
+        return (T) unmarshaller.unmarshal(message.getSOAPBody().extractContentAsDocument());
+    }
+
+    public static <T> T convertSoapXmlToJavaBean2(String xml, Class<T> t) throws Exception {
+        SOAPMessage message = MessageFactory.newInstance(SOAPConstants.SOAP_1_2_PROTOCOL).createMessage(null, new ByteArrayInputStream(xml.getBytes()));
         JAXBContext jc = JAXBContext.newInstance(t);
         Unmarshaller unmarshaller = jc.createUnmarshaller();
         return (T) unmarshaller.unmarshal(message.getSOAPBody().extractContentAsDocument());

@@ -15,7 +15,7 @@ import javax.annotation.Resource;
  */
 @Slf4j
 @RestController
-@RequestMapping("/sys/param")
+@RequestMapping("/param")
 public class SysParamController extends BaseController {
     @Resource
     private SysParamService sysParamService;

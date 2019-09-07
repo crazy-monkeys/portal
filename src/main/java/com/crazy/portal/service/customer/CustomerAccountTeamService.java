@@ -1,8 +1,10 @@
 package com.crazy.portal.service.customer;
 
 import com.crazy.portal.dao.cusotmer.CustomerAccountTeamMapper;
+import com.crazy.portal.dao.system.InternalUserMapper;
 import com.crazy.portal.entity.cusotmer.CustomerAccountTeam;
 import com.crazy.portal.entity.cusotmer.CustomerContact;
+import com.crazy.portal.entity.system.InternalUser;
 import com.crazy.portal.entity.system.User;
 import com.crazy.portal.util.Enums;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +23,8 @@ import java.util.List;
 public class CustomerAccountTeamService {
     @Resource
     private CustomerAccountTeamMapper customerAccountTeamMapper;
+    @Resource
+    private InternalUserMapper internalUserMapper;
 
     public List<CustomerAccountTeam> selectByCustId(Integer custId){
         return customerAccountTeamMapper.selectByCustId(custId);
@@ -67,13 +71,14 @@ public class CustomerAccountTeamService {
     /**
      * 销售报备客户
      */
-    public void updateTeam(Integer custId, String mobile, User user){
-        if(user.getUserType().equals(Enums.USER_TYPE.internal.toString())) {
+    public void updateTeam(Integer custId, Integer userId, InternalUser internalUser){
+        if(null != internalUser) {
             CustomerAccountTeam team = new CustomerAccountTeam();
             team.setCustId(custId);
-            team.setAccountMobile(mobile);
+            team.setAccountMobile(internalUser.getUserMobile());
+            team.setAccountName(internalUser.getUserName());
             team.setRoleType("142");//142:负责销售 211：客户团队成员 46：销售人员 213：合作伙伴联系人
-            team.setCreateUser(user.getId());
+            team.setCreateUser(userId);
             team.setActive(1);
             customerAccountTeamMapper.insertSelective(team);
         }

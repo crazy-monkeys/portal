@@ -186,4 +186,8 @@
     inner join t_organizational_structure os on os.seq = iu.user_department_code
     where iu.active =1 and u.active =1 and os.active=1 and u.id=#{userId}
   </select>
+
+  <select id="selectByUserNo" resultMap="BaseResultMap">
+    select * from t_internal_user where active =1 and user_no = #{userNo}
+  </select>
 </mapper>

@@ -202,7 +202,9 @@ public class Enums {
     public enum CUSTOMER_TYPE{
         WAIT_SUBMIT(0, "潜在客户"),
         WAIT_REPORT(1,"未报备"),
-        WAIT_APPROVAL(2, "已报备");
+        WAIT_APPROVAL(2, "已报备"),
+        REPORT(3,"报备中"),
+        OPEN(4,"OPEN 客户");
 
         private Integer code;
         private String desc;

@@ -70,11 +70,19 @@ public class CustomerController extends BaseController{
         return successResult();
     }
 
-    //审批
+    //审批 通过
     @GetMapping("/approval")
     public BaseResponse approval(ApprovalBean bean){
         bean.setApproveUser(this.getCurrentUser().getId());
-        customerInfoService.approval(bean);
+        customerInfoService.approval(bean, getCurrentUserId());
+        return successResult();
+    }
+
+    //审批驳回
+    @GetMapping("/reject")
+    public BaseResponse reject(ApprovalBean bean){
+        bean.setApproveUser(this.getCurrentUser().getId());
+        customerInfoService.approval(bean, getCurrentUserId());
         return successResult();
     }
 

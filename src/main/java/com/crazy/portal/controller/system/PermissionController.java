@@ -46,7 +46,7 @@ public class PermissionController extends BaseController{
 
         Map<String,Object> root = new HashMap<>();
         root.put("id",0);
-        root.put("resourceName","ROOT");
+        root.put("resourceName","菜单");
         root.put("children",Collections.EMPTY_LIST);
         Role currentRole = super.getCurrentRole();
         Integer roleID;

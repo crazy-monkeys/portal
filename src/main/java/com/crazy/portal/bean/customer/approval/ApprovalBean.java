@@ -17,7 +17,7 @@ public class ApprovalBean {
     //客户Id
     private Integer custId;
     //审批意见
-    private String remark;
+    private String approvalRemark;
 
     //分配代理商
     private Integer salesId;

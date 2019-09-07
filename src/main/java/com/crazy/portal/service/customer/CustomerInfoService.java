@@ -7,14 +7,15 @@ import com.crazy.portal.bean.common.Constant;
 import com.crazy.portal.bean.customer.CustomerQueryBean;
 import com.crazy.portal.bean.customer.CustomerShipBean;
 import com.crazy.portal.bean.customer.approval.ApprovalBean;
-import com.crazy.portal.bean.customer.basic.FileVO;
-import com.crazy.portal.bean.customer.dealer.credit.Zsdscredit;
+import com.crazy.portal.bean.customer.wsdl.credit.Zsdscredit;
 import com.crazy.portal.bean.customer.visitRecord.CustomerCodeEO;
 import com.crazy.portal.bean.customer.visitRecord.VisitRecordEO;
 import com.crazy.portal.bean.customer.visitRecord.VisitRecordQueryBean;
 import com.crazy.portal.dao.cusotmer.*;
+import com.crazy.portal.dao.system.InternalUserMapper;
 import com.crazy.portal.entity.cusotmer.*;
 import com.crazy.portal.entity.cusotmer.VisitRecord;
+import com.crazy.portal.entity.system.InternalUser;
 import com.crazy.portal.entity.system.User;
 import com.crazy.portal.util.*;
 import com.github.pagehelper.PageInfo;
@@ -24,7 +25,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
-import java.io.File;
 import java.math.BigDecimal;
 import java.util.*;
 
@@ -64,6 +64,8 @@ public class CustomerInfoService {
     private CustomerStructureService customerStructureService;
     @Resource
     private VisitRecordMapper visitRecordMapper;
+    @Resource
+    private InternalUserMapper internalUserMapper;
 
     @Value("${file.path.root}")
     private String filePath;
@@ -82,7 +84,8 @@ public class CustomerInfoService {
      * 分页查询客户信息  TODO 权限控制
      * @param customerQueryBean
      * @return
-     *  报备状态 0-初始化 1-已报备 2-可报备 3-报备中
+     *  报备状态 0-潜在客户 1-已报备 2-可报备 3-报备中
+     *  1-客户查询 2-审批查询 3-报备查询
      */
     public PageInfo<CustomerInfo> queryList(CustomerQueryBean customerQueryBean, User user){
         PortalUtil.defaultStartPage(customerQueryBean.getPageIndex(), customerQueryBean.getPageSize());
@@ -115,7 +118,7 @@ public class CustomerInfoService {
     }
 
     public void deleteCustomer(Integer custId){
-        customerInfoMapper.deleteByPrimaryKey(custId);
+        customerInfoMapper.updateCustomerInfo(custId);
     }
 
     /**
@@ -216,8 +219,13 @@ public class CustomerInfoService {
         customerInfo.setCreateUser(user.getId());
         customerInfoMapper.insertSelective(customerInfo);
         saveCustomerDetail(customerInfo, user.getId());
-        customerAccountTeamService.updateTeam(customerInfo.getId(), "", user);
-        custCorporateRelationshipService.UpdateCustShip(customerInfo.getId(), user);
+        if(user.getUserType().equals(Enums.USER_TYPE.internal.toString())){
+            InternalUser internalUser = internalUserMapper.selectByUserId(user.getId());
+            customerAccountTeamService.updateTeam(customerInfo.getId(), user.getId(), internalUser);
+        }else{
+            CustomerInfo dealer = customerInfoMapper.selectByPrimaryKey(user.getDealerId());
+            custCorporateRelationshipService.UpdateCustShip(customerInfo.getId(), user.getId(), dealer);
+        }
         //TODO 同步C4 获得outcode
     }
 
@@ -242,12 +250,12 @@ public class CustomerInfoService {
      */
     //TODO 邮件通知
     @Transactional
-    public void approval(ApprovalBean approvalBean){
+    public void approval(ApprovalBean approvalBean, Integer userId){
         //通过
         if(Enums.YES_NO.YES.getCode() == approvalBean.getApprovalType()){
-            approvalYes(approvalBean);
+            approvalYes(approvalBean, userId);
         }else{
-            approvalNo(approvalBean);
+            approvalNo(approvalBean, userId);
         }
     }
 
@@ -256,24 +264,31 @@ public class CustomerInfoService {
      * 自动驳回取消  逻辑无法实现
      * @param approvalBean
      */
-    private void approvalYes(ApprovalBean approvalBean){
+    private void approvalYes(ApprovalBean approvalBean, Integer userId){
         CustomerInfo customerInfo = customerInfoMapper.selectByPrimaryKey(approvalBean.getCustId());
-        if(null != customerInfo && customerInfo.getApproveStatus()!=Enums.CUSTOMER_APPROVE_STATUS.APPROVAL.getCode() && customerInfo.getCustType()!=Enums.CUSTOMER_TYPE.WAIT_REPORT.getCode()){
+        if(null != customerInfo && customerInfo.getApproveStatus()!=Enums.CUSTOMER_APPROVE_STATUS.APPROVAL.getCode() && customerInfo.getCustType()!=Enums.CUSTOMER_TYPE.WAIT_APPROVAL.getCode()){
             customerInfo.setCustType(Enums.CUSTOMER_TYPE.WAIT_APPROVAL.getCode());
             customerInfo.setApproveStatus(Enums.CUSTOMER_APPROVE_STATUS.APPROVAL.getCode());
             if(null != approvalBean.getSalesId()){
-
+                InternalUser internalUser = internalUserMapper.selectByPrimaryKey(approvalBean.getSalesId());
+                customerAccountTeamService.updateTeam(customerInfo.getId(), userId, internalUser);
             }else if (null != approvalBean.getDealerId()){
-
+                CustomerInfo dealer = customerInfoMapper.selectByPrimaryKey(approvalBean.getCustId());
+                custCorporateRelationshipService.UpdateCustShip(customerInfo.getId(), userId, dealer);
             }
+            customerInfo.setApproveUser(userId);
+            customerInfo.setApproveRemark(approvalBean.getApprovalRemark());
             customerInfoMapper.updateByPrimaryKeySelective(customerInfo);
         }
     }
 
     //审批驳回
-    private void approvalNo(ApprovalBean approvalBean){
+    private void approvalNo(ApprovalBean approvalBean, Integer userId){
         CustomerInfo customerInfo = customerInfoMapper.selectByPrimaryKey(approvalBean.getCustId());
         if(null != customerInfo){
+            customerInfo.setApproveUser(userId);
+            customerInfo.setApproveStatus(Enums.CUSTOMER_APPROVE_STATUS.REJECT.getCode());
+            customerInfo.setApproveRemark(approvalBean.getApprovalRemark());
             customerInfo.setActive(0);
             customerInfoMapper.updateByPrimaryKeySelective(customerInfo);
         }
