@@ -84,11 +84,12 @@ public class SaleForecastController extends BaseController {
 
     /**
      * 代理商批量删除数据
-     * @param AgencyForecastData
+     * @param biIds
      */
     @GetMapping(value = "/forecast/agency/data/delete")
-    public void deleteAgencyForecastData(Integer[] AgencyForecastData) {
-        saleForecastService.deleteAgencyForecastData(AgencyForecastData);
+    public BaseResponse deleteAgencyForecastData(Integer[] biIds) {
+        saleForecastService.deleteAgencyForecastData(biIds);
+        return super.successResult();
     }
 
     /**
@@ -97,17 +98,27 @@ public class SaleForecastController extends BaseController {
      */
     @PostMapping(value = "/forecast/agency/data/update")
     public BaseResponse updateAgencyForecastData(@RequestBody List<ForecastParam> list) {
-        saleForecastService.updateAgencyForecastData(list, getCurrentUser().getId());
+        saleForecastService.updateAgencyForecastData(list, 1);
         return super.successResult();
     }
 
-    //驳回记录查询
+    /**
+     * 驳回记录查询
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
     @GetMapping(value = "/forecast/agency/data/reject")
     public BaseResponse queryRejectForecastData(Integer pageNum, Integer pageSize) {
         return super.successResult(saleForecastService.queryAgencyForecastData(pageNum, pageSize, 1, 1));
     }
 
-    //驳回记录下载
+    /**
+     * 驳回记录下载
+     * @param response
+     * @param forecastIds
+     * @return
+     */
     @GetMapping(value = "/forecast/agency/reject/download")
     public BaseResponse downloadRejectData(HttpServletResponse response, Integer[] forecastIds) {
         saleForecastService.downloadRejectData(response, forecastIds, 1);
@@ -149,7 +160,29 @@ public class SaleForecastController extends BaseController {
         return super.successResult();
     }
 
-    //审批数据批量下载
+    /**
+     * 阿米巴下载数据
+     * @param response
+     * @param forecastIds
+     * @return
+     */
+    @GetMapping(value = "/forecast/amb/reject/download")
+    public BaseResponse downloadDataByAmb(HttpServletResponse response, Integer[] forecastIds) {
+        saleForecastService.downloadRejectData(response, forecastIds, 1);
+        return super.successResult();
+    }
+
+    /**
+     * 首代下载数据
+     * @param response
+     * @param forecastIds
+     * @return
+     */
+    @GetMapping(value = "/forecast/sd/reject/download")
+    public BaseResponse downloadDataBySd(HttpServletResponse response, Integer[] forecastIds) {
+        saleForecastService.downloadRejectData(response, forecastIds, 1);
+        return super.successResult();
+    }
 
     //审批数据批量上传（ID）
 
@@ -164,9 +197,16 @@ public class SaleForecastController extends BaseController {
         return super.successResult();
     }
 
-    //预测查询（按年）
-
-    //预测查询（按月）
+    /**
+     * 预测查询（按年）|| 预测查询（按月）
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
+    @GetMapping(value = "/forecast/data/query")
+    public BaseResponse queryForecastData(Integer pageNum, Integer pageSize) {
+        return super.successResult(saleForecastService.queryAgencyForecastData(pageNum, pageSize, 1, 0));
+    }
 
     //预测查询（首代Buffer）
 }
