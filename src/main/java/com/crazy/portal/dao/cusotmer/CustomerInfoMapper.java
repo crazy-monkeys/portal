@@ -35,4 +35,6 @@ public interface CustomerInfoMapper {
     List<CustomerInfo> selectCustomer(CustomerQueryBean record);
 
     CustomerInfo getDealerByUser(Integer userId);
+
+    int updateCustomerInfo(Integer custId);
 }

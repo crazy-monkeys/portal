@@ -16,4 +16,6 @@ public interface InternalUserMapper {
     int updateByPrimaryKey(InternalUser record);
 
     InternalUser selectByUserId(Integer userId);
+
+    InternalUser selectByUserNo(String userNo);
 }

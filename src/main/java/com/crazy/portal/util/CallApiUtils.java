@@ -1,15 +1,15 @@
 package com.crazy.portal.util;
 
 import com.alibaba.fastjson.JSON;
-import com.crazy.portal.bean.customer.dealer.credit.ZrfcsdcustomercreditResponse;
-import com.crazy.portal.bean.customer.dealer.credit.Zsdscredit;
+import com.crazy.portal.bean.customer.wsdl.credit.ZrfcsdcustomercreditResponse;
+import com.crazy.portal.bean.customer.wsdl.credit.Zsdscredit;
+import com.crazy.portal.bean.customer.wsdl.employee.*;
 import com.crazy.portal.bean.product.BaseProResponseVO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import javax.validation.Valid;
 import java.io.IOException;
 
 /**
@@ -180,4 +180,74 @@ public class CallApiUtils {
         String url = REBATE_SALES_DETAILS_URL.concat("?sStartYearMonth=").concat(startDate).concat("&sEndYearMonth=").concat(endDate);
         return getJsonMessage(HttpClientUtils.get(url, REBATE_USERNAME, REBATE_PASSWORD));
     }
+
+    private static String C4C_EMPLOYE;
+    @Value("${api.url.c4c-employe}")
+    public void setC4cEmploye(String c4cEmploye) {
+        C4C_EMPLOYE = c4cEmploye;
+    }
+
+    public static EmployeeBasicDataResponseMessageSync querEmployee(){
+        try{
+            String params = "<soap:Envelope xmlns:soap=\"http://www.w3.org/2003/05/soap-envelope\" xmlns:glob=\"http://sap.com/xi/SAPGlobal20/Global\">" +
+                    "   <soap:Header/>" +
+                    "   <soap:Body>" +
+                    "      <glob:EmployeeBasicDataByIdentificationQuery_sync>" +
+                    "         <!--Optional:-->" +
+                    "         <EmployeeBasicDataSelectionByIdentification>" +
+                    "            <!--Zero or more repetitions:-->" +
+                    "            <SelectionByEmployeeID>" +
+                    "               <!--Optional:-->" +
+                    "               <InclusionExclusionCode>I</InclusionExclusionCode>" +
+                    "               <!--Optional:-->" +
+                    "               <IntervalBoundaryTypeCode>9</IntervalBoundaryTypeCode>" +
+                    "               <!--Optional:-->" +
+                    "               <LowerBoundaryEmployeeID>1</LowerBoundaryEmployeeID>" +
+                    "               </SelectionByEmployeeID>" +
+                    "         </EmployeeBasicDataSelectionByIdentification>" +
+                    "      </glob:EmployeeBasicDataByIdentificationQuery_sync>" +
+                    "   </soap:Body>" +
+                    "</soap:Envelope>";
+            String jsonStr = HttpClientUtils.postHeader(C4C_EMPLOYE, params);
+            return JaxbXmlUtil.convertSoapXmlToJavaBean2(jsonStr, EmployeeBasicDataResponseMessageSync.class);
+        }catch (Exception e){
+            log.info("调用C4C人员同步接口异常！",e);
+        }
+        return null;
+    }
+
+    private static String C4C_ORGNATION;
+
+    @Value("${api.url.c4c-orgnation}")
+    public void setC4cOrgnation(String c4cOrgnation) {
+        C4C_ORGNATION = c4cOrgnation;
+    }
+
+    public static void queryOrganisation(){
+        try{
+            String params = "<soap:Envelope xmlns:soap=\"http://www.w3.org/2003/05/soap-envelope\" xmlns:glob=\"http://sap.com/xi/SAPGlobal20/Global\">" +
+                    "   <soap:Header/>" +
+                    "    <soap:Body>" +
+                    "      <glob:OrganisationalUnitByIDQuery_Sync>" +
+                    "         <OrganisationalUnitSelectionByID>" +
+                    "            <Identifier>" +
+                    "               <InclusionExclusionCode>I</InclusionExclusionCode>" +
+                    "               <IntervalBoundaryTypeCode>1</IntervalBoundaryTypeCode>" +
+                    "               <LowerBoundaryIdentifier>*</LowerBoundaryIdentifier>" +
+                    "            </Identifier>" +
+                    "         </OrganisationalUnitSelectionByID>" +
+                    "         <ProcessingConditions>" +
+                    "            <QueryHitsUnlimitedIndicator>true</QueryHitsUnlimitedIndicator>" +
+                    "         </ProcessingConditions>" +
+                    "      </glob:OrganisationalUnitByIDQuery_Sync>" +
+                    "   </soap:Body>" +
+                    "</soap:Envelope>";
+            String jsonStr = HttpClientUtils.postHeader(C4C_ORGNATION, params);
+            //OrganisationalUnitByElementsResponseSync response = JaxbXmlUtil.convertSoapXmlToJavaBean2(jsonStr, OrganisationalUnitByElementsResponseSync.class);
+            System.out.println("1");
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
 }

@@ -25,8 +25,10 @@ public class CustomerQueryBean extends PageBean {
     private String registStartTime;
     //创建结束时间
     private String registEndTime;
-    /* 报备状态 0-初始化 1-已报备 2-可报备 3-报备中*/
+    /* 报备状态1-可报备 2-审批中 3-审批通过 4-审批驳回*/
     private Integer customerStatus;
+    /*0-潜在客户 1-未报备 2-已报备 4-OPEN 客户*/
+    private Integer custType;
 
     /*1-客户查询 2-审批查询 3-报备查询*/
     private Integer queryType;
