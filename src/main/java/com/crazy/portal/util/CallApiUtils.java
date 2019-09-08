@@ -9,7 +9,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
 import java.io.IOException;
 
 /**
@@ -50,6 +49,13 @@ public class CallApiUtils {
     @Value("${api.url.rebate.sales.details}")
     public void setRebateSalesDetailsUrl(String rebateSalesDetailsUrl){ REBATE_SALES_DETAILS_URL = rebateSalesDetailsUrl;}
 
+    private static String REBATE_USERNAME;
+    @Value("${api.auth.rebate.username}")
+    public void setRebateUsername(String rebateUsername){ REBATE_USERNAME = rebateUsername;}
+
+    private static String REBATE_PASSWORD;
+    @Value("${api.auth.rebate.password}")
+    public void setRebatePassword(String rebatePassword){ REBATE_PASSWORD = rebatePassword;}
     /**
      * 同步产品信息
      * @return

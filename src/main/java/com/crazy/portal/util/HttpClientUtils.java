@@ -12,23 +12,17 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.conn.ssl.SSLContextBuilder;
-import org.apache.http.conn.ssl.TrustStrategy;
-import org.apache.http.conn.ssl.X509HostnameVerifier;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
+import org.apache.http.ssl.SSLContextBuilder;
 import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLException;
-import javax.net.ssl.SSLSession;
-import javax.net.ssl.SSLSocket;
 import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.security.GeneralSecurityException;
-import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
 
 /**
  * Created by weiying on 2019/7/29.
@@ -39,9 +33,11 @@ public class HttpClientUtils {
     public static final int CONNECT_TIMEOUT=10000;
     public static final int READ_TIMEOUT=10000;
     public static final String CHARSET="UTF-8";
+
     private static HttpClient client;
 
     public static String AUTH_SECRET;
+
     public static final String MIMETYPE_JSON = "application/json";
 
     static {
@@ -158,12 +154,10 @@ public class HttpClientUtils {
                     res = client.execute(get);
                 }
             } else {
-                //conn.setRequestProperty(Constant.Authorization, "Basic " + authStringEnc);
-                // 执行 Http 请求.
                 client = HttpClientUtils.client;
                 res = client.execute(get);
             }
-            if (null!=res) {
+            if (null != res) {
                 result = IOUtils.toString(res.getEntity().getContent(), charset);
             }
         } catch (IOException | GeneralSecurityException e) {
@@ -184,32 +178,18 @@ public class HttpClientUtils {
      */
     private static CloseableHttpClient createSSLInsecureClient() throws GeneralSecurityException {
         try {
-            SSLContext sslContext = new SSLContextBuilder().loadTrustMaterial(null, new TrustStrategy() {
-                public boolean isTrusted(X509Certificate[] chain,String authType) throws CertificateException {
-                    return true;
-                }
-            }).build();
+            SSLContext sslContext = SSLContextBuilder.create()
+                    .setProtocol(SSLConnectionSocketFactory.SSL)
+                    .loadTrustMaterial((x, y) -> true).build();
 
-            SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(sslContext, new X509HostnameVerifier() {
-                public void verify(String host, SSLSocket ssl) throws IOException {
-                }
+            RequestConfig config = RequestConfig.custom().setConnectTimeout(20000).setSocketTimeout(20000).build();
 
-                public void verify(String host, X509Certificate cert)
-                        throws SSLException {
-                }
+            CloseableHttpClient httpClient = HttpClientBuilder.create()
+                    .setDefaultRequestConfig(config)
+                    .setSSLContext(sslContext)
+                    .setSSLHostnameVerifier((x, y) -> true).build();
 
-                public void verify(String host, String[] cns,
-                                   String[] subjectAlts) throws SSLException {
-                }
-
-                public boolean verify(String arg0, SSLSession arg1) {
-                    return arg0.equalsIgnoreCase(arg1.getPeerHost());
-                }
-
-            });
-
-            return HttpClients.custom().setSSLSocketFactory(sslsf).build();
-
+            return httpClient;
         } catch (GeneralSecurityException e) {
             throw e;
         }
