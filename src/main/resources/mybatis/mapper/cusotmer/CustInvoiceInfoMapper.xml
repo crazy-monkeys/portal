@@ -180,6 +180,6 @@
   </select>
 
   <delete id="deleteByCustId">
-    update t_cust_invoice_info set active = 1 where active =1 and cust_id = #{custId}
+    update t_cust_invoice_info set active = 0 where active =1 and cust_id = #{custId}
   </delete>
 </mapper>

@@ -56,6 +56,10 @@ public class MemberInfoSyncHandler extends AbstractHandler implements IHandler<M
     private CustomerAccountTeamService customerAccountTeamService;
     @Resource
     private CustomerStructureService customerStructureService;
+    @Resource
+    private CustQuotasService custQuotasService;
+    @Resource
+    private CustZrAccountTeamService custZrAccountTeamService;
 
     @Override
     public MemberInfoSyncResponse process(MemberInfoSyncRequest request) {
@@ -95,6 +99,9 @@ public class MemberInfoSyncHandler extends AbstractHandler implements IHandler<M
         saveAddress(request.getAddresses(), customerinfo.getId());
         saveAccountTeams(request.getAccountTeams(), customerinfo.getId());
         saveCustStructure(request.getCustStructure(), customerinfo.getId());
+        saveQuotas(request.getQuotas(), customerinfo.getId());
+        saveZRAccountTeam(request.getZRaccountTeams() ,customerinfo.getId());
+
     }
 
     private void mappingCustomerInfo(MemberInfoSyncRequest request, CustomerInfo customerInfo){
@@ -224,6 +231,7 @@ public class MemberInfoSyncHandler extends AbstractHandler implements IHandler<M
         CustBankInfo custBankInfo = JSON.parseObject(bank,CustBankInfo.class);
         CustBankInfo bankInfo = custBankInfoMapper.selectByCustId(custId);
         if(null == bankInfo){
+            custBankInfo.setBankDetailInfo(custBankInfo.getBankAddress());
             custBankInfo.setCustId(custId);
             custBankInfo.setActive(Enums.YES_NO.YES.getCode());
             custBankInfoMapper.insertSelective(custBankInfo);
@@ -238,7 +246,7 @@ public class MemberInfoSyncHandler extends AbstractHandler implements IHandler<M
                 bankInfo.setBankBic(custBankInfo.getBankBic());
             }
             if(StringUtil.isNotEmpty(custBankInfo.getBankAddress())){
-                bankInfo.setBankAddress(custBankInfo.getBankAddress());
+                bankInfo.setBankDetailInfo(custBankInfo.getBankAddress());
             }
             custBankInfoMapper.updateByPrimaryKeySelective(bankInfo);
         }
@@ -285,6 +293,7 @@ public class MemberInfoSyncHandler extends AbstractHandler implements IHandler<M
         });
     }
 
+    /*代理team*/
     public void saveAccountTeams(String accountTeams, Integer custId){
         List<CustomerAccountTeam> result = JSON.parseArray(accountTeams, CustomerAccountTeam.class);
         customerAccountTeamService.deleteByCustId(custId);
@@ -305,8 +314,23 @@ public class MemberInfoSyncHandler extends AbstractHandler implements IHandler<M
         });
     }
 
+    private void saveQuotas(String quotas, Integer custId){
+        List<CustSalesQuota> results = JSON.parseArray(quotas, CustSalesQuota.class);
+        custQuotasService.deleteByCustId(custId);
+        results.forEach(e->{
+            e.setCustId(custId);
+            e.setActive(Enums.YES_NO.YES.getCode());
+            custQuotasService.save(e);
+        });
+    }
 
-
-      /*"","","","","","quotas","","",
-              "","","","","ZRaccountTeams",""*/
+    private void saveZRAccountTeam(String zrAccountTeam, Integer custId){
+        List<CustZrAccountTeam> results = JSON.parseArray(zrAccountTeam, CustZrAccountTeam.class);
+        custZrAccountTeamService.deleteByCustId(custId);
+        results.forEach(e->{
+            e.setCustId(custId);
+            e.setActive(Enums.YES_NO.YES.getCode());
+            custZrAccountTeamService.save(e);
+        });
+    }
 }

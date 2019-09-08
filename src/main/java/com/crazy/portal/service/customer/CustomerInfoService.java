@@ -66,11 +66,13 @@ public class CustomerInfoService {
     private VisitRecordMapper visitRecordMapper;
     @Resource
     private InternalUserMapper internalUserMapper;
+    @Resource
+    private CustQuotasService custQuotasService;
+    @Resource
+    private CustZrAccountTeamService custZrAccountTeamService;
 
     @Value("${file.path.root}")
     private String filePath;
-
-    private static final String CUST_FILE_PATH = "custfile";
 
     /**
      * 获取所有客户
@@ -114,6 +116,7 @@ public class CustomerInfoService {
         CustomerInfo customerInfo = customerInfoMapper.selectByPrimaryKey(customerId);
         customerInfo.setCustomerProducts(customerProductService.selectByCustId(customerId));
         customerInfo.setAccountTeams(customerAccountTeamService.selectByCustId(customerId));
+        customerInfo.setZrAccountTeams(custZrAccountTeamService.selectByCustId(customerId));
         return getCustDetail(customerInfo);
     }
 
@@ -133,8 +136,6 @@ public class CustomerInfoService {
 
         dealerInfo.setAssetsInformations(custAssetsInformationService.selectByCustId(dealerId));
         dealerInfo.setBusinessInformations(custBusinessInformationService.selectByCustId(dealerId));
-        //分级分类信息
-        //dealerInfo.setCustomerAgents();
         return getCustDetail(dealerInfo);
     }
 
@@ -147,6 +148,7 @@ public class CustomerInfoService {
         customerInfo.setSales(custSalesService.selectByCustId(customerInfo.getId()));
         customerInfo.setAddresses(customerAddressService.selectByCustId(customerInfo.getId()));
         customerInfo.setCustStructure(customerStructureService.selectByCustId(customerInfo.getId()));
+        customerInfo.setQuotas(custQuotasService.selectByCustId(customerInfo.getId()));
         return customerInfo;
     }
 
@@ -195,7 +197,7 @@ public class CustomerInfoService {
 
             //销售报备为被报备的潜在客户时带出客户信息
             if(user.getUserType().equals(Enums.USER_TYPE.internal.toString())&&customerInfo.getCustType()==Enums.CUSTOMER_TYPE.WAIT_SUBMIT.getCode()){
-                return customerInfoMapper.queryCustomerInfo(customerInfo.getId());
+                return queryInfo(customerInfo.getId());
             }
         }
         return tempCustomer;
@@ -221,7 +223,7 @@ public class CustomerInfoService {
         saveCustomerDetail(customerInfo, user.getId());
         if(user.getUserType().equals(Enums.USER_TYPE.internal.toString())){
             InternalUser internalUser = internalUserMapper.selectByUserId(user.getId());
-            customerAccountTeamService.updateTeam(customerInfo.getId(), user.getId(), internalUser);
+            custZrAccountTeamService.updateTeam(customerInfo.getId(), user.getId(), internalUser);
         }else{
             CustomerInfo dealer = customerInfoMapper.selectByPrimaryKey(user.getDealerId());
             custCorporateRelationshipService.UpdateCustShip(customerInfo.getId(), user.getId(), dealer);
@@ -240,6 +242,8 @@ public class CustomerInfoService {
         saveAddress(customerInfo.getAddresses(), customerInfo.getId(), userId);
         saveAccountTeam(customerInfo.getAccountTeams(), customerInfo.getId(), userId);
         saveCustomerStructure(customerInfo.getCustStructure(), customerInfo.getId(), userId);
+        saveQuotas(customerInfo.getQuotas(), customerInfo.getId(), userId);
+        saveZrAccountTeams(customerInfo.getZrAccountTeams(), customerInfo.getId(), userId);
     }
 
     /**
@@ -271,7 +275,7 @@ public class CustomerInfoService {
             customerInfo.setApproveStatus(Enums.CUSTOMER_APPROVE_STATUS.APPROVAL.getCode());
             if(null != approvalBean.getSalesId()){
                 InternalUser internalUser = internalUserMapper.selectByPrimaryKey(approvalBean.getSalesId());
-                customerAccountTeamService.updateTeam(customerInfo.getId(), userId, internalUser);
+                custZrAccountTeamService.updateTeam(customerInfo.getId(), userId, internalUser);
             }else if (null != approvalBean.getDealerId()){
                 CustomerInfo dealer = customerInfoMapper.selectByPrimaryKey(approvalBean.getCustId());
                 custCorporateRelationshipService.UpdateCustShip(customerInfo.getId(), userId, dealer);
@@ -434,6 +438,17 @@ public class CustomerInfoService {
         customerStructureService.saveOrUpdate(customerStructures,custId,userId);
     }
 
+    private void saveQuotas(List<CustSalesQuota> custSalesQuotas, Integer custId, Integer userId){
+        List<CustSalesQuota> results = custQuotasService.selectByCustId(custId);
+        custQuotasService.deleteByCustId(custSalesQuotas,results, custId);
+        custQuotasService.saveOrUpdate(custSalesQuotas,custId,userId);
+    }
+
+    private void saveZrAccountTeams(List<CustZrAccountTeam> custZrAccountTeams, Integer custId, Integer userId){
+        List<CustZrAccountTeam> results = custZrAccountTeamService.selectByCustId(custId);
+        custZrAccountTeamService.deleteByCustId(custZrAccountTeams,results, custId);
+        custZrAccountTeamService.saveOrUpdate(custZrAccountTeams,custId,userId);
+    }
     /**
      * 下载客户拜访模板
      * @param userId

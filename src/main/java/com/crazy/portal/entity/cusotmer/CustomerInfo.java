@@ -226,11 +226,16 @@ public class CustomerInfo {
     /*客户团队*/
     private List<CustomerAccountTeam> accountTeams;
 
+    /*展锐销售团队*/
+    private List<CustZrAccountTeam> zrAccountTeams;
+
     /*股权结构*/
     private List<CustomerStructure> custStructure;
 
     /*未来3年销售额*/
     private List<CustSalesQuota> quotas;
+
+
 
     //授信额度初始值
     private BigDecimal credit;
