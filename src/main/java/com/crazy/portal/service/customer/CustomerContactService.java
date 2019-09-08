@@ -59,4 +59,12 @@ public class CustomerContactService {
             }
         }
     }
+
+    public void deleteByCustId(Integer custId){
+        customerContactMapper.deleteByCustId(custId);
+    }
+
+    public void save(CustomerContact record){
+        customerContactMapper.insertSelective(record);
+    }
 }

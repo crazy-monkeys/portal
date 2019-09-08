@@ -37,4 +37,6 @@ public interface CustomerInfoMapper {
     CustomerInfo getDealerByUser(Integer userId);
 
     int updateCustomerInfo(Integer custId);
+
+    CustomerInfo selectByOutCode(String outCode);
 }

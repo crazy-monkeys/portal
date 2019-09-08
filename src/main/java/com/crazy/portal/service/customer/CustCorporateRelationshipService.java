@@ -80,4 +80,12 @@ public class CustCorporateRelationshipService {
             custCorporateRelationshipMapper.insertSelective(ship);
         }
     }
+
+    public void deleteByCustId(Integer custId){
+        custCorporateRelationshipMapper.deleteByCustId(custId);
+    }
+
+    public void save(CustCorporateRelationship record){
+        custCorporateRelationshipMapper.insertSelective(record);
+    }
 }

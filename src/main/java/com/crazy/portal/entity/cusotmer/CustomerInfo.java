@@ -27,12 +27,12 @@ public class CustomerInfo {
     private Integer custType;
 
     /**
-     * 内部客户号
+     * 内部客户号 C4C
      */
     private String inCode;
 
     /**
-     * 外部客户号
+     * 外部客户号  ECC
      */
     private String outCode;
 
@@ -229,6 +229,8 @@ public class CustomerInfo {
     /*股权结构*/
     private List<CustomerStructure> custStructure;
 
+    /*未来3年销售额*/
+    private List<CustSalesQuota> quotas;
 
     //授信额度初始值
     private BigDecimal credit;

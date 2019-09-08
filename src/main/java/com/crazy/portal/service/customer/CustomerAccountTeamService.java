@@ -83,4 +83,12 @@ public class CustomerAccountTeamService {
             customerAccountTeamMapper.insertSelective(team);
         }
     }
+
+    public void deleteByCustId(Integer custId){
+        customerAccountTeamMapper.deleteByCustId(custId);
+    }
+
+    public void save(CustomerAccountTeam record){
+        customerAccountTeamMapper.insertSelective(record);
+    }
 }

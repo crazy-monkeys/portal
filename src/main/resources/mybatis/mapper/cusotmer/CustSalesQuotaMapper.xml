@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.crazy.portal.dao.cusotmer.CustSalesQuotaMapper">
+  <resultMap id="BaseResultMap" type="com.crazy.portal.entity.cusotmer.CustSalesQuota">
+    <id column="quoat_id" jdbcType="INTEGER" property="quoatId" />
+    <result column="cust_id" jdbcType="INTEGER" property="custId" />
+    <result column="sales_year" jdbcType="VARCHAR" property="salesYear" />
+    <result column="currency" jdbcType="VARCHAR" property="currency" />
+    <result column="unit" jdbcType="VARCHAR" property="unit" />
+    <result column="sales_number" jdbcType="DECIMAL" property="salesNumber" />
+    <result column="active" jdbcType="INTEGER" property="active" />
+    <result column="create_user_id" jdbcType="INTEGER" property="createUserId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_user_id" jdbcType="INTEGER" property="updateUserId" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    quoat_id, cust_id, sales_year, currency, unit, sales_number, active, create_user_id, 
+    create_time, update_user_id, update_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_cust_sales_quota
+    where quoat_id = #{quoatId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_cust_sales_quota
+    where quoat_id = #{quoatId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.crazy.portal.entity.cusotmer.CustSalesQuota">
+    insert into t_cust_sales_quota (quoat_id, cust_id, sales_year, 
+      currency, unit, sales_number, 
+      active, create_user_id, create_time, 
+      update_user_id, update_time)
+    values (#{quoatId,jdbcType=INTEGER}, #{custId,jdbcType=INTEGER}, #{salesYear,jdbcType=VARCHAR}, 
+      #{currency,jdbcType=VARCHAR}, #{unit,jdbcType=VARCHAR}, #{salesNumber,jdbcType=DECIMAL}, 
+      #{active,jdbcType=INTEGER}, #{createUserId,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{updateUserId,jdbcType=INTEGER}, #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.crazy.portal.entity.cusotmer.CustSalesQuota">
+    insert into t_cust_sales_quota
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="quoatId != null">
+        quoat_id,
+      </if>
+      <if test="custId != null">
+        cust_id,
+      </if>
+      <if test="salesYear != null">
+        sales_year,
+      </if>
+      <if test="currency != null">
+        currency,
+      </if>
+      <if test="unit != null">
+        unit,
+      </if>
+      <if test="salesNumber != null">
+        sales_number,
+      </if>
+      <if test="active != null">
+        active,
+      </if>
+      <if test="createUserId != null">
+        create_user_id,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateUserId != null">
+        update_user_id,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="quoatId != null">
+        #{quoatId,jdbcType=INTEGER},
+      </if>
+      <if test="custId != null">
+        #{custId,jdbcType=INTEGER},
+      </if>
+      <if test="salesYear != null">
+        #{salesYear,jdbcType=VARCHAR},
+      </if>
+      <if test="currency != null">
+        #{currency,jdbcType=VARCHAR},
+      </if>
+      <if test="unit != null">
+        #{unit,jdbcType=VARCHAR},
+      </if>
+      <if test="salesNumber != null">
+        #{salesNumber,jdbcType=DECIMAL},
+      </if>
+      <if test="active != null">
+        #{active,jdbcType=INTEGER},
+      </if>
+      <if test="createUserId != null">
+        #{createUserId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUserId != null">
+        #{updateUserId,jdbcType=INTEGER},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.crazy.portal.entity.cusotmer.CustSalesQuota">
+    update t_cust_sales_quota
+    <set>
+      <if test="custId != null">
+        cust_id = #{custId,jdbcType=INTEGER},
+      </if>
+      <if test="salesYear != null">
+        sales_year = #{salesYear,jdbcType=VARCHAR},
+      </if>
+      <if test="currency != null">
+        currency = #{currency,jdbcType=VARCHAR},
+      </if>
+      <if test="unit != null">
+        unit = #{unit,jdbcType=VARCHAR},
+      </if>
+      <if test="salesNumber != null">
+        sales_number = #{salesNumber,jdbcType=DECIMAL},
+      </if>
+      <if test="active != null">
+        active = #{active,jdbcType=INTEGER},
+      </if>
+      <if test="createUserId != null">
+        create_user_id = #{createUserId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUserId != null">
+        update_user_id = #{updateUserId,jdbcType=INTEGER},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where quoat_id = #{quoatId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.crazy.portal.entity.cusotmer.CustSalesQuota">
+    update t_cust_sales_quota
+    set cust_id = #{custId,jdbcType=INTEGER},
+      sales_year = #{salesYear,jdbcType=VARCHAR},
+      currency = #{currency,jdbcType=VARCHAR},
+      unit = #{unit,jdbcType=VARCHAR},
+      sales_number = #{salesNumber,jdbcType=DECIMAL},
+      active = #{active,jdbcType=INTEGER},
+      create_user_id = #{createUserId,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_user_id = #{updateUserId,jdbcType=INTEGER},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where quoat_id = #{quoatId,jdbcType=INTEGER}
+  </update>
+</mapper>

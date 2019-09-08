@@ -6,8 +6,9 @@
 package com.crazy.portal.bean.webservice;
 
 
+import org.springframework.transaction.annotation.Transactional;
 
-/**   
+/**
  * <p>
  * Description:<br />
  * </p>
@@ -22,6 +23,7 @@ public interface IHandler<T extends IRequest<T>,U extends IResponse> {
 	 * @param request
 	 * @return
 	 */
+	@Transactional
 	public U process(T request);
 	
 }

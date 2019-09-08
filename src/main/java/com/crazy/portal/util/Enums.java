@@ -80,7 +80,7 @@ public class Enums {
 
     public enum YES_NO {
         YES(1),
-        NO(2);
+        NO(0);
 
         private int code;
 
