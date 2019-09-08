@@ -235,8 +235,9 @@
 							<sourceRoot>wsdl2java</sourceRoot>
 							<wsdlOptions>
 								<wsdlOption>
-									<wsdl>wsdl2java/npwsdl/CPI_ZPortal_CustomerRate-CLN.wsdl</wsdl>
+									<wsdl>wsdl2java/npwsdl/HCI_ZRFCSDPRICESIMULATE_V3.wsdl</wsdl>
 									<extraargs>
+										<!--指定生成目录-->
 										<extraarg>-p</extraarg>
 										<extraarg>npcxf</extraarg>
 									</extraargs>

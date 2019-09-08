@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="urn:sap-com:document:sap:soap:functions:mc-style" xmlns:n1="urn:sap-com:document:sap:rfc:functions" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="urn:sap-com:document:sap:soap:functions:mc-style" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+  <wsdl:types>
+    <xsd:schema attributeFormDefault="qualified" targetNamespace="urn:sap-com:document:sap:rfc:functions">
+            <xsd:simpleType name="char1">
+                <xsd:restriction base="xsd:string">
+                    <xsd:maxLength value="1"/>
+                </xsd:restriction>
+            </xsd:simpleType>
+            <xsd:simpleType name="char10">
+                <xsd:restriction base="xsd:string">
+                    <xsd:maxLength value="10"/>
+                </xsd:restriction>
+            </xsd:simpleType>
+            <xsd:simpleType name="char18">
+                <xsd:restriction base="xsd:string">
+                    <xsd:maxLength value="18"/>
+                </xsd:restriction>
+            </xsd:simpleType>
+            <xsd:simpleType name="char2">
+                <xsd:restriction base="xsd:string">
+                    <xsd:maxLength value="2"/>
+                </xsd:restriction>
+            </xsd:simpleType>
+            <xsd:simpleType name="char255">
+                <xsd:restriction base="xsd:string">
+                    <xsd:maxLength value="255"/>
+                </xsd:restriction>
+            </xsd:simpleType>
+            <xsd:simpleType name="char3">
+                <xsd:restriction base="xsd:string">
+                    <xsd:maxLength value="3"/>
+                </xsd:restriction>
+            </xsd:simpleType>
+            <xsd:simpleType name="char4">
+                <xsd:restriction base="xsd:string">
+                    <xsd:maxLength value="4"/>
+                </xsd:restriction>
+            </xsd:simpleType>
+            <xsd:simpleType name="char40">
+                <xsd:restriction base="xsd:string">
+                    <xsd:maxLength value="40"/>
+                </xsd:restriction>
+            </xsd:simpleType>
+            <xsd:simpleType name="char5">
+                <xsd:restriction base="xsd:string">
+                    <xsd:maxLength value="5"/>
+                </xsd:restriction>
+            </xsd:simpleType>
+            <xsd:simpleType name="char6">
+                <xsd:restriction base="xsd:string">
+                    <xsd:maxLength value="6"/>
+                </xsd:restriction>
+            </xsd:simpleType>
+            <xsd:simpleType name="char8">
+                <xsd:restriction base="xsd:string">
+                    <xsd:maxLength value="8"/>
+                </xsd:restriction>
+            </xsd:simpleType>
+            <xsd:simpleType name="char80">
+                <xsd:restriction base="xsd:string">
+                    <xsd:maxLength value="80"/>
+                </xsd:restriction>
+            </xsd:simpleType>
+            <xsd:simpleType name="decimal23.4">
+                <xsd:restriction base="xsd:decimal">
+                    <xsd:totalDigits value="23"/>
+                    <xsd:fractionDigits value="4"/>
+                </xsd:restriction>
+            </xsd:simpleType>
+            <xsd:simpleType name="quantum15.3">
+                <xsd:restriction base="xsd:decimal">
+                    <xsd:totalDigits value="15"/>
+                    <xsd:fractionDigits value="3"/>
+                </xsd:restriction>
+            </xsd:simpleType>
+        </xsd:schema>
+    <xsd:schema attributeFormDefault="qualified" targetNamespace="urn:sap-com:document:sap:soap:functions:mc-style" xmlns:n0="urn:sap-com:document:sap:rfc:functions">
+            <xsd:import namespace="urn:sap-com:document:sap:rfc:functions"/>
+            <xsd:complexType name="ZpricessimulateItemIn">
+                <xsd:sequence>
+                    <xsd:element name="Sequenceno" type="n0:char6"/>
+                    <xsd:element name="Productid" type="n0:char18"/>
+                    <xsd:element name="Orderquantity" type="n0:quantum15.3"/>
+                    <xsd:element name="Platform" type="n0:char80"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="ZpricessimulateHeaderIn">
+                <xsd:sequence>
+                    <xsd:element name="Portalorderid" type="n0:char40"/>
+                    <xsd:element name="Ordertype" type="n0:char4"/>
+                    <xsd:element name="Salesorg" type="n0:char4"/>
+                    <xsd:element name="Channel" type="n0:char2"/>
+                    <xsd:element name="Division" type="n0:char2"/>
+                    <xsd:element name="Salesoffice" type="n0:char4"/>
+                    <xsd:element name="Salesgroup" type="n0:char3"/>
+                    <xsd:element name="Soldto" type="n0:char10"/>
+                    <xsd:element name="Sendto" type="n0:char10"/>
+                    <xsd:element name="Pricedate" type="n0:char8"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="ZpricessimulateItemOut">
+                <xsd:sequence>
+                    <xsd:element name="Sequenceno" type="n0:char6"/>
+                    <xsd:element name="Itemno" type="n0:char6"/>
+                    <xsd:element name="Productid" type="n0:char18"/>
+                    <xsd:element name="Price" type="n0:decimal23.4"/>
+                    <xsd:element name="Netprice" type="n0:decimal23.4"/>
+                    <xsd:element name="Currency" type="n0:char5"/>
+                    <xsd:element name="Itemcategory" type="n0:char4"/>
+                    <xsd:element name="Refitemno" type="n0:char6"/>
+                    <xsd:element name="Refitemproductid" type="n0:char18"/>
+                    <xsd:element name="CondUnit" type="n0:char3"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="ZpricessimulateHeaderOut">
+                <xsd:sequence>
+                    <xsd:element name="Grossvalue" type="n0:decimal23.4"/>
+                    <xsd:element name="Netvalue" type="n0:decimal23.4"/>
+                    <xsd:element name="Resulttype" type="n0:char1"/>
+                    <xsd:element name="Resultmessage" type="n0:char255"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="TableOfZpricessimulateItemIn">
+                <xsd:sequence>
+                    <xsd:element maxOccurs="unbounded" minOccurs="0" name="item" type="tns:ZpricessimulateItemIn"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="TableOfZpricessimulateItemOut">
+                <xsd:sequence>
+                    <xsd:element maxOccurs="unbounded" minOccurs="0" name="item" type="tns:ZpricessimulateItemOut"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:element name="Zrfcsdpricesimulate">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element minOccurs="0" name="EtItems" type="tns:TableOfZpricessimulateItemOut"/>
+                        <xsd:element minOccurs="0" name="IsHeader" type="tns:ZpricessimulateHeaderIn"/>
+                        <xsd:element minOccurs="0" name="ItItems" type="tns:TableOfZpricessimulateItemIn"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="ZrfcsdpricesimulateResponse">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="EsHeader" type="tns:ZpricessimulateHeaderOut"/>
+                        <xsd:element name="EtItems" type="tns:TableOfZpricessimulateItemOut"/>
+                        <xsd:element name="ItItems" type="tns:TableOfZpricessimulateItemIn"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+        </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="ZrfcsdpricesimulateResponse">
+    <wsdl:part name="parameter" element="tns:ZrfcsdpricesimulateResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="Zrfcsdpricesimulate">
+    <wsdl:part name="parameters" element="tns:Zrfcsdpricesimulate">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="ZRFCSDPRICESIMULATE">
+    <wsdl:operation name="Zrfcsdpricesimulate">
+      <wsdl:input message="tns:Zrfcsdpricesimulate">
+    </wsdl:input>
+      <wsdl:output message="tns:ZrfcsdpricesimulateResponse">
+    </wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="ZRFCSDPRICESIMULATE" type="tns:ZRFCSDPRICESIMULATE">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsp:Policy xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
+            <wsp:PolicyReference URI="#BN__binding"/>
+        </wsp:Policy>
+    <wsdl:operation name="Zrfcsdpricesimulate">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="ZRFCSDPRICESIMULATE">
+    <wsdl:port name="ZRFCSDPRICESIMULATE" binding="tns:ZRFCSDPRICESIMULATE">
+      <soap:address location="https://e600180-hcioem.hcisbt.cn1.hana.ondemand.com:443/cxf/ECC/PORTAL/GETPRICESIMULATION"/>
+    </wsdl:port>
+  </wsdl:service>
+    <wsp:UsingPolicy required="true" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy"/>
+    <wsp:Policy wsu:Id="BN__binding" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
+        <wsp:ExactlyOne>
+            <wsp:All>
+                <sp:TransportBinding xmlns:sp="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702">
+                    <wsp:Policy>
+                        <sp:TransportToken>
+                            <wsp:Policy>
+                                <sp:HttpsToken>
+                                    <wsp:Policy>
+                                    <wsp:ExactlyOne>
+                                    <sp:HttpBasicAuthentication/>
+                                    <sp:RequireClientCertificate/>
+                                    </wsp:ExactlyOne>
+                                    </wsp:Policy>
+                                </sp:HttpsToken>
+                            </wsp:Policy>
+                        </sp:TransportToken>
+                        <sp:AlgorithmSuite>
+                            <wsp:Policy>
+                                <wsp:ExactlyOne>
+                                    <sp:Basic256/>
+                                    <sp:Basic192/>
+                                    <sp:Basic128/>
+                                    <sp:TripleDes/>
+                                    <sp:Basic256Rsa15/>
+                                    <sp:Basic192Rsa15/>
+                                    <sp:Basic128Rsa15/>
+                                    <sp:TripleDesRsa15/>
+                                    <sp:Basic256Sha256/>
+                                    <sp:Basic192Sha256/>
+                                    <sp:Basic128Sha256/>
+                                    <sp:TripleDesSha256/>
+                                    <sp:Basic256Sha256Rsa15/>
+                                    <sp:Basic192Sha256Rsa15/>
+                                    <sp:Basic128Sha256Rsa15/>
+                                    <sp:TripleDesSha256Rsa15/>
+                                </wsp:ExactlyOne>
+                            </wsp:Policy>
+                        </sp:AlgorithmSuite>
+                        <sp:Layout>
+                            <wsp:Policy>
+                                <sp:Strict/>
+                            </wsp:Policy>
+                        </sp:Layout>
+                    </wsp:Policy>
+                </sp:TransportBinding>
+            </wsp:All>
+        </wsp:ExactlyOne>
+    </wsp:Policy>
+</wsdl:definitions>

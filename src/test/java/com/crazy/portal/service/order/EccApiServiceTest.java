@@ -18,7 +18,7 @@ import javax.annotation.Resource;
 public class EccApiServiceTest {
 
     @Resource
-    private EccApiService eccApiService;
+    private OrderService eccApiService;
 
     @Test
     public void getCustomerRate() {
