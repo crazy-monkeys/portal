@@ -2,6 +2,8 @@ package com.crazy.portal.dao.cusotmer;
 
 import com.crazy.portal.entity.cusotmer.CustSalesQuota;
 
+import java.util.List;
+
 public interface CustSalesQuotaMapper {
     int deleteByPrimaryKey(Integer quoatId);
 
@@ -14,4 +16,8 @@ public interface CustSalesQuotaMapper {
     int updateByPrimaryKeySelective(CustSalesQuota record);
 
     int updateByPrimaryKey(CustSalesQuota record);
+
+    int deleteByCustId(Integer custId);
+
+    List<CustSalesQuota> selectByCustId(Integer custId);
 }

@@ -68,22 +68,6 @@ public class CustomerAccountTeamService {
         }
     }
 
-    /**
-     * 销售报备客户
-     */
-    public void updateTeam(Integer custId, Integer userId, InternalUser internalUser){
-        if(null != internalUser) {
-            CustomerAccountTeam team = new CustomerAccountTeam();
-            team.setCustId(custId);
-            team.setAccountMobile(internalUser.getUserMobile());
-            team.setAccountName(internalUser.getUserName());
-            team.setRoleType("142");//142:负责销售 211：客户团队成员 46：销售人员 213：合作伙伴联系人
-            team.setCreateUser(userId);
-            team.setActive(1);
-            customerAccountTeamMapper.insertSelective(team);
-        }
-    }
-
     public void deleteByCustId(Integer custId){
         customerAccountTeamMapper.deleteByCustId(custId);
     }

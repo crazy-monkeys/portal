@@ -674,7 +674,7 @@
     cust_abbreviation,
     business_type,
     cust_role,
-    team.account_name report_sales_name,
+    team.user_name report_sales_name,
     ship.user_name report_dealer_name,
     cust.approve_user,
     cust.approve_remark,
@@ -682,9 +682,8 @@
     cust.create_time
     from t_customer_info cust
     left join
-      (select team.team_id,team.cust_id,team.account_name,ins.user_name from t_customer_account_team team
-        left join t_user u on u.id = team.account_name
-        left join t_internal_user ins on ins.user_mail = u.login_name
+      (select team.id,team.cust_id,ins.user_name from cust_zr_account_team team
+        left join t_internal_user ins on ins.user_no = team.employee_id
         where   team.active=1 and team.role_type = '142'
       ) team on team.cust_id = cust.id
     left join
