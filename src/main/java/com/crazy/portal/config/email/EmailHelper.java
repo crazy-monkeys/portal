@@ -38,7 +38,8 @@ public class EmailHelper {
     public enum MAIL_TEMPLATE {
         USER_CREATE("mail/createSubAgent"),
         RESET_PWD("mail/resetPwdTemplate"),
-        REBATE_CONFIRM("mail/rebate/confirmLetter");
+        REBATE_MASTER_CONFIRM("mail/rebate/masterConfirmLetter"),
+        REBATE_ITEM_CONFIRM("mail/rebate/itemConfirmLetter");
 
         private String templateName;
 
@@ -115,7 +116,7 @@ public class EmailHelper {
         }
     }
 
-    private Context getContext(Map<String, String> paramsMap) {
+    private Context getContext(Map<String, Object> paramsMap) {
         Context context = new Context();
         paramsMap.forEach((x,y)-> context.setVariable(x,y));
         return context;

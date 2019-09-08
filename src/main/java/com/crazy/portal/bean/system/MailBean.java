@@ -1,6 +1,6 @@
 package com.crazy.portal.bean.system;
 
-import lombok.Data;
+import lombok.*;
 import org.springframework.core.io.FileSystemResource;
 
 import java.util.Map;
@@ -12,6 +12,9 @@ import java.util.Map;
  * @Modified by:
  */
 @Data
+@Builder
+@AllArgsConstructor(access = AccessLevel.PACKAGE)
+@NoArgsConstructor
 public class MailBean {
 
     /**
@@ -44,5 +47,7 @@ public class MailBean {
      */
     private String templateName;
 
-    private Map<String,String> params;
+    private Map<String, Object> params;
+
+
 }

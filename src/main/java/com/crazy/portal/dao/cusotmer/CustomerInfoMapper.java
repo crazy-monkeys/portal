@@ -30,7 +30,7 @@ public interface CustomerInfoMapper {
 
     List<CustomerInfo> selectAllCustomer();
 
-    String selectEmailByCustName(@Param("custName")String custName);
+    CustomerInfo selectEmailByCustName(@Param("custName")String custName);
 
     List<CustomerInfo> selectCustomer(CustomerQueryBean record);
 

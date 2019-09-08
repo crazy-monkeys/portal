@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html  xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>确认函</title>
+</head>
+<style>
+body{
+  font-family:"Microsoft YaHei",微软雅黑,"MicrosoftJhengHei",华文细黑,STHeiti,MingLiu;
+  padding:10px;
+}
+table{
+    width:100%;
+    border-right:1px solid #CCC;
+    border-bottom:1px solid #CCC;
+}
+table tr{
+    height:35px;
+}
+table th{
+    border-left:1px solid #CCC;
+    border-top:1px solid #CCC;
+}
+table td{
+    border-left:1px solid #CCC;
+    border-top:1px solid #CCC;
+}
+</style>
+<body>
+<table>
+    <tr>
+        <th>出货公司</th>
+        <th>执行代理商/客户</th>
+        <th>客户简称</th>
+        <th>销售</th>
+        <th>队长</th>
+        <th>代表处</th>
+        <th>本次执行金额($)</th>
+        <th>执行方式</th>
+        <th>备注</th>
+    </tr>
+    <tr th:each="item:${list}">
+        <td th:text="${item.shipmentCompany}"></td>
+        <td th:text="${item.executor}"></td>
+        <td th:text="${item.customerShortName}"></td>
+        <td th:text="${item.salesName}"></td>
+        <td th:text="${item.amebaHeader}"></td>
+        <td th:text="${item.amebaDepartment}"></td>
+        <td th:text="${item.rebateAmount}"></td>
+        <td th:text="${item.executeStyle}"></td>
+        <td th:text="${item.remark}"></td>
+    </tr>
+</table>
+</body>
+</html>

@@ -107,6 +107,10 @@ public class BusinessRebateItem {
     private String executor;
     //执行方式
     private String executeStyle;
+    //展锐执行日期
+    private Date zrExecuteDate;
+    //代理执行日期
+    private Date dlExecuteDate;
     //通知日期
     @JSONField(format="yyyy-MM-dd HH:mm:ss")
     private Date noticeDate;
@@ -129,5 +133,14 @@ public class BusinessRebateItem {
     @JsonIgnore
     @JSONField(serialize = false)
     private Date updateTime;
+
+    /**
+     * 剩余释放金额
+     */
+    private BigDecimal surplusRebateAmount;
+    /**
+     * rebate金额
+     */
+    private BigDecimal masterRebateAmount;
 
 }

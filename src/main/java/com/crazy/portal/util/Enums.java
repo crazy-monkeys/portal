@@ -402,7 +402,7 @@ public class Enums {
 
     public enum BusinessRebateItemStatus{
 
-        IN_APPROVAL(1, "审核中"),
+        IN_APPROVAL(1, "结算中"),
         WAIT_CONFIRM(2, "客户待确认"),
         USED_CONFIRM(3, "客户已确认"),
         FINISHED(4, "执行完成");

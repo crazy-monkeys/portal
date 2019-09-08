@@ -137,7 +137,7 @@ public class UserService {
         MailBean mailBean = new MailBean();
         mailBean.setTos(user.getEmail());
         mailBean.setSubject("账号开通邮件");
-        Map<String,String> map = new HashMap<>();
+        Map<String, Object> map = new HashMap<>();
         map.put("loginName",user.getLoginName());
         map.put("password",password);
         mailBean.setParams(map);
@@ -196,7 +196,7 @@ public class UserService {
         mailBean.setTos(user.getEmail());
         mailBean.setSubject("密码重置邮件");
 
-        Map<String,String> map = new HashMap<>();
+        Map<String, Object> map = new HashMap<>();
         map.put("loginName",user.getLoginName());
         map.put("password",newPasswod);
         mailBean.setParams(map);

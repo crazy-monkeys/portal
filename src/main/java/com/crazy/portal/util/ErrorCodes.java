@@ -174,6 +174,7 @@ public class ErrorCodes {
         REBATE_SURPLUS_AMOUNT_BIG(70103, "释放金额不能大于rebate金额", ""),
         REBATE_FILE_NOT_FOUND(70103, "文件不存在", ""),
         REBATE_ITEM_ID_IS_NULL(70104, "rebateItemId不能为空", ""),
+        REBATE_EXECUTOR_EMAIL_NOT_FOUND(70105, "rebate执行人邮箱不能为空", ""),
 
         PRODUCT_QUERY_ERROR(70501,"产品查询异常",""),
         PRODUCT_SYNC_ERROR(70502,"产品同步异常",""),

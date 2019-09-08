@@ -25,6 +25,8 @@
     <result column="rebate_amount" jdbcType="DECIMAL" property="rebateAmount" />
     <result column="executor" jdbcType="VARCHAR" property="executor"/>
     <result column="execute_style" jdbcType="VARCHAR" property="executeStyle" />
+    <result column="zr_execute_date" jdbcType="TIMESTAMP" property="zrExecuteDate" />
+    <result column="dl_execute_date" jdbcType="TIMESTAMP" property="dlExecuteDate" />
     <result column="notice_date" jdbcType="TIMESTAMP" property="noticeDate" />
     <result column="remark" jdbcType="VARCHAR" property="remark" />
     <result column="status" jdbcType="INTEGER" property="status" />
@@ -38,7 +40,7 @@
     id, rebate_id, agency_name, customer_short_name, customer_type, sales_name, ameba_header, ameba_department,
     shipment_company, account_year_month, order_month, shipment_year_month, bu, pdt,
     product, qty, sales_price, po_price, actual_price, platform,
-    rebate_amount, executor, execute_style,
+    rebate_amount, executor, execute_style, zr_execute_date, dl_execute_date,
     notice_date, remark,
     status, active, create_id, create_time, update_id, update_time
   </sql>
@@ -124,6 +126,12 @@
       </if>
       <if test="executeStyle != null">
         execute_style,
+      </if>
+      <if test="zrExecuteDate != null">
+        zr_execute_date,
+      </if>
+      <if test="dlExecuteDate != null">
+        dl_execute_date,
       </if>
       <if test="noticeDate != null">
         notice_date,
@@ -220,6 +228,12 @@
       <if test="executeStyle != null">
         #{executeStyle,jdbcType=VARCHAR},
       </if>
+      <if test="zrExecuteDate != null">
+        #{zrExecuteDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="dlExecuteDate != null">
+        #{dlExecuteDate,jdbcType=TIMESTAMP},
+      </if>
       <if test="noticeDate != null">
         #{noticeDate,jdbcType=TIMESTAMP},
       </if>
@@ -314,6 +328,12 @@
       </if>
       <if test="executeStyle != null">
         execute_style = #{executeStyle,jdbcType=VARCHAR},
+      </if>
+      <if test="zrExecuteDate != null">
+        zr_execute_date = #{zrExecuteDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="dlExecuteDate != null">
+        dl_execute_date = #{dlExecuteDate,jdbcType=TIMESTAMP},
       </if>
       <if test="noticeDate != null">
         notice_date = #{noticeDate,jdbcType=TIMESTAMP},

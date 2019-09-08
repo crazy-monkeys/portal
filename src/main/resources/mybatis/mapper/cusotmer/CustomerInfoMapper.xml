@@ -739,6 +739,18 @@
       update t_customer_info set active =0 where id = #{custId}
   </select>
 
+  <select id="selectNameAndCodeByUserId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select cust_name, in_code from t_customer_info
+    where active = 1 and create_user = #{userId}
+  </select>
+
+  <select id="selectEmailByCustName" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select a.business_type,b.email cust_email from t_customer_info a
+    inner join t_customer_contact b on b.cust_id = a.cust_id and b.type = 'C01'
+    where a.cust_name = #{custName} and a.active = 1 and b.email is not null
+  </select>
+
+
   <select id="selectByOutCode" resultMap="BaseResultMap">
     select * from t_customer_info where active =1 and out_code = #{outCode}
   </select>

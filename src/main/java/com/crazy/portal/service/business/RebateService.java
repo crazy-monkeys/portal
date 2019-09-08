@@ -6,6 +6,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.crazy.portal.bean.business.rebate.RebateConfirmBean;
 import com.crazy.portal.bean.business.rebate.RebateGroupParam;
 import com.crazy.portal.bean.business.rebate.RebateQueryBean;
+import com.crazy.portal.bean.business.rebate.SendMailBean;
 import com.crazy.portal.bean.common.Constant;
 import com.crazy.portal.bean.customer.basic.FileVO;
 import com.crazy.portal.bean.system.MailBean;
@@ -13,9 +14,11 @@ import com.crazy.portal.config.email.EmailHelper;
 import com.crazy.portal.dao.business.rebate.*;
 import com.crazy.portal.dao.cusotmer.CustomerInfoMapper;
 import com.crazy.portal.entity.business.rebate.*;
+import com.crazy.portal.entity.cusotmer.CustomerInfo;
 import com.crazy.portal.util.*;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -27,10 +30,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 /**
  * 客户Rebate
@@ -103,17 +103,19 @@ public class RebateService {
     @Transactional
     public void confirm(RebateConfirmBean bean, Integer userId){
         BusinessUtil.notNull(bean.getRebates(), ErrorCodes.BusinessEnum.REBATE_RECORD_NOT_FOUND);
+        List<BusinessRebateItem> items = Lists.newArrayList();
         bean.getRebates().forEach(e->{
             BusinessRebate info = businessRebateMapper.selectByPrimaryKey(e.getId());
             BusinessUtil.notNull(info, ErrorCodes.BusinessEnum.REBATE_RECORD_NOT_FOUND);
             BusinessUtil.assertFlase(e.getReleaseAmount().compareTo(info.getSurplusRebateAmount()) > 0, ErrorCodes.BusinessEnum.REBATE_SURPLUS_AMOUNT_BIG);
-            saveRebateItem(bean, e, userId, info);
+            BusinessRebateItem item = saveRebateItem(bean, e, userId, info);
             updateRebateMasterInfo(e, userId, info);
-//        sendConfirmEmail(bean);
+            items.add(item);
         });
+        sendConfirmEmail(items, bean.getExecutor());
     }
 
-    private void saveRebateItem(RebateConfirmBean bean, RebateConfirmBean.RebateRecord releaseItem, Integer userId, BusinessRebate info) {
+    private BusinessRebateItem saveRebateItem(RebateConfirmBean bean, RebateConfirmBean.RebateRecord releaseItem, Integer userId, BusinessRebate info) {
         BusinessRebateItem item = new BusinessRebateItem();
         item.setRebateId(releaseItem.getId());
         item.setAgencyName(info.getAgencyName());
@@ -144,6 +146,9 @@ public class RebateService {
         item.setCreateId(userId);
         item.setCreateTime(DateUtil.getCurrentTS());
         businessRebateItemMapper.insertSelective(item);
+        item.setSurplusRebateAmount(info.getSurplusRebateAmount());
+        item.setMasterRebateAmount(info.getRebateAmount());
+        return item;
     }
 
     private void updateRebateMasterInfo(RebateConfirmBean.RebateRecord releaseItem, Integer userId, BusinessRebate info) {
@@ -156,25 +161,31 @@ public class RebateService {
         businessRebateMapper.updateByPrimaryKeySelective(info);
     }
 
-    private void sendConfirmEmail(RebateConfirmBean bean, RebateConfirmBean.RebateRecord releaseItem) {
-        //TODO
-        /**
-         * 1.每条都会给记录里“队长“”去发，拿到队长姓名，俊国提供一个接口出来，拿队长姓名换邮箱
-         * 2.代理商和客户是执行方，是根据客户表里的类型来区分
-         * 3.CS是俊国提供一个接口出来进行查询
-         */
-
-        /**
-           代理商、CS:发送子表的数据
-           客户、队长：发送汇总的数据
-         **/
-        String email = customerInfoMapper.selectEmailByCustName(bean.getExecutor());
-        MailBean mailBean = new MailBean();
-        mailBean.setTos(email);
-        mailBean.setSubject("Rebate确认函");
-        mailBean.setParams(ImmutableMap.of("customerName", bean.getExecutor(), "amount", releaseItem.getReleaseAmount().toString()));
-        mailBean.setTemplateName(EmailHelper.MAIL_TEMPLATE.REBATE_CONFIRM.getTemplateName());
-        emailHelper.sendHtmlMail(mailBean);
+    /**
+     * 发送邮件
+     * @param items
+     * @param executor
+     * @describe 代理商、CS:发送汇总的数据   客户、队长：发送item的数据
+     *
+     */
+    private void sendConfirmEmail(List<BusinessRebateItem> items, String executor) {
+        Map<String, Object> data = ImmutableMap.of("list", items);
+        List<SendMailBean> toMails = Lists.newArrayList();
+        //TODO 获取阿米巴队长邮箱
+        String amebaHeaderEmail = "";
+        //TODO 获取CS邮箱
+        String csEmail = "";
+        toMails.add(SendMailBean.builder().email(amebaHeaderEmail).title("Rebate确认函[阿米巴队长]").data(data).templateName(EmailHelper.MAIL_TEMPLATE.REBATE_ITEM_CONFIRM.getTemplateName()).build());
+        toMails.add(SendMailBean.builder().email(csEmail).title("Rebate确认函[CS]").data(data).templateName(EmailHelper.MAIL_TEMPLATE.REBATE_MASTER_CONFIRM.getTemplateName()).build());
+        CustomerInfo custInfo = customerInfoMapper.selectEmailByCustName(executor);
+        BusinessUtil.notNull(custInfo, ErrorCodes.BusinessEnum.REBATE_EXECUTOR_EMAIL_NOT_FOUND);
+        String templateName = EmailHelper.MAIL_TEMPLATE.REBATE_ITEM_CONFIRM.getTemplateName();
+        if(custInfo.getBusinessType().equals(Enums.CUSTOMER_BUSINESS_TYPE.dealer.getCode())){
+            //代理商
+            templateName = EmailHelper.MAIL_TEMPLATE.REBATE_MASTER_CONFIRM.getTemplateName();
+        }
+        toMails.add(SendMailBean.builder().email(custInfo.getCustEmail()).title("Rebate确认函").data(data).templateName(templateName).build());
+        toMails.forEach(e-> emailHelper.sendHtmlMail(MailBean.builder().tos(e.getEmail()).subject(e.getTitle()).params(e.getData()).templateName(e.getTemplateName()).build()));
     }
 
     /**
@@ -217,9 +228,11 @@ public class RebateService {
     private Integer updateRebateItemStatus(Integer rebateItemId, Integer userId) {
         BusinessRebateItem item = businessRebateItemMapper.selectByPrimaryKey(rebateItemId);
         if(item.getStatus().equals(Enums.BusinessRebateItemStatus.WAIT_CONFIRM.getCode())){
+            item.setDlExecuteDate(DateUtil.getCurrentTS());
             item.setStatus(Enums.BusinessRebateItemStatus.USED_CONFIRM.getCode());
         }
         if(item.getStatus().equals(Enums.BusinessRebateItemStatus.USED_CONFIRM.getCode())){
+            item.setZrExecuteDate(DateUtil.getCurrentTS());
             item.setStatus(Enums.BusinessRebateItemStatus.FINISHED.getCode());
         }
         item.setUpdateId(userId);
