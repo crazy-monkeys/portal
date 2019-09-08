@@ -6,7 +6,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.cxf.helpers.IOUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpGet;
@@ -21,13 +20,15 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
-import javax.net.ssl.*;
-import java.io.*;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLException;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.SSLSocket;
+import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.security.GeneralSecurityException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
-import java.util.Base64;
 
 /**
  * Created by weiying on 2019/7/29.
@@ -38,10 +39,9 @@ public class HttpClientUtils {
     public static final int CONNECT_TIMEOUT=10000;
     public static final int READ_TIMEOUT=10000;
     public static final String CHARSET="UTF-8";
-    public static final String PROTOCOL="TLS";
-    private static HttpClient client = null;
+    private static HttpClient client;
 
-    private static final String authString = "Basic UzAwMjA0NjkwMzM6Q1JNQFVuaXNvYw==";
+    public static String AUTH_SECRET;
     public static final String MIMETYPE_JSON = "application/json";
 
     static {
@@ -52,16 +52,15 @@ public class HttpClientUtils {
     }
 
     public static String get(String url) throws IOException {
-        return get(url, CHARSET, authString, null, null);
+        return get(url, CHARSET, AUTH_SECRET, null, null);
     }
-    public static String get(String url, String username, String password) throws IOException{
-        return get(url, CHARSET, getBasicAuth(username, password), null, null);
-    }
+
     public static String post(String url, String body) throws IOException{
-        return post(url, body, authString, MIMETYPE_JSON, "utf-8", CONNECT_TIMEOUT, READ_TIMEOUT);
+        return post(url, body, AUTH_SECRET, MIMETYPE_JSON, "utf-8", CONNECT_TIMEOUT, READ_TIMEOUT);
     }
+
     public static String postHeader(String url, String params) throws IOException {
-        return post(url, params, authString, MIMETYPE_JSON, null, null, null);
+        return post(url, params, AUTH_SECRET, MIMETYPE_JSON, null, null, null);
     }
 
     /**
@@ -110,12 +109,8 @@ public class HttpClientUtils {
                 res = client.execute(post);
             }
             result = IOUtils.toString(res.getEntity().getContent(), charset);
-        } catch (GeneralSecurityException e) {
+        } catch (GeneralSecurityException | IOException e) {
             log.error("",e);
-        } catch (ClientProtocolException ex) {
-            log.error("",ex);
-        } catch (IOException ec) {
-            log.error("",ec);
         } finally {
             post.releaseConnection();
             if (url.startsWith("https") && client != null&& client instanceof CloseableHttpClient) {
@@ -171,13 +166,9 @@ public class HttpClientUtils {
             if (null!=res) {
                 result = IOUtils.toString(res.getEntity().getContent(), charset);
             }
-        } catch (ClientProtocolException cpe) {
-            throw cpe;
-        } catch (IOException e) {
-            log.error("",e);
-        } catch (GeneralSecurityException se) {
-            log.error("",se);
-        } finally {
+        } catch (IOException | GeneralSecurityException e) {
+            log.error("", e);
+        }finally {
             get.releaseConnection();
             if (url.startsWith("https") && client != null && client instanceof CloseableHttpClient) {
                 ((CloseableHttpClient) client).close();
@@ -222,14 +213,5 @@ public class HttpClientUtils {
         } catch (GeneralSecurityException e) {
             throw e;
         }
-    }
-
-    /**
-     * 获取BasicAuth
-     * @param username 用户名
-     * @param password 密码
-     */
-    public static String getBasicAuth(String username, String password){
-        return "Basic " + Base64.getUrlEncoder().encodeToString((username + ":" + password).getBytes());
     }
 }

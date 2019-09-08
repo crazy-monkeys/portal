@@ -143,6 +143,10 @@ public class BusinessSalesDetail {
      * 平台
      */
     private String class3;
+    /**
+     * 销售名称
+     */
+    private String salesName;
 
     @JsonIgnore
     @JSONField(serialize = false)
