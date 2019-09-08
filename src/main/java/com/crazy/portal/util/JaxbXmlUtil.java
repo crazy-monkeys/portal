@@ -1,8 +1,8 @@
 package com.crazy.portal.util;
 
-import com.crazy.portal.bean.order.OrderVO;
-import com.crazy.portal.bean.order.wsdl.OrderRequest;
-
+import com.crazy.portal.bean.BaseWSDLRequest;
+import com.crazy.portal.bean.order.wsdl.BodyContent;
+import com.crazy.portal.bean.order.wsdl.RequestBody;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
@@ -53,11 +53,11 @@ public class JaxbXmlUtil {
 
     public static void main(String[] args) {
         try {
-            OrderRequest order = new OrderRequest();
-            OrderVO orderVO = new OrderVO();
-            orderVO.setApprovalRemark("123");
-            order.setObj(orderVO);
-            System.out.println(convertToXml(order));
+            BodyContent bodyContent = new BodyContent();
+            bodyContent.setYear("123");
+
+            RequestBody requestBody = new RequestBody(bodyContent);
+            System.out.println(convertToXml(new BaseWSDLRequest(requestBody)));
         } catch (Exception e) {
             e.printStackTrace();
         }
