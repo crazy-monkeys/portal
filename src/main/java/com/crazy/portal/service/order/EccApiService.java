@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class EccApiService {
 
-    @Value("${ecc.api.url}")
+    @Value("${api.root}")
     private String ECC_API_URL;
 
     /**

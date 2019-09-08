@@ -48,18 +48,22 @@ file:
 
 
 api:
+  root: https://e600180-hcioem.hcisbt.cn1.hana.ondemand.com
   url:
-    bi-test: https://e600180-hcioem.hcisbt.cn1.hana.ondemand.com/http/
-    mdm-product: https://e600180-hcioem.hcisbt.cn1.hana.ondemand.com/http/MDMProductMaster
-    ecc-credit: https://e600180-hcioem.hcisbt.cn1.hana.ondemand.com:443/cxf/CUSTOMERCREDIT
-    bpm.idr.approval: https://e600180-hcioem.hcisbt.cn1.hana.ondemand.com/http/PORTAL/BPM/PROJECT_WEB_SUBMIT
-    rebate.price.role: https://e600180-hcioem.hcisbt.cn1.hana.ondemand.com/http/BI/PORTAL/GET_CALCULATED_ALL_REBATE_DATA_PRICE_ROLE
-    rebate.sales.details: https://e600180-hcioem.hcisbt.cn1.hana.ondemand.com/http/BI/PORTAL/GET_CALCULATED_ALL_REBATE_DATA_SALES_DETAILS
-    c4c-employe: https://e600180-hcioem.hcisbt.cn1.hana.ondemand.com:443/cxf/C4C/PORTAL/GETEMPLOYEEINFO
+    bi-test: ${api.root}/http/
+    mdm-product: ${api.root}/http/MDMProductMaster
+    ecc-credit: ${api.root}/cxf/CUSTOMERCREDIT
+    bpm.idr.approval: ${api.root}/http/PORTAL/BPM/PROJECT_WEB_SUBMIT
+    rebate.price.role: ${api.root}/http/BI/PORTAL/GET_CALCULATED_ALL_REBATE_DATA_PRICE_ROLE
+    rebate.sales.details: ${api.root}/http/BI/PORTAL/GET_CALCULATED_ALL_REBATE_DATA_SALES_DETAILS
+    c4c-employe: ${api.root}/cxf/C4C/PORTAL/GETEMPLOYEEINFO
+    c4c-orgnation: ${api.root}/cxf/C4C/PORTAL/GETORGANISATIONALUNIT
+
+ecc:
   auth:
-    rebate:
-      username: S0020469033
-      password: CRM@Unisoc
+    username: S0020469033
+    password: CRM@Unisoc
+
 ftp:
   host: 10.29.24.20
   port: 21
