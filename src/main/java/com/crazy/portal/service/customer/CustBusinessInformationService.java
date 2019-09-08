@@ -57,4 +57,12 @@ public class CustBusinessInformationService {
             }
         }
     }
+
+    public void deleteByCustId(Integer custId){
+        custBusinessInformationMapper.deleteByCustId(custId);
+    }
+
+    public void save(CustBusinessInformation record){
+        custBusinessInformationMapper.insertSelective(record);
+    }
 }

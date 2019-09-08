@@ -378,8 +378,6 @@ public class CustomerInfoService {
         custBusinessInformationService.saveOrUpdate(businessInformations, custId);
     }
 
-
-
     /*联系人信息*/
     private void saveContact(List<CustomerContact> customerContacts, Integer custId, Integer userId){
         List<CustomerContact> results = customerContactService.selectByCustId(custId);

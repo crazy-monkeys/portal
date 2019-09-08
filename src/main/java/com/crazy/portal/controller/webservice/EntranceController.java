@@ -129,14 +129,14 @@ public class EntranceController extends BaseController{
             return setResponse(INTERFACE_CODE.NO_ENTITY.getValue(),checkParamList.toString());
         }
 
-        //检查签名是否正确
-        if(!request.checkVerifyCode()){
+        //检查签名是否正确 TODO 暂时关闭
+        /*if(!request.checkVerifyCode()){
             return setResponse(INTERFACE_CODE.CODE1002.getValue(),INTERFACE_CODE.CODE1002.getZh_desc());
-        }
+        }*/
         //超过5分钟视为非法访问
-		if(!request.checkVerifyTime()){
+		/*if(!request.checkVerifyTime()){
 			return setResponse(INTERFACE_CODE.CODE1007.getValue(),INTERFACE_CODE.CODE1007.getZh_desc());
-		}
+		}*/
         commonResp.setResultCode(INTERFACE_CODE.SUCCESS.getValue());
         return commonResp;
     }

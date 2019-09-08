@@ -62,4 +62,12 @@ public class CustomerAddressService {
         }
     }
 
+    public void deleteByCustId(Integer custId){
+        customerAddressMapper.deleteByCustId(custId);
+    }
+
+    public void save(CustomerAddress record){
+        customerAddressMapper.insertSelective(record);
+    }
+
 }

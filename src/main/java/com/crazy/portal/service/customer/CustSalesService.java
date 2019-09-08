@@ -59,4 +59,12 @@ public class CustSalesService {
             }
         }
     }
+
+    public void deleteByCustId(Integer custId){
+        custSalesMapper.deleteByCustId(custId);
+    }
+
+    public void save(CustSales record){
+        custSalesMapper.insertSelective(record);
+    }
 }

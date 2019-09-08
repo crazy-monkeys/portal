@@ -57,4 +57,12 @@ public class CustAssetsInformationService {
             }
         }
     }
+
+    public void deleteByCustId(Integer custId){
+        custAssetsInformationMapper.deleteByCustId(custId);
+    }
+
+    public void save(CustAssetsInformation record){
+        custAssetsInformationMapper.insertSelective(record);
+    }
 }

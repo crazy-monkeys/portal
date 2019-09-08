@@ -60,4 +60,12 @@ public class CustomerStructureService {
         }
     }
 
+    public void deleteByCustId(Integer custId){
+        customerStructureMapper.deleteByCustId(custId);
+    }
+
+    public void save(CustomerStructure record){
+        customerStructureMapper.insertSelective(record);
+    }
+
 }

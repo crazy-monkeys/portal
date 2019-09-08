@@ -59,4 +59,12 @@ public class CustInvoiceInfoService {
             }
         }
     }
+
+    public void deleteByCustId(Integer custId){
+        custInvoiceInfoMapper.deleteByCustId(custId);
+    }
+
+    public void save(CustInvoiceInfo record){
+        custInvoiceInfoMapper.insertSelective(record);
+    }
 }

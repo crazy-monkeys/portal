@@ -161,4 +161,12 @@
       active = #{active,jdbcType=INTEGER}
     where agent_id = #{agentId,jdbcType=INTEGER}
   </update>
+
+  <select id="selectByCustId" resultMap="BaseResultMap">
+    select * from t_customer_agent where active = 1 and cust_id = #{custId}
+  </select>
+
+  <delete id="deleteByCustId">
+    update t_customer_agent set active = 0 where active =1 and cust_id = #{custId}
+  </delete>
 </mapper>

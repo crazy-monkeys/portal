@@ -738,4 +738,8 @@
   <select id="updateCustomerInfo">
       update t_customer_info set active =0 where id = #{custId}
   </select>
+
+  <select id="selectByOutCode" resultMap="BaseResultMap">
+    select * from t_customer_info where active =1 and out_code = #{outCode}
+  </select>
 </mapper>
