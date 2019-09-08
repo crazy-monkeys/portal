@@ -6,7 +6,6 @@ import com.crazy.portal.bean.customer.wsdl.order.ZrfcsdpricesimulateResponse;
 import com.crazy.portal.util.HttpClientUtils;
 import com.crazy.portal.util.JaxbXmlUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 /**
@@ -19,7 +18,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class OrderService {
 
-    @Value("${ecc.api.url}")
+//    @Value("${ecc.api.url}")
     private String ECC_API_URL;
 
     /**
