@@ -1,7 +1,6 @@
 package com.crazy.portal;
 
 import com.crazy.portal.config.email.EmailHelper;
-import com.crazy.portal.dao.system.TemAddressMapper;
 import com.crazy.portal.util.CallApiUtils;
 import com.crazy.portal.util.FTPClientUtil;
 import org.junit.Test;
@@ -17,10 +16,6 @@ public class PortalApplicationTests {
 
 	@Resource
 	private EmailHelper emailHelper;
-
-	@Resource
-	private TemAddressMapper temAddressMapper;
-
 
 	@Resource
 	private FTPClientUtil ftpClientUtil;
