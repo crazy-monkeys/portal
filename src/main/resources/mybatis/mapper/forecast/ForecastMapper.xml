@@ -451,7 +451,7 @@
     from t_forecast a
     inner join t_forecast_line b on a.id = b.f_id
     where 1 = 1
-    <foreach collection="userIds" item="item" index="index" open="and a.create_user_id in (" separator="," close="" >
+    <foreach collection="userIds" item="item" index="index" open="and a.create_user_id in (" separator="," close=")" >
       #{item}
     </foreach>
     order by a.create_time desc, a.batch_no asc
@@ -489,5 +489,13 @@
       #{item}
     </foreach>
   </update>
+
+  <delete id="deleteByBiIds" >
+    delete from t_forecast
+    where 1 = 1
+    <foreach collection="ids" item="item" index="index" open="and bi_id in (" separator="," close=")" >
+      #{item}
+    </foreach>
+  </delete>
 
 </mapper>

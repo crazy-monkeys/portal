@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @ClassName: CallApiUtils
@@ -117,15 +119,26 @@ public class CallApiUtils {
         return jsonStr;
     }
 
+    public static String callBiGetApi(Enums.BI_FUNCTION_CODE function_code, String baseMapping ,String param) throws IOException {
+        if(StringUtils.isEmpty(param)){
+            return HttpClientUtils.get(getBiUrl(function_code, baseMapping));
+        }
+        return HttpClientUtils.get(String.format("%s?%s", getBiUrl(function_code, baseMapping), param));
+    }
+
     public static String callBiPostApi(Enums.BI_FUNCTION_CODE function_code, String baseMapping, String body) throws IOException{
+        String response = HttpClientUtils.post(getBiUrl(function_code, baseMapping), body);
+        return response;
+    }
+
+    private static String getBiUrl(Enums.BI_FUNCTION_CODE function_code, String baseMapping) {
         String url;
         if(StringUtils.isNotEmpty(baseMapping)){
             url = BI_URL + baseMapping + function_code;
         }else{
             url = BI_URL + function_code;
         }
-        String response = HttpClientUtils.post(url, body);
-        return response;
+        return url;
     }
 
     /**

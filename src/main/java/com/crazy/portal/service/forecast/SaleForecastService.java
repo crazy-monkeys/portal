@@ -7,8 +7,7 @@ import com.crazy.portal.dao.forecast.ForecastLineMapper;
 import com.crazy.portal.dao.forecast.ForecastMapper;
 import com.crazy.portal.entity.forecast.Forecast;
 import com.crazy.portal.entity.forecast.ForecastLine;
-import com.crazy.portal.entity.handover.DeliverDetail;
-import com.crazy.portal.service.handover.AbstractHandover;
+import com.crazy.portal.service.customer.CustomerInfoService;
 import com.crazy.portal.util.*;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
@@ -40,6 +39,9 @@ public class SaleForecastService {
     private ForecastLineMapper forecastLineMapper;
     @Resource
     private FTPClientUtil ftpClientUtil;
+    @Resource
+    private CustomerInfoService customerInfoService;
+
 
     @Value("${file.path.forecast.push}")
     private String forecastPushPath;
@@ -91,9 +93,11 @@ public class SaleForecastService {
             log.warn(FORECAST_DATA_NOT_EMPTY.getZhMsg());
             throw new BusinessException(FORECAST_DATA_NOT_EMPTY);
         }
+//        String AgencyAbbreviation = customerInfoService.getDealerByUser(userId).getCustAbbreviation();
+        String AgencyAbbreviation = "测试的代理商简称";
         List<BiAgencyCheckTemplate> reqBiDataList = JSONObject.parseArray(JSONObject.toJSONString(agencyForecastList), BiAgencyCheckTemplate.class);
         for(BiAgencyCheckTemplate biAgencyCheckTemplate : reqBiDataList){
-            //TODO 匹配产品相关信息
+            biAgencyCheckTemplate.setAgencyAbbreviation(AgencyAbbreviation);
         }
         String checkFileName = ExcelUtils.writeExcel(forecastPushPath, reqBiDataList, BiAgencyCheckTemplate.class);
         BiResponse response = callBiServer(CHECK_FORECAST_IMPORT_DATA, forecastPushPath, checkFileName, forecastPullPath);
@@ -171,10 +175,12 @@ public class SaleForecastService {
         }
 
         List<Forecast> forecastList = forecastMapper.selectNotErrorDataByBatch(batchNo, userId);
+//        String AgencyAbbreviation = customerInfoService.getDealerByUser(userId).getCustAbbreviation();
+        String AgencyAbbreviation = "测试的代理商简称";
         List<BiAgencyCheckTemplate> reqBiDataList = JSONObject.parseArray(JSONObject.toJSONString(forecastList), BiAgencyCheckTemplate.class);
         reqBiDataList.addAll(JSONObject.parseArray(JSONObject.toJSONString(forecastList), BiAgencyCheckTemplate.class));
         for(BiAgencyCheckTemplate biAgencyCheckTemplate : reqBiDataList){
-            //TODO 匹配产品相关信息
+            biAgencyCheckTemplate.setAgencyAbbreviation(AgencyAbbreviation);
         }
 
         String checkFileName = ExcelUtils.writeExcel(forecastPushPath, reqBiDataList, BiAgencyCheckTemplate.class);
@@ -227,8 +233,20 @@ public class SaleForecastService {
 
     }
 
-    public void deleteAgencyForecastData(Integer[] AgencyForecastData) {
-
+    public void deleteAgencyForecastData(Integer[] biIds) {
+        String biParam = StringUtils.join(biIds, ",");
+        try {
+            String response = CallApiUtils.callBiGetApi(DELETEFORECAST, "PORTAL/BI/", String.format("sIDList=%s&sSummaryIDList=%s", biParam, biParam));
+            response = response.replace("\"", "").replace("\\","");
+            if("删除成功".equals(response)){
+                forecastMapper.deleteByBiIds(biIds);
+                return;
+            }
+            throw new BusinessException(FORECAST_BI_DELETE_FAIL);
+        }catch (Exception ex) {
+            log.error(FORECAST_BI_DELETE_FAIL.getZhMsg(), ex);
+            throw new BusinessException(FORECAST_BI_DELETE_FAIL);
+        }
     }
 
     public void updateAgencyForecastData(List<ForecastParam> list, Integer userId) {
@@ -290,7 +308,7 @@ public class SaleForecastService {
     public PageInfo<Forecast> queryApprovalForecastData(Integer pageNum, Integer pageSize, Integer userId) {
         PortalUtil.defaultStartPage(pageNum,pageSize);
         //TODO 根据登录用户查询他名下可以查看的代理商
-        Integer[] userIds = null;
+        Integer[] userIds = new Integer[]{1,2};
         List<Forecast> result = forecastMapper.selectByLeader(userIds);
         return new PageInfo<>(result);
     }
@@ -383,7 +401,7 @@ public class SaleForecastService {
     private BiResponse callBiServer(Enums.BI_FUNCTION_CODE functionCode, String filePath, String fileName, String pullPath) {
         try {
             String response;
-            if(functionCode == Enums.BI_FUNCTION_CODE.CHECK_SALES_IMPORT_FILE){
+            if(functionCode == Enums.BI_FUNCTION_CODE.CHECK_FORECAST_IMPORT_DATA){
                 response = mockThirdResult() ? "\"OK:/Users/lee/Documents/job_code/portal_file/pull_thrid/forecast/forecast_check.xlsx\"" :
                         "\"NG:/Users/lee/Documents/job_code/portal_file/pull_thrid/forecast/forecast_check.xlsx\"";
             }else{
