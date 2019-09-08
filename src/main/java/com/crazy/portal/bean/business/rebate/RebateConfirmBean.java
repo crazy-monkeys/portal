@@ -2,6 +2,7 @@ package com.crazy.portal.bean.business.rebate;
 
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.List;
@@ -11,9 +12,9 @@ public class RebateConfirmBean {
 
     private List<RebateRecord> rebates;
 
-    @NotNull(message = "请选择执行方")
+    @NotBlank(message = "请选择执行方")
     private String executor;
-    @NotNull(message = "请选择执行方式")
+    @NotBlank(message = "请选择执行方式")
     private String executeStyle;
     /** 备注 **/
     private String remark;

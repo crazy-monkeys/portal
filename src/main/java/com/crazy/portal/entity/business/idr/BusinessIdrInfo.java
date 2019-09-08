@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -14,7 +15,7 @@ import java.util.List;
 public class BusinessIdrInfo {
     private Integer id;
     //发货方编号
-    @NotNull(message = "请选择发货方编号")
+    @NotBlank(message = "请选择发货方编号")
     private String shipperCode;
     //申请时间
     @NotNull(message = "请选择申请时间")
@@ -22,13 +23,15 @@ public class BusinessIdrInfo {
     @DateTimeFormat(pattern="yyyy-MM-dd")
     private Date applyTime;
     //币种
-    @NotNull(message = "请选择币种")
+    @NotBlank(message = "请选择币种")
     private String currency;
     //CR金额
     private BigDecimal crAmount;
     //公司
+    @NotBlank(message = "公司不能为空")
     private String company;
     //内部客户名
+    @NotBlank(message = "内部客户名不能为空")
     private String inCustomerName;
     //外部客户ID
     private Integer dealerId;
