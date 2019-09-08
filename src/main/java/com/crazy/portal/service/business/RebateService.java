@@ -39,7 +39,6 @@ import java.util.*;
  */
 @Slf4j
 @Service
-@Transactional(rollbackFor = Exception.class)
 public class RebateService {
 
     @Resource
@@ -56,6 +55,8 @@ public class RebateService {
     private EmailHelper emailHelper;
     @Resource
     private CustomerInfoMapper customerInfoMapper;
+    @Resource
+    private RebateApiService rebateApiService;
     @Value("${file.path.root}")
     private String filePath;
     private static final String REBATE_FILE_PATH = "rebate";
@@ -330,7 +331,7 @@ public class RebateService {
     }
 
     private void batchUpdateSalesDetail(String currMonth, String preMonth, Date currDate) throws IOException {
-        String salesDetails = CallApiUtils.syncRebatePriceSalesDetails(currMonth, preMonth);
+        String salesDetails = rebateApiService.syncRebatePriceSalesDetails(currMonth, preMonth);
         JSONArray salesDetailResult = JSON.parseArray(salesDetails);
         Iterator item = salesDetailResult.iterator();
         while (item.hasNext()){
@@ -380,7 +381,7 @@ public class RebateService {
     }
 
     private void batchUpdatePriceRole(String currMonth, String preMonth, Date currDate) throws IOException {
-        String priceRoles = CallApiUtils.syncRebatePriceRoleData(currMonth, preMonth);
+        String priceRoles = rebateApiService.syncRebatePriceRoleData(currMonth, preMonth);
         JSONArray priceRoleResult = JSON.parseArray(priceRoles);
         Iterator prs = priceRoleResult.iterator();
         while (prs.hasNext()){

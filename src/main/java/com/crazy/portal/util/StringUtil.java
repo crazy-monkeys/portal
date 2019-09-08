@@ -4856,4 +4856,24 @@ public class StringUtil {
 		return iList;
 	}
 
+	/**
+	 * 排除JSON字符串中的"和\字符
+	 * @param message
+	 * @return
+	 */
+	public static String getJsonMessage(String message){
+		if(StringUtil.isBlank(message)){
+			return message;
+		}
+		String firstChar = message.substring(0, 1);
+		String lastChar = message.substring(message.length() - 1, message.length());
+		if(firstChar.equals("\"") && lastChar.equals("\"")){
+			message = message.substring(1, message.length() - 1);
+		}
+		if(message.indexOf("\\") != -1){
+			message = message.replaceAll("\\\\", "");
+		}
+		return message;
+	}
+
 }

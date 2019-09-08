@@ -19,35 +19,12 @@ import java.io.IOException;
 @Slf4j
 @Component
 public class CallApiUtils {
-    private static String MDM_PRODUCT_URL;
-    @Value("${api.url.mdm-product}")
-    public void setMdmProductUrl(String mdmProductUrl) {
-        MDM_PRODUCT_URL = mdmProductUrl;
-    }
+    private static final String MDM_PRODUCT_URL = "/http/MDMProductMaster";
 
-    private static String ECC_DEALER_CREDIR_URL;
-    @Value("${api.url.ecc-credit}")
-    public void setEccDealerCredirUrl(String eccDealerCredirUrl) {
-        ECC_DEALER_CREDIR_URL = eccDealerCredirUrl;
-    }
+    private static final String ECC_DEALER_CREDIR_URL = "/cxf/CUSTOMERCREDIT";
 
-    private static String BI_URL;
-    @Value("${api.url.bi-test}")
-    public void setBiUrl(String biUrl) {
-        BI_URL = biUrl;
-    }
+    private static final String BI_URL = "/http/";
 
-    private static String BPM_IDR_APPROVAL_URL;
-    @Value("${api.url.bpm.idr.approval}")
-    private void setBpmIdrApprovalUrl(String bpmIdrApprovalUrl){ BPM_IDR_APPROVAL_URL = bpmIdrApprovalUrl;}
-
-    private static String REBATE_PRICE_ROLE_URL;
-    @Value("${api.url.rebate.price.role}")
-    private void setRebatePriceRoleUrl(String rebatePriceRoleUrl){ REBATE_PRICE_ROLE_URL = rebatePriceRoleUrl;}
-
-    private static String REBATE_SALES_DETAILS_URL;
-    @Value("${api.url.rebate.sales.details}")
-    public void setRebateSalesDetailsUrl(String rebateSalesDetailsUrl){ REBATE_SALES_DETAILS_URL = rebateSalesDetailsUrl;}
 
     /**
      * 同步产品信息
@@ -75,7 +52,7 @@ public class CallApiUtils {
                     "      </urn:Zrfcsdcustomercredit>" +
                     "   </soapenv:Body>" +
                     "</soapenv:Envelope>";
-            String jsonStr = HttpClientUtils.postHeader(ECC_DEALER_CREDIR_URL, params);
+            String jsonStr = HttpClientUtils.post(ECC_DEALER_CREDIR_URL, params);
             ZrfcsdcustomercreditResponse response = JaxbXmlUtil.convertSoapXmlToJavaBean(jsonStr, ZrfcsdcustomercreditResponse.class);
             if(response.getOreturn().equals("0")){
                 zsdscredit = response.getOcredit();
@@ -131,68 +108,13 @@ public class CallApiUtils {
         return url;
     }
 
-    /**
-     * 提交保差退审批到BPM
-     * @param requestBody 请求体
-     * @return
-     */
-    public static String portalSubmitApprovalToBPM(String requestBody) throws IOException{
-        return HttpClientUtils.postHeader(BPM_IDR_APPROVAL_URL, requestBody);
-    }
 
-    /**
-     * 排除JSON字符串中的"和\字符
-     * @param message
-     * @return
-     */
-    public static String getJsonMessage(String message){
-        if(StringUtil.isBlank(message)){
-            return message;
-        }
-        String firstChar = message.substring(0, 1);
-        String lastChar = message.substring(message.length() - 1, message.length());
-        if(firstChar.equals("\"") && lastChar.equals("\"")){
-            message = message.substring(1, message.length() - 1);
-        }
-        if(message.indexOf("\\") != -1){
-            message = message.replaceAll("\\\\", "");
-        }
-        return message;
-    }
 
-    /**
-     * 同步rebate金额信息
-     * @param startDate 起始年月
-     * @param endDate 结束年月
-     * @return
-     * @throws IOException
-     */
-    public static String syncRebatePriceRoleData(String startDate, String endDate) throws IOException{
-        String url = REBATE_PRICE_ROLE_URL.concat("?sStartYearMonth=").concat(startDate).concat("&sEndYearMonth=").concat(endDate);
-        return getJsonMessage(HttpClientUtils.get(url));
-    }
-
-    /**
-     * 同步rebate商品明细
-     * @param startDate 起始年月
-     * @param endDate 结束年月
-     * @return
-     * @throws IOException
-     */
-    public static String syncRebatePriceSalesDetails(String startDate, String endDate) throws IOException{
-        String url = REBATE_SALES_DETAILS_URL.concat("?sStartYearMonth=").concat(startDate).concat("&sEndYearMonth=").concat(endDate);
-        return getJsonMessage(HttpClientUtils.get(url));
-    }
-
-    private static String C4C_EMPLOYE;
-    @Value("${api.url.c4c-employe}")
-    public void setC4cEmploye(String c4cEmploye) {
-        C4C_EMPLOYE = c4cEmploye;
-    }
+    private static String C4C_EMPLOYE = "/cxf/C4C/PORTAL/GETEMPLOYEEINFO";
 
     public static EmployeeBasicDataResponseMessageSync querEmployee(){
         try{
-            String params = "<soap:Envelope xmlns:soap=\"http://www.w3.org/2003/05/soap-envelope\" xmlns:glob=\"http://sap.com/xi/SAPGlobal20/Global\">" +
+            String body = "<soap:Envelope xmlns:soap=\"http://www.w3.org/2003/05/soap-envelope\" xmlns:glob=\"http://sap.com/xi/SAPGlobal20/Global\">" +
                     "   <soap:Header/>" +
                     "   <soap:Body>" +
                     "      <glob:EmployeeBasicDataByIdentificationQuery_sync>" +
@@ -211,7 +133,7 @@ public class CallApiUtils {
                     "      </glob:EmployeeBasicDataByIdentificationQuery_sync>" +
                     "   </soap:Body>" +
                     "</soap:Envelope>";
-            String jsonStr = HttpClientUtils.postHeader(C4C_EMPLOYE, params);
+            String jsonStr = HttpClientUtils.post(C4C_EMPLOYE, body);
             return JaxbXmlUtil.convertSoapXmlToJavaBean2(jsonStr, EmployeeBasicDataResponseMessageSync.class);
         }catch (Exception e){
             log.info("调用C4C人员同步接口异常！",e);
@@ -219,16 +141,11 @@ public class CallApiUtils {
         return null;
     }
 
-    private static String C4C_ORGNATION;
-
-    @Value("${api.url.c4c-orgnation}")
-    public void setC4cOrgnation(String c4cOrgnation) {
-        C4C_ORGNATION = c4cOrgnation;
-    }
+    private static String C4C_ORGNATION = "/cxf/C4C/PORTAL/GETORGANISATIONALUNIT";
 
     public static void queryOrganisation(){
         try{
-            String params = "<soap:Envelope xmlns:soap=\"http://www.w3.org/2003/05/soap-envelope\" xmlns:glob=\"http://sap.com/xi/SAPGlobal20/Global\">" +
+            String body = "<soap:Envelope xmlns:soap=\"http://www.w3.org/2003/05/soap-envelope\" xmlns:glob=\"http://sap.com/xi/SAPGlobal20/Global\">" +
                     "   <soap:Header/>" +
                     "    <soap:Body>" +
                     "      <glob:OrganisationalUnitByIDQuery_Sync>" +
@@ -245,7 +162,7 @@ public class CallApiUtils {
                     "      </glob:OrganisationalUnitByIDQuery_Sync>" +
                     "   </soap:Body>" +
                     "</soap:Envelope>";
-            String jsonStr = HttpClientUtils.postHeader(C4C_ORGNATION, params);
+            String jsonStr = HttpClientUtils.post(C4C_ORGNATION, body);
             //OrganisationalUnitByElementsResponseSync response = JaxbXmlUtil.convertSoapXmlToJavaBean2(jsonStr, OrganisationalUnitByElementsResponseSync.class);
             System.out.println("1");
         }catch (Exception e){

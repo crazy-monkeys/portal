@@ -54,7 +54,8 @@ public class IDRService {
     private BusinessFileMapper businessFileMapper;
     @Resource
     private BusinessIdrApprovalMapper businessIdrApprovalMapper;
-
+    @Resource
+    private IDRApiService idrApiService;
     @Value("${file.path.root}")
     private String filePath;
 
@@ -240,7 +241,7 @@ public class IDRService {
             String requestBody = JSON.toJSONString(requestBodyJson);
             log.info("IDR审批申请提交至BPM");
             log.info("requestBody:" + requestBody);
-            String responseBody = CallApiUtils.portalSubmitApprovalToBPM(requestBody);
+            String responseBody = idrApiService.portalSubmitApprovalToBPM(requestBody);
             log.info("responseBody:" + responseBody);
             BusinessUtil.assertTrue(StringUtil.isNotBlank(responseBody), ErrorCodes.BusinessEnum.BUSINESS_IDR_SUBMIT_RESULT_IS_NULL);
             IdrApprovalSubmitResultBean resultBean = JSON.toJavaObject(JSON.parseObject(responseBody).getJSONObject("d"), IdrApprovalSubmitResultBean.class);
@@ -387,6 +388,9 @@ public class IDRService {
         BusinessIdrApproval histortRecord = businessIdrApprovalMapper.selectByOrderNo(request.getOrderNumber());
         BusinessUtil.notNull(histortRecord, ErrorCodes.BusinessEnum.BUSINESS_IDR_APPROVAL_ORDERNO_NOT_FOUND);
         saveIdrApprovalRecord(request, histortRecord);
+
+//        List<BusinessIdrApproval> records = businessIdrApprovalMapper.selectByIdrInfoId(histortRecord.getIdrInfoId());
+        //TODO
         if(request.getReviewStatus().equals(Enums.BusinessIdrApprovalStatus.AGREE.getCode()) && StringUtil.isBlank(request.getCurrentReviewer())){
             updateIdrInfoByApproval(request.getApiUserId(), histortRecord.getIdrInfoId(), Enums.BusinessIdrStatus.APPROVAL_OVER.getCode());
         }

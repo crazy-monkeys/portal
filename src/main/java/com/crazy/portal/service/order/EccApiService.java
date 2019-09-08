@@ -17,8 +17,6 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class EccApiService {
 
-    @Value("${api.root}")
-    private String ECC_API_URL;
 
     /**
      * 获取代理费率
@@ -26,7 +24,7 @@ public class EccApiService {
      * @return
      */
     public ZrfcsdcustomercrrateResponse getCustomerRate(String ikunnr){
-        String url = String.format("%s/%s",ECC_API_URL,"/cxf/CUSTOMERRATE");
+        String url = "/cxf/CUSTOMERRATE";
 
         String requestXML = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" " +
                 "xmlns:urn=\"urn:sap-com:document:sap:soap:functions:mc-style\">\n" +

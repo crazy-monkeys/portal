@@ -137,4 +137,11 @@
     limit 1
   </select>
 
+  <select id="selectByIdrInfoId" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_business_idr_approval
+    where idr_info_id = #{idrInfoId}
+  </select>
+
 </mapper>
