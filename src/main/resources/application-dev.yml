@@ -54,11 +54,13 @@ api:
     rebate.sales.details: https://e600180-hcioem.hcisbt.cn1.hana.ondemand.com/http/BI/PORTAL/GET_CALCULATED_ALL_REBATE_DATA_SALES_DETAILS
     c4c-employe: https://e600180-hcioem.hcisbt.cn1.hana.ondemand.com:443/cxf/C4C/PORTAL/GETEMPLOYEEINFO
     c4c-orgnation: https://e600180-hcioem.hcisbt.cn1.hana.ondemand.com:443/cxf/C4C/PORTAL/GETORGANISATIONALUNIT
-  auth:
-    rebate:
-      username: S0020469033
-      password: CRM@Unisoc
 
+ecc:
+  api:
+    url: https://e600180-hcioem.hcisbt.cn1.hana.ondemand.com
+  auth:
+    username: S0020469033
+    password: CRM@Unisoc
 
 ftp:
   host: 10.29.24.20
