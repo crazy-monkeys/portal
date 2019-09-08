@@ -1,8 +1,7 @@
 package com.crazy.portal.util;
 
-import org.apache.http.util.EncodingUtils;
-import org.apache.poi.ss.formula.functions.T;
-import org.springframework.context.annotation.Bean;
+import com.crazy.portal.bean.order.OrderVO;
+import com.crazy.portal.bean.order.wsdl.OrderRequest;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
@@ -50,5 +49,17 @@ public class JaxbXmlUtil {
         marshaller.marshal(obj, writer);
 
         return writer.toString();
+    }
+
+    public static void main(String[] args) {
+        try {
+            OrderRequest order = new OrderRequest();
+            OrderVO orderVO = new OrderVO();
+            orderVO.setApprovalRemark("123");
+            order.setObj(orderVO);
+            System.out.println(convertToXml(order));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
