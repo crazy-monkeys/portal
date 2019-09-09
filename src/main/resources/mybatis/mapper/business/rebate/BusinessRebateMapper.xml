@@ -360,7 +360,7 @@
 
   <select id="selectByPage" parameterType="com.crazy.portal.bean.business.rebate.RebateQueryBean" resultMap="BaseResultMap">
     select
-    a.*
+    a.*,
     b.id as item_id,
     b.rebate_amount as item_rebate_amount,
     b.executor as item_executor,

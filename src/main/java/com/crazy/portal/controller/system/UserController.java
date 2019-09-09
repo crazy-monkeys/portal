@@ -1,7 +1,6 @@
 package com.crazy.portal.controller.system;
 
 import com.crazy.portal.bean.BaseResponse;
-import com.crazy.portal.bean.system.SubAgentVO;
 import com.crazy.portal.bean.system.UserCustomerMappingBean;
 import com.crazy.portal.controller.BaseController;
 import com.crazy.portal.entity.system.User;
@@ -64,7 +63,7 @@ public class UserController extends BaseController {
     }
 
     /**
-     * 密码重置
+     * 修改密码
      * @throws Exception
      */
     @PostMapping(value = "/modifyPwd")
