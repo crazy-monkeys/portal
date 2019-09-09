@@ -1,4 +1,4 @@
-package com.crazy.portal.controller.customer;
+package com.crazy.portal.controller.system;
 
 import com.crazy.portal.bean.BaseResponse;
 import com.crazy.portal.controller.BaseController;
@@ -22,7 +22,7 @@ import javax.annotation.Resource;
 @Slf4j
 @RestController
 @RequestMapping("/sys")
-public class SysCustomerController extends BaseController {
+public class SysController extends BaseController {
     @Resource
     private CustomerInfoService customerInfoService;
     @Resource
