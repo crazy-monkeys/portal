@@ -113,7 +113,7 @@ public class RebateService {
             updateRebateMasterInfo(e, userId, info);
             items.add(item);
         });
-        sendConfirmEmail(items, bean.getExecutor());
+//        sendConfirmEmail(items, bean.getExecutor());
     }
 
     private BusinessRebateItem saveRebateItem(RebateConfirmBean bean, RebateConfirmBean.RebateRecord releaseItem, Integer userId, BusinessRebate info) {
