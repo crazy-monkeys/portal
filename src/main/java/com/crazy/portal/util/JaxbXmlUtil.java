@@ -1,6 +1,6 @@
 package com.crazy.portal.util;
 
-import com.crazy.portal.bean.BaseWSDLRequest;
+import com.crazy.portal.bean.order.wsdl.BaseWSDLRequest;
 import com.crazy.portal.bean.order.wsdl.BodyContent;
 import com.crazy.portal.bean.order.wsdl.RequestBody;
 import javax.xml.bind.JAXBContext;
@@ -56,8 +56,13 @@ public class JaxbXmlUtil {
             BodyContent bodyContent = new BodyContent();
             bodyContent.setYear("123");
 
-            RequestBody requestBody = new RequestBody(bodyContent);
-            System.out.println(convertToXml(new BaseWSDLRequest(requestBody)));
+            RequestBody requestBody = new RequestBody();
+            requestBody.setBodyContent(bodyContent);
+
+            BaseWSDLRequest baseWSDLRequest = new BaseWSDLRequest();
+            baseWSDLRequest.setBody(requestBody);
+
+            System.out.println(convertToXml(baseWSDLRequest));
         } catch (Exception e) {
             e.printStackTrace();
         }

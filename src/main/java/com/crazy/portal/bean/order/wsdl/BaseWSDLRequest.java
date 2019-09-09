@@ -1,6 +1,5 @@
-package com.crazy.portal.bean;
+package com.crazy.portal.bean.order.wsdl;
 
-import com.crazy.portal.bean.order.wsdl.RequestBody;
 import lombok.Data;
 
 import javax.xml.bind.annotation.*;
@@ -19,12 +18,6 @@ import javax.xml.bind.annotation.*;
 @XmlRootElement(name = "soapenv:Envelope")
 public class BaseWSDLRequest {
 
-    public BaseWSDLRequest() {}
-
-    public BaseWSDLRequest(RequestBody body) {
-        this.body = body;
-    }
-
     @XmlAttribute(name="xmlns:soapenv")
     private String soapenv = "http://schemas.xmlsoap.org/soap/envelope/";
 
@@ -33,4 +26,8 @@ public class BaseWSDLRequest {
 
     @XmlElement(name="soap:Body")
     private RequestBody body;
+
+    public void setBody(RequestBody body) {
+        this.body = body;
+    }
 }

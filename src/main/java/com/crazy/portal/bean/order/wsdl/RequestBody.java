@@ -15,13 +15,10 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement(name = "soapenv:Body")
 public class RequestBody {
 
-    public RequestBody() {
-    }
-
-    public RequestBody(BodyContent bodyContent) {
-        this.bodyContent = bodyContent;
-    }
-
     @XmlElement(name = "urn:OrderRequest")
     private BodyContent bodyContent;
+
+    public void setBodyContent(BodyContent bodyContent) {
+        this.bodyContent = bodyContent;
+    }
 }
