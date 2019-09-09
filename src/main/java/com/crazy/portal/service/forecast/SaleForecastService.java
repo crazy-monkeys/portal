@@ -402,8 +402,8 @@ public class SaleForecastService {
         try {
             String response;
             if(functionCode == Enums.BI_FUNCTION_CODE.CHECK_FORECAST_IMPORT_DATA){
-                response = mockThirdResult() ? "\"OK:/Users/lee/Documents/job_code/portal_file/pull_thrid/forecast/forecast_check.xlsx\"" :
-                        "\"NG:/Users/lee/Documents/job_code/portal_file/pull_thrid/forecast/forecast_check.xlsx\"";
+                response = mockThirdResult() ? "\"OK:/service/ftp/portal_file/pull_thrid/forecas/forecast_check.xlsx\"" :
+                        "\"NG:/service/ftp/portal_file/pull_thrid/forecas/forecast_check.xlsx\"";
             }else{
                 response = "";
             }
