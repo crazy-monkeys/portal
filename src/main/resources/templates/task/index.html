@@ -24,11 +24,6 @@
     	<script src="http://cdnjs.cloudflare.com/ajax/libs/prettify/r224/prettify.js"></script>
     	<script th:src="@{/static/common/flatui/bootstrap-contextmenu.js}"></script>
     	
-    	<!-- messenger -->
-    	<script th:src="@{/static/common/messenger/js/messenger.min.js}"></script>
-    	<link th:href="@{/static/common/messenger/css/messenger.css}" rel="stylesheet" />
-    	<link th:href="@{/static/common/messenger/css/messenger-theme-block.css}" rel="stylesheet" />
-    	
 </head>
 <style type="text/css">
 .form-actions {
@@ -330,11 +325,7 @@ html, body {
  			$("#confirmButton2").bind("click",fun2);
  		}
  		function showErrorAlert(text){
- 			Messenger().post({
- 				  message: text,
- 				  type: 'error',
- 				  showCloseButton: true
-			});
+ 			alert(text);
  		}
  		function closeAllCM(){
  			$("div[id^='context-menu']").hide();
@@ -389,10 +380,7 @@ html, body {
 				});  
         	}
         	
-        	Messenger.options = {
-        		    extraClasses: 'messenger-fixed messenger-on-top',
-        		    theme: 'block'
-       		};
+
         	$("#searchObjGroupSelect").bind("change",function(){
         		  $("#form1").submit();
         	});

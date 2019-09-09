@@ -745,7 +745,7 @@
 
   <select id="selectEmailByCustName" parameterType="java.lang.String" resultMap="BaseResultMap">
     select a.business_type,b.email cust_email from t_customer_info a
-    inner join t_customer_contact b on b.cust_id = a.cust_id and b.type = 'C01'
+    inner join t_customer_contact b on b.cust_id = a.id and b.type = 'C01'
     where a.cust_name = #{custName} and a.active = 1 and b.email is not null
   </select>
 
