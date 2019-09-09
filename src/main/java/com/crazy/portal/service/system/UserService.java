@@ -240,6 +240,7 @@ public class UserService {
 
         User user = userMapper.findByLoginName(loginName);
         BusinessUtil.notNull(user, ErrorCodes.SystemManagerEnum.USER_NOT_EXISTS);
+        BusinessUtil.notNull(user.getEmail(),ErrorCodes.SystemManagerEnum.USER_EMAIL_INVALID);
 
         RetrievePassword retrievePassword =
                 retrievePasswordMapper.selectByRandomCodeAndUserId(user.getId(), sid);

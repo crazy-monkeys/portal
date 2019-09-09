@@ -33,8 +33,6 @@ public class UserController extends BaseController {
     private UserService userService;
     @Resource
     private UserCustomerMappingService userCustomerMappingService;
-    @Resource
-    private EmailHelper emailHelper;
 
     /**
      * 分页查询
