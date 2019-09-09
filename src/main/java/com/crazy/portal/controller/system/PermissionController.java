@@ -201,7 +201,7 @@ public class PermissionController extends BaseController{
 
         log.info("user {} delete the resource {}",super.getCurrentUser().getId(),resourceId);
 
-        List<Resource> resourceList = permissionService.findByParentId(resource.getParentId());
+        List<Resource> resourceList = permissionService.findByParentId(resourceId);
         BusinessUtil.assertTrue(resourceList.isEmpty(),SystemManagerEnum.RESOURCE_HAS_CHILDREN);
 
         int result = permissionService.getRoleCountByResourceId(resourceId);
