@@ -126,4 +126,9 @@ public class CustomerController extends BaseController{
         customerInfoService.uploadVisitRecord(files, this.getCurrentUser().getId());
         return successResult();
     }
+
+    @GetMapping("/all")
+    public BaseResponse queryAllCustomer(){
+        return successResult(customerInfoService.selecAllCustomer());
+    }
 }

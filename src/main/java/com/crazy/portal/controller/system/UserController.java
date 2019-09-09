@@ -91,15 +91,6 @@ public class UserController extends BaseController {
         return super.successResult();
     }
 
-    /**
-     * 获取代理商的内外部客户
-     * @return
-     */
-    @GetMapping(value = "/ships")
-    public BaseResponse selectShips(){
-        return successResult(userService.getUserShips(getCurrentUser().getDealerId()));
-    }
-
     @PostMapping(value = "/mapping")
     public BaseResponse getList(@RequestBody UserCustomerMappingBean bean){
         return successResult(userCustomerMappingService.selectByPage(bean));

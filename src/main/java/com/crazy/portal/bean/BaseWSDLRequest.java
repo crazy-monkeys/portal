@@ -1,5 +1,6 @@
 package com.crazy.portal.bean;
 
+import com.crazy.portal.bean.order.wsdl.RequestBody;
 import lombok.Data;
 
 import javax.xml.bind.annotation.*;
@@ -11,8 +12,18 @@ import javax.xml.bind.annotation.*;
  * @Modified by:
  */
 @XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "", propOrder = {
+    "body"
+})
 @Data
+@XmlRootElement(name = "soapenv:Envelope")
 public class BaseWSDLRequest {
+
+    public BaseWSDLRequest() {}
+
+    public BaseWSDLRequest(RequestBody body) {
+        this.body = body;
+    }
 
     @XmlAttribute(name="xmlns:soapenv")
     private String soapenv = "http://schemas.xmlsoap.org/soap/envelope/";
@@ -21,5 +32,5 @@ public class BaseWSDLRequest {
     private String urn = "urn:sap-com:document:sap:soap:functions:mc-style";
 
     @XmlElement(name="soap:Body")
-    private String body;
+    private RequestBody body;
 }

@@ -19,7 +19,6 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -389,13 +388,26 @@ public class IDRService {
         BusinessUtil.notNull(histortRecord, ErrorCodes.BusinessEnum.BUSINESS_IDR_APPROVAL_ORDERNO_NOT_FOUND);
         saveIdrApprovalRecord(request, histortRecord);
 
-//        List<BusinessIdrApproval> records = businessIdrApprovalMapper.selectByIdrInfoId(histortRecord.getIdrInfoId());
-        //TODO
-        if(request.getReviewStatus().equals(Enums.BusinessIdrApprovalStatus.AGREE.getCode()) && StringUtil.isBlank(request.getCurrentReviewer())){
-            updateIdrInfoByApproval(request.getApiUserId(), histortRecord.getIdrInfoId(), Enums.BusinessIdrStatus.APPROVAL_OVER.getCode());
-        }
-        if(request.getReviewStatus().equals(Enums.BusinessIdrApprovalStatus.REJECT.getCode())){
-            updateIdrInfoByApproval(request.getApiUserId(), histortRecord.getIdrInfoId(), Enums.BusinessIdrStatus.REJECT.getCode());
+        if(request.getType().equals(Enums.BusinessIdrApprovalSubmitType.HH.toString()) || request.getType().equals(Enums.BusinessIdrApprovalSubmitType.TH.toString()) ){
+            List<BusinessIdrApproval> records = businessIdrApprovalMapper.selectByIdrInfoId(histortRecord.getIdrInfoId());
+            Set<String> orderNos = records.stream().map(BusinessIdrApproval::getOrderNo).collect(Collectors.toSet());
+            Set<BusinessIdrApproval> agreeSet =  records.stream().filter(e-> e.getReviewStatus().equals(Enums.BusinessIdrApprovalStatus.AGREE.getCode()) && StringUtil.isBlank(e.getCurrentReviewer())).collect(Collectors.toSet());
+            Set<BusinessIdrApproval> rejectSet =  records.stream().filter(e-> e.getReviewStatus().equals(Enums.BusinessIdrApprovalStatus.REJECT.getCode())).collect(Collectors.toSet());
+            if(rejectSet.size() > 0){
+                //因为退换货，拆成了两个请求，所以其中一条被驳回，那么整个请求被驳回
+                updateIdrInfoByApproval(request.getApiUserId(), histortRecord.getIdrInfoId(), Enums.BusinessIdrStatus.REJECT.getCode());
+            }
+            if(orderNos.size() == agreeSet.size()){
+                //当所有审批被通过，整个请求被通过
+                updateIdrInfoByApproval(request.getApiUserId(), histortRecord.getIdrInfoId(), Enums.BusinessIdrStatus.APPROVAL_OVER.getCode());
+            }
+        } else {
+            if (request.getReviewStatus().equals(Enums.BusinessIdrApprovalStatus.AGREE.getCode()) && StringUtil.isBlank(request.getCurrentReviewer())) {
+                updateIdrInfoByApproval(request.getApiUserId(), histortRecord.getIdrInfoId(), Enums.BusinessIdrStatus.APPROVAL_OVER.getCode());
+            }
+            if (request.getReviewStatus().equals(Enums.BusinessIdrApprovalStatus.REJECT.getCode())) {
+                updateIdrInfoByApproval(request.getApiUserId(), histortRecord.getIdrInfoId(), Enums.BusinessIdrStatus.REJECT.getCode());
+            }
         }
     }
 

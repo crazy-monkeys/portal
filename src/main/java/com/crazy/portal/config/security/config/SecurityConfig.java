@@ -187,6 +187,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
     private static final String[] permissiveUrl = new String[]{
             "/",
+            "/sys",
             "/user/login",
             "/logout",
             "/announcement/file/**",

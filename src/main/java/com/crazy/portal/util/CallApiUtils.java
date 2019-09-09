@@ -4,10 +4,10 @@ import com.alibaba.fastjson.JSON;
 import com.crazy.portal.bean.customer.wsdl.credit.ZrfcsdcustomercreditResponse;
 import com.crazy.portal.bean.customer.wsdl.credit.Zsdscredit;
 import com.crazy.portal.bean.customer.wsdl.employee.EmployeeBasicDataResponseMessageSync;
+import com.crazy.portal.bean.customer.wsdl.orgnation.OrganisationalUnitByIDResponseMessageSync;
 import com.crazy.portal.bean.product.BaseProResponseVO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import java.io.IOException;
 
@@ -143,7 +143,7 @@ public class CallApiUtils {
 
     private static String C4C_ORGNATION = "/cxf/C4C/PORTAL/GETORGANISATIONALUNIT";
 
-    public static void queryOrganisation(){
+    public static OrganisationalUnitByIDResponseMessageSync queryOrganisation(){
         try{
             String body = "<soap:Envelope xmlns:soap=\"http://www.w3.org/2003/05/soap-envelope\" xmlns:glob=\"http://sap.com/xi/SAPGlobal20/Global\">" +
                     "   <soap:Header/>" +
@@ -163,11 +163,11 @@ public class CallApiUtils {
                     "   </soap:Body>" +
                     "</soap:Envelope>";
             String jsonStr = HttpClientUtils.post(C4C_ORGNATION, body);
-            //OrganisationalUnitByElementsResponseSync response = JaxbXmlUtil.convertSoapXmlToJavaBean2(jsonStr, OrganisationalUnitByElementsResponseSync.class);
-            System.out.println("1");
+            return JaxbXmlUtil.convertSoapXmlToJavaBean2(jsonStr, OrganisationalUnitByIDResponseMessageSync.class);
         }catch (Exception e){
             e.printStackTrace();
         }
+        return null;
     }
 
 }
