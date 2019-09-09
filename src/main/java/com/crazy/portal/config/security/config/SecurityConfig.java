@@ -189,6 +189,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
             "/",
             "/sys",
             "/user/login",
+            "/user/forgetPwd/**",
             "/logout",
             "/announcement/file/**",
             "/scheduleJob/list",

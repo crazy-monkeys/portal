@@ -2,11 +2,14 @@ package com.crazy.portal.controller.system;
 
 import com.crazy.portal.bean.BaseResponse;
 import com.crazy.portal.bean.system.UserCustomerMappingBean;
+import com.crazy.portal.config.email.EmailHelper;
 import com.crazy.portal.controller.BaseController;
 import com.crazy.portal.entity.system.User;
 import com.crazy.portal.entity.system.UserCustomerMapping;
 import com.crazy.portal.service.system.UserCustomerMappingService;
 import com.crazy.portal.service.system.UserService;
+import com.crazy.portal.util.BusinessUtil;
+import com.crazy.portal.util.ErrorCodes;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -30,6 +33,8 @@ public class UserController extends BaseController {
     private UserService userService;
     @Resource
     private UserCustomerMappingService userCustomerMappingService;
+    @Resource
+    private EmailHelper emailHelper;
 
     /**
      * 分页查询
@@ -55,7 +60,7 @@ public class UserController extends BaseController {
      * 登录名称是否可用
      * @return
      */
-    @GetMapping(value = "/validLoginName/{loginName}")
+    @GetMapping("/validLoginName/{loginName}")
     public BaseResponse checkLoginName(@PathVariable String loginName) {
         User user = userService.findUser(loginName);
         Map<String,Boolean> map = this.valid( user == null );
@@ -66,7 +71,7 @@ public class UserController extends BaseController {
      * 修改密码
      * @throws Exception
      */
-    @PostMapping(value = "/modifyPwd")
+    @PostMapping("/modifyPwd")
     public BaseResponse modifyPwd(@RequestParam String loginName,
                                   @RequestParam String oldPwd,
                                   @RequestParam String newPwd) {
@@ -78,10 +83,40 @@ public class UserController extends BaseController {
     }
 
     /**
+     * 忘记密码-发送邮件
+     * @param loginName
+     * @return
+     */
+    @PostMapping("/forgetPwd/sendEmail/{loginName}")
+    public BaseResponse sendEmail(@PathVariable String loginName){
+        User user = userService.findUser(loginName);
+        BusinessUtil.notNull(user, ErrorCodes.SystemManagerEnum.USER_NOT_EXISTS);
+
+        userService.sendForgetEmail(loginName);
+        return super.successResult();
+    }
+
+    /**
+     * 忘记密码-修改密码
+     * @param loginName
+     * @param sid
+     * @param newPwd
+     * @return
+     */
+    @PostMapping("/forgetPwd/modifyPwd/{loginName}")
+    public BaseResponse forgetPwd(@PathVariable String loginName,
+                                  @RequestParam String sid,
+                                  @RequestParam String newPwd){
+
+        userService.modifyPwd(loginName,sid,newPwd);
+        return successResult();
+    }
+
+    /**
      * 密码重置
      * @throws Exception
      */
-    @PostMapping(value = "/resetPwd/{loginName}")
+    @PostMapping("/resetPwd/{loginName}")
     public BaseResponse resetPwd(@PathVariable String loginName) {
         User currentUser = super.getCurrentUser();
         log.info("管理员{} 进行重置 '{}' 用户的密码操作",currentUser.getLoginName(),loginName);
@@ -90,12 +125,12 @@ public class UserController extends BaseController {
         return super.successResult();
     }
 
-    @PostMapping(value = "/mapping")
+    @PostMapping("/mapping")
     public BaseResponse getList(@RequestBody UserCustomerMappingBean bean){
         return successResult(userCustomerMappingService.selectByPage(bean));
     }
 
-    @PostMapping(value = "/createMapping")
+    @PostMapping("/createMapping")
     public BaseResponse createMapping(@RequestBody UserCustomerMapping mapping){
         userCustomerMappingService.saveOrUpdateMapping(mapping, this.getCurrentUserId());
         return successResult();

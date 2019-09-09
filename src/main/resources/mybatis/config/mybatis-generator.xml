@@ -19,33 +19,25 @@
             <property name="forceBigDecimals" value="false"/>  
         </javaTypeResolver>
 
-        <javaModelGenerator targetPackage="com.crazy.portal.entity.group" targetProject="src/main/java">
+        <javaModelGenerator targetPackage="com.crazy.portal.entity.system" targetProject="src/main/java">
             <property name="enableSubPackages" value="true"/>  
             <property name="trimStrings" value="true"/>  
         </javaModelGenerator>
 
-        <sqlMapGenerator targetPackage="mybatis/mapper/group" targetProject="src/main/resources">
+        <sqlMapGenerator targetPackage="mybatis/mapper/system" targetProject="src/main/resources">
             <property name="enableSubPackages" value="true"/>  
         </sqlMapGenerator>  
 
-        <javaClientGenerator type="XMLMAPPER" targetPackage="com.crazy.portal.dao.group" targetProject="src/main/java">
+        <javaClientGenerator type="XMLMAPPER" targetPackage="com.crazy.portal.dao.system" targetProject="src/main/java">
             <property name="enableSubPackages" value="true"/>
         </javaClientGenerator>
 
-        <table tableName="t_sales_group" domainObjectName="SalesGroup"
+        <table tableName="t_retrieve_password" domainObjectName="RetrievePassword"
                enableCountByExample="false"
                enableUpdateByExample="false"
                enableDeleteByExample="false"
                enableSelectByExample="false"
                selectByExampleQueryId="false"></table>
-
-        <table tableName="t_sales_group_office" domainObjectName="SalesGroupOffice"
-               enableCountByExample="false"
-               enableUpdateByExample="false"
-               enableDeleteByExample="false"
-               enableSelectByExample="false"
-               selectByExampleQueryId="false"></table>
-
 
     </context>
 

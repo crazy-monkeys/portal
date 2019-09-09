@@ -3,25 +3,20 @@ package com.crazy.portal.service.system;
 import com.crazy.portal.bean.customer.CustomerShipBean;
 import com.crazy.portal.bean.system.MailBean;
 import com.crazy.portal.bean.system.SubAgentVO;
-import com.crazy.portal.bean.system.UserPositionBean;
 import com.crazy.portal.config.email.EmailHelper;
 import com.crazy.portal.config.exception.BusinessException;
-import com.crazy.portal.dao.system.InternalUserMapper;
-import com.crazy.portal.dao.system.RoleMapper;
-import com.crazy.portal.dao.system.UserMapper;
-import com.crazy.portal.dao.system.UserRoleMapper;
-import com.crazy.portal.entity.system.InternalUser;
-import com.crazy.portal.entity.system.Role;
-import com.crazy.portal.entity.system.User;
-import com.crazy.portal.entity.system.UserRole;
+import com.crazy.portal.dao.system.*;
+import com.crazy.portal.entity.system.*;
 import com.crazy.portal.service.customer.CustomerInfoService;
 import com.crazy.portal.util.*;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import javax.annotation.Resource;
 import java.util.*;
 
@@ -47,6 +42,11 @@ public class UserService {
     private CustomerInfoService customerInfoService;
     @Resource
     private InternalUserMapper internalUserMapper;
+    @Resource
+    private RetrievePasswordMapper retrievePasswordMapper;
+
+    @Value("${portal-view.url}")
+    private String portalViewUrl;
 
 
     private PasswordEncoder passwordEncoder =
@@ -204,6 +204,13 @@ public class UserService {
         emailHelper.sendHtmlMail(mailBean);
     }
 
+    /**
+     * 用户-修改密码
+     * @param loginName
+     * @param oldPwd
+     * @param newPwd
+     * @param userId
+     */
     @Transactional
     public void modifyPwd(String loginName,String oldPwd,String newPwd,Integer userId){
         User user = this.findUser(loginName);
@@ -221,6 +228,70 @@ public class UserService {
         userMapper.updateByPrimaryKeySelective(user);
     }
 
+    /**
+     * 忘记密码-修改密码
+     * @param loginName
+     * @param sid
+     * @param newPwd
+     * @return
+     */
+    @Transactional
+    public boolean modifyPwd(String loginName,String sid,String newPwd){
+
+        User user = userMapper.findByLoginName(loginName);
+        BusinessUtil.notNull(user, ErrorCodes.SystemManagerEnum.USER_NOT_EXISTS);
+
+        RetrievePassword retrievePassword =
+                retrievePasswordMapper.selectByRandomCodeAndUserId(user.getId(), sid);
+
+        BusinessUtil.notNull(retrievePassword,ErrorCodes.SystemManagerEnum.USER_FOGET_EMAIL_URL_INVALID);
+
+        log.info("User {} resets the password",user.getLoginName());
+        user.setLoginPwd(passwordEncoder.encode(newPwd));
+        user.setPwdInvalidTime(DateUtil.addDays(new Date(),365 * 10));
+        user.setUpdateTime(new Date());
+        user.setUpdateUserId(user.getId());
+        userMapper.updateByPrimaryKeySelective(user);
+
+        retrievePassword.setStatus(0);
+        retrievePassword.setUpdateTime(new Date());
+        retrievePasswordMapper.updateByPrimaryKeySelective(retrievePassword);
+        return true;
+    }
+
+    /**
+     * 发送忘记密码邮件
+     * @param loginName
+     */
+    @Transactional
+    public boolean sendForgetEmail(String loginName){
+        User user = userMapper.findByLoginName(loginName);
+        BusinessUtil.notNull(user, ErrorCodes.SystemManagerEnum.USER_NOT_EXISTS);
+
+        MailBean mailBean = new MailBean();
+        mailBean.setTemplateName(EmailHelper.MAIL_TEMPLATE.FORGET_PWD.getTemplateName());
+        mailBean.setSubject("忘记密码邮件");
+        mailBean.setTos(user.getEmail());
+        String randomCode = UUID.randomUUID().toString();
+        Map<String,Object> map = new HashMap<>();
+        map.put("url",String.format("%s?sid=%s&loginName=%s",portalViewUrl,randomCode,loginName));
+        map.put("loginName",loginName);
+        mailBean.setParams(map);
+
+        emailHelper.sendHtmlMail(mailBean);
+
+        //保存
+        Date now = new Date();
+        RetrievePassword retrievePassword = new RetrievePassword();
+        retrievePassword.setUserid(user.getId());
+        retrievePassword.setRandomCode(randomCode);
+        retrievePassword.setInvalidTime(DateUtil.addMinutes(now,30));
+        retrievePassword.setStatus(1);
+        retrievePassword.setCreateTime(now);
+
+        retrievePasswordMapper.insertSelective(retrievePassword);
+        return true;
+    }
 
     /**
      * 获取 customer的内外部客户

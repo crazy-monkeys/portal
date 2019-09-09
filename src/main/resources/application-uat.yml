@@ -46,6 +46,9 @@ file:
       push: ${file.path.root-thrid-push}/forecast/
       pull: ${file.path.root-thrid-pull}/forecast/
 
+portal-view:
+  url: http://portal-sit.threeape.cn/portal/#/pwd
+
 ecc:
   api:
     url: https://e600180-hcioem.hcisbt.cn1.hana.ondemand.com

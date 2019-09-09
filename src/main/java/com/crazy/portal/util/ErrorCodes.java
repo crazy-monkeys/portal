@@ -53,7 +53,7 @@ public class ErrorCodes {
         USER_NOT_EXISTS(10012,"用户不存在",""),
         USER_INVALID_PASSWORD(10013,"原密码不正确",""),
         USER_SAVE_FAILED(10014,"用户保存失败",""),
-
+        USER_FOGET_EMAIL_URL_INVALID(10015,"链接已经失效",""),
         ROLE_NAME_EXISTS(10020,"角色名已经存在",""),
         ROLE_NOT_EXIST(10021,"角色不存在",""),
         ROLE_EMPTY_NAME(10022,"角色名不能为空",""),
