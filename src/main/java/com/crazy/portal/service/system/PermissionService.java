@@ -76,7 +76,7 @@ public class PermissionService {
     }
 
     /**
-     * 获取资源详情
+     * 获取资源  by id
      * @param resId
      * @return
      */
@@ -84,9 +84,20 @@ public class PermissionService {
         return resourceMapper.selectByPrimaryKey(resId);
     }
 
+    /**
+     * 获取资源  by 资源名称
+     * @param resName
+     * @return
+     */
     public Resource findResource(String resName){
         return resourceMapper.selectResourceByName(resName);
     }
+
+
+    public List<Resource> findByParentId(Integer parentId){
+        return resourceMapper.findByParentId(parentId);
+    }
+
 
     /**
      * 根据角色id获取拥有的权限

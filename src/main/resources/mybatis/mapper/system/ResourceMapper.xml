@@ -35,6 +35,14 @@
     where resource_name = #{resName,jdbcType=VARCHAR}
   </select>
 
+  <select id="findByParentId" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+    select
+    <include refid="Base_Column_List" />
+    from t_resource
+    where parent_id = #{parentId,jdbcType=INTEGER}
+  </select>
+
+
   <select id="findActiveList" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />

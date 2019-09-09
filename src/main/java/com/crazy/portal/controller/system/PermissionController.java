@@ -195,14 +195,18 @@ public class PermissionController extends BaseController{
      */
     @DeleteMapping(value="/delResource/{resourceId}")
     public BaseResponse deleteResource(@PathVariable Integer resourceId){
+
         Resource resource = permissionService.findResource(resourceId);
         BusinessUtil.notNull(resource,SystemManagerEnum.RESOURCE_NOT_EXIST);
+
         log.info("user {} delete the resource {}",super.getCurrentUser().getId(),resourceId);
+
+        List<Resource> resourceList = permissionService.findByParentId(resource.getParentId());
+        BusinessUtil.assertTrue(resourceList.isEmpty(),SystemManagerEnum.RESOURCE_HAS_CHILDREN);
+
         int result = permissionService.getRoleCountByResourceId(resourceId);
-        if(result > 0){
-            log.warn("该权限已配置角色，请先删除该权限的角色信息!");
-            BusinessUtil.assertFlase(true,SystemManagerEnum.RESOURCE_USED);
-        }
+        BusinessUtil.assertFlase(result > 0,SystemManagerEnum.RESOURCE_USED);
+
         permissionService.deleteResource(resourceId);
         return super.successResult();
     }
