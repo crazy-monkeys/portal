@@ -22,6 +22,7 @@ public interface ResourceMapper {
 
     List<Resource> findActiveList(@Param("roleId") Integer roleId);
 
+    List<Resource> findByParentId(Integer parentId);
     /**
      * 查询所有菜单总合
      * @return
