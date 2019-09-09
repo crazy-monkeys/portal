@@ -74,9 +74,8 @@ public class SubAgentController extends BaseController {
     public BaseResponse getSubAgents(@RequestParam(required = false,defaultValue = "1") Integer pageNum,
                                      @RequestParam(required = false,defaultValue = "10") Integer pageSize){
 
-        Role role = super.getCurrentRole();
         User userQuery = new User();
-        userQuery.setCreateUserId(role.getRoleCode().equals("ADMIN")?null:super.getCurrentUser().getId());
+        userQuery.setCreateUserId(super.getCurrentUser().getId());
         userQuery.setUserType(Enums.USER_TYPE.subAgent.toString());
         PageInfo<User> users = userService.getSubAgents(userQuery,pageNum,pageSize);
         return super.successResult(users);
