@@ -403,7 +403,7 @@ public class SaleForecastService {
             String response;
             if(functionCode == Enums.BI_FUNCTION_CODE.CHECK_FORECAST_IMPORT_DATA){
                 response = mockThirdResult() ? "\"OK:/service/ftp/portal_file/pull_thrid/forecast/forecast_check.xlsx\"" :
-                        "\"NG:/service/ftp/portal_file/pull_thrid/forecast/forecast_check.xlsx\"";
+                        "\"NG:/service/ftp/portal_file/pull_thrid/forecast/forecast_check_error.xlsx\"";
             }else{
 
                 response = "";
