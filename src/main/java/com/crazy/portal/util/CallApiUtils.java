@@ -20,11 +20,8 @@ import java.io.IOException;
 @Component
 public class CallApiUtils {
     private static final String MDM_PRODUCT_URL = "/http/MDMProductMaster";
-
     private static final String ECC_DEALER_CREDIR_URL = "/cxf/CUSTOMERCREDIT";
-
     private static final String BI_URL = "/http/";
-
 
     /**
      * 同步产品信息
@@ -108,10 +105,7 @@ public class CallApiUtils {
         return url;
     }
 
-
-
     private static String C4C_EMPLOYE = "/cxf/C4C/PORTAL/GETEMPLOYEEINFO";
-
     public static EmployeeBasicDataResponseMessageSync querEmployee(){
         try{
             String body = "<soap:Envelope xmlns:soap=\"http://www.w3.org/2003/05/soap-envelope\" xmlns:glob=\"http://sap.com/xi/SAPGlobal20/Global\">" +
@@ -142,7 +136,6 @@ public class CallApiUtils {
     }
 
     private static String C4C_ORGNATION = "/cxf/C4C/PORTAL/GETORGANISATIONALUNIT";
-
     public static OrganisationalUnitByIDResponseMessageSync queryOrganisation(){
         try{
             String body = "<soap:Envelope xmlns:soap=\"http://www.w3.org/2003/05/soap-envelope\" xmlns:glob=\"http://sap.com/xi/SAPGlobal20/Global\">" +
@@ -169,5 +162,7 @@ public class CallApiUtils {
         }
         return null;
     }
+
+    private static String C4C_Visits = "";
 
 }

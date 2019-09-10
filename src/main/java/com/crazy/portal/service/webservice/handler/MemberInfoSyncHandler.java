@@ -117,7 +117,7 @@ public class MemberInfoSyncHandler extends AbstractHandler implements IHandler<M
         if(StringUtil.isNotEmpty(request.getCustType())){
             customerInfo.setBusinessType(request.getCustType());
         }
-        if(null != request.getIsLicense()){
+        if(StringUtil.isNotEmpty(request.getIsLicense())){
             customerInfo.setIsLicense(Integer.valueOf(request.getIsLicense()));
         }
         if(StringUtil.isNotEmpty(request.getCustRole())){

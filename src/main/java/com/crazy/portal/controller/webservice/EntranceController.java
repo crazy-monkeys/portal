@@ -130,7 +130,7 @@ public class EntranceController extends BaseController{
         }
 
         //检查签名是否正确 TODO 暂时关闭
-        /*if(!request.checkVerifyCode()){
+       /* if(!request.checkVerifyCode()){
             return setResponse(INTERFACE_CODE.CODE1002.getValue(),INTERFACE_CODE.CODE1002.getZh_desc());
         }*/
         //超过5分钟视为非法访问
