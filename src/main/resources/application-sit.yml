@@ -32,6 +32,7 @@ spring:
 
 file:
   path:
+    reader_root: http://portal-sit.threeape.cn/portal-api/file
     root: /service/ftp/portal_file #公用基础路径
     root-local: ${file.path.root}/local #portal系统内文件地址入口
     root-thrid-push: ${file.path.root}/push_thrid #portal对接第三方文件出口地址
