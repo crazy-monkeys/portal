@@ -30,8 +30,8 @@ import java.security.GeneralSecurityException;
 @Slf4j
 public class HttpClientUtils {
 
-    public static final int CONNECT_TIMEOUT=60000;
-    public static final int READ_TIMEOUT=60000;
+    public static final int CONNECT_TIMEOUT=360000;
+    public static final int READ_TIMEOUT=360000;
     public static final String CHARSET="UTF-8";
 
     private static HttpClient client;

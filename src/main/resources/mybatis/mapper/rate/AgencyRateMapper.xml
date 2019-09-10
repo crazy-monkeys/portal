@@ -229,6 +229,9 @@
   </update>
 
   <update id="approve">
-    update t_agency_rate set active = 1 where id in (#{ids})
+    update t_agency_rate set active = 1 where id in
+    <foreach collection="ids" item="item" index="index" open="(" separator="," close=")" >
+      #{item}
+    </foreach>
 </update>
 </mapper>

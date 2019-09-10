@@ -161,6 +161,7 @@ public class ErrorCodes {
         RATE_BATCH_IS_NOT_NULL(60001,"批次号已存在",""),
         //代理费率
         AGENCY_RATE_UPLOAD_EXCEPTION(70001, "代理费率上传异常", ""),
+        AGENCY_RATE_CUST_TYPE_ERROR(70106,"客户分类只能为B1（Account Market）或 B2（Mass Market）",""),
         //商务管理-保差退
         BUSINESS_TYPE_IS_NULL(70002, "保差退类型不能为空", ""),
         BUSINESS_FILE_TYPE_IS_NULL(70003, "文件类型不能为空", ""),

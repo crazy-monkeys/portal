@@ -28,7 +28,8 @@
   </sql>
   
   <resultMap id="ProductResultMap" type="com.crazy.portal.entity.product.ProductInfoDO" extends="BaseResultMap">
-    <collection property="subProducts" resultMap="com.crazy.portal.dao.product.ProductSubDOMapper.BaseResultMap" />
+   <!-- <collection property="subProducts" resultMap="com.crazy.portal.dao.product.ProductSubDOMapper.BaseResultMap" />-->
+    <collection property="subProducts" ofType="com.crazy.portal.entity.product.ProductSubDO" column="id" select="selectSub" />
   </resultMap>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -265,14 +266,9 @@
     pro.bu_header,
     pro.manager,
     pro.sap_mid,
-    pro.mpq,
-    sub.sub_id,
-    sub.product_id,
-    sub.sub_mid,
-    sub.sub_number
+    pro.mpq
     from t_product_batch batch
     left join t_product_info pro on batch.id = pro.batch_id
-    left join t_product_sub sub on sub.product_id = pro.id
     where batch.batch_status=1
     <if test="product != null and product != ''">
         and pro.product like concat('%',#{product},'%')
@@ -295,9 +291,10 @@
     <if test="sapMid != null and sapMid != ''">
       and pro.sap_mid like concat('%',#{sapMid},'%')
     </if>
-    <if test="subMid != null and subMid != ''">
-      and sub.sub_mid like concat('%',#{subMid},'%')
-    </if>
     order by pro.sn
+  </select>
+
+  <select id="selectSub" resultType="com.crazy.portal.entity.product.ProductSubDO">
+    select * from t_product_sub where product_id = #{id}
   </select>
 </mapper>

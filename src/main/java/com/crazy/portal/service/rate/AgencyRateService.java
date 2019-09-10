@@ -9,6 +9,7 @@ import com.crazy.portal.bean.rate.AgencyRateQueryBean;
 import com.crazy.portal.config.exception.BusinessException;
 import com.crazy.portal.dao.rate.AgencyRateMapper;
 import com.crazy.portal.entity.rate.AgencyRate;
+import com.crazy.portal.entity.system.InternalUser;
 import com.crazy.portal.util.*;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
@@ -50,8 +51,10 @@ public class AgencyRateService {
                     BeanUtils.copyNotNullFields(e, record);
                     if (record.getCustomerType() != null && record.getCustomerType().equals("B1")) {
                         record.setCustomerType("Account Market");
-                    } else {
+                    } else if (record.getCustomerType() != null && record.getCustomerType().equals("B2")){
                         record.setCustomerType("Mass Market");
+                    }else{
+                        throw new BusinessException(ErrorCodes.BusinessEnum.AGENCY_RATE_CUST_TYPE_ERROR);
                     }
                     record.setActive(Enums.RATE_TYPE.INI.getCode());
                     record.setCreateUserId(userId);
@@ -72,7 +75,12 @@ public class AgencyRateService {
     @Transactional
     public void approveRate(String ids){
         agencyRateMapper.inActive();
-        agencyRateMapper.approve(ids);
+        String[] strs = ids.split(",");
+        List<Integer> results = new ArrayList<>();
+        for(String str : strs){
+            results.add(Integer.valueOf(str));
+        }
+        agencyRateMapper.approve(results);
     }
 
     /**

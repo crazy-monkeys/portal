@@ -2,6 +2,7 @@ package com.crazy.portal.dao.rate;
 
 import com.crazy.portal.bean.rate.AgencyRateQueryBean;
 import com.crazy.portal.entity.rate.AgencyRate;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -18,5 +19,5 @@ public interface AgencyRateMapper {
 
     int inActive();
 
-    int approve(String ids);
+    int approve(@Param("ids") List<Integer> ids);
 }
