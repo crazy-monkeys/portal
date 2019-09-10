@@ -98,4 +98,7 @@ public class BiAgencyCheckTemplate extends BaseRowModel {
     @ExcelProperty(index = 28, value = "错误信息")
     private String errorMsg;
 
+    @ExcelProperty(index = 29, value = "PortalID")
+    private String id;
+
 }

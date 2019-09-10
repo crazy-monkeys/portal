@@ -95,18 +95,11 @@ public class SaleForecastService {
         }
 //        String AgencyAbbreviation = customerInfoService.getDealerByUser(userId).getCustAbbreviation();
         String AgencyAbbreviation = "测试的代理商简称";
-        List<BiAgencyCheckTemplate> reqBiDataList = JSONObject.parseArray(JSONObject.toJSONString(agencyForecastList), BiAgencyCheckTemplate.class);
-        for(BiAgencyCheckTemplate biAgencyCheckTemplate : reqBiDataList){
-            biAgencyCheckTemplate.setAgencyAbbreviation(AgencyAbbreviation);
-        }
-        String checkFileName = ExcelUtils.writeExcel(forecastPushPath, reqBiDataList, BiAgencyCheckTemplate.class);
-        BiResponse response = callBiServer(CHECK_FORECAST_IMPORT_DATA, forecastPushPath, checkFileName, forecastPullPath);
-        List<BiAgencyCheckTemplate> responseDataList = ExcelUtils.readExcel(response.getFilePath(), BiAgencyCheckTemplate.class);
         String batchNo = generateBathNo();
-        for(BiAgencyCheckTemplate responseData : responseDataList){
-            Forecast forecast = new Forecast();
-            try {
-                BeanUtils.copyNotNullFields(responseData, forecast);
+        try {
+            for(AgencyTemplate template : agencyForecastList){
+                Forecast forecast = new Forecast();
+                BeanUtils.copyNotNullFields(template, forecast);
                 forecast.setCreateUserId(userId);
                 forecast.setCreateTime(new Date());
                 forecast.setBatchNo(batchNo);
@@ -115,20 +108,36 @@ public class SaleForecastService {
                     log.debug("[upload data] Save forecast head data , userId:{} , data:{}", userId, JSONObject.toJSON(forecast));
                 }
                 ForecastLine line = new ForecastLine();
-                BeanUtils.copyNotNullFields(responseData, line);
+                BeanUtils.copyNotNullFields(template, line);
                 line.setfId(forecast.getId());
                 forecastLineMapper.insertSelective(line);
                 if(log.isDebugEnabled()){
                     log.debug("[upload data] Save forecast line data , userId:{} , data:{}", userId, JSONObject.toJSON(line));
                 }
-            }catch (Exception ex) {
-
+                template.setAgencyAbbreviation(AgencyAbbreviation);
+                template.setId(String.valueOf(forecast.getId()));
             }
+        }catch (Exception ex) {
+            throw new BusinessException("BeanUtils copyNotNullFields exception");
         }
+        List<BiAgencyCheckTemplate> reqBiDataList = JSONObject.parseArray(JSONObject.toJSONString(agencyForecastList), BiAgencyCheckTemplate.class);
+        String checkFileName = ExcelUtils.writeExcel(forecastPushPath, reqBiDataList, BiAgencyCheckTemplate.class);
+        BiResponse response = callBiServer(CHECK_FORECAST_IMPORT_DATA, forecastPushPath, checkFileName, forecastPullPath);
+        List<BiAgencyCheckTemplate> responseDataList = ExcelUtils.readExcel(response.getFilePath(), BiAgencyCheckTemplate.class);
         ForecastResult result = new ForecastResult();
         result.setSuccess(response.isSuccess());
         result.setData(responseDataList);
         result.setBatchNo(batchNo);
+        if(response.isSuccess()){
+            return result;
+        }
+        for(BiAgencyCheckTemplate responseData : responseDataList){
+            responseData.setErrorMsg("模拟出来的错误，上线需要去掉");
+            if(StringUtils.isNotEmpty(responseData.getErrorMsg())){
+                BusinessUtil.assertEmpty(responseData.getId(), FORECAST_BI_CHECK_RESPONSE_ID_NOT_EXISTS);
+                forecastMapper.updateErrorMsgById(Integer.parseInt(responseData.getId()), responseData.getErrorMsg());
+            }
+        }
         return result;
     }
 
@@ -400,15 +409,15 @@ public class SaleForecastService {
 
     private BiResponse callBiServer(Enums.BI_FUNCTION_CODE functionCode, String filePath, String fileName, String pullPath) {
         try {
+            String fullPath = String.format("%s%s", filePath, fileName);
             String response;
             if(functionCode == Enums.BI_FUNCTION_CODE.CHECK_FORECAST_IMPORT_DATA){
-                response = mockThirdResult() ? "\"OK:/service/ftp/portal_file/pull_thrid/forecast/forecast_check.xlsx\"" :
-                        "\"NG:/service/ftp/portal_file/pull_thrid/forecast/forecast_check_error.xlsx\"";
+                response = mockThirdResult() ? "\"OK:"+fullPath+"\"" :
+                        "\"NG:"+fullPath+"\"";
             }else{
 
                 response = "";
             }
-            String fullPath = String.format("%s%s", filePath, fileName);
 //            String response = CallApiUtils.callBiApi(functionCode, "PORTAL/BI/", fullPath, pullPath);
             if(StringUtils.isEmpty(response)){
                 log.error("{} -> {}", FORECAST_BI_RESPONSE_EXCEPTION.getZhMsg(), response);

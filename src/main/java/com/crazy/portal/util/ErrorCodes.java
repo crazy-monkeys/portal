@@ -190,7 +190,8 @@ public class ErrorCodes {
         FORECAST_ERROR_DATA_EXISTS(80005, "存在错误数据，请修正后再进行操作", ""),
         FORECAST_BI_SERVER_EXCEPTION(40009, "BI服务异常，请联系管理员", ""),
         FORECAST_BI_RESPONSE_EXCEPTION(40009, "BI处理结果解析异常，请联系管理员", ""),
-        FORECAST_BI_DELETE_FAIL(40009, "数据删除失败，请联系管理员", "");
+        FORECAST_BI_DELETE_FAIL(40009, "数据删除失败，请联系管理员", ""),
+        FORECAST_BI_CHECK_RESPONSE_ID_NOT_EXISTS(40010, "BI返回数据-Portal ID未正确返回", "");
 
         private final int code;
         private final String zhMsg;

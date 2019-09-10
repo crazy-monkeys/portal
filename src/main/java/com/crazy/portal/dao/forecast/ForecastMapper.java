@@ -53,4 +53,7 @@ public interface ForecastMapper {
                           @Param(value = "status") Integer status);
 
     int deleteByBiIds(@Param(value = "ids") Integer[] biIds);
+
+    int updateErrorMsgById(@Param(value = "id") Integer id,
+                           @Param(value = "errorMsg") String errorMsg);
 }

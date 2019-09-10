@@ -498,4 +498,9 @@
     </foreach>
   </delete>
 
+  <update id="updateErrorMsgById" >
+    update t_forecast set error_msg = #{errorMsg}
+    where id = #{id}
+  </update>
+
 </mapper>

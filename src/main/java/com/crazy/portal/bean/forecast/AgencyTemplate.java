@@ -134,4 +134,8 @@ public class AgencyTemplate extends BaseRowModel {
     @ExcelProperty(index = 40, value = "备注6")
     private String remarkSix;
 
+    private String AgencyAbbreviation;
+
+    private String id;
+
 }
