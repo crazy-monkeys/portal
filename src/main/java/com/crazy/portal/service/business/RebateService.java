@@ -29,6 +29,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.util.*;
 
@@ -101,42 +102,25 @@ public class RebateService {
      * @param bean
      * @param userId
      */
-    @Transactional
-    public void confirm(RebateConfirmBean bean, Integer userId){
+    @Transactional(rollbackFor=Exception.class)
+    public void confirm(RebateConfirmBean bean, Integer userId) throws Exception{
         BusinessUtil.notNull(bean.getRebates(), ErrorCodes.BusinessEnum.REBATE_RECORD_NOT_FOUND);
         List<BusinessRebateItem> items = Lists.newArrayList();
-        bean.getRebates().forEach(e->{
+        for (RebateConfirmBean.RebateRecord e : bean.getRebates()) {
             BusinessRebate info = businessRebateMapper.selectByPrimaryKey(e.getId());
             BusinessUtil.notNull(info, ErrorCodes.BusinessEnum.REBATE_RECORD_NOT_FOUND);
             BusinessUtil.assertFlase(e.getReleaseAmount().compareTo(info.getSurplusRebateAmount()) > 0, ErrorCodes.BusinessEnum.REBATE_SURPLUS_AMOUNT_BIG);
             BusinessRebateItem item = saveRebateItem(bean, e, userId, info);
             updateRebateMasterInfo(e, userId, info);
             items.add(item);
-        });
+        }
 //        sendConfirmEmail(items, bean.getExecutor());
     }
 
-    private BusinessRebateItem saveRebateItem(RebateConfirmBean bean, RebateConfirmBean.RebateRecord releaseItem, Integer userId, BusinessRebate info) {
+    private BusinessRebateItem saveRebateItem(RebateConfirmBean bean, RebateConfirmBean.RebateRecord releaseItem, Integer userId, BusinessRebate info) throws Exception {
         BusinessRebateItem item = new BusinessRebateItem();
         item.setRebateId(releaseItem.getId());
-        item.setAgencyName(info.getAgencyName());
-        item.setCustomerShortName(info.getCustomerShortName());
-        item.setCustomerType(info.getCustomerType());
-        item.setSalesName(info.getSalesName());
-        item.setAmebaHeader(info.getAmebaHeader());
-        item.setAmebaDepartment(info.getAmebaDepartment());
-        item.setShipmentCompany(info.getShipmentCompany());
-        item.setAccountYearMonth(info.getAccountYearMonth());
-        item.setOrderMonth(info.getOrderMonth());
-        item.setShipmentYearMonth(info.getShipmentYearMonth());
-        item.setBu(info.getBu());
-        item.setPdt(info.getPdt());
-        item.setProduct(info.getProduct());
-        item.setQty(info.getQty());
-        item.setSalesPrice(info.getSalesPrice());
-        item.setPoPrice(info.getPoPrice());
-        item.setActualPrice(info.getActualPrice());
-        item.setPlatform(info.getPlatform());
+        BeanUtils.copyNotNullFields(info, item);
         item.setExecutor(bean.getExecutor());
         item.setExecuteStyle(bean.getExecuteStyle());
         item.setRebateAmount(releaseItem.getReleaseAmount());
@@ -274,8 +258,8 @@ public class RebateService {
      * BI -> portal
      * 每天0点
      */
-    @Transactional
-    public void rebateDataSync(String param) throws IOException {
+    @Transactional(rollbackFor=Exception.class)
+    public void rebateDataSync(String param) throws Exception {
         String currMonth = StringUtil.isBlank(param) ? DateUtil.format(new Date(), DateUtil.MONTH_FORMAT) : param;
         String preMonth = DateUtil.getPerMonth();
 
@@ -289,31 +273,14 @@ public class RebateService {
 
     }
 
-    private void batchUpdateRebate(String currMonth, String preMonth, Date currDate) {
+    private void batchUpdateRebate(String currMonth, String preMonth, Date currDate) throws Exception{
         List<RebateGroupParam> groupParams = businessSalesDetailMapper.selectGroupParamList(currMonth, preMonth);
         List<Integer> rebateIds = new ArrayList<>();
-        groupParams.forEach(e->{
+        for (RebateGroupParam e : groupParams) {
             Integer rebateId = businessRebateMapper.selectRebateIdByGroupParam(e);
             if(rebateId == null){
                 BusinessRebate rebateRecord = new BusinessRebate();
-                rebateRecord.setAgencyName(e.getAgencyName());
-                rebateRecord.setCustomerShortName(e.getCustomerShortName());
-                rebateRecord.setCustomerType(e.getCustomerType());
-                rebateRecord.setSalesName(e.getSalesName());
-                rebateRecord.setAmebaHeader(e.getAmebaHeader());
-                rebateRecord.setAmebaDepartment(e.getAmebaDepartment());
-                rebateRecord.setShipmentCompany(e.getShipmentCompany());
-                rebateRecord.setAccountYearMonth(e.getAccountYearMonth());
-                rebateRecord.setOrderMonth(e.getOrderMonth());
-                rebateRecord.setShipmentYearMonth(e.getShipmentYearMonth());
-                rebateRecord.setBu(e.getBu());
-                rebateRecord.setPdt(e.getPdt());
-                rebateRecord.setProduct(e.getProduct());
-                rebateRecord.setQty(e.getQty());
-                rebateRecord.setSalesPrice(e.getSalesPrice());
-                rebateRecord.setPoPrice(e.getPoPrice());
-                rebateRecord.setActualPrice(e.getActualPrice());
-                rebateRecord.setPlatform(e.getPlatform());
+                BeanUtils.copyNotNullFields(e, rebateRecord);
                 rebateRecord.setRebateAmount(BigDecimal.ZERO);
                 rebateRecord.setReleaseAmount(BigDecimal.ZERO);
                 rebateRecord.setSurplusRebateAmount(BigDecimal.ZERO);
@@ -325,7 +292,7 @@ public class RebateService {
                 rebateId = rebateRecord.getId();
             }
             rebateIds.add(rebateId);
-        });
+        }
         businessSalesDetailMapper.updateRebateId();
         rebateIds.forEach(e-> businessSalesDetailMapper.updateRebateAmountByRebateId(e));
     }

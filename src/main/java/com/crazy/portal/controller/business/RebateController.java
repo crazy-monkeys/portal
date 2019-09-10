@@ -43,8 +43,14 @@ public class RebateController extends BaseController {
 
     @PostMapping("/confirm")
     public BaseResponse confirm(@Valid @RequestBody RebateConfirmBean bean){
-        rebateService.confirm(bean, getCurrentUserId());
-        return successResult();
+        try{
+            rebateService.confirm(bean, getCurrentUserId());
+            return successResult();
+        }catch (Exception e){
+            log.error("发送确认函异常", e);
+            return failResult("发送确认函异常");
+        }
+
     }
 
     @PostMapping("/upload/{id}")

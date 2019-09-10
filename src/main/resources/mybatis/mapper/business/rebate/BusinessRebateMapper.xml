@@ -34,24 +34,24 @@
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <collection property="itemList" ofType="com.crazy.portal.entity.business.rebate.BusinessRebateItem">
       <id column="item_id" jdbcType="INTEGER" property="id" />
-      <result column="agency_name" jdbcType="VARCHAR" property="agencyName" />
-      <result column="customer_short_name" jdbcType="VARCHAR" property="customerShortName" />
-      <result column="customer_type" jdbcType="VARCHAR" property="customerType" />
-      <result column="sales_name" jdbcType="VARCHAR" property="salesName" />
-      <result column="ameba_header" jdbcType="VARCHAR" property="amebaHeader" />
-      <result column="ameba_department" jdbcType="VARCHAR" property="amebaDepartment" />
-      <result column="shipment_company" jdbcType="VARCHAR" property="shipmentCompany" />
-      <result column="account_year_month" jdbcType="VARCHAR" property="accountYearMonth" />
-      <result column="order_month" jdbcType="VARCHAR" property="orderMonth" />
-      <result column="shipment_year_month" jdbcType="VARCHAR" property="shipmentYearMonth" />
-      <result column="bu" jdbcType="VARCHAR" property="bu" />
-      <result column="pdt" jdbcType="VARCHAR" property="pdt" />
-      <result column="product" jdbcType="VARCHAR" property="product" />
-      <result column="qty" jdbcType="INTEGER" property="qty" />
-      <result column="sales_price" jdbcType="DECIMAL" property="salesPrice" />
-      <result column="po_price" jdbcType="DECIMAL" property="poPrice" />
-      <result column="actual_price" jdbcType="DECIMAL" property="actualPrice" />
-      <result column="platform" jdbcType="VARCHAR" property="platform" />
+      <result column="item_agency_name" jdbcType="VARCHAR" property="agencyName" />
+      <result column="item_customer_short_name" jdbcType="VARCHAR" property="customerShortName" />
+      <result column="item_customer_type" jdbcType="VARCHAR" property="customerType" />
+      <result column="item_sales_name" jdbcType="VARCHAR" property="salesName" />
+      <result column="item_ameba_header" jdbcType="VARCHAR" property="amebaHeader" />
+      <result column="item_ameba_department" jdbcType="VARCHAR" property="amebaDepartment" />
+      <result column="item_shipment_company" jdbcType="VARCHAR" property="shipmentCompany" />
+      <result column="item_account_year_month" jdbcType="VARCHAR" property="accountYearMonth" />
+      <result column="item_order_month" jdbcType="VARCHAR" property="orderMonth" />
+      <result column="item_shipment_year_month" jdbcType="VARCHAR" property="shipmentYearMonth" />
+      <result column="item_bu" jdbcType="VARCHAR" property="bu" />
+      <result column="item_pdt" jdbcType="VARCHAR" property="pdt" />
+      <result column="item_product" jdbcType="VARCHAR" property="product" />
+      <result column="item_qty" jdbcType="INTEGER" property="qty" />
+      <result column="item_sales_price" jdbcType="DECIMAL" property="salesPrice" />
+      <result column="item_po_price" jdbcType="DECIMAL" property="poPrice" />
+      <result column="item_actual_price" jdbcType="DECIMAL" property="actualPrice" />
+      <result column="item_platform" jdbcType="VARCHAR" property="platform" />
       <result column="item_rebate_amount" jdbcType="DECIMAL" property="rebateAmount" />
       <result column="item_executor" jdbcType="VARCHAR" property="executor"/>
       <result column="item_execute_style" jdbcType="VARCHAR" property="executeStyle" />
@@ -362,6 +362,24 @@
     select
     a.*,
     b.id as item_id,
+    b.agency_name as item_agency_name,
+    b.customer_short_name as item_customer_short_name,
+    b.customer_type as item_customer_type,
+    b.sales_name as item_sales_name,
+    b.ameba_header as item_ameba_header,
+    b.ameba_department as item_ameba_department,
+    b.shipment_company as item_shipment_company,
+    b.account_year_month as item_account_year_month,
+    b.order_month as item_order_month,
+    b.shipment_year_month as item_shipment_year_month,
+    b.bu as item_bu,
+    b.pdt as item_pdt,
+    b.product as item_product,
+    b.qty as item_qty,
+    b.sales_price as item_sales_price,
+    b.po_price as item_po_price,
+    b.actual_price as item_actual_price,
+    b.platform as item_platform,
     b.rebate_amount as item_rebate_amount,
     b.executor as item_executor,
     b.execute_style as item_execute_style,
@@ -371,10 +389,10 @@
     left join t_business_rebate_item b on b.rebate_id = a.id
     where a.active = 1
     <if test="dealerName != null and dealerName != ''">
-      and a.dealer_name like concat('%',#{dealerName},'%')
+      and a.agency_name like concat('%',#{dealerName},'%')
     </if>
     <if test="customerName != null and customerName != ''">
-      and a.customer_name like concat('%',#{customerName},'%')
+      and a.customer_short_name like concat('%',#{customerName},'%')
     </if>
     <if test="status != null">
       and a.status = #{status}
@@ -385,7 +403,7 @@
   <select id="selectRebateIdByGroupParam" resultType="java.lang.Integer" parameterType="com.crazy.portal.bean.business.rebate.RebateGroupParam">
     select id from t_business_rebate
     where active = 1
-    and agency_name = #{agency_name}
+    and agency_name = #{agencyName}
     and customer_short_name = #{customerShortName}
     and customer_type = #{customerType}
     and sales_name = #{salesName}

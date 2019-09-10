@@ -12,6 +12,7 @@
     <result column="ameba_header" jdbcType="VARCHAR" property="amebaHeader" />
     <result column="ameba_department" jdbcType="VARCHAR" property="amebaDepartment" />
     <result column="bu" jdbcType="VARCHAR" property="bu" />
+    <result column="pdt" jdbcType="VARCHAR" property="pdt" />
     <result column="product" jdbcType="VARCHAR" property="product" />
     <result column="shipment_type" jdbcType="VARCHAR" property="shipmentType" />
     <result column="qty" jdbcType="INTEGER" property="qty" />
@@ -57,7 +58,7 @@
   </resultMap>
   <sql id="Base_Column_List">
     id, rebate_id, agency_short_name, agency_name, customer_short_name, customer_code,
-    customer_type, ameba_header, ameba_department, bu, product, shipment_type, qty, sales_price,
+    customer_type, ameba_header, ameba_department, bu, pdt, product, shipment_type, qty, sales_price,
     po_price, actual_price, rebate_amount, account_year_month, shipment_year_month, shipment_date,
     order_month, price_role_id, price_strategy_number, shipment_company,
     rebate_type, class3, sales_name, active, create_id, create_time, update_id, update_time
@@ -111,6 +112,9 @@
       </if>
       <if test="bu != null">
         bu,
+      </if>
+      <if test="pdt != null">
+        pdt,
       </if>
       <if test="product != null">
         product,
@@ -210,6 +214,9 @@
       <if test="bu != null">
         #{bu,jdbcType=VARCHAR},
       </if>
+      <if test="pdt != null">
+        #{pdt,jdbcType=VARCHAR},
+      </if>
       <if test="product != null">
         #{product,jdbcType=VARCHAR},
       </if>
@@ -307,6 +314,9 @@
       </if>
       <if test="bu != null">
         bu = #{bu,jdbcType=VARCHAR},
+      </if>
+      <if test="pdt != null">
+        pdt = #{pdt,jdbcType=VARCHAR},
       </if>
       <if test="product != null">
         product = #{product,jdbcType=VARCHAR},

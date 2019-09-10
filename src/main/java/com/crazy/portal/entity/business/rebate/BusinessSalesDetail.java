@@ -65,6 +65,10 @@ public class BusinessSalesDetail {
     private String bu;
 
     /**
+     * pdt
+     */
+    private String pdt;
+    /**
      * 产品类型
      */
     private String product;

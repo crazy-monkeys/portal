@@ -105,4 +105,11 @@ public class BaseController {
         response.success(data);
         return response;
     }
+
+    protected BaseResponse failResult(String message){
+        BaseResponse response = new BaseResponse();
+        response.fail(message);
+        return response;
+    }
+
 }
