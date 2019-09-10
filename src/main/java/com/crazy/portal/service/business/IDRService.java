@@ -57,6 +57,8 @@ public class IDRService {
     private IDRApiService idrApiService;
     @Value("${file.path.root}")
     private String filePath;
+    @Value("${file.path.reader-dir}")
+    private String readerFilePath;
 
     private Multimap<Integer, String> fileCache = ArrayListMultimap.create();
 
@@ -87,7 +89,11 @@ public class IDRService {
         }else if(info.getType().equals(Enums.BusinessIdrType.RETURNS.getCode())){
             info.setRList(businessReturnsInfoMapper.selectByIdrInfoId(id));
         }
-        info.setFiles(businessFileMapper.selectByIdrInfoId(id));
+        List<BusinessFile> files = businessFileMapper.selectByIdrInfoId(id);
+        for(BusinessFile file : files){
+            file.setFilePath(readerFilePath+file.getFileName());
+        }
+        info.setFiles(files);
         return info;
     }
 
