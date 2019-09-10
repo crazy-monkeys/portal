@@ -30,8 +30,8 @@ import java.security.GeneralSecurityException;
 @Slf4j
 public class HttpClientUtils {
 
-    public static final int CONNECT_TIMEOUT=10000;
-    public static final int READ_TIMEOUT=10000;
+    public static final int CONNECT_TIMEOUT=60000;
+    public static final int READ_TIMEOUT=60000;
     public static final String CHARSET="UTF-8";
 
     private static HttpClient client;
@@ -53,6 +53,7 @@ public class HttpClientUtils {
     }
 
     public static String post(String url, String body) throws IOException{
+        log.info("url==========================="+ECC_API_URL.concat(url));
         return post(ECC_API_URL.concat(url), body, AUTH_SECRET, MIMETYPE_JSON, CHARSET, CONNECT_TIMEOUT, READ_TIMEOUT);
     }
 
