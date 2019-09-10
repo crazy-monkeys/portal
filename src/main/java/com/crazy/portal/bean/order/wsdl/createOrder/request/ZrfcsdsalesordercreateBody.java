@@ -10,7 +10,6 @@ import javax.xml.bind.annotation.*;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name = "soapenv:Body")
-@XmlSeeAlso({ZrfcsdsalesordercreateContent.class})
 public class ZrfcsdsalesordercreateBody {
 
     public ZrfcsdsalesordercreateBody() {
