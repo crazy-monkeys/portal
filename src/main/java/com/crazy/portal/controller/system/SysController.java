@@ -5,7 +5,6 @@ import com.crazy.portal.controller.BaseController;
 import com.crazy.portal.service.customer.CustomerInfoService;
 import com.crazy.portal.service.group.SalesGroupService;
 import com.crazy.portal.service.system.SysParamService;
-import com.crazy.portal.service.system.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,21 +28,10 @@ public class SysController extends BaseController {
     private SysParamService sysParamService;
     @Resource
     private SalesGroupService salesGroupService;
-    @Resource
-    private UserService userService;
 
     @GetMapping("/customer/all")
     public BaseResponse getAllCustomer(){
         return successResult(customerInfoService.selecAllCustomer());
-    }
-
-    /**
-     * 获取代理商的内外部客户
-     * @return
-     */
-    @GetMapping(value = "/ships")
-    public BaseResponse selectShips(){
-        return successResult(userService.getUserShips(getCurrentUser().getDealerId()));
     }
 
     @GetMapping("/selectByMAndF/{model}/{function}")

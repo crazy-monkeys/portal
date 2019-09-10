@@ -308,7 +308,7 @@ public class IDRService {
                 refundPrice.setProductType(e.getProductType());
                 refundPrice.setPlatform(e.getPlatfom());
                 refundPrice.setProductModel(e.getProductModel());
-                refundPrice.setShipmentTime(e.getShipmentDate() != null ? DateUtil.parseDate(e.getShipmentDate(), DateUtil.NEW_FORMAT) : null);
+                refundPrice.setShipmentTime(e.getShipmentDate() != null ? DateUtil.parseDate(e.getShipmentDate(), DateUtil.WEB_FORMAT) : null);
                 refundPrice.setQuantity(e.getNum());
                 refundPrice.setCusPickPrice(e.getCustomerPrice() != null ? e.getCustomerPrice().floatValue() : null);
                 refundPrice.setAgentPickPrice(e.getAgentPrice() != null ? e.getAgentPrice().floatValue() : null);
