@@ -5,7 +5,8 @@
     <title>Test</title>
 </head>
 <body>
-<p>Hello!<span th:text="${loginName}"></span>!<br /></p>
-您的忘记密码申请已经提交，请前往<span th:text="${url}"></span>修改密码
+<p>Hello,尊敬的<span th:text="${loginName}" />用户!<br /></p>
+您的忘记密码申请已经提交，请点击下面链接进行修改密码<br/>
+<a th:href="${url}"><span th:text="${url}" /></a>
 </body>
 </html>
