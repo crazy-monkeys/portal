@@ -405,6 +405,7 @@ public class SaleForecastService {
                 response = mockThirdResult() ? "\"OK:/service/ftp/portal_file/pull_thrid/forecast/forecast_check.xlsx\"" :
                         "\"NG:/service/ftp/portal_file/pull_thrid/forecast/forecast_check.xlsx\"";
             }else{
+
                 response = "";
             }
             String fullPath = String.format("%s%s", filePath, fileName);
