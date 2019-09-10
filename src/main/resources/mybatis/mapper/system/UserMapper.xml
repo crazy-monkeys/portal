@@ -235,6 +235,9 @@
       <if test="role != null and role.roleName != null and role.roleName != ''">
         and ro.role_name = #{roleName}
       </if>
+      <if test="createUserId != null">
+        and a.create_user_id = #{createUserId,jdbcType=INTEGER}
+      </if>
     </where>
   </select>
 </mapper>
