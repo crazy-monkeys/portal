@@ -1,5 +1,5 @@
 
-package com.crazy.portal.bean.customer.wsdl.order;
+package com.crazy.portal.bean.order.wsdl.customerRate.responce;
 
 import javax.xml.bind.annotation.*;
 import java.math.BigDecimal;

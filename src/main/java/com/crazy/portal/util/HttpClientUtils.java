@@ -53,8 +53,7 @@ public class HttpClientUtils {
     }
 
     public static String post(String url, String body) throws IOException{
-        log.info("url==========================="+ECC_API_URL.concat(url));
-        return post(ECC_API_URL.concat(url), body, AUTH_SECRET, MIMETYPE_JSON, CHARSET, CONNECT_TIMEOUT, READ_TIMEOUT);
+        return post(url, body, AUTH_SECRET, MIMETYPE_JSON, CHARSET, CONNECT_TIMEOUT, READ_TIMEOUT);
     }
 
     /**
