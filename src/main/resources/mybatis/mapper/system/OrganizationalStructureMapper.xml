@@ -174,4 +174,8 @@
       active = #{active,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <select id="selectByOrgNo" resultMap="BaseResultMap">
+      select * from t_organizational_structure where seq = #{seq}
+  </select>
 </mapper>

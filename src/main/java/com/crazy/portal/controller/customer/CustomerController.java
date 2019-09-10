@@ -105,6 +105,12 @@ public class CustomerController extends BaseController{
         return successResult();
     }
 
+    @PostMapping(value = "/update")
+    public BaseResponse update(CustomerInfo customerInfo){
+        customerInfoService.updateCustomerInfo(customerInfo, getCurrentUser());
+        return successResult();
+    }
+
     @GetMapping("/visitRecord/list")
     public BaseResponse visitRecordList(VisitRecordQueryBean bean){
         bean.setUserId(this.getCurrentUser().getId());

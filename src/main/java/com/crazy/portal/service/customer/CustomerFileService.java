@@ -25,21 +25,27 @@ import static com.crazy.portal.util.FileUtil.upload;
 public class CustomerFileService {
     @Resource
     private CustomerFileMapper customerFileMapper;
-    @Value("${file.path.root}")
+    @Value("${file.path.customer}")
     private String filePath;
-    private static final String CUST_FILE_PATH = "custfile";
+
+    @Value("${file.path.reader-customer}")
+    private String portalFileUrl;
+
 
     public List<CustomerFile> selectByCustId(Integer custId){
-        return customerFileMapper.selectByCustId(custId);
+        List<CustomerFile> files = customerFileMapper.selectByCustId(custId);
+        files.forEach(e->{
+            e.setFilePath(portalFileUrl+e.getFileName());
+        });
+        return files;
     }
-
     public void saveOrUpdate(List<CustomerFile> customerFiles, Integer custId){
         if(null == customerFiles || customerFiles.isEmpty()){
             return;
         }
         customerFiles.forEach(e->{
             if(null == e.getFileId()){
-                FileVO fileVO = FileUtil.upload(e.getFile(), getCustFilePath());
+                FileVO fileVO = FileUtil.upload(e.getFile(), filePath);
                 e.setType(e.getFileType());
                 e.setFileName(fileVO.getFileName());
                 e.setFilePath(fileVO.getFullPath());
@@ -54,17 +60,13 @@ public class CustomerFileService {
     }
 
     public CustomerFile saveOrUpdate(MultipartFile files, Integer custId){
-        FileVO fileVO = FileUtil.upload(files, getCustFilePath());
+        FileVO fileVO = FileUtil.upload(files, filePath);
         CustomerFile file = new CustomerFile();
         file.setFileName(fileVO.getFileName());
         file.setFilePath(fileVO.getFilePath());
         file.setActive(1);
         customerFileMapper.insertSelective(file);
         return file;
-    }
-
-    public String getCustFilePath(){
-        return filePath.concat(File.separator).concat(CUST_FILE_PATH);
     }
 
     public void deleteByCustId(List<CustomerFile> customerFiles, List<CustomerFile> results, Integer custId){

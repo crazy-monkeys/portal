@@ -266,6 +266,8 @@
     pro.manager,
     pro.sap_mid,
     pro.mpq,
+    sub.sub_id,
+    sub.product_id,
     sub.sub_mid,
     sub.sub_number
     from t_product_batch batch

@@ -18,5 +18,5 @@ public interface AgencyRateMapper {
 
     int inActive();
 
-    int approve();
+    int approve(String ids);
 }

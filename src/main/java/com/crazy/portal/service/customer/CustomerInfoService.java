@@ -11,6 +11,7 @@ import com.crazy.portal.bean.customer.wsdl.credit.Zsdscredit;
 import com.crazy.portal.bean.customer.visitRecord.CustomerCodeEO;
 import com.crazy.portal.bean.customer.visitRecord.VisitRecordEO;
 import com.crazy.portal.bean.customer.visitRecord.VisitRecordQueryBean;
+import com.crazy.portal.config.exception.BusinessException;
 import com.crazy.portal.dao.cusotmer.*;
 import com.crazy.portal.dao.system.InternalUserMapper;
 import com.crazy.portal.entity.cusotmer.*;
@@ -231,6 +232,69 @@ public class CustomerInfoService {
         //TODO 同步C4 获得outcode
     }
 
+    @Transactional
+    public void updateCustomerInfo(CustomerInfo cust, User user){
+        CustomerInfo customerinfo = customerInfoMapper.selectByPrimaryKey(cust.getId());
+        if(null == customerinfo){
+            throw new BusinessException(ErrorCodes.BusinessEnum.CUSTOMER_IS_EMPYT);
+        }else{
+            cust.setId(customerinfo.getId());
+            mappingCustomerInfo(cust, customerinfo);
+            customerinfo.setUpdateUser(user.getId());
+            customerInfoMapper.updateByPrimaryKeySelective(customerinfo);
+        }
+        saveCustomerDetail(cust, user.getId());
+    }
+
+    private void mappingCustomerInfo(CustomerInfo cust, CustomerInfo customerInfo){
+        customerInfo.setCustName(cust.getCustName());
+        if(StringUtil.isNotEmpty(cust.getCustEnName())){
+            customerInfo.setCustEnName(cust.getCustEnName());
+        }
+        if(StringUtil.isNotEmpty(cust.getCustAbbreviation())){
+            customerInfo.setCustAbbreviation(cust.getCustAbbreviation());
+        }
+        if(StringUtil.isNotEmpty(cust.getBusinessType())){
+            customerInfo.setBusinessType(cust.getBusinessType());
+        }
+        if(null != cust.getIsLicense()){
+            customerInfo.setIsLicense(Integer.valueOf(cust.getIsLicense()));
+        }
+        if(StringUtil.isNotEmpty(cust.getCustRole())){
+            customerInfo.setCustRole(cust.getCustRole());
+        }
+        if(StringUtil.isNotEmpty(cust.getCustMobile())){
+            customerInfo.setCustMobile(cust.getCustMobile());
+        }
+        if(StringUtil.isNotEmpty(cust.getCustEmail())){
+            customerInfo.setCustEmail(cust.getCustEmail());
+        }
+        if(StringUtil.isNotEmpty(cust.getCustWeb())){
+            customerInfo.setCustWeb(cust.getCustWeb());
+        }
+        if(null != cust.getIsWhite()){
+            customerInfo.setIsWhite(Integer.valueOf(cust.getIsWhite()));
+        }
+        if(StringUtil.isNotEmpty(cust.getRegistTime())){
+            customerInfo.setRegistTime(cust.getRegistTime());
+        }
+        if(null != cust.getCorportaeAssets()){
+            customerInfo.setCorportaeAssets(cust.getCorportaeAssets());
+        }
+        if(null != cust.getStaffNumber()){
+            customerInfo.setStaffNumber(cust.getStaffNumber());
+        }
+        if(null != cust.getDevelopersNumber()){
+            customerInfo.setDevelopersNumber(cust.getDevelopersNumber());
+        }
+        if(StringUtil.isNotEmpty(cust.getBusinessIntroduction())){
+            customerInfo.setBusinessIntroduction(cust.getBusinessIntroduction());
+        }
+        if(StringUtil.isNotEmpty(cust.getAdvantagesIntroduction())){
+            customerInfo.setAdvantagesIntroduction(cust.getAdvantagesIntroduction());
+        }
+    }
+
     private void saveCustomerDetail(CustomerInfo customerInfo, Integer userId){
         saveRelationship(customerInfo.getRelationships(), customerInfo.getId(), userId);
         saveContact(customerInfo.getCustomerContacts(), customerInfo.getId(), userId);
@@ -293,7 +357,6 @@ public class CustomerInfoService {
             customerInfo.setApproveUser(userId);
             customerInfo.setApproveStatus(Enums.CUSTOMER_APPROVE_STATUS.REJECT.getCode());
             customerInfo.setApproveRemark(approvalBean.getApprovalRemark());
-            customerInfo.setActive(0);
             customerInfoMapper.updateByPrimaryKeySelective(customerInfo);
         }
     }

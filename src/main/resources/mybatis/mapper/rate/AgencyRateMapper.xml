@@ -34,7 +34,7 @@
     where id = #{id,jdbcType=INTEGER}
   </delete>
 
-  <insert id="insertSelective" parameterType="com.crazy.portal.entity.rate.AgencyRate">
+  <insert id="insertSelective" parameterType="com.crazy.portal.entity.rate.AgencyRate" useGeneratedKeys="true" keyProperty="id">
     insert into t_agency_rate
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -229,6 +229,6 @@
   </update>
 
   <update id="approve">
-    update t_agency_rate set active = 1 where active=-1
-  </update>
+    update t_agency_rate set active = 1 where id in (#{ids})
+</update>
 </mapper>

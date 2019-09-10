@@ -1,6 +1,8 @@
 package com.crazy.portal.entity.cusotmer;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
@@ -54,6 +56,8 @@ public class CustBankInfo {
     /**
      * 
      */
+    @JSONField(format="yyyy-MM-dd HH:mm:ss")
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private Date createTime;
 
     /**
@@ -64,6 +68,8 @@ public class CustBankInfo {
     /**
      * 
      */
+    @JSONField(format="yyyy-MM-dd HH:mm:ss")
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private Date updateTime;
 
     /**

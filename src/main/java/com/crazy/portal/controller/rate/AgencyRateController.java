@@ -4,14 +4,12 @@ import com.crazy.portal.bean.BaseResponse;
 import com.crazy.portal.bean.rate.AgencyRateQueryBean;
 import com.crazy.portal.controller.BaseController;
 import com.crazy.portal.service.rate.AgencyRateService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 /**
  * @Describe 代理费率
@@ -35,9 +33,9 @@ public class AgencyRateController extends BaseController {
         return successResult(agencyRateService.uploadAgencyRateFile(files, this.getCurrentUser().getId()));
     }
 
-    @GetMapping("/approve")
-    public BaseResponse approve(){
-        agencyRateService.approveRate();
+    @GetMapping("/approve/{ids}")
+    public BaseResponse approve(@PathVariable String ids){
+        agencyRateService.approveRate(ids);
         return successResult();
     }
 

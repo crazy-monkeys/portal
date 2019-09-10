@@ -41,7 +41,6 @@ public class AgencyRateService {
 
     @Transactional
     public List<AgencyRate> uploadAgencyRateFile(MultipartFile[] files, Integer userId) throws Exception {
-        agencyRateMapper.inActive();
         List<AgencyRate> results = new ArrayList<>();
         for (MultipartFile file : files) {
             List<Object> records = ExcelUtils.readExcel(file, AgencyRateQueryBean.class);
@@ -54,11 +53,11 @@ public class AgencyRateService {
                     } else {
                         record.setCustomerType("Mass Market");
                     }
-                    results.add(record);
                     record.setActive(Enums.RATE_TYPE.INI.getCode());
                     record.setCreateUserId(userId);
                     record.setCreateTime(DateUtil.getCurrentTS());
                     agencyRateMapper.insertSelective(record);
+                    results.add(record);
                 } catch (BusinessException ex){
                     throw ex;
                 } catch (Exception ex) {
@@ -70,8 +69,10 @@ public class AgencyRateService {
         return results;
     }
 
-    public void approveRate(){
-        agencyRateMapper.approve();
+    @Transactional
+    public void approveRate(String ids){
+        agencyRateMapper.inActive();
+        agencyRateMapper.approve(ids);
     }
 
     /**

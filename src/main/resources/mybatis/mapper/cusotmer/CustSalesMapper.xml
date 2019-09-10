@@ -250,7 +250,7 @@
     select * from t_cust_sales where active =1 and cust_id = #{custId}
   </select>
 
-  <delete id="deleteByCustId">
+  <update id="deleteByCustId">
     update t_cust_sales set active = 0 where active =1 and cust_id = #{custId}
-  </delete>
+  </update>
 </mapper>

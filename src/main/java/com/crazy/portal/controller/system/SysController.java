@@ -32,7 +32,7 @@ public class SysController extends BaseController {
     @Resource
     private UserService userService;
 
-    @GetMapping("/cusotmer/all")
+    @GetMapping("/customer/all")
     public BaseResponse getAllCustomer(){
         return successResult(customerInfoService.selecAllCustomer());
     }

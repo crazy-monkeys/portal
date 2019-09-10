@@ -693,6 +693,7 @@
         where s.active=1 and s.corporate_type = 'Z001'
       ) ship on ship.cust_id = cust.id
     where cust.business_type!='A04'
+    and cust.active = 1
     <if test="queryType == 3 ">
       <if test="reportDealer!=null">
         and ship.corporate_id = #{reportDealer}
@@ -705,13 +706,12 @@
       </if>
     </if>
     <if test="queryType == 2 ">
-      and cust.active = 1
       <if test="customerStatus != '' and customerStatus != null">
         and cust.approve_status = #{customerStatus}
       </if>
     </if>
     <if test="queryType == 1 ">
-      and cust.active = 1
+      and cust.approve_status != 4
       <if test="custType != '' and custType != null">
         and cust.cust_type = #{custType}
       </if>
@@ -734,9 +734,9 @@
       select * from t_customer_info where active = 1
   </select>
 
-  <select id="updateCustomerInfo">
+  <update id="updateCustomerInfo">
       update t_customer_info set active =0 where id = #{custId}
-  </select>
+  </update>
 
   <select id="selectNameAndCodeByUserId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select cust_name, in_code from t_customer_info

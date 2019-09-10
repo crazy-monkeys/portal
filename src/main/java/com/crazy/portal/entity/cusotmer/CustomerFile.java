@@ -1,8 +1,11 @@
 package com.crazy.portal.entity.cusotmer;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.constraints.NotBlank;
 import java.util.Date;
 
 /**
@@ -31,6 +34,7 @@ public class CustomerFile {
      * A001 - 营业执照/商业登记证，A002 - 开票信息，A003 - 关联公司证明，A004 - 法人身份证，A005 - 收货委托证明，A006 - 其他；
 客户(Account): C001 - 营业执照/商业登记证，C002 - 银行开户证明，C003 - 组织架构图，C004 - 母公司营业执照/商业登记证，C005 - 其他
      */
+    @NotBlank(message = "请选择附件类型")
     private String type;
 
     /**
@@ -41,6 +45,8 @@ public class CustomerFile {
     /**
      * 
      */
+    @JSONField(format="yyyy-MM-dd HH:mm:ss")
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private Date uploadTime;
 
     /**
