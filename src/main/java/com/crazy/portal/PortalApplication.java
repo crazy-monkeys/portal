@@ -27,9 +27,6 @@ public class PortalApplication extends SpringBootServletInitializer {
 		SpringApplication.run(PortalApplication.class, args);
 	}
 
-	@Value("${ecc.api.url}")
-	private String ECC_API_URL;
-
 	@Value("${ecc.auth.username}")
 	private String ECC_USERNAME;
 
@@ -42,7 +39,6 @@ public class PortalApplication extends SpringBootServletInitializer {
 		String authInfo = String.format("%s:%s",ECC_USERNAME,ECC_PASSWORD);
 		String base64AuthInfo = Base64.encodeBase64String(authInfo.getBytes());
 		HttpClientUtils.AUTH_SECRET = "Basic " + base64AuthInfo;
-		HttpClientUtils.ECC_API_URL = ECC_API_URL;
 		log.info("========================================【AppContext End】");
 	}
 

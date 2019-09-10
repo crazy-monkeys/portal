@@ -1,10 +1,10 @@
 package com.crazy.portal.service.order;
 
-import com.alibaba.fastjson.JSON;
 import com.crazy.portal.bean.order.wsdl.createOrder.request.*;
 import com.crazy.portal.bean.order.wsdl.createOrder.responce.ZrfcsdsalesordercreateResponse;
 import com.crazy.portal.bean.order.wsdl.customerRate.responce.ZrfcsdcustomercrrateResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -30,7 +30,7 @@ public class OrderServiceTest {
     @Test
     public void getCustomerRate() {
         ZrfcsdcustomercrrateResponse response = eccApiService.getCustomerRate("100217");
-        log.info(JSON.toJSONString(response));
+        Assert.assertNotNull(response);
     }
 
     @Test
@@ -71,6 +71,6 @@ public class OrderServiceTest {
         Zrfcsdsalesordercreate order = new Zrfcsdsalesordercreate(zrfcsdsalesordercreateBody);
 
         ZrfcsdsalesordercreateResponse response = eccApiService.createSalesOrder(order);
-        log.info(JSON.toJSONString(response));
+        Assert.assertNotNull(response);
     }
 }

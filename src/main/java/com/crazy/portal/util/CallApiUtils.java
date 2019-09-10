@@ -8,7 +8,9 @@ import com.crazy.portal.bean.customer.wsdl.orgnation.OrganisationalUnitByIDRespo
 import com.crazy.portal.bean.product.BaseProResponseVO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
 import java.io.IOException;
 
 /**
@@ -19,9 +21,14 @@ import java.io.IOException;
 @Slf4j
 @Component
 public class CallApiUtils {
-    private static final String MDM_PRODUCT_URL = "/http/MDMProductMaster";
-    private static final String ECC_DEALER_CREDIR_URL = "/cxf/CUSTOMERCREDIT";
     private static final String BI_URL = "/http/";
+
+    private static String ECC_API_URL;
+
+    @Value("${ecc.api.url}")
+    public static void setEccApiUrl(String eccApiUrl) {
+        ECC_API_URL = eccApiUrl;
+    }
 
     /**
      * 同步产品信息
@@ -29,7 +36,8 @@ public class CallApiUtils {
      * @throws IOException
      */
     public static BaseProResponseVO callProductApi() throws IOException{
-        String jsonStr = HttpClientUtils.get(MDM_PRODUCT_URL);
+        String url = String.format("%s%s",ECC_API_URL,"/http/MDMProductMaster");
+        String jsonStr = HttpClientUtils.get(url);
         return JSON.parseObject(jsonStr, BaseProResponseVO.class);
     }
 
@@ -39,6 +47,7 @@ public class CallApiUtils {
      * @return
      */
     public static Zsdscredit callECCCreditApi(String dealerCode){
+        String url = String.format("%s%s",ECC_API_URL,"/cxf/CUSTOMERCREDIT");
         Zsdscredit zsdscredit = new Zsdscredit();
         try{
             String params = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:urn=\"urn:sap-com:document:sap:soap:functions:mc-style\">" +
@@ -49,7 +58,7 @@ public class CallApiUtils {
                     "      </urn:Zrfcsdcustomercredit>" +
                     "   </soapenv:Body>" +
                     "</soapenv:Envelope>";
-            String jsonStr = HttpClientUtils.post(ECC_DEALER_CREDIR_URL, params);
+            String jsonStr = HttpClientUtils.post(url, params);
             ZrfcsdcustomercreditResponse response = JaxbXmlUtil.convertSoapXmlToJavaBean(jsonStr, ZrfcsdcustomercreditResponse.class);
             if(response.getOreturn().equals("0")){
                 zsdscredit = response.getOcredit();
