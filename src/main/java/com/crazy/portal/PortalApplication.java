@@ -6,7 +6,6 @@ import org.apache.commons.net.util.Base64;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.cache.annotation.EnableCaching;
@@ -15,12 +14,11 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.annotation.PostConstruct;
 
-@EntityScan
+@Slf4j
 @EnableCaching
 @EnableScheduling
 @SpringBootApplication
 @EnableTransactionManagement(proxyTargetClass = true)
-@Slf4j
 public class PortalApplication extends SpringBootServletInitializer {
 
 	public static void main(String[] args) {
