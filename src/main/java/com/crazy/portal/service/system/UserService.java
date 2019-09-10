@@ -45,7 +45,7 @@ public class UserService {
     @Resource
     private RetrievePasswordMapper retrievePasswordMapper;
 
-    @Value("${portal-view.url}")
+    @Value("${portal.view-url}")
     private String portalViewUrl;
 
 
