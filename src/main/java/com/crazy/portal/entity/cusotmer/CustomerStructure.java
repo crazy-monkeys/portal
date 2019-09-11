@@ -33,32 +33,32 @@ public class CustomerStructure {
     private BigDecimal strValue;
 
     /**
-     * 
+     * 上级公司
      */
     private String strOne;
 
     /**
-     * 
+     * 股东性质
      */
     private String strTwo;
 
     /**
-     * 
+     * 公司性质
      */
     private String strThree;
 
     /**
-     * 
+     * 是否公司管理层
      */
     private String strFour;
 
     /**
-     * 
+     * 职务
      */
     private String strFive;
 
     /**
-     * 
+     * 部门
      */
     private String strSix;
 

@@ -59,7 +59,7 @@
       #{createUserId,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{updateUserId,jdbcType=INTEGER}, 
       #{updateTime,jdbcType=TIMESTAMP})
   </insert>
-  <insert id="insertSelective" parameterType="com.crazy.portal.entity.cusotmer.VisitRecord">
+  <insert id="insertSelective" parameterType="com.crazy.portal.entity.cusotmer.VisitRecord" useGeneratedKeys="true" keyProperty="id">
     insert into t_visit_record
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -312,5 +312,12 @@
       </if>
       order by create_time desc
     </select>
+
+    <update id="approve">
+      update t_visit_record set active = 1 where id in
+      <foreach collection="ids" item="item" index="index" open="(" separator="," close=")" >
+        #{item}
+      </foreach>
+    </update>
 
 </mapper>

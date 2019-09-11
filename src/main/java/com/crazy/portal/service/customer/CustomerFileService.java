@@ -46,7 +46,7 @@ public class CustomerFileService {
         customerFiles.forEach(e->{
             if(null == e.getFileId()){
                 FileVO fileVO = FileUtil.upload(e.getFile(), filePath);
-                e.setType(e.getFileType());
+                e.setType(e.getType());
                 e.setFileName(fileVO.getFileName());
                 e.setFilePath(fileVO.getFullPath());
                 e.setCustId(custId);

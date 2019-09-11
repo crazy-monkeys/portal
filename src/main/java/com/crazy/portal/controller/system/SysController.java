@@ -1,6 +1,7 @@
 package com.crazy.portal.controller.system;
 
 import com.crazy.portal.bean.BaseResponse;
+import com.crazy.portal.bean.inuser.SealerBean;
 import com.crazy.portal.controller.BaseController;
 import com.crazy.portal.service.customer.CustomerInfoService;
 import com.crazy.portal.service.group.SalesGroupService;
@@ -12,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @ClassName: SysCustomerController
@@ -32,6 +35,22 @@ public class SysController extends BaseController {
     @GetMapping("/customer/all")
     public BaseResponse getAllCustomer(){
         return successResult(customerInfoService.selecAllCustomer());
+    }
+
+    @GetMapping("/sales/list")
+    public BaseResponse getAllSales(){
+        SealerBean sealerBean = new SealerBean();
+        sealerBean.setEmployeeId("10001");
+        sealerBean.setEmployeeName("张三");
+
+        List<SealerBean> result = new ArrayList<>();
+        result.add(sealerBean);
+        return successResult(result);
+    }
+
+    @GetMapping("/dealer/list")
+    public BaseResponse getDealerList(){
+        return successResult(customerInfoService.getDealerList());
     }
 
     @GetMapping("/selectByMAndF/{model}/{function}")

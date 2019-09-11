@@ -753,4 +753,8 @@
   <select id="selectByOutCode" resultMap="BaseResultMap">
     select * from t_customer_info where active =1 and out_code = #{outCode}
   </select>
+
+  <select id="selectDealerList" resultMap="BaseResultMap">
+    select * from t_customer_info where active =1 and cust.business_type = 'A04'
+  </select>
 </mapper>

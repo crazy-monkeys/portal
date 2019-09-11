@@ -5,6 +5,7 @@ import com.alibaba.excel.support.ExcelTypeEnum;
 import com.crazy.portal.bean.BaseResponse;
 import com.crazy.portal.bean.customer.CustomerQueryBean;
 import com.crazy.portal.bean.customer.approval.ApprovalBean;
+import com.crazy.portal.bean.customer.visitRecord.VisiApproveBean;
 import com.crazy.portal.bean.customer.visitRecord.VisitRecordQueryBean;
 import com.crazy.portal.controller.BaseController;
 import com.crazy.portal.entity.cusotmer.CustomerInfo;
@@ -129,7 +130,12 @@ public class CustomerController extends BaseController{
 
     @PostMapping("/visitRecord/upload")
     public BaseResponse visitRecordUpload(MultipartFile[] files) throws Exception{
-        customerInfoService.uploadVisitRecord(files, this.getCurrentUser().getId());
+        return successResult(customerInfoService.uploadVisitRecord(files, this.getCurrentUser().getId()));
+    }
+
+    @PostMapping("/visitRecord/approve")
+    public BaseResponse approve(@RequestBody VisiApproveBean ids){
+        customerInfoService.approve(ids.getIds());
         return successResult();
     }
 

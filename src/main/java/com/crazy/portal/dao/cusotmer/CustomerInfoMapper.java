@@ -22,6 +22,8 @@ public interface CustomerInfoMapper {
 
     CustomerInfo selectDealerInfo(Integer id);
 
+    List<CustomerInfo> selectDealerList();
+
     List<CustomerInfo> selectByCustName(@Param("custName") String custName);
 
     CustomerInfo queryCustomerInfo(@Param("custId") int custId);

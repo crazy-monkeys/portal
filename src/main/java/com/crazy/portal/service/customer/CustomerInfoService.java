@@ -126,6 +126,12 @@ public class CustomerInfoService {
     }
 
     /**
+     * 获取所有代理商
+     */
+    public List<CustomerInfo> getDealerList(){
+        return customerInfoMapper.selectDealerList();
+    }
+    /**
      * 获取代理商信息
      * @param dealerId
      * @return
@@ -551,26 +557,33 @@ public class CustomerInfoService {
      * @param userId
      * @throws Exception
      **/
-
-    public void uploadVisitRecord(MultipartFile[] files, Integer userId) throws Exception{
+    public List<VisitRecord> uploadVisitRecord(MultipartFile[] files, Integer userId) throws Exception{
+        List<VisitRecord> results = new ArrayList<>();
         for (MultipartFile file : files) {
             List<Object> records = EasyExcelFactory.read(file.getInputStream(), new Sheet(1, 1,VisitRecordEO.class));
-            records.forEach(e->{
+            for(Object e : records){
                 try {
                     VisitRecord record = new VisitRecord();
                     BeanUtils.copyNotNullFields(e , record);
                     String excelVisitDate = BeanUtils.getFieldValueByName("visitDate", e).toString();
                     record.setVisitDate(DateUtil.getFlexibleDate(excelVisitDate));
-                    record.setActive(Constant.ACTIVE);
+                    record.setActive(Constant.DELETE);
                     record.setCreateUserId(userId);
                     record.setCreateTime(DateUtil.getCurrentTS());
                     visitRecordMapper.insertSelective(record);
-                } catch (Exception ex) {
+                    results.add(record);
+                }catch (BusinessException be){
+                    throw be;
+                }catch (Exception ex) {
                     log.error("保存拜访记录异常", ex);
                 }
-            });
-
+            }
         }
+        return results;
+    }
+
+    public void approve(List<Integer> ids){
+        visitRecordMapper.approve(ids);
     }
 
     /**
