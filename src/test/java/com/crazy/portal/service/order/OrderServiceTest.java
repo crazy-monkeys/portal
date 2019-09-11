@@ -1,8 +1,16 @@
 package com.crazy.portal.service.order;
 
-import com.crazy.portal.bean.order.wsdl.createOrder.request.*;
-import com.crazy.portal.bean.order.wsdl.createOrder.responce.ZrfcsdsalesordercreateResponse;
-import com.crazy.portal.bean.order.wsdl.customerRate.responce.ZrfcsdcustomercrrateResponse;
+import com.alibaba.fastjson.JSON;
+import com.crazy.portal.bean.order.wsdl.change.Zrfcsdsalesorderchange;
+import com.crazy.portal.bean.order.wsdl.change.ZrfcsdsalesorderchangeBody;
+import com.crazy.portal.bean.order.wsdl.change.ZrfcsdsalesorderchangeContent;
+import com.crazy.portal.bean.order.wsdl.change.ZrfcsdsalesorderchangeResponse;
+import com.crazy.portal.bean.order.wsdl.create.*;
+import com.crazy.portal.bean.order.wsdl.create.IsHeader;
+import com.crazy.portal.bean.order.wsdl.create.ItItem;
+import com.crazy.portal.bean.order.wsdl.create.ItItems;
+import com.crazy.portal.bean.order.wsdl.price.*;
+import com.crazy.portal.bean.order.wsdl.rate.ZrfcsdcustomercrrateResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Assert;
 import org.junit.Test;
@@ -71,6 +79,76 @@ public class OrderServiceTest {
         Zrfcsdsalesordercreate order = new Zrfcsdsalesordercreate(zrfcsdsalesordercreateBody);
 
         ZrfcsdsalesordercreateResponse response = eccApiService.createSalesOrder(order);
+        Assert.assertNotNull(response);
+    }
+
+    @Test
+    public void changeSalesOrder(){
+        com.crazy.portal.bean.order.wsdl.change.IsHeader isHeader = new com.crazy.portal.bean.order.wsdl.change.IsHeader();
+        isHeader.setSaporderid("11900");
+        isHeader.setSalesoffice("0005");
+        isHeader.setSalesgroup("002");
+        isHeader.setSendto("100017");
+        isHeader.setPurchaseno("178765432N");
+        isHeader.setPurchasedate("20190808");
+        isHeader.setOrderreason("003");
+        isHeader.setPaymentterms("0001");
+        isHeader.setIncoterms1("FH");
+        isHeader.setIncoterms2("123");
+        isHeader.setCustomergroup1("A02");
+        isHeader.setCustomergroup2("B1");
+        isHeader.setPricedate("20190903");
+
+        com.crazy.portal.bean.order.wsdl.change.ItItems itItems = new com.crazy.portal.bean.order.wsdl.change.ItItems();
+        com.crazy.portal.bean.order.wsdl.change.ItItem itItem = new com.crazy.portal.bean.order.wsdl.change.ItItem();
+        itItem.setOperationtype("I");
+        itItem.setSequenceno("1");
+        itItem.setItemno("10");
+        itItem.setProductid("18000000000");
+        itItem.setOrderquantity("10");
+        itItem.setPlatform("123");
+        itItem.setRequestdate("20191001");
+        itItem.setRejectreason("");
+        itItems.setItem(Arrays.asList(itItem));
+
+
+        ZrfcsdsalesorderchangeContent content = new ZrfcsdsalesorderchangeContent(null,isHeader,itItems);
+        ZrfcsdsalesorderchangeBody body = new ZrfcsdsalesorderchangeBody(content);
+        Zrfcsdsalesorderchange zrfcsdsalesorderchange = new Zrfcsdsalesorderchange(body);
+        ZrfcsdsalesorderchangeResponse response = eccApiService.changeSalesOrder(zrfcsdsalesorderchange);
+        log.info(JSON.toJSONString(response));
+        Assert.assertNotNull(response);
+    }
+
+    @Test
+    public void priceSimulate(){
+
+        com.crazy.portal.bean.order.wsdl.price.IsHeader isHeader = new com.crazy.portal.bean.order.wsdl.price.IsHeader();
+        isHeader.setPortalorderid("1");
+        isHeader.setOrdertype("ZOR");
+        isHeader.setSalesorg("7100");
+        isHeader.setChannel("10");
+        isHeader.setDivision("00");
+        isHeader.setSalesoffice("0003");
+        isHeader.setSalesgroup("031");
+        isHeader.setSoldto("300184");
+        isHeader.setSendto("300184");
+        isHeader.setPricedate("20190822");
+
+        com.crazy.portal.bean.order.wsdl.price.ItItems itItems = new com.crazy.portal.bean.order.wsdl.price.ItItems();
+        com.crazy.portal.bean.order.wsdl.price.ItItem itItem = new com.crazy.portal.bean.order.wsdl.price.ItItem();
+        itItem.setSequenceno("1");
+        itItem.setProductid("18000000017");
+        itItem.setOrderquantity("10");
+        itItem.setPlatform("1");
+        itItems.setItem(Arrays.asList(itItem));
+
+        ZrfcsdpricesimulateContent content = new ZrfcsdpricesimulateContent(null,isHeader,itItems);
+        ZrfcsdpricesimulateBody body = new ZrfcsdpricesimulateBody(content);
+        Zrfcsdpricesimulate zrfcsdpricesimulate = new Zrfcsdpricesimulate(body);
+        ZrfcsdpricesimulateResponse response = eccApiService.priceSimulate(zrfcsdpricesimulate);
+        log.info(JSON.toJSONString(response));
+
         Assert.assertNotNull(response);
     }
 }
