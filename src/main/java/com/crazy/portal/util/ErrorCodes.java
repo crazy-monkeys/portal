@@ -63,8 +63,8 @@ public class ErrorCodes {
         ROLE_SAVE_FAILED(10025,"角色保存失败",""),
         ROLE_CODE_EXISTS(10026,"角色编码已经存在",""),
         ROLE_EMPTY_TYPE(10027,"角色类型不能为空",""),
-        ROLE_DELETE_NOT_ALLOWED(10028,"该角色已经绑定在用户上,不允许删除",""),
-
+        ROLE_BIND_USER(10028,"该角色已经绑定在用户上,不允许删除",""),
+        ROLE_BIND_RES(10028,"该角色已经绑定在资源上,不允许删除",""),
         RESOURCE_ILLEGAL(10040,"资源必填项不能为空",""),
         RESOURCE_NOT_EXIST(10041,"资源不存在",""),
         RESOURCE_PARENT_NOT_EXIST(10042,"父级资源不存在",""),
