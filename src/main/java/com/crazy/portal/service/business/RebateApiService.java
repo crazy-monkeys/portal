@@ -1,5 +1,6 @@
 package com.crazy.portal.service.business;
 
+import com.crazy.portal.util.CallApiUtils;
 import com.crazy.portal.util.HttpClientUtils;
 import com.crazy.portal.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +24,7 @@ public class RebateApiService {
      * @throws IOException
      */
     public String syncRebatePriceRoleData(String startDate, String endDate) throws IOException{
-        String url = REBATE_PRICE_ROLE_URL.concat("?sStartYearMonth=").concat(startDate).concat("&sEndYearMonth=").concat(endDate);
+        String url = CallApiUtils.ECC_API_URL.concat(REBATE_PRICE_ROLE_URL).concat("?sStartYearMonth=").concat(startDate).concat("&sEndYearMonth=").concat(endDate);
         return StringUtil.getJsonMessage(HttpClientUtils.get(url));
     }
 
@@ -35,7 +36,7 @@ public class RebateApiService {
      * @throws IOException
      */
     public String syncRebatePriceSalesDetails(String startDate, String endDate) throws IOException{
-        String url = REBATE_SALES_DETAILS_URL.concat("?sStartYearMonth=").concat(startDate).concat("&sEndYearMonth=").concat(endDate);
+        String url = CallApiUtils.ECC_API_URL.concat(REBATE_SALES_DETAILS_URL).concat("?sStartYearMonth=").concat(startDate).concat("&sEndYearMonth=").concat(endDate);
         return StringUtil.getJsonMessage(HttpClientUtils.get(url));
     }
 }

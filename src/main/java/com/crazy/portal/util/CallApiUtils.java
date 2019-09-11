@@ -23,7 +23,7 @@ import java.io.IOException;
 public class CallApiUtils {
     private static final String BI_URL = "/http/";
 
-    private static String ECC_API_URL;
+    public static String ECC_API_URL;
 
     @Value("${ecc.api.url}")
     public static void setEccApiUrl(String eccApiUrl) {
@@ -82,9 +82,9 @@ public class CallApiUtils {
     public static String callBiApi(Enums.BI_FUNCTION_CODE function_code, String baseMapping, String fromUrl, String toUrl) throws IOException {
         String url;
         if(StringUtils.isNotEmpty(baseMapping)){
-            url = BI_URL + baseMapping + function_code + "?sFromUrl=" + fromUrl + "&sToUrl=" + toUrl;
+            url = ECC_API_URL + BI_URL + baseMapping + function_code + "?sFromUrl=" + fromUrl + "&sToUrl=" + toUrl;
         }else{
-            url = BI_URL + function_code + "?sFromUrl=" + fromUrl + "&sToUrl=" + toUrl;
+            url = ECC_API_URL + BI_URL + function_code + "?sFromUrl=" + fromUrl + "&sToUrl=" + toUrl;
         }
         log.info("call bi url:======================="+url);
         String jsonStr = HttpClientUtils.get(url);
@@ -107,9 +107,9 @@ public class CallApiUtils {
     private static String getBiUrl(Enums.BI_FUNCTION_CODE function_code, String baseMapping) {
         String url;
         if(StringUtils.isNotEmpty(baseMapping)){
-            url = BI_URL + baseMapping + function_code;
+            url = ECC_API_URL + BI_URL + baseMapping + function_code;
         }else{
-            url = BI_URL + function_code;
+            url = ECC_API_URL + BI_URL + function_code;
         }
         return url;
     }
@@ -136,7 +136,7 @@ public class CallApiUtils {
                     "      </glob:EmployeeBasicDataByIdentificationQuery_sync>" +
                     "   </soap:Body>" +
                     "</soap:Envelope>";
-            String jsonStr = HttpClientUtils.post(C4C_EMPLOYE, body);
+            String jsonStr = HttpClientUtils.post(ECC_API_URL.concat(C4C_EMPLOYE), body);
             return JaxbXmlUtil.convertSoapXmlToJavaBean2(jsonStr, EmployeeBasicDataResponseMessageSync.class);
         }catch (Exception e){
             log.info("调用C4C人员同步接口异常！",e);
@@ -164,7 +164,7 @@ public class CallApiUtils {
                     "      </glob:OrganisationalUnitByIDQuery_Sync>" +
                     "   </soap:Body>" +
                     "</soap:Envelope>";
-            String jsonStr = HttpClientUtils.post(C4C_ORGNATION, body);
+            String jsonStr = HttpClientUtils.post(ECC_API_URL.concat(C4C_ORGNATION), body);
             return JaxbXmlUtil.convertSoapXmlToJavaBean2(jsonStr, OrganisationalUnitByIDResponseMessageSync.class);
         }catch (Exception e){
             e.printStackTrace();
