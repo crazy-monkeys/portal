@@ -1,24 +1,24 @@
 
-package com.crazy.portal.bean.customer.wsdl.order;
+package com.crazy.portal.bean.order.wsdl.createOrder.responce;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
-import java.util.ArrayList;
-import java.util.List;
 
 
 /**
- * <p>TableOfZsdptdninfo complex type的 Java 类。
+ * <p>TableOfZsalesordercreateInItem complex type的 Java 类。
  * 
  * <p>以下模式片段指定包含在此类中的预期内容。
  * 
  * <pre>
- * &lt;complexType name="TableOfZsdptdninfo"&gt;
+ * &lt;complexType name="TableOfZsalesordercreateInItem"&gt;
  *   &lt;complexContent&gt;
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
  *       &lt;sequence&gt;
- *         &lt;element name="item" type="{urn:sap-com:document:sap:soap:functions:mc-style}Zsdptdninfo" maxOccurs="unbounded" minOccurs="0"/&gt;
+ *         &lt;element name="item" type="{urn:sap-com:document:sap:soap:functions:mc-style}ZsalesordercreateInItem" maxOccurs="unbounded" minOccurs="0"/&gt;
  *       &lt;/sequence&gt;
  *     &lt;/restriction&gt;
  *   &lt;/complexContent&gt;
@@ -28,12 +28,12 @@ import java.util.List;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "TableOfZsdptdninfo", propOrder = {
+@XmlType(name = "TableOfZsalesordercreateInItem", propOrder = {
     "item"
 })
-public class TableOfZsdptdninfo {
+public class TableOfZsalesordercreateInItem {
 
-    protected List<Zsdptdninfo> item;
+    protected List<ZsalesordercreateInItem> item;
 
     /**
      * Gets the value of the item property.
@@ -53,13 +53,13 @@ public class TableOfZsdptdninfo {
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link Zsdptdninfo }
+     * {@link ZsalesordercreateInItem }
      * 
      * 
      */
-    public List<Zsdptdninfo> getItem() {
+    public List<ZsalesordercreateInItem> getItem() {
         if (item == null) {
-            item = new ArrayList<Zsdptdninfo>();
+            item = new ArrayList<ZsalesordercreateInItem>();
         }
         return this.item;
     }

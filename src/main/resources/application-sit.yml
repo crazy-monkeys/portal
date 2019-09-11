@@ -23,7 +23,6 @@ spring:
     default-encoding: utf-8
     from: ${spring.mail.username} #与上面的username保持一致
 
-
   datasource:
     username: root
     password: ThreeApe!@#$2019

@@ -1,5 +1,5 @@
 
-package com.crazy.portal.bean.customer.wsdl.order;
+package com.crazy.portal.bean.order.wsdl.createOrder.responce;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -18,9 +18,9 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;complexContent&gt;
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
  *       &lt;sequence&gt;
- *         &lt;element name="EsHeader" type="{urn:sap-com:document:sap:soap:functions:mc-style}ZpricessimulateHeaderOut"/&gt;
- *         &lt;element name="EtItems" type="{urn:sap-com:document:sap:soap:functions:mc-style}TableOfZpricessimulateItemOut"/&gt;
- *         &lt;element name="ItItems" type="{urn:sap-com:document:sap:soap:functions:mc-style}TableOfZpricessimulateItemIn"/&gt;
+ *         &lt;element name="EsHeader" type="{urn:sap-com:document:sap:soap:functions:mc-style}ZsalesordercreateOutHeader"/&gt;
+ *         &lt;element name="EtItems" type="{urn:sap-com:document:sap:soap:functions:mc-style}TableOfZsalesordercreateOutItem"/&gt;
+ *         &lt;element name="ItItems" type="{urn:sap-com:document:sap:soap:functions:mc-style}TableOfZsalesordercreateInItem"/&gt;
  *       &lt;/sequence&gt;
  *     &lt;/restriction&gt;
  *   &lt;/complexContent&gt;
@@ -35,25 +35,25 @@ import javax.xml.bind.annotation.XmlType;
     "etItems",
     "itItems"
 })
-@XmlRootElement(name = "ZrfcsdpricesimulateResponse")
-public class ZrfcsdpricesimulateResponse {
+@XmlRootElement(name = "ZrfcsdsalesordercreateResponse",namespace = "urn:sap-com:document:sap:soap:functions:mc-style")
+public class ZrfcsdsalesordercreateResponse {
 
     @XmlElement(name = "EsHeader", required = true)
-    protected ZpricessimulateHeaderOut esHeader;
+    protected ZsalesordercreateOutHeader esHeader;
     @XmlElement(name = "EtItems", required = true)
-    protected TableOfZpricessimulateItemOut etItems;
+    protected TableOfZsalesordercreateOutItem etItems;
     @XmlElement(name = "ItItems", required = true)
-    protected TableOfZpricessimulateItemIn itItems;
+    protected TableOfZsalesordercreateInItem itItems;
 
     /**
      * 获取esHeader属性的值。
      * 
      * @return
      *     possible object is
-     *     {@link ZpricessimulateHeaderOut }
+     *     {@link ZsalesordercreateOutHeader }
      *     
      */
-    public ZpricessimulateHeaderOut getEsHeader() {
+    public ZsalesordercreateOutHeader getEsHeader() {
         return esHeader;
     }
 
@@ -62,10 +62,10 @@ public class ZrfcsdpricesimulateResponse {
      * 
      * @param value
      *     allowed object is
-     *     {@link ZpricessimulateHeaderOut }
+     *     {@link ZsalesordercreateOutHeader }
      *     
      */
-    public void setEsHeader(ZpricessimulateHeaderOut value) {
+    public void setEsHeader(ZsalesordercreateOutHeader value) {
         this.esHeader = value;
     }
 
@@ -74,10 +74,10 @@ public class ZrfcsdpricesimulateResponse {
      * 
      * @return
      *     possible object is
-     *     {@link TableOfZpricessimulateItemOut }
+     *     {@link TableOfZsalesordercreateOutItem }
      *     
      */
-    public TableOfZpricessimulateItemOut getEtItems() {
+    public TableOfZsalesordercreateOutItem getEtItems() {
         return etItems;
     }
 
@@ -86,10 +86,10 @@ public class ZrfcsdpricesimulateResponse {
      * 
      * @param value
      *     allowed object is
-     *     {@link TableOfZpricessimulateItemOut }
+     *     {@link TableOfZsalesordercreateOutItem }
      *     
      */
-    public void setEtItems(TableOfZpricessimulateItemOut value) {
+    public void setEtItems(TableOfZsalesordercreateOutItem value) {
         this.etItems = value;
     }
 
@@ -98,10 +98,10 @@ public class ZrfcsdpricesimulateResponse {
      * 
      * @return
      *     possible object is
-     *     {@link TableOfZpricessimulateItemIn }
+     *     {@link TableOfZsalesordercreateInItem }
      *     
      */
-    public TableOfZpricessimulateItemIn getItItems() {
+    public TableOfZsalesordercreateInItem getItItems() {
         return itItems;
     }
 
@@ -110,10 +110,10 @@ public class ZrfcsdpricesimulateResponse {
      * 
      * @param value
      *     allowed object is
-     *     {@link TableOfZpricessimulateItemIn }
+     *     {@link TableOfZsalesordercreateInItem }
      *     
      */
-    public void setItItems(TableOfZpricessimulateItemIn value) {
+    public void setItItems(TableOfZsalesordercreateInItem value) {
         this.itItems = value;
     }
 

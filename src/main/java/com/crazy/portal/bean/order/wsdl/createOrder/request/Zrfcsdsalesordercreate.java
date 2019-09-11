@@ -1,6 +1,6 @@
-package com.crazy.portal.bean.order.wsdl;
+package com.crazy.portal.bean.order.wsdl.createOrder.request;
 
-import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.xml.bind.annotation.*;
 
@@ -11,12 +11,16 @@ import javax.xml.bind.annotation.*;
  * @Modified by:
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {
-    "body"
-})
-@Data
 @XmlRootElement(name = "soapenv:Envelope")
-public class BaseWSDLRequest {
+@Slf4j
+public class Zrfcsdsalesordercreate {
+
+    public Zrfcsdsalesordercreate() {
+    }
+
+    public Zrfcsdsalesordercreate(ZrfcsdsalesordercreateBody body) {
+        this.body = body;
+    }
 
     @XmlAttribute(name="xmlns:soapenv")
     private String soapenv = "http://schemas.xmlsoap.org/soap/envelope/";
@@ -24,10 +28,6 @@ public class BaseWSDLRequest {
     @XmlAttribute(name="xmlns:urn")
     private String urn = "urn:sap-com:document:sap:soap:functions:mc-style";
 
-    @XmlElement(name="soap:Body")
-    private RequestBody body;
-
-    public void setBody(RequestBody body) {
-        this.body = body;
-    }
+    @XmlElement(name="soapenv:Body")
+    private ZrfcsdsalesordercreateBody body;
 }

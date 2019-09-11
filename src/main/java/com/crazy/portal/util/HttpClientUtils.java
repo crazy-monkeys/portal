@@ -36,7 +36,6 @@ public class HttpClientUtils {
 
     private static HttpClient client;
 
-    public static String ECC_API_URL;
     public static String AUTH_SECRET;
 
     public static final String MIMETYPE_JSON = "application/json";
@@ -49,12 +48,11 @@ public class HttpClientUtils {
     }
 
     public static String get(String url) throws IOException {
-        return get(ECC_API_URL.concat(url), CHARSET, AUTH_SECRET, null, null);
+        return get(url, CHARSET, AUTH_SECRET, null, null);
     }
 
     public static String post(String url, String body) throws IOException{
-        log.info("url==========================="+ECC_API_URL.concat(url));
-        return post(ECC_API_URL.concat(url), body, AUTH_SECRET, MIMETYPE_JSON, CHARSET, CONNECT_TIMEOUT, READ_TIMEOUT);
+        return post(url, body, AUTH_SECRET, MIMETYPE_JSON, CHARSET, CONNECT_TIMEOUT, READ_TIMEOUT);
     }
 
     /**

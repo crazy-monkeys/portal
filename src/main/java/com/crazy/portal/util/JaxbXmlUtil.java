@@ -1,8 +1,5 @@
 package com.crazy.portal.util;
 
-import com.crazy.portal.bean.order.wsdl.BaseWSDLRequest;
-import com.crazy.portal.bean.order.wsdl.BodyContent;
-import com.crazy.portal.bean.order.wsdl.RequestBody;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
@@ -49,22 +46,5 @@ public class JaxbXmlUtil {
         marshaller.marshal(obj, writer);
 
         return writer.toString();
-    }
-
-    public static void main(String[] args) {
-        try {
-            BodyContent bodyContent = new BodyContent();
-            bodyContent.setYear("123");
-
-            RequestBody requestBody = new RequestBody();
-            requestBody.setBodyContent(bodyContent);
-
-            BaseWSDLRequest baseWSDLRequest = new BaseWSDLRequest();
-            baseWSDLRequest.setBody(requestBody);
-
-            System.out.println(convertToXml(baseWSDLRequest));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 }

@@ -8,7 +8,9 @@ import com.crazy.portal.bean.customer.wsdl.orgnation.OrganisationalUnitByIDRespo
 import com.crazy.portal.bean.product.BaseProResponseVO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
 import java.io.IOException;
 
 /**
@@ -19,9 +21,14 @@ import java.io.IOException;
 @Slf4j
 @Component
 public class CallApiUtils {
-    private static final String MDM_PRODUCT_URL = "/http/MDMProductMaster";
-    private static final String ECC_DEALER_CREDIR_URL = "/cxf/CUSTOMERCREDIT";
     private static final String BI_URL = "/http/";
+
+    public static String ECC_API_URL;
+
+    @Value("${ecc.api.url}")
+    public static void setEccApiUrl(String eccApiUrl) {
+        ECC_API_URL = eccApiUrl;
+    }
 
     /**
      * 同步产品信息
@@ -29,7 +36,8 @@ public class CallApiUtils {
      * @throws IOException
      */
     public static BaseProResponseVO callProductApi() throws IOException{
-        String jsonStr = HttpClientUtils.get(MDM_PRODUCT_URL);
+        String url = String.format("%s%s",ECC_API_URL,"/http/MDMProductMaster");
+        String jsonStr = HttpClientUtils.get(url);
         return JSON.parseObject(jsonStr, BaseProResponseVO.class);
     }
 
@@ -39,6 +47,7 @@ public class CallApiUtils {
      * @return
      */
     public static Zsdscredit callECCCreditApi(String dealerCode){
+        String url = String.format("%s%s",ECC_API_URL,"/cxf/CUSTOMERCREDIT");
         Zsdscredit zsdscredit = new Zsdscredit();
         try{
             String params = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:urn=\"urn:sap-com:document:sap:soap:functions:mc-style\">" +
@@ -49,7 +58,7 @@ public class CallApiUtils {
                     "      </urn:Zrfcsdcustomercredit>" +
                     "   </soapenv:Body>" +
                     "</soapenv:Envelope>";
-            String jsonStr = HttpClientUtils.post(ECC_DEALER_CREDIR_URL, params);
+            String jsonStr = HttpClientUtils.post(url, params);
             ZrfcsdcustomercreditResponse response = JaxbXmlUtil.convertSoapXmlToJavaBean(jsonStr, ZrfcsdcustomercreditResponse.class);
             if(response.getOreturn().equals("0")){
                 zsdscredit = response.getOcredit();
@@ -73,9 +82,9 @@ public class CallApiUtils {
     public static String callBiApi(Enums.BI_FUNCTION_CODE function_code, String baseMapping, String fromUrl, String toUrl) throws IOException {
         String url;
         if(StringUtils.isNotEmpty(baseMapping)){
-            url = BI_URL + baseMapping + function_code + "?sFromUrl=" + fromUrl + "&sToUrl=" + toUrl;
+            url = ECC_API_URL + BI_URL + baseMapping + function_code + "?sFromUrl=" + fromUrl + "&sToUrl=" + toUrl;
         }else{
-            url = BI_URL + function_code + "?sFromUrl=" + fromUrl + "&sToUrl=" + toUrl;
+            url = ECC_API_URL + BI_URL + function_code + "?sFromUrl=" + fromUrl + "&sToUrl=" + toUrl;
         }
         log.info("call bi url:======================="+url);
         String jsonStr = HttpClientUtils.get(url);
@@ -98,9 +107,9 @@ public class CallApiUtils {
     private static String getBiUrl(Enums.BI_FUNCTION_CODE function_code, String baseMapping) {
         String url;
         if(StringUtils.isNotEmpty(baseMapping)){
-            url = BI_URL + baseMapping + function_code;
+            url = ECC_API_URL + BI_URL + baseMapping + function_code;
         }else{
-            url = BI_URL + function_code;
+            url = ECC_API_URL + BI_URL + function_code;
         }
         return url;
     }
@@ -127,7 +136,7 @@ public class CallApiUtils {
                     "      </glob:EmployeeBasicDataByIdentificationQuery_sync>" +
                     "   </soap:Body>" +
                     "</soap:Envelope>";
-            String jsonStr = HttpClientUtils.post(C4C_EMPLOYE, body);
+            String jsonStr = HttpClientUtils.post(ECC_API_URL.concat(C4C_EMPLOYE), body);
             return JaxbXmlUtil.convertSoapXmlToJavaBean2(jsonStr, EmployeeBasicDataResponseMessageSync.class);
         }catch (Exception e){
             log.info("调用C4C人员同步接口异常！",e);
@@ -155,7 +164,7 @@ public class CallApiUtils {
                     "      </glob:OrganisationalUnitByIDQuery_Sync>" +
                     "   </soap:Body>" +
                     "</soap:Envelope>";
-            String jsonStr = HttpClientUtils.post(C4C_ORGNATION, body);
+            String jsonStr = HttpClientUtils.post(ECC_API_URL.concat(C4C_ORGNATION), body);
             return JaxbXmlUtil.convertSoapXmlToJavaBean2(jsonStr, OrganisationalUnitByIDResponseMessageSync.class);
         }catch (Exception e){
             e.printStackTrace();

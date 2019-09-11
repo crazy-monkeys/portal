@@ -1,33 +1,35 @@
 
-package com.crazy.portal.bean.customer.wsdl.order;
+package com.crazy.portal.bean.order.wsdl.createOrder.responce;
 
+import java.math.BigDecimal;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
-import java.math.BigDecimal;
 
 
 /**
- * <p>ZpricessimulateItemOut complex type的 Java 类。
+ * <p>ZsalesordercreateOutItem complex type的 Java 类。
  * 
  * <p>以下模式片段指定包含在此类中的预期内容。
  * 
  * <pre>
- * &lt;complexType name="ZpricessimulateItemOut"&gt;
+ * &lt;complexType name="ZsalesordercreateOutItem"&gt;
  *   &lt;complexContent&gt;
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
  *       &lt;sequence&gt;
+ *         &lt;element name="Saporderid" type="{urn:sap-com:document:sap:rfc:functions}char10"/&gt;
  *         &lt;element name="Sequenceno" type="{urn:sap-com:document:sap:rfc:functions}char6"/&gt;
  *         &lt;element name="Itemno" type="{urn:sap-com:document:sap:rfc:functions}char6"/&gt;
  *         &lt;element name="Productid" type="{urn:sap-com:document:sap:rfc:functions}char18"/&gt;
+ *         &lt;element name="Sapquantity" type="{urn:sap-com:document:sap:rfc:functions}quantum15.3"/&gt;
  *         &lt;element name="Price" type="{urn:sap-com:document:sap:rfc:functions}decimal23.4"/&gt;
  *         &lt;element name="Netprice" type="{urn:sap-com:document:sap:rfc:functions}decimal23.4"/&gt;
+ *         &lt;element name="CondUnit" type="{urn:sap-com:document:sap:rfc:functions}char3"/&gt;
  *         &lt;element name="Currency" type="{urn:sap-com:document:sap:rfc:functions}char5"/&gt;
  *         &lt;element name="Itemcategory" type="{urn:sap-com:document:sap:rfc:functions}char4"/&gt;
  *         &lt;element name="Refitemno" type="{urn:sap-com:document:sap:rfc:functions}char6"/&gt;
  *         &lt;element name="Refitemproductid" type="{urn:sap-com:document:sap:rfc:functions}char18"/&gt;
- *         &lt;element name="CondUnit" type="{urn:sap-com:document:sap:rfc:functions}char3"/&gt;
  *       &lt;/sequence&gt;
  *     &lt;/restriction&gt;
  *   &lt;/complexContent&gt;
@@ -37,30 +39,38 @@ import java.math.BigDecimal;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "ZpricessimulateItemOut", propOrder = {
+@XmlType(name = "ZsalesordercreateOutItem", propOrder = {
+    "saporderid",
     "sequenceno",
     "itemno",
     "productid",
+    "sapquantity",
     "price",
     "netprice",
+    "condUnit",
     "currency",
     "itemcategory",
     "refitemno",
-    "refitemproductid",
-    "condUnit"
+    "refitemproductid"
 })
-public class ZpricessimulateItemOut {
+public class ZsalesordercreateOutItem {
 
+    @XmlElement(name = "Saporderid", required = true)
+    protected String saporderid;
     @XmlElement(name = "Sequenceno", required = true)
     protected String sequenceno;
     @XmlElement(name = "Itemno", required = true)
     protected String itemno;
     @XmlElement(name = "Productid", required = true)
     protected String productid;
+    @XmlElement(name = "Sapquantity", required = true)
+    protected BigDecimal sapquantity;
     @XmlElement(name = "Price", required = true)
     protected BigDecimal price;
     @XmlElement(name = "Netprice", required = true)
     protected BigDecimal netprice;
+    @XmlElement(name = "CondUnit", required = true)
+    protected String condUnit;
     @XmlElement(name = "Currency", required = true)
     protected String currency;
     @XmlElement(name = "Itemcategory", required = true)
@@ -69,8 +79,30 @@ public class ZpricessimulateItemOut {
     protected String refitemno;
     @XmlElement(name = "Refitemproductid", required = true)
     protected String refitemproductid;
-    @XmlElement(name = "CondUnit", required = true)
-    protected String condUnit;
+
+    /**
+     * 获取saporderid属性的值。
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getSaporderid() {
+        return saporderid;
+    }
+
+    /**
+     * 设置saporderid属性的值。
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setSaporderid(String value) {
+        this.saporderid = value;
+    }
 
     /**
      * 获取sequenceno属性的值。
@@ -145,6 +177,30 @@ public class ZpricessimulateItemOut {
     }
 
     /**
+     * 获取sapquantity属性的值。
+     * 
+     * @return
+     *     possible object is
+     *     {@link BigDecimal }
+     *     
+     */
+    public BigDecimal getSapquantity() {
+        return sapquantity;
+    }
+
+    /**
+     * 设置sapquantity属性的值。
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link BigDecimal }
+     *     
+     */
+    public void setSapquantity(BigDecimal value) {
+        this.sapquantity = value;
+    }
+
+    /**
      * 获取price属性的值。
      * 
      * @return
@@ -190,6 +246,30 @@ public class ZpricessimulateItemOut {
      */
     public void setNetprice(BigDecimal value) {
         this.netprice = value;
+    }
+
+    /**
+     * 获取condUnit属性的值。
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getCondUnit() {
+        return condUnit;
+    }
+
+    /**
+     * 设置condUnit属性的值。
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setCondUnit(String value) {
+        this.condUnit = value;
     }
 
     /**
@@ -286,30 +366,6 @@ public class ZpricessimulateItemOut {
      */
     public void setRefitemproductid(String value) {
         this.refitemproductid = value;
-    }
-
-    /**
-     * 获取condUnit属性的值。
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getCondUnit() {
-        return condUnit;
-    }
-
-    /**
-     * 设置condUnit属性的值。
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setCondUnit(String value) {
-        this.condUnit = value;
     }
 
 }
