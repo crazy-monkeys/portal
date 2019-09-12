@@ -2,6 +2,7 @@ package com.crazy.portal.service.system;
 
 import com.crazy.portal.config.exception.BusinessException;
 import com.crazy.portal.dao.system.RoleMapper;
+import com.crazy.portal.dao.system.RoleResourceMapper;
 import com.crazy.portal.dao.system.UserRoleMapper;
 import com.crazy.portal.entity.system.Role;
 import com.crazy.portal.util.BeanUtils;
@@ -13,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -29,6 +31,8 @@ public class RoleService {
     private RoleMapper roleMapper;
     @Resource
     private UserRoleMapper userRoleMapper;
+    @Resource
+    private RoleResourceMapper roleResourceMapper;
 
     /**
      * 分页获取角色列表
@@ -96,16 +100,19 @@ public class RoleService {
 
     /**
      * 删除角色
-     * @param roleId
+     * @param roleCode
      * @return
      */
-    public int deleteRole(Integer roleId){
+    public int deleteRole(String roleCode){
 
-        Integer roleBinds = userRoleMapper.countByRoleId(roleId);
-        BusinessUtil.assertTrue(roleBinds > 0,ErrorCodes.SystemManagerEnum.ROLE_DELETE_NOT_ALLOWED);
-
-        Role role = roleMapper.findById(roleId);
+        Role role = roleMapper.findRoleByCode(roleCode);
         BusinessUtil.notNull(role,ErrorCodes.SystemManagerEnum.ROLE_NOT_EXIST);
+
+        Integer roleUserBinds = userRoleMapper.countByRoleId(role.getId());
+        BusinessUtil.assertTrue(roleUserBinds > 0,ErrorCodes.SystemManagerEnum.ROLE_BIND_USER);
+
+        List<Integer> roleResBinds = roleResourceMapper.selectRoleResourceByRoleIds(Arrays.asList(role.getId()),true);
+        BusinessUtil.assertTrue(roleResBinds.isEmpty(),ErrorCodes.SystemManagerEnum.ROLE_BIND_RES);
 
         return roleMapper.deleteByPrimaryKey(role.getId());
     }

@@ -116,12 +116,12 @@ public class RoleController extends BaseController {
 
     /**
      * 删除角色
-     * @param roleId
+     * @param roleCode
      * @return
      */
-    @DeleteMapping("/delete/{roleId}")
-    public BaseResponse delete(@PathVariable Integer roleId){
-        roleService.deleteRole(roleId);
+    @DeleteMapping("/delete/{roleCode}")
+    public BaseResponse delete(@PathVariable String roleCode){
+        roleService.deleteRole(roleCode);
         return super.successResult();
     }
 }
