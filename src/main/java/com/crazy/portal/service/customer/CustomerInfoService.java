@@ -230,7 +230,7 @@ public class CustomerInfoService {
         saveCustomerDetail(customerInfo, user.getId());
         if(user.getUserType().equals(Enums.USER_TYPE.internal.toString())){
             InternalUser internalUser = internalUserMapper.selectByUserId(user.getId());
-            custZrAccountTeamService.updateTeam(customerInfo.getId(), user.getId(), internalUser);
+            custZrAccountTeamService.updateTeam(customerInfo.getId(), internalUser.getUserNo());
         }else{
             CustomerInfo dealer = customerInfoMapper.selectByPrimaryKey(user.getDealerId());
             custCorporateRelationshipService.UpdateCustShip(customerInfo.getId(), user.getId(), dealer);
@@ -344,8 +344,7 @@ public class CustomerInfoService {
             customerInfo.setCustType(Enums.CUSTOMER_TYPE.WAIT_APPROVAL.getCode());
             customerInfo.setApproveStatus(Enums.CUSTOMER_APPROVE_STATUS.APPROVAL.getCode());
             if(null != approvalBean.getSalesId()){
-                InternalUser internalUser = internalUserMapper.selectByPrimaryKey(approvalBean.getSalesId());
-                custZrAccountTeamService.updateTeam(customerInfo.getId(), userId, internalUser);
+                custZrAccountTeamService.updateTeam(customerInfo.getId(), approvalBean.getSalesId());
             }else if (null != approvalBean.getDealerId()){
                 CustomerInfo dealer = customerInfoMapper.selectByPrimaryKey(approvalBean.getCustId());
                 custCorporateRelationshipService.UpdateCustShip(customerInfo.getId(), userId, dealer);

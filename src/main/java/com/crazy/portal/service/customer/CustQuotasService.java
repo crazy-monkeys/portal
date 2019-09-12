@@ -48,7 +48,7 @@ public class CustQuotasService {
                 for(CustSalesQuota r : results){
                     Boolean flg = true;
                     for(CustSalesQuota c : custSalesQuotas){
-                        if(r.getQuoatId() == c.getQuoatId()){
+                        if(r.getQuoatId().equals(c.getQuoatId())){
                             flg = false;
                             break;
                         }

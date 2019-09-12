@@ -47,7 +47,7 @@ public class CustInvoiceInfoService {
                 for(CustInvoiceInfo r : results){
                     Boolean flg = true;
                     for(CustInvoiceInfo c : custInvoiceInfos){
-                        if(r.getInvoiceId() == c.getInvoiceId()){
+                        if(r.getInvoiceId().equals(c.getInvoiceId())){
                             flg = false;
                             break;
                         }

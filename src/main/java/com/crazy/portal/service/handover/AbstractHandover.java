@@ -45,7 +45,7 @@ public abstract class AbstractHandover {
             BiCheckResult result = callBiServer(functionCode, pushServerFile1, "bitest/download/");
             log.info("BI handle result info >> {}", JSONObject.toJSONString(result));
             //获取文件的地址信息
-            String biFileName = result.getFilePath().substring(result.getFilePath().lastIndexOf("/") + 1);
+            String biFileName = result.getFilePath().substring(result.getFilePath().lastIndexOf("/") + 1,result.getFilePath().lastIndexOf("\\") );
             String pullLocalFile = String.format("%s%s", pullPath, biFileName);
             if(log.isDebugEnabled()) {
                 log.debug("BI to Portal info >> Ftp file path:{} , Local file path:{}", result.getFilePath(), pullLocalFile);

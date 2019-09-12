@@ -20,7 +20,7 @@ public class ApprovalBean {
     private String approvalRemark;
 
     //分配代理商
-    private Integer salesId;
+    private String salesId;
     //分配销售
     private Integer dealerId;
 }

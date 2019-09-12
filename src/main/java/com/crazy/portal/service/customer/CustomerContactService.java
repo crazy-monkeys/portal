@@ -47,7 +47,7 @@ public class CustomerContactService {
                 for(CustomerContact r : results){
                     Boolean flg = true;
                     for(CustomerContact c : customerContacts){
-                        if(r.getContactId() == c.getContactId()){
+                        if(r.getContactId().equals(c.getContactId())){
                             flg = false;
                             break;
                         }

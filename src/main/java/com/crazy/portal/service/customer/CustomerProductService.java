@@ -47,7 +47,7 @@ public class CustomerProductService {
                 for(CustomerProduct r : results){
                     Boolean flg = true;
                     for(CustomerProduct c : customerProducts){
-                        if(r.getProId() == c.getProId()){
+                        if(r.getProId().equals(c.getProId())){
                             flg = false;
                             break;
                         }

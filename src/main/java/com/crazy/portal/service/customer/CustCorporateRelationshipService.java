@@ -51,7 +51,7 @@ public class CustCorporateRelationshipService {
                 for(CustCorporateRelationship r : results){
                     Boolean flg = true;
                     for(CustCorporateRelationship c : custCorporateRelationships){
-                        if(r.getShipId() == c.getShipId()){
+                        if(r.getShipId().equals(c.getShipId())){
                             flg = false;
                             break;
                         }
@@ -72,7 +72,7 @@ public class CustCorporateRelationshipService {
         if(null != dealer) {
             CustCorporateRelationship ship = new CustCorporateRelationship();
             ship.setCustId(custId);
-            ship.setCorporateType("Z001");
+            ship.setCorporateType("Z004");
             ship.setCorporateId(dealer.getId());
             ship.setCorporateName(dealer.getCustName());
             ship.setCreateUser(userId);

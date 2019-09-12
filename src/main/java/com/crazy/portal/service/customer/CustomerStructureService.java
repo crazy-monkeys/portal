@@ -47,7 +47,7 @@ public class CustomerStructureService {
                 for(CustomerStructure r : results){
                     Boolean flg = true;
                     for(CustomerStructure c : customerStructures){
-                        if(r.getStructureId() == c.getStructureId()){
+                        if(r.getStructureId().equals(c.getStructureId())){
                             flg = false;
                             break;
                         }

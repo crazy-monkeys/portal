@@ -45,7 +45,7 @@ public class CustAssetsInformationService {
                 for(CustAssetsInformation r : results){
                     Boolean flg = true;
                     for(CustAssetsInformation c : custAssetsInformations){
-                        if(r.getAsseteInfoId() == c.getAsseteInfoId()){
+                        if(r.getAsseteInfoId().equals(c.getAsseteInfoId())){
                             flg = false;
                             break;
                         }

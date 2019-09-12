@@ -1,9 +1,7 @@
 package com.crazy.portal.service.customer;
 
 import com.crazy.portal.dao.cusotmer.CustZrAccountTeamMapper;
-import com.crazy.portal.entity.cusotmer.CustSalesQuota;
 import com.crazy.portal.entity.cusotmer.CustZrAccountTeam;
-import com.crazy.portal.entity.system.InternalUser;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -50,7 +48,7 @@ public class CustZrAccountTeamService {
                 for(CustZrAccountTeam r : results){
                     Boolean flg = true;
                     for(CustZrAccountTeam c : zrAccountTeams){
-                        if(r.getId() == c.getId()){
+                        if(r.getId().equals(c.getId())){
                             flg = false;
                             break;
                         }
@@ -74,11 +72,11 @@ public class CustZrAccountTeamService {
     /**
      * 销售报备客户
      */
-    public void updateTeam(Integer custId, Integer userId, InternalUser internalUser){
-        if(null != internalUser) {
+    public void updateTeam(Integer custId, String employeeId){
+        if(null != employeeId) {
             CustZrAccountTeam team = new CustZrAccountTeam();
             team.setCustId(custId);
-            team.setEmployeeId(internalUser.getUserNo());
+            team.setEmployeeId(employeeId);
             team.setRoleType("142");//142:负责销售 211：客户团队成员 46：销售人员 213：合作伙伴联系人
             team.setActive(1);
             custZrAccountTeamMapper.insertSelective(team);

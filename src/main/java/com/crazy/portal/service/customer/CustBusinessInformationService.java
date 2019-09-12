@@ -45,7 +45,7 @@ public class CustBusinessInformationService {
                 for(CustBusinessInformation r : results){
                     Boolean flg = true;
                     for(CustBusinessInformation c : custBusinessInformations){
-                        if(r.getBusInfoId() == c.getBusInfoId()){
+                        if(r.getBusInfoId().equals(c.getBusInfoId())){
                             flg = false;
                             break;
                         }

@@ -47,7 +47,7 @@ public class CustSalesService {
                 for(CustSales r : results){
                     Boolean flg = true;
                     for(CustSales c : custSales){
-                        if(r.getSalesId() == c.getSalesId()){
+                        if(r.getSalesId().equals(c.getSalesId())){
                             flg = false;
                             break;
                         }

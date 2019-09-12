@@ -3,6 +3,7 @@ package com.crazy.portal.controller.system;
 import com.crazy.portal.bean.BaseResponse;
 import com.crazy.portal.bean.inuser.SealerBean;
 import com.crazy.portal.controller.BaseController;
+import com.crazy.portal.dao.system.InternalUserMapper;
 import com.crazy.portal.service.customer.CustomerInfoService;
 import com.crazy.portal.service.group.SalesGroupService;
 import com.crazy.portal.service.system.SysParamService;
@@ -31,6 +32,8 @@ public class SysController extends BaseController {
     private SysParamService sysParamService;
     @Resource
     private SalesGroupService salesGroupService;
+    @Resource
+    private InternalUserMapper internalUserMapper;
 
     @GetMapping("/customer/all")
     public BaseResponse getAllCustomer(){
@@ -39,13 +42,7 @@ public class SysController extends BaseController {
 
     @GetMapping("/sales/list")
     public BaseResponse getAllSales(){
-        SealerBean sealerBean = new SealerBean();
-        sealerBean.setEmployeeId("10001");
-        sealerBean.setEmployeeName("张三");
-
-        List<SealerBean> result = new ArrayList<>();
-        result.add(sealerBean);
-        return successResult(result);
+        return successResult(internalUserMapper.selectSales());
     }
 
     @GetMapping("/dealer/list")

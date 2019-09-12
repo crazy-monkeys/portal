@@ -1,9 +1,6 @@
 package com.crazy.portal.task.quartz;
 
-import com.crazy.portal.bean.customer.wsdl.orgnation.OrganisationalUnitByElementsResponseSync;
-import com.crazy.portal.bean.customer.wsdl.orgnation.OrganisationalUnitByIDResponseMessageSync;
-import com.crazy.portal.bean.customer.wsdl.orgnation.OrganisationalUnitQueryRepsonseNameAndAddress;
-import com.crazy.portal.bean.customer.wsdl.orgnation.OrganisationalUnitQueryResponseEmployeeAssignment;
+import com.crazy.portal.bean.customer.wsdl.orgnation.*;
 import com.crazy.portal.config.quartz.annotation.Task;
 import com.crazy.portal.dao.system.InternalUserMapper;
 import com.crazy.portal.dao.system.OrganizationalStructureMapper;
@@ -54,14 +51,17 @@ public class OrganisationalJob implements Job {
                 for(OrganisationalUnitQueryRepsonseNameAndAddress name : names){
                     organizational.setOrgName(name.getName());
                 }
+                List<OrganisationalUnitQueryResponseParentOrganisationalUnitAssignment> parentOrg = org.getParentOrganisationalUnitAssignment();
+                for(OrganisationalUnitQueryResponseParentOrganisationalUnitAssignment parent : parentOrg){
+                    if(null != parent.getParentOrganisationalUnitID()){
+                        organizational.setParentOrg(Integer.valueOf(parent.getParentOrganisationalUnitID()));
+                    }
+                }
                 List<OrganisationalUnitQueryResponseEmployeeAssignment> emps = org.getEmployeeAssignment();
                 for(OrganisationalUnitQueryResponseEmployeeAssignment emp : emps){
-                    if(null != emp.getRoleCode()){
-                        organizational.setParentOrg(Integer.valueOf(emp.getRoleCode()));
-                    }
                     if(null != emp.getEmployeeInternalID()){
                         InternalUser internalUser = internalUserMapper.selectByUserNo(emp.getEmployeeInternalID());
-                        organizational.setPm(internalUser.getUserName());
+                        organizational.setPm(internalUser==null?emp.getEmployeeInternalID():internalUser.getUserName());
                     }
                 }
                 if(null != organizational.getId()){
@@ -71,7 +71,7 @@ public class OrganisationalJob implements Job {
                 }
             }
         }catch (Exception e){
-            log.error("部门信息同步");
+            log.error("部门信息同步",e);
         }
     }
 }

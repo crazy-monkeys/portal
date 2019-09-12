@@ -658,7 +658,7 @@
   </select>
 
   <select id="selectCustomer" resultMap="BaseResultMap">
-      select
+    select
     cust.id,
     cust_type,
     case cust.business_type when 'A01' then 'Account Market（直供）'
@@ -675,23 +675,24 @@
     business_type,
     cust_role,
     team.user_name report_sales_name,
-    ship.user_name report_dealer_name,
+    team.employee_id,
+    ship.report_dealer_name,
+    ship.corporate_id,
     cust.approve_user,
     cust.approve_remark,
     cust.approve_time,
     cust.create_time
     from t_customer_info cust
     left join
-      (select team.id,team.cust_id,ins.user_name from cust_zr_account_team team
-        left join t_internal_user ins on ins.user_no = team.employee_id
-        where   team.active=1 and team.role_type = '142'
-      ) team on team.cust_id = cust.id
+    (select team.id,team.cust_id,ins.user_name,team.employee_id from cust_zr_account_team team
+    left join t_internal_user ins on ins.user_no = team.employee_id
+    where   team.active=1 and team.role_type = '142'
+    ) team on team.cust_id = cust.id
     left join
-      (select s.ship_id,s.cust_id,s.corporate_id,ins.user_name from t_cust_corporate_relationship s
-        left join t_user u on u.id = s.corporate_id
-        left join t_internal_user ins on ins.user_mail = u.login_name
-        where s.active=1 and s.corporate_type = 'Z001'
-      ) ship on ship.cust_id = cust.id
+    (select s.cust_id,c.cust_name report_dealer_name,s.corporate_id from t_cust_corporate_relationship s
+    inner JOIN t_customer_info c on s.corporate_id = c.id
+    where s.active=1 and s.corporate_type = 'Z004'
+    ) ship on ship.cust_id = cust.id
     where cust.business_type!='A04'
     and cust.active = 1
     <if test="queryType == 3 ">
@@ -699,7 +700,7 @@
         and ship.corporate_id = #{reportDealer}
       </if>
       <if test="reportSales != null">
-        and team.account_name = #{reportSales}
+        and team.employee_id = #{reportSales}
       </if>
       <if test="customerStatus != '' and customerStatus != null">
         and cust.approve_status = #{customerStatus}
@@ -755,6 +756,6 @@
   </select>
 
   <select id="selectDealerList" resultMap="BaseResultMap">
-    select * from t_customer_info where active =1 and cust.business_type = 'A04'
+    select * from t_customer_info where active =1 and business_type = 'A04'
   </select>
 </mapper>

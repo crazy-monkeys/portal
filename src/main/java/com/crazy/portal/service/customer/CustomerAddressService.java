@@ -49,7 +49,7 @@ public class CustomerAddressService {
                 for(CustomerAddress r : results){
                     Boolean flg = true;
                     for(CustomerAddress c : customerAddresses){
-                        if(r.getAddressId() == c.getAddressId()){
+                        if(r.getAddressId().equals(c.getAddressId())){
                             flg = false;
                             break;
                         }

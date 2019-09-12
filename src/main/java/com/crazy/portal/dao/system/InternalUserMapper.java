@@ -2,6 +2,8 @@ package com.crazy.portal.dao.system;
 
 import com.crazy.portal.entity.system.InternalUser;
 
+import java.util.List;
+
 public interface InternalUserMapper {
     int deleteByPrimaryKey(Integer inUserId);
 
@@ -18,4 +20,6 @@ public interface InternalUserMapper {
     InternalUser selectByUserId(Integer userId);
 
     InternalUser selectByUserNo(String userNo);
+
+    List<InternalUser> selectSales();
 }

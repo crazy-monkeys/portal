@@ -77,7 +77,7 @@ public class CustomerFileService {
                 for(CustomerFile r : results){
                     Boolean flg = true;
                     for(CustomerFile c : customerFiles){
-                        if(r.getFileId() == c.getFileId()){
+                        if(r.getFileId().equals(c.getFileId())){
                             flg = false;
                             break;
                         }

@@ -190,4 +190,10 @@
   <select id="selectByUserNo" resultMap="BaseResultMap">
     select * from t_internal_user where active =1 and user_no = #{userNo}
   </select>
+
+  <select id="selectSales" resultMap="BaseResultMap">
+    select * from t_internal_user where user_department_code in (
+      select seq from t_organizational_structure where parent_org in ('1001013','1001014')
+      )
+  </select>
 </mapper>

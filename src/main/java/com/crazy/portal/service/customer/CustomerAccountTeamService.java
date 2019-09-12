@@ -55,7 +55,7 @@ public class CustomerAccountTeamService {
                 for(CustomerAccountTeam r : results){
                     Boolean flg = true;
                     for(CustomerAccountTeam c : customerAccountTeams){
-                        if(r.getTeamId() == c.getTeamId()){
+                        if(r.getTeamId().equals(c.getTeamId())){
                             flg = false;
                             break;
                         }
