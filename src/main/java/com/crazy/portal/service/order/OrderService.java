@@ -3,9 +3,11 @@ package com.crazy.portal.service.order;
 import com.crazy.portal.bean.order.OrderApprovalBean;
 import com.crazy.portal.bean.order.OrderCreditInfoBean;
 import com.crazy.portal.bean.order.OrderQueryBean;
+import com.crazy.portal.bean.order.wsdl.create.*;
 import com.crazy.portal.dao.order.OrderLineMapper;
 import com.crazy.portal.dao.order.OrderMapper;
 import com.crazy.portal.entity.order.Order;
+import com.crazy.portal.entity.order.OrderLine;
 import com.crazy.portal.util.BusinessUtil;
 import com.crazy.portal.util.DateUtil;
 import com.crazy.portal.util.Enums;
@@ -17,6 +19,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -30,7 +34,8 @@ public class OrderService {
     private OrderMapper orderMapper;
     @Resource
     private OrderLineMapper orderLineMapper;
-
+    @Resource
+    private OrderApiService orderApiService;
     /**
      * 订单列表查询
      * @param bean
@@ -115,6 +120,9 @@ public class OrderService {
     public void approval(OrderApprovalBean bean, Integer userId){
         Order order = orderMapper.selectByPrimaryKey(bean.getOrderId());
         BusinessUtil.notNull(order, ErrorCodes.BusinessEnum.ORDER_INFO_NOT_FOUND);
+        if(bean.getApprovalStatus().equals(Enums.OrderApprovalStatus.ADOPT.getValue())){
+            sendOrderCreateRequest(order);
+        }
         order.setApprovalStatus(bean.getApprovalStatus());
         order.setRejectReason(bean.getRejectReason());
         order.setUpdateId(userId);
@@ -129,5 +137,49 @@ public class OrderService {
         OrderCreditInfoBean info = new OrderCreditInfoBean();
         //TODO
         return info;
+    }
+
+
+    public String sendOrderCreateRequest(Order order){
+        IsHeader isHeader = new IsHeader();
+        isHeader.setPortalorderid(order.getId().toString());
+        isHeader.setOrdertype(order.getOrderType());
+        isHeader.setSalesorg(order.getSalesOrgId().toString());
+//        isHeader.setChannel();
+//        isHeader.setDivision();
+//        isHeader.setSalesoffice();
+//        isHeader.setSalesgroup();
+//        isHeader.setSoldto("100158");
+//        isHeader.setSendto("100158");
+        isHeader.setPurchaseno(order.getPurchaseOrderNo());
+        isHeader.setPurchasedate(DateUtil.format(order.getPurchaseOrderDate(), DateUtil.NEW_FORMAT));
+        isHeader.setPaymentterms("0001");
+        isHeader.setCustomergroup1("A02");
+        isHeader.setCustomergroup2("B1");
+        isHeader.setPricedate("20190829");
+        isHeader.setRefsaporderid("");
+        isHeader.setInco1("FH");
+        isHeader.setInco2("123");
+        isHeader.setAugru("005");
+
+        List<ItItem> items = new ArrayList<>();
+        for (OrderLine line : order.getLines()) {
+            ItItem item = new ItItem();
+//            item.setSequenceno();
+//            item.setProductid();
+//            item.setOrderquantity("1");
+//            item.setPlatform(line.getPlatform());
+//            item.setRequestdate();
+//            item.setRefsaporderitemno("");
+//            items.add(item);
+        }
+        ItItems itItems = new ItItems();
+        itItems.setItem(items);
+
+        ZrfcsdsalesordercreateContent content = new ZrfcsdsalesordercreateContent(null,isHeader,itItems);
+        ZrfcsdsalesordercreateBody zrfcsdsalesordercreateBody = new ZrfcsdsalesordercreateBody(content);
+        Zrfcsdsalesordercreate request = new Zrfcsdsalesordercreate(zrfcsdsalesordercreateBody);
+        ZrfcsdsalesordercreateResponse response = orderApiService.createSalesOrder(request);
+        return null;
     }
 }
