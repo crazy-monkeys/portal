@@ -168,7 +168,7 @@ public class SaleForecastController extends BaseController {
      */
     @GetMapping(value = "/forecast/amb/reject/download")
     public BaseResponse downloadDataByAmb(HttpServletResponse response, Integer[] forecastIds) {
-        saleForecastService.downloadRejectData(response, forecastIds, 1);
+        saleForecastService.downloadDataByAmb(response, forecastIds);
         return super.successResult();
     }
 
@@ -180,7 +180,7 @@ public class SaleForecastController extends BaseController {
      */
     @GetMapping(value = "/forecast/sd/reject/download")
     public BaseResponse downloadDataBySd(HttpServletResponse response, Integer[] forecastIds) {
-        saleForecastService.downloadRejectData(response, forecastIds, 1);
+        saleForecastService.downloadDataBySd(response, forecastIds);
         return super.successResult();
     }
 

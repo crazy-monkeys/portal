@@ -387,7 +387,8 @@
       update_time = #{updateTime,jdbcType=TIMESTAMP},
       update_user_id = #{updateUserId,jdbcType=INTEGER},
       operation_time = #{operationTime,jdbcType=TIMESTAMP},
-      operation_user_id = #{operationUserId,jdbcType=INTEGER}
+      operation_user_id = #{operationUserId,jdbcType=INTEGER},
+      error_msg = #{errorMsg}
     where id = #{id,jdbcType=INTEGER}
   </update>
 
@@ -501,6 +502,27 @@
   <update id="updateErrorMsgById" >
     update t_forecast set error_msg = #{errorMsg}
     where id = #{id}
+  </update>
+
+  <select id="selectByBatchNo" resultMap="fullFieldMap" >
+    select a.*,b.*
+    from t_forecast a
+    inner join t_forecast_line b on a.id = b.f_id
+    where a.batch_no = #{batchNo}
+  </select>
+
+  <select id="selectByIds" resultMap="fullFieldMap" >
+    select a.*,b.*
+    from t_forecast a
+    inner join t_forecast_line b on a.id = b.f_id
+    where 1 = 1
+    <foreach collection="ids" item="item" index="index" open="a.id in (" separator="," close=")" >
+      #{item}
+    </foreach>
+  </select>
+
+  <update id="clearErrorMsgByBatch" >
+    update t_forecast set error_msg = null where batch_no = #{batchNo}
   </update>
 
 </mapper>

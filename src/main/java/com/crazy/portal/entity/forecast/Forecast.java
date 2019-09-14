@@ -88,6 +88,9 @@ public class Forecast {
      */
     private String sdPeople;
 
+    //代表处
+    private String representative;
+
     /**
      *
      */
@@ -162,5 +165,14 @@ public class Forecast {
     private ForecastLine line;
 
     private String statusDesc;
+
+    public Forecast() {
+    }
+
+    public Forecast(Integer createUserId) {
+        this.createUserId = createUserId;
+        this.createTime = new Date();
+
+    }
 
 }

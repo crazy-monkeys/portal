@@ -12,7 +12,7 @@ import lombok.Data;
 public class AgencyTemplate extends BaseRowModel {
 
     @ExcelProperty(index = 0, value = "年月")
-    private String yearMonth;
+    private String operationYearMonth;
 
     @ExcelProperty(index = 1, value = "出货公司")
     private String company;
@@ -134,7 +134,7 @@ public class AgencyTemplate extends BaseRowModel {
     @ExcelProperty(index = 40, value = "备注6")
     private String remarkSix;
 
-    private String AgencyAbbreviation;
+    private String agencyAbbreviation;
 
     private String id;
 
