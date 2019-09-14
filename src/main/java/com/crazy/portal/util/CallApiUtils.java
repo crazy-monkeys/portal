@@ -10,7 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
 import java.io.IOException;
 
 /**
@@ -26,7 +25,7 @@ public class CallApiUtils {
     public static String ECC_API_URL;
 
     @Value("${ecc.api.url}")
-    public static void setEccApiUrl(String eccApiUrl) {
+    public void setEccApiUrl(String eccApiUrl) {
         ECC_API_URL = eccApiUrl;
     }
 
@@ -172,6 +171,7 @@ public class CallApiUtils {
         return null;
     }
 
-    private static String C4C_Visits = "";
+    private static String C4C_Visits = "/cxf/PORTAL/C4C/VISIT";
+
 
 }

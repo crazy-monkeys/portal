@@ -23,6 +23,10 @@ public class CustZrAccountTeamService {
         return custZrAccountTeamMapper.selectByCustId(custId);
     }
 
+    public CustZrAccountTeam selectZRByCustId(Integer custId){
+        return custZrAccountTeamMapper.selectZRByCustId(custId);
+    }
+
     public void saveOrUpdate(List<CustZrAccountTeam> zrAccountTeams, Integer custId, Integer userId){
         if(null == zrAccountTeams || zrAccountTeams.isEmpty()){
             return;

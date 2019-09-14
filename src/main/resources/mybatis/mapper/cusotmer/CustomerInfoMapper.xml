@@ -758,4 +758,8 @@
   <select id="selectDealerList" resultMap="BaseResultMap">
     select * from t_customer_info where active =1 and business_type = 'A04'
   </select>
+
+  <select id="selectByCustAbbreviation" resultMap="BaseResultMap">
+      select * from t_customer_info where active =1 and business_type != 'A04'
+  </select>
 </mapper>

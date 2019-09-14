@@ -5,8 +5,14 @@ import com.crazy.portal.bean.system.MailBean;
 import com.crazy.portal.bean.system.SubAgentVO;
 import com.crazy.portal.config.email.EmailHelper;
 import com.crazy.portal.config.exception.BusinessException;
-import com.crazy.portal.dao.system.*;
-import com.crazy.portal.entity.system.*;
+import com.crazy.portal.dao.system.RetrievePasswordMapper;
+import com.crazy.portal.dao.system.RoleMapper;
+import com.crazy.portal.dao.system.UserMapper;
+import com.crazy.portal.dao.system.UserRoleMapper;
+import com.crazy.portal.entity.system.RetrievePassword;
+import com.crazy.portal.entity.system.Role;
+import com.crazy.portal.entity.system.User;
+import com.crazy.portal.entity.system.UserRole;
 import com.crazy.portal.service.customer.CustomerInfoService;
 import com.crazy.portal.util.*;
 import com.github.pagehelper.PageInfo;
@@ -40,8 +46,6 @@ public class UserService {
     private EmailHelper emailHelper;
     @Resource
     private CustomerInfoService customerInfoService;
-    @Resource
-    private InternalUserMapper internalUserMapper;
     @Resource
     private RetrievePasswordMapper retrievePasswordMapper;
 
@@ -309,14 +313,5 @@ public class UserService {
      */
     public List<Integer> getUserDealers(Integer userId){
         return Arrays.asList(1);
-    }
-
-    /**
-     * 获取用户的权限职位信息
-     * @param userId
-     * @return
-     */
-    public InternalUser getUserPosition(Integer userId){
-        return internalUserMapper.selectByUserId(userId);
     }
 }

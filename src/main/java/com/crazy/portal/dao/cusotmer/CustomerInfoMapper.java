@@ -41,4 +41,6 @@ public interface CustomerInfoMapper {
     int updateCustomerInfo(Integer custId);
 
     CustomerInfo selectByOutCode(String outCode);
+
+    CustomerInfo selectByCustAbbreviation(String custAbbreviation);
 }

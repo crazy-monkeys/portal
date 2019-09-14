@@ -62,7 +62,6 @@ public class OrderService {
      */
     public ZrfcsdsalesordercreateResponse createSalesOrder(Zrfcsdsalesordercreate order){
         String url = String.format("%s%s",ECC_API_URL,"/cxf/PORTAL/ECC/CREATESALESORDER");
-
         try {
             String requestXml = JaxbXmlUtil.convertToXml(order);
             String response = HttpClientUtils.post(url,requestXml);

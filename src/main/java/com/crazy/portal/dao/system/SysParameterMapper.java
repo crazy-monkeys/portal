@@ -23,4 +23,7 @@ public interface SysParameterMapper {
     List<SysParameter> selectByMAndF(@Param("model") String model, @Param("function") String function);
 
     Integer checkValue(@Param("model") Integer model, @Param("function") Integer function, @Param("pValue") String pValue, @Param("id") Integer id);
+
+    SysParameter selectByPvalue(@Param("model") String model, @Param("function") String function, @Param("pValue") String pValue);
+
 }

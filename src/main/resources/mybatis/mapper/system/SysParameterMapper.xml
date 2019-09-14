@@ -192,4 +192,11 @@
     </if>
     and p_model=#{model} and p_function=#{function} and p_value=#{pValue}
   </select>
+
+  <select id="selectByPvalue" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Status_Column_List" />
+    from t_sys_parameter
+    where active=1 and p_model=#{model} and p_function=#{function} and p_value = #{pValue}
+  </select>
 </mapper>

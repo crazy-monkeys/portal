@@ -41,6 +41,17 @@ public class SysParamService {
     }
 
     /**
+     * 获取对应的系统参数
+     * @param model
+     * @param function
+     * @param pValue
+     * @return
+     */
+    public SysParameter selectParam(String model, String function, String pValue){
+        return sysParameterMapper.selectByPvalue(model, function, pValue);
+    }
+
+    /**
      * 新增或保存系统参数
      * @param sysParameter
      */

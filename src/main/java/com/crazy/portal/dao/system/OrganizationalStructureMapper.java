@@ -15,5 +15,7 @@ public interface OrganizationalStructureMapper {
 
     int updateByPrimaryKey(OrganizationalStructure record);
 
-    OrganizationalStructure selectByOrgNo(String seq);
+    OrganizationalStructure selectByOrgNo(Integer seq);
+
+
 }

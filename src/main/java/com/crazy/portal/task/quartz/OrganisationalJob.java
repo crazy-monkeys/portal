@@ -35,7 +35,7 @@ public class OrganisationalJob implements Job {
             OrganisationalUnitByIDResponseMessageSync responseMessageSync = CallApiUtils.queryOrganisation();
             List<OrganisationalUnitByElementsResponseSync> results = responseMessageSync.getOrganisationalUnit();
             for(OrganisationalUnitByElementsResponseSync org : results){
-                OrganizationalStructure organizational = organizationalStructureMapper.selectByOrgNo(org.getID());
+                OrganizationalStructure organizational = organizationalStructureMapper.selectByOrgNo(Integer.valueOf(org.getID()));
                 if(null == organizational){
                     organizational = new OrganizationalStructure();
                     organizational.setActive(1);

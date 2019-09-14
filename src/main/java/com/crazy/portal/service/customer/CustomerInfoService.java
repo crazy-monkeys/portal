@@ -4,6 +4,7 @@ import com.alibaba.excel.EasyExcelFactory;
 import com.alibaba.excel.metadata.BaseRowModel;
 import com.alibaba.excel.metadata.Sheet;
 import com.crazy.portal.bean.common.Constant;
+import com.crazy.portal.bean.customer.CustomerOrgBean;
 import com.crazy.portal.bean.customer.CustomerQueryBean;
 import com.crazy.portal.bean.customer.CustomerShipBean;
 import com.crazy.portal.bean.customer.approval.ApprovalBean;
@@ -14,10 +15,16 @@ import com.crazy.portal.bean.customer.visitRecord.VisitRecordQueryBean;
 import com.crazy.portal.config.exception.BusinessException;
 import com.crazy.portal.dao.cusotmer.*;
 import com.crazy.portal.dao.system.InternalUserMapper;
+import com.crazy.portal.dao.system.OrganizationalStructureMapper;
 import com.crazy.portal.entity.cusotmer.*;
 import com.crazy.portal.entity.cusotmer.VisitRecord;
 import com.crazy.portal.entity.system.InternalUser;
+import com.crazy.portal.entity.system.OrganizationalStructure;
+import com.crazy.portal.entity.system.SysParameter;
 import com.crazy.portal.entity.system.User;
+import com.crazy.portal.service.system.InternalUserService;
+import com.crazy.portal.service.system.SysParamService;
+import com.crazy.portal.service.system.UserService;
 import com.crazy.portal.util.*;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
@@ -71,6 +78,13 @@ public class CustomerInfoService {
     private CustQuotasService custQuotasService;
     @Resource
     private CustZrAccountTeamService custZrAccountTeamService;
+    @Resource
+    private SysParamService sysParamService;
+    @Resource
+    private InternalUserService internalUserService;
+
+    @Resource
+    private UserService userService;
 
     @Value("${file.path.root}")
     private String filePath;
@@ -594,5 +608,19 @@ public class CustomerInfoService {
         CustomerFile file = customerFileService.saveOrUpdate(files, customerId);
         file.setIndex(index);
         return file;
+    }
+
+    /**
+     * 通过客户简称获取客户销售的组织信息
+     * TODO 校验客户是否可以支持销售预测
+     */
+    public CustomerOrgBean selectByAbbreviation(String custAbbreviation){
+        CustomerInfo customerinfo = customerInfoMapper.selectByCustAbbreviation(custAbbreviation);
+        CustomerOrgBean customerOrgBean = internalUserService.getSalesInfo(customerinfo.getId());
+
+        SysParameter sysParameter = sysParamService.selectParam("2","1",customerinfo.getBusinessType());
+        customerOrgBean.setCustType(sysParameter.getZhName());
+
+        return customerOrgBean;
     }
 }

@@ -20,4 +20,6 @@ public interface CustZrAccountTeamMapper {
     int deleteByCustId(Integer custId);
 
     List<CustZrAccountTeam> selectByCustId(Integer custId);
+
+    CustZrAccountTeam selectZRByCustId(Integer custId);
 }
