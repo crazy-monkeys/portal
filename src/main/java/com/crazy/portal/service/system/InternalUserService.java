@@ -45,7 +45,7 @@ public class InternalUserService {
 
         OrganizationalStructure ambOrg = organizationalStructureMapper.selectByOrgNo(Integer.valueOf(sales.getUserDepartmentCode()));
         InternalUser amb =  internalUserMapper.selectByUserNo(ambOrg.getPm());
-        customerOrgBean.setSales(amb.getUserName());
+        customerOrgBean.setAmb(amb.getUserName());
 
         OrganizationalStructure office = organizationalStructureMapper.selectByOrgNo(ambOrg.getParentOrg());
         customerOrgBean.setOffice(office.getOrgName());
