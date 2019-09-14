@@ -203,11 +203,22 @@ public class SaleForecastService {
         forecastMapper.updateStatus(1, batchNo, userId);
     }
 
-    public PageInfo<Forecast> queryAgencyForecastData(Integer pageNum, Integer pageSize, Integer userId, Integer isReject) {
+    public PageInfo<Forecast> queryAgencyRejectForecastData(Integer pageNum, Integer pageSize, Integer userId) {
         PortalUtil.defaultStartPage(pageNum,pageSize);
-        List<Forecast> result = forecastMapper.selectByUser(userId, isReject);
+        List<Forecast> result = forecastMapper.selectPageByUser(userId, null, -1, null, null, null);
         return new PageInfo<>(result);
 
+    }
+
+    public PageInfo<Forecast> queryAgencyForecastData(Integer pageNum, Integer pageSize, Integer userId,
+                                                      String customerName, Integer status, String salePeople,
+                                                      String uploadStartTime, String uploadEndTime) {
+        if(status == -1){
+            return new PageInfo<>(null);
+        }
+        PortalUtil.defaultStartPage(pageNum,pageSize);
+        List<Forecast> result = forecastMapper.selectPageByUser(userId, customerName, status, salePeople, uploadStartTime, uploadEndTime);
+        return new PageInfo<>(result);
     }
 
     /**

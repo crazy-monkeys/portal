@@ -428,22 +428,29 @@
     where batch_no = #{batchNo} and create_user_id = #{userId}
   </update>
 
-  <select id="selectByUser" resultMap="fullFieldMap" >
+  <select id="selectPageByUser" resultMap="fullFieldMap" >
     select a.*,b.*
     from t_forecast a
     inner join t_forecast_line b on a.id = b.f_id
     where a.create_user_id = #{userId}
-    <choose>
-        <when test="isReject == 1" >
-            and a.status = -1
-        </when>
-        <when test="isReject == 0" >
-            and  a.status != -1
-        </when>
-        <otherwise>
-            and 1 = 2
-        </otherwise>
-    </choose>
+    <if test="status != null" >
+      and a.status = #{status}
+    </if>
+    <if test="customerName != null" >
+      and a.customer_name like concat('%', #{customerName}, '%')
+    </if>
+    <if test="salePeople != null" >
+      and a.sale_people like concat('%', #{salePeople}, '%')
+    </if>
+    <if test="uploadStartTime != null and uploadStartTime != '' and uploadEndTime != null and uploadEndTime != ''" >
+      and a.create_time between #{uploadStartTime} and #{uploadEndTime}
+    </if>
+    <if test="uploadStartTime != null and uploadStartTime != '' and (uploadEndTime == null or uploadEndTime == '')" >
+      and a.create_time >= #{uploadStartTime}
+    </if>
+    <if test="(uploadStartTime == null or uploadStartTime == '') and uploadEndTime != null and uploadEndTime != ''" >
+      <![CDATA[ and a.create_time <= #{uploadEndTime} ]]>
+    </if>
     order by a.create_time desc, a.batch_no asc
   </select>
 

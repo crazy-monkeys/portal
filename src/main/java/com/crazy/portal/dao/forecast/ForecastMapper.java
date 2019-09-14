@@ -34,8 +34,12 @@ public interface ForecastMapper {
                      @Param(value = "batchNo") String batchNo,
                      @Param(value = "userId") Integer userId);
 
-    List<Forecast> selectByUser(@Param(value = "userId") Integer userId,
-                                @Param(value = "isReject") Integer isReject);
+    List<Forecast> selectPageByUser(@Param(value = "userId") Integer userId,
+                                @Param(value = "customerName") String customerName,
+                                @Param(value = "status") Integer status,
+                                @Param(value = "salePeople") String salePeople,
+                                @Param(value = "uploadStartTime") String uploadStartTime,
+                                @Param(value = "uploadEndTime") String uploadEndTime);
 
     int selectCntByBatchAndId(@Param(value = "batchNo") String batchNo,
                               @Param(value = "list") List<AgencyErrorTemplate> list,

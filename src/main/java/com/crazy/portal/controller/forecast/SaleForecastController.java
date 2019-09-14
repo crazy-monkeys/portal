@@ -78,8 +78,11 @@ public class SaleForecastController extends BaseController {
      * @param pageSize
      */
     @GetMapping(value = "/forecast/agency/data/query")
-    public BaseResponse queryAgencyForecastData(Integer pageNum, Integer pageSize) {
-        return super.successResult(saleForecastService.queryAgencyForecastData(pageNum, pageSize, 1, 0));
+    public BaseResponse queryAgencyForecastData(Integer pageNum, Integer pageSize,
+                                                String customerName, Integer status, String salePeople,
+                                                String uploadStartTime, String uploadEndTime) {
+        return super.successResult(saleForecastService.queryAgencyForecastData(pageNum, pageSize, 1,
+                customerName, status, salePeople, uploadStartTime, uploadEndTime));
     }
 
     /**
@@ -110,7 +113,7 @@ public class SaleForecastController extends BaseController {
      */
     @GetMapping(value = "/forecast/agency/data/reject")
     public BaseResponse queryRejectForecastData(Integer pageNum, Integer pageSize) {
-        return super.successResult(saleForecastService.queryAgencyForecastData(pageNum, pageSize, 1, 1));
+        return super.successResult(saleForecastService.queryAgencyRejectForecastData(pageNum, pageSize, 1));
     }
 
     /**
@@ -205,7 +208,7 @@ public class SaleForecastController extends BaseController {
      */
     @GetMapping(value = "/forecast/data/query")
     public BaseResponse queryForecastData(Integer pageNum, Integer pageSize) {
-        return super.successResult(saleForecastService.queryAgencyForecastData(pageNum, pageSize, 1, 0));
+        return super.successResult(saleForecastService.queryAgencyRejectForecastData(pageNum, pageSize, 1));
     }
 
     //预测查询（首代Buffer）
