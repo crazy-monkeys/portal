@@ -194,8 +194,15 @@ public class ErrorCodes {
         FORECAST_BI_DELETE_FAIL(40009, "数据删除失败，请联系管理员", ""),
         FORECAST_BI_CHECK_RESPONSE_ID_NOT_EXISTS(40010, "BI返回数据-Portal ID未正确返回", ""),
         FORECAST_NOT_FOUND_CUSTOMER_INFO(40011, "请填写正确的客户简称信息", ""),
-        FORECAST_AGENCY_INFO_ERROR(40012, "请使用代理商身份进行操作", "");
-
+        FORECAST_AGENCY_INFO_ERROR(40012, "请使用代理商身份进行操作", ""),
+        //订单管理
+        ORDER_INFO_NOT_FOUND(90001, "订单信息不存在", ""),
+        ORDER_ID_IS_REQUIRED(90002, "订单ID不能为空", ""),
+        ORDER_INFO_IS_REQUIRED(90003, "订单信息不能为空", ""),
+        ORDER_LINES_IS_REQUIRED(90004, "订单行信息不能为空", ""),
+        ORDER_APPROCAL_STATUS_IS_REQUIRED(90005, "审批状态不能为空", ""),
+        ORDER_DELIVERY_DATE_FORMAT_FAIL(90006, "订单发货日期格式错误", "")
+        ;
         private final int code;
         private final String zhMsg;
         private final String enMsg;

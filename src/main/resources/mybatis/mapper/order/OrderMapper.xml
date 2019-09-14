@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.crazy.portal.dao.order.OrderMapper">
+  <resultMap id="BaseResultMap" type="com.crazy.portal.entity.order.Order">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="under_order_type" jdbcType="VARCHAR" property="underOrderType" />
+    <result column="sales_org_id" jdbcType="INTEGER" property="salesOrgId" />
+    <result column="sold_party" jdbcType="VARCHAR" property="soldParty" />
+    <result column="ship_party" jdbcType="VARCHAR" property="shipParty" />
+    <result column="purchase_order_no" jdbcType="VARCHAR" property="purchaseOrderNo" />
+    <result column="purchase_order_date" jdbcType="DATE" property="purchaseOrderDate" />
+    <result column="customer_attribute" jdbcType="VARCHAR" property="customerAttribute" />
+    <result column="order_type" jdbcType="VARCHAR" property="orderType" />
+    <result column="delivery_date" jdbcType="DATE" property="deliveryDate" />
+    <result column="pricing_date" jdbcType="DATE" property="pricingDate" />
+    <result column="pay_condition" jdbcType="VARCHAR" property="payCondition" />
+    <result column="Incoterms" jdbcType="VARCHAR" property="incoterms" />
+    <result column="order_status" jdbcType="VARCHAR" property="orderStatus" />
+    <result column="r_total_amount_includ_tax" jdbcType="DECIMAL" property="rTotalAmountIncludTax" />
+    <result column="r_total_amount_exclude_tax" jdbcType="DECIMAL" property="rTotalAmountExcludeTax" />
+    <result column="r_success_flag" jdbcType="VARCHAR" property="rSuccessFlag" />
+    <result column="r_error_msg" jdbcType="VARCHAR" property="rErrorMsg" />
+    <result column="approval_status" jdbcType="INTEGER" property="approvalStatus" />
+    <result column="create_id" jdbcType="INTEGER" property="createId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_id" jdbcType="INTEGER" property="updateId" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="reject_reason" jdbcType="VARCHAR" property="rejectReason" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, under_order_type, sales_org_id, sold_party, ship_party, purchase_order_no, purchase_order_date, 
+    customer_attribute, order_type, delivery_date, pricing_date, pay_condition, Incoterms, 
+    order_status, r_total_amount_includ_tax, r_total_amount_exclude_tax, r_success_flag, 
+    r_error_msg, approval_status, create_id, create_time, update_id, update_time, reject_reason
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_order
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_order
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+
+  <insert id="insertSelective" useGeneratedKeys="true" keyProperty="id" parameterType="com.crazy.portal.entity.order.Order">
+    insert into t_order
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="underOrderType != null">
+        under_order_type,
+      </if>
+      <if test="salesOrgId != null">
+        sales_org_id,
+      </if>
+      <if test="soldParty != null">
+        sold_party,
+      </if>
+      <if test="shipParty != null">
+        ship_party,
+      </if>
+      <if test="purchaseOrderNo != null">
+        purchase_order_no,
+      </if>
+      <if test="purchaseOrderDate != null">
+        purchase_order_date,
+      </if>
+      <if test="customerAttribute != null">
+        customer_attribute,
+      </if>
+      <if test="orderType != null">
+        order_type,
+      </if>
+      <if test="deliveryDate != null">
+        delivery_date,
+      </if>
+      <if test="pricingDate != null">
+        pricing_date,
+      </if>
+      <if test="payCondition != null">
+        pay_condition,
+      </if>
+      <if test="incoterms != null">
+        Incoterms,
+      </if>
+      <if test="orderStatus != null">
+        order_status,
+      </if>
+      <if test="rTotalAmountIncludTax != null">
+        r_total_amount_includ_tax,
+      </if>
+      <if test="rTotalAmountExcludeTax != null">
+        r_total_amount_exclude_tax,
+      </if>
+      <if test="rSuccessFlag != null">
+        r_success_flag,
+      </if>
+      <if test="rErrorMsg != null">
+        r_error_msg,
+      </if>
+      <if test="approvalStatus != null">
+        approval_status,
+      </if>
+      <if test="createId != null">
+        create_id,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateId != null">
+        update_id,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="rejectReason != null">
+        reject_reason,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="underOrderType != null">
+        #{underOrderType,jdbcType=VARCHAR},
+      </if>
+      <if test="salesOrgId != null">
+        #{salesOrgId,jdbcType=INTEGER},
+      </if>
+      <if test="soldParty != null">
+        #{soldParty,jdbcType=VARCHAR},
+      </if>
+      <if test="shipParty != null">
+        #{shipParty,jdbcType=VARCHAR},
+      </if>
+      <if test="purchaseOrderNo != null">
+        #{purchaseOrderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="purchaseOrderDate != null">
+        #{purchaseOrderDate,jdbcType=DATE},
+      </if>
+      <if test="customerAttribute != null">
+        #{customerAttribute,jdbcType=VARCHAR},
+      </if>
+      <if test="orderType != null">
+        #{orderType,jdbcType=VARCHAR},
+      </if>
+      <if test="deliveryDate != null">
+        #{deliveryDate,jdbcType=DATE},
+      </if>
+      <if test="pricingDate != null">
+        #{pricingDate,jdbcType=DATE},
+      </if>
+      <if test="payCondition != null">
+        #{payCondition,jdbcType=VARCHAR},
+      </if>
+      <if test="incoterms != null">
+        #{incoterms,jdbcType=VARCHAR},
+      </if>
+      <if test="orderStatus != null">
+        #{orderStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="rTotalAmountIncludTax != null">
+        #{rTotalAmountIncludTax,jdbcType=DECIMAL},
+      </if>
+      <if test="rTotalAmountExcludeTax != null">
+        #{rTotalAmountExcludeTax,jdbcType=DECIMAL},
+      </if>
+      <if test="rSuccessFlag != null">
+        #{rSuccessFlag,jdbcType=VARCHAR},
+      </if>
+      <if test="rErrorMsg != null">
+        #{rErrorMsg,jdbcType=VARCHAR},
+      </if>
+      <if test="approvalStatus != null">
+        #{approvalStatus,jdbcType=INTEGER},
+      </if>
+      <if test="createId != null">
+        #{createId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateId != null">
+        #{updateId,jdbcType=INTEGER},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="rejectReason != null">
+        #{rejectReason,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.crazy.portal.entity.order.Order">
+    update t_order
+    <set>
+      <if test="underOrderType != null">
+        under_order_type = #{underOrderType,jdbcType=VARCHAR},
+      </if>
+      <if test="salesOrgId != null">
+        sales_org_id = #{salesOrgId,jdbcType=INTEGER},
+      </if>
+      <if test="soldParty != null">
+        sold_party = #{soldParty,jdbcType=VARCHAR},
+      </if>
+      <if test="shipParty != null">
+        ship_party = #{shipParty,jdbcType=VARCHAR},
+      </if>
+      <if test="purchaseOrderNo != null">
+        purchase_order_no = #{purchaseOrderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="purchaseOrderDate != null">
+        purchase_order_date = #{purchaseOrderDate,jdbcType=DATE},
+      </if>
+      <if test="customerAttribute != null">
+        customer_attribute = #{customerAttribute,jdbcType=VARCHAR},
+      </if>
+      <if test="orderType != null">
+        order_type = #{orderType,jdbcType=VARCHAR},
+      </if>
+      <if test="deliveryDate != null">
+        delivery_date = #{deliveryDate,jdbcType=DATE},
+      </if>
+      <if test="pricingDate != null">
+        pricing_date = #{pricingDate,jdbcType=DATE},
+      </if>
+      <if test="payCondition != null">
+        pay_condition = #{payCondition,jdbcType=VARCHAR},
+      </if>
+      <if test="incoterms != null">
+        Incoterms = #{incoterms,jdbcType=VARCHAR},
+      </if>
+      <if test="orderStatus != null">
+        order_status = #{orderStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="rTotalAmountIncludTax != null">
+        r_total_amount_includ_tax = #{rTotalAmountIncludTax,jdbcType=DECIMAL},
+      </if>
+      <if test="rTotalAmountExcludeTax != null">
+        r_total_amount_exclude_tax = #{rTotalAmountExcludeTax,jdbcType=DECIMAL},
+      </if>
+      <if test="rSuccessFlag != null">
+        r_success_flag = #{rSuccessFlag,jdbcType=VARCHAR},
+      </if>
+      <if test="rErrorMsg != null">
+        r_error_msg = #{rErrorMsg,jdbcType=VARCHAR},
+      </if>
+      <if test="approvalStatus != null">
+        approval_status = #{approvalStatus,jdbcType=INTEGER},
+      </if>
+      <if test="createId != null">
+        create_id = #{createId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateId != null">
+        update_id = #{updateId,jdbcType=INTEGER},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="rejectReason != null">
+        reject_reason = #{rejectReason,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <select id="selectByPage" resultMap="BaseResultMap" parameterType="com.crazy.portal.bean.order.OrderQueryBean">
+    select
+    <include refid="Base_Column_List" />
+    from t_order
+    where 1 = 1
+    order by create_time desc
+  </select>
+
+</mapper>

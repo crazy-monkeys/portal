@@ -30,10 +30,10 @@ import java.util.Arrays;
 @SpringBootTest
 @RunWith(SpringRunner.class)
 @Slf4j
-public class OrderServiceTest {
+public class OrderApiServiceTest {
 
     @Resource
-    private OrderService eccApiService;
+    private OrderApiService eccApiService;
 
     @Test
     public void getCustomerRate() {

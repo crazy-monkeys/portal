@@ -4,6 +4,7 @@ import com.alibaba.excel.metadata.BaseRowModel;
 import com.crazy.portal.bean.business.idr.DiffPriceEO;
 import com.crazy.portal.bean.business.idr.InsuranceEO;
 import com.crazy.portal.bean.business.idr.ReturnsEO;
+import org.apache.ibatis.javassist.runtime.Desc;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -260,7 +261,7 @@ public class Enums {
             return code;
         }
     }
-
+    /** 保差退 begin**/
     public enum BusinessIdrType{
         INSURANCE(1, "保价", new InsuranceEO()),
         DIFF_PRICE(2, "差价补偿", new DiffPriceEO()),
@@ -399,7 +400,8 @@ public class Enums {
             return desc;
         }
     }
-
+    /** 保差退 end**/
+    /** 客户rebate begin**/
     public enum BusinessRebateItemStatus{
 
         IN_APPROVAL(1, "结算中"),
@@ -441,7 +443,7 @@ public class Enums {
             return desc;
         }
     }
-
+    /** 客户rebate end**/
     public enum ProductStatus{
         ACTIVE(1),INACTIVE(0);
         private Integer status;
@@ -461,5 +463,86 @@ public class Enums {
         CHECK_SALES_IMPORT_FILE,SAVE_SALES_IMPORT_FILE,DELETE_SALES_CASE,
         //预测管理
         CHECK_FORECAST_IMPORT_DATA,INSERT_FORECAST_IMPORT_DATA,UPDATE_FORECAST_IMPORT_DAT,DELETEFORECAST;
+    }
+
+    /** 订单管理 **/
+    public enum OrderType{
+        //交货免费-不需要做价格模拟。-审批-纸质订单
+        ZFD,
+        //标准订单。-审批-纸质订单
+        ZOR,
+        //标准订单(ZRET)-必须录入ZRET订单号。-审批-纸质订单
+        ZORT,
+        //退货-需要找到原销售订单
+        ZRET,
+        //寄售 代理退货(RDA)-不需要关联原订单
+        YKA,
+        //客户库存补货(RDA)-寄售标准订单-审批-纸质订单
+        YKB,
+        //客户库存出货(RDA)-代理出给客户，传终端客户外部编号
+        YKE,
+        //客户库存补货
+        KB,
+        //客户库存出货
+        KE,
+        //标准客户库存出货
+        ZKE,
+        //标准客户库存补货
+        ZKB;
+
+        OrderType(){
+        }
+    }
+    public enum OrderCustomerGroupOne{
+        //客户专货订单
+        A01,
+        //Buffer订单
+        A02,
+        //新产品订单
+        A03,
+        //样品订单
+        A04,
+        //Last Buy订单
+        A05,
+        //分销商专货订单
+        A06;
+        OrderCustomerGroupOne(){
+        }
+    }
+    public enum OrderCustomerGroupTwo{
+        //Account Market
+        B1,
+        //Mass Market
+        B2;
+        OrderCustomerGroupTwo(){
+        }
+    }
+    public enum OrderMaterialNumber{
+        //虚拟料号
+        TAP,
+        //实体料
+        ZTAN;
+        OrderMaterialNumber(){
+        }
+    }
+    public enum OrderApprovalStatus{
+        WAIT_APPROVAL(0, "待审批"),
+        ADOPT(1, "已通过"),
+        REJEC(2, "已驳回");
+
+        private Integer value;
+        private String desc;
+        OrderApprovalStatus(Integer value, String desc){
+            this.value = value;
+            this.desc = desc;
+        }
+
+        public Integer getValue() {
+            return value;
+        }
+
+        public String getDesc() {
+            return desc;
+        }
     }
 }
