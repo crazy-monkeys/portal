@@ -7,10 +7,8 @@ import com.crazy.portal.entity.system.InternalUser;
 import com.crazy.portal.entity.system.Role;
 import com.crazy.portal.entity.system.User;
 import com.crazy.portal.service.system.InternalUserService;
-import com.crazy.portal.service.system.UserService;
 import com.crazy.portal.util.Enums;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -34,8 +32,6 @@ public class BaseController {
 
     @Resource
     private RoleMapper roleMapper;
-    @Resource
-    private UserService userService;
     @Resource
     private InternalUserService internalUserService;
 
