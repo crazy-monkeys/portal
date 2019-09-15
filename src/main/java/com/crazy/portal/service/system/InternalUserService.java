@@ -55,4 +55,8 @@ public class InternalUserService {
 
         return customerOrgBean;
     }
+
+    public InternalUser getUserByName(String userName){
+        return internalUserMapper.selectUserByName(userName);
+    }
 }

@@ -196,4 +196,8 @@
       select seq from t_organizational_structure where parent_org in ('1001013','1001014')
       )
   </select>
+
+  <select id="selectUserByName" resultMap="BaseResultMap">
+      select * From t_internal_user where user_name=#{userName}
+  </select>
 </mapper>

@@ -23,4 +23,6 @@ public interface InternalUserMapper {
 
     List<InternalUser> selectSales();
 
+    InternalUser selectUserByName(String userName);
+
 }

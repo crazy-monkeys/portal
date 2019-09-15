@@ -15,16 +15,13 @@ import com.crazy.portal.bean.customer.visitRecord.VisitRecordQueryBean;
 import com.crazy.portal.config.exception.BusinessException;
 import com.crazy.portal.dao.cusotmer.*;
 import com.crazy.portal.dao.system.InternalUserMapper;
-import com.crazy.portal.dao.system.OrganizationalStructureMapper;
 import com.crazy.portal.entity.cusotmer.*;
 import com.crazy.portal.entity.cusotmer.VisitRecord;
 import com.crazy.portal.entity.system.InternalUser;
-import com.crazy.portal.entity.system.OrganizationalStructure;
 import com.crazy.portal.entity.system.SysParameter;
 import com.crazy.portal.entity.system.User;
 import com.crazy.portal.service.system.InternalUserService;
 import com.crazy.portal.service.system.SysParamService;
-import com.crazy.portal.service.system.UserService;
 import com.crazy.portal.util.*;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
@@ -82,9 +79,6 @@ public class CustomerInfoService {
     private SysParamService sysParamService;
     @Resource
     private InternalUserService internalUserService;
-
-    @Resource
-    private UserService userService;
 
     @Value("${file.path.root}")
     private String filePath;
