@@ -1,8 +1,8 @@
 package com.crazy.portal.controller.system;
 
+import com.crazy.portal.annotation.OperationLog;
 import com.crazy.portal.bean.BaseResponse;
 import com.crazy.portal.bean.system.UserCustomerMappingBean;
-import com.crazy.portal.config.email.EmailHelper;
 import com.crazy.portal.controller.BaseController;
 import com.crazy.portal.entity.system.User;
 import com.crazy.portal.entity.system.UserCustomerMapping;
@@ -69,6 +69,7 @@ public class UserController extends BaseController {
      * 修改密码
      * @throws Exception
      */
+    @OperationLog
     @PostMapping("/modifyPwd")
     public BaseResponse modifyPwd(@RequestParam String loginName,
                                   @RequestParam String oldPwd,
@@ -114,6 +115,7 @@ public class UserController extends BaseController {
      * 密码重置
      * @throws Exception
      */
+    @OperationLog
     @PostMapping("/resetPwd/{loginName}")
     public BaseResponse resetPwd(@PathVariable String loginName) {
         User currentUser = super.getCurrentUser();

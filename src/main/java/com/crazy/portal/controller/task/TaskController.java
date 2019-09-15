@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.crazy.portal.bean.common.Constant;
 import com.crazy.portal.bean.task.TaskBean;
 import com.crazy.portal.config.quartz.LoadPackageClasses;
-import com.crazy.portal.config.quartz.annotation.Task;
+import com.crazy.portal.annotation.Task;
 import com.crazy.portal.entity.task.ScheduleJob;
 import com.crazy.portal.service.task.ScheduleJobService;
 import org.quartz.CronExpression;

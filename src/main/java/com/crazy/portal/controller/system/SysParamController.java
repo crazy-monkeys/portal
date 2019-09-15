@@ -1,5 +1,6 @@
 package com.crazy.portal.controller.system;
 
+import com.crazy.portal.annotation.OperationLog;
 import com.crazy.portal.bean.BaseResponse;
 import com.crazy.portal.controller.BaseController;
 import com.crazy.portal.entity.system.SysParameter;
@@ -29,6 +30,7 @@ public class SysParamController extends BaseController {
         return super.successResult(sysParamService.selectAll(pModel, pFunction, active, pageNum, pageSize));
     }
 
+    @OperationLog
     @PostMapping("/saveOrUpdate")
     public BaseResponse saveOrUpdate(@RequestBody SysParameter sysParameter){
         sysParamService.saveOrUpdate(sysParameter, super.getCurrentUser().getId());

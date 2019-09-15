@@ -1,5 +1,6 @@
 package com.crazy.portal.controller.system;
 
+import com.crazy.portal.annotation.OperationLog;
 import com.crazy.portal.bean.BaseResponse;
 import com.crazy.portal.bean.system.SubAgentVO;
 import com.crazy.portal.controller.BaseController;
@@ -35,6 +36,7 @@ public class SubAgentController extends BaseController {
      * 创建登陆账号
      * @param subAgentVO
      */
+    @OperationLog
     @PostMapping("/register")
     public BaseResponse regSubAgent(@Valid @RequestBody SubAgentVO subAgentVO){
         userService.regSubAgent(subAgentVO,super.getCurrentUser().getId());
@@ -46,6 +48,7 @@ public class SubAgentController extends BaseController {
      * @param userBasicInfo
      * @return
      */
+    @OperationLog
     @PostMapping("/update")
     public BaseResponse updateUser(@RequestBody SubAgentVO userBasicInfo){
         userService.updateSubAgent(userBasicInfo,super.getCurrentUser().getId());

@@ -1,5 +1,6 @@
 package com.crazy.portal.controller.system;
 
+import com.crazy.portal.annotation.OperationLog;
 import com.crazy.portal.bean.BaseResponse;
 import com.crazy.portal.controller.BaseController;
 import com.crazy.portal.entity.system.Role;
@@ -53,6 +54,7 @@ public class RoleController extends BaseController {
      * 新增角色
      * @return
      */
+    @OperationLog
     @PostMapping(value = "/saveRole")
     public BaseResponse saveRole(@RequestBody Role role) {
         BusinessUtil.assertEmpty(role.getRoleCode(),SystemManagerEnum.ROLE_EMPTY_CODE);
@@ -88,6 +90,7 @@ public class RoleController extends BaseController {
      * 修改角色
      * @return
      */
+    @OperationLog
     @PostMapping(value = "/updateRole")
     public BaseResponse updateRole(@RequestBody Role role) {
         BusinessUtil.notNull(role.getId(),SystemManagerEnum.ROLE_EMPTY_ID);
@@ -120,6 +123,7 @@ public class RoleController extends BaseController {
      * @param roleCode
      * @return
      */
+    @OperationLog
     @DeleteMapping("/delete/{roleCode}")
     public BaseResponse delete(@PathVariable String roleCode){
         roleService.deleteRole(roleCode);

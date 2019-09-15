@@ -1,7 +1,7 @@
 package com.crazy.portal.task.quartz;
 
 
-import com.crazy.portal.config.quartz.annotation.Task;
+import com.crazy.portal.annotation.Task;
 import com.crazy.portal.entity.task.ScheduleJob;
 import com.crazy.portal.service.business.RebateService;
 import com.crazy.portal.service.task.ScheduleJobService;

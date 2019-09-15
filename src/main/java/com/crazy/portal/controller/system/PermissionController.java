@@ -1,5 +1,6 @@
 package com.crazy.portal.controller.system;
 
+import com.crazy.portal.annotation.OperationLog;
 import com.crazy.portal.bean.BaseResponse;
 import com.crazy.portal.bean.system.PermissionBean;
 import com.crazy.portal.config.exception.BusinessException;
@@ -16,7 +17,11 @@ import com.crazy.portal.util.ErrorCodes.SystemManagerEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
-import java.util.*;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @Desc:
@@ -82,6 +87,7 @@ public class PermissionController extends BaseController{
      * 给角色赋资源权限
      * @return
      */
+    @OperationLog
     @PostMapping(value = "/savePermission")
     public BaseResponse empowerment(@RequestBody PermissionBean permissionBean) {
         BusinessUtil.notNull(permissionBean.getRoleCode(),SystemManagerEnum.ROLE_EMPTY_CODE);
@@ -96,6 +102,7 @@ public class PermissionController extends BaseController{
      * @param roleCode
      * @return
      */
+    @OperationLog
     @PostMapping(value = "/improveUserPerm")
     public BaseResponse improveUserPerm(@RequestParam String loginName,
                                         @RequestParam String roleCode){
@@ -113,6 +120,7 @@ public class PermissionController extends BaseController{
      * 添加资源信息
      * @return
      */
+    @OperationLog
     @PostMapping(value="/addResource")
     public BaseResponse addResource(@RequestBody Resource resource){
         if(resource.getParentId() == null
@@ -155,6 +163,7 @@ public class PermissionController extends BaseController{
      * 修改资源信息
      * @return
      */
+    @OperationLog
     @PostMapping(value="/editResource")
     public BaseResponse editResource(@RequestBody Resource resource){
         if(resource.getResourceType() == null
@@ -186,13 +195,12 @@ public class PermissionController extends BaseController{
      * 删除资源信息
      * @return
      */
+    @OperationLog
     @DeleteMapping(value="/delResource/{resourceId}")
     public BaseResponse deleteResource(@PathVariable Integer resourceId){
 
         Resource resource = permissionService.findResource(resourceId);
         BusinessUtil.notNull(resource,SystemManagerEnum.RESOURCE_NOT_EXIST);
-
-        log.info("user {} delete the resource {}",super.getCurrentUser().getId(),resourceId);
 
         List<Resource> resourceList = permissionService.findByParentId(resourceId);
         BusinessUtil.assertTrue(resourceList.isEmpty(),SystemManagerEnum.RESOURCE_HAS_CHILDREN);

@@ -1,14 +1,11 @@
 package com.crazy.portal.task.quartz;
 
-import com.crazy.portal.config.quartz.annotation.Task;
-import com.crazy.portal.entity.task.ScheduleJob;
+import com.crazy.portal.annotation.Task;
 import com.crazy.portal.service.product.ProductService;
-import com.crazy.portal.service.task.ScheduleJobService;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
 
 import javax.annotation.Resource;
 

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.crazy.portal.config.quartz.annotation;
+package com.crazy.portal.annotation;
 
 import java.lang.annotation.*;
 

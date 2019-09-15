@@ -1,7 +1,7 @@
 package com.crazy.portal.task.quartz;
 
 import com.crazy.portal.bean.customer.wsdl.employee.*;
-import com.crazy.portal.config.quartz.annotation.Task;
+import com.crazy.portal.annotation.Task;
 import com.crazy.portal.dao.system.InternalUserMapper;
 import com.crazy.portal.entity.system.InternalUser;
 import com.crazy.portal.util.CallApiUtils;
