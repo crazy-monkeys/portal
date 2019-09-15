@@ -35,7 +35,7 @@ public class OperationAspect extends BaseController {
             StringBuilder invoke = new StringBuilder(signature.getDeclaringTypeName())
                     .append(".")
                     .append(signature.getName())
-                    .append("\n-> parameters：")
+                    .append("-> parameters：")
                     .append(params);
 
             RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
@@ -43,7 +43,7 @@ public class OperationAspect extends BaseController {
             String url = request.getRequestURI();
             String operator = super.getCurrentUser().getLoginName();
             String businessKey = String.format("%s.%s",point.getTarget().getClass().getSimpleName(),signature.getName());
-            log.info("operator: {} \nurl:{} \ninvoke:{} \nbusinessKey:{}",
+            log.info("\noperator: {} \nurl:{} \ninvoke:{} \nbusinessKey:{}",
                     operator,url,invoke.toString(),businessKey);
         } catch (Exception e) {
             log.error("The global operations log intercepts exceptions",e);
