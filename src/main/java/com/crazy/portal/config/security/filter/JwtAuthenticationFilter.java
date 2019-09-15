@@ -88,17 +88,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
-        //获取资源路径
-        String url = request.getServletPath();
         //可以忽略Token权限的url
         if (this.canIgnorePermiss(request, response, filterChain)){
-            log.info("Anonymous access -> {}",url);
             return;
         }
         try {
             String token = this.getToken(request);
             if(StringUtils.isEmpty(token)){
-                this.authenticationFailure(request, response,new InsufficientAuthenticationException("Url does not carry tokens"));
+                this.authenticationFailure(request, response,
+                        new InsufficientAuthenticationException("Url does not carry tokens"));
                 return;
             }
             //根据token获取身份认证
@@ -115,6 +113,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
                 //鉴权失败处理
                 this.authenticationFailure(request, response,
                         new InsufficientAuthenticationException("Insufficient permissions"));
+
                 return;
             }
             //认证成功并放行
