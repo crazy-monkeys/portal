@@ -44,8 +44,8 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
         DecodedJWT jwt = ((JwtAuthenticationToken)authentication).getToken();
         Date now = new Date();
         if(jwt.getExpiresAt().before(now)){
-            log.debug("Expiration time is {}",((SimpleDateFormat)threadLocal.get()).format(jwt.getExpiresAt()));
-            log.debug("Current time is {}",((SimpleDateFormat)threadLocal.get()).format(now));
+            log.info("Expiration time is {}",((SimpleDateFormat)threadLocal.get()).format(jwt.getExpiresAt()));
+            log.info("Current time is {}",((SimpleDateFormat)threadLocal.get()).format(now));
             throw new NonceExpiredException("Token expires");
         }
         String username = jwt.getSubject();

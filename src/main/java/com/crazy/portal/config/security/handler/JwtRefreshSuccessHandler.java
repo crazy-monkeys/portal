@@ -28,8 +28,8 @@ public class JwtRefreshSuccessHandler implements AuthenticationSuccessHandler{
     @Resource
     private JwtUserService jwtUserService;
 
-    //刷新间隔10分钟
-    private static final int tokenRefreshInterval = 60 * 10;
+    //刷新间隔30分钟
+    private static final int tokenRefreshInterval = 30;
 
     public JwtRefreshSuccessHandler(JwtUserService jwtUserService) {
         this.jwtUserService = jwtUserService;
@@ -48,6 +48,6 @@ public class JwtRefreshSuccessHandler implements AuthenticationSuccessHandler{
 
     protected boolean shouldTokenRefresh(Date issueAt){
         LocalDateTime issueTime = LocalDateTime.ofInstant(issueAt.toInstant(), ZoneId.systemDefault());
-        return LocalDateTime.now().minusSeconds(tokenRefreshInterval).isAfter(issueTime);
+        return LocalDateTime.now().minusMinutes(tokenRefreshInterval).isAfter(issueTime);
     }
 }
