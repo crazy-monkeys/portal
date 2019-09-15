@@ -25,6 +25,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.Resource;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Objects;
 
 /**
  * @Desc:
@@ -61,22 +62,20 @@ public class JwtUserService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException,LockedException {
         boolean isInternalEmployee = username.contains(adDomain);
-        User user;
         if(isInternalEmployee){
             String loginName = username.substring(0,username.indexOf(adDomain)-1);
-            user = userMapper.findByLoginName(loginName);
-        }else{
-            user = userMapper.findByLoginName(username);
+            username = loginName;
         }
-        if (user == null) {
+        User user = userMapper.findByLoginName(username);
+        if (Objects.isNull(user)) {
             if(!isInternalEmployee){
-                String errorMsg = String.format("No user found with username '%s'.", username);
+                String errorMsg = String.format("No user found with username '%s'", username);
                 log.error(errorMsg);
                 throw new UsernameNotFoundException(errorMsg);
             }
-            String currentLoginName = username.substring(0,username.indexOf(adDomain)-1);
+            log.info("Initialize the domain user %s",username);
             //初始化用户
-            String loginName = this.getLoginName(currentLoginName);
+            String loginName = this.getLoginName(username);
             user = new User();
             user.setLoginName(loginName);
             user.setCustomerName(username);
@@ -152,7 +151,7 @@ public class JwtUserService implements UserDetailsService {
         if(userMapper.findByLoginName(loginName) == null){
             return loginName;
         }else{
-            loginName = loginName + StringUtil.creatRandom(6);
+            loginName = loginName + StringUtil.creatRandom(4);
             return getLoginName(loginName);
         }
     }
