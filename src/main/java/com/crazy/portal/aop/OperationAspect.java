@@ -123,7 +123,7 @@ public class OperationAspect extends BaseController {
     }
 
     /**
-     * 持久化到DB
+     * 持久化到DB,暂存mysql,当操作日志较多时,可以考虑日志归档或者ES
      * @param operationLogDO
      */
     private void saveLog(OperationLogDO operationLogDO){
