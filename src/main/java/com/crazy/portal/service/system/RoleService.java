@@ -109,7 +109,7 @@ public class RoleService {
         BusinessUtil.notNull(role,ErrorCodes.SystemManagerEnum.ROLE_NOT_EXIST);
 
         Integer roleUserBinds = userRoleMapper.countByRoleId(role.getId());
-        BusinessUtil.assertTrue(roleUserBinds > 0,ErrorCodes.SystemManagerEnum.ROLE_BIND_USER);
+        BusinessUtil.assertFlase(roleUserBinds > 0,ErrorCodes.SystemManagerEnum.ROLE_BIND_USER);
 
         List<Integer> roleResBinds = roleResourceMapper.selectRoleResourceByRoleIds(Arrays.asList(role.getId()),true);
         BusinessUtil.assertTrue(roleResBinds.isEmpty(),ErrorCodes.SystemManagerEnum.ROLE_BIND_RES);
