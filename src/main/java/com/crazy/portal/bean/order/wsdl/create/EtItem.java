@@ -17,25 +17,25 @@ import javax.xml.bind.annotation.XmlElement;
 public class EtItem {
 
     @XmlElement(name = "Saporderid")
-    private String saporderid;
+    private String saporderid = "";
     @XmlElement(name = "Sequenceno")
-    private String sequenceno;
+    private String sequenceno = "";
     @XmlElement(name = "Itemno")
-    private String itemno;
+    private String itemno = "";
     @XmlElement(name = "Productid")
-    private String productid;
+    private String productid = "";
     @XmlElement(name = "Sapquantity")
-    private String sapquantity;
+    private String sapquantity = "";
     @XmlElement(name = "Price")
-    private String price;
+    private String price = "";
     @XmlElement(name = "Netprice")
-    private String netprice;
+    private String netprice = "";
     @XmlElement(name = "CondUnit")
-    private String condUnit;
+    private String condUnit = "";
     @XmlElement(name = "Currency")
-    private String currency;
+    private String currency = "";
     @XmlElement(name = "Refitemno")
-    private String refitemno;
+    private String refitemno = "";
     @XmlElement(name = "Refitemproductid")
-    private String refitemproductid;
+    private String refitemproductid = "";
 }

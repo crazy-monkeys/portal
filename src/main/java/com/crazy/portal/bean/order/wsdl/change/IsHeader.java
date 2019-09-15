@@ -17,29 +17,29 @@ import javax.xml.bind.annotation.XmlElement;
 public class IsHeader {
 
     @XmlElement(name = "Saporderid")
-    private String saporderid;
+    private String saporderid = "";
     @XmlElement(name = "Salesoffice")
-    private String salesoffice;
+    private String salesoffice = "";
     @XmlElement(name = "Salesgroup")
-    private String salesgroup;
+    private String salesgroup = "";
     @XmlElement(name = "Sendto")
-    private String sendto;
+    private String sendto = "";
     @XmlElement(name = "Purchaseno")
-    private String purchaseno;
+    private String purchaseno = "";
     @XmlElement(name = "Purchasedate")
-    private String purchasedate;
+    private String purchasedate = "";
     @XmlElement(name = "Orderreason")
-    private String orderreason;
+    private String orderreason = "";
     @XmlElement(name = "Paymentterms")
-    private String paymentterms;
+    private String paymentterms = "";
     @XmlElement(name = "Incoterms1")
-    private String incoterms1;
+    private String incoterms1 = "";
     @XmlElement(name = "Incoterms2")
-    private String incoterms2;
+    private String incoterms2 = "";
     @XmlElement(name = "Customergroup1")
-    private String customergroup1;
+    private String customergroup1 = "";
     @XmlElement(name = "Customergroup2")
-    private String customergroup2;
+    private String customergroup2 = "";
     @XmlElement(name = "Pricedate")
-    private String pricedate;
+    private String pricedate = "";
 }

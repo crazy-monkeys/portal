@@ -17,19 +17,19 @@ import javax.xml.bind.annotation.XmlElement;
 public class ItItem {
 
     @XmlElement(name = "Operationtype")
-    private String operationtype;
+    private String operationtype = "";
     @XmlElement(name = "Sequenceno")
-    private String sequenceno;
+    private String sequenceno = "";
     @XmlElement(name = "Itemno")
-    private String itemno;
+    private String itemno = "";
     @XmlElement(name = "Productid")
-    private String productid;
+    private String productid = "";
     @XmlElement(name = "Orderquantity")
-    private String orderquantity;
+    private String orderquantity = "";
     @XmlElement(name = "Platform")
-    private String platform;
+    private String platform = "";
     @XmlElement(name = "Requestdate")
-    private String requestdate;
+    private String requestdate = "";
     @XmlElement(name = "Rejectreason")
-    private String rejectreason;
+    private String rejectreason = "";
 }

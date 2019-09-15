@@ -16,42 +16,42 @@ import javax.xml.bind.annotation.XmlElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class IsHeader {
     @XmlElement(name = "Portalorderid")
-    private String portalorderid;
+    private String portalorderid = "";
     @XmlElement(name = "Ordertype")
-    private String ordertype;
+    private String ordertype = "";
     @XmlElement(name = "Salesorg")
-    private String salesorg;
+    private String salesorg = "";
     @XmlElement(name = "Channel")
-    private String channel;
+    private String channel = "";
     @XmlElement(name = "Division")
-    private String division;
+    private String division = "";
     @XmlElement(name = "Salesoffice")
-    private String salesoffice;
+    private String salesoffice = "";
     @XmlElement(name = "Salesgroup")
-    private String salesgroup;
+    private String salesgroup = "";
     @XmlElement(name = "Soldto")
-    private String soldto;
+    private String soldto = "";
     @XmlElement(name = "Sendto")
-    private String sendto;
+    private String sendto = "";
     @XmlElement(name = "Purchaseno")
-    private String purchaseno;
+    private String purchaseno = "";
     @XmlElement(name = "Purchasedate")
-    private String purchasedate;
+    private String purchasedate = "";
     @XmlElement(name = "Paymentterms")
-    private String paymentterms;
+    private String paymentterms = "";
     @XmlElement(name = "Customergroup1")
-    private String customergroup1;
+    private String customergroup1 = "";
     @XmlElement(name = "Customergroup2")
-    private String customergroup2;
+    private String customergroup2 = "";
     @XmlElement(name = "Pricedate")
-    private String pricedate;
+    private String pricedate = "";
     @XmlElement(name = "Refsaporderid")
-    private String refsaporderid;
+    private String refsaporderid = "";
     @XmlElement(name = "Inco1")
-    private String inco1;
+    private String inco1 = "";
     @XmlElement(name = "Inco2")
-    private String inco2;
+    private String inco2 = "";
     @XmlElement(name = "Augru")
-    private String augru;
+    private String augru = "";
 
 }

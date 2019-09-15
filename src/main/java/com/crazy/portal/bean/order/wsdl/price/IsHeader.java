@@ -17,23 +17,23 @@ import javax.xml.bind.annotation.XmlElement;
 public class IsHeader {
 
     @XmlElement(name = "Portalorderid")
-    private String portalorderid;
+    private String portalorderid = "";
     @XmlElement(name = "Ordertype")
-    private String ordertype;
+    private String ordertype = "";
     @XmlElement(name = "Salesorg")
-    private String salesorg;
+    private String salesorg = "";
     @XmlElement(name = "Channel")
-    private String channel;
+    private String channel = "";
     @XmlElement(name = "Division")
-    private String division;
+    private String division = "";
     @XmlElement(name = "Salesoffice")
-    private String salesoffice;
+    private String salesoffice = "";
     @XmlElement(name = "Salesgroup")
-    private String salesgroup;
+    private String salesgroup = "";
     @XmlElement(name = "Soldto")
-    private String soldto;
+    private String soldto = "";
     @XmlElement(name = "Sendto")
-    private String sendto;
+    private String sendto = "";
     @XmlElement(name = "Pricedate")
-    private String pricedate;
+    private String pricedate = "";
 }

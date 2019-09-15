@@ -17,15 +17,15 @@ import javax.xml.bind.annotation.XmlElement;
 public class ItItem {
 
     @XmlElement(name = "Sequenceno")
-    private String sequenceno;
+    private String sequenceno = "";
     @XmlElement(name = "Productid")
-    private String productid;
+    private String productid = "";
     @XmlElement(name = "Orderquantity")
-    private String orderquantity;
+    private String orderquantity = "";
     @XmlElement(name = "Platform")
-    private String platform;
+    private String platform = "";
     @XmlElement(name = "Requestdate")
-    private String requestdate;
+    private String requestdate = "";
     @XmlElement(name = "Refsaporderitemno")
-    private String refsaporderitemno;
+    private String refsaporderitemno = "";
 }

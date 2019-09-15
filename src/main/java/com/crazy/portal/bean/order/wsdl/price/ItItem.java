@@ -17,11 +17,11 @@ import javax.xml.bind.annotation.XmlElement;
 public class ItItem {
 
     @XmlElement(name = "Sequenceno")
-    private String sequenceno;
+    private String sequenceno = "";
     @XmlElement(name = "Productid")
-    private String productid;
+    private String productid = "";
     @XmlElement(name = "Orderquantity")
-    private String orderquantity;
+    private String orderquantity = "";
     @XmlElement(name = "Platform")
-    private String platform;
+    private String platform = "";
 }
