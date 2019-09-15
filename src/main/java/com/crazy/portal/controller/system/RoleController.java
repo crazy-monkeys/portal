@@ -1,6 +1,5 @@
 package com.crazy.portal.controller.system;
 
-import com.alibaba.fastjson.JSON;
 import com.crazy.portal.bean.BaseResponse;
 import com.crazy.portal.controller.BaseController;
 import com.crazy.portal.entity.system.Role;
@@ -10,6 +9,7 @@ import com.crazy.portal.util.ErrorCodes.SystemManagerEnum;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+
 import javax.annotation.Resource;
 import java.util.Date;
 import java.util.List;
@@ -90,9 +90,6 @@ public class RoleController extends BaseController {
      */
     @PostMapping(value = "/updateRole")
     public BaseResponse updateRole(@RequestBody Role role) {
-        log.info("Update the role by {},role info {}",
-                super.getCurrentUser().getLoginName(), JSON.toJSON(role));
-
         BusinessUtil.notNull(role.getId(),SystemManagerEnum.ROLE_EMPTY_ID);
         BusinessUtil.assertEmpty(role.getRoleCode(),SystemManagerEnum.ROLE_EMPTY_CODE);
 
@@ -125,7 +122,6 @@ public class RoleController extends BaseController {
      */
     @DeleteMapping("/delete/{roleCode}")
     public BaseResponse delete(@PathVariable String roleCode){
-        log.info("Delete the role by {}",super.getCurrentUser().getLoginName());
         roleService.deleteRole(roleCode);
         return super.successResult();
     }
