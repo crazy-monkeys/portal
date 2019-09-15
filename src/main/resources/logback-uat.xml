@@ -48,6 +48,29 @@
         </triggeringPolicy>
     </appender>
 
+    <appender name="DEBUG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>INFO</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <encoder>
+            <pattern>${FILE_LOG_PATTERN}</pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+
+            <!--日志文件输出的文件名-->
+            <fileNamePattern>${LOG_HOME}/debug.%d{yyyy-MM-dd}.log</fileNamePattern>
+
+            <!--日志文件保留天数-->
+            <MaxHistory>30</MaxHistory>
+        </rollingPolicy>
+
+        <!--日志文件最大的大小-->
+        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+            <MaxFileSize>10MB</MaxFileSize>
+        </triggeringPolicy>
+    </appender>
 
     <!--WARN 级别的日志-->
     <appender name="WARN" class="ch.qos.logback.core.rolling.RollingFileAppender">
@@ -85,6 +108,7 @@
     <root level="debug">
 <!--        <appender-ref ref="CONSOLE" />-->
         <appender-ref ref="INFO"/>
+        <appender-ref ref="DEBUG"/>
         <appender-ref ref="WARN"/>
         <appender-ref ref="ERROR"/>
     </root>
