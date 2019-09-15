@@ -86,13 +86,6 @@ public class PermissionController extends BaseController{
     public BaseResponse empowerment(@RequestBody PermissionBean permissionBean) {
         BusinessUtil.notNull(permissionBean.getRoleCode(),SystemManagerEnum.ROLE_EMPTY_CODE);
         List<Integer> permissionIds = permissionBean.getPermissionIds();
-
-        if(permissionIds == null || permissionIds.isEmpty()){
-
-            throw new BusinessException(SystemManagerEnum.RESOURCE_EMPTY_LIST.getCode(),
-                    SystemManagerEnum.RESOURCE_EMPTY_LIST.getZhMsg());
-        }
-
         permissionService.savePermission(permissionIds,permissionBean.getRoleCode(),super.getCurrentUserId());
         return super.successResult();
     }

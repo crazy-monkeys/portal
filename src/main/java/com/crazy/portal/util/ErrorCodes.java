@@ -68,7 +68,6 @@ public class ErrorCodes {
         RESOURCE_ILLEGAL(10040,"资源必填项不能为空",""),
         RESOURCE_NOT_EXIST(10041,"资源不存在",""),
         RESOURCE_PARENT_NOT_EXIST(10042,"父级资源不存在",""),
-        RESOURCE_EMPTY_LIST(10043,"资源列表为空",""),
         RESOURCE_HAS_CHILDREN(10044,"该资源下面有子资源,不允许删除",""),
         RESOURCE_USED(10045,"该资源已经绑定在角色上，不允许删除",""),
         RESOURCE_TYPE_NOT_EXIST(10046,"资源类型不存在",""),

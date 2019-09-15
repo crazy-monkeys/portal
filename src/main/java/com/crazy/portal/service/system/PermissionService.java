@@ -216,6 +216,12 @@ public class PermissionService {
      */
     private boolean setPermission(List<Integer> resourcesIds, Integer roleId, Integer userId) {
 
+        if(resourcesIds == null || resourcesIds.isEmpty()){
+            //删除所有权限
+            roleResourceMapper.deleteByRoleId(roleId);
+            return true;
+        }
+
         List<Integer> errorList = resourcesIds.stream().filter(x->
             x == null
         ).collect(Collectors.toList());
