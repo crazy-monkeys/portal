@@ -35,7 +35,7 @@ public interface ForecastMapper {
                      @Param(value = "userId") Integer userId);
 
     List<Forecast> selectPageByUser(@Param(value = "userId") Integer userId,
-                                @Param(value = "customerName") String customerName,
+                                @Param(value = "customerAbbreviation") String customerAbbreviation,
                                 @Param(value = "status") Integer status,
                                 @Param(value = "salePeople") String salePeople,
                                 @Param(value = "uploadStartTime") String uploadStartTime,
@@ -53,10 +53,20 @@ public interface ForecastMapper {
     List<Forecast> selectRejectDataByIds(@Param(value = "ids") Integer[] ids,
                                          @Param(value = "userId") Integer userId);
 
-    List<Forecast> selectByLeader(@Param(value = "userIds") Integer[] userIds);
+    List<Forecast> selectByLeader(@Param(value = "userIds") Integer[] userIds,
+                                  @Param(value = "customerAbbreviation") String customerAbbreviation,
+                                  @Param(value = "status") Integer status,
+                                  @Param(value = "salePeople") String salePeople,
+                                  @Param(value = "uploadStartTime") String uploadStartTime,
+                                  @Param(value = "uploadEndTime") String uploadEndTime,
+                                  @Param(value = "ambPeople") String ambPeople,
+                                  @Param(value = "sdPeople") String sdPeople,
+                                  @Param(value = "agencyAbbreviation") String agencyAbbreviation,
+                                  @Param(value = "channel") String channel);
 
     int updateStatusByIds(@Param(value = "ids") Integer[] ids,
-                          @Param(value = "status") Integer status);
+                          @Param(value = "status") Integer status,
+                          @Param(value = "operationRemark") String operationRemark);
 
     int deleteByBiIds(@Param(value = "ids") Integer[] biIds);
 

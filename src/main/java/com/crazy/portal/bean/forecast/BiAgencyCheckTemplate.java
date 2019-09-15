@@ -18,7 +18,7 @@ public class BiAgencyCheckTemplate extends BaseRowModel {
     private String company;
 
     @ExcelProperty(index = 2, value = "代理简称")
-    private String AgencyAbbreviation;
+    private String agencyAbbreviation;
 
     @ExcelProperty(index = 3, value = "客户简称")
     private String customerAbbreviation;

@@ -13,6 +13,10 @@ import java.util.List;
 
 @Data
 public class Forecast {
+
+    private String operationRemark;
+
+    private String agencyAbbreviation;
     /**
      *
      */

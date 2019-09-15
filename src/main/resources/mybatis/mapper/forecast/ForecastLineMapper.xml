@@ -695,4 +695,22 @@
       sd_remark_six = #{sdRemarkSix,jdbcType=VARCHAR}
     where line_id = #{lineId,jdbcType=INTEGER}
   </update>
+
+  <update id="updateByForecastId" parameterType="com.crazy.portal.entity.forecast.ForecastLine" >
+    update t_forecast_line
+    set amb_adjustment_one = #{ambAdjustmentOne,jdbcType=VARCHAR},
+      amb_remark_one = #{ambRemarkOne,jdbcType=VARCHAR},
+      amb_adjustment_two = #{ambAdjustmentTwo,jdbcType=VARCHAR},
+      amb_remark_two = #{ambRemarkTwo,jdbcType=VARCHAR},
+      amb_adjustment_three = #{ambAdjustmentThree,jdbcType=VARCHAR},
+      amb_remark_three = #{ambRemarkThree,jdbcType=VARCHAR},
+      amb_adjustment_four = #{ambAdjustmentFour,jdbcType=VARCHAR},
+      amb_remark_four = #{ambRemarkFour,jdbcType=VARCHAR},
+      amb_adjustment_five = #{ambAdjustmentFive,jdbcType=VARCHAR},
+      amb_remark_five = #{ambRemarkFive,jdbcType=VARCHAR},
+      amb_adjustment_six = #{ambAdjustmentSix,jdbcType=VARCHAR},
+      amb_remark_six = #{ambRemarkSix,jdbcType=VARCHAR}
+      where f_id = #{fId,jdbcType=INTEGER}
+  </update>
+
 </mapper>

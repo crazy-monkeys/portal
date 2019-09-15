@@ -1,5 +1,6 @@
 package com.crazy.portal.controller.handover;
 
+import com.crazy.portal.annotation.OperationLog;
 import com.crazy.portal.bean.BaseResponse;
 import com.crazy.portal.controller.BaseController;
 import com.crazy.portal.service.handover.HandoverServiceContext;
@@ -82,6 +83,7 @@ public class HandoverController extends BaseController {
      * @param remark
      * @return
      */
+    @OperationLog
     @GetMapping(value = "/handover/operation/{id}")
     public BaseResponse operationDeliverInfo(@PathVariable Integer id, String type, Integer status, String remark) {
         handoverService.operationDeliverInfo(id, getCurrentUser().getId(), type, status, remark);
@@ -104,6 +106,7 @@ public class HandoverController extends BaseController {
      * @param excel
      * @return
      */
+    @OperationLog
     @PostMapping(value = "/handover/template")
     public BaseResponse uploadTemplateData(MultipartFile excel, String type) {
         List<?> data = handoverServiceContext.getService(type).uploadTemplateData(excel, getCurrentUser().getId());
@@ -118,6 +121,7 @@ public class HandoverController extends BaseController {
      * @param recordId
      * @return
      */
+    @OperationLog
     @PostMapping(value = "/handover/error/retry")
     public BaseResponse modifyErrorData(MultipartFile excel, String type, Integer recordId) {
         List<?> data = handoverServiceContext.getService(type).uploadTemplateData(excel, getCurrentUser().getId());
@@ -137,6 +141,7 @@ public class HandoverController extends BaseController {
      * 数据提交
      * @return
      */
+    @OperationLog
     @PostMapping(value = "/handover/detail")
     public BaseResponse submitData(Integer recordId, String type) {
         handoverService.checkDataStatus(recordId);
@@ -149,6 +154,7 @@ public class HandoverController extends BaseController {
      * @param type
      * @return
      */
+    @OperationLog
     @PostMapping(value = "/handover/detail/delete")
     public BaseResponse deleteData(Integer[] ids, String type) {
         handoverServiceContext.getService(type).batchDeleteData(ids, getCurrentUser().getId());
