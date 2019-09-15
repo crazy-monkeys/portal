@@ -13,6 +13,10 @@ import java.util.List;
 
 @Data
 public class Forecast {
+
+    private String operationRemark;
+
+    private String agencyAbbreviation;
     /**
      *
      */
@@ -165,6 +169,8 @@ public class Forecast {
     private ForecastLine line;
 
     private String statusDesc;
+
+    private String createTimeStr;
 
     public Forecast() {
     }

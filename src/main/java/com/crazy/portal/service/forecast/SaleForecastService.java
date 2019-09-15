@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -211,30 +212,36 @@ public class SaleForecastService {
     }
 
     public PageInfo<Forecast> queryAgencyForecastData(Integer pageNum, Integer pageSize, Integer userId,
-                                                      String customerName, Integer status, String salePeople,
+                                                      String customerAbbreviation, Integer status, String salePeople,
                                                       String uploadStartTime, String uploadEndTime) {
-        if(status == -1){
+        if(null != status && status == -1){
             return new PageInfo<>(null);
         }
         PortalUtil.defaultStartPage(pageNum,pageSize);
-        List<Forecast> result = forecastMapper.selectPageByUser(userId, customerName, status, salePeople, uploadStartTime, uploadEndTime);
+        List<Forecast> result = forecastMapper.selectPageByUser(userId, customerAbbreviation, status, salePeople, uploadStartTime, uploadEndTime);
         return new PageInfo<>(result);
     }
 
     /**
      * 代理商预测数据删除
-     * @param biIds
+     * @param forecastIds
      */
-    public void deleteAgencyForecastData(Integer[] biIds) {
-        String biParam = StringUtils.join(biIds, ",");
+    public void deleteAgencyForecastData(Integer[] forecastIds) {
         try {
-            String response = CallApiUtils.callBiGetApi(DELETEFORECAST, "PORTAL/BI/", String.format("sIDList=%s&sSummaryIDList=%s", biParam, biParam));
-            response = response.replace("\"", "").replace("\\","");
-            if(StringUtils.isNotEmpty(response) && response.contains("删除成功")){
-                forecastMapper.deleteByBiIds(biIds);
-                return;
+            for(Integer id : forecastIds){
+                Forecast forecast = forecastMapper.selectByPrimaryKey(id);
+                if(forecast.getStatus() == 2){
+                    String response = CallApiUtils.callBiGetApi(DELETEFORECAST, "PORTAL/BI/", String.format("sIDList=%s&sSummaryIDList=%s", id, id));
+                    response = response.replace("\"", "").replace("\\","");
+                    if(StringUtils.isNotEmpty(response) && response.contains("删除成功")){
+                        forecastMapper.deleteByPrimaryKey(id);
+                    }else{
+                        throw new BusinessException(FORECAST_BI_DELETE_FAIL);
+                    }
+                }else{
+                    forecastMapper.deleteByPrimaryKey(id);
+                }
             }
-            throw new BusinessException(FORECAST_BI_DELETE_FAIL);
         }catch (Exception ex) {
             log.error(FORECAST_BI_DELETE_FAIL.getZhMsg(), ex);
             throw new BusinessException(FORECAST_BI_DELETE_FAIL);
@@ -289,75 +296,68 @@ public class SaleForecastService {
         BusinessUtil.notNull(forecastIds, FORECAST_REQ_PARAM_NOT_EMPTY);
         List<Forecast> rejectDataList = forecastMapper.selectRejectDataByIds(forecastIds, userId);
 
-        List<AgencyErrorTemplate> errorList = new ArrayList<>();
+        List<AgencyRejectTemplate> rejectList = new ArrayList<>();
         for(Forecast forecast : rejectDataList) {
-            AgencyErrorTemplate agencyTemplate = new AgencyErrorTemplate();
-            copyDbFields(forecast, agencyTemplate);
-            errorList.add(agencyTemplate);
+            AgencyRejectTemplate rejectTemplate = new AgencyRejectTemplate();
+            copyDbFields(forecast, rejectTemplate);
+            rejectList.add(rejectTemplate);
         }
-        ExcelUtils.writeExcel(response, errorList, AgencyErrorTemplate.class);
+        ExcelUtils.writeExcel(response, rejectList, AgencyRejectTemplate.class);
     }
 
-    public PageInfo<Forecast> queryApprovalForecastData(Integer pageNum, Integer pageSize, Integer userId) {
+    public PageInfo<Forecast> queryApprovalForecastData(Integer pageNum, Integer pageSize, Integer userId,
+                                                        String customerAbbreviation, Integer status, String salePeople,
+                                                        String uploadStartTime, String uploadEndTime,
+                                                        String ambPeople, String sdPeople, String agencyAbbreviation,
+                                                        String channel) {
         PortalUtil.defaultStartPage(pageNum,pageSize);
         //TODO 根据登录用户查询他名下可以查看的代理商
         Integer[] userIds = new Integer[]{1,2};
-        List<Forecast> result = forecastMapper.selectByLeader(userIds);
+        List<Forecast> result = forecastMapper.selectByLeader(userIds, customerAbbreviation, status,
+                salePeople, uploadStartTime, uploadEndTime, ambPeople, sdPeople, agencyAbbreviation, channel);
         return new PageInfo<>(result);
     }
 
     public void updateSingleForecastData(ForecastParam param) {
-        ForecastLine paramLine = param.getLine();
+        ApprovalUpdateLineParam paramLine = param.getUpdateLine();
         ForecastLine dbRecord = forecastLineMapper.selectByPrimaryKey(paramLine.getLineId());
         if(null == dbRecord){
             throw new BusinessException("没有记录");
         }
         if(param.getSortNum() == 1){
-            dbRecord.setAmbAdjustmentOne(paramLine.getAmbAdjustmentOne());
-            dbRecord.setAmbRemarkOne(paramLine.getRemarkOne());
-            dbRecord.setSdAdjustmentOne(paramLine.getSdAdjustmentOne());
-            dbRecord.setSdRemarkOne(paramLine.getSdRemarkOne());
+            dbRecord.setAmbAdjustmentOne(paramLine.getAmbAdjustment());
+            dbRecord.setAmbRemarkOne(paramLine.getAmbRemark());
         }
         if(param.getSortNum() == 2){
-            dbRecord.setAmbAdjustmentTwo(paramLine.getAmbAdjustmentTwo());
-            dbRecord.setAmbRemarkTwo(paramLine.getRemarkTwo());
-            dbRecord.setSdAdjustmentTwo(paramLine.getSdAdjustmentTwo());
-            dbRecord.setSdRemarkTwo(paramLine.getSdRemarkTwo());
+            dbRecord.setAmbAdjustmentTwo(paramLine.getAmbAdjustment());
+            dbRecord.setAmbRemarkTwo(paramLine.getAmbRemark());
         }
         if(param.getSortNum() == 3){
-            dbRecord.setAmbAdjustmentThree(paramLine.getAmbAdjustmentThree());
-            dbRecord.setAmbRemarkThree(paramLine.getRemarkThree());
-            dbRecord.setSdAdjustmentThree(paramLine.getSdAdjustmentThree());
-            dbRecord.setSdRemarkThree(paramLine.getSdRemarkThree());
+            dbRecord.setAmbAdjustmentThree(paramLine.getAmbAdjustment());
+            dbRecord.setAmbRemarkThree(paramLine.getAmbRemark());
         }
         if(param.getSortNum() == 4){
-            dbRecord.setAmbAdjustmentFour(paramLine.getAmbAdjustmentFour());
-            dbRecord.setAmbRemarkFour(paramLine.getRemarkFour());
-            dbRecord.setSdAdjustmentFour(paramLine.getSdAdjustmentFour());
-            dbRecord.setSdRemarkFour(paramLine.getSdRemarkFour());
+            dbRecord.setAmbAdjustmentFour(paramLine.getAmbAdjustment());
+            dbRecord.setAmbRemarkFour(paramLine.getAmbRemark());
         }
         if(param.getSortNum() == 5){
-            dbRecord.setAmbAdjustmentFive(paramLine.getAmbAdjustmentFive());
-            dbRecord.setAmbRemarkFive(paramLine.getRemarkFive());
-            dbRecord.setSdAdjustmentFive(paramLine.getSdAdjustmentFive());
-            dbRecord.setSdRemarkFive(paramLine.getSdRemarkFive());
+            dbRecord.setAmbAdjustmentFive(paramLine.getAmbAdjustment());
+            dbRecord.setAmbRemarkFive(paramLine.getAmbRemark());
         }
         if(param.getSortNum() == 6){
-            dbRecord.setAmbAdjustmentSix(paramLine.getAmbAdjustmentSix());
-            dbRecord.setAmbRemarkSix(paramLine.getRemarkSix());
-            dbRecord.setSdAdjustmentSix(paramLine.getSdAdjustmentSix());
-            dbRecord.setSdRemarkSix(paramLine.getSdRemarkSix());
+            dbRecord.setAmbAdjustmentSix(paramLine.getAmbAdjustment());
+            dbRecord.setAmbRemarkSix(paramLine.getAmbRemark());
         }
         forecastLineMapper.updateByPrimaryKeySelective(dbRecord);
     }
 
     public void passApprovalForecastData(Integer[] forecastIds, String passMsg) {
-        forecastMapper.updateStatusByIds(forecastIds, 2);
+        forecastMapper.updateStatusByIds(forecastIds, 2, passMsg);
         //TODO 最终提交给BI
     }
 
     public void rejectApprovalForecastData(Integer[] forecastIds, String rejectMsg) {
-        forecastMapper.updateStatusByIds(forecastIds, -1);
+        forecastMapper.updateStatusByIds(forecastIds, -1, rejectMsg);
     }
 
     public void downloadDataByAmb(HttpServletResponse response, Integer[] forecastIds) {
@@ -366,9 +366,21 @@ public class SaleForecastService {
         for(Forecast forecast : forecastList) {
             AmbUpdateTemplate agencyTemplate = new AmbUpdateTemplate();
             copyDbFields(forecast, agencyTemplate);
+            agencyTemplate.setId(String.valueOf(forecast.getId()));
+            agencyTemplate.setTotalForecastSalesVolume(sumValue(agencyTemplate));
             templateList.add(agencyTemplate);
         }
         ExcelUtils.writeExcel(response, templateList, AmbUpdateTemplate.class);
+    }
+
+    public void uploadDataByAmb(MultipartFile excel, Integer userId) {
+        List<AmbUpdateTemplate> ambList = ExcelUtils.readExcel(excel, AmbUpdateTemplate.class);
+        for(AmbUpdateTemplate ambUpdateTemplate : ambList){
+            ForecastLine forecastLine = new ForecastLine();
+            copyTemplateFields(ambUpdateTemplate, forecastLine);
+            forecastLine.setfId(Integer.parseInt(ambUpdateTemplate.getId()));
+            forecastLineMapper.updateByForecastId(forecastLine);
+        }
     }
 
     public void downloadDataBySd(HttpServletResponse response, Integer[] forecastIds) {
@@ -380,6 +392,10 @@ public class SaleForecastService {
             templateList.add(agencyTemplate);
         }
         ExcelUtils.writeExcel(response, null, SdUpdateTemplate.class);
+    }
+
+    public void uploadDataBySd(MultipartFile excel, Integer userId) {
+        List<SdUpdateTemplate> sdList = ExcelUtils.readExcel(excel, SdUpdateTemplate.class);
     }
 
     private ForecastResult pushForecastDataToBi(String batchNo) {
@@ -488,6 +504,21 @@ public class SaleForecastService {
         int len = time.length();
         int i = Integer.parseInt(String.valueOf(time.charAt(len - 1)));
         return i > 4;
+    }
+
+    private String sumValue(AmbUpdateTemplate agencyTemplate){
+        BigDecimal total;
+        try {
+            total = BigDecimal.ZERO.add(new BigDecimal(agencyTemplate.getCurrentWriteOne()))
+                    .add(new BigDecimal(agencyTemplate.getCurrentWriteTwo()))
+                    .add(new BigDecimal(agencyTemplate.getCurrentWriteThree()))
+                    .add(new BigDecimal(agencyTemplate.getCurrentWriteFour()))
+                    .add(new BigDecimal(agencyTemplate.getCurrentWriteFive()))
+                    .add(new BigDecimal(agencyTemplate.getCurrentWriteSix()));
+        }catch (Exception ex) {
+            return null;
+        }
+        return String.valueOf(total);
     }
 
     private void copyDbFields(Forecast forecast, Object object) {

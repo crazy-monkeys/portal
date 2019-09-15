@@ -1,6 +1,7 @@
 package com.crazy.portal.dao.forecast;
 
 import com.crazy.portal.entity.forecast.ForecastLine;
+import org.apache.ibatis.annotations.Param;
 
 public interface ForecastLineMapper {
     int deleteByPrimaryKey(Integer lineId);
@@ -14,4 +15,6 @@ public interface ForecastLineMapper {
     int updateByPrimaryKeySelective(ForecastLine record);
 
     int updateByPrimaryKey(ForecastLine record);
+
+    int updateByForecastId(ForecastLine forecastLine);
 }

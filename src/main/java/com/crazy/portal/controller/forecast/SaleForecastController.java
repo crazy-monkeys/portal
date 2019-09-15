@@ -1,5 +1,6 @@
 package com.crazy.portal.controller.forecast;
 
+import com.crazy.portal.annotation.OperationLog;
 import com.crazy.portal.bean.BaseResponse;
 import com.crazy.portal.bean.forecast.ForecastParam;
 import com.crazy.portal.controller.BaseController;
@@ -66,6 +67,7 @@ public class SaleForecastController extends BaseController {
      * 代理商预测数据提交
      * @param batchNo
      */
+    @OperationLog
     @GetMapping(value = "/forecast/agency/data/submit")
     public BaseResponse commitAgencyForecastData(String batchNo) {
         saleForecastService.commitAgencyForecastData(batchNo, 1);
@@ -79,19 +81,20 @@ public class SaleForecastController extends BaseController {
      */
     @GetMapping(value = "/forecast/agency/data/query")
     public BaseResponse queryAgencyForecastData(Integer pageNum, Integer pageSize,
-                                                String customerName, Integer status, String salePeople,
+                                                String customerAbbreviation, Integer status, String salePeople,
                                                 String uploadStartTime, String uploadEndTime) {
         return super.successResult(saleForecastService.queryAgencyForecastData(pageNum, pageSize, 1,
-                customerName, status, salePeople, uploadStartTime, uploadEndTime));
+                customerAbbreviation, status, salePeople, uploadStartTime, uploadEndTime));
     }
 
     /**
      * 代理商批量删除数据
-     * @param biIds
+     * @param forecastIds
      */
+    @OperationLog
     @GetMapping(value = "/forecast/agency/data/delete")
-    public BaseResponse deleteAgencyForecastData(Integer[] biIds) {
-        saleForecastService.deleteAgencyForecastData(biIds);
+    public BaseResponse deleteAgencyForecastData(Integer[] forecastIds) {
+        saleForecastService.deleteAgencyForecastData(forecastIds);
         return super.successResult();
     }
 
@@ -99,6 +102,7 @@ public class SaleForecastController extends BaseController {
      * 代理商批量修改数据
      * @param list
      */
+    @OperationLog
     @PostMapping(value = "/forecast/agency/data/update")
     public BaseResponse updateAgencyForecastData(@RequestBody List<ForecastParam> list) {
         saleForecastService.updateAgencyForecastData(list, 1);
@@ -135,8 +139,14 @@ public class SaleForecastController extends BaseController {
      * @return
      */
     @GetMapping(value = "/forecast/approval/data/query")
-    public BaseResponse queryApprovalForecastData(Integer pageNum, Integer pageSize) {
-        return super.successResult(saleForecastService.queryApprovalForecastData(pageNum, pageSize, 1));
+    public BaseResponse queryApprovalForecastData(Integer pageNum, Integer pageSize,
+                                                  String customerAbbreviation, Integer isUpdate, String salePeople,
+                                                  String uploadStartTime, String uploadEndTime,
+                                                  String ambPeople, String sdPeople, String agencyAbbreviation,
+                                                  String channel) {
+        return super.successResult(saleForecastService.queryApprovalForecastData(pageNum, pageSize, 1,
+                customerAbbreviation, null, salePeople, uploadStartTime, uploadEndTime, ambPeople, sdPeople,
+                agencyAbbreviation, channel));
     }
 
     /**
@@ -145,6 +155,7 @@ public class SaleForecastController extends BaseController {
      * @param passMsg
      * @return
      */
+    @OperationLog
     @GetMapping(value = "/forecast/approval/data/pass")
     public BaseResponse passApprovalForecastData(Integer[] forecastIds, String passMsg) {
         saleForecastService.passApprovalForecastData(forecastIds, passMsg);
@@ -157,6 +168,7 @@ public class SaleForecastController extends BaseController {
      * @param rejectMsg
      * @return
      */
+    @OperationLog
     @GetMapping(value = "/forecast/approval/data/reject")
     public BaseResponse rejectApprovalForecastData(Integer[] forecastIds, String rejectMsg) {
         saleForecastService.rejectApprovalForecastData(forecastIds, rejectMsg);
@@ -169,9 +181,20 @@ public class SaleForecastController extends BaseController {
      * @param forecastIds
      * @return
      */
-    @GetMapping(value = "/forecast/amb/reject/download")
+    @GetMapping(value = "/forecast/amb/data/download")
     public BaseResponse downloadDataByAmb(HttpServletResponse response, Integer[] forecastIds) {
         saleForecastService.downloadDataByAmb(response, forecastIds);
+        return super.successResult();
+    }
+
+    /**
+     * 阿米巴数据
+     * @param excel
+     * @return
+     */
+    @PostMapping(value = "/forecast/amb/data/upload")
+    public BaseResponse uploadDataByAmb(MultipartFile excel) {
+        saleForecastService.uploadDataByAmb(excel, 1);
         return super.successResult();
     }
 
@@ -181,19 +204,24 @@ public class SaleForecastController extends BaseController {
      * @param forecastIds
      * @return
      */
-    @GetMapping(value = "/forecast/sd/reject/download")
+    @GetMapping(value = "/forecast/sd/data/download")
     public BaseResponse downloadDataBySd(HttpServletResponse response, Integer[] forecastIds) {
         saleForecastService.downloadDataBySd(response, forecastIds);
         return super.successResult();
     }
 
-    //审批数据批量上传（ID）
+    @PostMapping(value = "/forecast/sd/data/upload")
+    public BaseResponse uploadDataBySd(MultipartFile excel) {
+        saleForecastService.uploadDataBySd(excel, 1);
+        return super.successResult();
+    }
 
     /**
      * 审批数据单条修改
      * @param param
      * @return
      */
+    @OperationLog
     @PostMapping(value = "/forecast/approval/single/update")
     public BaseResponse updateSingleForecastData(@RequestBody ForecastParam param) {
         saleForecastService.updateSingleForecastData(param);
@@ -206,9 +234,13 @@ public class SaleForecastController extends BaseController {
      * @param pageSize
      * @return
      */
-    @GetMapping(value = "/forecast/data/query")
-    public BaseResponse queryForecastData(Integer pageNum, Integer pageSize) {
-        return super.successResult(saleForecastService.queryAgencyRejectForecastData(pageNum, pageSize, 1));
+    @GetMapping(value = "/forecast/data/leader/query")
+    public BaseResponse queryForecastData(Integer pageNum, Integer pageSize,
+                                          String customerAbbreviation, String agencyAbbreviation, String salePeople,
+                                          String uploadStartTime, String uploadEndTime, String channel) {
+        return super.successResult(saleForecastService.queryApprovalForecastData(pageNum, pageSize, 1,
+                customerAbbreviation, 2, salePeople, uploadStartTime, uploadEndTime, null, null,
+                agencyAbbreviation, channel));
     }
 
     //预测查询（首代Buffer）
