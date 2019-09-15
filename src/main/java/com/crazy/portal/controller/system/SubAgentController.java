@@ -77,7 +77,7 @@ public class SubAgentController extends BaseController {
      */
     @GetMapping("/list")
     public BaseResponse getSubAgents(@RequestParam(required = false,defaultValue = "1") Integer pageNum,
-                                     @RequestParam(required = false,defaultValue = "10") Integer pageSize){
+                                     @RequestParam(required = false,defaultValue = "20") Integer pageSize){
 
         User userQuery = new User();
         userQuery.setCreateUserId(super.getCurrentUser().getId());
