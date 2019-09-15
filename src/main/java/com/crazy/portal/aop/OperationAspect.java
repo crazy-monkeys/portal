@@ -123,7 +123,7 @@ public class OperationAspect extends BaseController {
     }
 
     /**
-     * 持久化到DB,数据量大的情况下 考虑存储到mongo
+     * 持久化到DB
      * @param operationLogDO
      */
     private void saveLog(OperationLogDO operationLogDO){
