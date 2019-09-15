@@ -17,7 +17,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
-
 import javax.servlet.http.HttpServletRequest;
 import java.util.Objects;
 
@@ -118,7 +117,7 @@ public class OperationAspect extends BaseController {
         return new StringBuilder(signature.getDeclaringTypeName())
                         .append(".")
                         .append(signature.getName())
-                        .append("-> parameters：")
+                        .append(" -> parameters：")
                         .append(params).toString();
     }
 
