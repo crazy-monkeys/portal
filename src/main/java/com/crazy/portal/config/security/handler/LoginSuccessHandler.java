@@ -21,10 +21,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.OutputStream;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @Desc:
@@ -69,7 +66,7 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
         map.put(PERMISSIONS,permissionService.resourceTree(permissions));
         map.put(USER,user);
         InternalUser currentUserPosition = baseController.getCurrentUserPosition();
-        map.put(POSITION,currentUserPosition == null ? StringUtils.EMPTY : currentUserPosition.getUserPositionCode());
+        map.put(POSITION, Objects.isNull(currentUserPosition) ? StringUtils.EMPTY : currentUserPosition.getUserPositionCode());
         return map;
     }
 

@@ -17,7 +17,6 @@ import org.springframework.stereotype.Component;
 import javax.annotation.Resource;
 import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -85,12 +84,8 @@ public class BaseController {
         if(!user.getUserType().equals(Enums.USER_TYPE.internal.toString())){
             return null;
         }
-        InternalUser userPosition = internalUserService.getUserPosition(user.getId());
-        if(Objects.isNull(userPosition)){
-            log.error("Internal customer position is null");
-            return null;
-        }
-        return userPosition;
+        //需求暂时不清楚,暂时仅返回为null
+        return null;
     }
 
     protected BaseResponse successResult() {
