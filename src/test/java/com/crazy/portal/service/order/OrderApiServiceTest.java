@@ -6,10 +6,11 @@ import com.crazy.portal.bean.order.wsdl.change.ZrfcsdsalesorderchangeBody;
 import com.crazy.portal.bean.order.wsdl.change.ZrfcsdsalesorderchangeContent;
 import com.crazy.portal.bean.order.wsdl.change.ZrfcsdsalesorderchangeResponse;
 import com.crazy.portal.bean.order.wsdl.create.*;
-import com.crazy.portal.bean.order.wsdl.create.IsHeader;
-import com.crazy.portal.bean.order.wsdl.create.ItItem;
-import com.crazy.portal.bean.order.wsdl.create.ItItems;
-import com.crazy.portal.bean.order.wsdl.price.*;
+import com.crazy.portal.bean.order.wsdl.delivery.*;
+import com.crazy.portal.bean.order.wsdl.price.Zrfcsdpricesimulate;
+import com.crazy.portal.bean.order.wsdl.price.ZrfcsdpricesimulateBody;
+import com.crazy.portal.bean.order.wsdl.price.ZrfcsdpricesimulateContent;
+import com.crazy.portal.bean.order.wsdl.price.ZrfcsdpricesimulateResponse;
 import com.crazy.portal.bean.order.wsdl.rate.ZrfcsdcustomercrrateResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Assert;
@@ -149,6 +150,20 @@ public class OrderApiServiceTest {
         ZrfcsdpricesimulateResponse response = eccApiService.priceSimulate(zrfcsdpricesimulate);
         log.info(JSON.toJSONString(response));
 
+        Assert.assertNotNull(response);
+    }
+
+    @Test
+    public void getDeliverylist(){
+        ZrfcsddeliverylistContent content = new ZrfcsddeliverylistContent();
+        content.setChangedfrom("2019-07-01");
+        content.setChangedto("2019-08-02");
+        Item item = new Item();
+        content.setEtList(Arrays.asList(item));
+        ZrfcsddeliverylistBody body = new ZrfcsddeliverylistBody(content);
+        Zrfcsddeliverylist zrfcsddeliverylist = new Zrfcsddeliverylist(body);
+        ZrfcsddeliverylistResponse response = eccApiService.deliveryList(zrfcsddeliverylist);
+        log.info(JSON.toJSONString(response));
         Assert.assertNotNull(response);
     }
 }

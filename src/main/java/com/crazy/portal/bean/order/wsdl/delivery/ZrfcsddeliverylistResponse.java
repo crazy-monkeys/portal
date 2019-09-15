@@ -35,7 +35,7 @@ import javax.xml.bind.annotation.XmlType;
     "resultmessage",
     "resulttype"
 })
-@XmlRootElement(name = "ZrfcsddeliverylistResponse")
+@XmlRootElement(name = "ZrfcsddeliverylistResponse",namespace = "urn:sap-com:document:sap:soap:functions:mc-style")
 public class ZrfcsddeliverylistResponse {
 
     @XmlElement(name = "EtList", required = true)

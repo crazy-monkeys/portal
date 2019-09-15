@@ -1,6 +1,5 @@
 package com.crazy.portal.service.price;
 
-import com.crazy.portal.bean.price.CatalogPriceVO;
 import com.crazy.portal.bean.price.EnquiryApprovalBean;
 import com.crazy.portal.bean.price.EnquiryPriceVO;
 import com.crazy.portal.dao.price.CatalogPriceMapper;

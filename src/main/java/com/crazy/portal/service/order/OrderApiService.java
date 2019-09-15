@@ -4,10 +4,11 @@ import com.crazy.portal.bean.order.wsdl.change.Zrfcsdsalesorderchange;
 import com.crazy.portal.bean.order.wsdl.change.ZrfcsdsalesorderchangeResponse;
 import com.crazy.portal.bean.order.wsdl.create.Zrfcsdsalesordercreate;
 import com.crazy.portal.bean.order.wsdl.create.ZrfcsdsalesordercreateResponse;
+import com.crazy.portal.bean.order.wsdl.delivery.Zrfcsddeliverylist;
 import com.crazy.portal.bean.order.wsdl.delivery.ZrfcsddeliverylistResponse;
-import com.crazy.portal.bean.order.wsdl.rate.ZrfcsdcustomercrrateResponse;
 import com.crazy.portal.bean.order.wsdl.price.Zrfcsdpricesimulate;
 import com.crazy.portal.bean.order.wsdl.price.ZrfcsdpricesimulateResponse;
+import com.crazy.portal.bean.order.wsdl.rate.ZrfcsdcustomercrrateResponse;
 import com.crazy.portal.util.HttpClientUtils;
 import com.crazy.portal.util.JaxbXmlUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -112,7 +113,16 @@ public class OrderApiService {
      * 交货单查询
      * @return
      */
-    public ZrfcsddeliverylistResponse deliveryList(){
+    public ZrfcsddeliverylistResponse deliveryList(Zrfcsddeliverylist zrfcsddeliverylist){
+        String url = String.format("%s%s",ECC_API_URL,"/cxf/ECC/PORTAL/GET_DELIVERY_LIST");
+
+        try {
+            String requestXml = JaxbXmlUtil.convertToXml(zrfcsddeliverylist);
+            String response = HttpClientUtils.post(url,requestXml);
+            return JaxbXmlUtil.convertSoapXmlToJavaBean(response, ZrfcsddeliverylistResponse.class);
+        } catch (Exception e) {
+            log.error("",e);
+        }
         return null;
     }
 
