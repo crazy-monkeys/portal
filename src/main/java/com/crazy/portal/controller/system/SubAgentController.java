@@ -58,10 +58,12 @@ public class SubAgentController extends BaseController {
 
     /**
      * 查询所有子账号角色类型的角色
+     * roleType 2 : 子账号角色类型
      * @return
      */
     @GetMapping("/getRoles")
     public BaseResponse getSubRole(){
+
         int roleType = 2;
         List<Role> roles = roleService.findRoles(roleType);
         return super.successResult(roles);
