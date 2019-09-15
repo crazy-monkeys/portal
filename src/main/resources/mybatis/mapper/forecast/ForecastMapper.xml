@@ -35,6 +35,7 @@
     <result column="batch_no" jdbcType="VARCHAR" property="batchNo" />
     <result column="status_desc" jdbcType="VARCHAR" property="statusDesc" />
     <result column="operation_remark" jdbcType="VARCHAR" property="operationRemark" />
+    <result column="create_time_str" jdbcType="VARCHAR" property="createTimeStr" />
   </resultMap>
 
   <resultMap id="fullFieldMap" type="com.crazy.portal.entity.forecast.Forecast" extends="BaseResultMap" >
@@ -395,7 +396,7 @@
 
   <select id="selectByYearMonth" resultMap="fullFieldMap" >
     select
-    a.*,b.*
+    a.*,b.*,date_format(a.create_time, '%Y-%m-%d %H:%i:%s') create_time_str
     from t_forecast a
     inner join t_forecast_line b on a.id = b.f_id
     where a.operation_year_month = #{yearMonth}
@@ -403,7 +404,7 @@
   </select>
 
   <select id="selectErrorDataByBatch" resultMap="fullFieldMap" >
-    select a.*,b.*
+    select a.*,b.*,date_format(a.create_time, '%Y-%m-%d %H:%i:%s') create_time_str
     from t_forecast a
     inner join t_forecast_line b on a.id = b.f_id
     where a.error_msg is not null and a.error_msg != ''
@@ -411,7 +412,7 @@
   </select>
 
   <select id="selectNotErrorDataByBatch" resultMap="fullFieldMap" >
-    select a.*,b.*
+    select a.*,b.*,date_format(a.create_time, '%Y-%m-%d %H:%i:%s') create_time_str
     from t_forecast a
     inner join t_forecast_line b on a.id = b.f_id
     where (a.error_msg is null or a.error_msg = '')
@@ -430,7 +431,7 @@
   </update>
 
   <select id="selectPageByUser" resultMap="fullFieldMap" >
-    select a.*,b.*
+    select a.*,b.*,date_format(a.create_time, '%Y-%m-%d %H:%i:%s') create_time_str
     from t_forecast a
     inner join t_forecast_line b on a.id = b.f_id
     where a.create_user_id = #{userId}
@@ -457,7 +458,7 @@
   </select>
 
   <select id="selectByLeader" resultMap="fullFieldMap" >
-    select a.status statusDesc,a.*,b.*
+    select a.status statusDesc,a.*,b.*,date_format(a.create_time, '%Y-%m-%d %H:%i:%s') create_time_str
     from t_forecast a
     inner join t_forecast_line b on a.id = b.f_id
     where 1 = 1
@@ -513,7 +514,7 @@
   </delete>
 
   <select id="selectRejectDataByIds" resultMap="fullFieldMap" >
-    select a.*,b.*
+    select a.*,b.*,date_format(a.create_time, '%Y-%m-%d %H:%i:%s') create_time_str
     from t_forecast a
     inner join t_forecast_line b on a.id = b.f_id
     where a.create_user_id = #{userId}
@@ -545,14 +546,14 @@
   </update>
 
   <select id="selectByBatchNo" resultMap="fullFieldMap" >
-    select a.*,b.*
+    select a.*,b.*,date_format(a.create_time, '%Y-%m-%d %H:%i:%s') create_time_str
     from t_forecast a
     inner join t_forecast_line b on a.id = b.f_id
     where a.batch_no = #{batchNo}
   </select>
 
   <select id="selectByIds" resultMap="fullFieldMap" >
-    select a.*,b.*
+    select a.*,b.*,date_format(a.create_time, '%Y-%m-%d %H:%i:%s') create_time_str
     from t_forecast a
     inner join t_forecast_line b on a.id = b.f_id
     where 1 = 1

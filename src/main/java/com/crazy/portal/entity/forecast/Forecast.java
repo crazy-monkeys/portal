@@ -170,6 +170,8 @@ public class Forecast {
 
     private String statusDesc;
 
+    private String createTimeStr;
+
     public Forecast() {
     }
 

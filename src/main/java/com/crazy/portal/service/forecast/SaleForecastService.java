@@ -366,6 +366,7 @@ public class SaleForecastService {
         for(Forecast forecast : forecastList) {
             AmbUpdateTemplate agencyTemplate = new AmbUpdateTemplate();
             copyDbFields(forecast, agencyTemplate);
+            agencyTemplate.setId(String.valueOf(forecast.getId()));
             agencyTemplate.setTotalForecastSalesVolume(sumValue(agencyTemplate));
             templateList.add(agencyTemplate);
         }
