@@ -53,7 +53,6 @@ public class UserController extends BaseController {
         return super.successResult(userService.findUser(loginName));
     }
 
-
     /**
      * 登录名称是否可用
      * @return

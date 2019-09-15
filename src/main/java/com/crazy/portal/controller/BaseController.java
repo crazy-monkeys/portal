@@ -6,13 +6,14 @@ import com.crazy.portal.dao.system.RoleMapper;
 import com.crazy.portal.entity.system.InternalUser;
 import com.crazy.portal.entity.system.Role;
 import com.crazy.portal.entity.system.User;
-import com.crazy.portal.service.system.InternalUserService;
 import com.crazy.portal.util.Enums;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import javax.annotation.Resource;
 import java.util.Collection;
@@ -31,20 +32,22 @@ public class BaseController {
 
     @Resource
     private RoleMapper roleMapper;
-    @Resource
-    private InternalUserService internalUserService;
 
     /**
      * 获取当前登录用户
      * @return
      */
     protected User getCurrentUser(){
-        User user = ((JwtUser) SecurityContextHolder
-                .getContext()
-                .getAuthentication()
-                .getPrincipal())
-                .getUser();
-
+        User user = null;
+        try {
+            user = ((JwtUser) SecurityContextHolder
+                    .getContext()
+                    .getAuthentication()
+                    .getPrincipal())
+                    .getUser();
+        } catch (Exception e) {
+            log.error("Current user is null");
+        }
         return user;
     }
 
@@ -72,6 +75,20 @@ public class BaseController {
         //目前只支持用户单角色
         String roleCode = list.get(0);
         return roleMapper.findRoleByCode(roleCode);
+    }
+
+    /**
+     * 获取参数校验失败信息
+     * @param exception
+     * @return
+     */
+    public String getValidExceptionMsg(MethodArgumentNotValidException exception) {
+        MethodArgumentNotValidException paramException = exception;
+        List<ObjectError> errorList = paramException.getBindingResult().getAllErrors();
+
+        return errorList.stream()
+                .map(ObjectError::getDefaultMessage)
+                .collect(Collectors.joining(","));
     }
 
     /**

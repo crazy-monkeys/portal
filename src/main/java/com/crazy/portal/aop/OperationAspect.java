@@ -2,17 +2,24 @@ package com.crazy.portal.aop;
 
 import com.alibaba.fastjson.JSON;
 import com.crazy.portal.annotation.OperationLog;
+import com.crazy.portal.config.exception.BusinessException;
 import com.crazy.portal.controller.BaseController;
+import com.crazy.portal.entity.system.OperationLogDO;
+import com.crazy.portal.entity.system.User;
+import com.crazy.portal.util.ErrorCodes.CommonEnum;
+import com.crazy.portal.util.ExceptionUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
+import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Objects;
 
 /**
  * @Desc: 操作日志
@@ -25,28 +32,101 @@ import javax.servlet.http.HttpServletRequest;
 @Slf4j
 public class OperationAspect extends BaseController {
 
-    @Before("@annotation(operationLog)")
-//    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void before(JoinPoint point, OperationLog operationLog) {
-        try {
-            Object[] objects = point.getArgs();
-            String params = JSON.toJSONString(objects);
-            Signature signature = point.getSignature();
-            StringBuilder invoke = new StringBuilder(signature.getDeclaringTypeName())
-                    .append(".")
-                    .append(signature.getName())
-                    .append("-> parameters：")
-                    .append(params);
 
-            RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
-            HttpServletRequest request = (HttpServletRequest) requestAttributes.resolveReference(RequestAttributes.REFERENCE_REQUEST);
-            String url = request.getRequestURI();
-            String operator = super.getCurrentUser().getLoginName();
-            String businessKey = String.format("%s.%s",point.getTarget().getClass().getSimpleName(),signature.getName());
-            log.info("\noperator: {} \nurl:{} \ninvoke:{} \nbusinessKey:{}",
-                    operator,url,invoke.toString(),businessKey);
+    @Around("@annotation(operationLog)")
+    public Object before(ProceedingJoinPoint point, OperationLog operationLog){
+        Object returnObj = null;
+        OperationLogDO opLog = null;
+        try {
+            opLog = this.buildOperationLog(point);
         } catch (Exception e) {
-            log.error("The global operations log intercepts exceptions",e);
+            //构建操作日志对象出现异常不影响Controller继续执行
+            log.error("Aop intercepts log exceptions.",e);
         }
+        try {
+            returnObj = point.proceed();
+        } catch (Throwable throwable) {
+            //设置错误信息并且抛出相应异常
+            this.setErrorMsgAndThrowException(opLog, throwable);
+        }finally {
+            //保存日志
+            if(opLog != null) this.saveLog(opLog);
+        }
+        return returnObj;
+    }
+
+    /**
+     * 设置错误信息并且抛出相应异常
+     * @param opLog
+     * @param throwable
+     */
+    private void setErrorMsgAndThrowException(OperationLogDO opLog, Throwable throwable) {
+        if(throwable instanceof BusinessException){
+            BusinessException ex = (BusinessException)throwable;
+            opLog.setErrorMsg(throwable.getMessage());
+            throw ex;
+        }
+        if(throwable instanceof MethodArgumentNotValidException){
+            MethodArgumentNotValidException ex = (MethodArgumentNotValidException) throwable;
+            String msg = super.getValidExceptionMsg(ex);
+            opLog.setErrorMsg(msg);
+            throw new BusinessException(CommonEnum.REQ_PARAM_FORMAT_ERROR.getCode(),msg);
+        }
+        opLog.setErrorMsg(ExceptionUtils.getExceptionAllinformation(throwable));
+        throw new RuntimeException("Unknown Exception",throwable);
+    }
+
+    /**
+     * 组装操作日志对象
+     * @param point
+     * @return
+     */
+    private OperationLogDO buildOperationLog(ProceedingJoinPoint point) {
+        OperationLogDO opLog = new OperationLogDO();
+        User user = super.getCurrentUser();
+        opLog.setOperator(Objects.isNull(user)? null: user.getLoginName());
+
+        HttpServletRequest request = this.getRequest();
+        opLog.setUrl(request.getRequestURI());
+
+        Object[] objects = point.getArgs();
+        String params = JSON.toJSONString(objects);
+        Signature signature = point.getSignature();
+        String invoke = this.getInvoke(params, signature);
+        opLog.setInvoke(invoke);
+
+        opLog.setBusinessKey(String.format("%s.%s",point.getTarget().getClass().getSimpleName(),signature.getName()));
+        return opLog;
+    }
+
+    /**
+     * 获取容器中的Request
+     * @return
+     */
+    private HttpServletRequest getRequest() {
+        RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
+        return (HttpServletRequest) requestAttributes.resolveReference(RequestAttributes.REFERENCE_REQUEST);
+    }
+
+    /**
+     * 获取调用方法&参数
+     * @param params
+     * @param signature
+     * @return
+     */
+    private String getInvoke(String params, Signature signature) {
+        return new StringBuilder(signature.getDeclaringTypeName())
+                        .append(".")
+                        .append(signature.getName())
+                        .append("-> parameters：")
+                        .append(params).toString();
+    }
+
+    /**
+     * 持久化到DB,数据量大的情况下 考虑存储到mongo
+     * @param operationLogDO
+     */
+    private void saveLog(OperationLogDO operationLogDO){
+        log.info(JSON.toJSONString(operationLogDO));
     }
 }
