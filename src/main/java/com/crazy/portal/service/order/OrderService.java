@@ -1,119 +1,185 @@
 package com.crazy.portal.service.order;
 
-import com.crazy.portal.bean.order.wsdl.change.Zrfcsdsalesorderchange;
-import com.crazy.portal.bean.order.wsdl.change.ZrfcsdsalesorderchangeResponse;
-import com.crazy.portal.bean.order.wsdl.create.Zrfcsdsalesordercreate;
-import com.crazy.portal.bean.order.wsdl.create.ZrfcsdsalesordercreateResponse;
-import com.crazy.portal.bean.order.wsdl.delivery.ZrfcsddeliverylistResponse;
-import com.crazy.portal.bean.order.wsdl.rate.ZrfcsdcustomercrrateResponse;
-import com.crazy.portal.bean.order.wsdl.price.Zrfcsdpricesimulate;
-import com.crazy.portal.bean.order.wsdl.price.ZrfcsdpricesimulateResponse;
-import com.crazy.portal.util.HttpClientUtils;
-import com.crazy.portal.util.JaxbXmlUtil;
+import com.crazy.portal.bean.order.OrderApprovalBean;
+import com.crazy.portal.bean.order.OrderCreditInfoBean;
+import com.crazy.portal.bean.order.OrderQueryBean;
+import com.crazy.portal.bean.order.wsdl.create.*;
+import com.crazy.portal.dao.order.OrderLineMapper;
+import com.crazy.portal.dao.order.OrderMapper;
+import com.crazy.portal.entity.order.Order;
+import com.crazy.portal.entity.order.OrderLine;
+import com.crazy.portal.util.BusinessUtil;
+import com.crazy.portal.util.DateUtil;
+import com.crazy.portal.util.Enums;
+import com.crazy.portal.util.ErrorCodes;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
- * @Desc:
- * @Author: Bill
- * @Date: created in 10:53 2019-09-08
- * @Modified by:
+ * 订单管理
  */
-@Service
 @Slf4j
+@Service
 public class OrderService {
 
-    @Value("${ecc.api.url}")
-    private String ECC_API_URL;
-
+    @Resource
+    private OrderMapper orderMapper;
+    @Resource
+    private OrderLineMapper orderLineMapper;
+    @Resource
+    private OrderApiService orderApiService;
     /**
-     * 获取代理费率
-     * @param ikunnr
+     * 订单列表查询
+     * @param bean
      * @return
      */
-    public ZrfcsdcustomercrrateResponse getCustomerRate(String ikunnr){
-        String url = String.format("%s%s",ECC_API_URL,"/cxf/CUSTOMERRATE");
-
-        String requestXML = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" " +
-                "xmlns:urn=\"urn:sap-com:document:sap:soap:functions:mc-style\">\n" +
-                "   <soapenv:Header/>\n" +
-                "   <soapenv:Body>\n" +
-                "      <urn:Zrfcsdcustomercrrate>\n" +
-                "         <Ikunnr>"+ikunnr+"</Ikunnr>\n" +
-                "      </urn:Zrfcsdcustomercrrate>\n" +
-                "   </soapenv:Body>\n" +
-                "</soapenv:Envelope>";
-
-        try {
-            String response = HttpClientUtils.post(url,requestXML);
-            log.info("CUSTOMERRATE Interface return {}",response);
-            return JaxbXmlUtil.convertSoapXmlToJavaBean(response, ZrfcsdcustomercrrateResponse.class);
-        } catch (Exception e) {
-            log.error("",e);
-        }
-        return null;
+    public PageInfo<Order> list(OrderQueryBean bean){
+        PageHelper.startPage(bean.getPageIndex(), bean.getPageSize());
+        List<Order> list = orderMapper.selectByPage(bean);
+        return new PageInfo<>(list);
     }
 
     /**
-     * 创建销售单
+     * 订单明细
+     * @param id
+     * @return
+     */
+    public Order detail(Integer id){
+        BusinessUtil.notNull(id, ErrorCodes.BusinessEnum.ORDER_ID_IS_REQUIRED);
+        Order order = orderMapper.selectByPrimaryKey(id);
+        BusinessUtil.notNull(order, ErrorCodes.BusinessEnum.ORDER_INFO_NOT_FOUND);
+        order.setLines(orderLineMapper.selectByOrderId(id));
+        return order;
+    }
+
+    /**
+     * 订单申请
      * @param order
-     * @return
+     * @param userId
      */
-    public ZrfcsdsalesordercreateResponse createSalesOrder(Zrfcsdsalesordercreate order){
-        String url = String.format("%s%s",ECC_API_URL,"/cxf/PORTAL/ECC/CREATESALESORDER");
-        try {
-            String requestXml = JaxbXmlUtil.convertToXml(order);
-            String response = HttpClientUtils.post(url,requestXml);
-            return JaxbXmlUtil.convertSoapXmlToJavaBean(response, ZrfcsdsalesordercreateResponse.class);
-        } catch (Exception e) {
-            log.error("",e);
-        }
-        return null;
+    @Transactional
+    public void apply(Order order, Integer userId){
+        BusinessUtil.notNull(order, ErrorCodes.BusinessEnum.ORDER_INFO_IS_REQUIRED);
+        BusinessUtil.notNull(order.getLines(), ErrorCodes.BusinessEnum.ORDER_LINES_IS_REQUIRED);
+        order.setApprovalStatus(Enums.OrderApprovalStatus.WAIT_APPROVAL.getValue());
+        order.setCreateId(userId);
+        order.setCreateTime(DateUtil.getCurrentTS());
+        orderMapper.insertSelective(order);
+        order.getLines().forEach(line->{
+            line.setOrderId(order.getId());
+            line.setCreateId(userId);
+            line.setCreateTime(DateUtil.getCurrentTS());
+            orderLineMapper.insertSelective(line);
+        });
     }
 
     /**
-     * 修改销售单
-     * @param order
-     * @return
+     * 变更交货日期
      */
-    public ZrfcsdsalesorderchangeResponse changeSalesOrder(Zrfcsdsalesorderchange order){
-        String url = String.format("%s%s",ECC_API_URL,"/cxf/PORTAL/ECC/CHANGE_SALES_ORDER");
-
-        try {
-            String requestXml = JaxbXmlUtil.convertToXml(order);
-            String response = HttpClientUtils.post(url,requestXml);
-            return JaxbXmlUtil.convertSoapXmlToJavaBean(response, ZrfcsdsalesorderchangeResponse.class);
-        } catch (Exception e) {
-            log.error("",e);
-        }
-        return null;
+    public void modifyDeliveryDate(Integer orderId, String deliveryDate, Integer userId) throws Exception{
+        BusinessUtil.notNull(orderId, ErrorCodes.BusinessEnum.ORDER_ID_IS_REQUIRED);
+        BusinessUtil.assertTrue(DateUtil.isValidDateFormat(deliveryDate, DateUtil.WEB_FORMAT), ErrorCodes.BusinessEnum.ORDER_DELIVERY_DATE_FORMAT_FAIL);
+        Order order = new Order();
+        order.setId(orderId);
+        order.setDeliveryDate(DateUtil.parseDate(deliveryDate, DateUtil.WEB_FORMAT));
+        order.setUpdateId(userId);
+        order.setUpdateTime(DateUtil.getCurrentTS());
+        orderMapper.updateByPrimaryKeySelective(order);
     }
 
     /**
-     * 调价试算
-     * @param priceSimulate
-     * @return
+     * 提货
+     * @param orderId
+     * @param userId
      */
-    public ZrfcsdpricesimulateResponse priceSimulate(Zrfcsdpricesimulate priceSimulate){
-        String url = String.format("%s%s",ECC_API_URL,"/cxf/ECC/PORTAL/GETPRICESIMULATION");
+    public void takeGoods(Integer orderId, Integer userId){
 
-        try {
-            String requestXml = JaxbXmlUtil.convertToXml(priceSimulate);
-            String response = HttpClientUtils.post(url,requestXml);
-            return JaxbXmlUtil.convertSoapXmlToJavaBean(response, ZrfcsdpricesimulateResponse.class);
-        } catch (Exception e) {
-            log.error("",e);
-        }
-        return null;
     }
 
     /**
-     * 交货单查询
-     * @return
+     * 取消
+     * @param orderId
+     * @param userId
      */
-    public ZrfcsddeliverylistResponse deliveryList(){
-       return null;
+    public void cancel(Integer orderId, Integer userId){
+
     }
 
+    /**
+     * 订单审批
+     * @param bean
+     */
+    public void approval(OrderApprovalBean bean, Integer userId){
+        Order order = orderMapper.selectByPrimaryKey(bean.getOrderId());
+        BusinessUtil.notNull(order, ErrorCodes.BusinessEnum.ORDER_INFO_NOT_FOUND);
+        if(bean.getApprovalStatus().equals(Enums.OrderApprovalStatus.ADOPT.getValue())){
+            sendOrderCreateRequest(order);
+        }
+        order.setApprovalStatus(bean.getApprovalStatus());
+        order.setRejectReason(bean.getRejectReason());
+        order.setUpdateId(userId);
+        order.setUpdateTime(DateUtil.getCurrentTS());
+        orderMapper.updateByPrimaryKeySelective(order);
+    }
+
+    /**
+     * 信用额度查询
+     */
+    public OrderCreditInfoBean creditInfoQuery(Integer orderId){
+        OrderCreditInfoBean info = new OrderCreditInfoBean();
+        //TODO
+        return info;
+    }
+
+
+    public String sendOrderCreateRequest(Order order){
+        IsHeader isHeader = new IsHeader();
+        isHeader.setPortalorderid(order.getId().toString());
+        isHeader.setOrdertype(order.getOrderType());
+        isHeader.setSalesorg(order.getSalesOrgId().toString());
+//        isHeader.setChannel();
+//        isHeader.setDivision();
+//        isHeader.setSalesoffice();
+//        isHeader.setSalesgroup();
+//        isHeader.setSoldto("100158");
+//        isHeader.setSendto("100158");
+        isHeader.setPurchaseno(order.getPurchaseOrderNo());
+        isHeader.setPurchasedate(DateUtil.format(order.getPurchaseOrderDate(), DateUtil.NEW_FORMAT));
+        isHeader.setPaymentterms("0001");
+        isHeader.setCustomergroup1("A02");
+        isHeader.setCustomergroup2("B1");
+        isHeader.setPricedate("20190829");
+        isHeader.setRefsaporderid("");
+        isHeader.setInco1("FH");
+        isHeader.setInco2("123");
+        isHeader.setAugru("005");
+
+        List<ItItem> items = new ArrayList<>();
+        for (OrderLine line : order.getLines()) {
+            ItItem item = new ItItem();
+//            item.setSequenceno();
+//            item.setProductid();
+//            item.setOrderquantity("1");
+//            item.setPlatform(line.getPlatform());
+//            item.setRequestdate();
+//            item.setRefsaporderitemno("");
+//            items.add(item);
+        }
+        ItItems itItems = new ItItems();
+        itItems.setItem(items);
+
+        ZrfcsdsalesordercreateContent content = new ZrfcsdsalesordercreateContent(null,isHeader,itItems);
+        ZrfcsdsalesordercreateBody zrfcsdsalesordercreateBody = new ZrfcsdsalesordercreateBody(content);
+        Zrfcsdsalesordercreate request = new Zrfcsdsalesordercreate(zrfcsdsalesordercreateBody);
+        ZrfcsdsalesordercreateResponse response = orderApiService.createSalesOrder(request);
+        return null;
+    }
 }

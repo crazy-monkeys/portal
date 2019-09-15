@@ -34,8 +34,12 @@ public interface ForecastMapper {
                      @Param(value = "batchNo") String batchNo,
                      @Param(value = "userId") Integer userId);
 
-    List<Forecast> selectByUser(@Param(value = "userId") Integer userId,
-                                @Param(value = "isReject") Integer isReject);
+    List<Forecast> selectPageByUser(@Param(value = "userId") Integer userId,
+                                @Param(value = "customerName") String customerName,
+                                @Param(value = "status") Integer status,
+                                @Param(value = "salePeople") String salePeople,
+                                @Param(value = "uploadStartTime") String uploadStartTime,
+                                @Param(value = "uploadEndTime") String uploadEndTime);
 
     int selectCntByBatchAndId(@Param(value = "batchNo") String batchNo,
                               @Param(value = "list") List<AgencyErrorTemplate> list,
@@ -43,6 +47,8 @@ public interface ForecastMapper {
 
     int deleteByBatchNo(@Param(value = "batchNo") String batchNo,
                         @Param(value = "userId") Integer userId);
+
+    List<Forecast> selectByBatchNo(@Param(value = "batchNo") String batchNo);
 
     List<Forecast> selectRejectDataByIds(@Param(value = "ids") Integer[] ids,
                                          @Param(value = "userId") Integer userId);
@@ -56,4 +62,8 @@ public interface ForecastMapper {
 
     int updateErrorMsgById(@Param(value = "id") Integer id,
                            @Param(value = "errorMsg") String errorMsg);
+
+    List<Forecast> selectByIds(@Param(value = "ids") Integer[] ids);
+
+    int clearErrorMsgByBatch(@Param(value = "batchNo") String batchNo);
 }

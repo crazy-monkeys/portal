@@ -401,6 +401,24 @@ public class DateUtil {
 		return true;
 	}
 
+	public static boolean isValidDateFormat(String strDate, String format){
+		if (strDate.length() != format.length()) {
+			return false;
+		}
+		try {
+			Integer.parseInt(strDate); // ---- 避免日期中输入非数字 ----
+		} catch (Exception NumberFormatException) {
+			return false;
+		}
+		DateFormat df = getNewDateFormat(format);
+		try {
+			df.parse(strDate);
+		} catch (ParseException e) {
+			return false;
+		}
+		return true;
+	}
+
 	public static boolean isValidShortDateFormat(String strDate, String delimiter) {
 		String temp = strDate.replaceAll(delimiter, "");
 

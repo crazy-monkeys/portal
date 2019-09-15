@@ -12,7 +12,7 @@ import lombok.Data;
 public class BiAgencyCheckTemplate extends BaseRowModel {
 
     @ExcelProperty(index = 0, value = "年月")
-    private String yearMonth;
+    private String operationYearMonth;
 
     @ExcelProperty(index = 1, value = "公司")
     private String company;

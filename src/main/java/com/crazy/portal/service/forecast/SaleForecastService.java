@@ -1,10 +1,12 @@
 package com.crazy.portal.service.forecast;
 
 import com.alibaba.fastjson.JSONObject;
+import com.crazy.portal.bean.customer.CustomerOrgBean;
 import com.crazy.portal.bean.forecast.*;
 import com.crazy.portal.config.exception.BusinessException;
 import com.crazy.portal.dao.forecast.ForecastLineMapper;
 import com.crazy.portal.dao.forecast.ForecastMapper;
+import com.crazy.portal.entity.cusotmer.CustomerInfo;
 import com.crazy.portal.entity.forecast.Forecast;
 import com.crazy.portal.entity.forecast.ForecastLine;
 import com.crazy.portal.service.customer.CustomerInfoService;
@@ -74,18 +76,22 @@ public class SaleForecastService {
         List<AgencyTemplate> templateList = new ArrayList<>();
         for(Forecast forecast : forecastList) {
             AgencyTemplate agencyTemplate = new AgencyTemplate();
-            try {
-                BeanUtils.copyNotNullFields(forecast, agencyTemplate);
-                BeanUtils.copyNotNullFields(forecast.getLine(), agencyTemplate);
-                templateList.add(agencyTemplate);
-            }catch (Exception ex) {
-                ex.printStackTrace();
-            }
+            copyDbFields(forecast, agencyTemplate);
             templateList.add(agencyTemplate);
         }
         ExcelUtils.writeExcel(response, templateList, AgencyTemplate.class);
     }
 
+    /**
+     * 代理商预测数据上传
+     * 1：自动带出客户属性
+     * 2：自动带出产品属性
+     * 3：进行入库动作
+     * 4：传输给到BI进行数据check
+     * @param excel
+     * @param userId
+     * @return
+     */
     public ForecastResult uploadAgencyTemplate(MultipartFile excel, Integer userId) {
         BusinessUtil.notNull(excel, FORECAST_EXCEL_CHECK_ERROR);
         List<AgencyTemplate> agencyForecastList = ExcelUtils.readExcel(excel, AgencyTemplate.class);
@@ -93,54 +99,43 @@ public class SaleForecastService {
             log.warn(FORECAST_DATA_NOT_EMPTY.getZhMsg());
             throw new BusinessException(FORECAST_DATA_NOT_EMPTY);
         }
-//        String AgencyAbbreviation = customerInfoService.getDealerByUser(userId).getCustAbbreviation();
-        String AgencyAbbreviation = "测试的代理商简称";
+        String agencyAbbreviation = getAgencyAbbreviation(userId);
         String batchNo = generateBathNo();
-        try {
-            for(AgencyTemplate template : agencyForecastList){
-                Forecast forecast = new Forecast();
-                BeanUtils.copyNotNullFields(template, forecast);
-                forecast.setCreateUserId(userId);
-                forecast.setCreateTime(new Date());
-                forecast.setBatchNo(batchNo);
-                forecastMapper.insertSelective(forecast);
-                if(log.isDebugEnabled()){
-                    log.debug("[upload data] Save forecast head data , userId:{} , data:{}", userId, JSONObject.toJSON(forecast));
-                }
-                ForecastLine line = new ForecastLine();
-                BeanUtils.copyNotNullFields(template, line);
-                line.setfId(forecast.getId());
-                forecastLineMapper.insertSelective(line);
-                if(log.isDebugEnabled()){
-                    log.debug("[upload data] Save forecast line data , userId:{} , data:{}", userId, JSONObject.toJSON(line));
-                }
-                template.setAgencyAbbreviation(AgencyAbbreviation);
-                template.setId(String.valueOf(forecast.getId()));
+        for(AgencyTemplate template : agencyForecastList){
+            template.setAgencyAbbreviation(agencyAbbreviation);
+            CustomerOrgBean customerOrgBean = getCustomerOrgInfo(template.getCustomerAbbreviation());
+            Forecast forecast = new Forecast(userId);
+            copyTemplateFields(template, forecast);
+            //设置客户字段
+            forecast.setCustomerType(customerOrgBean.getCustType());
+            forecast.setSalePeople(customerOrgBean.getSales());
+            forecast.setAmbLeader(customerOrgBean.getAmb());
+            forecast.setSdPeople(customerOrgBean.getPm());
+            forecast.setRepresentative(customerOrgBean.getOffice());
+            //当前操作批次
+            forecast.setBatchNo(batchNo);
+            forecastMapper.insertSelective(forecast);
+            if(log.isDebugEnabled()){
+                log.debug("[upload data] Save forecast head data , userId:{} , data:{}", userId, JSONObject.toJSON(forecast));
             }
-        }catch (Exception ex) {
-            throw new BusinessException("BeanUtils copyNotNullFields exception");
-        }
-        List<BiAgencyCheckTemplate> reqBiDataList = JSONObject.parseArray(JSONObject.toJSONString(agencyForecastList), BiAgencyCheckTemplate.class);
-        String checkFileName = ExcelUtils.writeExcel(forecastPushPath, reqBiDataList, BiAgencyCheckTemplate.class);
-        BiResponse response = callBiServer(CHECK_FORECAST_IMPORT_DATA, forecastPushPath, checkFileName, forecastPullPath);
-        List<BiAgencyCheckTemplate> responseDataList = ExcelUtils.readExcel(response.getFilePath(), BiAgencyCheckTemplate.class);
-        ForecastResult result = new ForecastResult();
-        result.setSuccess(response.isSuccess());
-        result.setData(responseDataList);
-        result.setBatchNo(batchNo);
-        if(response.isSuccess()){
-            return result;
-        }
-        for(BiAgencyCheckTemplate responseData : responseDataList){
-            responseData.setErrorMsg("模拟出来的错误，上线需要去掉");
-            if(StringUtils.isNotEmpty(responseData.getErrorMsg())){
-                BusinessUtil.assertEmpty(responseData.getId(), FORECAST_BI_CHECK_RESPONSE_ID_NOT_EXISTS);
-                forecastMapper.updateErrorMsgById(Integer.parseInt(responseData.getId()), responseData.getErrorMsg());
+            ForecastLine line = new ForecastLine();
+            copyTemplateFields(template, line);
+            line.setfId(forecast.getId());
+            forecastLineMapper.insertSelective(line);
+            if(log.isDebugEnabled()){
+                log.debug("[upload data] Save forecast line data , userId:{} , data:{}", userId, JSONObject.toJSON(line));
             }
+            template.setId(String.valueOf(forecast.getId()));
         }
-        return result;
+        return pushForecastDataToBi(batchNo);
     }
 
+    /**
+     * 下载错误数据文件
+     * @param response
+     * @param batchNo
+     * @param userId
+     */
     public void downloadAgencyError(HttpServletResponse response, String batchNo, Integer userId) {
         if(log.isDebugEnabled()){
             log.debug("Download error data file, parameter value : batchNo[{}], userId:[{}]", batchNo, userId);
@@ -154,18 +149,20 @@ public class SaleForecastService {
         List<AgencyErrorTemplate> errorList = new ArrayList<>();
         for(Forecast forecast : errorTemplateList) {
             AgencyErrorTemplate agencyTemplate = new AgencyErrorTemplate();
-            try {
-                BeanUtils.copyNotNullFields(forecast, agencyTemplate);
-                agencyTemplate.setForecastId(String.valueOf(forecast.getId()));
-                BeanUtils.copyNotNullFields(forecast.getLine(), agencyTemplate);
-            }catch (Exception ex) {
-                ex.printStackTrace();
-            }
+            agencyTemplate.setForecastId(String.valueOf(forecast.getId()));
+            copyDbFields(forecast, agencyTemplate);
             errorList.add(agencyTemplate);
         }
         ExcelUtils.writeExcel(response, errorList, AgencyErrorTemplate.class);
     }
 
+    /**
+     * 代理商预测数据 修正
+     * @param excel
+     * @param batchNo
+     * @param userId
+     * @return
+     */
     public ForecastResult modifyErrorData(MultipartFile excel, String batchNo, Integer userId) {
         if(log.isDebugEnabled()){
             log.debug("Modify error data, parameter value : batchNo[{}] , userId:[{}]", batchNo, userId);
@@ -177,55 +174,26 @@ public class SaleForecastService {
             log.warn(FORECAST_DATA_NOT_EMPTY.getZhMsg());
             throw new BusinessException(FORECAST_DATA_NOT_EMPTY);
         }
-        int dbCnt = forecastMapper.countErrorDataByBatch(batchNo, userId);
-        if(dbCnt != errorTemplateList.size()){
-            log.error("{} , parameter value : batchNo[{}]", FORECAST_DB_DATA_MISMATCH.getZhMsg(), batchNo);
-            throw new BusinessException(FORECAST_DB_DATA_MISMATCH);
+//        int dbCnt = forecastMapper.countErrorDataByBatch(batchNo, userId);
+//        if(dbCnt != errorTemplateList.size()){
+//            log.error("{} , parameter value : batchNo[{}]", FORECAST_DB_DATA_MISMATCH.getZhMsg(), batchNo);
+//            throw new BusinessException(FORECAST_DB_DATA_MISMATCH);
+//        }
+        forecastMapper.clearErrorMsgByBatch(batchNo);
+        for(AgencyErrorTemplate errorTemplate : errorTemplateList){
+            Forecast forecast = forecastMapper.selectByPrimaryKey(Integer.parseInt(errorTemplate.getForecastId()));
+            copyTemplateFields(errorTemplate, forecast);
+            forecast.setErrorMsg("clear");
+            forecastMapper.updateByPrimaryKeySelective(forecast);
         }
-
-        List<Forecast> forecastList = forecastMapper.selectNotErrorDataByBatch(batchNo, userId);
-//        String AgencyAbbreviation = customerInfoService.getDealerByUser(userId).getCustAbbreviation();
-        String AgencyAbbreviation = "测试的代理商简称";
-        List<BiAgencyCheckTemplate> reqBiDataList = JSONObject.parseArray(JSONObject.toJSONString(forecastList), BiAgencyCheckTemplate.class);
-        reqBiDataList.addAll(JSONObject.parseArray(JSONObject.toJSONString(forecastList), BiAgencyCheckTemplate.class));
-        for(BiAgencyCheckTemplate biAgencyCheckTemplate : reqBiDataList){
-            biAgencyCheckTemplate.setAgencyAbbreviation(AgencyAbbreviation);
-        }
-
-        String checkFileName = ExcelUtils.writeExcel(forecastPushPath, reqBiDataList, BiAgencyCheckTemplate.class);
-        BiResponse response = callBiServer(CHECK_FORECAST_IMPORT_DATA, forecastPushPath, checkFileName, forecastPullPath);
-        List<BiAgencyCheckTemplate> responseDataList = ExcelUtils.readExcel(response.getFilePath(), BiAgencyCheckTemplate.class);
-        //清理前面的记录，以最新返回的为准
-        forecastMapper.deleteByBatchNo(batchNo, userId);
-        for(BiAgencyCheckTemplate responseData : responseDataList){
-            Forecast forecast = new Forecast();
-            try {
-                BeanUtils.copyNotNullFields(responseData, forecast);
-                forecast.setCreateUserId(userId);
-                forecast.setCreateTime(new Date());
-                forecast.setBatchNo(batchNo);
-                forecastMapper.insertSelective(forecast);
-                if(log.isDebugEnabled()){
-                    log.debug("[modify data] Save forecast head data , userId:{} , data:{}", userId, JSONObject.toJSON(forecast));
-                }
-                ForecastLine line = new ForecastLine();
-                BeanUtils.copyNotNullFields(responseData, line);
-                line.setfId(forecast.getId());
-                forecastLineMapper.insertSelective(line);
-                if(log.isDebugEnabled()){
-                    log.debug("[modify data] Save forecast line data , userId:{} , data:{}", userId, JSONObject.toJSON(line));
-                }
-            }catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
-        ForecastResult result = new ForecastResult();
-        result.setSuccess(response.isSuccess());
-        result.setData(responseDataList);
-        result.setBatchNo(batchNo);
-        return result;
+        return pushForecastDataToBi(batchNo);
     }
 
+    /**
+     * 代理商预测数据提交至 下一流程进行审批
+     * @param batchNo
+     * @param userId
+     */
     public void commitAgencyForecastData(String batchNo, Integer userId) {
         int num = forecastMapper.countErrorDataByBatch(batchNo, userId);
         if(num != 0){
@@ -235,19 +203,34 @@ public class SaleForecastService {
         forecastMapper.updateStatus(1, batchNo, userId);
     }
 
-    public PageInfo<Forecast> queryAgencyForecastData(Integer pageNum, Integer pageSize, Integer userId, Integer isReject) {
+    public PageInfo<Forecast> queryAgencyRejectForecastData(Integer pageNum, Integer pageSize, Integer userId) {
         PortalUtil.defaultStartPage(pageNum,pageSize);
-        List<Forecast> result = forecastMapper.selectByUser(userId, isReject);
+        List<Forecast> result = forecastMapper.selectPageByUser(userId, null, -1, null, null, null);
         return new PageInfo<>(result);
 
     }
 
+    public PageInfo<Forecast> queryAgencyForecastData(Integer pageNum, Integer pageSize, Integer userId,
+                                                      String customerName, Integer status, String salePeople,
+                                                      String uploadStartTime, String uploadEndTime) {
+        if(status == -1){
+            return new PageInfo<>(null);
+        }
+        PortalUtil.defaultStartPage(pageNum,pageSize);
+        List<Forecast> result = forecastMapper.selectPageByUser(userId, customerName, status, salePeople, uploadStartTime, uploadEndTime);
+        return new PageInfo<>(result);
+    }
+
+    /**
+     * 代理商预测数据删除
+     * @param biIds
+     */
     public void deleteAgencyForecastData(Integer[] biIds) {
         String biParam = StringUtils.join(biIds, ",");
         try {
             String response = CallApiUtils.callBiGetApi(DELETEFORECAST, "PORTAL/BI/", String.format("sIDList=%s&sSummaryIDList=%s", biParam, biParam));
             response = response.replace("\"", "").replace("\\","");
-            if("删除成功".equals(response)){
+            if(StringUtils.isNotEmpty(response) && response.contains("删除成功")){
                 forecastMapper.deleteByBiIds(biIds);
                 return;
             }
@@ -296,6 +279,12 @@ public class SaleForecastService {
         }
     }
 
+    /**
+     * 被驳回数据下载
+     * @param response
+     * @param forecastIds
+     * @param userId
+     */
     public void downloadRejectData(HttpServletResponse response, Integer[] forecastIds, Integer userId) {
         BusinessUtil.notNull(forecastIds, FORECAST_REQ_PARAM_NOT_EMPTY);
         List<Forecast> rejectDataList = forecastMapper.selectRejectDataByIds(forecastIds, userId);
@@ -303,12 +292,7 @@ public class SaleForecastService {
         List<AgencyErrorTemplate> errorList = new ArrayList<>();
         for(Forecast forecast : rejectDataList) {
             AgencyErrorTemplate agencyTemplate = new AgencyErrorTemplate();
-            try {
-                BeanUtils.copyNotNullFields(forecast, agencyTemplate);
-                BeanUtils.copyNotNullFields(forecast.getLine(), agencyTemplate);
-            }catch (Exception ex) {
-                ex.printStackTrace();
-            }
+            copyDbFields(forecast, agencyTemplate);
             errorList.add(agencyTemplate);
         }
         ExcelUtils.writeExcel(response, errorList, AgencyErrorTemplate.class);
@@ -374,6 +358,62 @@ public class SaleForecastService {
 
     public void rejectApprovalForecastData(Integer[] forecastIds, String rejectMsg) {
         forecastMapper.updateStatusByIds(forecastIds, -1);
+    }
+
+    public void downloadDataByAmb(HttpServletResponse response, Integer[] forecastIds) {
+        List<Forecast> forecastList = forecastMapper.selectByIds(forecastIds);
+        List<AmbUpdateTemplate> templateList = new ArrayList<>();
+        for(Forecast forecast : forecastList) {
+            AmbUpdateTemplate agencyTemplate = new AmbUpdateTemplate();
+            copyDbFields(forecast, agencyTemplate);
+            templateList.add(agencyTemplate);
+        }
+        ExcelUtils.writeExcel(response, templateList, AmbUpdateTemplate.class);
+    }
+
+    public void downloadDataBySd(HttpServletResponse response, Integer[] forecastIds) {
+        List<Forecast> forecastList = forecastMapper.selectByIds(forecastIds);
+        List<SdUpdateTemplate> templateList = new ArrayList<>();
+        for(Forecast forecast : forecastList) {
+            SdUpdateTemplate agencyTemplate = new SdUpdateTemplate();
+            copyDbFields(forecast, agencyTemplate);
+            templateList.add(agencyTemplate);
+        }
+        ExcelUtils.writeExcel(response, null, SdUpdateTemplate.class);
+    }
+
+    private ForecastResult pushForecastDataToBi(String batchNo) {
+        List<Forecast> biList = forecastMapper.selectByBatchNo(batchNo);
+        List<BiAgencyCheckTemplate> reqBiDataList = new ArrayList<>();
+        try {
+            for(Forecast forecast : biList){
+                BiAgencyCheckTemplate biData = new BiAgencyCheckTemplate();
+                BeanUtils.copyNotNullFields(forecast, biData);
+                BeanUtils.copyNotNullFields(forecast.getLine(), biData);
+                biData.setId(String.valueOf(forecast.getId()));
+                reqBiDataList.add(biData);
+            }
+        }catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        String checkFileName = ExcelUtils.writeExcel(forecastPushPath, reqBiDataList, BiAgencyCheckTemplate.class);
+        BiResponse response = callBiServer(CHECK_FORECAST_IMPORT_DATA, forecastPushPath, checkFileName, forecastPullPath);
+        List<BiAgencyCheckTemplate> responseDataList = ExcelUtils.readExcel(response.getFilePath(), BiAgencyCheckTemplate.class);
+        ForecastResult result = new ForecastResult();
+        result.setSuccess(response.isSuccess());
+        result.setBatchNo(batchNo);
+        for(BiAgencyCheckTemplate responseData : responseDataList){
+            if(!response.isSuccess()){
+                responseData.setErrorMsg("模拟出来的错误，上线需要去掉");
+            }
+            if(StringUtils.isNotEmpty(responseData.getErrorMsg())){
+                BusinessUtil.assertEmpty(responseData.getId(), FORECAST_BI_CHECK_RESPONSE_ID_NOT_EXISTS);
+                forecastMapper.updateErrorMsgById(Integer.parseInt(responseData.getId()), responseData.getErrorMsg());
+            }
+        }
+        List<Forecast> resultData = forecastMapper.selectByBatchNo(batchNo);
+        result.setData(resultData);
+        return result;
     }
 
     private String generateBathNo() {
@@ -448,6 +488,62 @@ public class SaleForecastService {
         int len = time.length();
         int i = Integer.parseInt(String.valueOf(time.charAt(len - 1)));
         return i > 4;
+    }
+
+    private void copyDbFields(Forecast forecast, Object object) {
+        try {
+            BeanUtils.copyNotNullFields(forecast, object);
+            BeanUtils.copyNotNullFields(forecast.getLine(), object);
+        }catch (Exception ex) {
+            log.error("BeanUtils copyNotNullFields exception", ex);
+            throw new BusinessException("BeanUtils copyNotNullFields exception");
+        }
+    }
+
+    private void copyTemplateFields(Object object, Forecast forecast) {
+        try {
+            BeanUtils.copyNotNullFields(object, forecast);
+        }catch (Exception ex) {
+            log.error("BeanUtils copyNotNullFields exception", ex);
+            throw new BusinessException("BeanUtils copyNotNullFields exception");
+        }
+    }
+
+    private void copyTemplateFields(Object object, ForecastLine line) {
+        try {
+            BeanUtils.copyNotNullFields(object, line);
+        }catch (Exception ex) {
+            log.error("BeanUtils copyNotNullFields exception", ex);
+            throw new BusinessException("BeanUtils copyNotNullFields exception");
+        }
+    }
+
+    /**
+     * 根据登录用户获取代理商信息
+     * @param userId
+     * @return
+     */
+    private String getAgencyAbbreviation(Integer userId) {
+        CustomerInfo customerInfo = customerInfoService.getDealerByUser(userId);
+        BusinessUtil.notNull(customerInfo, FORECAST_AGENCY_INFO_ERROR);
+        BusinessUtil.assertEmpty(customerInfo.getCustAbbreviation(), FORECAST_AGENCY_INFO_ERROR);
+        return customerInfo.getCustAbbreviation();
+    }
+
+    /**
+     * 根据客户简称获取关联上级客户信息，同时对数据正确性进行基础校验
+     * @param customerAbbreviation
+     * @return
+     */
+    private CustomerOrgBean getCustomerOrgInfo(String customerAbbreviation) {
+        CustomerOrgBean customerOrgBean = customerInfoService.selectByAbbreviation(customerAbbreviation);
+        BusinessUtil.notNull(customerOrgBean, FORECAST_NOT_FOUND_CUSTOMER_INFO);
+        BusinessUtil.assertEmpty(customerOrgBean.getCustType(), FORECAST_NOT_FOUND_CUSTOMER_INFO);
+        BusinessUtil.assertEmpty(customerOrgBean.getSales(), FORECAST_NOT_FOUND_CUSTOMER_INFO);
+        BusinessUtil.assertEmpty(customerOrgBean.getAmb(), FORECAST_NOT_FOUND_CUSTOMER_INFO);
+        BusinessUtil.assertEmpty(customerOrgBean.getPm(), FORECAST_NOT_FOUND_CUSTOMER_INFO);
+        BusinessUtil.assertEmpty(customerOrgBean.getOffice(), FORECAST_NOT_FOUND_CUSTOMER_INFO);
+        return customerOrgBean;
     }
 
     class BiResponse {
