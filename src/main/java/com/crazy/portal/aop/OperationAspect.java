@@ -26,6 +26,7 @@ import javax.servlet.http.HttpServletRequest;
 public class OperationAspect extends BaseController {
 
     @After("@annotation(operationLog)")
+//    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void before(JoinPoint point, OperationLog operationLog) {
         try {
             Object[] objects = point.getArgs();
@@ -34,17 +35,16 @@ public class OperationAspect extends BaseController {
             StringBuilder invoke = new StringBuilder(signature.getDeclaringTypeName())
                     .append(".")
                     .append(signature.getName())
-                    .append("\n访问参数：")
+                    .append("\n-> parameters：")
                     .append(params);
 
             RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
             HttpServletRequest request = (HttpServletRequest) requestAttributes.resolveReference(RequestAttributes.REFERENCE_REQUEST);
             String url = request.getRequestURI();
-            String userName = super.getCurrentUser().getLoginName();
-
+            String operator = super.getCurrentUser().getLoginName();
             String businessKey = String.format("%s.%s",point.getTarget().getClass().getSimpleName(),signature.getName());
-            log.info("prepare sending log to server "+ businessKey);
-            log.info("userName: {},url:{},invoke:{},businessKey:{}",userName,url,invoke.toString(),businessKey);
+            log.info("operator: {} \nurl:{} \ninvoke:{} \nbusinessKey:{}",
+                    operator,url,invoke.toString(),businessKey);
         } catch (Exception e) {
             log.error("The global operations log intercepts exceptions",e);
         }
