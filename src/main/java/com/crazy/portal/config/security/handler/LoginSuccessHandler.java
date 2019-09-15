@@ -59,7 +59,9 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
         UserDetails userDetails = (UserDetails)authentication.getPrincipal();
         //登录修改最后登录时间
         User user = userMapper.findByLoginName(userDetails.getUsername());
-        user.setLastLoginTime(new Date());
+        Date now = new Date();
+        user.setLastLoginTime(now);
+        user.setUpdateTime(now);
         userMapper.updateByPrimaryKeySelective(user);
         Map<String,Object> map = new HashMap<>();
         List<com.crazy.portal.entity.system.Resource> permissions = permissionService.findAllPerMissionByUserId(userDetails.getUsername());
