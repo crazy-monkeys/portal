@@ -27,15 +27,17 @@ public class GlobalExceptionHandler extends BaseController {
     @ResponseBody
     @ExceptionHandler(value = Exception.class)
     public BaseResponse parameterExceptionHandler(Exception exception) {
-        if(exception instanceof MethodArgumentNotValidException){
 
+        if(exception instanceof MethodArgumentNotValidException){
             String msg = super.getValidExceptionMsg((MethodArgumentNotValidException) exception);
             return new BaseResponse(CommonEnum.REQ_PARAM_FORMAT_ERROR.getCode(),msg);
         }
+
         if(exception instanceof BusinessException){
             BusinessException ex = (BusinessException)exception;
             return new BaseResponse(ex.getErrorCode(),ex.getMessage());
         }
+
         log.error("", exception);
         return new BaseResponse(CommonEnum.SYSTEM_EXCEPTION.getCode(),CommonEnum.SYSTEM_EXCEPTION.getZhMsg());
     }
