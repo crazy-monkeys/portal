@@ -55,7 +55,7 @@ public class OperationAspect extends BaseController {
     private void setErrorMsgAndThrowException(OperationLogDO opLog, Throwable throwable) {
         if(throwable instanceof BusinessException){
             BusinessException ex = (BusinessException)throwable;
-            opLog.setErrorMsg(throwable.getMessage());
+            opLog.setErrorMsg(ex.getMessage());
             throw ex;
         }
         if(throwable instanceof MethodArgumentNotValidException){
