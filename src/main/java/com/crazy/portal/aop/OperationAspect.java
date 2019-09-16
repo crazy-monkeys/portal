@@ -22,7 +22,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
-import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -102,7 +101,7 @@ public class OperationAspect extends BaseController {
         String params = this.getParams(objects);
         //获取调用链
         Signature signature = point.getSignature();
-        String invoke = this.getInvoke(params, signature);
+        String invoke = this.getInvoke(params, point.getSignature());
         opLog.setInvoke(invoke);
 
         //获取业务日志Key(类名.方法名)
@@ -112,19 +111,18 @@ public class OperationAspect extends BaseController {
     }
 
     private String getParams(Object[] objects) {
-        String params = "";
+        String params = null;
         if(Objects.nonNull(objects)){
             params = Stream.of(objects).map(x->{
+                Object obj = x;
                 if(x instanceof MultipartFile[]){
                     MultipartFile[] multipartFiles = (MultipartFile[])x;
-                    List<String> files = Stream.of(multipartFiles)
+                    obj = Stream.of(multipartFiles)
                             .map(MultipartFile::getName)
                             .collect(Collectors.toList());
 
-                    return JSON.toJSONString(files);
-                }else {
-                   return JSON.toJSONString(x);
                 }
+                return JSON.toJSONString(obj);
             }).collect(Collectors.joining(","));
         }
         return params;
@@ -147,11 +145,15 @@ public class OperationAspect extends BaseController {
      * @return
      */
     private String getInvoke(String params, Signature signature) {
-        return new StringBuilder(signature.getDeclaringTypeName())
-                        .append(".")
-                        .append(signature.getName())
-                        .append(" -> parameters：")
-                        .append(params).toString();
+        StringBuilder sb = new StringBuilder(signature.getDeclaringTypeName())
+                .append(".")
+                .append(signature.getName());
+
+        if(Objects.nonNull(params)){
+            sb.append(" -> parameters：");
+            sb.append(params);
+        }
+        return sb.toString();
     }
 
     /**
