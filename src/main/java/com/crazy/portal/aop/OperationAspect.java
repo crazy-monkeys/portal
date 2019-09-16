@@ -120,6 +120,7 @@ public class OperationAspect extends BaseController {
         if(Objects.nonNull(objects)){
             params = Stream.of(objects).map(x->{
                 Object obj = x;
+                //如果是上传文件,普通序列化会报错,需要做一层处理
                 if(x instanceof MultipartFile[]){
                     MultipartFile[] multipartFiles = (MultipartFile[])x;
                     obj = Stream.of(multipartFiles)
