@@ -80,7 +80,7 @@ public class OperationAspect extends BaseController {
      * @param point
      * @return
      */
-    private OperationLogDO buildOperationLog(ProceedingJoinPoint point,OperationLogDO opLog) {
+    private void buildOperationLog(ProceedingJoinPoint point,OperationLogDO opLog) {
         User user = super.getCurrentUser();
         opLog.setOperator(Objects.isNull(user)? null: user.getLoginName());
 
@@ -94,7 +94,6 @@ public class OperationAspect extends BaseController {
         opLog.setInvoke(invoke);
 
         opLog.setBusinessKey(String.format("%s.%s",point.getTarget().getClass().getSimpleName(),signature.getName()));
-        return opLog;
     }
 
     /**
