@@ -124,8 +124,9 @@ public class OperationAspect extends BaseController {
                 if(x instanceof MultipartFile[]){
                     MultipartFile[] multipartFiles = (MultipartFile[])x;
                     obj = Stream.of(multipartFiles)
-                            .map(MultipartFile::getOriginalFilename)
-                            .collect(Collectors.toList());
+                            .collect(Collectors.toMap(
+                                    MultipartFile::getName,
+                                    MultipartFile::getOriginalFilename));
 
                 }
                 return JSON.toJSONString(obj);
