@@ -18,6 +18,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 import java.util.Objects;
 
 /**
@@ -34,7 +35,7 @@ public class OperationAspect extends BaseController {
     @Around("@annotation(operationLog)")
     public Object around(ProceedingJoinPoint point, OperationLog operationLog){
         Object proceed = null;
-        OperationLogDO opLog = new OperationLogDO();
+        OperationLogDO opLog = new OperationLogDO(new Date());
         try {
             this.buildOperationLog(point,opLog);
         } catch (Exception e) {
@@ -90,10 +91,13 @@ public class OperationAspect extends BaseController {
         Object[] objects = point.getArgs();
         String params = JSON.toJSONString(objects);
         Signature signature = point.getSignature();
+
         String invoke = this.getInvoke(params, signature);
         opLog.setInvoke(invoke);
 
-        opLog.setBusinessKey(String.format("%s.%s",point.getTarget().getClass().getSimpleName(),signature.getName()));
+        String className = point.getTarget().getClass().getSimpleName();
+        String methodName = signature.getName();
+        opLog.setBusinessKey(String.format("%s.%s",className,methodName));
     }
 
     /**
@@ -124,6 +128,10 @@ public class OperationAspect extends BaseController {
      * @param operationLogDO
      */
     private void saveLog(OperationLogDO operationLogDO){
-        log.info(JSON.toJSONString(operationLogDO));
+        try {
+            log.info(JSON.toJSONString(operationLogDO));
+        } catch (Exception e) {
+            log.error("Failed to save log",e);
+        }
     }
 }
