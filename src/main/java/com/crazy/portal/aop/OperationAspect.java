@@ -34,14 +34,21 @@ public class OperationAspect extends BaseController {
     @Around("@annotation(operationLog)")
     public Object around(ProceedingJoinPoint point, OperationLog operationLog){
         Object proceed = null;
-        OperationLogDO opLog = this.buildOperationLog(point);
+        OperationLogDO opLog = new OperationLogDO();
         try {
+            this.buildOperationLog(point,opLog);
+        } catch (Exception e) {
+            //构建操作日志对象出现异常不影响Controller继续执行
+            log.error("Aop intercepts log exceptions.",e);
+        }
+        try {
+            //前置增强结束,继续执行原有方法
             proceed = point.proceed();
         } catch (Throwable throwable) {
             //设置错误信息并且抛出相应异常
             this.setErrorMsgAndThrowException(opLog, throwable);
         }finally {
-            //保存日志
+            //后置增强，保存日志
             this.saveLog(opLog);
         }
         return proceed;
@@ -73,25 +80,20 @@ public class OperationAspect extends BaseController {
      * @param point
      * @return
      */
-    private OperationLogDO buildOperationLog(ProceedingJoinPoint point) {
-        OperationLogDO opLog = new OperationLogDO();
-        try {
-            User user = super.getCurrentUser();
-            opLog.setOperator(Objects.isNull(user)? null: user.getLoginName());
+    private OperationLogDO buildOperationLog(ProceedingJoinPoint point,OperationLogDO opLog) {
+        User user = super.getCurrentUser();
+        opLog.setOperator(Objects.isNull(user)? null: user.getLoginName());
 
-            HttpServletRequest request = this.getRequest();
-            opLog.setUrl(request.getRequestURI());
+        HttpServletRequest request = this.getRequest();
+        opLog.setUrl(request.getRequestURI());
 
-            Object[] objects = point.getArgs();
-            String params = JSON.toJSONString(objects);
-            Signature signature = point.getSignature();
-            String invoke = this.getInvoke(params, signature);
-            opLog.setInvoke(invoke);
+        Object[] objects = point.getArgs();
+        String params = JSON.toJSONString(objects);
+        Signature signature = point.getSignature();
+        String invoke = this.getInvoke(params, signature);
+        opLog.setInvoke(invoke);
 
-            opLog.setBusinessKey(String.format("%s.%s",point.getTarget().getClass().getSimpleName(),signature.getName()));
-        } catch (Exception e) {
-            log.error("Aop intercepts log exceptions.",e);
-        }
+        opLog.setBusinessKey(String.format("%s.%s",point.getTarget().getClass().getSimpleName(),signature.getName()));
         return opLog;
     }
 
