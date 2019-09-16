@@ -35,9 +35,9 @@ public class OperationAspect extends BaseController {
     @Around("@annotation(operationLog)")
     public Object before(ProceedingJoinPoint point, OperationLog operationLog){
         Object returnObj = null;
-        OperationLogDO opLog = null;
+        OperationLogDO opLog = new OperationLogDO();
         try {
-            opLog = this.buildOperationLog(point);
+            opLog = this.buildOperationLog(point,opLog);
         } catch (Exception e) {
             //构建操作日志对象出现异常不影响Controller继续执行
             log.error("Aop intercepts log exceptions.",e);
@@ -49,7 +49,7 @@ public class OperationAspect extends BaseController {
             this.setErrorMsgAndThrowException(opLog, throwable);
         }finally {
             //保存日志
-            if(opLog != null) this.saveLog(opLog);
+            this.saveLog(opLog);
         }
         return returnObj;
     }
@@ -80,8 +80,7 @@ public class OperationAspect extends BaseController {
      * @param point
      * @return
      */
-    private OperationLogDO buildOperationLog(ProceedingJoinPoint point) {
-        OperationLogDO opLog = new OperationLogDO();
+    private OperationLogDO buildOperationLog(ProceedingJoinPoint point,OperationLogDO opLog) {
         User user = super.getCurrentUser();
         opLog.setOperator(Objects.isNull(user)? null: user.getLoginName());
 
