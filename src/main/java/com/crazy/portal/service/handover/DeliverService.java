@@ -128,9 +128,16 @@ public class DeliverService extends AbstractHandover implements IHandover<Delive
     }
 
     @Override
-    public PageInfo<DeliverDetail> getDetailList(Integer dealerId, Integer pageNum, Integer pageSize) {
+    public PageInfo<DeliverDetail> getDetailList(Integer dealerId, Integer pageNum, Integer pageSize,
+                                                 String uploadStartTime, String uploadEndTime,
+                                                 String handoverStartTime, String handoverEndTime,
+                                                 String customerFullName, String productModel, String deliveryType,
+                                                 String orderMonth, String customerOrderNumber,
+                                                 String warehouse, String deliveryCompany) {
         PortalUtil.defaultStartPage(pageNum,pageSize);
-        List<DeliverDetail> result = deliverDetailMapper.selectByDealerId(dealerId);
+        List<DeliverDetail> result = deliverDetailMapper.selectByDealerId(dealerId,
+                uploadStartTime, uploadEndTime, handoverStartTime, handoverEndTime,
+                customerFullName, productModel, deliveryType, orderMonth, customerOrderNumber);
         return new PageInfo<>(result);
     }
 

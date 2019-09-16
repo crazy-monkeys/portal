@@ -118,9 +118,16 @@ public class ReceiveService extends AbstractHandover implements IHandover<Receiv
     }
 
     @Override
-    public PageInfo<ReceiveDetail> getDetailList(Integer dealerId, Integer pageNum, Integer pageSize) {
+    public PageInfo<ReceiveDetail> getDetailList(Integer dealerId, Integer pageNum, Integer pageSize,
+                                                 String uploadStartTime, String uploadEndTime,
+                                                 String handoverStartTime, String handoverEndTime,
+                                                 String customerFullName, String productModel, String deliveryType,
+                                                 String orderMonth, String customerOrderNumber,
+                                                 String warehouse, String deliveryCompany) {
         PortalUtil.defaultStartPage(pageNum,pageSize);
-        List<ReceiveDetail> result = receiveDetailMapper.selectByDealerId(dealerId);
+        List<ReceiveDetail> result = receiveDetailMapper.selectByDealerId(dealerId,
+                uploadStartTime, uploadEndTime, handoverStartTime, handoverEndTime,
+                productModel, warehouse, deliveryCompany);
         return new PageInfo<>(result);
     }
 

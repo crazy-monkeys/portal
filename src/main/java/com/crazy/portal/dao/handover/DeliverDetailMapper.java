@@ -21,7 +21,16 @@ public interface DeliverDetailMapper {
 
     List<DeliverDetail> selectByRecordId(@Param(value = "recordId") Integer recordId);
 
-    List<DeliverDetail> selectByDealerId(@Param(value = "dealerId") Integer dealerId);
+    List<DeliverDetail> selectByDealerId(@Param(value = "dealerId") Integer dealerId,
+                                         @Param(value = "uploadStartTime") String uploadStartTime,
+                                         @Param(value = "uploadEndTime") String uploadEndTime,
+                                         @Param(value = "handoverStartTime") String handoverStartTime,
+                                         @Param(value = "handoverEndTime") String handoverEndTime,
+                                         @Param(value = "customerFullName") String customerFullName,
+                                         @Param(value = "productModel") String productModel,
+                                         @Param(value = "deliveryType") String deliveryType,
+                                         @Param(value = "orderMonth") String orderMonth,
+                                         @Param(value = "customerOrderNumber") String customerOrderNumber);
 
     int countErrorData(@Param(value = "recordId") Integer recordId);
 

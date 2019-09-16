@@ -226,6 +226,34 @@
     select b.* from t_deliver_receive_record a
     inner join t_receive_detail b on a.id = b.record_id
     where a.dealer_id = #{dealerId}
+    <if test="uploadStartTime != null and uploadStartTime != '' and uploadEndTime != null and uploadEndTime != ''" >
+      and a.upload_time between #{uploadStartTime} and #{uploadEndTime}
+    </if>
+    <if test="uploadStartTime != null and uploadStartTime != '' and (uploadEndTime == null or uploadEndTime == '')" >
+      and a.upload_time >= #{uploadStartTime}
+    </if>
+    <if test="(uploadStartTime == null or uploadStartTime == '') and uploadEndTime != null and uploadEndTime != ''" >
+      <![CDATA[ and a.upload_time <= #{uploadEndTime} ]]>
+    </if>
+    <!-- 配送时间条件 -->
+    <if test="handoverStartTime != null and handoverStartTime != '' and handoverEndTime != null and handoverEndTime != ''" >
+      and b.delivery_time between #{handoverStartTime} and #{handoverEndTime}
+    </if>
+    <if test="handoverStartTime != null and handoverStartTime != '' and (handoverEndTime == null or handoverEndTime == '')" >
+      and b.delivery_time >= #{handoverStartTime}
+    </if>
+    <if test="(handoverStartTime == null or handoverStartTime == '') and handoverEndTime != null and handoverEndTime != ''" >
+      <![CDATA[ and b.delivery_time <= #{handoverEndTime} ]]>
+    </if>
+    <if test="productModel != null and productModel != ''" >
+      and b.product_model like concat('%', #{productModel}, '%')
+    </if>
+    <if test="warehouse != null and warehouse != ''" >
+      and b.warehouse like concat('%', #{warehouse}, '%')
+    </if>
+    <if test="deliveryCompany != null and deliveryCompany != ''" >
+      and b.delivery_company like concat('%', #{deliveryCompany}, '%')
+    </if>
     order by a.create_time desc
   </select>
 
