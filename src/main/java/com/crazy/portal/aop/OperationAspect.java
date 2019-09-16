@@ -123,7 +123,7 @@ public class OperationAspect extends BaseController {
                 if(x instanceof MultipartFile[]){
                     MultipartFile[] multipartFiles = (MultipartFile[])x;
                     obj = Stream.of(multipartFiles)
-                            .map(MultipartFile::getName)
+                            .map(MultipartFile::getOriginalFilename)
                             .collect(Collectors.toList());
 
                 }
