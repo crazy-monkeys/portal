@@ -19,10 +19,15 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.ssl.SSLContextBuilder;
+
 import javax.net.ssl.SSLContext;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.SocketTimeoutException;
 import java.security.GeneralSecurityException;
+import java.util.stream.Collectors;
 
 /**
  * Created by weiying on 2019/7/29.
@@ -30,9 +35,9 @@ import java.security.GeneralSecurityException;
 @Slf4j
 public class HttpClientUtils {
 
-    public static final int CONNECT_TIMEOUT=360000;
-    public static final int READ_TIMEOUT=360000;
-    public static final String CHARSET="UTF-8";
+    public static final int CONNECT_TIMEOUT = 360000;
+    public static final int READ_TIMEOUT = 360000;
+    public static final String CHARSET = "UTF-8";
 
     private static HttpClient client;
 
@@ -73,6 +78,7 @@ public class HttpClientUtils {
         HttpClient client = null;
         HttpPost post = new HttpPost(url);
         String result = "";
+        boolean isHttps = url.startsWith("https");
         try {
             if (StringUtils.isNotBlank(body)) {
                 HttpEntity entity = new StringEntity(body, ContentType.create(mimeType, charset));
@@ -87,25 +93,22 @@ public class HttpClientUtils {
                 customReqConf.setSocketTimeout(readTimeout);
             }
             post.setConfig(customReqConf.build());
+
             if(header != null) {
                 post.setHeader(Constant.Authorization, header);
             }
-            HttpResponse res;
-            if (url.startsWith("https")) {
-                // 执行 Https 请求.
-                client = createSSLInsecureClient();
-                res = client.execute(post);
-            } else {
-                // 执行 Http 请求.
-                client = HttpClientUtils.client;
-                res = client.execute(post);
-            }
+            client = isHttps ? createSSLInsecureClient() : HttpClientUtils.client;
+            HttpResponse res = client.execute(post);
+
             result = IOUtils.toString(res.getEntity().getContent(), charset);
+
         } catch (GeneralSecurityException | IOException e) {
             log.error("",e);
         } finally {
             post.releaseConnection();
-            if (url.startsWith("https") && client != null&& client instanceof CloseableHttpClient) {
+
+            if (isHttps &&
+                    client != null && client instanceof CloseableHttpClient) {
                 ((CloseableHttpClient) client).close();
             }
         }
@@ -126,9 +129,10 @@ public class HttpClientUtils {
      */
     public static String get(String url, String charset, String header, Integer connTimeout,Integer readTimeout) throws IOException {
 
-        HttpClient client = null;
-        HttpGet get = new HttpGet(url);
         String result = "";
+        HttpClient client = null;
+        HttpGet httpGet = new HttpGet(url);
+        boolean isHttps = url.startsWith("https");
         try {
             // 设置参数
             RequestConfig.Builder customReqConf = RequestConfig.custom();
@@ -138,29 +142,27 @@ public class HttpClientUtils {
             if (readTimeout != null) {
                 customReqConf.setSocketTimeout(readTimeout);
             }
-            get.setConfig(customReqConf.build());
+
+            httpGet.setConfig(customReqConf.build());
+
             if(StringUtil.isNotEmpty(header)){
-                get.setHeader(Constant.Authorization,header);
+                httpGet.setHeader(Constant.Authorization,header);
             }
-            HttpResponse res = null;
-            if (url.startsWith("https")) {
-                // 执行 Https 请求.
-                client = createSSLInsecureClient();
-                if (null!=client) {
-                    res = client.execute(get);
-                }
-            } else {
-                client = HttpClientUtils.client;
-                res = client.execute(get);
-            }
+
+            client = isHttps ? createSSLInsecureClient() : HttpClientUtils.client;
+            HttpResponse res = client.execute(httpGet);
+
             if (null != res) {
-                result = IOUtils.toString(res.getEntity().getContent(), charset);
+                InputStream content = res.getEntity().getContent();
+                result = new BufferedReader(new InputStreamReader(content))
+                        .lines().collect(Collectors.joining(System.lineSeparator()));
             }
         } catch (IOException | GeneralSecurityException e) {
             log.error("", e);
         }finally {
-            get.releaseConnection();
-            if (url.startsWith("https") && client != null && client instanceof CloseableHttpClient) {
+            httpGet.releaseConnection();
+
+            if (isHttps && client != null && client instanceof CloseableHttpClient) {
                 ((CloseableHttpClient) client).close();
             }
         }
