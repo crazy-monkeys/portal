@@ -191,12 +191,12 @@ public class ExcelUtils {
         if(e.getCause() instanceof ExcelGenerateException){
             String message = null;
             if(e.getCause().getCause() instanceof NumberFormatException){
-                message = "转换为数字类型错误：".concat(getIndexMessage(e.getCause().getCause().getMessage()));
+                message = "不能转换为数字：".concat(getIndexMessage(e.getCause().getCause().getMessage()));
             }
             if(e.getCause().getCause() instanceof BusinessException){
                 throw (BusinessException)e.getCause().getCause();
             }
-            throw new BusinessException(ErrorCodes.BusinessEnum.EXCEL_PARAM_FAIL.getCode(), ErrorCodes.BusinessEnum.EXCEL_PARAM_FAIL.getZhMsg().concat(message));
+            throw new BusinessException(ErrorCodes.BusinessEnum.EXCEL_PARAM_FAIL.getCode(), ErrorCodes.BusinessEnum.EXCEL_PARAM_FAIL.getZhMsg().concat("，").concat(message));
         }
     }
 

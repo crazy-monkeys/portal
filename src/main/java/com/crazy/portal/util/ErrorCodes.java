@@ -122,7 +122,7 @@ public class ErrorCodes {
         EXCEL_TYPE_ERROR(21002, "请上传正确Excel文件", ""),
         EXCEL_WRITE_ERROR(21003, "Excel数据写入异常", ""),
         EXCEL_PROPERTY_DIFF(21004, "Excel数据与此功能接收不一致，请核对", ""),
-        EXCEL_PARAM_FAIL(21005, "Excel数据类型错误，请核对", ""),
+        EXCEL_PARAM_FAIL(21005, "Excel数据类型错误", ""),
         EXCEL_PARAM_DATE_FAIL(21006, "Excel日期格式无效，请核对", ""),
         //公告模块
         ANNOUNCEMENT_FILE_LIST_PARAM_EMPTY(30000, "请上传正确文件参数", ""),
