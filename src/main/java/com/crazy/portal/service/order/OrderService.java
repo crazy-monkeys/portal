@@ -1,5 +1,6 @@
 package com.crazy.portal.service.order;
 
+import com.crazy.portal.annotation.OperationLog;
 import com.crazy.portal.bean.order.OrderApprovalBean;
 import com.crazy.portal.bean.order.OrderCreditInfoBean;
 import com.crazy.portal.bean.order.OrderQueryBean;
@@ -20,7 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -65,6 +65,7 @@ public class OrderService {
      * @param order
      * @param userId
      */
+    @OperationLog
     @Transactional
     public void apply(Order order, Integer userId){
         BusinessUtil.notNull(order, ErrorCodes.BusinessEnum.ORDER_INFO_IS_REQUIRED);
@@ -84,6 +85,7 @@ public class OrderService {
     /**
      * 变更交货日期
      */
+    @OperationLog
     public void modifyDeliveryDate(Integer orderId, String deliveryDate, Integer userId) throws Exception{
         BusinessUtil.notNull(orderId, ErrorCodes.BusinessEnum.ORDER_ID_IS_REQUIRED);
         BusinessUtil.assertTrue(DateUtil.isValidDateFormat(deliveryDate, DateUtil.WEB_FORMAT), ErrorCodes.BusinessEnum.ORDER_DELIVERY_DATE_FORMAT_FAIL);
@@ -100,6 +102,7 @@ public class OrderService {
      * @param orderId
      * @param userId
      */
+    @OperationLog
     public void takeGoods(Integer orderId, Integer userId){
 
     }
@@ -109,6 +112,7 @@ public class OrderService {
      * @param orderId
      * @param userId
      */
+    @OperationLog
     public void cancel(Integer orderId, Integer userId){
 
     }
@@ -117,6 +121,7 @@ public class OrderService {
      * 订单审批
      * @param bean
      */
+    @OperationLog
     public void approval(OrderApprovalBean bean, Integer userId){
         Order order = orderMapper.selectByPrimaryKey(bean.getOrderId());
         BusinessUtil.notNull(order, ErrorCodes.BusinessEnum.ORDER_INFO_NOT_FOUND);

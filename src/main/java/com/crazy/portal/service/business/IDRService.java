@@ -4,6 +4,7 @@ import com.alibaba.excel.metadata.BaseRowModel;
 import com.alibaba.excel.support.ExcelTypeEnum;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.crazy.portal.annotation.OperationLog;
 import com.crazy.portal.bean.business.idr.BusinessFileUploadBean;
 import com.crazy.portal.bean.business.idr.BusinessIdrQueryBean;
 import com.crazy.portal.bean.business.idr.IdrApprovalSubmitBean;
@@ -119,6 +120,7 @@ public class IDRService {
      * @param file 文件
      * @return
      */
+    @OperationLog
     @Transactional
     public BusinessFileUploadBean upload(Integer id, Integer type, Integer fileType, BigDecimal crAmount, MultipartFile file, Integer userId){
         checkFileUploadParam(id, type, fileType, file);
@@ -181,6 +183,8 @@ public class IDRService {
         return filePath.concat(File.separator).concat(IDR_FILE_PATH).concat(File.separator);
     }
 
+    @OperationLog
+    @Transactional
     public void save(BusinessIdrInfo bean, Integer userId) throws Exception{
         bean.setStatus(Enums.BusinessIdrStatus.APPROVAL_SUBMIT.getCode());
         bean.setCreateId(userId);

@@ -3,20 +3,22 @@ package com.crazy.portal.service.customer;
 import com.alibaba.excel.EasyExcelFactory;
 import com.alibaba.excel.metadata.BaseRowModel;
 import com.alibaba.excel.metadata.Sheet;
+import com.crazy.portal.annotation.OperationLog;
 import com.crazy.portal.bean.common.Constant;
 import com.crazy.portal.bean.customer.CustomerOrgBean;
 import com.crazy.portal.bean.customer.CustomerQueryBean;
 import com.crazy.portal.bean.customer.CustomerShipBean;
 import com.crazy.portal.bean.customer.approval.ApprovalBean;
-import com.crazy.portal.bean.customer.wsdl.credit.Zsdscredit;
 import com.crazy.portal.bean.customer.visitRecord.CustomerCodeEO;
 import com.crazy.portal.bean.customer.visitRecord.VisitRecordEO;
 import com.crazy.portal.bean.customer.visitRecord.VisitRecordQueryBean;
+import com.crazy.portal.bean.customer.wsdl.credit.Zsdscredit;
 import com.crazy.portal.config.exception.BusinessException;
-import com.crazy.portal.dao.cusotmer.*;
+import com.crazy.portal.dao.cusotmer.CustBankInfoMapper;
+import com.crazy.portal.dao.cusotmer.CustomerInfoMapper;
+import com.crazy.portal.dao.cusotmer.VisitRecordMapper;
 import com.crazy.portal.dao.system.InternalUserMapper;
 import com.crazy.portal.entity.cusotmer.*;
-import com.crazy.portal.entity.cusotmer.VisitRecord;
 import com.crazy.portal.entity.system.InternalUser;
 import com.crazy.portal.entity.system.SysParameter;
 import com.crazy.portal.entity.system.User;
@@ -29,9 +31,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+
 import javax.annotation.Resource;
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @ClassName: CustomerInfoService
@@ -223,6 +229,7 @@ public class CustomerInfoService {
      * @param customerInfo
      * @param user
      */
+    @OperationLog
     @Transactional
     public void report(CustomerInfo customerInfo, User user){
         if(user.getUserType().equals(Enums.USER_TYPE.internal.toString())){
@@ -246,6 +253,7 @@ public class CustomerInfoService {
         //TODO 同步C4 获得outcode
     }
 
+    @OperationLog
     @Transactional
     public void updateCustomerInfo(CustomerInfo cust, User user){
         CustomerInfo customerinfo = customerInfoMapper.selectByPrimaryKey(cust.getId());
@@ -331,6 +339,7 @@ public class CustomerInfoService {
      * @param approvalBean
      */
     //TODO 邮件通知
+    @OperationLog
     @Transactional
     public void approval(ApprovalBean approvalBean, Integer userId){
         //通过
@@ -373,7 +382,7 @@ public class CustomerInfoService {
             customerInfoMapper.updateByPrimaryKeySelective(customerInfo);
         }
     }
-
+    @OperationLog
     @Transactional
     public void updateDealerInfo(CustomerInfo customerInfo, Integer userId){
         saveCustomerInfo(customerInfo, userId);
@@ -564,6 +573,7 @@ public class CustomerInfoService {
      * @param userId
      * @throws Exception
      **/
+    @OperationLog
     public List<VisitRecord> uploadVisitRecord(MultipartFile[] files, Integer userId) throws Exception{
         List<VisitRecord> results = new ArrayList<>();
         for (MultipartFile file : files) {
@@ -598,6 +608,7 @@ public class CustomerInfoService {
      * @param files
      * @return
      **/
+    @OperationLog
     public CustomerFile fileUpload(MultipartFile files, Integer customerId, Integer index){
         CustomerFile file = customerFileService.saveOrUpdate(files, customerId);
         file.setIndex(index);

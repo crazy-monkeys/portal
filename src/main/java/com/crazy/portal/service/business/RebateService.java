@@ -3,6 +3,7 @@ package com.crazy.portal.service.business;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.crazy.portal.annotation.OperationLog;
 import com.crazy.portal.bean.business.rebate.RebateConfirmBean;
 import com.crazy.portal.bean.business.rebate.RebateGroupParam;
 import com.crazy.portal.bean.business.rebate.RebateQueryBean;
@@ -29,7 +30,6 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.util.*;
 
@@ -102,6 +102,7 @@ public class RebateService {
      * @param bean
      * @param userId
      */
+    @OperationLog
     @Transactional(rollbackFor=Exception.class)
     public void confirm(RebateConfirmBean bean, Integer userId) throws Exception{
         BusinessUtil.notNull(bean.getRebates(), ErrorCodes.BusinessEnum.REBATE_RECORD_NOT_FOUND);
@@ -180,6 +181,7 @@ public class RebateService {
      * @param file
      * @return
      */
+    @OperationLog
     @Transactional
     public FileVO fileUpload(Integer rebateItemId, Integer userId, MultipartFile file){
         BusinessUtil.notNull(rebateItemId, ErrorCodes.BusinessEnum.REBATE_ITEM_ID_IS_NULL);

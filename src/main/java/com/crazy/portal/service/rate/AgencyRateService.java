@@ -1,15 +1,12 @@
 package com.crazy.portal.service.rate;
 
-import com.alibaba.excel.EasyExcelFactory;
 import com.alibaba.excel.metadata.BaseRowModel;
-import com.alibaba.excel.metadata.Sheet;
 import com.alibaba.excel.support.ExcelTypeEnum;
-import com.crazy.portal.bean.common.Constant;
+import com.crazy.portal.annotation.OperationLog;
 import com.crazy.portal.bean.rate.AgencyRateQueryBean;
 import com.crazy.portal.config.exception.BusinessException;
 import com.crazy.portal.dao.rate.AgencyRateMapper;
 import com.crazy.portal.entity.rate.AgencyRate;
-import com.crazy.portal.entity.system.InternalUser;
 import com.crazy.portal.util.*;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +16,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.util.*;
 
 /**
@@ -40,6 +36,7 @@ public class AgencyRateService {
         return new PageInfo<>(list);
     }
 
+    @OperationLog
     @Transactional
     public List<AgencyRate> uploadAgencyRateFile(MultipartFile[] files, Integer userId) throws Exception {
         List<AgencyRate> results = new ArrayList<>();
@@ -72,6 +69,7 @@ public class AgencyRateService {
         return results;
     }
 
+    @OperationLog
     @Transactional
     public void approveRate(String ids){
         agencyRateMapper.inActive();
