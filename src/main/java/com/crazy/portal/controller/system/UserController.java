@@ -38,6 +38,7 @@ public class UserController extends BaseController {
      * 分页查询
      * @return
      */
+    @OperationLog
     @PostMapping("/list")
     public BaseResponse selectAllUsers(@RequestBody(required = false) User user,
                                        @RequestParam Integer pageNum,

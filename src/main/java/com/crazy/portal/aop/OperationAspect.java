@@ -18,10 +18,14 @@ import org.springframework.util.Assert;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @Desc: 操作日志
@@ -94,11 +98,8 @@ public class OperationAspect extends BaseController {
         opLog.setUrl(request.getRequestURI());
 
         Object[] objects = point.getArgs();
-        String params = "";
         //获取方法参数
-        if(Objects.nonNull(objects)){
-            params = JSON.toJSONString(objects);
-        }
+        String params = this.getParams(objects);
         //获取调用链
         Signature signature = point.getSignature();
         String invoke = this.getInvoke(params, signature);
@@ -108,6 +109,25 @@ public class OperationAspect extends BaseController {
         String className = point.getTarget().getClass().getSimpleName();
         String methodName = signature.getName();
         opLog.setBusinessKey(String.format("%s.%s",className,methodName));
+    }
+
+    private String getParams(Object[] objects) {
+        String params = "";
+        if(Objects.nonNull(objects)){
+            params = Stream.of(objects).map(x->{
+                if(x instanceof MultipartFile[]){
+                    MultipartFile[] multipartFiles = (MultipartFile[])x;
+                    List<String> files = Stream.of(multipartFiles)
+                            .map(MultipartFile::getName)
+                            .collect(Collectors.toList());
+
+                    return JSON.toJSONString(files);
+                }else {
+                   return JSON.toJSONString(x);
+                }
+            }).collect(Collectors.joining(","));
+        }
+        return params;
     }
 
     /**
