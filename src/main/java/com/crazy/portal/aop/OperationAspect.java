@@ -46,7 +46,7 @@ public class OperationAspect extends BaseController {
             proceed = point.proceed();
         } catch (Throwable throwable) {
             //设置错误信息并且抛出相应异常
-            this.setErrorMsgAndThrowException(opLog, throwable);
+            this.setErrorMsgAndThrowException(throwable,opLog);
         }finally {
             //后置增强，保存日志
             this.saveLog(opLog);
@@ -59,7 +59,7 @@ public class OperationAspect extends BaseController {
      * @param opLog
      * @param throwable
      */
-    private void setErrorMsgAndThrowException(OperationLogDO opLog, Throwable throwable) {
+    private void setErrorMsgAndThrowException(Throwable throwable,OperationLogDO opLog) {
         if(throwable instanceof BusinessException){
             BusinessException ex = (BusinessException)throwable;
             opLog.setErrorMsg(ex.getMessage());
