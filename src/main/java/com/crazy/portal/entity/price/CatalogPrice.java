@@ -1,5 +1,6 @@
 package com.crazy.portal.entity.price;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
 
@@ -34,10 +35,9 @@ public class CatalogPrice {
     private String pdt;
 
     /**
-     * 产品类型
+     * sapCode
      */
-    private String productType;
-
+    private String sapCode;
     /**
      * 平台
      */
@@ -61,25 +61,27 @@ public class CatalogPrice {
     /**
      * 生效时间
      */
-    @JSONField(format="yyyy-MM-dd")
-    private Date effectTime;
+    private String effectTime;
 
     /**
      * 失效时间
      */
-    @JSONField(format="yyyy-MM-dd")
-    private Date deadTime;
+    private String deadTime;
 
     /**
-     * 
+     * BOMS
      */
-    @JSONField(format="yyyy-MM-dd HH:mm:ss")
-    private Date modifyTime;
-
+    private JSONArray boms;
     /**
      * 
      */
     private String remark;
+
+    /**
+     *
+     */
+    @JSONField(format="yyyy-MM-dd HH:mm:ss")
+    private Date modifyTime;
 
     /**
      * 创建时间

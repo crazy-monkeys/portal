@@ -1,6 +1,6 @@
 package com.crazy.portal.service.price;
 
-import com.crazy.portal.bean.price.BIActualPrice;
+import com.crazy.portal.bean.price.BICatalogPrice;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Assert;
 import org.junit.Test;
@@ -21,14 +21,14 @@ import java.util.List;
 @RunWith(SpringRunner.class)
 @Slf4j
 //@Ignore
-public class ActualPriceServiceTest {
+public class CatalogPriceServiceTest {
 
     @Resource
-    private ActualPriceService actualPriceService;
+    private CatalogPriceService catalogPriceService;
 
     @Test
     public void getBIActualPrices() {
-        List<BIActualPrice> biActualPrices = this.actualPriceService.getBIActualPrices();
+        List<BICatalogPrice> biActualPrices = catalogPriceService.getBIActualPrices();
         Assert.assertNotNull(biActualPrices);
     }
 }

@@ -9,7 +9,7 @@ import lombok.Data;
  * @Modified by:
  */
 @Data
-public class BIActualPrice {
+public class BICatalogPrice {
 
     private String BU;
     private String PDT;

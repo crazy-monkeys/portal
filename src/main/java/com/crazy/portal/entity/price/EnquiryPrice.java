@@ -73,14 +73,12 @@ public class EnquiryPrice {
     /**
      * 生效时间
      */
-    @JSONField(format="yyyy-MM-dd")
-    private Date effectTime;
+    private String effectTime;
 
     /**
      * 失效时间
      */
-    @JSONField(format="yyyy-MM-dd")
-    private Date deadTime;
+    private String deadTime;
 
     /**
      * 更新时间

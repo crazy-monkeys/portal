@@ -27,9 +27,9 @@ public class MyBatisConfig implements TransactionManagementConfigurer {
     @Resource
 	DataSource dataSource;
 
-    @Bean(name = "sqlSessionFactory")
     @Primary
-    public SqlSessionFactory sqlSessionFactoryBean() throws Exception {
+    @Bean(name = "sqlSessionFactory")
+    public SqlSessionFactory sqlSessionFactoryBean() {
     	SqlSessionFactoryBean bean = new SqlSessionFactoryBean();
         bean.setDataSource(dataSource);
         bean.setTypeAliasesPackage("com.crazy.portal.entity");
@@ -37,6 +37,7 @@ public class MyBatisConfig implements TransactionManagementConfigurer {
         ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
         try {
             bean.setMapperLocations(resolver.getResources("classpath*:mybatis/mapper/**/*.xml"));
+            bean.setTypeHandlersPackage("com.crazy.portal.config.mybatis.handler");
             return bean.getObject();
         } catch (Exception e) {
             e.printStackTrace();
