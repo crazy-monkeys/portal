@@ -110,6 +110,11 @@ public class OperationAspect extends BaseController {
         opLog.setBusinessKey(String.format("%s.%s",className,methodName));
     }
 
+    /**
+     * 获取方法参数
+     * @param objects
+     * @return
+     */
     private String getParams(Object[] objects) {
         String params = null;
         if(Objects.nonNull(objects)){
