@@ -4,6 +4,7 @@ import com.crazy.portal.bean.BaseResponse;
 import com.crazy.portal.controller.BaseController;
 import com.crazy.portal.util.ErrorCodes.CommonEnum;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -32,11 +33,16 @@ public class GlobalExceptionHandler extends BaseController {
             String msg = super.getValidExceptionMsg((MethodArgumentNotValidException) exception);
             return new BaseResponse(CommonEnum.REQ_PARAM_FORMAT_ERROR.getCode(),msg);
         }
-
+        if(exception instanceof HttpMessageNotReadableException){
+            String msg = exception.getMessage().indexOf(":") != -1 ? exception.getMessage().substring(exception.getMessage().lastIndexOf(":") + 2, exception.getMessage().length()) : exception.getMessage();
+            return new BaseResponse(CommonEnum.REQ_PARAM_FORMAT_ERROR.getCode(),msg.concat("格式错误"));
+        }
         if(exception instanceof BusinessException){
             BusinessException ex = (BusinessException)exception;
             return new BaseResponse(ex.getErrorCode(),ex.getMessage());
         }
+
+
 
         log.error("", exception);
         return new BaseResponse(CommonEnum.SYSTEM_EXCEPTION.getCode(),CommonEnum.SYSTEM_EXCEPTION.getZhMsg());
