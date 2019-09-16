@@ -1,0 +1,455 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.crazy.portal.dao.forecast.ForecastSdMapper">
+  <resultMap id="BaseResultMap" type="com.crazy.portal.entity.forecast.ForecastSd">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="bi_id" jdbcType="VARCHAR" property="biId" />
+    <result column="operation_year_month" jdbcType="VARCHAR" property="operationYearMonth" />
+    <result column="company" jdbcType="VARCHAR" property="company" />
+    <result column="bu" jdbcType="VARCHAR" property="bu" />
+    <result column="pdt" jdbcType="VARCHAR" property="pdt" />
+    <result column="product_type" jdbcType="VARCHAR" property="productType" />
+    <result column="platform" jdbcType="VARCHAR" property="platform" />
+    <result column="product_model" jdbcType="VARCHAR" property="productModel" />
+    <result column="vm_number" jdbcType="VARCHAR" property="vmNumber" />
+    <result column="forecast_month_one" jdbcType="VARCHAR" property="forecastMonthOne" />
+    <result column="sd_adjustment_one" jdbcType="VARCHAR" property="sdAdjustmentOne" />
+    <result column="sd_remark_one" jdbcType="VARCHAR" property="sdRemarkOne" />
+    <result column="forecast_month_two" jdbcType="VARCHAR" property="forecastMonthTwo" />
+    <result column="sd_adjustment_two" jdbcType="VARCHAR" property="sdAdjustmentTwo" />
+    <result column="sd_remark_two" jdbcType="VARCHAR" property="sdRemarkTwo" />
+    <result column="forecast_month_three" jdbcType="VARCHAR" property="forecastMonthThree" />
+    <result column="sd_adjustment_three" jdbcType="VARCHAR" property="sdAdjustmentThree" />
+    <result column="sd_remark_three" jdbcType="VARCHAR" property="sdRemarkThree" />
+    <result column="forecast_month_four" jdbcType="VARCHAR" property="forecastMonthFour" />
+    <result column="sd_adjustment_four" jdbcType="VARCHAR" property="sdAdjustmentFour" />
+    <result column="sd_remark_four" jdbcType="VARCHAR" property="sdRemarkFour" />
+    <result column="forecast_month_five" jdbcType="VARCHAR" property="forecastMonthFive" />
+    <result column="sd_adjustment_five" jdbcType="VARCHAR" property="sdAdjustmentFive" />
+    <result column="sd_remark_five" jdbcType="VARCHAR" property="sdRemarkFive" />
+    <result column="forecast_month_six" jdbcType="VARCHAR" property="forecastMonthSix" />
+    <result column="sd_adjustment_six" jdbcType="VARCHAR" property="sdAdjustmentSix" />
+    <result column="sd_remark_six" jdbcType="VARCHAR" property="sdRemarkSix" />
+  </resultMap>
+
+  <resultMap id="sdTotalMap" type="com.crazy.portal.bean.forecast.SdUpdateTemplate" >
+    <result column="company" jdbcType="VARCHAR" property="company" />
+    <result column="operation_year_month" jdbcType="VARCHAR" property="operationYearMonth" />
+    <result column="bu" jdbcType="VARCHAR" property="bu" />
+    <result column="pdt" jdbcType="VARCHAR" property="pdt" />
+    <result column="product_type" jdbcType="VARCHAR" property="productType" />
+    <result column="platform" jdbcType="VARCHAR" property="platform" />
+    <result column="product_model" jdbcType="VARCHAR" property="productModel" />
+
+    <result column="forecast_month_one" jdbcType="VARCHAR" property="forecastMonthOne" />
+    <result column="last_write_one" jdbcType="VARCHAR" property="lastWriteOne" />
+    <result column="current_write_one" jdbcType="VARCHAR" property="currentWriteOne" />
+    <result column="gap_one" jdbcType="VARCHAR" property="gapOne" />
+    <result column="sd_adjustment_one" jdbcType="VARCHAR" property="sdAdjustmentOne" />
+    <result column="sd_remark_one" jdbcType="VARCHAR" property="sdRemarkOne" />
+    <result column="forecast_month_two" jdbcType="VARCHAR" property="forecastMonthTwo" />
+    <result column="last_write_two" jdbcType="VARCHAR" property="lastWriteTwo" />
+    <result column="current_write_two" jdbcType="VARCHAR" property="currentWriteTwo" />
+    <result column="gap_two" jdbcType="VARCHAR" property="gapTwo" />
+    <result column="sd_adjustment_two" jdbcType="VARCHAR" property="sdAdjustmentTwo" />
+    <result column="sd_remark_two" jdbcType="VARCHAR" property="sdRemarkTwo" />
+    <result column="forecast_month_three" jdbcType="VARCHAR" property="forecastMonthThree" />
+    <result column="last_write_three" jdbcType="VARCHAR" property="lastWriteThree" />
+    <result column="current_write_three" jdbcType="VARCHAR" property="currentWriteThree" />
+    <result column="gap_three" jdbcType="VARCHAR" property="gapThree" />
+    <result column="sd_adjustment_three" jdbcType="VARCHAR" property="sdAdjustmentThree" />
+    <result column="sd_remark_three" jdbcType="VARCHAR" property="sdRemarkThree" />
+    <result column="forecast_month_four" jdbcType="VARCHAR" property="forecastMonthFour" />
+    <result column="last_write_four" jdbcType="VARCHAR" property="lastWriteFour" />
+    <result column="current_write_four" jdbcType="VARCHAR" property="currentWriteFour" />
+    <result column="gap_four" jdbcType="VARCHAR" property="gapFour" />
+    <result column="sd_adjustment_four" jdbcType="VARCHAR" property="sdAdjustmentFour" />
+    <result column="sd_remark_four" jdbcType="VARCHAR" property="sdRemarkFour" />
+    <result column="forecast_month_five" jdbcType="VARCHAR" property="forecastMonthFive" />
+    <result column="last_write_five" jdbcType="VARCHAR" property="lastWriteFive" />
+    <result column="current_write_five" jdbcType="VARCHAR" property="currentWriteFive" />
+    <result column="gap_five" jdbcType="VARCHAR" property="gapFive" />
+    <result column="sd_adjustment_five" jdbcType="VARCHAR" property="sdAdjustmentFive" />
+    <result column="sd_remark_five" jdbcType="VARCHAR" property="sdRemarkFive" />
+    <result column="forecast_month_six" jdbcType="VARCHAR" property="forecastMonthSix" />
+    <result column="last_write_six" jdbcType="VARCHAR" property="lastWriteSix" />
+    <result column="current_write_six" jdbcType="VARCHAR" property="currentWriteSix" />
+    <result column="gap_six" jdbcType="VARCHAR" property="gapSix" />
+    <result column="sd_adjustment_six" jdbcType="VARCHAR" property="sdAdjustmentSix" />
+    <result column="sd_remark_six" jdbcType="VARCHAR" property="sdRemarkSix" />
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    id, bi_id, operation_year_month, company, bu, pdt, product_type, platform, product_model, 
+    vm_number, forecast_month_one, sd_adjustment_one, sd_remark_one, forecast_month_two, 
+    sd_adjustment_two, sd_remark_two, forecast_month_three, sd_adjustment_three, sd_remark_three, 
+    forecast_month_four, sd_adjustment_four, sd_remark_four, forecast_month_five, sd_adjustment_five, 
+    sd_remark_five, forecast_month_six, sd_adjustment_six, sd_remark_six
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_forecast_sd
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_forecast_sd
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.crazy.portal.entity.forecast.ForecastSd">
+    insert into t_forecast_sd (id, bi_id, operation_year_month, 
+      company, bu, pdt, product_type, 
+      platform, product_model, vm_number, 
+      forecast_month_one, sd_adjustment_one, sd_remark_one, 
+      forecast_month_two, sd_adjustment_two, sd_remark_two, 
+      forecast_month_three, sd_adjustment_three, 
+      sd_remark_three, forecast_month_four, sd_adjustment_four, 
+      sd_remark_four, forecast_month_five, sd_adjustment_five, 
+      sd_remark_five, forecast_month_six, sd_adjustment_six, 
+      sd_remark_six)
+    values (#{id,jdbcType=INTEGER}, #{biId,jdbcType=VARCHAR}, #{operationYearMonth,jdbcType=VARCHAR}, 
+      #{company,jdbcType=VARCHAR}, #{bu,jdbcType=VARCHAR}, #{pdt,jdbcType=VARCHAR}, #{productType,jdbcType=VARCHAR}, 
+      #{platform,jdbcType=VARCHAR}, #{productModel,jdbcType=VARCHAR}, #{vmNumber,jdbcType=VARCHAR}, 
+      #{forecastMonthOne,jdbcType=VARCHAR}, #{sdAdjustmentOne,jdbcType=VARCHAR}, #{sdRemarkOne,jdbcType=VARCHAR}, 
+      #{forecastMonthTwo,jdbcType=VARCHAR}, #{sdAdjustmentTwo,jdbcType=VARCHAR}, #{sdRemarkTwo,jdbcType=VARCHAR}, 
+      #{forecastMonthThree,jdbcType=VARCHAR}, #{sdAdjustmentThree,jdbcType=VARCHAR}, 
+      #{sdRemarkThree,jdbcType=VARCHAR}, #{forecastMonthFour,jdbcType=VARCHAR}, #{sdAdjustmentFour,jdbcType=VARCHAR}, 
+      #{sdRemarkFour,jdbcType=VARCHAR}, #{forecastMonthFive,jdbcType=VARCHAR}, #{sdAdjustmentFive,jdbcType=VARCHAR}, 
+      #{sdRemarkFive,jdbcType=VARCHAR}, #{forecastMonthSix,jdbcType=VARCHAR}, #{sdAdjustmentSix,jdbcType=VARCHAR}, 
+      #{sdRemarkSix,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.crazy.portal.entity.forecast.ForecastSd">
+    insert into t_forecast_sd
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="biId != null">
+        bi_id,
+      </if>
+      <if test="operationYearMonth != null">
+        operation_year_month,
+      </if>
+      <if test="company != null">
+        company,
+      </if>
+      <if test="bu != null">
+        bu,
+      </if>
+      <if test="pdt != null">
+        pdt,
+      </if>
+      <if test="productType != null">
+        product_type,
+      </if>
+      <if test="platform != null">
+        platform,
+      </if>
+      <if test="productModel != null">
+        product_model,
+      </if>
+      <if test="vmNumber != null">
+        vm_number,
+      </if>
+      <if test="forecastMonthOne != null">
+        forecast_month_one,
+      </if>
+      <if test="sdAdjustmentOne != null">
+        sd_adjustment_one,
+      </if>
+      <if test="sdRemarkOne != null">
+        sd_remark_one,
+      </if>
+      <if test="forecastMonthTwo != null">
+        forecast_month_two,
+      </if>
+      <if test="sdAdjustmentTwo != null">
+        sd_adjustment_two,
+      </if>
+      <if test="sdRemarkTwo != null">
+        sd_remark_two,
+      </if>
+      <if test="forecastMonthThree != null">
+        forecast_month_three,
+      </if>
+      <if test="sdAdjustmentThree != null">
+        sd_adjustment_three,
+      </if>
+      <if test="sdRemarkThree != null">
+        sd_remark_three,
+      </if>
+      <if test="forecastMonthFour != null">
+        forecast_month_four,
+      </if>
+      <if test="sdAdjustmentFour != null">
+        sd_adjustment_four,
+      </if>
+      <if test="sdRemarkFour != null">
+        sd_remark_four,
+      </if>
+      <if test="forecastMonthFive != null">
+        forecast_month_five,
+      </if>
+      <if test="sdAdjustmentFive != null">
+        sd_adjustment_five,
+      </if>
+      <if test="sdRemarkFive != null">
+        sd_remark_five,
+      </if>
+      <if test="forecastMonthSix != null">
+        forecast_month_six,
+      </if>
+      <if test="sdAdjustmentSix != null">
+        sd_adjustment_six,
+      </if>
+      <if test="sdRemarkSix != null">
+        sd_remark_six,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="biId != null">
+        #{biId,jdbcType=VARCHAR},
+      </if>
+      <if test="operationYearMonth != null">
+        #{operationYearMonth,jdbcType=VARCHAR},
+      </if>
+      <if test="company != null">
+        #{company,jdbcType=VARCHAR},
+      </if>
+      <if test="bu != null">
+        #{bu,jdbcType=VARCHAR},
+      </if>
+      <if test="pdt != null">
+        #{pdt,jdbcType=VARCHAR},
+      </if>
+      <if test="productType != null">
+        #{productType,jdbcType=VARCHAR},
+      </if>
+      <if test="platform != null">
+        #{platform,jdbcType=VARCHAR},
+      </if>
+      <if test="productModel != null">
+        #{productModel,jdbcType=VARCHAR},
+      </if>
+      <if test="vmNumber != null">
+        #{vmNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="forecastMonthOne != null">
+        #{forecastMonthOne,jdbcType=VARCHAR},
+      </if>
+      <if test="sdAdjustmentOne != null">
+        #{sdAdjustmentOne,jdbcType=VARCHAR},
+      </if>
+      <if test="sdRemarkOne != null">
+        #{sdRemarkOne,jdbcType=VARCHAR},
+      </if>
+      <if test="forecastMonthTwo != null">
+        #{forecastMonthTwo,jdbcType=VARCHAR},
+      </if>
+      <if test="sdAdjustmentTwo != null">
+        #{sdAdjustmentTwo,jdbcType=VARCHAR},
+      </if>
+      <if test="sdRemarkTwo != null">
+        #{sdRemarkTwo,jdbcType=VARCHAR},
+      </if>
+      <if test="forecastMonthThree != null">
+        #{forecastMonthThree,jdbcType=VARCHAR},
+      </if>
+      <if test="sdAdjustmentThree != null">
+        #{sdAdjustmentThree,jdbcType=VARCHAR},
+      </if>
+      <if test="sdRemarkThree != null">
+        #{sdRemarkThree,jdbcType=VARCHAR},
+      </if>
+      <if test="forecastMonthFour != null">
+        #{forecastMonthFour,jdbcType=VARCHAR},
+      </if>
+      <if test="sdAdjustmentFour != null">
+        #{sdAdjustmentFour,jdbcType=VARCHAR},
+      </if>
+      <if test="sdRemarkFour != null">
+        #{sdRemarkFour,jdbcType=VARCHAR},
+      </if>
+      <if test="forecastMonthFive != null">
+        #{forecastMonthFive,jdbcType=VARCHAR},
+      </if>
+      <if test="sdAdjustmentFive != null">
+        #{sdAdjustmentFive,jdbcType=VARCHAR},
+      </if>
+      <if test="sdRemarkFive != null">
+        #{sdRemarkFive,jdbcType=VARCHAR},
+      </if>
+      <if test="forecastMonthSix != null">
+        #{forecastMonthSix,jdbcType=VARCHAR},
+      </if>
+      <if test="sdAdjustmentSix != null">
+        #{sdAdjustmentSix,jdbcType=VARCHAR},
+      </if>
+      <if test="sdRemarkSix != null">
+        #{sdRemarkSix,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.crazy.portal.entity.forecast.ForecastSd">
+    update t_forecast_sd
+    <set>
+      <if test="biId != null">
+        bi_id = #{biId,jdbcType=VARCHAR},
+      </if>
+      <if test="operationYearMonth != null">
+        operation_year_month = #{operationYearMonth,jdbcType=VARCHAR},
+      </if>
+      <if test="company != null">
+        company = #{company,jdbcType=VARCHAR},
+      </if>
+      <if test="bu != null">
+        bu = #{bu,jdbcType=VARCHAR},
+      </if>
+      <if test="pdt != null">
+        pdt = #{pdt,jdbcType=VARCHAR},
+      </if>
+      <if test="productType != null">
+        product_type = #{productType,jdbcType=VARCHAR},
+      </if>
+      <if test="platform != null">
+        platform = #{platform,jdbcType=VARCHAR},
+      </if>
+      <if test="productModel != null">
+        product_model = #{productModel,jdbcType=VARCHAR},
+      </if>
+      <if test="vmNumber != null">
+        vm_number = #{vmNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="forecastMonthOne != null">
+        forecast_month_one = #{forecastMonthOne,jdbcType=VARCHAR},
+      </if>
+      <if test="sdAdjustmentOne != null">
+        sd_adjustment_one = #{sdAdjustmentOne,jdbcType=VARCHAR},
+      </if>
+      <if test="sdRemarkOne != null">
+        sd_remark_one = #{sdRemarkOne,jdbcType=VARCHAR},
+      </if>
+      <if test="forecastMonthTwo != null">
+        forecast_month_two = #{forecastMonthTwo,jdbcType=VARCHAR},
+      </if>
+      <if test="sdAdjustmentTwo != null">
+        sd_adjustment_two = #{sdAdjustmentTwo,jdbcType=VARCHAR},
+      </if>
+      <if test="sdRemarkTwo != null">
+        sd_remark_two = #{sdRemarkTwo,jdbcType=VARCHAR},
+      </if>
+      <if test="forecastMonthThree != null">
+        forecast_month_three = #{forecastMonthThree,jdbcType=VARCHAR},
+      </if>
+      <if test="sdAdjustmentThree != null">
+        sd_adjustment_three = #{sdAdjustmentThree,jdbcType=VARCHAR},
+      </if>
+      <if test="sdRemarkThree != null">
+        sd_remark_three = #{sdRemarkThree,jdbcType=VARCHAR},
+      </if>
+      <if test="forecastMonthFour != null">
+        forecast_month_four = #{forecastMonthFour,jdbcType=VARCHAR},
+      </if>
+      <if test="sdAdjustmentFour != null">
+        sd_adjustment_four = #{sdAdjustmentFour,jdbcType=VARCHAR},
+      </if>
+      <if test="sdRemarkFour != null">
+        sd_remark_four = #{sdRemarkFour,jdbcType=VARCHAR},
+      </if>
+      <if test="forecastMonthFive != null">
+        forecast_month_five = #{forecastMonthFive,jdbcType=VARCHAR},
+      </if>
+      <if test="sdAdjustmentFive != null">
+        sd_adjustment_five = #{sdAdjustmentFive,jdbcType=VARCHAR},
+      </if>
+      <if test="sdRemarkFive != null">
+        sd_remark_five = #{sdRemarkFive,jdbcType=VARCHAR},
+      </if>
+      <if test="forecastMonthSix != null">
+        forecast_month_six = #{forecastMonthSix,jdbcType=VARCHAR},
+      </if>
+      <if test="sdAdjustmentSix != null">
+        sd_adjustment_six = #{sdAdjustmentSix,jdbcType=VARCHAR},
+      </if>
+      <if test="sdRemarkSix != null">
+        sd_remark_six = #{sdRemarkSix,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.crazy.portal.entity.forecast.ForecastSd">
+    update t_forecast_sd
+    set bi_id = #{biId,jdbcType=VARCHAR},
+      operation_year_month = #{operationYearMonth,jdbcType=VARCHAR},
+      company = #{company,jdbcType=VARCHAR},
+      bu = #{bu,jdbcType=VARCHAR},
+      pdt = #{pdt,jdbcType=VARCHAR},
+      product_type = #{productType,jdbcType=VARCHAR},
+      platform = #{platform,jdbcType=VARCHAR},
+      product_model = #{productModel,jdbcType=VARCHAR},
+      vm_number = #{vmNumber,jdbcType=VARCHAR},
+      forecast_month_one = #{forecastMonthOne,jdbcType=VARCHAR},
+      sd_adjustment_one = #{sdAdjustmentOne,jdbcType=VARCHAR},
+      sd_remark_one = #{sdRemarkOne,jdbcType=VARCHAR},
+      forecast_month_two = #{forecastMonthTwo,jdbcType=VARCHAR},
+      sd_adjustment_two = #{sdAdjustmentTwo,jdbcType=VARCHAR},
+      sd_remark_two = #{sdRemarkTwo,jdbcType=VARCHAR},
+      forecast_month_three = #{forecastMonthThree,jdbcType=VARCHAR},
+      sd_adjustment_three = #{sdAdjustmentThree,jdbcType=VARCHAR},
+      sd_remark_three = #{sdRemarkThree,jdbcType=VARCHAR},
+      forecast_month_four = #{forecastMonthFour,jdbcType=VARCHAR},
+      sd_adjustment_four = #{sdAdjustmentFour,jdbcType=VARCHAR},
+      sd_remark_four = #{sdRemarkFour,jdbcType=VARCHAR},
+      forecast_month_five = #{forecastMonthFive,jdbcType=VARCHAR},
+      sd_adjustment_five = #{sdAdjustmentFive,jdbcType=VARCHAR},
+      sd_remark_five = #{sdRemarkFive,jdbcType=VARCHAR},
+      forecast_month_six = #{forecastMonthSix,jdbcType=VARCHAR},
+      sd_adjustment_six = #{sdAdjustmentSix,jdbcType=VARCHAR},
+      sd_remark_six = #{sdRemarkSix,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <select id="selectTotalByForecastIds" resultMap="sdTotalMap" >
+    select a.operation_year_month,a.company,a.bu,a.pdt,a.product_type,a.platform,a.product_model,
+    b.forecast_month_one,
+    sum(b.last_write_one) last_write_one,
+    sum(b.current_write_one) current_write_one,
+    sum(b.gap_one) gap_one,
+    b.forecast_month_two,
+    sum(b.last_write_two) last_write_two,
+    sum(b.current_write_two) current_write_two,
+    sum(b.gap_two) gap_two,
+    b.forecast_month_three,
+    sum(b.last_write_three) last_write_three,
+    sum(b.current_write_three) current_write_three,
+    sum(b.gap_three) gap_three,
+    b.forecast_month_four,
+    sum(b.last_write_four) last_write_four,
+    sum(b.current_write_four) current_write_four,
+    sum(b.gap_four) gap_four,
+    b.forecast_month_five,
+    sum(b.last_write_five) last_write_five,
+    sum(b.current_write_five) current_write_five,
+    sum(b.gap_five) gap_five,
+    b.forecast_month_six,
+    sum(b.last_write_six) last_write_six,
+    sum(b.current_write_six) current_write_six,
+    sum(b.gap_six) gap_six
+    from t_forecast a
+    inner join t_forecast_line b on a.id = b.f_id
+    where 1 = 1
+    <foreach collection="forecastIds" item="item" index="index" open="and a.id in (" separator="," close=")" >
+      #{item}
+    </foreach>
+    group by a.operation_year_month,a.company,a.bu,a.pdt,a.product_type,a.platform,a.product_model,a.vm_number,
+    b.forecast_month_one,b.forecast_month_two,b.forecast_month_three,b.forecast_month_four,b.forecast_month_five,b.forecast_month_six
+  </select>
+
+  <select id="selectPage" resultMap="BaseResultMap" >
+    select * from t_forecast_sd
+  </select>
+  
+</mapper>

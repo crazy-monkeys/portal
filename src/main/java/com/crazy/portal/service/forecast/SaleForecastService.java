@@ -6,9 +6,11 @@ import com.crazy.portal.bean.forecast.*;
 import com.crazy.portal.config.exception.BusinessException;
 import com.crazy.portal.dao.forecast.ForecastLineMapper;
 import com.crazy.portal.dao.forecast.ForecastMapper;
+import com.crazy.portal.dao.forecast.ForecastSdMapper;
 import com.crazy.portal.entity.cusotmer.CustomerInfo;
 import com.crazy.portal.entity.forecast.Forecast;
 import com.crazy.portal.entity.forecast.ForecastLine;
+import com.crazy.portal.entity.forecast.ForecastSd;
 import com.crazy.portal.service.customer.CustomerInfoService;
 import com.crazy.portal.util.*;
 import com.github.pagehelper.PageInfo;
@@ -44,6 +46,8 @@ public class SaleForecastService {
     private FTPClientUtil ftpClientUtil;
     @Resource
     private CustomerInfoService customerInfoService;
+    @Resource
+    private ForecastSdMapper forecastSdMapper;
 
 
     @Value("${file.path.forecast.push}")
@@ -318,6 +322,14 @@ public class SaleForecastService {
         return new PageInfo<>(result);
     }
 
+    public PageInfo<ForecastSd> queryForecastDataBySd(Integer pageNum, Integer pageSize,
+                                                      String customerAbbreviation, String agencyAbbreviation, String salePeople,
+                                                      String uploadStartTime, String uploadEndTime, String channel){
+        PortalUtil.defaultStartPage(pageNum,pageSize);
+        List<ForecastSd> result = forecastSdMapper.selectPage();
+        return new PageInfo<>(result);
+    }
+
     public void updateSingleForecastData(ForecastParam param) {
         ApprovalUpdateLineParam paramLine = param.getUpdateLine();
         ForecastLine dbRecord = forecastLineMapper.selectByPrimaryKey(paramLine.getLineId());
@@ -384,14 +396,8 @@ public class SaleForecastService {
     }
 
     public void downloadDataBySd(HttpServletResponse response, Integer[] forecastIds) {
-        List<Forecast> forecastList = forecastMapper.selectByIds(forecastIds);
-        List<SdUpdateTemplate> templateList = new ArrayList<>();
-        for(Forecast forecast : forecastList) {
-            SdUpdateTemplate agencyTemplate = new SdUpdateTemplate();
-            copyDbFields(forecast, agencyTemplate);
-            templateList.add(agencyTemplate);
-        }
-        ExcelUtils.writeExcel(response, null, SdUpdateTemplate.class);
+        List<SdUpdateTemplate> templateList = forecastSdMapper.selectTotalByForecastIds(forecastIds);
+        ExcelUtils.writeExcel(response, templateList, SdUpdateTemplate.class);
     }
 
     public void uploadDataBySd(MultipartFile excel, Integer userId) {
