@@ -21,5 +21,5 @@ public interface VisitRecordMapper {
 
     List<VisitRecord> selectByPage(VisitRecordQueryBean visitRecordQueryBean);
 
-    int approve(@Param("ids") List<Integer> ids);
+    int approve(@Param("id") Integer id, @Param("c4cId") String c4cId);
 }

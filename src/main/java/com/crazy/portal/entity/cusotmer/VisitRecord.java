@@ -120,4 +120,6 @@ public class VisitRecord {
      * 
      */
     private Date updateTime;
+
+    private String c4cId;
 }

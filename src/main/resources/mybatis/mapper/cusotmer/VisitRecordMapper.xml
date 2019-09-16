@@ -24,6 +24,7 @@
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_user_id" jdbcType="INTEGER" property="updateUserId" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="c4c_id" jdbcType="VARCHAR" property="c4cId" />
   </resultMap>
   <sql id="Base_Column_List">
     id, cust_id, visit_date, customer_location, customer_code, visit_number, visit_purpose, 
@@ -314,10 +315,10 @@
     </select>
 
     <update id="approve">
-      update t_visit_record set active = 1 where id in
-      <foreach collection="ids" item="item" index="index" open="(" separator="," close=")" >
+      update t_visit_record set active = 1,c4c_id = #{c4cId} where id = #{id}
+    <!--  <foreach collection="ids" item="item" index="index" open="(" separator="," close=")" >
         #{item}
-      </foreach>
+      </foreach>-->
     </update>
 
 </mapper>

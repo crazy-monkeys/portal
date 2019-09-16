@@ -5,6 +5,8 @@ import com.crazy.portal.bean.customer.wsdl.credit.ZrfcsdcustomercreditResponse;
 import com.crazy.portal.bean.customer.wsdl.credit.Zsdscredit;
 import com.crazy.portal.bean.customer.wsdl.employee.EmployeeBasicDataResponseMessageSync;
 import com.crazy.portal.bean.customer.wsdl.orgnation.OrganisationalUnitByIDResponseMessageSync;
+import com.crazy.portal.bean.customer.wsdl.visits1.AppointmentActivityMaintainConfirmationBundleMessageSyncV1;
+import com.crazy.portal.bean.customer.wsdl.visits.VisitCreate;
 import com.crazy.portal.bean.product.BaseProResponseVO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -172,6 +174,16 @@ public class CallApiUtils {
     }
 
     private static String C4C_Visits = "/cxf/PORTAL/C4C/VISIT";
-
+    public static AppointmentActivityMaintainConfirmationBundleMessageSyncV1 callC4cVisits(VisitCreate create){
+        String url = String.format("%s%s",ECC_API_URL,C4C_Visits);
+        try {
+            String requestXml = JaxbXmlUtil.convertToXml(create).replace("</StartDateTime timeZoneCode=\"CET\">","</StartDateTime>").replace("</EndDateTime timeZoneCode=\"CET\">","</EndDateTime>");
+            String response = HttpClientUtils.post(url,requestXml);
+            return JaxbXmlUtil.convertSoapXmlToJavaBean2(response, AppointmentActivityMaintainConfirmationBundleMessageSyncV1.class);
+        } catch (Exception e) {
+            log.error("",e);
+        }
+        return null;
+    }
 
 }

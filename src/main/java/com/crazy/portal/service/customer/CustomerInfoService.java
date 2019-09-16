@@ -13,6 +13,8 @@ import com.crazy.portal.bean.customer.visitRecord.CustomerCodeEO;
 import com.crazy.portal.bean.customer.visitRecord.VisitRecordEO;
 import com.crazy.portal.bean.customer.visitRecord.VisitRecordQueryBean;
 import com.crazy.portal.bean.customer.wsdl.credit.Zsdscredit;
+import com.crazy.portal.bean.customer.wsdl.visits.*;
+import com.crazy.portal.bean.customer.wsdl.visits1.AppointmentActivityMaintainConfirmationBundleMessageSyncV1;
 import com.crazy.portal.config.exception.BusinessException;
 import com.crazy.portal.dao.cusotmer.CustBankInfoMapper;
 import com.crazy.portal.dao.cusotmer.CustomerInfoMapper;
@@ -31,14 +33,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-
 import javax.annotation.Resource;
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 /**
  * @ClassName: CustomerInfoService
  * @Author: God Man Qiu~
@@ -600,7 +601,51 @@ public class CustomerInfoService {
     }
 
     public void approve(List<Integer> ids){
-        visitRecordMapper.approve(ids);
+        ids.forEach(e->{
+            VisitRecord visitRecord = visitRecordMapper.selectByPrimaryKey(e);
+            VisitCreate create = getVisitsRequest(visitRecord);
+            AppointmentActivityMaintainConfirmationBundleMessageSyncV1 response = CallApiUtils.callC4cVisits(create);
+            if(null != response && !response.getAppointmentActivity().isEmpty() && null != response.getAppointmentActivity().get(0).getID()){
+                visitRecordMapper.approve(e, response.getAppointmentActivity().get(0).getID().getValue());
+            }
+        });
+    }
+
+    private VisitCreate getVisitsRequest(VisitRecord visitRecord){
+        VisitCreateBean visitBean = new VisitCreateBean();
+        visitBean.setObjectNodeSenderTechnicalID("001");
+        visitBean.setName(visitRecord.getProjectName());
+        visitBean.setLifeCycleStatusCode("1");
+        visitBean.setVisitTypeCode("Z01");
+
+        try{
+            visitBean.setStartDateTime(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSSS'Z'").format(DateUtil.parseDate(visitRecord.getVisitDate(),DateUtil.WEB_FORMAT)));
+            visitBean.setEndDateTime(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSSS'Z'").format(DateUtil.parseDate(visitRecord.getVisitDate(),DateUtil.WEB_FORMAT)));
+        }catch (Exception e){
+            log.error("时间格式化异常",e);
+        }
+        visitBean.setZMeetingContent(visitRecord.getTalkContent());
+        visitBean.setZFollowUpPlans(visitRecord.getFollowPlan());
+        visitBean.setZRequirementDescription(visitRecord.getClaimDescription());
+
+        OrganizerPartyBean organizerPartyBean = new OrganizerPartyBean();
+        organizerPartyBean.setBusinessPartnerInternalID("1000042");
+        visitBean.setOrganizerPartyBean(organizerPartyBean);
+
+        MainActivityPartyBean mainActivityPartyBean = new MainActivityPartyBean();
+        mainActivityPartyBean.setBusinessPartnerInternalID("1000042");
+        visitBean.setMainActivityPartyBean(mainActivityPartyBean);
+
+        OtherPartyBean otherPartyBean = new OtherPartyBean();
+        otherPartyBean.setBusinessPartnerInternalID("1000042");
+        visitBean.setOtherPartyBean(otherPartyBean);
+
+        VisitCreateHeader header = new VisitCreateHeader();
+        VisitCreateContent content = new VisitCreateContent(visitBean,header);
+
+        VisitCreateBody body = new VisitCreateBody(content);
+        VisitCreate create = new VisitCreate(body);
+        return create;
     }
 
     /**
