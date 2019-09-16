@@ -14,9 +14,11 @@ import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.stereotype.Component;
+import org.springframework.util.Assert;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
+
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.Objects;
@@ -38,7 +40,7 @@ public class OperationAspect extends BaseController {
         OperationLogDO opLog = new OperationLogDO(new Date());
         try {
             this.buildOperationLog(point,opLog);
-        } catch (Exception e) {
+        } catch (NullPointerException e) {
             //构建操作日志对象出现异常不影响Controller继续执行
             log.error("Aop intercepts log exceptions.",e);
         }
@@ -82,19 +84,27 @@ public class OperationAspect extends BaseController {
      * @return
      */
     private void buildOperationLog(ProceedingJoinPoint point,OperationLogDO opLog) {
+        //获取操作人
         User user = super.getCurrentUser();
         opLog.setOperator(Objects.isNull(user)? null: user.getLoginName());
 
+        //获取请求URL
         HttpServletRequest request = this.getRequest();
+        Assert.notNull(request,"requestAttributes is null");
         opLog.setUrl(request.getRequestURI());
 
         Object[] objects = point.getArgs();
-        String params = JSON.toJSONString(objects);
+        String params = "";
+        //获取方法参数
+        if(Objects.nonNull(objects)){
+            params = JSON.toJSONString(objects);
+        }
+        //获取调用链
         Signature signature = point.getSignature();
-
         String invoke = this.getInvoke(params, signature);
         opLog.setInvoke(invoke);
 
+        //获取业务日志Key(类名.方法名)
         String className = point.getTarget().getClass().getSimpleName();
         String methodName = signature.getName();
         opLog.setBusinessKey(String.format("%s.%s",className,methodName));
@@ -106,6 +116,7 @@ public class OperationAspect extends BaseController {
      */
     private HttpServletRequest getRequest() {
         RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
+        Assert.notNull(requestAttributes,"requestAttributes is null");
         return (HttpServletRequest) requestAttributes.resolveReference(RequestAttributes.REFERENCE_REQUEST);
     }
 
