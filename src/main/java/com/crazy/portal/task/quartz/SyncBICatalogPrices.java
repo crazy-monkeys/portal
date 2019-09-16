@@ -53,7 +53,7 @@ public class SyncBICatalogPrices implements Job {
             }
             catalogPriceService.insertCatalogPrice(this.buildCatalogPrice(x, new JSONArray(), now));
         });
-        log.info("------End synchronizing bi catalog price data");
+        log.info("-----End synchronizing bi catalog price data");
     }
 
     private CatalogPrice buildCatalogPrice(BICatalogPrice x, JSONArray boms, Date now) {
