@@ -35,7 +35,7 @@ public class CatalogPrice {
     private String pdt;
 
     /**
-     * sapCode
+     * 虚拟料号
      */
     private String sapCode;
     /**
