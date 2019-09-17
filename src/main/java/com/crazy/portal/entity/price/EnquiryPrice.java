@@ -1,5 +1,6 @@
 package com.crazy.portal.entity.price;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
 
@@ -22,7 +23,14 @@ public class EnquiryPrice {
      * 产品型号
      */
     private String productModel;
-
+    /**
+     * 产品类型
+     */
+    private String productType;
+    /**
+     * 价格类型
+     */
+    private String priceType;
 
     /**
      * 申请说明
@@ -50,10 +58,6 @@ public class EnquiryPrice {
      */
     private String status;
 
-    /**
-     * 产品类型
-     */
-    private String productType;
 
     /**
      * 平台
@@ -110,4 +114,10 @@ public class EnquiryPrice {
      * 备注
      */
     private String remark;
+
+    /**
+     * BOMS
+     * @see CatalogBomsPrice
+     */
+    private JSONArray boms;
 }

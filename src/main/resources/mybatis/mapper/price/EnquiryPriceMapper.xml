@@ -3,13 +3,15 @@
 <mapper namespace="com.crazy.portal.dao.price.EnquiryPriceMapper">
   <resultMap id="BaseResultMap" type="com.crazy.portal.entity.price.EnquiryPrice">
     <id column="id" jdbcType="INTEGER" property="id" />
-    <result column="product_model" jdbcType="VARCHAR" property="productModel" />
+
     <result column="apply_remark" jdbcType="VARCHAR" property="applyRemark" />
     <result column="apply_time" jdbcType="TIMESTAMP" property="applyTime" />
     <result column="bu" jdbcType="VARCHAR" property="bu" />
     <result column="pdt" jdbcType="VARCHAR" property="pdt" />
     <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="product_model" jdbcType="VARCHAR" property="productModel" />
     <result column="product_type" jdbcType="VARCHAR" property="productType" />
+    <result column="price_type" jdbcType="VARCHAR" property="priceType" />
     <result column="platform" jdbcType="VARCHAR" property="platform" />
     <result column="catalog_price" jdbcType="DECIMAL" property="catalogPrice" />
     <result column="in_customer" jdbcType="VARCHAR" property="inCustomer" />
@@ -21,11 +23,12 @@
     <result column="approver" jdbcType="VARCHAR" property="approver" />
     <result column="proposer" jdbcType="VARCHAR" property="proposer" />
     <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="boms" property="boms" typeHandler="com.crazy.portal.config.mybatis.handler.ArrayJsonHandler" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, product_model, apply_remark, apply_time, bu, pdt,status, product_type,
+    id, apply_remark, apply_time, bu, pdt,status, product_model,product_type,price_type,
     platform, catalog_price, in_customer, effect_time, dead_time, modify_time, approval_status, 
-    approval_remark, approver, proposer,remark
+    approval_remark, approver, proposer,remark,boms
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -87,6 +90,9 @@
       <if test="productType != null">
         product_type,
       </if>
+      <if test="priceType != null">
+        price_type,
+      </if>
       <if test="platform != null">
         platform,
       </if>
@@ -120,6 +126,9 @@
       <if test="remark != null">
         remark,
       </if>
+      <if test="boms != null">
+        boms
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -145,6 +154,9 @@
       </if>
       <if test="productType != null">
         #{productType,jdbcType=VARCHAR},
+      </if>
+      <if test="priceType != null">
+        #{priceType,jdbcType=VARCHAR},
       </if>
       <if test="platform != null">
         #{platform,jdbcType=VARCHAR},
@@ -179,6 +191,9 @@
       <if test="remark != null">
         #{remark,jdbcType=VARCHAR},
       </if>
+      <if test="boms != null">
+        #{boms,jdbcType=OTHER,typeHandler=com.crazy.portal.config.mybatis.handler.ArrayJsonHandler},
+      </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.crazy.portal.entity.price.EnquiryPrice">
@@ -204,6 +219,9 @@
       </if>
       <if test="productType != null">
         product_type = #{productType,jdbcType=VARCHAR},
+      </if>
+      <if test="priceType != null">
+        price_type = #{priceType,jdbcType=VARCHAR},
       </if>
       <if test="platform != null">
         platform = #{platform,jdbcType=VARCHAR},
@@ -237,6 +255,9 @@
       </if>
       <if test="remark != null">
         remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="boms != null">
+        boms = #{boms,jdbcType=OTHER,typeHandler=com.crazy.portal.config.mybatis.handler.ArrayJsonHandler},
       </if>
     </set>
     where id = #{id,jdbcType=INTEGER}

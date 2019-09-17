@@ -111,6 +111,9 @@ public class EnquiryPriceService {
                 enquiryPrice.setStatus(catalogPrice.getStatus());
                 enquiryPrice.setInCustomer(catalogPrice.getInCustomer());
                 enquiryPrice.setRemark(catalogPrice.getRemark());
+                enquiryPrice.setProductType(catalogPrice.getProductType());
+                enquiryPrice.setPriceType(catalogPrice.getPriceType());
+                enquiryPrice.setBoms(catalogPrice.getBoms());
                 enquiryPrice.setPlatform(catalogPrice.getPlatform());
                 enquiryPrice.setCatalogPrice(catalogPrice.getCatalogPrice());
                 enquiryPrice.setEffectTime(catalogPrice.getEffectTime());
