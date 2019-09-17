@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
  * @Modified by:
  */
 @Slf4j
-@Task(value = "同步BI目录价")
+@Task(value = "BI目录价同步")
 @DisallowConcurrentExecution
 public class SyncBICatalogPricesJob implements Job {
 
