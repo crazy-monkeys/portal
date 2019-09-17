@@ -163,7 +163,7 @@ public class HandoverController extends BaseController {
      * @return
      */
     @OperationLog
-    @PostMapping(value = "/handover/detail/delete")
+    @GetMapping(value = "/handover/detail/delete")
     public BaseResponse deleteData(Integer[] ids, String type) {
         handoverServiceContext.getService(type).batchDeleteData(ids, getCurrentUser().getId());
         return super.successResult();
