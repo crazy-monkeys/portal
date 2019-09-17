@@ -5,13 +5,13 @@ import com.crazy.portal.bean.price.CatalogPriceVO;
 import com.crazy.portal.controller.BaseController;
 import com.crazy.portal.entity.price.CatalogPrice;
 import com.crazy.portal.service.price.CatalogPriceService;
+import com.crazy.portal.util.BusinessUtil;
+import com.crazy.portal.util.ErrorCodes;
 import com.github.pagehelper.PageInfo;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.Objects;
 
 /**
  * @Desc: 目录价格
@@ -30,5 +30,17 @@ public class CatalogPriceController extends BaseController {
     public BaseResponse list(@RequestBody CatalogPriceVO catalogPriceVO){
         PageInfo<CatalogPrice> catalogPricePageInfo =  catalogPriceService.selectWithPage(catalogPriceVO);
         return super.successResult(catalogPricePageInfo);
+    }
+
+    @PostMapping("/detail")
+    public BaseResponse detail(@RequestBody CatalogPriceVO catalogPriceVO){
+        String productModel = catalogPriceVO.getProductModel();
+        String inCustomer = catalogPriceVO.getInCustomer();
+
+        boolean check = Objects.isNull(productModel) && Objects.isNull(inCustomer);
+        BusinessUtil.assertFlase(check,ErrorCodes.PriceEnum.PRICE_EMPTY_MODEL_INCUSTOMER);
+
+        CatalogPrice catalogPrice = catalogPriceService.selectByProductModelAndCustomerName(productModel, inCustomer);
+        return super.successResult(catalogPrice);
     }
 }

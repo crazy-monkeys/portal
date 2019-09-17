@@ -34,6 +34,11 @@ public class CatalogPriceService {
     @Resource
     private CatalogPriceMapper catalogPriceMapper;
 
+    /**
+     * 分页查询目录价
+     * @param catalogPriceVO
+     * @return
+     */
     public PageInfo<CatalogPrice> selectWithPage(CatalogPriceVO catalogPriceVO){
         PortalUtil.defaultStartPage(catalogPriceVO.getPageIndex(), catalogPriceVO.getPageSize());
         if(StringUtils.isEmpty(catalogPriceVO.getStatus())){
@@ -41,6 +46,16 @@ public class CatalogPriceService {
         }
         Page<CatalogPrice> catalogPrices = catalogPriceMapper.selectByParamsWithPage(catalogPriceVO);
         return new PageInfo<>(catalogPrices);
+    }
+
+    /**
+     * 详情
+     * @param productModel
+     * @param inCustomer
+     * @return
+     */
+    public CatalogPrice selectByProductModelAndCustomerName(String productModel,String inCustomer){
+        return catalogPriceMapper.selectByProductModelAndCustomerName(productModel,inCustomer);
     }
 
     /**

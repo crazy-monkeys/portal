@@ -236,7 +236,8 @@ public class ErrorCodes {
         PRICE_CATALOG_CUSTOMER_NOT_EXISTS(80003,"内部客户下产品型号不存在"),
         PRICE_EMPTY_APPLYIDS(80004,"询价申请单ID不能为空"),
         PRICE_EMPTY_STATUS(80004,"询价申请单审批状态不能为空"),
-        PRICE_NON_PENGDING_STATUS(80005,"非待审批状态询价单不允许再进行审批")
+        PRICE_NON_PENGDING_STATUS(80005,"非待审批状态询价单不允许再进行审批"),
+        PRICE_EMPTY_MODEL_INCUSTOMER(80005,"内部客户跟产品型号不能同时为空")
         ;
 
         private final int code;
