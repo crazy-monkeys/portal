@@ -87,6 +87,13 @@ public class SyncBICatalogPricesJob implements Job {
         return totalPrice;
     }
 
+    /**
+     * 构建目录价格对象
+     * @param x
+     * @param boms
+     * @param now
+     * @return
+     */
     private CatalogPrice buildCatalogPrice(BICatalogPrice x, JSONArray boms, Date now) {
         CatalogPrice catalogPrice = new CatalogPrice();
         catalogPrice.setBu(x.getBU());
