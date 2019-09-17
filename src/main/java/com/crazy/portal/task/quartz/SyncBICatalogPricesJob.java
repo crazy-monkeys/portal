@@ -39,14 +39,21 @@ public class SyncBICatalogPricesJob implements Job {
         log.info("-----Synchronize {} pieces of data",biActualPrices.size());
 
         biActualPrices.forEach(x->{
-            CatalogPrice catalogPrice = catalogPriceService.selectBySapCode(x.getSap_code());
-            Date now = new Date();
+            final String sapCode = x.getSap_code();
+            final Date now = new Date();
+            //根据sapCode查询唯一记录
+            CatalogPrice catalogPrice = catalogPriceService.selectBySapCode(sapCode);
+
             if(Objects.nonNull(catalogPrice)){
                 String createDate = DateUtil.format(catalogPrice.getCreateTime(),DateUtil.SHORT_FORMAT);
                 String nowDate = DateUtil.format(now,DateUtil.SHORT_FORMAT);
+                //注意: 由于每次都是全量推送数据,如果先全量删除再全量更新会造成同步时间段内 目录价格服务不可用
+                //这里将该风险避免到最低,如果不是当天数据则进行删除,否则进行修改,金额累加
                 if(!nowDate.equals(createDate)){
+                    log.info("Non - day data are deleted - {}", sapCode);
                     catalogPriceService.delete(catalogPrice.getId());
                 }else{
+                    log.info("Data of the day are modified - {}", sapCode);
                     JSONArray boms = catalogPrice.getBoms();
                     CatalogPrice updateCatalogPrice = this.buildCatalogPrice(x, boms, now);
                     updateCatalogPrice.setId(catalogPrice.getId());
