@@ -1,5 +1,6 @@
 package com.crazy.portal.task.quartz;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.crazy.portal.annotation.Task;
 import com.crazy.portal.bean.price.BICatalogPrice;
@@ -11,8 +12,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
-
 import javax.annotation.Resource;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -26,7 +27,7 @@ import java.util.Objects;
 @Slf4j
 @Task(value = "同步BI目录价")
 @DisallowConcurrentExecution
-public class SyncBICatalogPrices implements Job {
+public class SyncBICatalogPricesJob implements Job {
 
     @Resource
     private CatalogPriceService catalogPriceService;
@@ -47,13 +48,36 @@ public class SyncBICatalogPrices implements Job {
                     catalogPriceService.delete(catalogPrice.getId());
                 }else{
                     JSONArray boms = catalogPrice.getBoms();
-                    catalogPriceService.update(this.buildCatalogPrice(x, boms, now));
+                    CatalogPrice updateCatalogPrice = this.buildCatalogPrice(x, boms, now);
+                    updateCatalogPrice.setId(catalogPrice.getId());
+                    updateCatalogPrice.setModifyTime(new Date());
+                    catalogPriceService.update(updateCatalogPrice);
                     return;
                 }
             }
             catalogPriceService.insertCatalogPrice(this.buildCatalogPrice(x, new JSONArray(), now));
         });
         log.info("-----End synchronizing bi catalog price data");
+    }
+
+    /**
+     * 计算每次记录的boms总价
+     * @param boms
+     * @return
+     */
+    private BigDecimal calculateCatalogPrice(JSONArray boms) {
+        BigDecimal totalPrice = new BigDecimal(0);
+        String jsonStr = JSON.toJSONString(boms);
+        List<CatalogBomsPrice> bomsPrices = JSON.parseArray(jsonStr,CatalogBomsPrice.class);
+
+        for(CatalogBomsPrice bomsPrice : bomsPrices){
+            BigDecimal totalBomPrice = bomsPrice.getPrice()
+                    .multiply(new BigDecimal(bomsPrice.getQty()))
+                    .setScale(5,BigDecimal.ROUND_HALF_DOWN);
+
+            totalPrice = totalPrice.add(totalBomPrice);
+        }
+        return totalPrice;
     }
 
     private CatalogPrice buildCatalogPrice(BICatalogPrice x, JSONArray boms, Date now) {
@@ -63,6 +87,7 @@ public class SyncBICatalogPrices implements Job {
         catalogPrice.setSapCode(x.getSap_code());
         catalogPrice.setInCustomer(x.getCustomer_incode());
         catalogPrice.setProductModel(x.getProduct());
+        catalogPrice.setProductType(x.getPrice_type());
         catalogPrice.setRemark(x.getComments());
         catalogPrice.setPlatform(x.getClass3());
         catalogPrice.setEffectTime(x.getEffective_date());
@@ -72,10 +97,13 @@ public class SyncBICatalogPrices implements Job {
         bom.setBomId(x.getBom_id());
         bom.setBomName(x.getBom_name());
         bom.setInCustomer(x.getCustomer_incode());
-        bom.setPrice(x.getPrice());
+        bom.setPrice(new BigDecimal(x.getPrice()));
         bom.setClass2(x.getClass2());
+        bom.setQty(Integer.parseInt(x.getQty()));
         boms.add(bom);
         catalogPrice.setBoms(boms);
+        //计算boms总价
+        catalogPrice.setCatalogPrice(this.calculateCatalogPrice(boms));
         return catalogPrice;
     }
 }

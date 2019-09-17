@@ -1,5 +1,6 @@
 package com.crazy.portal.service.price;
 
+import com.alibaba.fastjson.JSON;
 import com.crazy.portal.bean.price.BICatalogPrice;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Assert;

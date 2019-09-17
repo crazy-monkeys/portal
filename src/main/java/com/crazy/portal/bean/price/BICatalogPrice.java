@@ -11,17 +11,24 @@ import lombok.Data;
 @Data
 public class BICatalogPrice {
 
-    private String BU;
-    private String PDT;
-    private String class2;
+    private String bU;
+    private String pDT;
     private String class3;
     private String sap_code;
     private String product;
-    private String bom_id;
-    private String bom_name;
-    private String customer_incode;
     private String effective_date;
-    private String price;
     private String comments;
     private String active;
+    private String price_type;
+
+    //boms
+    private String bom_id;
+    private String bom_name;
+    private String class2;
+    private String price;
+    private String qty;
+    private String customer_incode;
+
+
+
 }

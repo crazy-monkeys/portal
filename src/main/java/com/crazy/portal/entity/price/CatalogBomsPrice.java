@@ -2,6 +2,8 @@ package com.crazy.portal.entity.price;
 
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 /**
  * @Desc:
  * @Author: Bill
@@ -14,5 +16,6 @@ public class CatalogBomsPrice {
     private String bomName;
     private String class2;
     private String inCustomer;
-    private String price;
+    private BigDecimal price;
+    private Integer qty;
 }

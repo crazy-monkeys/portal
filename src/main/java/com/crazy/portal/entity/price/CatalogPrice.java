@@ -49,6 +49,11 @@ public class CatalogPrice {
     private String productModel;
 
     /**
+     * 产品类型
+     */
+    private String productType;
+
+    /**
      * 目录价格
      */
     private BigDecimal catalogPrice;
@@ -70,6 +75,7 @@ public class CatalogPrice {
 
     /**
      * BOMS
+     * @see CatalogBomsPrice
      */
     private JSONArray boms;
     /**

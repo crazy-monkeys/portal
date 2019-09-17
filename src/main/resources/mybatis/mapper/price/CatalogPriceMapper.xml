@@ -9,6 +9,7 @@
     <result column="sap_code" jdbcType="VARCHAR" property="sapCode" />
     <result column="platform" jdbcType="VARCHAR" property="platform" />
     <result column="product_model" jdbcType="VARCHAR" property="productModel" />
+    <result column="product_type" jdbcType="VARCHAR" property="productType" />
     <result column="catalog_price" jdbcType="DECIMAL" property="catalogPrice" />
     <result column="in_customer" jdbcType="VARCHAR" property="inCustomer" />
     <result column="effect_time" jdbcType="TIMESTAMP" property="effectTime" />
@@ -19,7 +20,7 @@
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, status, bu, pdt, sap_code, platform, product_model, catalog_price, in_customer,
+    id, status, bu, pdt, sap_code, platform, product_model,product_type, catalog_price, in_customer,
     effect_time, dead_time, modify_time, boms,remark, create_time
   </sql>
 
@@ -57,10 +58,10 @@
     <if test="productModel != null and productModel != '' ">
       and product_model = #{productModel,jdbcType=VARCHAR}
     </if>
-    <if test="effectBeginTime != ''">
+    <if test="effectBeginTime != null and effectBeginTime != ''">
       and effect_time &gt;= #{effectBeginTime,jdbcType=VARCHAR}
     </if>
-    <if test="effectEndTime != ''">
+    <if test="effectEndTime != null and effectEndTime != ''">
       and effect_time &lt;= #{effectEndTime,jdbcType=VARCHAR}
     </if>
   </select>
@@ -93,6 +94,9 @@
       </if>
       <if test="productModel != null">
         product_model,
+      </if>
+      <if test="productType != null">
+        product_type,
       </if>
       <if test="catalogPrice != null">
         catalog_price,
@@ -141,6 +145,9 @@
       <if test="productModel != null">
         #{productModel,jdbcType=VARCHAR},
       </if>
+      <if test="productType != null">
+        #{productType,jdbcType=VARCHAR},
+      </if>
       <if test="catalogPrice != null">
         #{catalogPrice,jdbcType=DECIMAL},
       </if>
@@ -188,6 +195,9 @@
       </if>
       <if test="productModel != null">
         product_model = #{productModel,jdbcType=VARCHAR},
+      </if>
+      <if test="productType != null">
+        product_type = #{productType,jdbcType=VARCHAR},
       </if>
       <if test="catalogPrice != null">
         catalog_price = #{catalogPrice,jdbcType=DECIMAL},
