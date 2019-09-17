@@ -17,6 +17,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * @Desc:
@@ -108,6 +109,16 @@ public class SyncBICatalogPricesJob implements Job {
         catalogPrice.setEffectTime(x.getEffective_date());
         catalogPrice.setStatus(x.getActive());
         catalogPrice.setCreateTime(now);
+
+        //如果是叠加操作,判断实体料号是否已经存在(即任务当天多次触发),如果存在则直接覆盖
+        if(!boms.isEmpty()){
+            String jsonStr = JSON.toJSONString(boms);
+            List<CatalogBomsPrice> bomsPrices = JSON.parseArray(jsonStr,CatalogBomsPrice.class);
+            bomsPrices = bomsPrices.stream().filter(bom->x.getBom_id().equals(bom.getBomId())).collect(Collectors.toList());
+            if(!bomsPrices.isEmpty()){
+                boms = new JSONArray();
+            }
+        }
         CatalogBomsPrice bom = new CatalogBomsPrice();
         bom.setBomId(x.getBom_id());
         bom.setBomName(x.getBom_name());
