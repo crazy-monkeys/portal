@@ -49,7 +49,12 @@ public class CatalogPrice {
     private String productModel;
 
     /**
-     * 产品类型
+     * 价格类型
+     */
+    private String priceType;
+
+    /**
+     * 价格类型
      */
     private String productType;
 

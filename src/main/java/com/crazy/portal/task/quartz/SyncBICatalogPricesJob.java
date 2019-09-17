@@ -101,7 +101,8 @@ public class SyncBICatalogPricesJob implements Job {
         catalogPrice.setSapCode(x.getSap_code());
         catalogPrice.setInCustomer(x.getCustomer_incode());
         catalogPrice.setProductModel(x.getProduct());
-        catalogPrice.setProductType(x.getPrice_type());
+        catalogPrice.setPriceType(x.getPrice_type());
+        catalogPrice.setProductType(x.getClass2());
         catalogPrice.setRemark(x.getComments());
         catalogPrice.setPlatform(x.getClass3());
         catalogPrice.setEffectTime(x.getEffective_date());
@@ -112,7 +113,6 @@ public class SyncBICatalogPricesJob implements Job {
         bom.setBomName(x.getBom_name());
         bom.setInCustomer(x.getCustomer_incode());
         bom.setPrice(new BigDecimal(x.getPrice()));
-        bom.setClass2(x.getClass2());
         bom.setQty(Integer.parseInt(x.getQty()));
         boms.add(bom);
         catalogPrice.setBoms(boms);

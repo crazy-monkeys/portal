@@ -9,6 +9,7 @@
     <result column="sap_code" jdbcType="VARCHAR" property="sapCode" />
     <result column="platform" jdbcType="VARCHAR" property="platform" />
     <result column="product_model" jdbcType="VARCHAR" property="productModel" />
+    <result column="price_type" jdbcType="VARCHAR" property="priceType" />
     <result column="product_type" jdbcType="VARCHAR" property="productType" />
     <result column="catalog_price" jdbcType="DECIMAL" property="catalogPrice" />
     <result column="in_customer" jdbcType="VARCHAR" property="inCustomer" />
@@ -20,7 +21,7 @@
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, status, bu, pdt, sap_code, platform, product_model,product_type, catalog_price, in_customer,
+    id, status, bu, pdt, sap_code, platform, product_model,price_type, product_type,catalog_price, in_customer,
     effect_time, dead_time, modify_time, boms,remark, create_time
   </sql>
 
@@ -95,6 +96,9 @@
       <if test="productModel != null">
         product_model,
       </if>
+      <if test="priceType != null">
+        price_type,
+      </if>
       <if test="productType != null">
         product_type,
       </if>
@@ -144,6 +148,9 @@
       </if>
       <if test="productModel != null">
         #{productModel,jdbcType=VARCHAR},
+      </if>
+      <if test="priceType != null">
+        #{priceType,jdbcType=VARCHAR},
       </if>
       <if test="productType != null">
         #{productType,jdbcType=VARCHAR},
@@ -195,6 +202,9 @@
       </if>
       <if test="productModel != null">
         product_model = #{productModel,jdbcType=VARCHAR},
+      </if>
+      <if test="priceType != null">
+        price_type = #{priceType,jdbcType=VARCHAR},
       </if>
       <if test="productType != null">
         product_type = #{productType,jdbcType=VARCHAR},

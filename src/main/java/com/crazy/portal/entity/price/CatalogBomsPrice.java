@@ -12,10 +12,15 @@ import java.math.BigDecimal;
  */
 @Data
 public class CatalogBomsPrice {
+
+    //实体料id
     private String bomId;
+    //实体料名称
     private String bomName;
-    private String class2;
+    //内部客户
     private String inCustomer;
+    //价格
     private BigDecimal price;
+    //数量
     private Integer qty;
 }
