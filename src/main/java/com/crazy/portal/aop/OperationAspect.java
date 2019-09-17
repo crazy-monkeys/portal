@@ -14,11 +14,17 @@ import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.stereotype.Component;
+import org.springframework.util.Assert;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.multipart.MultipartFile;
+
 import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @Desc: 操作日志
@@ -34,10 +40,10 @@ public class OperationAspect extends BaseController {
     @Around("@annotation(operationLog)")
     public Object around(ProceedingJoinPoint point, OperationLog operationLog){
         Object proceed = null;
-        OperationLogDO opLog = new OperationLogDO();
+        OperationLogDO opLog = new OperationLogDO(new Date());
         try {
             this.buildOperationLog(point,opLog);
-        } catch (Exception e) {
+        } catch (NullPointerException e) {
             //构建操作日志对象出现异常不影响Controller继续执行
             log.error("Aop intercepts log exceptions.",e);
         }
@@ -81,19 +87,52 @@ public class OperationAspect extends BaseController {
      * @return
      */
     private void buildOperationLog(ProceedingJoinPoint point,OperationLogDO opLog) {
+        //获取操作人
         User user = super.getCurrentUser();
         opLog.setOperator(Objects.isNull(user)? null: user.getLoginName());
 
+        //获取请求URL
         HttpServletRequest request = this.getRequest();
+        Assert.notNull(request,"requestAttributes is null");
         opLog.setUrl(request.getRequestURI());
 
         Object[] objects = point.getArgs();
-        String params = JSON.toJSONString(objects);
+        //获取方法参数
+        String params = this.getParams(objects);
+        //获取调用链
         Signature signature = point.getSignature();
-        String invoke = this.getInvoke(params, signature);
+        String invoke = this.getInvoke(params, point.getSignature());
         opLog.setInvoke(invoke);
 
-        opLog.setBusinessKey(String.format("%s.%s",point.getTarget().getClass().getSimpleName(),signature.getName()));
+        //获取业务日志Key(类名.方法名)
+        String className = point.getTarget().getClass().getSimpleName();
+        String methodName = signature.getName();
+        opLog.setBusinessKey(String.format("%s.%s",className,methodName));
+    }
+
+    /**
+     * 获取方法参数
+     * @param objects
+     * @return
+     */
+    private String getParams(Object[] objects) {
+        String params = null;
+        if(Objects.nonNull(objects)){
+            params = Stream.of(objects).map(x->{
+                Object obj = x;
+                //如果是上传文件,普通序列化会报错,需要做一层处理
+                if(x instanceof MultipartFile[]){
+                    MultipartFile[] multipartFiles = (MultipartFile[])x;
+                    obj = Stream.of(multipartFiles)
+                            .collect(Collectors.toMap(
+                                    MultipartFile::getName,
+                                    MultipartFile::getOriginalFilename));
+
+                }
+                return JSON.toJSONString(obj);
+            }).collect(Collectors.joining(","));
+        }
+        return params;
     }
 
     /**
@@ -102,6 +141,7 @@ public class OperationAspect extends BaseController {
      */
     private HttpServletRequest getRequest() {
         RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
+        Assert.notNull(requestAttributes,"requestAttributes is null");
         return (HttpServletRequest) requestAttributes.resolveReference(RequestAttributes.REFERENCE_REQUEST);
     }
 
@@ -112,11 +152,15 @@ public class OperationAspect extends BaseController {
      * @return
      */
     private String getInvoke(String params, Signature signature) {
-        return new StringBuilder(signature.getDeclaringTypeName())
-                        .append(".")
-                        .append(signature.getName())
-                        .append(" -> parameters：")
-                        .append(params).toString();
+        StringBuilder sb = new StringBuilder(signature.getDeclaringTypeName())
+                .append(".")
+                .append(signature.getName());
+
+        if(Objects.nonNull(params)){
+            sb.append(" -> parameters：");
+            sb.append(params);
+        }
+        return sb.toString();
     }
 
     /**
@@ -124,6 +168,10 @@ public class OperationAspect extends BaseController {
      * @param operationLogDO
      */
     private void saveLog(OperationLogDO operationLogDO){
-        log.info(JSON.toJSONString(operationLogDO));
+        try {
+            log.info(JSON.toJSONString(operationLogDO));
+        } catch (Exception e) {
+            log.error("Failed to save log",e);
+        }
     }
 }

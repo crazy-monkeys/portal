@@ -10,7 +10,7 @@ public interface CatalogPriceMapper {
 
     int insertSelective(CatalogPrice record);
 
-    CatalogPrice selectByPrimaryKey(Integer id);
+    CatalogPrice selectBySapCode(String sapCode);
 
     CatalogPrice selectByProductModelAndCustomerName(@Param("productModel") String productModel,@Param("insideCustomer") String insideCustomer);
 

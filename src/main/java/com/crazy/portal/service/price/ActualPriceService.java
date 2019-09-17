@@ -6,6 +6,7 @@ import com.crazy.portal.entity.price.ActualPrice;
 import com.crazy.portal.util.PortalUtil;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -17,10 +18,13 @@ import javax.annotation.Resource;
  * @Modified by:
  */
 @Service
+@Slf4j
 public class ActualPriceService {
 
     @Resource
     private ActualPriceMapper actualPriceMapper;
+
+
 
     public PageInfo<ActualPrice> selectWithPage(ActualPriceVO actualPriceVO){
         PortalUtil.defaultStartPage(actualPriceVO.getPageIndex(), actualPriceVO.getPageSize());

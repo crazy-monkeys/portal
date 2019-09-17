@@ -6,7 +6,7 @@
     <result column="status" jdbcType="VARCHAR" property="status" />
     <result column="bu" jdbcType="VARCHAR" property="bu" />
     <result column="pdt" jdbcType="VARCHAR" property="pdt" />
-    <result column="product_type" jdbcType="VARCHAR" property="productType" />
+    <result column="sap_code" jdbcType="VARCHAR" property="sapCode" />
     <result column="platform" jdbcType="VARCHAR" property="platform" />
     <result column="product_model" jdbcType="VARCHAR" property="productModel" />
     <result column="catalog_price" jdbcType="DECIMAL" property="catalogPrice" />
@@ -14,19 +14,20 @@
     <result column="effect_time" jdbcType="TIMESTAMP" property="effectTime" />
     <result column="dead_time" jdbcType="TIMESTAMP" property="deadTime" />
     <result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime" />
+    <result column="boms" property="boms" typeHandler="com.crazy.portal.config.mybatis.handler.ArrayJsonHandler" />
     <result column="remark" jdbcType="VARCHAR" property="remark" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, status, bu, pdt, product_type, platform, product_model, catalog_price, in_customer,
-    effect_time, dead_time, modify_time, remark, create_time
+    id, status, bu, pdt, sap_code, platform, product_model, catalog_price, in_customer,
+    effect_time, dead_time, modify_time, boms,remark, create_time
   </sql>
 
-  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+  <select id="selectBySapCode" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from t_catalog_price
-    where id = #{id,jdbcType=INTEGER}
+    where sap_code = #{sapCode,jdbcType=VARCHAR}
   </select>
 
   <select id="selectByProductModelAndCustomerName" resultMap="BaseResultMap">
@@ -50,20 +51,17 @@
     <if test="pdt != null and pdt != ''">
       and pdt = #{pdt,jdbcType=VARCHAR}
     </if>
-    <if test="productType != null and productType != ''">
-      and product_type = #{productType,jdbcType=VARCHAR}
-    </if>
     <if test="platform != null and platform != '' ">
       and platform = #{platform,jdbcType=VARCHAR}
     </if>
     <if test="productModel != null and productModel != '' ">
       and product_model = #{productModel,jdbcType=VARCHAR}
     </if>
-    <if test="effectBeginTime != null">
-      and effect_time &gt;= #{effectBeginTime,jdbcType=TIMESTAMP}
+    <if test="effectBeginTime != ''">
+      and effect_time &gt;= #{effectBeginTime,jdbcType=VARCHAR}
     </if>
-    <if test="effectEndTime != null">
-      and effect_time &lt;= #{effectEndTime,jdbcType=TIMESTAMP}
+    <if test="effectEndTime != ''">
+      and effect_time &lt;= #{effectEndTime,jdbcType=VARCHAR}
     </if>
   </select>
 
@@ -87,8 +85,8 @@
       <if test="pdt != null">
         pdt,
       </if>
-      <if test="productType != null">
-        product_type,
+      <if test="sapCode != null">
+        sap_code,
       </if>
       <if test="platform != null">
         platform,
@@ -111,6 +109,9 @@
       <if test="modifyTime != null">
         modify_time,
       </if>
+      <if test="boms != null">
+        boms,
+      </if>
       <if test="remark != null">
         remark,
       </if>
@@ -131,8 +132,8 @@
       <if test="pdt != null">
         #{pdt,jdbcType=VARCHAR},
       </if>
-      <if test="productType != null">
-        #{productType,jdbcType=VARCHAR},
+      <if test="sapCode != null">
+        #{sapCode,jdbcType=VARCHAR},
       </if>
       <if test="platform != null">
         #{platform,jdbcType=VARCHAR},
@@ -147,13 +148,16 @@
         #{inCustomer,jdbcType=VARCHAR},
       </if>
       <if test="effectTime != null">
-        #{effectTime,jdbcType=TIMESTAMP},
+        #{effectTime,jdbcType=VARCHAR},
       </if>
       <if test="deadTime != null">
-        #{deadTime,jdbcType=TIMESTAMP},
+        #{deadTime,jdbcType=VARCHAR},
       </if>
       <if test="modifyTime != null">
         #{modifyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="boms != null">
+        #{boms,jdbcType=OTHER,typeHandler=com.crazy.portal.config.mybatis.handler.ArrayJsonHandler},
       </if>
       <if test="remark != null">
         #{remark,jdbcType=VARCHAR},
@@ -176,8 +180,8 @@
       <if test="pdt != null">
         pdt = #{pdt,jdbcType=VARCHAR},
       </if>
-      <if test="productType != null">
-        product_type = #{productType,jdbcType=VARCHAR},
+      <if test="sapCode != null">
+        sap_code = #{sapCode,jdbcType=VARCHAR},
       </if>
       <if test="platform != null">
         platform = #{platform,jdbcType=VARCHAR},
@@ -192,13 +196,16 @@
         in_customer = #{inCustomer,jdbcType=VARCHAR},
       </if>
       <if test="effectTime != null">
-        effect_time = #{effectTime,jdbcType=TIMESTAMP},
+        effect_time = #{effectTime,jdbcType=VARCHAR},
       </if>
       <if test="deadTime != null">
-        dead_time = #{deadTime,jdbcType=TIMESTAMP},
+        dead_time = #{deadTime,jdbcType=VARCHAR},
       </if>
       <if test="modifyTime != null">
         modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="boms != null">
+        boms = #{boms,jdbcType=OTHER,typeHandler=com.crazy.portal.config.mybatis.handler.ArrayJsonHandler},
       </if>
       <if test="remark != null">
         remark = #{remark,jdbcType=VARCHAR},

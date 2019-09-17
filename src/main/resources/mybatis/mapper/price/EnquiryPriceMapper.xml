@@ -13,8 +13,8 @@
     <result column="platform" jdbcType="VARCHAR" property="platform" />
     <result column="catalog_price" jdbcType="DECIMAL" property="catalogPrice" />
     <result column="in_customer" jdbcType="VARCHAR" property="inCustomer" />
-    <result column="effect_time" jdbcType="TIMESTAMP" property="effectTime" />
-    <result column="dead_time" jdbcType="TIMESTAMP" property="deadTime" />
+    <result column="effect_time" jdbcType="VARCHAR" property="effectTime" />
+    <result column="dead_time" jdbcType="VARCHAR" property="deadTime" />
     <result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime" />
     <result column="approval_status" jdbcType="VARCHAR" property="approvalStatus" />
     <result column="approval_remark" jdbcType="VARCHAR" property="approvalRemark" />
@@ -156,10 +156,10 @@
         #{inCustomer,jdbcType=VARCHAR},
       </if>
       <if test="effectTime != null">
-        #{effectTime,jdbcType=TIMESTAMP},
+        #{effectTime,jdbcType=VARCHAR},
       </if>
       <if test="deadTime != null">
-        #{deadTime,jdbcType=TIMESTAMP},
+        #{deadTime,jdbcType=VARCHAR},
       </if>
       <if test="modifyTime != null">
         #{modifyTime,jdbcType=TIMESTAMP},
@@ -215,10 +215,10 @@
         in_customer = #{inCustomer,jdbcType=VARCHAR},
       </if>
       <if test="effectTime != null">
-        effect_time = #{effectTime,jdbcType=TIMESTAMP},
+        effect_time = #{effectTime,jdbcType=VARCHAR},
       </if>
       <if test="deadTime != null">
-        dead_time = #{deadTime,jdbcType=TIMESTAMP},
+        dead_time = #{deadTime,jdbcType=VARCHAR},
       </if>
       <if test="modifyTime != null">
         modify_time = #{modifyTime,jdbcType=TIMESTAMP},

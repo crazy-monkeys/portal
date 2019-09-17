@@ -12,6 +12,11 @@ import java.util.Date;
  */
 @Data
 public class OperationLogDO {
+
+    public OperationLogDO(Date createTime) {
+        this.createTime = createTime;
+    }
+
     private String operator;
     private String url;
     private String invoke;
