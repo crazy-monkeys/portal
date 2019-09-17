@@ -18,11 +18,13 @@ public class CatalogPriceVO extends PageBean {
 
     private String pdt;
 
-    private String productType;
-
     private String platform;
 
     private String productModel;
+
+    private String status;
+
+    private String inCustomer;
 
     private Date effectBeginTime;
 

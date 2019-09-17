@@ -12,6 +12,7 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,6 +36,9 @@ public class CatalogPriceService {
 
     public PageInfo<CatalogPrice> selectWithPage(CatalogPriceVO catalogPriceVO){
         PortalUtil.defaultStartPage(catalogPriceVO.getPageIndex(), catalogPriceVO.getPageSize());
+        if(StringUtils.isEmpty(catalogPriceVO.getStatus())){
+            catalogPriceVO.setStatus("True");
+        }
         Page<CatalogPrice> catalogPrices = catalogPriceMapper.selectByParamsWithPage(catalogPriceVO);
         return new PageInfo<>(catalogPrices);
     }

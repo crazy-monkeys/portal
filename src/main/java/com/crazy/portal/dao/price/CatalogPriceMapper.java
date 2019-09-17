@@ -12,7 +12,7 @@ public interface CatalogPriceMapper {
 
     CatalogPrice selectBySapCode(String sapCode);
 
-    CatalogPrice selectByProductModelAndCustomerName(@Param("productModel") String productModel,@Param("insideCustomer") String insideCustomer);
+    CatalogPrice selectByProductModelAndCustomerName(@Param("productModel") String productModel,@Param("inCustomer") String inCustomer);
 
     Page<CatalogPrice> selectByParamsWithPage(CatalogPriceVO record);
 
