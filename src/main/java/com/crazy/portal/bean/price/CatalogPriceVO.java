@@ -22,6 +22,8 @@ public class CatalogPriceVO extends PageBean {
 
     private String productModel;
 
+    private String productType;
+
     private String status;
 
     private String inCustomer;
