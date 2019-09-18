@@ -13,7 +13,7 @@
     <result column="product_type" jdbcType="VARCHAR" property="productType" />
     <result column="catalog_price" jdbcType="DECIMAL" property="catalogPrice" />
     <result column="in_customer" jdbcType="VARCHAR" property="inCustomer" />
-    <result column="effect_time" jdbcType="TIMESTAMP" property="effectTime" />
+    <result column="effect_time" jdbcType="VARCHAR" property="effectTime" />
     <result column="dead_time" jdbcType="TIMESTAMP" property="deadTime" />
     <result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime" />
     <result column="boms" property="boms" typeHandler="com.crazy.portal.config.mybatis.handler.ArrayJsonHandler" />
