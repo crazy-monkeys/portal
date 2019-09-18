@@ -15,6 +15,8 @@ import java.util.Date;
 @Data
 public class EnquiryPriceVO extends PageBean {
 
+
+    private String bu;
     /**
      * 产品型号
      */
