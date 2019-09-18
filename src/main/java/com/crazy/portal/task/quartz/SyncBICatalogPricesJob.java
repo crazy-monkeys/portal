@@ -9,6 +9,7 @@ import com.crazy.portal.entity.price.CatalogPrice;
 import com.crazy.portal.service.price.CatalogPriceService;
 import com.crazy.portal.util.DateUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
@@ -106,7 +107,11 @@ public class SyncBICatalogPricesJob implements Job {
         catalogPrice.setProductType(x.getClass2());
         catalogPrice.setRemark(x.getComments());
         catalogPrice.setPlatform(x.getClass3());
-        catalogPrice.setEffectTime(x.getEffective_date());
+
+        String effectiveDate = x.getEffective_date();
+        if(StringUtils.isNotEmpty(effectiveDate)){
+            catalogPrice.setEffectTime(effectiveDate.substring(0,effectiveDate.lastIndexOf("-")+3));
+        }
         catalogPrice.setStatus(x.getActive());
         catalogPrice.setCreateTime(now);
 
