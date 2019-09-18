@@ -35,7 +35,7 @@ public class Announcement {
     @JsonIgnore
     private String content;
     //创建人
-    private Integer createUserName;
+    private String createUserName;
     //创建时间
     private String createTimeStr;
     //发布时间
