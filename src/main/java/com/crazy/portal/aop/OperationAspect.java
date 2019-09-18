@@ -129,7 +129,12 @@ public class OperationAspect extends BaseController {
                                     MultipartFile::getOriginalFilename));
 
                 }
-                return JSON.toJSONString(obj);
+                try {
+                    return JSON.toJSONString(obj);
+                } catch (Exception e) {
+                    log.error("",e);
+                    return null;
+                }
             }).collect(Collectors.joining(","));
         }
         return params;
