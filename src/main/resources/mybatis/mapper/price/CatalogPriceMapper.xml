@@ -62,8 +62,8 @@
     <if test="productModel != null and productModel != '' ">
       and product_model = #{productModel,jdbcType=VARCHAR}
     </if>
-    <if test="productType != null and productType != '' ">
-      and price_type = #{productType,jdbcType=VARCHAR}
+    <if test="priceType != null and priceType != '' ">
+      and price_type = #{priceType,jdbcType=VARCHAR}
     </if>
     <if test="inCustomer != null and inCustomer != '' ">
       and in_customer = #{inCustomer,jdbcType=VARCHAR}
