@@ -211,6 +211,7 @@ html, body {
                 success : function(data) {
                     var tModal = $("#editModal");
                     tModal.find($("select[name='jobName']")).val(data.jobName);
+                    $("#select2-chosen-8").html(data.jobName);
                     tModal.find($("input[name='cronEx']")).val(data.cronExpression);
                     tModal.find($("input[name='jobId']")).val(data.jobId);
                     tModal.find($("textarea[name='jobDesc']")).val(data.jobDesc);
