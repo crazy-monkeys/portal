@@ -46,18 +46,24 @@
     select
     <include refid="Base_Column_List" />
     from t_catalog_price
-    where status = #{status,jdbcType=VARCHAR}
+    where 1 = 1
     <if test="bu != null and bu != ''">
       and bu = #{bu,jdbcType=VARCHAR}
     </if>
     <if test="pdt != null and pdt != ''">
       and pdt = #{pdt,jdbcType=VARCHAR}
     </if>
+    <if test="status != null and status != ''">
+      and status = #{status,jdbcType=VARCHAR}
+    </if>
     <if test="platform != null and platform != '' ">
       and platform = #{platform,jdbcType=VARCHAR}
     </if>
     <if test="productModel != null and productModel != '' ">
       and product_model = #{productModel,jdbcType=VARCHAR}
+    </if>
+    <if test="productType != null and productType != '' ">
+      and price_type = #{productType,jdbcType=VARCHAR}
     </if>
     <if test="inCustomer != null and inCustomer != '' ">
       and in_customer = #{inCustomer,jdbcType=VARCHAR}

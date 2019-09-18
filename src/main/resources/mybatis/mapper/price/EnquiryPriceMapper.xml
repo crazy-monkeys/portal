@@ -43,6 +43,9 @@
     from t_enquiry_price
     <where>
         1=1
+        <if test="bu != null and bu != ''">
+            and bu = #{bu,jdbcType=VARCHAR}
+        </if>
         <if test="productModel != null and productModel != ''">
             and product_model = #{productModel,jdbcType=VARCHAR}
         </if>
@@ -54,6 +57,12 @@
         </if>
         <if test="proposer != null and proposer != '' ">
             and proposer = #{proposer,jdbcType=VARCHAR}
+        </if>
+        <if test="applyBeginTime != null">
+            and apply_time &gt;= #{applyBeginTime,jdbcType=TIMESTAMP}
+        </if>
+        <if test="applyEndTime != null">
+            and apply_time &lt;= #{applyEndTime,jdbcType=TIMESTAMP}
         </if>
     </where>
     order by apply_time desc

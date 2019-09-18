@@ -3,6 +3,8 @@ package com.crazy.portal.bean.price;
 import com.crazy.portal.bean.common.PageBean;
 import lombok.Data;
 
+import java.util.Date;
+
 
 /**
  * @Desc:
@@ -48,4 +50,14 @@ public class EnquiryPriceVO extends PageBean {
      * 审批说明
      */
     private String approvalRemark;
+
+    /**
+     * 申请开始时间
+     */
+    private Date applyBeginTime;
+
+    /**
+     * 申请结束时间
+     */
+    private Date applyEndTime;
 }
