@@ -3,8 +3,6 @@ package com.crazy.portal.bean.price;
 import com.crazy.portal.bean.common.PageBean;
 import lombok.Data;
 
-import java.util.Date;
-
 /**
  * @Desc:
  * @Author: Bill
@@ -28,8 +26,8 @@ public class CatalogPriceVO extends PageBean {
 
     private String inCustomer;
 
-    private Date effectBeginTime;
+    private String effectBeginTime;
 
-    private Date effectEndTime;
+    private String effectEndTime;
 
 }
