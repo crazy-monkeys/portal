@@ -30,6 +30,9 @@ public class ContactPerson {
     @XmlElement(name = "FamilyName")
     private String familyName;
 
+/*    @XmlElement(name = "BusinessPartnerContactInternalID")
+    private String businessPartnerContactInternalID ="1";*/
+
     @XmlElement(name = "BusinessPartnerFunctionTypeCode")
     private String businessPartnerFunctionTypeCode;
 

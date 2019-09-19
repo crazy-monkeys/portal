@@ -35,5 +35,5 @@ public class CustomerQueryBean extends PageBean {
     /**代理商报备查询**/
     private Integer reportDealer;
     /**销售报备查询**/
-    private Integer reportSales;
+    private String reportSales;
 }

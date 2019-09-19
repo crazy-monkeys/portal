@@ -15,6 +15,7 @@ import javax.xml.bind.annotation.XmlElement;
 @Data
 public class Email {
 
+    /*邮箱*/
     @XmlElement(name = "URI")
     private String uRI;
 }

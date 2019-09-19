@@ -14,6 +14,7 @@ import javax.xml.bind.annotation.XmlElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Organisation {
 
-    @XmlElement(name = "firstLineName")
-    private String FirstLineName;
+    /*客户名称*/
+    @XmlElement(name = "FirstLineName")
+    private String firstLineName;
 }

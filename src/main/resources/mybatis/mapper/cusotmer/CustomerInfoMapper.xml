@@ -762,4 +762,8 @@
   <select id="selectByCustAbbreviation" resultMap="BaseResultMap">
       select * from t_customer_info where active =1 and business_type != 'A04'
   </select>
+
+  <update id="updateC4CId">
+    update t_customer_info set in_code = #{inCode,jdbcType=VARCHAR} where active =1 and id = #{custId}
+  </update>
 </mapper>

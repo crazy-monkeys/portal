@@ -50,6 +50,11 @@ public class SysController extends BaseController {
         return successResult(customerInfoService.getDealerList());
     }
 
+    @GetMapping("/selectCustomerShip/{custId}")
+    public BaseResponse selectCustomerShip(@PathVariable("custId") Integer custId){
+        return super.successResult(customerInfoService.selectCustShip(custId));
+    }
+
     @GetMapping("/selectByMAndF/{model}/{function}")
     public BaseResponse selectByMAndF(@PathVariable("model") String model, @PathVariable("function") String function){
         return super.successResult(sysParamService.selectParam(model, function));

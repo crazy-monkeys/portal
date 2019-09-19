@@ -101,7 +101,6 @@ public class MemberInfoSyncHandler extends AbstractHandler implements IHandler<M
         saveCustStructure(request.getCustStructure(), customerinfo.getId());
         saveQuotas(request.getQuotas(), customerinfo.getId());
         saveZRAccountTeam(request.getZRaccountTeams() ,customerinfo.getId());
-
     }
 
     private void mappingCustomerInfo(MemberInfoSyncRequest request, CustomerInfo customerInfo){
@@ -287,6 +286,8 @@ public class MemberInfoSyncHandler extends AbstractHandler implements IHandler<M
         List<CustomerAddress> results = JSON.parseArray(address, CustomerAddress.class);
         customerAddressService.deleteByCustId(custId);
         results.forEach(e->{
+            e.setContact(String.format("%s,%s",e.getCountry(),e.getCity()));
+            e.setAddressDetail(e.getDistrict());
             e.setCustId(custId);
             e.setActive(Enums.YES_NO.YES.getCode());
             customerAddressService.save(e);

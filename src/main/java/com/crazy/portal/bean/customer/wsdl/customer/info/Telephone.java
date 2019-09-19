@@ -17,6 +17,7 @@ public class Telephone {
     @XmlElement(name = "ObjectNodeSenderTechnicalID")
     private String objectNodeSenderTechnicalID;
 
+    /*手机号码*/
     @XmlElement(name = "FormattedNumberDescription")
     private String formattedNumberDescription;
 }

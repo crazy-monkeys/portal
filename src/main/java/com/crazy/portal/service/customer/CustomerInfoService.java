@@ -13,6 +13,7 @@ import com.crazy.portal.bean.customer.visitRecord.CustomerCodeEO;
 import com.crazy.portal.bean.customer.visitRecord.VisitRecordEO;
 import com.crazy.portal.bean.customer.visitRecord.VisitRecordQueryBean;
 import com.crazy.portal.bean.customer.wsdl.credit.Zsdscredit;
+import com.crazy.portal.bean.customer.wsdl.customer.info.*;
 import com.crazy.portal.bean.customer.wsdl.visits.*;
 import com.crazy.portal.bean.customer.wsdl.visits1.AppointmentActivityMaintainConfirmationBundleMessageSyncV1;
 import com.crazy.portal.config.exception.BusinessException;
@@ -108,8 +109,9 @@ public class CustomerInfoService {
     public PageInfo<CustomerInfo> queryList(CustomerQueryBean customerQueryBean, User user){
         PortalUtil.defaultStartPage(customerQueryBean.getPageIndex(), customerQueryBean.getPageSize());
         if(customerQueryBean.getQueryType()==3){
-            if(user.getUserType().equals(Enums.USER_TYPE.internal)){
-                customerQueryBean.setReportSales(user.getId());
+            if(user.getUserType().equals(Enums.USER_TYPE.internal.toString())){
+                InternalUser internalUser = internalUserMapper.selectUserByName(user.getLoginName());
+                customerQueryBean.setReportSales(internalUser.getUserNo());
             }else{
                 customerQueryBean.setReportDealer(user.getId());
             }
@@ -245,13 +247,12 @@ public class CustomerInfoService {
         customerInfoMapper.insertSelective(customerInfo);
         saveCustomerDetail(customerInfo, user.getId());
         if(user.getUserType().equals(Enums.USER_TYPE.internal.toString())){
-            InternalUser internalUser = internalUserMapper.selectByUserId(user.getId());
+            InternalUser internalUser = internalUserMapper.selectUserByName(user.getLoginName());
             custZrAccountTeamService.updateTeam(customerInfo.getId(), internalUser.getUserNo());
         }else{
             CustomerInfo dealer = customerInfoMapper.selectByPrimaryKey(user.getDealerId());
             custCorporateRelationshipService.UpdateCustShip(customerInfo.getId(), user.getId(), dealer);
         }
-        //TODO 同步C4 获得outcode
     }
 
     @OperationLog
@@ -327,7 +328,7 @@ public class CustomerInfoService {
         saveInvoice(customerInfo.getInvoiceInfos(), customerInfo.getId(), userId);
         saveSales(customerInfo.getSales(), customerInfo.getId(), userId);
         saveAddress(customerInfo.getAddresses(), customerInfo.getId(), userId);
-        saveAccountTeam(customerInfo.getAccountTeams(), customerInfo.getId(), userId);
+        //saveAccountTeam(customerInfo.getAccountTeams(), customerInfo.getId(), userId);
         saveCustomerStructure(customerInfo.getCustStructure(), customerInfo.getId(), userId);
         saveQuotas(customerInfo.getQuotas(), customerInfo.getId(), userId);
         saveZrAccountTeams(customerInfo.getZrAccountTeams(), customerInfo.getId(), userId);
@@ -345,10 +346,18 @@ public class CustomerInfoService {
     public void approval(ApprovalBean approvalBean, Integer userId){
         //通过
         if(Enums.YES_NO.YES.getCode() == approvalBean.getApprovalType()){
-            approvalYes(approvalBean, userId);
+            CustomerInfo customerInfo = queryInfo(approvalBean.getCustId());
+            approvalYes(approvalBean, userId, customerInfo);
+            customerInfoSync(customerInfo);
         }else{
             approvalNo(approvalBean, userId);
         }
+    }
+
+    private void customerInfoSync(CustomerInfo customerInfo){
+        CustomerInfoCreate create = syncCustomerInfo(customerInfo);
+        String c4cId = CallApiUtils.callC4cCustomerInfo(create);
+        customerInfoMapper.updateC4CId(customerInfo.getId(), c4cId);
     }
 
     /**
@@ -356,8 +365,7 @@ public class CustomerInfoService {
      * 自动驳回取消  逻辑无法实现
      * @param approvalBean
      */
-    private void approvalYes(ApprovalBean approvalBean, Integer userId){
-        CustomerInfo customerInfo = customerInfoMapper.selectByPrimaryKey(approvalBean.getCustId());
+    private void approvalYes(ApprovalBean approvalBean, Integer userId, CustomerInfo customerInfo){
         if(null != customerInfo && customerInfo.getApproveStatus()!=Enums.CUSTOMER_APPROVE_STATUS.APPROVAL.getCode() && customerInfo.getCustType()!=Enums.CUSTOMER_TYPE.WAIT_APPROVAL.getCode()){
             customerInfo.setCustType(Enums.CUSTOMER_TYPE.WAIT_APPROVAL.getCode());
             customerInfo.setApproveStatus(Enums.CUSTOMER_APPROVE_STATUS.APPROVAL.getCode());
@@ -371,6 +379,146 @@ public class CustomerInfoService {
             customerInfo.setApproveRemark(approvalBean.getApprovalRemark());
             customerInfoMapper.updateByPrimaryKeySelective(customerInfo);
         }
+    }
+
+    private CustomerInfoCreate syncCustomerInfo(CustomerInfo customerInfo){
+        Customer customer = new Customer();
+        customer.setActionCode("01");
+
+        Organisation organisation = new Organisation();
+        organisation.setFirstLineName(customerInfo.getCustName());
+        customer.setOrganisation(organisation);
+
+        customer.setAbbreviation(customerInfo.getCustAbbreviation());
+        customer.setType(customerInfo.getBusinessType());
+        String license = customerInfo.getIsLicense()==null?"Y":customerInfo.getIsLicense()==Enums.YES_NO.YES.getCode()?"Y":"N";
+        customer.setIsLicenseAccount(license);
+        customer.setAccountRole(customerInfo.getCustRole());
+
+        BlockingReasons blockingReasons = new BlockingReasons();
+        //创建时默认都是否
+        blockingReasons.setOrderBlockingReasonCode("01");
+        blockingReasons.setDeliveryBlockingReasonCode("01");
+        blockingReasons.setBillingBlockingReasonCode("02");
+        blockingReasons.setSalesSupportBlockingIndicator("true");
+        customer.setBlockingReasons(blockingReasons);
+
+        customer.setRegistrationDate(customerInfo.getRegistTime());
+        customer.setAdvantagesIntroduction(customerInfo.getAdvantagesIntroduction());
+        customer.setCorporateAssets(customerInfo.getCorportaeAssets().toString());
+        customer.setStaffNumber(customerInfo.getStaffNumber().toString());
+        customer.setDevelopersNumber(customerInfo.getDevelopersNumber().toString());
+        customer.setBusinessintroduction(customerInfo.getBusinessIntroduction());
+
+        //联系人
+        contanctMapping(customer, customerInfo.getCustomerContacts());
+        //银行
+        bankMapping(customer, customerInfo.getCustBankInfo());
+        //地址
+        addressMapping(customer, customerInfo.getAddresses());
+        //关系
+        shipMapping(customer, customerInfo.getRelationships());
+        //开票信息
+        invoiceMapping(customer, customerInfo.getInvoiceInfos());
+        //zr团队
+        zrAccountTeamMapping(customer, customerInfo.getZrAccountTeams());
+
+        VisitCreateHeader header = new VisitCreateHeader();
+        CustomerInfoContent customerContent = new CustomerInfoContent(header, customer);
+
+        CustomerInfoBody customerInfoBody = new CustomerInfoBody(customerContent);
+        CustomerInfoCreate create = new CustomerInfoCreate(customerInfoBody);
+        return create;
+    }
+
+    private void zrAccountTeamMapping(Customer customer, List<CustZrAccountTeam> zrAccountTeams){
+        List<DirectResponsibility> durects = new ArrayList<>();
+        zrAccountTeams.forEach(e->{
+            DirectResponsibility directResponsibility = new DirectResponsibility();
+            directResponsibility.setEmployeeID(e.getEmployeeId());
+            directResponsibility.setPartyRoleCode(e.getRoleType());
+
+            durects.add(directResponsibility);
+        });
+        customer.setDirectResponsibility(durects);
+    }
+
+    private void invoiceMapping(Customer customer, List<CustInvoiceInfo> invoiceInfos){
+        invoiceInfos.forEach(e->{
+            customer.setPurchasingUnit(e.getPurchasingUnit());
+            customer.setShippingAddress(e.getShippingAddress());
+            customer.setPhone(e.getShippingMobile());
+            customer.setTaxpayerRegistrationNumber(e.getTaxpayerRegistrationNumber());
+            customer.setCurrency(e.getCurrency());
+        });
+    }
+
+    private void shipMapping(Customer customer, List<CustCorporateRelationship> relationships){
+        List<Relationship> relationshipList = new ArrayList<>();
+        relationships.forEach(e->{
+            Relationship relationship = new Relationship();
+            relationship.setRelationshipBusinessPartnerInternalID(e.getCorporateId().toString());
+            relationship.setRoleCode(e.getCorporateType());
+
+            relationshipList.add(relationship);
+        });
+        customer.setRelationship(relationshipList);
+    }
+
+    private void addressMapping(Customer customer, List<CustomerAddress> customerAddress){
+        List<AddressInformation> addressInformation = new ArrayList<>();
+        customerAddress.forEach(e->{
+            AddressInformation information  = new AddressInformation();
+            information.setAddressType(e.getAddressType());
+
+            Address address = new Address();
+            PostalAddress postalAddress = new PostalAddress();
+            postalAddress.setCountryCode(e.getCountry().substring(0,e.getContact().indexOf(",")));
+            postalAddress.setCityName(e.getCountry().substring(e.getContact().indexOf(",")+1));
+            postalAddress.setStreetName(e.getDistrict());
+            address.setPostalAddress(postalAddress);
+
+            Telephone telephone = new Telephone();
+            telephone.setFormattedNumberDescription("+86 "+e.getMobile());
+            address.setTelephone(telephone);
+
+            Email email = new Email();
+            email.setURI(e.getEamil());
+            address.setEmail(email);
+            information.setAddress(address);
+            addressInformation.add(information);
+        });
+        customer.setAddressInformation(addressInformation);
+    }
+
+    private void bankMapping(Customer customer, CustBankInfo bankInfo){
+        customer.setBankName(bankInfo.getBankName());
+        customer.setBankAddress(bankInfo.getBankAddress());
+        customer.setAccount(bankInfo.getBankAccount());
+        customer.setBIC(bankInfo.getBankBic());
+    }
+
+    private void contanctMapping(Customer customer, List<CustomerContact> contacts){
+        List<ContactPerson> contactPersonList = new ArrayList<>();
+        contacts.forEach(e->{
+            ContactPerson person = new ContactPerson();
+            person.setBusinessPartnerFunctionTypeCode(e.getType());
+            person.setFamilyName(e.getContactName());
+
+            WorkplaceTelephone workplaceTelephone = new WorkplaceTelephone();
+            workplaceTelephone.setFormattedNumberDescription("+86 "+e.getMobile());
+            person.setWorkplaceTelephone(workplaceTelephone);
+
+            WorkplaceEmail email1 = new WorkplaceEmail();
+            email1.setURI(e.getEmail());
+            person.setWorkplaceEmail(email1);
+
+            person.setWorkplaceDepartmentName(e.getDepartment());
+            person.setSecondaryDept(e.getSubDepartment());
+            person.setBusinessPartnerFunctionTypeCode(e.getPosition());
+            contactPersonList.add(person);
+        });
+        customer.setContactPerson(contactPersonList);
     }
 
     //审批驳回
@@ -672,5 +820,9 @@ public class CustomerInfoService {
         customerOrgBean.setCustType(sysParameter.getZhName());
 
         return customerOrgBean;
+    }
+
+    public List<CustomerInfo> selectCustShip(Integer custId){
+        return customerInfoMapper.selectCustShip(custId);
     }
 }

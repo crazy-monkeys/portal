@@ -30,6 +30,7 @@ public class Address {
     @XmlElement(name = "Email")
     private Email email;
 
+    /*网址*/
     @XmlElement(name = "WebURI")
     private String webURI;
 

@@ -5,6 +5,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import java.util.List;
 
 /**
  * @ClassName: Customer
@@ -15,8 +16,9 @@ import javax.xml.bind.annotation.XmlElement;
 @Data
 public class Customer {
 
+    /*01-新增 02-修改*/
     @XmlAttribute(name="actionCode")
-    private String actionCode = "01";
+    private String actionCode;
 
     @XmlAttribute(name="addressInformationListCompleteTransmissionIndicator")
     private String addressInformationListCompleteTransmissionIndicator = "true";
@@ -64,14 +66,15 @@ public class Customer {
     private String internalID;
 
     @XmlElement(name = "CategoryCode")
-    private String categoryCode;
+    private String categoryCode="2";
 
     @XmlElement(name = "ProspectIndicator")
-    private String prospectIndicator;
+    private String prospectIndicator = "false";
 
     @XmlElement(name = "CustomerIndicator")
-    private String customerIndicator;
+    private String customerIndicator = "true";
 
+    /*状态 1- 2- */
     @XmlElement(name = "LifeCycleStatusCode")
     private String lifeCycleStatusCode;
 
@@ -79,29 +82,33 @@ public class Customer {
     private Organisation organisation;
 
     @XmlElement(name = "AddressInformation")
-    private AddressInformation addressInformation;
+    private List<AddressInformation> addressInformation;
 
     @XmlElement(name = "ContactPerson")
-    private ContactPerson contactPerson;
+    private List<ContactPerson> contactPerson;
 
     @XmlElement(name = "DirectResponsibility")
-    private DirectResponsibility directResponsibility;
+    private List<DirectResponsibility> directResponsibility;
 
     @XmlElement(name = "BlockingReasons")
     private BlockingReasons blockingReasons;
 
     @XmlElement(name = "Relationship")
-    private Relationship relationship;
+    private List<Relationship> relationship;
 
+    /*客户简称*/
     @XmlElement(name = "y4r:Abbreviation")
     private String abbreviation;
 
+    /*客户类型 A01 - Account Market（直供）；A02 - Account Market（非直供）；A03 - Mass Market；A04 - 代理商*/
     @XmlElement(name = "y4r:Type")
     private String type;
 
+    /*是否license Y/N*/
     @XmlElement(name = "y4r:IsLicenseAccount")
     private String isLicenseAccount;
 
+    /*用户角色 Z001 - 中国客户(Chinese Account); Z002 - 亚太客户(Asia-Pacific Account); Z003 - 北美客户(North American Account); Z010 - 内部客户(Customer);*/
     @XmlElement(name = "y4r:AccountRole")
     private String accountRole;
 
@@ -150,6 +157,7 @@ public class Customer {
     @XmlElement(name = "y4r:Currency")
     private String currency;
 
+    /*白名单*/
     @XmlElement(name = "y4r:IsInWhiteList")
     private String isInWhiteList;
 

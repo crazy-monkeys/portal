@@ -14,15 +14,19 @@ import javax.xml.bind.annotation.XmlElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 @Data
 public class BlockingReasons {
+    /*下单冻结*/
     @XmlElement(name = "OrderBlockingReasonCode")
     private String orderBlockingReasonCode;
 
+    /*出货冻结*/
     @XmlElement(name = "DeliveryBlockingReasonCode")
     private String deliveryBlockingReasonCode;
 
+    /*发货冻结*/
     @XmlElement(name = "BillingBlockingReasonCode")
     private String billingBlockingReasonCode;
 
+    /*销售支持冻结*/
     @XmlElement(name = "SalesSupportBlockingIndicator")
     private String salesSupportBlockingIndicator;
 }

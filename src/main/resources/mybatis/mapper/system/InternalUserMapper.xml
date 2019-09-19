@@ -198,6 +198,6 @@
   </select>
 
   <select id="selectUserByName" resultMap="BaseResultMap">
-      select * From t_internal_user where user_name=#{userName}
+      select * From t_internal_user where substring_index(user_mail,'@',1) = #{userName}
   </select>
 </mapper>

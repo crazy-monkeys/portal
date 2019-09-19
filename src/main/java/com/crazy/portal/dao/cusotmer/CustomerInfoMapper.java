@@ -40,7 +40,11 @@ public interface CustomerInfoMapper {
 
     int updateCustomerInfo(Integer custId);
 
+    int updateC4CId(@Param("custId") Integer custId, @Param("inCode") String inCode);
+
     CustomerInfo selectByOutCode(String outCode);
 
     CustomerInfo selectByCustAbbreviation(String custAbbreviation);
+
+    List<CustomerInfo> selectCustShip(Integer custId);
 }
