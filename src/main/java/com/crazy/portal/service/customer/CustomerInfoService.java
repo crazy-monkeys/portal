@@ -536,6 +536,8 @@ public class CustomerInfoService {
     public void updateDealerInfo(CustomerInfo customerInfo, Integer userId){
         saveCustomerInfo(customerInfo, userId);
         saveDealerDetail(customerInfo, userId);
+        customerInfo = queryInfo(customerInfo.getId());
+        customerInfoSync(customerInfo);
     }
 
     /**

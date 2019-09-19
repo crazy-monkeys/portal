@@ -323,8 +323,8 @@ public class UserService {
         user.setEmail(email);
         user.setDealerId(dealerId);
         //域账号使用随机密码
-        String pwd = passwordEncoder.encode(PortalUtil.generateRandomPassword());
-        user.setLoginPwd(pwd);
+        String password = PortalUtil.generateRandomPassword();
+        user.setLoginPwd(passwordEncoder.encode(password));
         user.setActive((short)1);
         user.setUserStatus(1);
         //域账号密码过期跟随ad域,这里设置为20年过期
@@ -349,7 +349,7 @@ public class UserService {
         mailBean.setSubject("账号开通邮件");
         Map<String, Object> map = new HashMap<>();
         map.put("loginName",user.getLoginName());
-        map.put("password",pwd);
+        map.put("password",password);
         mailBean.setParams(map);
         mailBean.setTemplateName(EmailHelper.MAIL_TEMPLATE.USER_CREATE.getTemplateName());
         emailHelper.sendHtmlMail(mailBean);
