@@ -314,4 +314,44 @@ public class UserService {
     public List<Integer> getUserDealers(Integer userId){
         return Arrays.asList(1);
     }
+
+    @Transactional
+    public void createUser(String username, String loginName, String email, Integer dealerId){
+        User user = new User();
+        user.setLoginName(loginName);
+        user.setCustomerName(username);
+        user.setEmail(email);
+        user.setDealerId(dealerId);
+        //域账号使用随机密码
+        String pwd = passwordEncoder.encode(PortalUtil.generateRandomPassword());
+        user.setLoginPwd(pwd);
+        user.setActive((short)1);
+        user.setUserStatus(1);
+        //域账号密码过期跟随ad域,这里设置为20年过期
+        user.setPwdInvalidTime(DateUtil.addDays(new Date(),365));
+        user.setRegTime(new Date());
+        user.setUserType(Enums.USER_TYPE.agent.toString());
+        user.setCreateUserId(1);
+        user.setCreateTime(new Date());
+        userMapper.insertSelective(user);
+
+        Role basicRole = roleMapper.queryRoleList("BASIC_ROLE").get(0);
+        UserRole userRole = new UserRole();
+        userRole.setCreateId(1);
+        userRole.setCreateTime(new Date());
+        userRole.setRoleId(basicRole.getId());
+        userRole.setUserId(user.getId());
+        userRoleMapper.insertSelective(userRole);
+
+        //发送邮件通知用户
+        MailBean mailBean = new MailBean();
+        mailBean.setTos(user.getEmail());
+        mailBean.setSubject("账号开通邮件");
+        Map<String, Object> map = new HashMap<>();
+        map.put("loginName",user.getLoginName());
+        map.put("password",pwd);
+        mailBean.setParams(map);
+        mailBean.setTemplateName(EmailHelper.MAIL_TEMPLATE.USER_CREATE.getTemplateName());
+        emailHelper.sendHtmlMail(mailBean);
+    }
 }

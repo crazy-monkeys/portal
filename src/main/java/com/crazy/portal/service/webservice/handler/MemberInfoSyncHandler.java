@@ -10,9 +10,11 @@ import com.crazy.portal.dao.cusotmer.CustBankInfoMapper;
 import com.crazy.portal.dao.cusotmer.CustomerInfoMapper;
 import com.crazy.portal.entity.cusotmer.*;
 import com.crazy.portal.service.customer.*;
+import com.crazy.portal.service.system.UserService;
 import com.crazy.portal.util.Enums;
 import com.crazy.portal.util.ErrorCodes;
 import com.crazy.portal.util.StringUtil;
+import lombok.Synchronized;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -60,6 +62,8 @@ public class MemberInfoSyncHandler extends AbstractHandler implements IHandler<M
     private CustQuotasService custQuotasService;
     @Resource
     private CustZrAccountTeamService custZrAccountTeamService;
+    @Resource
+    private UserService userService;
 
     @Override
     public MemberInfoSyncResponse process(MemberInfoSyncRequest request) {
@@ -83,6 +87,10 @@ public class MemberInfoSyncHandler extends AbstractHandler implements IHandler<M
             customerinfo.setActive(1);
             mappingCustomerInfo(request, customerinfo);
             customerInfoMapper.insertSelective(customerinfo);
+            if(request.getCustType().equals(Enums.CUSTOMER_BUSINESS_TYPE.dealer.getCode())){
+                //代理商用户 开通账号
+                userService.createUser(customerinfo.getCustName(), customerinfo.getCustName(), customerinfo.getCustEmail(), customerinfo.getId());
+            }
         }else{
             mappingCustomerInfo(request, customerinfo);
             customerInfoMapper.updateByPrimaryKeySelective(customerinfo);
@@ -97,7 +105,7 @@ public class MemberInfoSyncHandler extends AbstractHandler implements IHandler<M
         saveInvoiceInfos(request.getInvoiceInfos(), customerinfo.getId());
         saveSales(request.getSales(), customerinfo.getId());
         saveAddress(request.getAddresses(), customerinfo.getId());
-        saveAccountTeams(request.getAccountTeams(), customerinfo.getId());
+        //saveAccountTeams(request.getAccountTeams(), customerinfo.getId());
         saveCustStructure(request.getCustStructure(), customerinfo.getId());
         saveQuotas(request.getQuotas(), customerinfo.getId());
         saveZRAccountTeam(request.getZRaccountTeams() ,customerinfo.getId());
