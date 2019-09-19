@@ -1,7 +1,6 @@
 package com.crazy.portal.entity.order;
 
 import com.alibaba.fastjson.annotation.JSONField;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -90,9 +89,14 @@ public class Order {
     private String payCondition;
 
     /**
-     * 国际贸易条款
+     * 国际贸易条款1
      */
-    private String incoterms;
+    private String inco1;
+
+    /**
+     * 国际贸易条款2
+     */
+    private String inco2;
 
     /**
      * 订单状态
