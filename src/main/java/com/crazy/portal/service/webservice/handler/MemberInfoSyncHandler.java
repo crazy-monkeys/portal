@@ -167,13 +167,13 @@ public class MemberInfoSyncHandler extends AbstractHandler implements IHandler<M
         if(StringUtil.isNotEmpty(request.getRegistTime())){
             customerInfo.setRegistTime(request.getRegistTime());
         }
-        if(null != request.getCorportaeAssets()){
+        if(StringUtil.isNotEmpty(request.getCorportaeAssets())){
             customerInfo.setCorportaeAssets(new BigDecimal(request.getCorportaeAssets()));
         }
-        if(null != request.getStaffNumber()){
+        if(StringUtil.isNotEmpty(request.getStaffNumber())){
             customerInfo.setStaffNumber(Integer.valueOf(request.getStaffNumber()));
         }
-        if(null != request.getDevelopersNumber()){
+        if(StringUtil.isNotEmpty(request.getDevelopersNumber())){
             customerInfo.setDevelopersNumber(Integer.valueOf(request.getDevelopersNumber()));
         }
         if(StringUtil.isNotEmpty(request.getBusinessIntroduction())){

@@ -135,7 +135,7 @@ public class CustomerController extends BaseController{
 
     @PostMapping("/visitRecord/approve")
     public BaseResponse approve(@RequestBody VisiApproveBean ids){
-        customerInfoService.approve(ids.getIds());
+        customerInfoService.approve(ids.getIds(),super.getCurrentUser().getDealerId());
         return successResult();
     }
 

@@ -23,6 +23,27 @@ public class ProductInfo {
     @XmlElement(name = "BusinessUnit")
     private String businessUnit;
 
-    @XmlElement(name = "ExpectedShipments")
-    private String expectedShipments;
+    @XmlElement(name = "CURRENT_YEAR")
+    private String currentYear;
+
+    @XmlElement(name = "CURRENT_MONTH")
+    private String currentMonth;
+
+    @XmlElement(name = "EXPECTED_SHIPMENTS1")
+    private String expectedShipments1;
+
+    @XmlElement(name = "EXPECTED_SHIPMENTS2")
+    private String expectedShipments2;
+
+    @XmlElement(name = "EXPECTED_SHIPMENTS3")
+    private String expectedShipments3;
+
+    @XmlElement(name = "EXPECTED_SHIPMENTS4")
+    private String expectedShipments4;
+
+    @XmlElement(name = "EXPECTED_SHIPMENTS5")
+    private String expectedShipments5;
+
+    @XmlElement(name = "EXPECTED_SHIPMENTS6")
+    private String expectedShipments6;
 }

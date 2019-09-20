@@ -357,7 +357,8 @@ public class CustomerInfoService {
     private void customerInfoSync(CustomerInfo customerInfo, String type){
         CustomerInfoCreate create = syncCustomerInfo(customerInfo, type);
         String c4cId = CallApiUtils.callC4cCustomerInfo(create);
-        syncCustomerDetail(customerInfo, c4cId);
+        CustomerDetailCreate detail = syncCustomerDetail(customerInfo, c4cId);
+        CallApiUtils.callC4cCustomerDetail(detail);
         //查询eccid
         customerInfoMapper.updateC4CId(customerInfo.getId(), c4cId);
     }
@@ -387,8 +388,10 @@ public class CustomerInfoService {
         CustomerDetail detail = new CustomerDetail();
         detail.setCustomerID(c4cId);
 
-       /* getProduct(detail);
-        getBusiness(detail);*/
+        productMapping(detail, customerinfo.getCustomerProducts()==null?new ArrayList<>():customerinfo.getCustomerProducts());
+        businessMapping(detail, customerinfo.getAssetsInformations());
+        businessInfoMationsMapping(detail, customerinfo.getBusinessInformations());
+       // shareholdingMapping(detail, customerinfo.getCustStructure());
 
         VisitCreateHeader header = new VisitCreateHeader();
         CustomerDetailContent content = new CustomerDetailContent(header, detail);
@@ -421,7 +424,7 @@ public class CustomerInfoService {
         blockingReasons.setSalesSupportBlockingIndicator("true");
         customer.setBlockingReasons(blockingReasons);
 
-       // customer.setRegistrationDate(DateUtil.parseDate(customerInfo.getRegistTime(),DateUtil.WEB_FORMAT));
+        customer.setRegistrationDate(customerInfo.getRegistTime());
         customer.setAdvantagesIntroduction(customerInfo.getAdvantagesIntroduction());
         customer.setCorporateAssets(customerInfo.getCorportaeAssets().toString());
         customer.setStaffNumber(customerInfo.getStaffNumber().toString());
@@ -429,7 +432,7 @@ public class CustomerInfoService {
         customer.setBusinessintroduction(customerInfo.getBusinessIntroduction());
 
         //联系人
-        contanctMapping(customer, customerInfo.getCustomerContacts());
+        contanctMapping(customer, customerInfo.getCustomerContacts()==null?new ArrayList<>():customerInfo.getCustomerContacts());
         //银行
         bankMapping(customer, customerInfo.getCustBankInfo());
         //地址
@@ -439,7 +442,7 @@ public class CustomerInfoService {
         //开票信息
         invoiceMapping(customer, customerInfo.getInvoiceInfos());
         //zr团队
-        zrAccountTeamMapping(customer, customerInfo.getZrAccountTeams());
+        zrAccountTeamMapping(customer, customerInfo.getZrAccountTeams()==null?new ArrayList<>():customerInfo.getZrAccountTeams());
 
         VisitCreateHeader header = new VisitCreateHeader();
         CustomerInfoContent customerContent = new CustomerInfoContent(header, customer);
@@ -449,20 +452,72 @@ public class CustomerInfoService {
         return create;
     }
 
-    private void productMapping(CustomerDetail detail, CustomerProduct product){
-        ProductInfo productInfo = new ProductInfo();
-        productInfo.setProductCode(product.getProduct());
-        productInfo.setExpectedShipments(product.getPNumberOne().toString());
+    private void shareholdingMapping(CustomerDetail detail, List<CustomerStructure> structures){
+        List<ShareholdingInformation> shareholdingInformations = new ArrayList<>();
+        structures.forEach(e->{
+            ShareholdingInformation shareholdingInformation = new ShareholdingInformation();
+            shareholdingInformation.setZSuperiorShareholder(e.getStrOne());
+            shareholdingInformation.setZShareholder(e.getStrName());//gudong
+            shareholdingInformation.setZEquityRatio(String.valueOf(e.getStrValue()));//bili
+            shareholdingInformation.setZNatureOfShareholder(e.getStrTwo());//xinzhi
+            shareholdingInformation.setZNatureOfCompany(e.getStrThree()); //gongsixinzhi
+            shareholdingInformation.setZIsManager(e.getStrFour()); // shifouguanli
+            shareholdingInformation.setZDepartment(e.getStrFive()); //bumen
+            shareholdingInformation.setZTitle(e.getStrSix()); //zhiwu
 
-        detail.setProductInfo(productInfo);
+            shareholdingInformations.add(shareholdingInformation);
+        });
+        detail.setShareholdingInformation(shareholdingInformations);
     }
 
-    public void businessMapping(CustomerDetail detail){
-        AssetInfo assetInfo = new AssetInfo();
-        assetInfo.setYear("2019");
-        assetInfo.setSeason("01");
-        assetInfo.setTotalAssets("1111");
-        detail.setAssetInfo(assetInfo);
+    private void businessInfoMationsMapping(CustomerDetail detail, List<CustBusinessInformation> businessInformations){
+        List<BusinessIntroduction> businessIntroductions = new ArrayList<>();
+        businessInformations.forEach(e->{
+            BusinessIntroduction businessIntroduction = new BusinessIntroduction();
+            businessIntroduction.setYear(e.getBusinessYear());
+            businessIntroduction.setProductLine1(e.getProductLine());
+            businessIntroduction.setRevenuePL1(String.valueOf(e.getRevenuePlOne()));
+            businessIntroduction.setRevenuePL2(String.valueOf(e.getRevenuePlTwo()));
+            businessIntroduction.setRevenuePL3(String.valueOf(e.getRevenuePlThree()));
+
+            businessIntroductions.add(businessIntroduction);
+        });
+        detail.setBusinessIntroductions(businessIntroductions);
+    }
+
+    private void productMapping(CustomerDetail detail, List<CustomerProduct> products){
+        List<ProductInfo> productInfos = new ArrayList<>();
+        products.forEach(e->{
+            ProductInfo productInfo = new ProductInfo();
+            productInfo.setProductCode(e.getProduct());
+            //productInfo.setCurrentYear();
+            productInfo.setCurrentMonth(e.getPMonth());
+            productInfo.setExpectedShipments1(e.getPNumberOne()==null?"0":String.valueOf(e.getPNumberOne()));
+            productInfo.setExpectedShipments2(e.getPNumberTwo()==null?"0":String.valueOf(e.getPNumberTwo()));
+            productInfo.setExpectedShipments3(e.getPNumberThree()==null?"0":String.valueOf(e.getPNumberThree()));
+            productInfo.setExpectedShipments4(e.getPNumberFour()==null?"0":String.valueOf(e.getPNumberFour()));
+            productInfo.setExpectedShipments5(e.getPNumberFive()==null?"0":String.valueOf(e.getPNumberFive()));
+            productInfo.setExpectedShipments6(e.getPNumberSix()==null?"0":String.valueOf(e.getPNumberSix()));
+            productInfos.add(productInfo);
+        });
+        detail.setProductInfo(productInfos);
+    }
+
+    public void businessMapping(CustomerDetail detail, List<CustAssetsInformation> assetsInformations){
+        List<AssetInfo> assetInfos = new ArrayList<>();
+        assetsInformations.forEach(e->{
+            AssetInfo assetInfo = new AssetInfo();
+            assetInfo.setYear(e.getAssetsYear());
+            assetInfo.setSeason(e.getAssetsSeason());
+            assetInfo.setTotalAssets(String.valueOf(e.getAssetsTotal()));
+            assetInfo.setNetAssets(String.valueOf(e.getAssetsNet()));
+            assetInfo.setRevenue(String.valueOf(e.getRevenue()));
+            assetInfo.setTotalStaff(String.valueOf(e.getTotalStaff()));
+
+            assetInfos.add(assetInfo);
+        });
+
+        detail.setAssetInfo(assetInfos);
     }
 
     private void zrAccountTeamMapping(Customer customer, List<CustZrAccountTeam> zrAccountTeams){
@@ -507,10 +562,8 @@ public class CustomerInfoService {
 
             Address address = new Address();
             PostalAddress postalAddress = new PostalAddress();
-            postalAddress.setCountryCode("US");
-            postalAddress.setCityName("Buffalo");
-            /*postalAddress.setCountryCode(e.getCountry().substring(0,e.getCountry().indexOf(",")));
-            postalAddress.setCityName(e.getCountry().substring(e.getContact().indexOf(",")+1));*/
+            postalAddress.setCountryCode(e.getCountry().substring(0,e.getCountry().indexOf(",")));
+            postalAddress.setCityName(e.getCountry().substring(e.getCountry().indexOf(",")+1));
             postalAddress.setStreetName(e.getDistrict());
             address.setPostalAddress(postalAddress);
 
@@ -570,12 +623,13 @@ public class CustomerInfoService {
             customerInfoMapper.updateByPrimaryKeySelective(customerInfo);
         }
     }
+
     @OperationLog
     @Transactional
     public void updateDealerInfo(CustomerInfo customerInfo, Integer userId){
         saveCustomerInfo(customerInfo, userId);
         saveDealerDetail(customerInfo, userId);
-        customerInfo = queryInfo(customerInfo.getId());
+        //customerInfo = queryInfo(customerInfo.getId());
         customerInfoSync(customerInfo, "02");
     }
 
@@ -617,17 +671,18 @@ public class CustomerInfoService {
         saveRelationship(customerInfo.getRelationships(), customerInfo.getId(), userId);
         saveInvoice(customerInfo.getInvoiceInfos(), customerInfo.getId(), userId);
         saveSales(customerInfo.getSales(), customerInfo.getId(), userId);
-        List<CustomerAddress> addresses = customerInfo.getAddresses();
-        addresses.forEach(e->{
-            if(StringUtil.isNotEmpty(e.getContact())){
-                List<String> st = JSON.parseArray(e.getContact(),String.class);
+        List<CustomerAddress> addresses = new ArrayList<>();
+        for(CustomerAddress address : customerInfo.getAddresses()){
+            if(StringUtil.isNotEmpty(address.getCountry())){
+                List<String> st = JSON.parseArray(address.getCountry(),String.class);
                 String contact = "";
-               for(String s : st){
-                   contact += s+",";
-               }
-                e.setContact(contact.substring(0,contact.lastIndexOf(",")));
+                for(String s : st){
+                    contact += s+",";
+                }
+                address.setCountry(contact.substring(0,contact.lastIndexOf(",")));
+                addresses.add(address);
             }
-        });
+        }
         saveAddress(addresses, customerInfo.getId(), userId);
         saveAssetsInformation(customerInfo.getAssetsInformations(), customerInfo.getId());
         saveBusinessInformation(customerInfo.getBusinessInformations(), customerInfo.getId());
@@ -800,10 +855,11 @@ public class CustomerInfoService {
         return results;
     }
 
-    public void approve(List<Integer> ids){
+    public void approve(List<Integer> ids, Integer dealerId){
+        CustomerInfo dealerInfo = customerInfoMapper.selectByPrimaryKey(dealerId);
         ids.forEach(e->{
             VisitRecord visitRecord = visitRecordMapper.selectByPrimaryKey(e);
-            VisitCreate create = getVisitsRequest(visitRecord);
+            VisitCreate create = getVisitsRequest(visitRecord, dealerInfo.getInCode());
             AppointmentActivityMaintainConfirmationBundleMessageSyncV1 response = CallApiUtils.callC4cVisits(create);
             if(null != response && !response.getAppointmentActivity().isEmpty() && null != response.getAppointmentActivity().get(0).getID()){
                 visitRecordMapper.approve(e, response.getAppointmentActivity().get(0).getID().getValue());
@@ -811,7 +867,7 @@ public class CustomerInfoService {
         });
     }
 
-    private VisitCreate getVisitsRequest(VisitRecord visitRecord){
+    private VisitCreate getVisitsRequest(VisitRecord visitRecord, String c4cId){
         VisitCreateBean visitBean = new VisitCreateBean();
         visitBean.setObjectNodeSenderTechnicalID("001");
         visitBean.setName(visitRecord.getProjectName());
@@ -819,14 +875,15 @@ public class CustomerInfoService {
         visitBean.setVisitTypeCode("Z01");
         visitBean.setAddress(visitRecord.getCustomerLocation());
 
-        //c4c id
+        //客户 c4c id
+        CustomerInfo customerInfo = customerInfoMapper.selectByOutCode(visitRecord.getCustomerCode());
         MainActivityPartyBean mainActivityPartyBean = new MainActivityPartyBean();
-        mainActivityPartyBean.setBusinessPartnerInternalID("1000042");
+        mainActivityPartyBean.setBusinessPartnerInternalID(customerInfo.getOutCode());
         visitBean.setMainActivityPartyBean(mainActivityPartyBean);
 
         //代理商 c4c id
         OrganizerPartyBean organizerPartyBean = new OrganizerPartyBean();
-        organizerPartyBean.setBusinessPartnerInternalID("1000201");
+        organizerPartyBean.setBusinessPartnerInternalID(c4cId);
         visitBean.setOrganizerPartyBean(organizerPartyBean);
 
         try{

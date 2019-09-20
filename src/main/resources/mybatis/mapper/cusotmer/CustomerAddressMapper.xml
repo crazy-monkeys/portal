@@ -49,7 +49,7 @@
       #{createTime,jdbcType=TIMESTAMP}, #{crateUser,jdbcType=INTEGER}, #{updateTime,jdbcType=TIMESTAMP}, 
       #{updateUser,jdbcType=INTEGER}, #{active,jdbcType=INTEGER})
   </insert>
-  <insert id="insertSelective" parameterType="com.crazy.portal.entity.cusotmer.CustomerAddress">
+  <insert id="insertSelective" parameterType="com.crazy.portal.entity.cusotmer.CustomerAddress" useGeneratedKeys="true" keyProperty="addressId">
     insert into t_customer_address
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="addressId != null">

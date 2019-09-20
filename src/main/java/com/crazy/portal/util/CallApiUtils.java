@@ -3,8 +3,12 @@ package com.crazy.portal.util;
 import com.alibaba.fastjson.JSON;
 import com.crazy.portal.bean.customer.wsdl.credit.ZrfcsdcustomercreditResponse;
 import com.crazy.portal.bean.customer.wsdl.credit.Zsdscredit;
+import com.crazy.portal.bean.customer.wsdl.customer.detail.CustomerDetail;
+import com.crazy.portal.bean.customer.wsdl.customer.detail.CustomerDetailCreate;
 import com.crazy.portal.bean.customer.wsdl.customer.info.CustomerInfoCreate;
 import com.crazy.portal.bean.customer.wsdl.customer.ws.CustomerBundleMaintainConfirmationMessageSyncV1;
+import com.crazy.portal.bean.customer.wsdl.customer.ws.detail.BOExtendCustomerCreateConfirmationMessageSync;
+import com.crazy.portal.bean.customer.wsdl.customer.ws.detail.BOExtendCustomerUpdateConfirmationMessageSync;
 import com.crazy.portal.bean.customer.wsdl.employee.EmployeeBasicDataResponseMessageSync;
 import com.crazy.portal.bean.customer.wsdl.orgnation.OrganisationalUnitByIDResponseMessageSync;
 import com.crazy.portal.bean.customer.wsdl.visits1.AppointmentActivityMaintainConfirmationBundleMessageSyncV1;
@@ -218,7 +222,26 @@ public class CallApiUtils {
             return v1.getCustomer().get(0).getInternalID();
         } catch (Exception e) {
             log.error("", e);
-            throw new BusinessException("审批异常");
+            throw new BusinessException("客户信息同步C4C异常");
+        }
+    }
+
+    private static String C4C_CUSTOMER_DETAIL = "/cxf/PORTAL/C4C/CREATEEXTENDCUSTOMERMASTER";
+
+    public static void callC4cCustomerDetail(CustomerDetailCreate create) {
+        String url = String.format("%s%s", ECC_API_URL, C4C_CUSTOMER_DETAIL);
+        try {
+            String requestXml = JaxbXmlUtil.convertToXml(create);
+            log.info(requestXml);
+            String response = HttpClientUtils.post(url, requestXml);
+            log.info(response);
+            BOExtendCustomerUpdateConfirmationMessageSync v1 = JaxbXmlUtil.convertSoapXmlToJavaBean2(response, BOExtendCustomerUpdateConfirmationMessageSync.class);
+            if(null == v1.getLog() || !v1.getLog().getBusinessDocumentProcessingResultCode().equals("1")){
+                throw new BusinessException("C4C扩展信息修改失败");
+            }
+        } catch (Exception e) {
+            log.error("", e);
+            throw new BusinessException("C4C扩展信息修改异常");
         }
     }
 }

@@ -17,6 +17,9 @@ public class BusinessIntroduction {
     @XmlAttribute(name="ActionCode")
     private String actionCode = "01";
 
+    @XmlElement(name = "Year")
+    private String year;
+
     @XmlElement(name = "ProductLine1")
     private String productLine1;
 

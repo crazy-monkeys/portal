@@ -47,7 +47,7 @@
       #{insertUser,jdbcType=INTEGER}, #{updateTime,jdbcType=TIMESTAMP}, #{updateUser,jdbcType=INTEGER}, 
       #{active,jdbcType=INTEGER})
   </insert>
-  <insert id="insertSelective" parameterType="com.crazy.portal.entity.cusotmer.CustomerContact">
+  <insert id="insertSelective" parameterType="com.crazy.portal.entity.cusotmer.CustomerContact" useGeneratedKeys="true" keyProperty="contactId">
     insert into t_customer_contact
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="contactId != null">
