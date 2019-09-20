@@ -22,4 +22,7 @@ public class PostalAddress {
 
     @XmlElement(name="StreetName")
     private String streetName;
+
+    @XmlElement(name="StreetPostalCode")
+    private String StreetPostalCode = "14204";
 }

@@ -62,8 +62,17 @@ public class VisitCreateBean {
     @XmlElement(name = "y4r:Z_REQUIREMENT_DESCRIPTION")
     private String zRequirementDescription;
 
+    //zr  参与人
     @XmlElement(name = "y4r:Z_ATTENDEES")
     private String attendees;
+
+    //代理参与人
+    @XmlElement(name = "y4r:Z_AGENT_ATTENDEE")
+    private String dAttendees;
+
+    //客户参与人
+    @XmlElement(name = "y4r:Z_ACCOUNT_ATTENDEE")
+    private String kAttendees;
 
     //地址
     @XmlElement(name = "y4r:Z_ADDRESS")

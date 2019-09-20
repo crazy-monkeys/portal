@@ -3,6 +3,7 @@ package com.crazy.portal.service.customer;
 import com.alibaba.excel.EasyExcelFactory;
 import com.alibaba.excel.metadata.BaseRowModel;
 import com.alibaba.excel.metadata.Sheet;
+import com.alibaba.fastjson.JSON;
 import com.crazy.portal.annotation.OperationLog;
 import com.crazy.portal.bean.common.Constant;
 import com.crazy.portal.bean.customer.CustomerOrgBean;
@@ -13,6 +14,7 @@ import com.crazy.portal.bean.customer.visitRecord.CustomerCodeEO;
 import com.crazy.portal.bean.customer.visitRecord.VisitRecordEO;
 import com.crazy.portal.bean.customer.visitRecord.VisitRecordQueryBean;
 import com.crazy.portal.bean.customer.wsdl.credit.Zsdscredit;
+import com.crazy.portal.bean.customer.wsdl.customer.detail.*;
 import com.crazy.portal.bean.customer.wsdl.customer.info.*;
 import com.crazy.portal.bean.customer.wsdl.visits.*;
 import com.crazy.portal.bean.customer.wsdl.visits1.AppointmentActivityMaintainConfirmationBundleMessageSyncV1;
@@ -37,10 +39,8 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
 /**
  * @ClassName: CustomerInfoService
  * @Author: God Man Qiu~
@@ -348,15 +348,17 @@ public class CustomerInfoService {
         if(Enums.YES_NO.YES.getCode() == approvalBean.getApprovalType()){
             CustomerInfo customerInfo = queryInfo(approvalBean.getCustId());
             approvalYes(approvalBean, userId, customerInfo);
-            customerInfoSync(customerInfo);
+            customerInfoSync(customerInfo, "01");
         }else{
             approvalNo(approvalBean, userId);
         }
     }
 
-    private void customerInfoSync(CustomerInfo customerInfo){
-        CustomerInfoCreate create = syncCustomerInfo(customerInfo);
+    private void customerInfoSync(CustomerInfo customerInfo, String type){
+        CustomerInfoCreate create = syncCustomerInfo(customerInfo, type);
         String c4cId = CallApiUtils.callC4cCustomerInfo(create);
+        syncCustomerDetail(customerInfo, c4cId);
+        //查询eccid
         customerInfoMapper.updateC4CId(customerInfo.getId(), c4cId);
     }
 
@@ -381,9 +383,25 @@ public class CustomerInfoService {
         }
     }
 
-    private CustomerInfoCreate syncCustomerInfo(CustomerInfo customerInfo){
+    private CustomerDetailCreate syncCustomerDetail(CustomerInfo customerinfo, String c4cId){
+        CustomerDetail detail = new CustomerDetail();
+        detail.setCustomerID(c4cId);
+
+       /* getProduct(detail);
+        getBusiness(detail);*/
+
+        VisitCreateHeader header = new VisitCreateHeader();
+        CustomerDetailContent content = new CustomerDetailContent(header, detail);
+        CustomerDetailBody body = new CustomerDetailBody(content);
+        return new CustomerDetailCreate(body);
+    }
+
+    private CustomerInfoCreate syncCustomerInfo(CustomerInfo customerInfo, String type){
         Customer customer = new Customer();
-        customer.setActionCode("01");
+        if(type.equals("02")){
+            customer.setInternalID(customerInfo.getInCode());
+        }
+        customer.setActionCode(type);
 
         Organisation organisation = new Organisation();
         organisation.setFirstLineName(customerInfo.getCustName());
@@ -403,7 +421,7 @@ public class CustomerInfoService {
         blockingReasons.setSalesSupportBlockingIndicator("true");
         customer.setBlockingReasons(blockingReasons);
 
-        customer.setRegistrationDate(customerInfo.getRegistTime());
+       // customer.setRegistrationDate(DateUtil.parseDate(customerInfo.getRegistTime(),DateUtil.WEB_FORMAT));
         customer.setAdvantagesIntroduction(customerInfo.getAdvantagesIntroduction());
         customer.setCorporateAssets(customerInfo.getCorportaeAssets().toString());
         customer.setStaffNumber(customerInfo.getStaffNumber().toString());
@@ -429,6 +447,22 @@ public class CustomerInfoService {
         CustomerInfoBody customerInfoBody = new CustomerInfoBody(customerContent);
         CustomerInfoCreate create = new CustomerInfoCreate(customerInfoBody);
         return create;
+    }
+
+    private void productMapping(CustomerDetail detail, CustomerProduct product){
+        ProductInfo productInfo = new ProductInfo();
+        productInfo.setProductCode(product.getProduct());
+        productInfo.setExpectedShipments(product.getPNumberOne().toString());
+
+        detail.setProductInfo(productInfo);
+    }
+
+    public void businessMapping(CustomerDetail detail){
+        AssetInfo assetInfo = new AssetInfo();
+        assetInfo.setYear("2019");
+        assetInfo.setSeason("01");
+        assetInfo.setTotalAssets("1111");
+        detail.setAssetInfo(assetInfo);
     }
 
     private void zrAccountTeamMapping(Customer customer, List<CustZrAccountTeam> zrAccountTeams){
@@ -473,8 +507,10 @@ public class CustomerInfoService {
 
             Address address = new Address();
             PostalAddress postalAddress = new PostalAddress();
-            postalAddress.setCountryCode(e.getCountry().substring(0,e.getContact().indexOf(",")));
-            postalAddress.setCityName(e.getCountry().substring(e.getContact().indexOf(",")+1));
+            postalAddress.setCountryCode("US");
+            postalAddress.setCityName("Buffalo");
+            /*postalAddress.setCountryCode(e.getCountry().substring(0,e.getCountry().indexOf(",")));
+            postalAddress.setCityName(e.getCountry().substring(e.getContact().indexOf(",")+1));*/
             postalAddress.setStreetName(e.getDistrict());
             address.setPostalAddress(postalAddress);
 
@@ -502,12 +538,15 @@ public class CustomerInfoService {
         List<ContactPerson> contactPersonList = new ArrayList<>();
         contacts.forEach(e->{
             ContactPerson person = new ContactPerson();
+            person.setObjectNodeSenderTechnicalID(e.getContactId().toString());
             person.setBusinessPartnerFunctionTypeCode(e.getType());
             person.setFamilyName(e.getContactName());
 
-            WorkplaceTelephone workplaceTelephone = new WorkplaceTelephone();
-            workplaceTelephone.setFormattedNumberDescription("+86 "+e.getMobile());
-            person.setWorkplaceTelephone(workplaceTelephone);
+           if(StringUtil.isNotEmpty(e.getMobile())){
+               WorkplaceTelephone workplaceTelephone = new WorkplaceTelephone();
+               workplaceTelephone.setFormattedNumberDescription("+86 "+e.getMobile());
+               person.setWorkplaceTelephone(workplaceTelephone);
+           }
 
             WorkplaceEmail email1 = new WorkplaceEmail();
             email1.setURI(e.getEmail());
@@ -537,7 +576,7 @@ public class CustomerInfoService {
         saveCustomerInfo(customerInfo, userId);
         saveDealerDetail(customerInfo, userId);
         customerInfo = queryInfo(customerInfo.getId());
-        customerInfoSync(customerInfo);
+        customerInfoSync(customerInfo, "02");
     }
 
     /**
@@ -578,7 +617,18 @@ public class CustomerInfoService {
         saveRelationship(customerInfo.getRelationships(), customerInfo.getId(), userId);
         saveInvoice(customerInfo.getInvoiceInfos(), customerInfo.getId(), userId);
         saveSales(customerInfo.getSales(), customerInfo.getId(), userId);
-        saveAddress(customerInfo.getAddresses(), customerInfo.getId(), userId);
+        List<CustomerAddress> addresses = customerInfo.getAddresses();
+        addresses.forEach(e->{
+            if(StringUtil.isNotEmpty(e.getContact())){
+                List<String> st = JSON.parseArray(e.getContact(),String.class);
+                String contact = "";
+               for(String s : st){
+                   contact += s+",";
+               }
+                e.setContact(contact.substring(0,contact.lastIndexOf(",")));
+            }
+        });
+        saveAddress(addresses, customerInfo.getId(), userId);
         saveAssetsInformation(customerInfo.getAssetsInformations(), customerInfo.getId());
         saveBusinessInformation(customerInfo.getBusinessInformations(), customerInfo.getId());
     }
@@ -767,6 +817,17 @@ public class CustomerInfoService {
         visitBean.setName(visitRecord.getProjectName());
         visitBean.setLifeCycleStatusCode("1");
         visitBean.setVisitTypeCode("Z01");
+        visitBean.setAddress(visitRecord.getCustomerLocation());
+
+        //c4c id
+        MainActivityPartyBean mainActivityPartyBean = new MainActivityPartyBean();
+        mainActivityPartyBean.setBusinessPartnerInternalID("1000042");
+        visitBean.setMainActivityPartyBean(mainActivityPartyBean);
+
+        //代理商 c4c id
+        OrganizerPartyBean organizerPartyBean = new OrganizerPartyBean();
+        organizerPartyBean.setBusinessPartnerInternalID("1000201");
+        visitBean.setOrganizerPartyBean(organizerPartyBean);
 
         try{
             visitBean.setStartDateTime(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSSS'Z'").format(DateUtil.parseDate(visitRecord.getVisitDate(),DateUtil.WEB_FORMAT)));
@@ -778,17 +839,9 @@ public class CustomerInfoService {
         visitBean.setZFollowUpPlans(visitRecord.getFollowPlan());
         visitBean.setZRequirementDescription(visitRecord.getClaimDescription());
 
-        OrganizerPartyBean organizerPartyBean = new OrganizerPartyBean();
-        organizerPartyBean.setBusinessPartnerInternalID("1000042");
-        visitBean.setOrganizerPartyBean(organizerPartyBean);
-
-        MainActivityPartyBean mainActivityPartyBean = new MainActivityPartyBean();
-        mainActivityPartyBean.setBusinessPartnerInternalID("1000042");
-        visitBean.setMainActivityPartyBean(mainActivityPartyBean);
-
-        OtherPartyBean otherPartyBean = new OtherPartyBean();
-        otherPartyBean.setBusinessPartnerInternalID("1000042");
-        visitBean.setOtherPartyBean(otherPartyBean);
+        visitBean.setAttendees(visitRecord.getParticipantsZr());
+        visitBean.setDAttendees(visitRecord.getParticipantsDl());
+        visitBean.setKAttendees(visitRecord.getParticipantsCt());
 
         VisitCreateHeader header = new VisitCreateHeader();
         VisitCreateContent content = new VisitCreateContent(visitBean,header);

@@ -191,8 +191,8 @@ public class CallApiUtils {
             return JaxbXmlUtil.convertSoapXmlToJavaBean2(response, AppointmentActivityMaintainConfirmationBundleMessageSyncV1.class);
         } catch (Exception e) {
             log.error("", e);
+            throw new BusinessException("拜访记录上传失败");
         }
-        return null;
     }
 
     private static String C4C_CUSTOMER_INFO = "/cxf/PORTAL/C4C/CUSTOMERMASTER";
