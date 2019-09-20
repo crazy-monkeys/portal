@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
@@ -26,6 +27,7 @@ public class BusinessIdrInfo {
     @NotBlank(message = "请选择币种")
     private String currency;
     //CR金额
+    @Digits(integer=15,fraction=4,message = "请输入有效的数字")
     private BigDecimal crAmount;
     //公司
     @NotBlank(message = "公司不能为空")
