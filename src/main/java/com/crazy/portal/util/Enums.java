@@ -528,7 +528,9 @@ public class Enums {
     public enum OrderApprovalStatus{
         WAIT_APPROVAL(0, "待审批"),
         ADOPT(1, "已通过"),
-        REJEC(2, "已驳回");
+        REJEC(2, "已驳回"),
+        CANCEL(3, "已取消")
+        ;
 
         private Integer value;
         private String desc;

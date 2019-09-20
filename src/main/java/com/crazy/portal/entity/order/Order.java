@@ -131,7 +131,7 @@ public class Order {
     private String rErrorMsg;
 
     /**
-     * 审批状态  0：未审批 1：已通过 2：已驳回
+     * 审批状态  0：未审批 1：已通过 2：已驳回 3：已取消
      */
     private Integer approvalStatus;
     /**

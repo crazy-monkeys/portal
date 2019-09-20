@@ -1,29 +1,28 @@
 package com.crazy.portal.service.order;
 
+import com.alibaba.excel.metadata.BaseRowModel;
+import com.alibaba.excel.support.ExcelTypeEnum;
 import com.crazy.portal.annotation.OperationLog;
-import com.crazy.portal.bean.order.OrderApprovalBean;
-import com.crazy.portal.bean.order.OrderCreditInfoBean;
-import com.crazy.portal.bean.order.OrderQueryBean;
+import com.crazy.portal.bean.business.idr.BusinessFileUploadBean;
+import com.crazy.portal.bean.customer.basic.FileVO;
+import com.crazy.portal.bean.order.*;
 import com.crazy.portal.bean.order.wsdl.create.*;
 import com.crazy.portal.dao.order.OrderLineMapper;
 import com.crazy.portal.dao.order.OrderMapper;
 import com.crazy.portal.entity.order.Order;
 import com.crazy.portal.entity.order.OrderLine;
-import com.crazy.portal.util.BusinessUtil;
-import com.crazy.portal.util.DateUtil;
-import com.crazy.portal.util.Enums;
-import com.crazy.portal.util.ErrorCodes;
+import com.crazy.portal.util.*;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import javax.servlet.http.HttpServletResponse;
+import java.math.BigDecimal;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -89,35 +88,44 @@ public class OrderService {
      * 变更交货日期
      */
     @OperationLog
-    public void modifyDeliveryDate(Integer orderId, String deliveryDate, Integer userId) throws Exception{
-        BusinessUtil.notNull(orderId, ErrorCodes.BusinessEnum.ORDER_ID_IS_REQUIRED);
-        BusinessUtil.assertTrue(DateUtil.isValidDateFormat(deliveryDate, DateUtil.WEB_FORMAT), ErrorCodes.BusinessEnum.ORDER_DELIVERY_DATE_FORMAT_FAIL);
-        Order order = new Order();
-        order.setId(orderId);
-        order.setDeliveryDate(DateUtil.parseDate(deliveryDate, DateUtil.WEB_FORMAT));
-        order.setUpdateId(userId);
-        order.setUpdateTime(DateUtil.getCurrentTS());
-        orderMapper.updateByPrimaryKeySelective(order);
+    public void modifyDeliveryDate(BatchModifyOrderBean bean, Integer userId) throws Exception{
+        for (Integer id : bean.getOrderIds()) {
+            BusinessUtil.notNull(id, ErrorCodes.BusinessEnum.ORDER_ID_IS_REQUIRED);
+            BusinessUtil.assertTrue(DateUtil.isValidDateFormat(bean.getDeliveryDate(), DateUtil.WEB_FORMAT), ErrorCodes.BusinessEnum.ORDER_DELIVERY_DATE_FORMAT_FAIL);
+            Order order = new Order();
+            order.setId(id);
+            order.setDeliveryDate(DateUtil.parseDate(bean.getDeliveryDate(), DateUtil.WEB_FORMAT));
+            order.setUpdateId(userId);
+            order.setUpdateTime(DateUtil.getCurrentTS());
+            orderMapper.updateByPrimaryKeySelective(order);
+        }
     }
 
     /**
      * 提货
-     * @param orderId
+     * @param bean
      * @param userId
      */
     @OperationLog
-    public void takeGoods(Integer orderId, Integer userId){
-
+    public void takeGoods(BatchModifyOrderBean bean, Integer userId){
+        //TODO
     }
 
     /**
      * 取消
-     * @param orderId
+     * @param bean
      * @param userId
      */
     @OperationLog
-    public void cancel(Integer orderId, Integer userId){
-
+    public void cancel(BatchModifyOrderBean bean, Integer userId){
+        for(Integer id : bean.getOrderIds()){
+            Order order = new Order();
+            order.setId(id);
+            order.setApprovalStatus(Enums.OrderApprovalStatus.CANCEL.getValue());
+            order.setUpdateId(userId);
+            order.setUpdateTime(DateUtil.getCurrentTS());
+            orderMapper.updateByPrimaryKeySelective(order);
+        }
     }
 
     /**
@@ -217,5 +225,21 @@ public class OrderService {
 
     }
 
+    /**
+     * 模板下载
+     */
+    public void templateDownload(HttpServletResponse response) throws Exception{
+        Map<String, List<? extends BaseRowModel>> resultMap = new HashMap<>();
+        resultMap.put("sheet1", Collections.singletonList(new OrderLineEO()));
+        ExcelUtils.createExcelStreamMutilByEaysExcel(response, resultMap, "订单模板", ExcelTypeEnum.XLSX);
+    }
 
+    /**
+     * 上传附件
+     * @return
+     */
+    public List<BaseRowModel> upload(MultipartFile file, Integer userId){
+        List<BaseRowModel> records = ExcelUtils.readExcel(file, OrderLineEO.class);
+        return records;
+    }
 }
