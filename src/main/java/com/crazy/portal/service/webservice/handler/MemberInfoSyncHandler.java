@@ -19,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import javax.annotation.Resource;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -188,7 +189,7 @@ public class MemberInfoSyncHandler extends AbstractHandler implements IHandler<M
     }
 
     private void saveCustomerAgents(String agents, Integer custId){
-        List<CustomerAgent> results = JSON.parseArray(agents,CustomerAgent.class);
+        List<CustomerAgent> results = StringUtil.isEmpty(agents)?new ArrayList<>():JSON.parseArray(agents,CustomerAgent.class);
         customerAgentsService.deleteByCustId(custId);
         results.forEach(e->{
             e.setCustId(custId);
@@ -198,7 +199,7 @@ public class MemberInfoSyncHandler extends AbstractHandler implements IHandler<M
     }
 
     private void saveAssetSInformations(String asset, Integer custId){
-        List<CustAssetsInformation> results = JSON.parseArray(asset, CustAssetsInformation.class);
+        List<CustAssetsInformation> results = StringUtil.isEmpty(asset)?new ArrayList<>():JSON.parseArray(asset, CustAssetsInformation.class);
         custAssetsInformationService.deleteByCustId(custId);
         results.forEach(e->{
             e.setCustId(custId);
@@ -208,7 +209,7 @@ public class MemberInfoSyncHandler extends AbstractHandler implements IHandler<M
     }
 
     private void saveBusinessInformations(String business, Integer custId){
-        List<CustBusinessInformation> results = JSON.parseArray(business, CustBusinessInformation.class);
+        List<CustBusinessInformation> results = StringUtil.isEmpty(business)?new ArrayList<>():JSON.parseArray(business, CustBusinessInformation.class);
         custBusinessInformationService.deleteByCustId(custId);
         results.forEach(e->{
             e.setCustId(custId);
@@ -218,7 +219,7 @@ public class MemberInfoSyncHandler extends AbstractHandler implements IHandler<M
     }
 
     private void saveCustContacts(String contact, Integer custId){
-        List<CustomerContact> results = JSON.parseArray(contact, CustomerContact.class);
+        List<CustomerContact> results = StringUtil.isEmpty(contact)?new ArrayList<>():JSON.parseArray(contact, CustomerContact.class);
         customerContactService.deleteByCustId(custId);
         results.forEach(e->{
             e.setCustId(custId);
@@ -228,7 +229,7 @@ public class MemberInfoSyncHandler extends AbstractHandler implements IHandler<M
     }
 
     private void saveProducts(String products, Integer custId){
-        List<CustomerProduct> results = JSON.parseArray(products, CustomerProduct.class);
+        List<CustomerProduct> results = StringUtil.isEmpty(products)?new ArrayList<>():JSON.parseArray(products, CustomerProduct.class);
         customerProductService.deleteByCustId(custId);
         results.forEach(e->{
             e.setCustId(custId);
@@ -263,7 +264,7 @@ public class MemberInfoSyncHandler extends AbstractHandler implements IHandler<M
     }
 
     private void saveRelationShips(String relationShips, Integer custId){
-        List<CustCorporateRelationship> results = JSON.parseArray(relationShips, CustCorporateRelationship.class);
+        List<CustCorporateRelationship> results = StringUtil.isEmpty(relationShips)?new ArrayList<>():JSON.parseArray(relationShips, CustCorporateRelationship.class);
         custCorporateRelationshipService.deleteByCustId(custId);
         results.forEach(e->{
             e.setCustId(custId);
@@ -273,7 +274,7 @@ public class MemberInfoSyncHandler extends AbstractHandler implements IHandler<M
     }
 
     private void saveInvoiceInfos(String invoice, Integer custId){
-        List<CustInvoiceInfo> results = JSON.parseArray(invoice, CustInvoiceInfo.class);
+        List<CustInvoiceInfo> results = StringUtil.isEmpty(invoice)?new ArrayList<>():JSON.parseArray(invoice, CustInvoiceInfo.class);
         custInvoiceInfoService.deleteByCustId(custId);
         results.forEach(e->{
             e.setCustId(custId);
@@ -284,7 +285,7 @@ public class MemberInfoSyncHandler extends AbstractHandler implements IHandler<M
     }
 
     private void saveSales(String sales, Integer custId){
-        List<CustSales> results = JSON.parseArray(sales, CustSales.class);
+        List<CustSales> results = StringUtil.isEmpty(sales)?new ArrayList<>():JSON.parseArray(sales, CustSales.class);
         custSalesService.deleteByCustId(custId);
         results.forEach(e->{
             e.setCustId(custId);
@@ -294,7 +295,7 @@ public class MemberInfoSyncHandler extends AbstractHandler implements IHandler<M
     }
 
     public void saveAddress(String address, Integer custId){
-        List<CustomerAddress> results = JSON.parseArray(address, CustomerAddress.class);
+        List<CustomerAddress> results = StringUtil.isEmpty(address)?new ArrayList<>():JSON.parseArray(address, CustomerAddress.class);
         customerAddressService.deleteByCustId(custId);
         results.forEach(e->{
             e.setCountry(String.format("%s,%s",e.getCountry(),e.getCity()));
@@ -307,7 +308,7 @@ public class MemberInfoSyncHandler extends AbstractHandler implements IHandler<M
 
     /*代理team*/
     public void saveAccountTeams(String accountTeams, Integer custId){
-        List<CustomerAccountTeam> result = JSON.parseArray(accountTeams, CustomerAccountTeam.class);
+        List<CustomerAccountTeam> result = StringUtil.isEmpty(accountTeams)?new ArrayList<>():JSON.parseArray(accountTeams, CustomerAccountTeam.class);
         customerAccountTeamService.deleteByCustId(custId);
         result.forEach(e->{
             e.setCustId(custId);
@@ -317,7 +318,7 @@ public class MemberInfoSyncHandler extends AbstractHandler implements IHandler<M
     }
 
     public void saveCustStructure(String custStructure, Integer custId){
-        List<CustomerStructure> result = JSON.parseArray(custStructure, CustomerStructure.class);
+        List<CustomerStructure> result = StringUtil.isEmpty(custStructure)?new ArrayList<>():JSON.parseArray(custStructure, CustomerStructure.class);
         customerStructureService.deleteByCustId(custId);
         result.forEach(e->{
             e.setCustId(custId);
@@ -327,7 +328,7 @@ public class MemberInfoSyncHandler extends AbstractHandler implements IHandler<M
     }
 
     private void saveQuotas(String quotas, Integer custId){
-        List<CustSalesQuota> results = JSON.parseArray(quotas, CustSalesQuota.class);
+        List<CustSalesQuota> results = StringUtil.isEmpty(quotas)?new ArrayList<>():JSON.parseArray(quotas, CustSalesQuota.class);
         custQuotasService.deleteByCustId(custId);
         results.forEach(e->{
             e.setCustId(custId);
@@ -337,7 +338,7 @@ public class MemberInfoSyncHandler extends AbstractHandler implements IHandler<M
     }
 
     private void saveZRAccountTeam(String zrAccountTeam, Integer custId){
-        List<CustZrAccountTeam> results = JSON.parseArray(zrAccountTeam, CustZrAccountTeam.class);
+        List<CustZrAccountTeam> results = StringUtil.isEmpty(zrAccountTeam)?new ArrayList<>():JSON.parseArray(zrAccountTeam, CustZrAccountTeam.class);
         custZrAccountTeamService.deleteByCustId(custId);
         results.forEach(e->{
             e.setCustId(custId);
