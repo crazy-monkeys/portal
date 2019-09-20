@@ -13,7 +13,7 @@ import javax.xml.ws.WebFault;
 @WebFault(name = "StandardFaultMessage", targetNamespace = "http://sap.com/xi/AP/Common/Global")
 public class StandardFaultMessage_Exception extends Exception {
     
-    private npcxf.StandardFaultMessage standardFaultMessage;
+    private StandardFaultMessage standardFaultMessage;
 
     public StandardFaultMessage_Exception() {
         super();
@@ -27,17 +27,17 @@ public class StandardFaultMessage_Exception extends Exception {
         super(message, cause);
     }
 
-    public StandardFaultMessage_Exception(String message, npcxf.StandardFaultMessage standardFaultMessage) {
+    public StandardFaultMessage_Exception(String message, StandardFaultMessage standardFaultMessage) {
         super(message);
         this.standardFaultMessage = standardFaultMessage;
     }
 
-    public StandardFaultMessage_Exception(String message, npcxf.StandardFaultMessage standardFaultMessage, Throwable cause) {
+    public StandardFaultMessage_Exception(String message, StandardFaultMessage standardFaultMessage, Throwable cause) {
         super(message, cause);
         this.standardFaultMessage = standardFaultMessage;
     }
 
-    public npcxf.StandardFaultMessage getFaultInfo() {
+    public StandardFaultMessage getFaultInfo() {
         return this.standardFaultMessage;
     }
 }
