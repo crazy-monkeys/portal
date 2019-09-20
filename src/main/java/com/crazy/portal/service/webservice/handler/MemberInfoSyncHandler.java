@@ -1,6 +1,7 @@
 package com.crazy.portal.service.webservice.handler;
 
 import com.alibaba.fastjson.JSON;
+import com.crazy.portal.annotation.OperationLog;
 import com.crazy.portal.bean.webservice.AbstractHandler;
 import com.crazy.portal.bean.webservice.IHandler;
 import com.crazy.portal.bean.webservice.request.MemberInfoSyncRequest;
@@ -14,15 +15,11 @@ import com.crazy.portal.service.system.UserService;
 import com.crazy.portal.util.Enums;
 import com.crazy.portal.util.ErrorCodes;
 import com.crazy.portal.util.StringUtil;
-import lombok.Synchronized;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-
 import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.List;
-
-import static com.crazy.portal.util.ErrorCodes.BusinessEnum.HANDOVER_BI_RESPONSE_EXCEPTION;
 
 /**
  * @ClassName: MemberInfoSyncHandler
@@ -65,11 +62,12 @@ public class MemberInfoSyncHandler extends AbstractHandler implements IHandler<M
     @Resource
     private UserService userService;
 
+    @OperationLog
     @Override
     public MemberInfoSyncResponse process(MemberInfoSyncRequest request) {
         MemberInfoSyncResponse response = new MemberInfoSyncResponse();
         try{
-            saveOrUpdateCustomer(request);
+             saveOrUpdateCustomer(request);
         }catch (Exception e){
             log.error("接受客户信息异常",e);
             throw new BusinessException(ErrorCodes.BusinessEnum.CUSTOMER_SYNC_ERROR);
@@ -79,6 +77,7 @@ public class MemberInfoSyncHandler extends AbstractHandler implements IHandler<M
     }
 
     private void saveOrUpdateCustomer(MemberInfoSyncRequest request){
+        boolean dealerCreate = false;
         CustomerInfo customerinfo = customerInfoMapper.selectByOutCode(request.getOutCode());
         if(null == customerinfo){
             customerinfo = new CustomerInfo();
@@ -88,8 +87,7 @@ public class MemberInfoSyncHandler extends AbstractHandler implements IHandler<M
             mappingCustomerInfo(request, customerinfo);
             customerInfoMapper.insertSelective(customerinfo);
             if(request.getCustType().equals(Enums.CUSTOMER_BUSINESS_TYPE.dealer.getCode())){
-                //代理商用户 开通账号
-                userService.createUser(customerinfo.getCustName(), customerinfo.getCustName(), customerinfo.getCustEmail(), customerinfo.getId());
+                 dealerCreate = true;
             }
         }else{
             mappingCustomerInfo(request, customerinfo);
@@ -109,6 +107,11 @@ public class MemberInfoSyncHandler extends AbstractHandler implements IHandler<M
         saveCustStructure(request.getCustStructure(), customerinfo.getId());
         saveQuotas(request.getQuotas(), customerinfo.getId());
         saveZRAccountTeam(request.getZRaccountTeams() ,customerinfo.getId());
+
+        if(dealerCreate){
+            //代理商用户 开通账号
+            userService.createUser(customerinfo.getCustName(), customerinfo.getCustName(), customerinfo.getCustEmail(), customerinfo.getId());
+        }
     }
 
     private void mappingCustomerInfo(MemberInfoSyncRequest request, CustomerInfo customerInfo){
