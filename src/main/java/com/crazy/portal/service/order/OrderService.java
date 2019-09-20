@@ -21,7 +21,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * 订单管理
@@ -122,9 +125,11 @@ public class OrderService {
      * @param bean
      */
     @OperationLog
+    @Transactional
     public void approval(OrderApprovalBean bean, Integer userId){
         Order order = orderMapper.selectByPrimaryKey(bean.getOrderId());
         BusinessUtil.notNull(order, ErrorCodes.BusinessEnum.ORDER_INFO_NOT_FOUND);
+        order.setLines(orderLineMapper.selectByOrderId(order.getId()));
         if(bean.getApprovalStatus().equals(Enums.OrderApprovalStatus.ADOPT.getValue())){
             sendOrderCreateRequest(order);
         }
@@ -145,38 +150,42 @@ public class OrderService {
     }
 
 
-    public String sendOrderCreateRequest(Order order){
+    public void sendOrderCreateRequest(Order order){
         IsHeader isHeader = new IsHeader();
         isHeader.setPortalorderid(order.getId().toString());
         isHeader.setOrdertype(order.getOrderType());
         isHeader.setSalesorg(order.getSalesOrgId().toString());
-//        isHeader.setChannel();
-//        isHeader.setDivision();
-//        isHeader.setSalesoffice();
-//        isHeader.setSalesgroup();
-//        isHeader.setSoldto("100158");
-//        isHeader.setSendto("100158");
+        isHeader.setChannel("10");
+        isHeader.setDivision("00");
+        isHeader.setSalesoffice("0003");
+        isHeader.setSalesgroup("031");
+        isHeader.setSoldto(order.getSoldParty());
+        isHeader.setSendto(order.getShipParty());
         isHeader.setPurchaseno(order.getPurchaseOrderNo());
-        isHeader.setPurchasedate(DateUtil.format(order.getPurchaseOrderDate(), DateUtil.NEW_FORMAT));
-        isHeader.setPaymentterms("0001");
-        isHeader.setCustomergroup1("A02");
-        isHeader.setCustomergroup2("B1");
-        isHeader.setPricedate("20190829");
+        isHeader.setPurchasedate(DateUtil.format(order.getPurchaseOrderDate(), DateUtil.SHORT_FORMAT));
+        isHeader.setPaymentterms(order.getPayCondition());
+        isHeader.setCustomergroup1(order.getCustomerGroup1());
+        isHeader.setCustomergroup2(order.getCustomerGroup2());
+        isHeader.setPricedate(DateUtil.format(order.getDeliveryDate(), DateUtil.SHORT_FORMAT));
         isHeader.setRefsaporderid("");
-        isHeader.setInco1("FH");
-        isHeader.setInco2("123");
+        isHeader.setInco1(order.getInco1());
+        isHeader.setInco2(order.getInco2());
         isHeader.setAugru("005");
 
+        Integer line_no = 1;
+        Map<Integer, Integer> lineMap = new HashMap<>();
         List<ItItem> items = new ArrayList<>();
         for (OrderLine line : order.getLines()) {
             ItItem item = new ItItem();
-//            item.setSequenceno();
-//            item.setProductid();
-//            item.setOrderquantity("1");
-//            item.setPlatform(line.getPlatform());
-//            item.setRequestdate();
-//            item.setRefsaporderitemno("");
-//            items.add(item);
+            item.setSequenceno(String.valueOf(line_no));
+            item.setProductid(line.getMaterialNumber());
+            item.setOrderquantity(String.valueOf(line.getNum()));
+            item.setPlatform(line.getPlatform());
+            item.setRequestdate(DateUtil.format(line.getExpectedDeliveryDate(), DateUtil.SHORT_FORMAT));
+            item.setRefsaporderitemno("");
+            items.add(item);
+            lineMap.put(line_no, line.getId());
+            line_no ++;
         }
         ItItems itItems = new ItItems();
         itItems.setItem(items);
@@ -184,7 +193,29 @@ public class OrderService {
         ZrfcsdsalesordercreateContent content = new ZrfcsdsalesordercreateContent(null,isHeader,itItems);
         ZrfcsdsalesordercreateBody zrfcsdsalesordercreateBody = new ZrfcsdsalesordercreateBody(content);
         Zrfcsdsalesordercreate request = new Zrfcsdsalesordercreate(zrfcsdsalesordercreateBody);
+        log.info("提交订单申请：{}", request);
         ZrfcsdsalesordercreateResponse response = orderApiService.createSalesOrder(request);
-        return null;
+        log.info("订单申请返回：{}", response);
+
+        order.setRTotalAmountIncludTax(response.getEsHeader().getGrossvalue());
+        order.setRTotalAmountExcludeTax(response.getEsHeader().getNetvalue());
+        order.setRSuccessFlag(response.getEsHeader().getResulttype());
+        order.setRErrorMsg(response.getEsHeader().getResultmessage());
+        for(ZsalesordercreateOutItem etItem : response.getEtItems().getItem()){
+            OrderLine orderLine = new OrderLine();
+            orderLine.setId(lineMap.get(etItem.getSequenceno()));
+            orderLine.setRSapOrderLineItemNumber(etItem.getItemno());
+            orderLine.setRPriceIncludTax(etItem.getPrice());
+            orderLine.setRPriceExcludeTax(etItem.getNetprice());
+            orderLine.setRCurrency(etItem.getCurrency());
+            orderLine.setRMaterialNumber(etItem.getProductid());
+            orderLine.setRLineItemCategories(etItem.getItemcategory());
+            orderLine.setRRelevanceLineNumber(etItem.getRefitemno());
+            orderLine.setRRelevanceMaterialNumber(etItem.getRefitemproductid());
+            orderLineMapper.updateByPrimaryKeySelective(orderLine);
+        }
+
     }
+
+
 }

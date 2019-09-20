@@ -87,7 +87,14 @@ public class Order {
      * 付款条件
      */
     private String payCondition;
-
+    /**
+     * 客户组1
+     */
+    private String customerGroup1;
+    /**
+     * 客户组2
+     */
+    private String customerGroup2;
     /**
      * 国际贸易条款1
      */
@@ -114,7 +121,7 @@ public class Order {
     private BigDecimal rTotalAmountExcludeTax;
 
     /**
-     * 返回-成功标识
+     * 返回-成功标识  0-成功；1-有错误
      */
     private String rSuccessFlag;
 
