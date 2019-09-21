@@ -42,11 +42,6 @@ spring:
     multipart:
       max-file-size: 50MB
       max-request-size: 200MB
-##web容器配置
-server:
-  port: 8080
-  servlet:
-    context-path: /portal-api
 
 ##自定义配置
 login:

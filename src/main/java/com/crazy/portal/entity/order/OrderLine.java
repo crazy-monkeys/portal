@@ -32,6 +32,11 @@ public class OrderLine {
     private Integer num;
 
     /**
+     * 单位
+     */
+    private String unit;
+
+    /**
      * 平台
      */
     private String platform;

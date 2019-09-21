@@ -1,29 +1,30 @@
 package com.crazy.portal.service.order;
 
-import com.alibaba.excel.metadata.BaseRowModel;
-import com.alibaba.excel.support.ExcelTypeEnum;
 import com.crazy.portal.annotation.OperationLog;
-import com.crazy.portal.bean.business.idr.BusinessFileUploadBean;
-import com.crazy.portal.bean.customer.basic.FileVO;
-import com.crazy.portal.bean.order.*;
+import com.crazy.portal.bean.order.BatchModifyOrderBean;
+import com.crazy.portal.bean.order.OrderApprovalBean;
+import com.crazy.portal.bean.order.OrderCreditInfoBean;
+import com.crazy.portal.bean.order.OrderQueryBean;
 import com.crazy.portal.bean.order.wsdl.create.*;
 import com.crazy.portal.dao.order.OrderLineMapper;
 import com.crazy.portal.dao.order.OrderMapper;
 import com.crazy.portal.entity.order.Order;
 import com.crazy.portal.entity.order.OrderLine;
-import com.crazy.portal.util.*;
+import com.crazy.portal.util.BusinessUtil;
+import com.crazy.portal.util.DateUtil;
+import com.crazy.portal.util.Enums;
+import com.crazy.portal.util.ErrorCodes;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
-import java.math.BigDecimal;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 订单管理
@@ -60,28 +61,6 @@ public class OrderService {
         BusinessUtil.notNull(order, ErrorCodes.BusinessEnum.ORDER_INFO_NOT_FOUND);
         order.setLines(orderLineMapper.selectByOrderId(id));
         return order;
-    }
-
-    /**
-     * 订单申请
-     * @param order
-     * @param userId
-     */
-    @OperationLog
-    @Transactional
-    public void apply(Order order, Integer userId){
-        BusinessUtil.notNull(order, ErrorCodes.BusinessEnum.ORDER_INFO_IS_REQUIRED);
-        BusinessUtil.notNull(order.getLines(), ErrorCodes.BusinessEnum.ORDER_LINES_IS_REQUIRED);
-        order.setApprovalStatus(Enums.OrderApprovalStatus.WAIT_APPROVAL.getValue());
-        order.setCreateId(userId);
-        order.setCreateTime(DateUtil.getCurrentTS());
-        orderMapper.insertSelective(order);
-        order.getLines().forEach(line->{
-            line.setOrderId(order.getId());
-            line.setCreateId(userId);
-            line.setCreateTime(DateUtil.getCurrentTS());
-            orderLineMapper.insertSelective(line);
-        });
     }
 
     /**
@@ -223,23 +202,5 @@ public class OrderService {
             orderLineMapper.updateByPrimaryKeySelective(orderLine);
         }
 
-    }
-
-    /**
-     * 模板下载
-     */
-    public void templateDownload(HttpServletResponse response) throws Exception{
-        Map<String, List<? extends BaseRowModel>> resultMap = new HashMap<>();
-        resultMap.put("sheet1", Collections.singletonList(new OrderLineEO()));
-        ExcelUtils.createExcelStreamMutilByEaysExcel(response, resultMap, "订单模板", ExcelTypeEnum.XLSX);
-    }
-
-    /**
-     * 上传附件
-     * @return
-     */
-    public List<BaseRowModel> upload(MultipartFile file, Integer userId){
-        List<BaseRowModel> records = ExcelUtils.readExcel(file, OrderLineEO.class);
-        return records;
     }
 }

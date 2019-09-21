@@ -16,28 +16,48 @@ import javax.validation.Valid;
  * @Date 2019-09-14
  */
 @RestController
-@RequestMapping("/orderApproval")
+@RequestMapping("/order/approval")
 public class OrderApprovalController extends BaseController {
 
     @Resource
     private OrderService orderService;
 
-    @GetMapping("/list")
-    public BaseResponse list(OrderQueryBean bean){
+    /**
+     * 审批列表
+     * @param bean
+     * @return
+     */
+    @PostMapping("/list")
+    public BaseResponse list(@RequestBody OrderQueryBean bean){
         return successResult(orderService.list(bean));
     }
 
+    /**
+     * 详情
+     * @param id
+     * @return
+     */
     @GetMapping("/detail/{id}")
     public BaseResponse detail(@PathVariable Integer id){
         return successResult(orderService.detail(id));
     }
 
+    /**
+     * 审批
+     * @param bean
+     * @return
+     */
     @PostMapping("/approval")
     public BaseResponse approval(@RequestBody @Valid OrderApprovalBean bean){
         orderService.approval(bean, getCurrentUserId());
         return successResult();
     }
 
+    /**
+     * 信贷信息
+     * @param id
+     * @return
+     */
     @GetMapping("/creditInfo/{id}")
     public BaseResponse creditInfoQuery(@PathVariable Integer id){
         return successResult(orderService.creditInfoQuery(id));

@@ -3,7 +3,7 @@ package com.crazy.portal.controller.order;
 import com.crazy.portal.bean.BaseResponse;
 import com.crazy.portal.controller.BaseController;
 import com.crazy.portal.entity.order.Order;
-import com.crazy.portal.service.order.OrderService;
+import com.crazy.portal.service.order.OrderApplyService;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -17,26 +17,41 @@ import javax.validation.Valid;
  * @Date 2019-09-14
  */
 @RestController
-@RequestMapping("/orderAapply")
+@RequestMapping("/order/apply")
 public class OrderApplyController extends BaseController {
 
     @Resource
-    private OrderService orderService;
+    private OrderApplyService orderApplyService;
 
-    @PostMapping("/apply")
+    /**
+     * 提交申请
+     * @param order
+     * @return
+     */
+    @PostMapping("/submit")
     public BaseResponse apply(@RequestBody @Valid Order order){
-        orderService.apply(order, getCurrentUserId());
+        orderApplyService.apply(order, getCurrentUserId());
         return successResult();
     }
 
-    @GetMapping("/templateDownload")
-    public void download(HttpServletResponse response) throws Exception{
-        orderService.templateDownload(response);
+    /**
+     * 模板下载
+     * @param response
+     * @throws Exception
+     */
+    @GetMapping("/lineTmpl")
+    public void lineTmpl(HttpServletResponse response) throws Exception{
+        orderApplyService.downloadLineTmpl(response);
     }
 
+    /**
+     * 上传订单行模板解析
+     * @param file
+     * @return
+     */
     @PostMapping("/upload")
     public BaseResponse upload(MultipartFile file){
-        return successResult(orderService.upload(file, this.getCurrentUser().getId()));
+        return successResult(orderApplyService.parsingLineTmplFile(file));
     }
 
 }

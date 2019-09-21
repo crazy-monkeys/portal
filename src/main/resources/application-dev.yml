@@ -1,6 +1,12 @@
 logging:
   config: classpath:logback-dev.xml
 
+##web容器配置
+server:
+  port: 8080
+  servlet:
+    context-path: /portal-api
+
 app:
   ad-domain: THREEAPE.CN
   service-principal: HTTP/tomcat.threeape.cn@THREEAPE.CN
@@ -31,7 +37,7 @@ spring:
 
 file:
   path:
-    root: /Users/weiying/Documents/job_code/portal_file #公用基础路径
+    root: /Users/Bill/Downloads #公用基础路径
     root-local: ${file.path.root}/local #portal系统内文件地址入口
     root-thrid-push: ${file.path.root}/push_thrid #portal对接第三方文件出口地址
     root-thrid-pull: ${file.path.root}/pull_thrid #第三方传输文件至portal入口地址

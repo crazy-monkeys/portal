@@ -71,9 +71,9 @@ public class Order {
     /**
      * 交货日期
      */
-    @NotNull(message = "请选择交货日期")
-    @JSONField(format="yyyy-MM-dd")
-    @DateTimeFormat(pattern="yyyy-MM-dd")
+    @NotNull(message = "请选择交货月份")
+    @JSONField(format="yyyy-MM")
+    @DateTimeFormat(pattern="yyyy-MM")
     private Date deliveryDate;
 
     /**
