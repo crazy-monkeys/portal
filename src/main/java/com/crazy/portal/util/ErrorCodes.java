@@ -200,7 +200,8 @@ public class ErrorCodes {
         ORDER_INFO_IS_REQUIRED(90003, "订单信息不能为空", ""),
         ORDER_LINES_IS_REQUIRED(90004, "订单行信息不能为空", ""),
         ORDER_APPROCAL_STATUS_IS_REQUIRED(90005, "审批状态不能为空", ""),
-        ORDER_DELIVERY_DATE_FORMAT_FAIL(90006, "订单发货日期格式错误", "")
+        ORDER_DELIVERY_DATE_FORMAT_FAIL(90006, "订单发货日期格式错误", ""),
+        ORDER_NO_PENDING(90007, "当前订单已经被审批", "")
         ;
         private final int code;
         private final String zhMsg;

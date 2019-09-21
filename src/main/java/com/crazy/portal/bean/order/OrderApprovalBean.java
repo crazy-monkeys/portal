@@ -12,7 +12,7 @@ public class OrderApprovalBean {
     private Integer orderId;
 
     /** 审批信息 **/
-    private String rejectReason;
+    private String reason;
 
     /** 审批操作 1：通过 2：驳回 **/
     @NotNull(message = "审批状态不能为空")

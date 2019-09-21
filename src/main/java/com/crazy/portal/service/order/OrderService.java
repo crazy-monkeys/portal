@@ -117,11 +117,16 @@ public class OrderService {
         Order order = orderMapper.selectByPrimaryKey(bean.getOrderId());
         BusinessUtil.notNull(order, ErrorCodes.BusinessEnum.ORDER_INFO_NOT_FOUND);
         order.setLines(orderLineMapper.selectByOrderId(order.getId()));
+
+        BusinessUtil.assertTrue(!order.getApprovalStatus().equals(Enums.OrderApprovalStatus.WAIT_APPROVAL),
+                ErrorCodes.BusinessEnum.ORDER_NO_PENDING);
+
+        //如果是通过，调用ECC创单接口
         if(bean.getApprovalStatus().equals(Enums.OrderApprovalStatus.ADOPT.getValue())){
-            sendOrderCreateRequest(order);
+//            this.sendOrderCreateRequest(order);
         }
         order.setApprovalStatus(bean.getApprovalStatus());
-        order.setRejectReason(bean.getRejectReason());
+        order.setRejectReason(bean.getReason());
         order.setUpdateId(userId);
         order.setUpdateTime(DateUtil.getCurrentTS());
         orderMapper.updateByPrimaryKeySelective(order);
