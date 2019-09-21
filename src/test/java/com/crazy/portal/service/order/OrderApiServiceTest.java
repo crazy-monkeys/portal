@@ -138,7 +138,9 @@ public class OrderApiServiceTest {
 
         com.crazy.portal.bean.order.wsdl.price.ItItems itItems = new com.crazy.portal.bean.order.wsdl.price.ItItems();
         com.crazy.portal.bean.order.wsdl.price.ItItem itItem = new com.crazy.portal.bean.order.wsdl.price.ItItem();
+        //序号 从1递增
         itItem.setSequenceno("1");
+        //物料号 需要校验是否
         itItem.setProductid("18000000017");
         itItem.setOrderquantity("10");
         itItem.setPlatform("1");

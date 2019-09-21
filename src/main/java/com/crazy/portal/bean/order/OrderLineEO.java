@@ -23,4 +23,12 @@ public class OrderLineEO extends BaseRowModel {
      */
     @ExcelProperty(value = "数量", index = 2)
     private String num;
+
+    /**
+     * 期望交货月份
+     */
+    @ExcelProperty(value = "单位", index = 4)
+    private String expectedDeliveryMonth;
+
+    private String price;
 }

@@ -45,13 +45,15 @@ public class OrderApplyController extends BaseController {
     }
 
     /**
-     * 上传订单行模板解析
+     * 上传订单行模板,做调价试算
      * @param file
      * @return
      */
     @PostMapping("/upload")
-    public BaseResponse upload(MultipartFile file){
-        return successResult(orderApplyService.parsingLineTmplFile(file));
+    public BaseResponse upload(@RequestBody @Valid Order order,
+                               @RequestParam MultipartFile file){
+
+        return successResult(orderApplyService.parsingLineTmplFile(order,file));
     }
 
 }

@@ -26,8 +26,8 @@ public class OrderQueryController extends BaseController {
      * @param bean
      * @return
      */
-    @GetMapping("/list")
-    public BaseResponse list(OrderQueryBean bean) {
+    @PostMapping("/list")
+    public BaseResponse list(@RequestBody OrderQueryBean bean) {
         return successResult(orderService.list(bean));
     }
 
