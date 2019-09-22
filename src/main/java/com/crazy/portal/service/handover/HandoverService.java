@@ -54,6 +54,13 @@ public class HandoverService {
         return new PageInfo<>(result);
     }
 
+    public PageInfo<DeliverReceiveRecord> getReceiveErrorList(Integer dealerId, Integer pageNum, Integer pageSize) {
+        PortalUtil.defaultStartPage(pageNum,pageSize);
+        List<DeliverReceiveRecord> result = deliverReceiveRecordMapper.selectPageInfo(null, -2,
+                null, null, dealerId, 2);
+        return new PageInfo<>(result);
+    }
+
 
     @Transactional
     public void operationDeliverInfo(Integer id, Integer userId, String type, Integer status, String remark) {
