@@ -3,6 +3,9 @@ package com.crazy.portal.entity.order;
 import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
+
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
@@ -132,6 +135,13 @@ public class Order {
     @NotEmpty(message = "客户属性不能为空")
     private String customerAttr;
 
+    /**
+     * 是否同意条款
+     */
+    @NotNull(message = "是否同意条款不能为空")
+    @Min(0)
+    @Max(1)
+    private Integer isAgreed;
 
     /**
      * 参考订单号(如果是退货ZRET时需要传入)
