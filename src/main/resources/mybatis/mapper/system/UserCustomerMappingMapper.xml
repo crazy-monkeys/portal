@@ -167,4 +167,8 @@
       and cust_id like '%'+#{mappingModel}+'%'
     </if>
   </select>
+
+  <select id="selectUserMapping" resultMap="BaseResultMap">
+    select * from t_user_customer_mapping where cd_user_id =#{userId} and mapping_model = #{mappingModel}
+  </select>
 </mapper>

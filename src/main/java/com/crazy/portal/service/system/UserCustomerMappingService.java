@@ -29,6 +29,10 @@ public class UserCustomerMappingService {
 
     }
 
+    public UserCustomerMapping selectUserMapping(Integer userId, String mappingModel){
+        return userCustomerMappingMapper.selectUserMapping(userId, mappingModel);
+    }
+
     public void saveOrUpdateMapping(UserCustomerMapping userCustomerMapping, Integer userId){
         if(null != userCustomerMapping.getMappingId()){
             userCustomerMapping.setActive(1);
