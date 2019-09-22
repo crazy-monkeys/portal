@@ -208,7 +208,8 @@ public class ErrorCodes {
         ORDER_APPROCAL_STATUS_IS_REQUIRED(90005, "审批状态不能为空", ""),
         ORDER_DELIVERY_DATE_FORMAT_FAIL(90006, "订单发货日期格式错误", ""),
         ORDER_NO_PENDING(90007, "当前订单已经被审批", ""),
-        ORDER_DELIVERY_MONTH_ERROR(90008, "期望交货月份格式错误 例:2019-01", "")
+        ORDER_LINE_FILE_ERROR(90008, "订单行附件参数格式不正确", ""),
+        ORDER_NOT_EXISTS_PRODUCT_ID(90009, "物料号不存在", "")
         ;
         private final int code;
         private final String zhMsg;

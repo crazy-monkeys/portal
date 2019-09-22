@@ -14,13 +14,10 @@ import com.crazy.portal.util.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.Assert;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
-import java.text.ParseException;
 import java.util.*;
-import java.util.regex.Pattern;
 
 /**
  * @Desc:
@@ -81,36 +78,41 @@ public class OrderApplyService {
 
         for(int i = 0;i<records.size();i++){
             OrderLineEO orderLineEO = records.get(i);
+
+            String productId = orderLineEO.getProductId();
+            String unit = orderLineEO.getUnit();
+            String num = orderLineEO.getNum();
+            Date expectedDeliveryMonth = orderLineEO.getExpectedDeliveryMonth();
+
+            boolean paramsCheck = StringUtil.isEmpty(productId)
+                                        || StringUtil.isEmpty(unit)
+                                        || StringUtil.isEmpty(num)
+                                        || expectedDeliveryMonth == null;
+
+            BusinessUtil.assertFlase(paramsCheck,ErrorCodes.BusinessEnum.ORDER_LINE_FILE_ERROR);
+
             IsHeader isHeader = new IsHeader();
             isHeader.setOrdertype(order.getOrderType());
             isHeader.setSalesorg(order.getSalesOrg());
             isHeader.setSoldto(order.getSoldTo());
             isHeader.setSendto(order.getSendTo());
+            String priceDate = DateUtil.getLastDayOfMonth(DateUtil.getYear(expectedDeliveryMonth),DateUtil.getMonth(expectedDeliveryMonth));
+            isHeader.setPricedate(priceDate);
+            orderLineEO.setPriceDate(priceDate);
 
-            String expectedDeliveryMonth = orderLineEO.getExpectedDeliveryMonth();
-            Pattern p = Pattern.compile("\\d{4}/(0\\d|1[0-2])");
-            BusinessUtil.assertTrue(p.matcher(expectedDeliveryMonth).matches(),ErrorCodes.BusinessEnum.ORDER_DELIVERY_MONTH_ERROR);
-
-            try {
-                Date date = DateUtil.parseDate(expectedDeliveryMonth,DateUtil.MONTH_FORMAT_HLINE);
-                String priceDate = DateUtil.getLastDayOfMonth(DateUtil.getYear(date),DateUtil.getMonth(date));
-                isHeader.setPricedate(priceDate);
-            } catch (ParseException e) {
-                log.error("",e);
-            }
             ItItems itItems = new ItItems();
             ItItem itItem = new ItItem();
 
-            itItem.setSequenceno(i+"");
-            itItem.setProductid(orderLineEO.getMaterialNumber());
-            itItem.setOrderquantity(orderLineEO.getNum());
+            itItem.setSequenceno((i+1)+"");
+            itItem.setProductid(productId);
+            itItem.setOrderquantity(num);
 
             ProductInfoDO params = new ProductInfoDO();
-            params.setSapMid(orderLineEO.getMaterialNumber());
+            params.setSapMid(productId);
             List<ProductInfoDO> productInfoDOS = productInfoDOMapper.selectProductInfo(params);
-            ProductInfoDO productInfo = productInfoDOS.get(0);
-            Assert.notNull(productInfo,"根据物料号查询不到商品信息");
+            BusinessUtil.assertFlase(productInfoDOS.isEmpty(),ErrorCodes.BusinessEnum.ORDER_NOT_EXISTS_PRODUCT_ID);
 
+            ProductInfoDO productInfo = productInfoDOS.get(0);
             itItem.setPlatform(productInfo.getPlatform());
             itItems.setItem(Arrays.asList(itItem));
             ZrfcsdpricesimulateContent content = new ZrfcsdpricesimulateContent(null,isHeader,itItems);

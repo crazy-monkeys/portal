@@ -1029,7 +1029,7 @@ public class DateUtil {
 		//设置日历中月份的最大天数
 		cal.set(Calendar.DAY_OF_MONTH, lastDay);
 		//格式化日期
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 		return sdf.format(cal.getTime());
 	}
 

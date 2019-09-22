@@ -101,7 +101,9 @@ public class OrderApiService {
 
         try {
             String requestXml = JaxbXmlUtil.convertToXml(priceSimulate);
+            log.info("request - >" + requestXml);
             String response = HttpClientUtils.post(url,requestXml);
+            log.info("response - >" + response);
             return JaxbXmlUtil.convertSoapXmlToJavaBean(response, ZrfcsdpricesimulateResponse.class);
         } catch (Exception e) {
             log.error("",e);
