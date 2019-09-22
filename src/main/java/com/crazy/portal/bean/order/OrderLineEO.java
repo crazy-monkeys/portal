@@ -19,21 +19,16 @@ public class OrderLineEO extends BaseRowModel {
     @ExcelProperty(value = "物料号", index = 0)
     private String productId;
     /**
-     * 单位
-     */
-    @ExcelProperty(value = "单位", index = 1)
-    private String unit;
-    /**
      * 数量
      */
-    @ExcelProperty(value = "数量", index = 2)
+    @ExcelProperty(value = "数量", index = 1)
     private String num;
 
     /**
      * 期望交货月份
      */
-    @ExcelProperty(value = "期望交货月份", index = 3)
-    @JSONField(format = "yyyy-MM-dd")
+    @ExcelProperty(value = "期望交货月份", index = 2)
+    @JSONField(format = "yyyy-MM")
     private Date expectedDeliveryMonth;
 
     /**
@@ -42,12 +37,12 @@ public class OrderLineEO extends BaseRowModel {
     private String priceDate;
 
     /**
-     * 含税总金额
+     * 含税价格
      */
-    private BigDecimal grossValue;
+    private BigDecimal price;
 
     /**
-     * 不含税总金额
+     * 不含税价格
      */
-    private BigDecimal netVale;
+    private BigDecimal netPrice;
 }

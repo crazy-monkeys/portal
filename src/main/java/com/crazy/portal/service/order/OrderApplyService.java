@@ -49,6 +49,9 @@ public class OrderApplyService {
         order.setApprovalStatus(Enums.OrderApprovalStatus.WAIT_APPROVAL.getValue());
         order.setCreateId(userId);
         order.setCreateTime(DateUtil.getCurrentTS());
+        if(order.getSalesOrg().equals("3000")){
+            order.setPaymentTerms("9994");
+        }
         orderMapper.insertSelective(order);
         order.getLines().forEach(line->{
             line.setOrderId(order.getId());
@@ -71,36 +74,71 @@ public class OrderApplyService {
      * 解析附件并作调价试算
      * @return
      */
-    public List<OrderLineEO> parsingLineTmplFile(Order order){
+    public Map<String,Object> parsingLineTmplFile(Order order){
+        Map<String,Object> map = new HashMap<>();
+        if(order.getSalesOrg().equals("3000")){
+            order.setPaymentTerms("9994");
+        }
         List<OrderLineEO> records = ExcelUtils.readExcel(order.getLineFile(), OrderLineEO.class);
 
+        //逻辑只允许出现同一个月份
+        Date expectedDeliveryMonth = records.get(0).getExpectedDeliveryMonth();
+        String priceDate = DateUtil.getLastDayOfMonth(DateUtil.getYear(expectedDeliveryMonth),DateUtil.getMonth(expectedDeliveryMonth));
+        IsHeader isHeader = this.buildIsHeader(order);
+        isHeader.setPricedate(priceDate);
+        ItItems itItems = new ItItems();
+        itItems.setItem(this.buildItItems(records));
+
+        Zrfcsdpricesimulate zrfcsdpricesimulate = this.getZrfcsdpricesimulate(isHeader, itItems);
+        ZrfcsdpricesimulateResponse response = orderApiService.priceSimulate(zrfcsdpricesimulate);
+        BusinessUtil.notNull(response,ErrorCodes.BusinessEnum.ORDER_PRICESIMULATION_ERROR);
+
+        ZpricessimulateHeaderOut esHeader = response.getEsHeader();
+        List<ZpricessimulateItemOut> items = response.getEtItems().getItem();
+
+        for(OrderLineEO orderLineEO : records){
+            //设置定价
+            orderLineEO.setPriceDate(priceDate);
+            //设置单价
+            for(ZpricessimulateItemOut item : items){
+                if(item.getProductid().equals(orderLineEO.getProductId())){
+                    orderLineEO.setPrice(item.getPrice());
+                    orderLineEO.setNetPrice(item.getNetprice());
+                }
+            }
+        }
+        map.put("lines",records);
+        map.put("grossValue",esHeader.getGrossvalue());
+        map.put("netValue",esHeader.getNetvalue());
+        return map;
+    }
+
+    private List<ItItem> buildItItems(List<OrderLineEO> records) {
+        List<ItItem> items = new ArrayList<>();
         for(int i = 0;i<records.size();i++){
             OrderLineEO orderLineEO = records.get(i);
-
             String productId = orderLineEO.getProductId();
-            String unit = orderLineEO.getUnit();
             String num = orderLineEO.getNum();
-            Date expectedDeliveryMonth = orderLineEO.getExpectedDeliveryMonth();
-
             boolean paramsCheck = StringUtil.isEmpty(productId)
-                                        || StringUtil.isEmpty(unit)
-                                        || StringUtil.isEmpty(num)
-                                        || expectedDeliveryMonth == null;
+                                        || StringUtil.isEmpty(num);
 
-            BusinessUtil.assertFlase(paramsCheck,ErrorCodes.BusinessEnum.ORDER_LINE_FILE_ERROR);
+            BusinessUtil.assertFlase(paramsCheck, ErrorCodes.BusinessEnum.ORDER_LINE_FILE_ERROR);
+            ItItem itItem = new ItItem();
+            itItem.setSequenceno((i+1)+"");
+            itItem.setProductid(productId);
+            itItem.setOrderquantity(num);
 
-            IsHeader isHeader = this.getIsHeader(order, orderLineEO, expectedDeliveryMonth);
-            ItItems itItems = this.getItItems(i, productId, num);
+            //根据物料号获取平台
+            ProductInfoDO params = new ProductInfoDO();
+            params.setSapMid(productId);
+            List<ProductInfoDO> productInfoDOS = productInfoDOMapper.selectProductInfo(params);
+            BusinessUtil.assertFlase(productInfoDOS.isEmpty(), ErrorCodes.BusinessEnum.ORDER_NOT_EXISTS_PRODUCT_ID);
+            ProductInfoDO productInfo = productInfoDOS.get(0);
+            itItem.setPlatform(productInfo.getPlatform());
 
-            Zrfcsdpricesimulate zrfcsdpricesimulate = this.getZrfcsdpricesimulate(isHeader, itItems);
-            ZrfcsdpricesimulateResponse response = orderApiService.priceSimulate(zrfcsdpricesimulate);
-            BusinessUtil.notNull(response,ErrorCodes.BusinessEnum.ORDER_PRICESIMULATION_ERROR);
-
-            ZpricessimulateHeaderOut esHeader = response.getEsHeader();
-            orderLineEO.setGrossValue(esHeader.getGrossvalue());
-            orderLineEO.setNetVale(esHeader.getNetvalue());
+            items.add(itItem);
         }
-        return records;
+        return items;
     }
 
     /**
@@ -115,48 +153,19 @@ public class OrderApplyService {
         return new Zrfcsdpricesimulate(body);
     }
 
-    /**
-     * 组装订单行入参
-     * @param i
-     * @param productId
-     * @param num
-     * @return
-     */
-    private ItItems getItItems(int i, String productId, String num) {
-        ItItems itItems = new ItItems();
-        ItItem itItem = new ItItem();
-
-        itItem.setSequenceno((i+1)+"");
-        itItem.setProductid(productId);
-        itItem.setOrderquantity(num);
-
-        ProductInfoDO params = new ProductInfoDO();
-        params.setSapMid(productId);
-        List<ProductInfoDO> productInfoDOS = productInfoDOMapper.selectProductInfo(params);
-        BusinessUtil.assertFlase(productInfoDOS.isEmpty(), ErrorCodes.BusinessEnum.ORDER_NOT_EXISTS_PRODUCT_ID);
-
-        ProductInfoDO productInfo = productInfoDOS.get(0);
-        itItem.setPlatform(productInfo.getPlatform());
-        itItems.setItem(Arrays.asList(itItem));
-        return itItems;
-    }
 
     /**
      * 组装订单头入参
      * @param order
-     * @param orderLineEO
-     * @param expectedDeliveryMonth
+     * @param order
      * @return
      */
-    private IsHeader getIsHeader(Order order, OrderLineEO orderLineEO, Date expectedDeliveryMonth) {
+    private IsHeader buildIsHeader(Order order) {
         IsHeader isHeader = new IsHeader();
         isHeader.setOrdertype(order.getOrderType());
         isHeader.setSalesorg(order.getSalesOrg());
         isHeader.setSoldto(order.getSoldTo());
         isHeader.setSendto(order.getSendTo());
-        String priceDate = DateUtil.getLastDayOfMonth(DateUtil.getYear(expectedDeliveryMonth),DateUtil.getMonth(expectedDeliveryMonth));
-        isHeader.setPricedate(priceDate);
-        orderLineEO.setPriceDate(priceDate);
         return isHeader;
     }
 }

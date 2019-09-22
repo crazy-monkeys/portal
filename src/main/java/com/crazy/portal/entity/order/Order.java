@@ -3,11 +3,7 @@ package com.crazy.portal.entity.order;
 import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
-
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
@@ -20,9 +16,7 @@ import java.util.List;
 @Data
 public class Order {
 
-
     @JSONField(serialize = false)
-    @NotNull(message = "订单行附件不能为空")
     private MultipartFile lineFile;
 
     /**
@@ -126,8 +120,7 @@ public class Order {
     /**
      * 付款条件
      */
-    @NotEmpty(message = "付款条件不能为空")
-    private String paymentTerms;
+    private String paymentTerms = "";
 
     /**
      * 客户属性(B1-Account Market；B2-Mass Market)
@@ -136,11 +129,23 @@ public class Order {
     private String customerAttr;
 
     /**
+     * 发票类型（1.出口发票 2.增值税普通发票 3.增值税专业发票）
+     */
+    private Integer invoiceType;
+
+    /**
+     * 发票专递类型 1.随货 2.指定(甲方办公地或者详细地址invoice_delivery_address)
+     */
+    private Integer invoiceDeliveryType;
+
+    /**
+     * 指定发票配送地址
+     */
+    private String invoiceDeliveryAddress;
+
+    /**
      * 是否同意条款
      */
-    @NotNull(message = "是否同意条款不能为空")
-    @Min(0)
-    @Max(1)
     private Integer isAgreed;
 
     /**
@@ -196,7 +201,10 @@ public class Order {
      * 是否有效(0 失效 1有效)
      */
     private Integer active;
-
+    /**
+     * 代理商ID
+     */
+    private Integer dealerId;
     /**
      * 创建人
      */
