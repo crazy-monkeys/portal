@@ -88,4 +88,5 @@ public class CustCorporateRelationshipService {
     public void save(CustCorporateRelationship record){
         custCorporateRelationshipMapper.insertSelective(record);
     }
+
 }

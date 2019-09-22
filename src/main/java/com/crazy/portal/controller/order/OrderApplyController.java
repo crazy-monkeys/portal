@@ -2,6 +2,7 @@ package com.crazy.portal.controller.order;
 
 import com.crazy.portal.annotation.OperationLog;
 import com.crazy.portal.bean.BaseResponse;
+import com.crazy.portal.bean.order.DeliveryOrderVO;
 import com.crazy.portal.controller.BaseController;
 import com.crazy.portal.entity.order.Order;
 import com.crazy.portal.service.order.OrderApplyService;
@@ -54,6 +55,17 @@ public class OrderApplyController extends BaseController {
     public BaseResponse upload(@Valid Order order){
 
         return successResult(orderApplyService.parsingLineTmplFile(order));
+    }
+
+    /**
+     * 提货申请
+     * @param bean
+     * @return
+     */
+    @PostMapping("/submitOrderDelivery")
+    public BaseResponse submitOrderDelivery(@RequestBody DeliveryOrderVO bean) {
+        orderApplyService.submitApplyDelivery(bean, getCurrentUserId());
+        return successResult();
     }
 
 }

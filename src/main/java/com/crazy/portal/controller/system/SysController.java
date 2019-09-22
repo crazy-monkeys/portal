@@ -1,7 +1,6 @@
 package com.crazy.portal.controller.system;
 
 import com.crazy.portal.bean.BaseResponse;
-import com.crazy.portal.bean.inuser.SealerBean;
 import com.crazy.portal.controller.BaseController;
 import com.crazy.portal.dao.system.InternalUserMapper;
 import com.crazy.portal.service.customer.CustomerInfoService;
@@ -12,10 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @ClassName: SysCustomerController

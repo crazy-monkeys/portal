@@ -672,7 +672,11 @@
     cust_name,
     cust_en_name,
     cust_abbreviation,
-    cust_role,
+    case cust_role when 'Z001' then '中国客户(Chinese Account)'
+    when 'Z002' then '亚太客户(Asia-Pacific Account)'
+    when 'Z003' then '北美客户(North American Account)'
+    when 'Z010' then '内部客户(Customer)'
+    else '未知' end cust_role,
     team.user_name report_sales_name,
     team.employee_id,
     ship.report_dealer_name,
@@ -806,4 +810,11 @@
   <update id="updateC4CId">
     update t_customer_info set in_code = #{inCode,jdbcType=VARCHAR} where active =1 and id = #{custId}
   </update>
+
+  <select id="selectDealerShip" resultMap="BaseResultMap">
+   select * from t_customer_info cust
+    where id in (
+    select corporate_id from t_cust_corporate_relationship where corporate_type = 'Z003' and cust_id=#{custId}
+    )
+  </select>
 </mapper>
