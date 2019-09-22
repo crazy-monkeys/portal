@@ -5,6 +5,8 @@ import com.alibaba.excel.metadata.BaseRowModel;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
+import java.math.BigDecimal;
+
 @Slf4j
 @Data
 public class OrderLineEO extends BaseRowModel {
@@ -30,5 +32,13 @@ public class OrderLineEO extends BaseRowModel {
     @ExcelProperty(value = "单位", index = 4)
     private String expectedDeliveryMonth;
 
-    private String price;
+    /**
+     * 含税总金额
+     */
+    private BigDecimal grossValue;
+
+    /**
+     * 不含税总金额
+     */
+    private BigDecimal netVale;
 }

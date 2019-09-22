@@ -3,30 +3,36 @@
 <mapper namespace="com.crazy.portal.dao.order.OrderLineMapper">
   <resultMap id="BaseResultMap" type="com.crazy.portal.entity.order.OrderLine">
     <id column="id" jdbcType="INTEGER" property="id" />
-    <result column="order_id" jdbcType="INTEGER" property="orderId" />
-    <result column="material_number" jdbcType="VARCHAR" property="materialNumber" />
-    <result column="num" jdbcType="INTEGER" property="num" />
+    <result column="order_id" jdbcType="VARCHAR" property="orderId" />
+    <result column="product_id" jdbcType="VARCHAR" property="productId" />
     <result column="unit" jdbcType="VARCHAR" property="unit" />
+    <result column="num" jdbcType="INTEGER" property="num" />
     <result column="platform" jdbcType="VARCHAR" property="platform" />
-    <result column="expected_delivery_month" jdbcType="INTEGER" property="expectedDeliveryMonth" />
-    <result column="expected_delivery_date" jdbcType="DATE" property="expectedDeliveryDate" />
-    <result column="r_SAP_order_line_item_number" jdbcType="VARCHAR" property="rSapOrderLineItemNumber" />
-    <result column="r_price_includ_tax" jdbcType="DECIMAL" property="rPriceIncludTax" />
-    <result column="r_price_exclude_tax" jdbcType="DECIMAL" property="rPriceExcludeTax" />
+    <result column="expected_delivery_month" jdbcType="VARCHAR" property="expectedDeliveryMonth" />
+    <result column="expected_delivery_date" jdbcType="VARCHAR" property="expectedDeliveryDate" />
+    <result column="r_sap_order_id" jdbcType="VARCHAR" property="rSapOrderId" />
+    <result column="r_sequence_no" jdbcType="VARCHAR" property="rSequenceNo" />
+    <result column="r_item_no" jdbcType="VARCHAR" property="rItemNo" />
+    <result column="r_product_id" jdbcType="VARCHAR" property="rProductId" />
+    <result column="r_price" jdbcType="DECIMAL" property="rPrice" />
+    <result column="r_net_price" jdbcType="DECIMAL" property="rNetPrice" />
+    <result column="r_sap_qty" jdbcType="INTEGER" property="rSapQty" />
+    <result column="r_cond_unit" jdbcType="VARCHAR" property="rCondUnit" />
     <result column="r_currency" jdbcType="VARCHAR" property="rCurrency" />
-    <result column="r_material_number" jdbcType="VARCHAR" property="rMaterialNumber" />
-    <result column="r_line_item_categories" jdbcType="VARCHAR" property="rLineItemCategories" />
-    <result column="r_relevance_line_number" jdbcType="VARCHAR" property="rRelevanceLineNumber" />
-    <result column="r_relevance_material_number" jdbcType="VARCHAR" property="rRelevanceMaterialNumber" />
+    <result column="r_item_category" jdbcType="VARCHAR" property="rItemCategory" />
+    <result column="r_ref_item_no" jdbcType="VARCHAR" property="rRefItemNo" />
+    <result column="r_ref_item_product_id" jdbcType="VARCHAR" property="rRefItemProductId" />
+    <result column="r_platform" jdbcType="VARCHAR" property="rPlatform" />
+    <result column="actice" jdbcType="INTEGER" property="actice" />
     <result column="create_id" jdbcType="INTEGER" property="createId" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_id" jdbcType="INTEGER" property="updateId" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, order_id, material_number, num, unit,platform, expected_delivery_month, expected_delivery_date,
-    r_SAP_order_line_item_number, r_price_includ_tax, r_price_exclude_tax, r_currency, 
-    r_material_number, r_line_item_categories, r_relevance_line_number, r_relevance_material_number, 
+    id, order_id, product_id, unit, num, platform, expected_delivery_month, expected_delivery_date, 
+    r_sap_order_id, r_sequence_no, r_item_no, r_product_id, r_price, r_net_price, r_sap_qty, 
+    r_cond_unit, r_currency,r_item_category, r_ref_item_no, r_ref_item_product_id, r_platform, actice,
     create_id, create_time, update_id, update_time
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
@@ -35,10 +41,13 @@
     from t_order_line
     where id = #{id,jdbcType=INTEGER}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from t_order_line
-    where id = #{id,jdbcType=INTEGER}
-  </delete>
+
+  <select id="selectByOrderId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_order_line
+    where order_id = #{orderId,jdbcType=INTEGER}
+  </select>
 
   <insert id="insertSelective" parameterType="com.crazy.portal.entity.order.OrderLine">
     insert into t_order_line
@@ -49,14 +58,14 @@
       <if test="orderId != null">
         order_id,
       </if>
-      <if test="materialNumber != null">
-        material_number,
-      </if>
-      <if test="num != null">
-        num,
+      <if test="productId != null">
+        product_id,
       </if>
       <if test="unit != null">
         unit,
+      </if>
+      <if test="num != null">
+        num,
       </if>
       <if test="platform != null">
         platform,
@@ -67,29 +76,47 @@
       <if test="expectedDeliveryDate != null">
         expected_delivery_date,
       </if>
-      <if test="rSapOrderLineItemNumber != null">
-        r_SAP_order_line_item_number,
+      <if test="rSapOrderId != null">
+        r_sap_order_id,
       </if>
-      <if test="rPriceIncludTax != null">
-        r_price_includ_tax,
+      <if test="rSequenceNo != null">
+        r_sequence_no,
       </if>
-      <if test="rPriceExcludeTax != null">
-        r_price_exclude_tax,
+      <if test="rItemNo != null">
+        r_item_no,
+      </if>
+      <if test="rProductId != null">
+        r_product_id,
+      </if>
+      <if test="rPrice != null">
+        r_price,
+      </if>
+      <if test="rNetPrice != null">
+        r_net_price,
+      </if>
+      <if test="rSapQty != null">
+        r_sap_qty,
+      </if>
+      <if test="rCondUnit != null">
+        r_cond_unit,
       </if>
       <if test="rCurrency != null">
         r_currency,
       </if>
-      <if test="rMaterialNumber != null">
-        r_material_number,
+      <if test="rItemCategory != null">
+        r_item_category,
       </if>
-      <if test="rLineItemCategories != null">
-        r_line_item_categories,
+      <if test="rRefItemNo != null">
+        r_ref_item_no,
       </if>
-      <if test="rRelevanceLineNumber != null">
-        r_relevance_line_number,
+      <if test="rRefItemProductId != null">
+        r_ref_item_product_id,
       </if>
-      <if test="rRelevanceMaterialNumber != null">
-        r_relevance_material_number,
+      <if test="rPlatform != null">
+        r_platform,
+      </if>
+      <if test="actice != null">
+        actice,
       </if>
       <if test="createId != null">
         create_id,
@@ -109,49 +136,67 @@
         #{id,jdbcType=INTEGER},
       </if>
       <if test="orderId != null">
-        #{orderId,jdbcType=INTEGER},
+        #{orderId,jdbcType=VARCHAR},
       </if>
-      <if test="materialNumber != null">
-        #{materialNumber,jdbcType=VARCHAR},
+      <if test="productId != null">
+        #{productId,jdbcType=VARCHAR},
+      </if>
+      <if test="unit != null">
+        #{unit,jdbcType=VARCHAR},
       </if>
       <if test="num != null">
         #{num,jdbcType=INTEGER},
-      </if>
-      <if test="unit != null">
-        #{unit,jdbcType=INTEGER},
       </if>
       <if test="platform != null">
         #{platform,jdbcType=VARCHAR},
       </if>
       <if test="expectedDeliveryMonth != null">
-        #{expectedDeliveryMonth,jdbcType=INTEGER},
+        #{expectedDeliveryMonth,jdbcType=VARCHAR},
       </if>
       <if test="expectedDeliveryDate != null">
-        #{expectedDeliveryDate,jdbcType=DATE},
+        #{expectedDeliveryDate,jdbcType=VARCHAR},
       </if>
-      <if test="rSapOrderLineItemNumber != null">
-        #{rSapOrderLineItemNumber,jdbcType=VARCHAR},
+      <if test="rSapOrderId != null">
+        #{rSapOrderId,jdbcType=VARCHAR},
       </if>
-      <if test="rPriceIncludTax != null">
-        #{rPriceIncludTax,jdbcType=DECIMAL},
+      <if test="rSequenceNo != null">
+        #{rSequenceNo,jdbcType=VARCHAR},
       </if>
-      <if test="rPriceExcludeTax != null">
-        #{rPriceExcludeTax,jdbcType=DECIMAL},
+      <if test="rItemNo != null">
+        #{rItemNo,jdbcType=VARCHAR},
+      </if>
+      <if test="rProductId != null">
+        #{rProductId,jdbcType=VARCHAR},
+      </if>
+      <if test="rPrice != null">
+        #{rPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="rNetPrice != null">
+        #{rNetPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="rSapQty != null">
+        #{rSapQty,jdbcType=INTEGER},
+      </if>
+      <if test="rCondUnit != null">
+        #{rCondUnit,jdbcType=VARCHAR},
       </if>
       <if test="rCurrency != null">
         #{rCurrency,jdbcType=VARCHAR},
       </if>
-      <if test="rMaterialNumber != null">
-        #{rMaterialNumber,jdbcType=VARCHAR},
+      <if test="rItemCategory != null">
+        #{rItemCategory,jdbcType=VARCHAR},
       </if>
-      <if test="rLineItemCategories != null">
-        #{rLineItemCategories,jdbcType=VARCHAR},
+      <if test="rRefItemNo != null">
+        #{rRefItemNo,jdbcType=VARCHAR},
       </if>
-      <if test="rRelevanceLineNumber != null">
-        #{rRelevanceLineNumber,jdbcType=VARCHAR},
+      <if test="rRefItemProductId != null">
+        #{rRefItemProductId,jdbcType=VARCHAR},
       </if>
-      <if test="rRelevanceMaterialNumber != null">
-        #{rRelevanceMaterialNumber,jdbcType=VARCHAR},
+      <if test="rPlatform != null">
+        #{rPlatform,jdbcType=VARCHAR},
+      </if>
+      <if test="actice != null">
+        #{actice,jdbcType=INTEGER},
       </if>
       <if test="createId != null">
         #{createId,jdbcType=INTEGER},
@@ -171,49 +216,67 @@
     update t_order_line
     <set>
       <if test="orderId != null">
-        order_id = #{orderId,jdbcType=INTEGER},
+        order_id = #{orderId,jdbcType=VARCHAR},
       </if>
-      <if test="materialNumber != null">
-        material_number = #{materialNumber,jdbcType=VARCHAR},
+      <if test="productId != null">
+        product_id = #{productId,jdbcType=VARCHAR},
+      </if>
+      <if test="unit != null">
+        unit = #{unit,jdbcType=VARCHAR},
       </if>
       <if test="num != null">
         num = #{num,jdbcType=INTEGER},
-      </if>
-      <if test="unit != null">
-        num = #{unit,jdbcType=INTEGER},
       </if>
       <if test="platform != null">
         platform = #{platform,jdbcType=VARCHAR},
       </if>
       <if test="expectedDeliveryMonth != null">
-        expected_delivery_month = #{expectedDeliveryMonth,jdbcType=INTEGER},
+        expected_delivery_month = #{expectedDeliveryMonth,jdbcType=VARCHAR},
       </if>
       <if test="expectedDeliveryDate != null">
-        expected_delivery_date = #{expectedDeliveryDate,jdbcType=DATE},
+        expected_delivery_date = #{expectedDeliveryDate,jdbcType=VARCHAR},
       </if>
-      <if test="rSapOrderLineItemNumber != null">
-        r_SAP_order_line_item_number = #{rSapOrderLineItemNumber,jdbcType=VARCHAR},
+      <if test="rSapOrderId != null">
+        r_sap_order_id = #{rSapOrderId,jdbcType=VARCHAR},
       </if>
-      <if test="rPriceIncludTax != null">
-        r_price_includ_tax = #{rPriceIncludTax,jdbcType=DECIMAL},
+      <if test="rSequenceNo != null">
+        r_sequence_no = #{rSequenceNo,jdbcType=VARCHAR},
       </if>
-      <if test="rPriceExcludeTax != null">
-        r_price_exclude_tax = #{rPriceExcludeTax,jdbcType=DECIMAL},
+      <if test="rItemNo != null">
+        r_item_no = #{rItemNo,jdbcType=VARCHAR},
+      </if>
+      <if test="rProductId != null">
+        r_product_id = #{rProductId,jdbcType=VARCHAR},
+      </if>
+      <if test="rPrice != null">
+        r_price = #{rPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="rNetPrice != null">
+        r_net_price = #{rNetPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="rSapQty != null">
+        r_sap_qty = #{rSapQty,jdbcType=INTEGER},
+      </if>
+      <if test="rCondUnit != null">
+        r_cond_unit = #{rCondUnit,jdbcType=VARCHAR},
       </if>
       <if test="rCurrency != null">
         r_currency = #{rCurrency,jdbcType=VARCHAR},
       </if>
-      <if test="rMaterialNumber != null">
-        r_material_number = #{rMaterialNumber,jdbcType=VARCHAR},
+      <if test="rItemCategory != null">
+        r_item_category = #{rItemCategory,jdbcType=VARCHAR},
       </if>
-      <if test="rLineItemCategories != null">
-        r_line_item_categories = #{rLineItemCategories,jdbcType=VARCHAR},
+      <if test="rRefItemNo != null">
+        r_ref_item_no = #{rRefItemNo,jdbcType=VARCHAR},
       </if>
-      <if test="rRelevanceLineNumber != null">
-        r_relevance_line_number = #{rRelevanceLineNumber,jdbcType=VARCHAR},
+      <if test="rRefItemProductId != null">
+        r_ref_item_product_id = #{rRefItemProductId,jdbcType=VARCHAR},
       </if>
-      <if test="rRelevanceMaterialNumber != null">
-        r_relevance_material_number = #{rRelevanceMaterialNumber,jdbcType=VARCHAR},
+      <if test="rPlatform != null">
+        r_platform = #{rPlatform,jdbcType=VARCHAR},
+      </if>
+      <if test="actice != null">
+        actice = #{actice,jdbcType=INTEGER},
       </if>
       <if test="createId != null">
         create_id = #{createId,jdbcType=INTEGER},
@@ -230,11 +293,4 @@
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-
-  <select id="selectByOrderId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select
-    <include refid="Base_Column_List" />
-    from t_order_line
-    where order_id = #{orderId,jdbcType=INTEGER}
-  </select>
 </mapper>

@@ -3,96 +3,135 @@ package com.crazy.portal.entity.order;
 import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.Date;
 
 /**
  * 
- * @author Shawn
- * @date 2019-09-14 14:44::48
+ * @author Bill
+ * @date   2019-09-22 11:57::14
  */
 @Data
 public class OrderLine {
-
+    /**
+     * 
+     */
     private Integer id;
 
     /**
-     * 订单ID
+     * 订单主键ID
      */
     private Integer orderId;
 
     /**
      * 物料号
      */
-    private String materialNumber;
-
-    /**
-     * 订单数量
-     */
-    private Integer num;
+    @NotEmpty
+    private String productId;
 
     /**
      * 单位
      */
+    @NotEmpty
     private String unit;
+
+    /**
+     * 数量
+     */
+    @NotNull
+    private Integer num;
 
     /**
      * 平台
      */
+    @NotEmpty
     private String platform;
 
     /**
-     * 期望交货月份
+     * 
      */
-    private Integer expectedDeliveryMonth;
+    @NotEmpty
+    private String expectedDeliveryMonth;
 
     /**
-     * 期望交货日期
+     * 
      */
-    private Date expectedDeliveryDate;
+    @NotEmpty
+    private String expectedDeliveryDate;
 
     /**
-     * SAP订单行项目号
+     * sap订单号
      */
-    private String rSapOrderLineItemNumber;
+    private String rSapOrderId;
+
+    /**
+     * 序号
+     */
+    private String rSequenceNo;
+
+    /**
+     * sap订单行号
+     */
+    private String rItemNo;
+
+    /**
+     * 物料号
+     */
+    private String rProductId;
 
     /**
      * 含税价格
      */
-    private BigDecimal rPriceIncludTax;
+    private BigDecimal rPrice;
 
     /**
      * 不含税价格
      */
-    private BigDecimal rPriceExcludeTax;
+    private BigDecimal rNetPrice;
 
     /**
-     * 返回-币种
+     * 数量
+     */
+    private Integer rSapQty;
+
+    /**
+     * 单位
+     */
+    private String rCondUnit;
+
+    /**
+     * 币种
      */
     private String rCurrency;
-
     /**
-     * 返回-物料号
+     * 行项目类别(TAP:虚拟物料 ZTAN: 实体物料)
      */
-    private String rMaterialNumber;
-
-    /**
-     * 返回-类目
-     */
-    private String rLineItemCategories;
+    private String rItemCategory;
 
     /**
      * 关联行号
      */
-    private String rRelevanceLineNumber;
+    private String rRefItemNo;
 
     /**
      * 关联物料号
      */
-    private String rRelevanceMaterialNumber;
+    private String rRefItemProductId;
 
     /**
-     * 创建人id
+     * 返回平台
+     */
+    private String rPlatform;
+
+    /**
+     * 是否有效(0:失效  1 有效)
+     */
+    private Integer actice;
+
+    /**
+     * 创建人
      */
     @JSONField(serialize = false)
     private Integer createId;
@@ -100,19 +139,16 @@ public class OrderLine {
     /**
      * 创建时间
      */
-    @JSONField(serialize = false)
     private Date createTime;
 
     /**
-     * 修改人id
+     * 修改人
      */
     @JSONField(serialize = false)
     private Integer updateId;
 
     /**
-     * 修改时间
+     * 
      */
-    @JSONField(serialize = false)
     private Date updateTime;
-
 }

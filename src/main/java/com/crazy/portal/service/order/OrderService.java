@@ -73,7 +73,7 @@ public class OrderService {
             BusinessUtil.assertTrue(DateUtil.isValidDateFormat(bean.getDeliveryDate(), DateUtil.WEB_FORMAT), ErrorCodes.BusinessEnum.ORDER_DELIVERY_DATE_FORMAT_FAIL);
             Order order = new Order();
             order.setId(id);
-            order.setDeliveryDate(DateUtil.parseDate(bean.getDeliveryDate(), DateUtil.WEB_FORMAT));
+            order.setPriceDate(DateUtil.parseDate(bean.getDeliveryDate(), DateUtil.WEB_FORMAT));
             order.setUpdateId(userId);
             order.setUpdateTime(DateUtil.getCurrentTS());
             orderMapper.updateByPrimaryKeySelective(order);
@@ -123,10 +123,10 @@ public class OrderService {
 
         //如果是通过，调用ECC创单接口
         if(bean.getApprovalStatus().equals(Enums.OrderApprovalStatus.ADOPT.getValue())){
-//            this.sendOrderCreateRequest(order);
+            this.sendOrderCreateRequest(order);
         }
         order.setApprovalStatus(bean.getApprovalStatus());
-        order.setRejectReason(bean.getReason());
+        order.setOrderReason(bean.getReason());
         order.setUpdateId(userId);
         order.setUpdateTime(DateUtil.getCurrentTS());
         orderMapper.updateByPrimaryKeySelective(order);
@@ -146,22 +146,17 @@ public class OrderService {
         IsHeader isHeader = new IsHeader();
         isHeader.setPortalorderid(order.getId().toString());
         isHeader.setOrdertype(order.getOrderType());
-        isHeader.setSalesorg(order.getSalesOrgId().toString());
-        isHeader.setChannel("10");
-        isHeader.setDivision("00");
-        isHeader.setSalesoffice("0003");
-        isHeader.setSalesgroup("031");
-        isHeader.setSoldto(order.getSoldParty());
-        isHeader.setSendto(order.getShipParty());
-        isHeader.setPurchaseno(order.getPurchaseOrderNo());
-        isHeader.setPurchasedate(DateUtil.format(order.getPurchaseOrderDate(), DateUtil.SHORT_FORMAT));
-        isHeader.setPaymentterms(order.getPayCondition());
-        isHeader.setCustomergroup1(order.getCustomerGroup1());
-        isHeader.setCustomergroup2(order.getCustomerGroup2());
-        isHeader.setPricedate(DateUtil.format(order.getDeliveryDate(), DateUtil.SHORT_FORMAT));
-        isHeader.setRefsaporderid("");
-        isHeader.setInco1(order.getInco1());
-        isHeader.setInco2(order.getInco2());
+        isHeader.setSalesorg(order.getSalesOrg());
+        isHeader.setSoldto(order.getSoldTo());
+        isHeader.setSendto(order.getSendTo());
+        isHeader.setPurchaseno(order.getPurchaseNo());
+        isHeader.setPurchasedate(DateUtil.format(order.getPurchaseDate(), DateUtil.SHORT_FORMAT));
+        isHeader.setPaymentterms(order.getPaymentTerms());
+        isHeader.setCustomergroup1(order.getOrderType());
+        isHeader.setCustomergroup2(order.getCustomerAttr());
+        isHeader.setPricedate(DateUtil.format(order.getPriceDate(), DateUtil.SHORT_FORMAT));
+        isHeader.setInco1(order.getIncoterms1());
+        isHeader.setInco2(order.getIncoterms2());
         isHeader.setAugru("005");
 
         Integer line_no = 1;
@@ -170,11 +165,10 @@ public class OrderService {
         for (OrderLine line : order.getLines()) {
             ItItem item = new ItItem();
             item.setSequenceno(String.valueOf(line_no));
-            item.setProductid(line.getMaterialNumber());
+            item.setProductid(line.getProductId());
             item.setOrderquantity(String.valueOf(line.getNum()));
             item.setPlatform(line.getPlatform());
-            item.setRequestdate(DateUtil.format(line.getExpectedDeliveryDate(), DateUtil.SHORT_FORMAT));
-            item.setRefsaporderitemno("");
+            item.setRequestdate(line.getExpectedDeliveryDate());
             items.add(item);
             lineMap.put(line_no, line.getId());
             line_no ++;
@@ -189,21 +183,19 @@ public class OrderService {
         ZrfcsdsalesordercreateResponse response = orderApiService.createSalesOrder(request);
         log.info("订单申请返回：{}", response);
 
-        order.setRTotalAmountIncludTax(response.getEsHeader().getGrossvalue());
-        order.setRTotalAmountExcludeTax(response.getEsHeader().getNetvalue());
-        order.setRSuccessFlag(response.getEsHeader().getResulttype());
-        order.setRErrorMsg(response.getEsHeader().getResultmessage());
+        order.setRGrossValue(response.getEsHeader().getGrossvalue());
+        order.setRNetValue(response.getEsHeader().getNetvalue());
         for(ZsalesordercreateOutItem etItem : response.getEtItems().getItem()){
             OrderLine orderLine = new OrderLine();
             orderLine.setId(lineMap.get(etItem.getSequenceno()));
-            orderLine.setRSapOrderLineItemNumber(etItem.getItemno());
-            orderLine.setRPriceIncludTax(etItem.getPrice());
-            orderLine.setRPriceExcludeTax(etItem.getNetprice());
+            orderLine.setRItemNo(etItem.getItemno());
+            orderLine.setRPrice(etItem.getPrice());
+            orderLine.setRNetPrice(etItem.getNetprice());
             orderLine.setRCurrency(etItem.getCurrency());
-            orderLine.setRMaterialNumber(etItem.getProductid());
-            orderLine.setRLineItemCategories(etItem.getItemcategory());
-            orderLine.setRRelevanceLineNumber(etItem.getRefitemno());
-            orderLine.setRRelevanceMaterialNumber(etItem.getRefitemproductid());
+            orderLine.setRProductId(etItem.getProductid());
+            orderLine.setRItemCategory(etItem.getItemcategory());
+            orderLine.setRRefItemNo(etItem.getRefitemno());
+            orderLine.setRRefItemProductId(etItem.getRefitemproductid());
             orderLineMapper.updateByPrimaryKeySelective(orderLine);
         }
 

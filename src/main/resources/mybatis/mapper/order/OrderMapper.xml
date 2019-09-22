@@ -3,119 +3,135 @@
 <mapper namespace="com.crazy.portal.dao.order.OrderMapper">
   <resultMap id="BaseResultMap" type="com.crazy.portal.entity.order.Order">
     <id column="id" jdbcType="INTEGER" property="id" />
-    <result column="under_order_type" jdbcType="VARCHAR" property="underOrderType" />
-    <result column="sales_org_id" jdbcType="INTEGER" property="salesOrgId" />
-    <result column="sold_party" jdbcType="VARCHAR" property="soldParty" />
-    <result column="ship_party" jdbcType="VARCHAR" property="shipParty" />
-    <result column="purchase_order_no" jdbcType="VARCHAR" property="purchaseOrderNo" />
-    <result column="purchase_order_date" jdbcType="DATE" property="purchaseOrderDate" />
-    <result column="customer_attribute" jdbcType="VARCHAR" property="customerAttribute" />
     <result column="order_type" jdbcType="VARCHAR" property="orderType" />
-    <result column="delivery_date" jdbcType="DATE" property="deliveryDate" />
-    <result column="pricing_date" jdbcType="DATE" property="pricingDate" />
-    <result column="pay_condition" jdbcType="VARCHAR" property="payCondition" />
-    <result column="customer_group1" jdbcType="VARCHAR" property="customerGroup1"/>
-    <result column="customer_group2" jdbcType="VARCHAR" property="customerGroup2"/>
-    <result column="inco1" jdbcType="VARCHAR" property="inco1"/>
-    <result column="inco2" jdbcType="VARCHAR" property="inco2"/>
-    <result column="order_status" jdbcType="VARCHAR" property="orderStatus" />
-    <result column="r_total_amount_includ_tax" jdbcType="DECIMAL" property="rTotalAmountIncludTax" />
-    <result column="r_total_amount_exclude_tax" jdbcType="DECIMAL" property="rTotalAmountExcludeTax" />
-    <result column="r_success_flag" jdbcType="VARCHAR" property="rSuccessFlag" />
-    <result column="r_error_msg" jdbcType="VARCHAR" property="rErrorMsg" />
+    <result column="under_order_type" jdbcType="VARCHAR" property="underOrderType" />
+    <result column="sales_org" jdbcType="VARCHAR" property="salesOrg" />
+    <result column="channel" jdbcType="VARCHAR" property="channel" />
+    <result column="division" jdbcType="VARCHAR" property="division" />
+    <result column="sales_office" jdbcType="VARCHAR" property="salesOffice" />
+    <result column="sales_group" jdbcType="VARCHAR" property="salesGroup" />
+    <result column="sold_to" jdbcType="VARCHAR" property="soldTo" />
+    <result column="send_to" jdbcType="VARCHAR" property="sendTo" />
+    <result column="purchase_no" jdbcType="VARCHAR" property="purchaseNo" />
+    <result column="incoterms1" jdbcType="VARCHAR" property="incoterms1" />
+    <result column="incoterms2" jdbcType="VARCHAR" property="incoterms2" />
+    <result column="price_date" jdbcType="DATE" property="priceDate" />
+    <result column="payment_terms" jdbcType="VARCHAR" property="paymentTerms" />
+    <result column="customer_attr" jdbcType="VARCHAR" property="customerAttr" />
+    <result column="purchase_date" jdbcType="DATE" property="purchaseDate" />
+    <result column="ref_sap_order_id" jdbcType="VARCHAR" property="refSapOrderId" />
+    <result column="r_sap_order_id" jdbcType="VARCHAR" property="rSapOrderId" />
+    <result column="r_sap_currency" jdbcType="VARCHAR" property="rSapCurrency" />
+    <result column="r_gross_value" jdbcType="DECIMAL" property="rGrossValue" />
+    <result column="r_net_value" jdbcType="DECIMAL" property="rNetValue" />
+    <result column="order_reason" jdbcType="VARCHAR" property="orderReason" />
     <result column="approval_status" jdbcType="INTEGER" property="approvalStatus" />
+    <result column="active" jdbcType="INTEGER" property="active" />
     <result column="create_id" jdbcType="INTEGER" property="createId" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_id" jdbcType="INTEGER" property="updateId" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
-    <result column="reject_reason" jdbcType="VARCHAR" property="rejectReason" />
   </resultMap>
+
   <sql id="Base_Column_List">
-    id, under_order_type, sales_org_id, sold_party, ship_party, purchase_order_no, purchase_order_date, 
-    customer_attribute, order_type, delivery_date, pricing_date, pay_condition,
-    customer_group1, customer_group2, inco1, inco2,
-    order_status, r_total_amount_includ_tax, r_total_amount_exclude_tax, r_success_flag, 
-    r_error_msg, approval_status, create_id, create_time, update_id, update_time, reject_reason
+    id, order_type, under_order_type, sales_org, channel, division, sales_office, sales_group, 
+    sold_to, send_to, purchase_no, incoterms1, incoterms2, price_date, payment_terms, 
+    customer_attr, purchase_date, ref_sap_order_id, r_sap_order_id, r_sap_currency, r_gross_value, 
+    r_net_value, order_reason, approval_status, active, create_id, create_time, update_id, 
+    update_time
   </sql>
+
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from t_order
     where id = #{id,jdbcType=INTEGER}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from t_order
-    where id = #{id,jdbcType=INTEGER}
-  </delete>
 
-  <insert id="insertSelective" useGeneratedKeys="true" keyProperty="id" parameterType="com.crazy.portal.entity.order.Order">
+  <select id="selectByPage" resultMap="BaseResultMap" parameterType="com.crazy.portal.bean.order.OrderQueryBean">
+    select
+    <include refid="Base_Column_List" />
+    from t_order
+    order by create_time desc
+  </select>
+
+  <insert id="insertSelective" parameterType="com.crazy.portal.entity.order.Order">
     insert into t_order
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
       </if>
-      <if test="underOrderType != null">
-        under_order_type,
-      </if>
-      <if test="salesOrgId != null">
-        sales_org_id,
-      </if>
-      <if test="soldParty != null">
-        sold_party,
-      </if>
-      <if test="shipParty != null">
-        ship_party,
-      </if>
-      <if test="purchaseOrderNo != null">
-        purchase_order_no,
-      </if>
-      <if test="purchaseOrderDate != null">
-        purchase_order_date,
-      </if>
-      <if test="customerAttribute != null">
-        customer_attribute,
-      </if>
       <if test="orderType != null">
         order_type,
       </if>
-      <if test="deliveryDate != null">
-        delivery_date,
+      <if test="underOrderType != null">
+        under_order_type,
       </if>
-      <if test="pricingDate != null">
-        pricing_date,
+      <if test="salesOrg != null">
+        sales_org,
       </if>
-      <if test="payCondition != null">
-        pay_condition,
+      <if test="channel != null">
+        channel,
       </if>
-      <if test="customerGroup1 != null">
-        customer_group1,
+      <if test="division != null">
+        division,
       </if>
-      <if test="customerGroup2 != null">
-        customer_group2,
+      <if test="salesOffice != null">
+        sales_office,
       </if>
-      <if test="inco1 != null">
-        inco1,
+      <if test="salesGroup != null">
+        sales_group,
       </if>
-      <if test="inco2 != null">
-        inco2,
+      <if test="soldTo != null">
+        sold_to,
       </if>
-      <if test="orderStatus != null">
-        order_status,
+      <if test="sendTo != null">
+        send_to,
       </if>
-      <if test="rTotalAmountIncludTax != null">
-        r_total_amount_includ_tax,
+      <if test="purchaseNo != null">
+        purchase_no,
       </if>
-      <if test="rTotalAmountExcludeTax != null">
-        r_total_amount_exclude_tax,
+      <if test="incoterms1 != null">
+        incoterms1,
       </if>
-      <if test="rSuccessFlag != null">
-        r_success_flag,
+      <if test="incoterms2 != null">
+        incoterms2,
       </if>
-      <if test="rErrorMsg != null">
-        r_error_msg,
+      <if test="priceDate != null">
+        price_date,
+      </if>
+      <if test="paymentTerms != null">
+        payment_terms,
+      </if>
+      <if test="customerAttr != null">
+        customer_attr,
+      </if>
+      <if test="purchaseDate != null">
+        purchase_date,
+      </if>
+      <if test="refSapOrderId != null">
+        ref_sap_order_id,
+      </if>
+      <if test="rSapOrderId != null">
+        r_sap_order_id,
+      </if>
+      <if test="rSapCurrency != null">
+        r_sap_currency,
+      </if>
+      <if test="rGrossValue != null">
+        r_gross_value,
+      </if>
+      <if test="rNetValue != null">
+        r_net_value,
+      </if>
+      <if test="orderReason != null">
+        order_reason,
       </if>
       <if test="approvalStatus != null">
         approval_status,
+      </if>
+      <if test="active != null">
+        active,
       </if>
       <if test="createId != null">
         create_id,
@@ -129,76 +145,82 @@
       <if test="updateTime != null">
         update_time,
       </if>
-      <if test="rejectReason != null">
-        reject_reason,
-      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
         #{id,jdbcType=INTEGER},
       </if>
-      <if test="underOrderType != null">
-        #{underOrderType,jdbcType=VARCHAR},
-      </if>
-      <if test="salesOrgId != null">
-        #{salesOrgId,jdbcType=INTEGER},
-      </if>
-      <if test="soldParty != null">
-        #{soldParty,jdbcType=VARCHAR},
-      </if>
-      <if test="shipParty != null">
-        #{shipParty,jdbcType=VARCHAR},
-      </if>
-      <if test="purchaseOrderNo != null">
-        #{purchaseOrderNo,jdbcType=VARCHAR},
-      </if>
-      <if test="purchaseOrderDate != null">
-        #{purchaseOrderDate,jdbcType=DATE},
-      </if>
-      <if test="customerAttribute != null">
-        #{customerAttribute,jdbcType=VARCHAR},
-      </if>
       <if test="orderType != null">
         #{orderType,jdbcType=VARCHAR},
       </if>
-      <if test="deliveryDate != null">
-        #{deliveryDate,jdbcType=DATE},
+      <if test="underOrderType != null">
+        #{underOrderType,jdbcType=VARCHAR},
       </if>
-      <if test="pricingDate != null">
-        #{pricingDate,jdbcType=DATE},
+      <if test="salesOrg != null">
+        #{salesOrg,jdbcType=VARCHAR},
       </if>
-      <if test="payCondition != null">
-        #{payCondition,jdbcType=VARCHAR},
+      <if test="channel != null">
+        #{channel,jdbcType=VARCHAR},
       </if>
-      <if test="customerGroup1 != null">
-        #{customerGroup1,jdbcType=VARCHAR},
+      <if test="division != null">
+        #{division,jdbcType=VARCHAR},
       </if>
-      <if test="customerGroup2 != null">
-        #{customerGroup2,jdbcType=VARCHAR},
+      <if test="salesOffice != null">
+        #{salesOffice,jdbcType=VARCHAR},
       </if>
-      <if test="inco1 != null">
-        #{inco1,jdbcType=VARCHAR},
+      <if test="salesGroup != null">
+        #{salesGroup,jdbcType=VARCHAR},
       </if>
-      <if test="inco2 != null">
-        #{inco2,jdbcType=VARCHAR},
+      <if test="soldTo != null">
+        #{soldTo,jdbcType=VARCHAR},
       </if>
-      <if test="orderStatus != null">
-        #{orderStatus,jdbcType=VARCHAR},
+      <if test="sendTo != null">
+        #{sendTo,jdbcType=VARCHAR},
       </if>
-      <if test="rTotalAmountIncludTax != null">
-        #{rTotalAmountIncludTax,jdbcType=DECIMAL},
+      <if test="purchaseNo != null">
+        #{purchaseNo,jdbcType=VARCHAR},
       </if>
-      <if test="rTotalAmountExcludeTax != null">
-        #{rTotalAmountExcludeTax,jdbcType=DECIMAL},
+      <if test="incoterms1 != null">
+        #{incoterms1,jdbcType=VARCHAR},
       </if>
-      <if test="rSuccessFlag != null">
-        #{rSuccessFlag,jdbcType=VARCHAR},
+      <if test="incoterms2 != null">
+        #{incoterms2,jdbcType=VARCHAR},
       </if>
-      <if test="rErrorMsg != null">
-        #{rErrorMsg,jdbcType=VARCHAR},
+      <if test="priceDate != null">
+        #{priceDate,jdbcType=DATE},
+      </if>
+      <if test="paymentTerms != null">
+        #{paymentTerms,jdbcType=VARCHAR},
+      </if>
+      <if test="customerAttr != null">
+        #{customerAttr,jdbcType=VARCHAR},
+      </if>
+      <if test="purchaseDate != null">
+        #{purchaseDate,jdbcType=DATE},
+      </if>
+      <if test="refSapOrderId != null">
+        #{refSapOrderId,jdbcType=VARCHAR},
+      </if>
+      <if test="rSapOrderId != null">
+        #{rSapOrderId,jdbcType=VARCHAR},
+      </if>
+      <if test="rSapCurrency != null">
+        #{rSapCurrency,jdbcType=VARCHAR},
+      </if>
+      <if test="rGrossValue != null">
+        #{rGrossValue,jdbcType=DECIMAL},
+      </if>
+      <if test="rNetValue != null">
+        #{rNetValue,jdbcType=DECIMAL},
+      </if>
+      <if test="orderReason != null">
+        #{orderReason,jdbcType=VARCHAR},
       </if>
       <if test="approvalStatus != null">
         #{approvalStatus,jdbcType=INTEGER},
+      </if>
+      <if test="active != null">
+        #{active,jdbcType=INTEGER},
       </if>
       <if test="createId != null">
         #{createId,jdbcType=INTEGER},
@@ -212,76 +234,82 @@
       <if test="updateTime != null">
         #{updateTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="rejectReason != null">
-        #{rejectReason,jdbcType=VARCHAR},
-      </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.crazy.portal.entity.order.Order">
     update t_order
     <set>
-      <if test="underOrderType != null">
-        under_order_type = #{underOrderType,jdbcType=VARCHAR},
-      </if>
-      <if test="salesOrgId != null">
-        sales_org_id = #{salesOrgId,jdbcType=INTEGER},
-      </if>
-      <if test="soldParty != null">
-        sold_party = #{soldParty,jdbcType=VARCHAR},
-      </if>
-      <if test="shipParty != null">
-        ship_party = #{shipParty,jdbcType=VARCHAR},
-      </if>
-      <if test="purchaseOrderNo != null">
-        purchase_order_no = #{purchaseOrderNo,jdbcType=VARCHAR},
-      </if>
-      <if test="purchaseOrderDate != null">
-        purchase_order_date = #{purchaseOrderDate,jdbcType=DATE},
-      </if>
-      <if test="customerAttribute != null">
-        customer_attribute = #{customerAttribute,jdbcType=VARCHAR},
-      </if>
       <if test="orderType != null">
         order_type = #{orderType,jdbcType=VARCHAR},
       </if>
-      <if test="deliveryDate != null">
-        delivery_date = #{deliveryDate,jdbcType=DATE},
+      <if test="underOrderType != null">
+        under_order_type = #{underOrderType,jdbcType=VARCHAR},
       </if>
-      <if test="pricingDate != null">
-        pricing_date = #{pricingDate,jdbcType=DATE},
+      <if test="salesOrg != null">
+        sales_org = #{salesOrg,jdbcType=VARCHAR},
       </if>
-      <if test="payCondition != null">
-        pay_condition = #{payCondition,jdbcType=VARCHAR},
+      <if test="channel != null">
+        channel = #{channel,jdbcType=VARCHAR},
       </if>
-      <if test="customerGroup1 != null">
-        customer_group1 = #{customerGroup1,jdbcType=VARCHAR},
+      <if test="division != null">
+        division = #{division,jdbcType=VARCHAR},
       </if>
-      <if test="customerGroup2 != null">
-        customer_group2 = #{customerGroup2,jdbcType=VARCHAR},
+      <if test="salesOffice != null">
+        sales_office = #{salesOffice,jdbcType=VARCHAR},
       </if>
-      <if test="inco1 != null">
-        inco1 = #{inco1,jdbcType=VARCHAR},
+      <if test="salesGroup != null">
+        sales_group = #{salesGroup,jdbcType=VARCHAR},
       </if>
-      <if test="inco2 != null">
-        inco2 = #{inco2,jdbcType=VARCHAR},
+      <if test="soldTo != null">
+        sold_to = #{soldTo,jdbcType=VARCHAR},
       </if>
-      <if test="orderStatus != null">
-        order_status = #{orderStatus,jdbcType=VARCHAR},
+      <if test="sendTo != null">
+        send_to = #{sendTo,jdbcType=VARCHAR},
       </if>
-      <if test="rTotalAmountIncludTax != null">
-        r_total_amount_includ_tax = #{rTotalAmountIncludTax,jdbcType=DECIMAL},
+      <if test="purchaseNo != null">
+        purchase_no = #{purchaseNo,jdbcType=VARCHAR},
       </if>
-      <if test="rTotalAmountExcludeTax != null">
-        r_total_amount_exclude_tax = #{rTotalAmountExcludeTax,jdbcType=DECIMAL},
+      <if test="incoterms1 != null">
+        incoterms1 = #{incoterms1,jdbcType=VARCHAR},
       </if>
-      <if test="rSuccessFlag != null">
-        r_success_flag = #{rSuccessFlag,jdbcType=VARCHAR},
+      <if test="incoterms2 != null">
+        incoterms2 = #{incoterms2,jdbcType=VARCHAR},
       </if>
-      <if test="rErrorMsg != null">
-        r_error_msg = #{rErrorMsg,jdbcType=VARCHAR},
+      <if test="priceDate != null">
+        price_date = #{priceDate,jdbcType=DATE},
+      </if>
+      <if test="paymentTerms != null">
+        payment_terms = #{paymentTerms,jdbcType=VARCHAR},
+      </if>
+      <if test="customerAttr != null">
+        customer_attr = #{customerAttr,jdbcType=VARCHAR},
+      </if>
+      <if test="purchaseDate != null">
+        purchase_date = #{purchaseDate,jdbcType=DATE},
+      </if>
+      <if test="refSapOrderId != null">
+        ref_sap_order_id = #{refSapOrderId,jdbcType=VARCHAR},
+      </if>
+      <if test="rSapOrderId != null">
+        r_sap_order_id = #{rSapOrderId,jdbcType=VARCHAR},
+      </if>
+      <if test="rSapCurrency != null">
+        r_sap_currency = #{rSapCurrency,jdbcType=VARCHAR},
+      </if>
+      <if test="rGrossValue != null">
+        r_gross_value = #{rGrossValue,jdbcType=DECIMAL},
+      </if>
+      <if test="rNetValue != null">
+        r_net_value = #{rNetValue,jdbcType=DECIMAL},
+      </if>
+      <if test="orderReason != null">
+        order_reason = #{orderReason,jdbcType=VARCHAR},
       </if>
       <if test="approvalStatus != null">
         approval_status = #{approvalStatus,jdbcType=INTEGER},
+      </if>
+      <if test="active != null">
+        active = #{active,jdbcType=INTEGER},
       </if>
       <if test="createId != null">
         create_id = #{createId,jdbcType=INTEGER},
@@ -295,19 +323,8 @@
       <if test="updateTime != null">
         update_time = #{updateTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="rejectReason != null">
-        reject_reason = #{rejectReason,jdbcType=VARCHAR},
-      </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-
-  <select id="selectByPage" resultMap="BaseResultMap" parameterType="com.crazy.portal.bean.order.OrderQueryBean">
-    select
-    <include refid="Base_Column_List" />
-    from t_order
-    where 1 = 1
-    order by create_time desc
-  </select>
 
 </mapper>

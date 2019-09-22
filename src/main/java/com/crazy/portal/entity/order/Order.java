@@ -2,9 +2,7 @@ package com.crazy.portal.entity.order;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
-import org.springframework.format.annotation.DateTimeFormat;
-
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -12,132 +10,156 @@ import java.util.List;
 
 /**
  * 
- * @author Shawn
- * @date 2019-09-14 14:43::30
+ * @author Bill
+ * @date   2019-09-22 11:46::52
  */
 @Data
 public class Order {
-
+    /**
+     * 
+     */
     private Integer id;
 
     /**
-     * 下单类型
+     * 订单类型\\\\nA01-客户专货订单；\\\\nA02-Buffer订单；\\\\nA03-新产品订单；\\\\nA04-样品订单；\\\\nA05-Last Buy订单；\\\\nA06-分销商专货订单
      */
-    @NotBlank(message = "请选择下单类型")
+    @NotEmpty
+    private String orderType;
+
+    /**
+     * 下单类型
+     * ZFD-交货免费-不需要做价格模拟。-审批-纸质订单
+     * ZOR-标准订单。-审批-纸质订单
+     * ZORT-标准订单(ZRET)-必须录入ZRET订单号。-审批-纸质订单
+     * ZRET-退货-需要找到原销售订单
+     * KB-客户库存补货
+     * KE-客户库存出货
+     * ZKE-标准客户库存出货
+     * ZKB-标准客户库存补货
+     */
+    @NotEmpty
     private String underOrderType;
 
     /**
-     * 销售组织主键
+     * 销售组织
      */
-    @NotNull(message = "请选择销售组织")
-    private Integer salesOrgId;
+    @NotEmpty
+    private String salesOrg;
+
+    /**
+     * 分销渠道-默认为10
+     */
+    private String channel;
+
+    /**
+     * 产品组-默认为00
+     */
+    private String division;
+
+    /**
+     * 销售部门-默认为0003
+     */
+    private String salesOffice;
+
+    /**
+     * 销售组-默认为031
+     */
+    private String salesGroup;
 
     /**
      * 售达方(代理商的外部编号)
      */
-    private String soldParty;
+    @NotEmpty
+    private String soldTo;
 
     /**
      * 送达方(代理商的外部编号)
      */
-    private String shipParty;
+    @NotEmpty
+    private String sendTo;
 
     /**
      * 采购订单编号
      */
-    @NotBlank(message = "请输入订单编号")
-    private String purchaseOrderNo;
+    @NotEmpty
+    private String purchaseNo;
 
     /**
      * 采购订单下达日期
      */
-    @NotNull(message = "请选择订单日期")
-    @JSONField(format="yyyy-MM-dd")
-    @DateTimeFormat(pattern="yyyy-MM-dd")
-    private Date purchaseOrderDate;
+    @NotNull
+    private Date purchaseDate;
 
-    /**
-     * 客户属性(B1-Account Market；B2-Mass Market)
-     */
-    @NotBlank(message = "请选择客户属性")
-    private String customerAttribute;
-
-    /**
-     * 订单类型
-     */
-    @NotBlank(message = "请选择订单类型")
-    private String orderType;
-
-    /**
-     * 交货日期
-     */
-    @NotNull(message = "请选择交货月份")
-    @JSONField(format="yyyy-MM")
-    @DateTimeFormat(pattern="yyyy-MM")
-    private Date deliveryDate;
-
-    /**
-     * 定价日期
-     */
-    @JSONField(format="yyyy-MM-dd")
-    @DateTimeFormat(pattern="yyyy-MM-dd")
-    private Date pricingDate;
-
-    /**
-     * 付款条件
-     */
-    private String payCondition;
-    /**
-     * 客户组1
-     */
-    private String customerGroup1;
-    /**
-     * 客户组2
-     */
-    private String customerGroup2;
     /**
      * 国际贸易条款1
      */
-    private String inco1;
+    @NotEmpty
+    private String incoterms1;
 
     /**
      * 国际贸易条款2
      */
-    private String inco2;
+    @NotEmpty
+    private String incoterms2;
 
     /**
-     * 订单状态
+     * 定价日期(需求交货日期)
      */
-    private String orderStatus;
+    @NotNull
+    private Date priceDate;
 
     /**
-     * 返回-含税总金额
+     * 付款条件
      */
-    private BigDecimal rTotalAmountIncludTax;
+    @NotEmpty
+    private String paymentTerms;
 
     /**
-     * 返回-不含税总金额
+     * 客户属性(B1-Account Market；B2-Mass Market)
      */
-    private BigDecimal rTotalAmountExcludeTax;
+    @NotEmpty
+    private String customerAttr;
+
 
     /**
-     * 返回-成功标识  0-成功；1-有错误
+     * 参考订单号(如果是退货ZRET时需要传入)
      */
-    private String rSuccessFlag;
+    private String refSapOrderId;
 
     /**
-     * 返回-报错消息
+     * SAP订单号
      */
-    private String rErrorMsg;
+    private String rSapOrderId;
 
     /**
-     * 审批状态  0：未审批 1：已通过 2：已驳回 3：已取消
+     * 货币
+     */
+    private String rSapCurrency;
+
+    /**
+     * 含税总金额
+     */
+    private BigDecimal rGrossValue;
+
+    /**
+     * 不含税总金额
+     */
+    private BigDecimal rNetValue;
+
+    /**
+     * 订单原因(10:不合理请求)
+     */
+    private String orderReason;
+
+    /**
+     * 审批状态 0：待审批 1：已通过 2：已驳回
      */
     private Integer approvalStatus;
+
     /**
-     * 驳回意见
+     * 是否有效(0 失效 1有效)
      */
-    private String rejectReason;
+    private Integer active;
 
     /**
      * 创建人
@@ -148,22 +170,21 @@ public class Order {
     /**
      * 创建时间
      */
-    @JSONField(serialize = false)
     private Date createTime;
 
     /**
-     * 更新人
+     * 修改人
      */
     @JSONField(serialize = false)
     private Integer updateId;
+
     /**
-     * 更新时间
+     * 修改时间
      */
-    @JSONField(serialize = false)
     private Date updateTime;
+
     /**
      * 订单行集合
      */
     private List<OrderLine> lines;
-
 }
