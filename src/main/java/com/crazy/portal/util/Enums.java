@@ -542,4 +542,18 @@ public class Enums {
             return desc;
         }
     }
+
+    public enum CustomerMappingModel{
+        Forecast("forecast"),
+        HH("换货");
+
+        private String value;
+
+        CustomerMappingModel(String value){
+            this.value = value;
+        }
+        public String getValue(){
+            return value;
+        }
+    }
 }
