@@ -77,9 +77,16 @@ public class ReceiveService extends AbstractHandover implements IHandover<Receiv
                 detail.setRecordId(record.getId());
                 receiveDetailMapper.insertSelective(detail);
             }
+            handoverService.updateStatus(record.getId(), -2);
             return false;
         }
+        handoverService.updateStatus(record.getId(), -2);
         return false;
+    }
+
+    public void downloadReceiveErrorList(HttpServletResponse response, Integer recordId) {
+        List<ReceiveTemplateBean> errorData = receiveDetailMapper.selectErrorDataByRecord(recordId);
+        ExcelUtils.writeExcel(response, errorData, ReceiveTemplateBean.class);
     }
 
     @Override

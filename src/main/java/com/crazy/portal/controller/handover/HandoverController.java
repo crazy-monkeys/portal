@@ -5,6 +5,7 @@ import com.crazy.portal.bean.BaseResponse;
 import com.crazy.portal.controller.BaseController;
 import com.crazy.portal.service.handover.HandoverServiceContext;
 import com.crazy.portal.service.handover.HandoverService;
+import com.crazy.portal.service.handover.ReceiveService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,6 +26,8 @@ public class HandoverController extends BaseController {
     private HandoverService handoverService;
     @Resource
     private HandoverServiceContext handoverServiceContext;
+    @Resource(name = "receive")
+    private ReceiveService receive;
 
     /**
      * 出货数据查询
@@ -195,6 +198,17 @@ public class HandoverController extends BaseController {
         if("deliver".equals(type)){
             return super.successResult(handoverServiceContext.getService(type).uploadDataByUpdate(excel, getCurrentUser().getId()));
         }
+        return super.successResult();
+    }
+
+    @GetMapping(value = "/handover/receive/detail/error")
+    public BaseResponse getReceiveErrorList(Integer pageNum, Integer pageSize) {
+        return super.successResult(handoverService.getReceiveErrorList(getCurrentUser().getId(), pageNum, pageSize));
+    }
+
+    @GetMapping(value = "/handover/receive/detail/error/download")
+    public BaseResponse downloadReceiveErrorList(HttpServletResponse response, Integer recordId) {
+        receive.downloadReceiveErrorList(response, recordId);
         return super.successResult();
     }
 

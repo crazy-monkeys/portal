@@ -12,6 +12,7 @@ import com.crazy.portal.entity.forecast.Forecast;
 import com.crazy.portal.entity.forecast.ForecastLine;
 import com.crazy.portal.entity.forecast.ForecastSd;
 import com.crazy.portal.service.customer.CustomerInfoService;
+import com.crazy.portal.service.system.UserCustomerMappingService;
 import com.crazy.portal.util.*;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
@@ -23,10 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 import static com.crazy.portal.util.Enums.BI_FUNCTION_CODE.*;
 import static com.crazy.portal.util.ErrorCodes.BusinessEnum.*;
@@ -49,6 +47,8 @@ public class SaleForecastService {
     private CustomerInfoService customerInfoService;
     @Resource
     private ForecastSdMapper forecastSdMapper;
+    @Resource
+    private UserCustomerMappingService userCustomerMappingService;
 
 
     @Value("${file.path.forecast.push}")
@@ -329,9 +329,9 @@ public class SaleForecastService {
                                                         String ambPeople, String sdPeople, String agencyAbbreviation,
                                                         String channel) {
         PortalUtil.defaultStartPage(pageNum,pageSize);
-        //TODO 根据登录用户查询他名下可以查看的代理商
-        Integer[] userIds = new Integer[]{1,2};
-        List<Forecast> result = forecastMapper.selectByLeader(userIds, customerAbbreviation, status,
+        List<Integer> userList = userCustomerMappingService.selectUserMapping(userId, Enums.CustomerMappingModel.Forecast.getValue());
+        Integer[] userIds = new Integer[userList.size()];
+        List<Forecast> result = forecastMapper.selectByLeader(userList.toArray(userIds), customerAbbreviation, status,
                 salePeople, uploadStartTime, uploadEndTime, ambPeople, sdPeople, agencyAbbreviation, channel);
         return new PageInfo<>(result);
     }
