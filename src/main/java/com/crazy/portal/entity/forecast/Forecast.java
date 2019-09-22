@@ -126,7 +126,7 @@ public class Forecast {
     private Integer status;
 
     /**
-     *
+     *  代理商操作状态：-1:删除 1:新增 2:修改
      */
     private Integer agencyStatusType;
 

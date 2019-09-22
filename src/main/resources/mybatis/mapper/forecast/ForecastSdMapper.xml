@@ -118,7 +118,7 @@
       #{sdRemarkFive,jdbcType=VARCHAR}, #{forecastMonthSix,jdbcType=VARCHAR}, #{sdAdjustmentSix,jdbcType=VARCHAR}, 
       #{sdRemarkSix,jdbcType=VARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="com.crazy.portal.entity.forecast.ForecastSd">
+  <insert id="insertSelective" useGeneratedKeys="true" keyProperty="id" parameterType="com.crazy.portal.entity.forecast.ForecastSd">
     insert into t_forecast_sd
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -450,6 +450,22 @@
 
   <select id="selectPage" resultMap="BaseResultMap" >
     select * from t_forecast_sd
+  </select>
+
+  <select id="selectByMonthAndProduct" resultMap="BaseResultMap" >
+    select * from t_forecast_sd a
+    where a.operation_year_month = #{operationYearMonth}
+    and a.company = #{company}
+    and a.bu = #{bu}
+    and a.pdt = #{pdt}
+    and a.product_type = #{productType}
+    and a.platform = #{platform}
+    and a.product_model = #{productModel}
+  </select>
+
+  <select id="selectByBiId" resultMap="BaseResultMap" >
+    select * from t_forecast_sd a
+    where bi_id = #{biId}
   </select>
   
 </mapper>
