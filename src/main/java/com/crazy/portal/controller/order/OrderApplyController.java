@@ -30,7 +30,7 @@ public class OrderApplyController extends BaseController {
      */
     @PostMapping("/submit")
     public BaseResponse submit(@RequestBody @Valid Order order){
-        orderApplyService.apply(order, getCurrentUserId());
+        orderApplyService.submitApply(order, getCurrentUserId());
         return successResult();
     }
 

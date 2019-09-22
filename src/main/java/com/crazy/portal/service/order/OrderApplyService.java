@@ -7,16 +7,21 @@ import com.crazy.portal.bean.order.OrderLineEO;
 import com.crazy.portal.bean.order.wsdl.price.*;
 import com.crazy.portal.dao.order.OrderLineMapper;
 import com.crazy.portal.dao.order.OrderMapper;
+import com.crazy.portal.dao.product.ProductInfoDOMapper;
 import com.crazy.portal.entity.order.Order;
+import com.crazy.portal.entity.product.ProductInfoDO;
 import com.crazy.portal.util.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
+import java.text.ParseException;
 import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * @Desc:
@@ -33,6 +38,8 @@ public class OrderApplyService {
     @Resource
     private OrderLineMapper orderLineMapper;
     @Resource
+    private ProductInfoDOMapper productInfoDOMapper;
+    @Resource
     private OrderApiService orderApiService;
 
     /**
@@ -42,7 +49,7 @@ public class OrderApplyService {
      */
     @OperationLog
     @Transactional
-    public void apply(Order order, Integer userId){
+    public void submitApply(Order order, Integer userId){
         BusinessUtil.notNull(order, ErrorCodes.BusinessEnum.ORDER_INFO_IS_REQUIRED);
         BusinessUtil.notNull(order.getLines(), ErrorCodes.BusinessEnum.ORDER_LINES_IS_REQUIRED);
         order.setApprovalStatus(Enums.OrderApprovalStatus.WAIT_APPROVAL.getValue());
@@ -67,39 +74,55 @@ public class OrderApplyService {
     }
 
     /**
-     * 解析附件
+     * 解析附件并作调价试算
      * @return
      */
     public List<OrderLineEO> parsingLineTmplFile(Order order,MultipartFile file){
         List<OrderLineEO> records = ExcelUtils.readExcel(file, OrderLineEO.class);
 
-        records.forEach(x->{
+        for(int i = 0;i<records.size();i++){
+            OrderLineEO orderLineEO = records.get(i);
             IsHeader isHeader = new IsHeader();
             isHeader.setOrdertype(order.getOrderType());
             isHeader.setSalesorg(order.getSalesOrg());
-            isHeader.setChannel(order.getChannel());
-            isHeader.setDivision(order.getDivision());
-            isHeader.setSalesoffice(order.getSalesOffice());
-            isHeader.setSalesgroup(order.getSalesGroup());
             isHeader.setSoldto(order.getSoldTo());
             isHeader.setSendto(order.getSendTo());
-            isHeader.setPricedate(DateUtil.format(order.getPriceDate(), DateUtil.WEB_FORMAT));
 
-            com.crazy.portal.bean.order.wsdl.price.ItItems itItems = new com.crazy.portal.bean.order.wsdl.price.ItItems();
-            com.crazy.portal.bean.order.wsdl.price.ItItem itItem = new com.crazy.portal.bean.order.wsdl.price.ItItem();
-            //序号 从1递增
-            itItem.setSequenceno("1");
-            //物料号 需要校验是否
-            itItem.setProductid("18000000017");
-            itItem.setOrderquantity("10");
-            itItem.setPlatform("1");
+            String expectedDeliveryMonth = orderLineEO.getExpectedDeliveryMonth();
+            Pattern p = Pattern.compile("\\d{4}/(0\\d|1[0-2])");
+            BusinessUtil.assertTrue(p.matcher(expectedDeliveryMonth).matches(),ErrorCodes.BusinessEnum.ORDER_DELIVERY_MONTH_ERROR);
+
+            try {
+                Date date = DateUtil.parseDate(expectedDeliveryMonth,DateUtil.MONTH_FORMAT_HLINE);
+                String priceDate = DateUtil.getLastDayOfMonth(DateUtil.getYear(date),DateUtil.getMonth(date));
+                isHeader.setPricedate(priceDate);
+            } catch (ParseException e) {
+                log.error("",e);
+            }
+            ItItems itItems = new ItItems();
+            ItItem itItem = new ItItem();
+
+            itItem.setSequenceno(i+"");
+            itItem.setProductid(orderLineEO.getMaterialNumber());
+            itItem.setOrderquantity(orderLineEO.getNum());
+
+            ProductInfoDO params = new ProductInfoDO();
+            params.setSapMid(orderLineEO.getMaterialNumber());
+            List<ProductInfoDO> productInfoDOS = productInfoDOMapper.selectProductInfo(params);
+            ProductInfoDO productInfo = productInfoDOS.get(0);
+            Assert.notNull(productInfo,"根据物料号查询不到商品信息");
+
+            itItem.setPlatform(productInfo.getPlatform());
             itItems.setItem(Arrays.asList(itItem));
-
             ZrfcsdpricesimulateContent content = new ZrfcsdpricesimulateContent(null,isHeader,itItems);
             ZrfcsdpricesimulateBody body = new ZrfcsdpricesimulateBody(content);
             Zrfcsdpricesimulate zrfcsdpricesimulate = new Zrfcsdpricesimulate(body);
             ZrfcsdpricesimulateResponse response = orderApiService.priceSimulate(zrfcsdpricesimulate);
-        });
+
+            ZpricessimulateHeaderOut esHeader = response.getEsHeader();
+            orderLineEO.setGrossValue(esHeader.getGrossvalue());
+            orderLineEO.setNetVale(esHeader.getNetvalue());
+        }
         return records;
     }
 }

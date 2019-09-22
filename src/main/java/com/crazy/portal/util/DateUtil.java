@@ -4,11 +4,11 @@ import com.crazy.portal.config.exception.BusinessException;
 import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalTime;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -34,6 +34,7 @@ public class DateUtil {
 	public static final String OLD_FORMAT = "yyyy/MM/dd";
 	public static final String TIME_FORMAT = "HHmmss";
 	public static final String MONTH_FORMAT = "yyyyMM";
+	public static final String MONTH_FORMAT_HLINE = "yyyy-MM";
 	public static final String CHINESE_DT_FORMAT = "yyyy年MM月dd日";
 	public static final String NEW_FORMAT = "yyyy-MM-dd HH:mm:ss";
 	public static final String OLD_LONG_FORMAT = "yyyy/MM/dd HH:mm:ss";
@@ -1008,6 +1009,28 @@ public class DateUtil {
 		Calendar calendar = Calendar.getInstance();
 		calendar.add(Calendar.MONTH, 1);
 		return dft.format(calendar.getTime());
+	}
+
+
+	/**
+	 * 获取指定年月的最后一天
+	 * @param year
+	 * @param month
+	 * @return
+	 */
+	public static String getLastDayOfMonth(int year, int month) {
+		Calendar cal = Calendar.getInstance();
+		//设置年份
+		cal.set(Calendar.YEAR, year);
+		//设置月份
+		cal.set(Calendar.MONTH, month-1);
+		//获取某月最大天数
+		int lastDay = cal.getActualMaximum(Calendar.DATE);
+		//设置日历中月份的最大天数
+		cal.set(Calendar.DAY_OF_MONTH, lastDay);
+		//格式化日期
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		return sdf.format(cal.getTime());
 	}
 
 

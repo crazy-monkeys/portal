@@ -21,7 +21,13 @@ public class Order {
     private Integer id;
 
     /**
-     * 订单类型\\\\nA01-客户专货订单；\\\\nA02-Buffer订单；\\\\nA03-新产品订单；\\\\nA04-样品订单；\\\\nA05-Last Buy订单；\\\\nA06-分销商专货订单
+     * 订单类型
+     * A01-客户专货订单；
+     * A02-Buffer订单；
+     * A03-新产品订单；
+     * A04-样品订单；
+     * A05-Last Buy订单；
+     * A06-分销商专货订单
      */
     @NotEmpty
     private String orderType;
@@ -49,22 +55,22 @@ public class Order {
     /**
      * 分销渠道-默认为10
      */
-    private String channel;
+    private String channel = "10";
 
     /**
      * 产品组-默认为00
      */
-    private String division;
+    private String division = "00";
 
     /**
      * 销售部门-默认为0003
      */
-    private String salesOffice;
+    private String salesOffice = "0003";
 
     /**
      * 销售组-默认为031
      */
-    private String salesGroup;
+    private String salesGroup = "031";
 
     /**
      * 售达方(代理商的外部编号)
