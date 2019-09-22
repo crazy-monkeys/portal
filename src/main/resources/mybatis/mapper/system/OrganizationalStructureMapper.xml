@@ -178,4 +178,9 @@
   <select id="selectByOrgNo" resultMap="BaseResultMap">
       select * from t_organizational_structure where seq = #{seq}
   </select>
+
+  <select id="selectSalesOrg" resultMap="BaseResultMap">
+    select * from t_organizational_structure where (parent_org in ('1001013','1001014') or seq in ('1001013','1001014'))
+    and seq =#{seq}
+  </select>
 </mapper>

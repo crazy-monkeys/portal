@@ -4,7 +4,7 @@
   <resultMap id="BaseResultMap" type="com.crazy.portal.entity.cusotmer.CustCorporateRelationship">
     <id column="ship_id" jdbcType="INTEGER" property="shipId" />
     <result column="cust_id" jdbcType="INTEGER" property="custId" />
-    <result column="corporate_id" jdbcType="INTEGER" property="corporateId" />
+    <result column="corporate_id" jdbcType="VARCHAR" property="corporateId" />
     <result column="corporate_name" jdbcType="VARCHAR" property="corporateName" />
     <result column="corporate_type" jdbcType="VARCHAR" property="corporateType" />
     <result column="create_user" jdbcType="INTEGER" property="createUser" />
@@ -32,7 +32,7 @@
       corporate_name, corporate_type, create_user, 
       create_time, update_user, update_time, 
       active)
-    values (#{shipId,jdbcType=INTEGER}, #{custId,jdbcType=INTEGER}, #{corporateId,jdbcType=INTEGER}, 
+    values (#{shipId,jdbcType=INTEGER}, #{custId,jdbcType=INTEGER}, #{corporateId,jdbcType=VARCHAR},
       #{corporateName,jdbcType=VARCHAR}, #{corporateType,jdbcType=VARCHAR}, #{createUser,jdbcType=INTEGER}, 
       #{createTime,jdbcType=TIMESTAMP}, #{updateUser,jdbcType=INTEGER}, #{updateTime,jdbcType=TIMESTAMP}, 
       #{active,jdbcType=INTEGER})
@@ -79,7 +79,7 @@
         #{custId,jdbcType=INTEGER},
       </if>
       <if test="corporateId != null">
-        #{corporateId,jdbcType=INTEGER},
+        #{corporateId,jdbcType=VARCHAR},
       </if>
       <if test="corporateName != null">
         #{corporateName,jdbcType=VARCHAR},
@@ -111,7 +111,7 @@
         cust_id = #{custId,jdbcType=INTEGER},
       </if>
       <if test="corporateId != null">
-        corporate_id = #{corporateId,jdbcType=INTEGER},
+        corporate_id = #{corporateId,jdbcType=VARCHAR},
       </if>
       <if test="corporateName != null">
         corporate_name = #{corporateName,jdbcType=VARCHAR},
@@ -140,7 +140,7 @@
   <update id="updateByPrimaryKey" parameterType="com.crazy.portal.entity.cusotmer.CustCorporateRelationship">
     update t_cust_corporate_relationship
     set cust_id = #{custId,jdbcType=INTEGER},
-      corporate_id = #{corporateId,jdbcType=INTEGER},
+      corporate_id = #{corporateId,jdbcType=VARCHAR},
       corporate_name = #{corporateName,jdbcType=VARCHAR},
       corporate_type = #{corporateType,jdbcType=VARCHAR},
       create_user = #{createUser,jdbcType=INTEGER},

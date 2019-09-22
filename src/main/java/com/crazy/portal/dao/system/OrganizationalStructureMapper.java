@@ -17,5 +17,7 @@ public interface OrganizationalStructureMapper {
 
     OrganizationalStructure selectByOrgNo(Integer seq);
 
+    OrganizationalStructure selectSalesOrg(String seq);
+
 
 }

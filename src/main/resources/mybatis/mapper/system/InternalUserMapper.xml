@@ -200,4 +200,14 @@
   <select id="selectUserByName" resultMap="BaseResultMap">
       select * From t_internal_user where substring_index(user_mail,'@',1) = #{userName}
   </select>
+  
+  <select id="selectUserbyOrg" resultType="java.lang.String">
+    select user_no from t_internal_user where user_department_code = #{org}
+  </select>
+
+  <select id="selectUserbyParenOrg" resultType="java.lang.String">
+    select user_no from t_internal_user where user_department_code in (
+      select seq from t_organizational_structure where parent_org =#{org}
+      )
+  </select>
 </mapper>

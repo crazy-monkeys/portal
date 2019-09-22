@@ -25,4 +25,8 @@ public interface InternalUserMapper {
 
     InternalUser selectUserByName(String userName);
 
+    List<String> selectUserbyOrg(String selectUserbyOrg);
+
+    List<String> selectUserbyParenOrg(String selectUserbyOrg);
+
 }

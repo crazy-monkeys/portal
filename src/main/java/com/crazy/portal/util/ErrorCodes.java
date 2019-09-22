@@ -156,6 +156,7 @@ public class ErrorCodes {
         CUSTOMER_REPORT_ERROR(50004,"非Mass Market 客户",""),
         CUSTOMER_REPORT_ERROR1(50005,"客户正在报备中",""),
         CUSTOMER_SYNC_ERROR(50006,"客户同步异常",""),
+        CUSTOMER_ORG_ERROR(50007,"没有审批权限",""),
 
         RATE_BATCH_IS_NOT_NULL(60001,"批次号已存在",""),
         //代理费率

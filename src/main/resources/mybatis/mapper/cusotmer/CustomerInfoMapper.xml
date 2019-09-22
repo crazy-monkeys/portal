@@ -672,7 +672,6 @@
     cust_name,
     cust_en_name,
     cust_abbreviation,
-    business_type,
     cust_role,
     team.user_name report_sales_name,
     team.employee_id,
@@ -690,11 +689,47 @@
     ) team on team.cust_id = cust.id
     left join
     (select s.cust_id,c.cust_name report_dealer_name,s.corporate_id from t_cust_corporate_relationship s
-    inner JOIN t_customer_info c on s.corporate_id = c.id
-    where s.active=1 and s.corporate_type = 'Z004'
+    inner JOIN t_customer_info c on s.corporate_id = c.in_code
+    where s.active=1 and s.corporate_type = 'Z004-1'
     ) ship on ship.cust_id = cust.id
     where cust.business_type!='A04'
     and cust.active = 1
+    <if test="customerName != null and customerName != ''">
+      and cust.cust_name like concat('%',#{customerName},'%')
+    </if>
+    <if test="custAbbreviation != null and custAbbreviation != ''">
+      and cust_abbreviation like concat('%',#{custAbbreviation},'%')
+    </if>
+    <if test="customerOutCode != null and customerOutCode!=''">
+      and cust.out_code = #{customerOutCode}
+    </if>
+    <if test="isLicense != null">
+      and cust.is_license = #{isLicense}
+    </if>
+    <if test="businessType != null and businessType != ''">
+      and cust.business_type = #{businessType}
+    </if>
+    <if test=" custRole != null and custRole !=''">
+      and cust_role = #{custRole}
+    </if>
+    <if test="reportStartDate != null and reportStartDate != '' and reportEndDate != null and reportEndDate != ''">
+      and date_format( cust.approve_time, '%Y-%m-%d' ) BETWEEN  #{reportStartDate} and #{reportEndDate}
+    </if>
+    <if test="reportStartDate != null and reportStartDate != '' and (reportEndDate == null or reportEndDate == '')">
+      and date_format( cust.approve_time, '%Y-%m-%d' ) >=  #{reportStartDate}
+    </if>
+    <if test="(reportStartDate == null or reportStartDate == '') and reportEndDate != null and reportEndDate != ''">
+      and date_format( cust.approve_time, '%Y-%m-%d' ) &lt;= #{reportEndDate}
+    </if>
+    <if test="createStartDate != null and createStartDate != '' and createEndDate != null and createEndDate != ''">
+      and date_format( cust.create_time, '%Y-%m-%d' ) BETWEEN #{createStartDate} and #{createEndDate}
+    </if>
+    <if test="createStartDate != null and createStartDate != '' and (createEndDate == null or createEndDate == '')">
+      and date_format( cust.create_time, '%Y-%m-%d' )>= #{createStartDate}
+    </if>
+    <if test="(createStartDate == null or createStartDate == '') and createEndDate != null and createEndDate != ''">
+      and date_format( cust.create_time, '%Y-%m-%d' ) &lt;= #{createEndDate}
+    </if>
     <if test="queryType == 3 ">
       <if test="reportDealer!=null">
         and ship.corporate_id = #{reportDealer}
@@ -715,6 +750,11 @@
       and cust.approve_status != 4
       <if test="custType != '' and custType != null">
         and cust.cust_type = #{custType}
+      </if>
+      <if test="salesTeam != null">
+        <foreach collection="salesTeam" item="item" index="index" open="and team.employee_id in (" separator="," close=")" >
+          #{item}
+        </foreach>
       </if>
     </if>
   </select>

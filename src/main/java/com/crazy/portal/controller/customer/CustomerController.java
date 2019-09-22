@@ -17,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
 
@@ -66,7 +67,7 @@ public class CustomerController extends BaseController{
 
     //报备客户
     @PostMapping(value = "/report")
-    public BaseResponse reportCustomer(CustomerInfo customerInfo){
+    public BaseResponse reportCustomer(@Valid CustomerInfo customerInfo){
         customerInfoService.report(customerInfo, getCurrentUser());
         return successResult();
     }
