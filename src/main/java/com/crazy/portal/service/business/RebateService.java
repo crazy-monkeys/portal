@@ -3,7 +3,6 @@ package com.crazy.portal.service.business;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.crazy.portal.annotation.OperationLog;
 import com.crazy.portal.bean.business.rebate.RebateConfirmBean;
 import com.crazy.portal.bean.business.rebate.RebateGroupParam;
 import com.crazy.portal.bean.business.rebate.RebateQueryBean;
@@ -12,6 +11,7 @@ import com.crazy.portal.bean.common.Constant;
 import com.crazy.portal.bean.customer.basic.FileVO;
 import com.crazy.portal.bean.system.MailBean;
 import com.crazy.portal.config.email.EmailHelper;
+import com.crazy.portal.config.exception.BusinessException;
 import com.crazy.portal.dao.business.rebate.*;
 import com.crazy.portal.dao.cusotmer.CustomerInfoMapper;
 import com.crazy.portal.entity.business.rebate.*;
@@ -102,9 +102,8 @@ public class RebateService {
      * @param bean
      * @param userId
      */
-    @OperationLog
     @Transactional(rollbackFor=Exception.class)
-    public void confirm(RebateConfirmBean bean, Integer userId) throws Exception{
+    public void confirm(RebateConfirmBean bean, Integer userId) {
         BusinessUtil.notNull(bean.getRebates(), ErrorCodes.BusinessEnum.REBATE_RECORD_NOT_FOUND);
         List<BusinessRebateItem> items = Lists.newArrayList();
         for (RebateConfirmBean.RebateRecord e : bean.getRebates()) {
@@ -118,10 +117,15 @@ public class RebateService {
 //        sendConfirmEmail(items, bean.getExecutor());
     }
 
-    private BusinessRebateItem saveRebateItem(RebateConfirmBean bean, RebateConfirmBean.RebateRecord releaseItem, Integer userId, BusinessRebate info) throws Exception {
+    private BusinessRebateItem saveRebateItem(RebateConfirmBean bean, RebateConfirmBean.RebateRecord releaseItem, Integer userId, BusinessRebate info) {
         BusinessRebateItem item = new BusinessRebateItem();
         item.setRebateId(releaseItem.getId());
-        BeanUtils.copyNotNullFields(info, item);
+        try {
+            BeanUtils.copyNotNullFields(info, item);
+        }catch (Exception e){
+            log.error(ErrorCodes.BusinessEnum.REBATE_SEND_EMAIL_EXCEPTION.getZhMsg(), e);
+            throw new BusinessException(ErrorCodes.BusinessEnum.REBATE_SEND_EMAIL_EXCEPTION);
+        }
         item.setExecutor(bean.getExecutor());
         item.setExecuteStyle(bean.getExecuteStyle());
         item.setRebateAmount(releaseItem.getReleaseAmount());
@@ -181,7 +185,6 @@ public class RebateService {
      * @param file
      * @return
      */
-    @OperationLog
     @Transactional
     public FileVO fileUpload(Integer rebateItemId, Integer userId, MultipartFile file){
         BusinessUtil.notNull(rebateItemId, ErrorCodes.BusinessEnum.REBATE_ITEM_ID_IS_NULL);
