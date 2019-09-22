@@ -3,7 +3,6 @@ package com.crazy.portal.service.order;
 import com.crazy.portal.annotation.OperationLog;
 import com.crazy.portal.bean.order.BatchModifyOrderBean;
 import com.crazy.portal.bean.order.OrderApprovalBean;
-import com.crazy.portal.bean.order.OrderCreditInfoBean;
 import com.crazy.portal.bean.order.OrderQueryBean;
 import com.crazy.portal.bean.order.wsdl.create.*;
 import com.crazy.portal.dao.order.OrderLineMapper;
@@ -16,7 +15,6 @@ import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -64,7 +62,7 @@ public class OrderService {
      * 变更交货日期
      */
     @OperationLog
-    public void modifyDeliveryDate(BatchModifyOrderBean bean, Integer userId) throws Exception{
+    public void modifyDeliveryDate(BatchModifyOrderBean bean, Integer userId){
         for (Integer id : bean.getOrderIds()) {
             BusinessUtil.notNull(id, ErrorCodes.BusinessEnum.ORDER_ID_IS_REQUIRED);
             BusinessUtil.assertTrue(DateUtil.isValidDateFormat(bean.getDeliveryDate(), DateUtil.WEB_FORMAT), ErrorCodes.BusinessEnum.ORDER_DELIVERY_DATE_FORMAT_FAIL);
@@ -129,16 +127,11 @@ public class OrderService {
         orderMapper.updateByPrimaryKeySelective(order);
     }
 
+
     /**
-     * 信用额度查询
+     * 调用ecc创单接口
+     * @param order
      */
-    public OrderCreditInfoBean creditInfoQuery(Integer orderId){
-        OrderCreditInfoBean info = new OrderCreditInfoBean();
-        //TODO
-        return info;
-    }
-
-
     public void sendOrderCreateRequest(Order order){
         IsHeader isHeader = this.getIsHeader(order);
 

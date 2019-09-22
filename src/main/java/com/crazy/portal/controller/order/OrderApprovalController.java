@@ -52,14 +52,4 @@ public class OrderApprovalController extends BaseController {
         orderService.approval(bean, getCurrentUserId());
         return successResult();
     }
-
-    /**
-     * 信贷信息
-     * @param id
-     * @return
-     */
-    @GetMapping("/creditInfo/{id}")
-    public BaseResponse creditInfoQuery(@PathVariable Integer id){
-        return successResult(orderService.creditInfoQuery(id));
-    }
 }
