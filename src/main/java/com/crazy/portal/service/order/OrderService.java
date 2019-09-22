@@ -10,10 +10,7 @@ import com.crazy.portal.dao.order.OrderLineMapper;
 import com.crazy.portal.dao.order.OrderMapper;
 import com.crazy.portal.entity.order.Order;
 import com.crazy.portal.entity.order.OrderLine;
-import com.crazy.portal.util.BusinessUtil;
-import com.crazy.portal.util.DateUtil;
-import com.crazy.portal.util.Enums;
-import com.crazy.portal.util.ErrorCodes;
+import com.crazy.portal.util.*;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
@@ -143,37 +140,10 @@ public class OrderService {
 
 
     public void sendOrderCreateRequest(Order order){
-        IsHeader isHeader = new IsHeader();
-        isHeader.setPortalorderid(order.getId().toString());
-        isHeader.setOrdertype(order.getOrderType());
-        isHeader.setSalesorg(order.getSalesOrg());
-        isHeader.setSoldto(order.getSoldTo());
-        isHeader.setSendto(order.getSendTo());
-        isHeader.setPurchaseno(order.getPurchaseNo());
-        isHeader.setPurchasedate(order.getPurchaseDate());
-        isHeader.setPaymentterms(order.getPaymentTerms());
-        isHeader.setCustomergroup1(order.getOrderType());
-        isHeader.setCustomergroup2(order.getCustomerAttr());
-        isHeader.setPricedate(order.getPurchaseDate());
-        isHeader.setInco1(order.getIncoterms1());
-        isHeader.setInco2(order.getIncoterms2());
+        IsHeader isHeader = this.getIsHeader(order);
 
-        Integer line_no = 1;
         Map<Integer, Integer> lineMap = new HashMap<>();
-        List<ItItem> items = new ArrayList<>();
-        for (OrderLine line : order.getLines()) {
-            ItItem item = new ItItem();
-            item.setSequenceno(String.valueOf(line_no));
-            item.setProductid(line.getProductId());
-            item.setOrderquantity(String.valueOf(line.getNum()));
-            item.setPlatform(line.getPlatform());
-            item.setRequestdate(line.getExpectedDeliveryDate());
-            items.add(item);
-            lineMap.put(line_no, line.getId());
-            line_no ++;
-        }
-        ItItems itItems = new ItItems();
-        itItems.setItem(items);
+        ItItems itItems = this.getItItems(order, lineMap);
 
         ZrfcsdsalesordercreateContent content = new ZrfcsdsalesordercreateContent(null,isHeader,itItems);
         ZrfcsdsalesordercreateBody zrfcsdsalesordercreateBody = new ZrfcsdsalesordercreateBody(content);
@@ -196,5 +166,44 @@ public class OrderService {
             orderLineMapper.updateByPrimaryKeySelective(orderLine);
         }
 
+    }
+
+    private ItItems getItItems(Order order, Map<Integer, Integer> lineMap) {
+        Integer line_no = 1;
+        List<ItItem> items = new ArrayList<>();
+        for (OrderLine line : order.getLines()) {
+            ItItem item = new ItItem();
+            item.setSequenceno(String.valueOf(line_no));
+            item.setProductid(line.getProductId());
+            item.setOrderquantity(String.valueOf(line.getNum()));
+            item.setPlatform(line.getPlatform());
+            item.setRequestdate(line.getExpectedDeliveryDate());
+            items.add(item);
+            lineMap.put(line_no, line.getId());
+            line_no ++;
+        }
+        ItItems itItems = new ItItems();
+        itItems.setItem(items);
+        return itItems;
+    }
+
+    private IsHeader getIsHeader(Order order) {
+        IsHeader isHeader = new IsHeader();
+        isHeader.setPortalorderid(order.getId().toString());
+        isHeader.setOrdertype(order.getOrderType());
+        isHeader.setSalesorg(order.getSalesOrg());
+        isHeader.setSoldto(order.getSoldTo());
+        isHeader.setSendto(order.getSendTo());
+        isHeader.setPurchaseno(order.getPurchaseNo());
+        isHeader.setPurchasedate(order.getPurchaseDate());
+        isHeader.setPaymentterms(order.getPaymentTerms());
+        isHeader.setCustomergroup1(order.getOrderType());
+        isHeader.setCustomergroup2(order.getCustomerAttr());
+        String priceDate = order.getPriceDate();
+        BusinessUtil.assertTrue(StringUtil.isNotEmpty(priceDate), ErrorCodes.BusinessEnum.ORDER_EMPTY_PRICE_DATE);
+        isHeader.setPricedate(priceDate);
+        isHeader.setInco1(order.getIncoterms1());
+        isHeader.setInco2(order.getIncoterms2());
+        return isHeader;
     }
 }

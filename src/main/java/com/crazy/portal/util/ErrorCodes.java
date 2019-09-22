@@ -210,7 +210,8 @@ public class ErrorCodes {
         ORDER_NO_PENDING(90007, "当前订单已经被审批", ""),
         ORDER_LINE_FILE_ERROR(90008, "订单行附件参数格式不正确", ""),
         ORDER_NOT_EXISTS_PRODUCT_ID(90009, "物料号不存在", ""),
-        ORDER_PRICESIMULATION_ERROR(90010, "调价试算接口异常", "")
+        ORDER_PRICESIMULATION_ERROR(90010, "调价试算接口异常", ""),
+        ORDER_EMPTY_PRICE_DATE(90010, "定价日期不能为空", "")
         ;
         private final int code;
         private final String zhMsg;
