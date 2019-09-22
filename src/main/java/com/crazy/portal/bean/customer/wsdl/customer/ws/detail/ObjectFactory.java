@@ -856,7 +856,7 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link BOExtendCustomerUpdateConfirmationMessageSync }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "http://sap.com/xi/SAPGlobal20/Global", name = "BO_ExtendCustomerUpdateConfirmation_sync")
+    @XmlElementDecl(namespace = "http://sap.com/xi/SAPGlobal20/Global", name = "BO_ExtendCustomerUpdateConfirmationMessage_sync")
     public JAXBElement<BOExtendCustomerUpdateConfirmationMessageSync> createBOExtendCustomerUpdateConfirmationSync(BOExtendCustomerUpdateConfirmationMessageSync value) {
         return new JAXBElement<BOExtendCustomerUpdateConfirmationMessageSync>(_BOExtendCustomerUpdateConfirmationSync_QNAME, BOExtendCustomerUpdateConfirmationMessageSync.class, null, value);
     }

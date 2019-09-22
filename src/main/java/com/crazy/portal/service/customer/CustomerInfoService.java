@@ -25,6 +25,7 @@ import com.crazy.portal.dao.cusotmer.VisitRecordMapper;
 import com.crazy.portal.dao.system.InternalUserMapper;
 import com.crazy.portal.entity.cusotmer.*;
 import com.crazy.portal.entity.system.InternalUser;
+import com.crazy.portal.entity.system.OrganizationalStructure;
 import com.crazy.portal.entity.system.SysParameter;
 import com.crazy.portal.entity.system.User;
 import com.crazy.portal.service.system.InternalUserService;
@@ -113,13 +114,26 @@ public class CustomerInfoService {
                 InternalUser internalUser = internalUserMapper.selectUserByName(user.getLoginName());
                 customerQueryBean.setReportSales(internalUser.getUserNo());
             }else{
-                customerQueryBean.setReportDealer(user.getId());
+                CustomerInfo dealer = customerInfoMapper.selectByPrimaryKey(user.getDealerId());
+                customerQueryBean.setReportDealer(dealer.getInCode());
             }
         }else if(customerQueryBean.getQueryType()==2){
             //审批查询
-
+            OrganizationalStructure org = internalUserService.getUserOrg(user.getLoginName());
+            if(null != org&&org.getSeq()==1001012){
+                customerQueryBean.setBusinessType("A03");
+            }else if(null != org&&org.getSeq()==1001011){
+                customerQueryBean.setBusinessType("A02");
+            }else{
+                throw new BusinessException(ErrorCodes.BusinessEnum.CUSTOMER_ORG_ERROR);
+            }
         }else{
-            //客户查询
+            //客户查询 销售查询 客户销售为自己或自己战队人员
+            InternalUser internalUser = internalUserMapper.selectUserByName(user.getLoginName());
+            if(null != internalUser){
+                List<String> sales = internalUserService.getSalesTeam(internalUser);
+                customerQueryBean.setSalesTeam(sales);
+            }
         }
         List<CustomerInfo> customerInfos = customerInfoMapper.selectCustomer(customerQueryBean);
         return new PageInfo<>(customerInfos);
@@ -268,6 +282,7 @@ public class CustomerInfoService {
             customerInfoMapper.updateByPrimaryKeySelective(customerinfo);
         }
         saveCustomerDetail(cust, user.getId());
+        customerInfoSync(cust, "02");
     }
 
     private void mappingCustomerInfo(CustomerInfo cust, CustomerInfo customerInfo){
@@ -348,6 +363,7 @@ public class CustomerInfoService {
         if(Enums.YES_NO.YES.getCode() == approvalBean.getApprovalType()){
             CustomerInfo customerInfo = queryInfo(approvalBean.getCustId());
             approvalYes(approvalBean, userId, customerInfo);
+            customerInfo = queryInfo(approvalBean.getCustId());
             customerInfoSync(customerInfo, "01");
         }else{
             approvalNo(approvalBean, userId);
@@ -389,9 +405,10 @@ public class CustomerInfoService {
         detail.setCustomerID(c4cId);
 
         productMapping(detail, customerinfo.getCustomerProducts()==null?new ArrayList<>():customerinfo.getCustomerProducts());
-        businessMapping(detail, customerinfo.getAssetsInformations());
-        businessInfoMationsMapping(detail, customerinfo.getBusinessInformations());
-       // shareholdingMapping(detail, customerinfo.getCustStructure());
+        businessMapping(detail, customerinfo.getAssetsInformations()==null?new ArrayList<>():customerinfo.getAssetsInformations());
+        businessInfoMationsMapping(detail, customerinfo.getBusinessInformations()==null?new ArrayList<>():customerinfo.getBusinessInformations());
+        shareholdingMapping(detail, customerinfo.getCustStructure()==null?new ArrayList<>():customerinfo.getCustStructure());
+        custBusinessMapping(detail, customerinfo.getQuotas()==null?new ArrayList<>():customerinfo.getQuotas());
 
         VisitCreateHeader header = new VisitCreateHeader();
         CustomerDetailContent content = new CustomerDetailContent(header, detail);
@@ -426,9 +443,15 @@ public class CustomerInfoService {
 
         customer.setRegistrationDate(customerInfo.getRegistTime());
         customer.setAdvantagesIntroduction(customerInfo.getAdvantagesIntroduction());
-        customer.setCorporateAssets(customerInfo.getCorportaeAssets().toString());
-        customer.setStaffNumber(customerInfo.getStaffNumber().toString());
-        customer.setDevelopersNumber(customerInfo.getDevelopersNumber().toString());
+        if(null != customerInfo.getCorportaeAssets()){
+            customer.setCorporateAssets(customerInfo.getCorportaeAssets().toString());
+        }
+        if(null != customerInfo.getStaffNumber()){
+            customer.setStaffNumber(customerInfo.getStaffNumber().toString());
+        }
+        if(null != customerInfo.getDevelopersNumber()){
+            customer.setDevelopersNumber(customerInfo.getDevelopersNumber().toString());
+        }
         customer.setBusinessintroduction(customerInfo.getBusinessIntroduction());
 
         //联系人
@@ -436,11 +459,11 @@ public class CustomerInfoService {
         //银行
         bankMapping(customer, customerInfo.getCustBankInfo());
         //地址
-        addressMapping(customer, customerInfo.getAddresses());
+        addressMapping(customer, customerInfo.getAddresses()==null?new ArrayList<>():customerInfo.getAddresses());
         //关系
-        shipMapping(customer, customerInfo.getRelationships());
+        shipMapping(customer, customerInfo.getRelationships()==null?new ArrayList<>():customerInfo.getRelationships());
         //开票信息
-        invoiceMapping(customer, customerInfo.getInvoiceInfos());
+        invoiceMapping(customer, customerInfo.getInvoiceInfos()==null?new ArrayList<>():customerInfo.getInvoiceInfos());
         //zr团队
         zrAccountTeamMapping(customer, customerInfo.getZrAccountTeams()==null?new ArrayList<>():customerInfo.getZrAccountTeams());
 
@@ -513,6 +536,19 @@ public class CustomerInfoService {
             assetInfo.setNetAssets(String.valueOf(e.getAssetsNet()));
             assetInfo.setRevenue(String.valueOf(e.getRevenue()));
             assetInfo.setTotalStaff(String.valueOf(e.getTotalStaff()));
+
+            assetInfos.add(assetInfo);
+        });
+
+        detail.setAssetInfo(assetInfos);
+    }
+
+    public void custBusinessMapping(CustomerDetail detail, List<CustSalesQuota> custSalesQuotas){
+        List<AssetInfo> assetInfos = new ArrayList<>();
+        custSalesQuotas.forEach(e->{
+            AssetInfo assetInfo = new AssetInfo();
+            assetInfo.setYear(e.getSalesYear());
+            assetInfo.setRevenue(String.valueOf(e.getSalesNumber()));
 
             assetInfos.add(assetInfo);
         });

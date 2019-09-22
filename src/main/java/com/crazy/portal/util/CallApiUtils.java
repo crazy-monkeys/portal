@@ -211,7 +211,7 @@ public class CallApiUtils {
             log.info(response);
             CustomerBundleMaintainConfirmationMessageSyncV1 v1 = JaxbXmlUtil.convertSoapXmlToJavaBean2(response, CustomerBundleMaintainConfirmationMessageSyncV1.class);
             if (!v1.getCustomer().isEmpty() && null != v1.getCustomer().get(0)) {
-                if (!v1.getCustomer().get(0).getReferenceObjectNodeSenderTechnicalID().equals("01")) {
+                if (v1.getCustomer().get(0).getReferenceObjectNodeSenderTechnicalID().equals("03")) {
                     log.error("customer sync c4c log :" + JSON.toJSONString(v1));
                     throw new BusinessException("客户信息同步C4C失败");
                 }
@@ -236,7 +236,7 @@ public class CallApiUtils {
             String response = HttpClientUtils.post(url, requestXml);
             log.info(response);
             BOExtendCustomerUpdateConfirmationMessageSync v1 = JaxbXmlUtil.convertSoapXmlToJavaBean2(response, BOExtendCustomerUpdateConfirmationMessageSync.class);
-            if(null == v1.getLog() || !v1.getLog().getBusinessDocumentProcessingResultCode().equals("1")){
+            if(null == v1.getLog() || v1.getLog().getMaximumLogItemSeverityCode().equals("3")){
                 throw new BusinessException("C4C扩展信息修改失败");
             }
         } catch (Exception e) {

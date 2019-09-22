@@ -67,6 +67,7 @@ public class CustomerFile {
 
     private String fileType;
 
+    @JSONField(serialize = false)
     private MultipartFile file;
 
     private Integer index;

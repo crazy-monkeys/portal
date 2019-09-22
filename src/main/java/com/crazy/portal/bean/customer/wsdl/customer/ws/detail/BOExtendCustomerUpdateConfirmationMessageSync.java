@@ -24,10 +24,10 @@ import javax.xml.bind.annotation.*;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "BO_ExtendCustomerUpdateConfirmationMessage_sync", propOrder = {
+@XmlType(name = "", propOrder = {
     "log"
 })
-@XmlRootElement(name = "BO_ExtendCustomerUpdateConfirmationMessage_sync", namespace = "http://sap.com/xi/SAPGlobal20/Global")
+@XmlRootElement(name = "BO_ExtendCustomerUpdateConfirmation_sync", namespace = "http://sap.com/xi/SAPGlobal20/Global")
 public class BOExtendCustomerUpdateConfirmationMessageSync {
 
     @XmlElement(name = "Log", required = true)

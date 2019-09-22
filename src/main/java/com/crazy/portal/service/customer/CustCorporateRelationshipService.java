@@ -72,8 +72,8 @@ public class CustCorporateRelationshipService {
         if(null != dealer) {
             CustCorporateRelationship ship = new CustCorporateRelationship();
             ship.setCustId(custId);
-            ship.setCorporateType("Z004");
-            ship.setCorporateId(dealer.getId());
+            ship.setCorporateType("Z004-1");
+            ship.setCorporateId(dealer.getInCode());
             ship.setCorporateName(dealer.getCustName());
             ship.setCreateUser(userId);
             ship.setActive(1);
