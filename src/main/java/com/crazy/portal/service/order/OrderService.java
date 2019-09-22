@@ -178,9 +178,7 @@ public class OrderService {
         ZrfcsdsalesordercreateContent content = new ZrfcsdsalesordercreateContent(null,isHeader,itItems);
         ZrfcsdsalesordercreateBody zrfcsdsalesordercreateBody = new ZrfcsdsalesordercreateBody(content);
         Zrfcsdsalesordercreate request = new Zrfcsdsalesordercreate(zrfcsdsalesordercreateBody);
-        log.info("提交订单申请：{}", request);
         ZrfcsdsalesordercreateResponse response = orderApiService.createSalesOrder(request);
-        log.info("订单申请返回：{}", response);
 
         order.setRGrossValue(response.getEsHeader().getGrossvalue());
         order.setRNetValue(response.getEsHeader().getNetvalue());

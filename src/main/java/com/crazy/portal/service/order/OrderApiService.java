@@ -65,7 +65,9 @@ public class OrderApiService {
         String url = String.format("%s%s",ECC_API_URL,"/cxf/PORTAL/ECC/CREATESALESORDER");
         try {
             String requestXml = JaxbXmlUtil.convertToXml(order);
+            log.info("request - >" + requestXml);
             String response = HttpClientUtils.post(url,requestXml);
+            log.info("response - >" + response);
             return JaxbXmlUtil.convertSoapXmlToJavaBean(response, ZrfcsdsalesordercreateResponse.class);
         } catch (Exception e) {
             log.error("",e);
@@ -83,7 +85,9 @@ public class OrderApiService {
 
         try {
             String requestXml = JaxbXmlUtil.convertToXml(order);
+            log.info("request - >" + requestXml);
             String response = HttpClientUtils.post(url,requestXml);
+            log.info("response - >" + response);
             return JaxbXmlUtil.convertSoapXmlToJavaBean(response, ZrfcsdsalesorderchangeResponse.class);
         } catch (Exception e) {
             log.error("",e);
@@ -120,7 +124,9 @@ public class OrderApiService {
 
         try {
             String requestXml = JaxbXmlUtil.convertToXml(zrfcsddeliverylist);
+            log.info("request - >" + requestXml);
             String response = HttpClientUtils.post(url,requestXml);
+            log.info("response - >" + response);
             return JaxbXmlUtil.convertSoapXmlToJavaBean(response, ZrfcsddeliverylistResponse.class);
         } catch (Exception e) {
             log.error("",e);
