@@ -3,7 +3,7 @@
 <mapper namespace="com.crazy.portal.dao.system.UserCustomerMappingMapper">
   <resultMap id="BaseResultMap" type="com.crazy.portal.entity.system.UserCustomerMapping">
     <id column="mapping_id" jdbcType="INTEGER" property="mappingId" />
-    <result column="mapping_model" jdbcType="INTEGER" property="mappingModel" />
+    <result column="mapping_model" jdbcType="VARCHAR" property="mappingModel" />
     <result column="cd_user_id" jdbcType="INTEGER" property="cdUserId" />
     <result column="dealer_user_id" jdbcType="INTEGER" property="dealerUserId" />
     <result column="cust_id" jdbcType="VARCHAR" property="custId" />
@@ -76,7 +76,7 @@
         #{mappingId,jdbcType=INTEGER},
       </if>
       <if test="mappingModel != null">
-        #{mappingModel,jdbcType=INTEGER},
+        #{mappingModel,jdbcType=VARCHAR},
       </if>
       <if test="cdUserId != null">
         #{cdUserId,jdbcType=INTEGER},
@@ -108,7 +108,7 @@
     update t_user_customer_mapping
     <set>
       <if test="mappingModel != null">
-        mapping_model = #{mappingModel,jdbcType=INTEGER},
+        mapping_model = #{mappingModel,jdbcType=VARCHAR},
       </if>
       <if test="cdUserId != null">
         cd_user_id = #{cdUserId,jdbcType=INTEGER},

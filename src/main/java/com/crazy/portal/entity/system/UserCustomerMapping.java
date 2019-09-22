@@ -1,5 +1,7 @@
 package com.crazy.portal.entity.system;
 
+import lombok.Data;
+
 import java.util.Date;
 
 /**
@@ -7,6 +9,7 @@ import java.util.Date;
  * @author weiying
  * @date   2019-08-26 22:57::08
  */
+@Data
 public class UserCustomerMapping {
     /**
      * 
@@ -16,7 +19,7 @@ public class UserCustomerMapping {
     /**
      * 模块
      */
-    private Integer mappingModel;
+    private String mappingModel;
 
     /**
      * 营销运作部
@@ -57,84 +60,4 @@ public class UserCustomerMapping {
      * 
      */
     private Integer active;
-
-    public Integer getMappingId() {
-        return mappingId;
-    }
-
-    public void setMappingId(Integer mappingId) {
-        this.mappingId = mappingId;
-    }
-
-    public Integer getMappingModel() {
-        return mappingModel;
-    }
-
-    public void setMappingModel(Integer mappingModel) {
-        this.mappingModel = mappingModel;
-    }
-
-    public Integer getCdUserId() {
-        return cdUserId;
-    }
-
-    public void setCdUserId(Integer cdUserId) {
-        this.cdUserId = cdUserId;
-    }
-
-    public Integer getDealerUserId() {
-        return dealerUserId;
-    }
-
-    public void setDealerUserId(Integer dealerUserId) {
-        this.dealerUserId = dealerUserId;
-    }
-
-    public String getCustId() {
-        return custId;
-    }
-
-    public void setCustId(String custId) {
-        this.custId = custId == null ? null : custId.trim();
-    }
-
-    public Integer getInsertUserId() {
-        return insertUserId;
-    }
-
-    public void setInsertUserId(Integer insertUserId) {
-        this.insertUserId = insertUserId;
-    }
-
-    public Date getInsertTime() {
-        return insertTime;
-    }
-
-    public void setInsertTime(Date insertTime) {
-        this.insertTime = insertTime;
-    }
-
-    public Integer getUpdateUserId() {
-        return updateUserId;
-    }
-
-    public void setUpdateUserId(Integer updateUserId) {
-        this.updateUserId = updateUserId;
-    }
-
-    public Date getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(Date updateTime) {
-        this.updateTime = updateTime;
-    }
-
-    public Integer getActive() {
-        return active;
-    }
-
-    public void setActive(Integer active) {
-        this.active = active;
-    }
 }
