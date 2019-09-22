@@ -7,7 +7,6 @@ import com.crazy.portal.config.exception.BusinessException;
 import com.crazy.portal.dao.handover.DeliverDetailMapper;
 import com.crazy.portal.entity.handover.DeliverDetail;
 import com.crazy.portal.entity.handover.DeliverReceiveRecord;
-import com.crazy.portal.entity.handover.ReceiveDetail;
 import com.crazy.portal.service.customer.CustomerInfoService;
 import com.crazy.portal.util.*;
 import com.github.pagehelper.PageInfo;
@@ -16,16 +15,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.crazy.portal.util.Enums.BI_FUNCTION_CODE.CHECK_SALES_IMPORT_FILE;
-import static com.crazy.portal.util.Enums.BI_FUNCTION_CODE.DELETE_INVENTORY_CASE;
-import static com.crazy.portal.util.Enums.BI_FUNCTION_CODE.SAVE_SALES_IMPORT_FILE;
+import static com.crazy.portal.util.Enums.BI_FUNCTION_CODE.*;
 import static com.crazy.portal.util.ErrorCodes.BusinessEnum.*;
 
 /**
@@ -197,6 +193,35 @@ public class DeliverService extends AbstractHandover implements IHandover<Delive
             }
         }catch (Exception ex) {
             throw new BusinessException(HANDOVER_BI_SERVER_EXCEPTION);
+        }
+    }
+
+    @Override
+    public void downloadDataByUpdate(HttpServletResponse response, Integer[] ids) {
+        List<DeliverDetail> deliverData = deliverDetailMapper.selectByIds(ids);
+        ExcelUtils.writeExcel(response, deliverData, DeliverDetail.class);
+    }
+
+    @Override
+    public HandoverUploadVO uploadDataByUpdate(MultipartFile excel, Integer userId) {
+        try {
+            List<DeliverDetail> deliverDetails = ExcelUtils.readExcel(excel, DeliverDetail.class);
+            //数据包装，生成第三方需要的文件
+            String thirdFileName = ExcelUtils.writeExcel(deliverPushPath, deliverDetails, DeliverDetail.class);
+            //请求了第三方，并拿到了结果
+            BiCheckResult checkResult = callBiServerByFtp(UPDATE_SALES_IMPORT_FILE, deliverPushPath , thirdFileName, ftpPullPath);
+            List<DeliverDetail> responseData = ExcelUtils.readExcel(checkResult.getFilePath(), DeliverDetail.class);
+            for(DeliverDetail detail : responseData){
+                DeliverDetail dbRecord = deliverDetailMapper.selectByThirdId(detail.getThirdId());
+                if(null == dbRecord){
+                    continue;
+                }
+                BeanUtils.copyNotNullFields(detail, dbRecord);
+                deliverDetailMapper.updateByPrimaryKeySelective(dbRecord);
+            }
+            return null;
+        }catch (Exception ex) {
+            throw new BusinessException("对象属性复制异常");
         }
     }
 

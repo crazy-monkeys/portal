@@ -124,6 +124,7 @@ public class ErrorCodes {
         EXCEL_PROPERTY_DIFF(21004, "Excel数据与此功能接收不一致，请核对", ""),
         EXCEL_PARAM_FAIL(21005, "Excel数据类型错误", ""),
         EXCEL_PARAM_DATE_FAIL(21006, "Excel日期格式无效，请核对", ""),
+        EXCEL_TEMPLATE_DOWNLOAD_FAIL(21007, "Excel模板下载异常", ""),
         //公告模块
         ANNOUNCEMENT_FILE_LIST_PARAM_EMPTY(30000, "请上传正确文件参数", ""),
         ANNOUNCEMENT_FILE_SIZE_ERROR(30001, "请勿上传多个文件", ""),
@@ -173,13 +174,16 @@ public class ErrorCodes {
         BUSINESS_IDR_SUBMIT_RESULT_IS_NULL(70008, "提交至BPM审批返回为空", ""),
         BUSINESS_IDR_SUBMIT_RESULT_FAIL(70009, "提交至BPM审批返回失败", ""),
         BUSINESS_IDR_APPROVAL_ORDERNO_NOT_FOUND(70010, "审批结果同步[orderNo不存在]", ""),
+        BUSINESS_IDR_APPROVAL_DATE_PARSE_EXCEPTION(70011, "保差退提交BPM[不是合法的日期格式]", ""),
+        BUSINESS_IDR_APPROVAL_API_EXCEPTION(70012, "保差退提交BPM[接口异常]", ""),
         //商务管理-客户rebate
         REBATE_RECORD_NOT_FOUND(70101, "Rebate信息不存在", ""),
         REBATE_SURPLUS_AMOUNT_BIG(70103, "释放金额不能大于rebate金额", ""),
         REBATE_FILE_NOT_FOUND(70103, "文件不存在", ""),
         REBATE_ITEM_ID_IS_NULL(70104, "rebateItemId不能为空", ""),
         REBATE_EXECUTOR_EMAIL_NOT_FOUND(70105, "rebate执行人邮箱不能为空", ""),
-
+        REBATE_SEND_EMAIL_EXCEPTION(70106, "发送确认函异常", ""),
+        //产品管理
         PRODUCT_QUERY_ERROR(70501,"产品查询异常",""),
         PRODUCT_SYNC_ERROR(70502,"产品同步异常",""),
 

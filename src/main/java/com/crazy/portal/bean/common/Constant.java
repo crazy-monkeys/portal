@@ -8,6 +8,8 @@ public class Constant {
 
     public static final Integer TASK_DEFAULT_USER_ID = 1;
 
+    public static final String DEFAULT_SHEET_NAME = "sheet1";
+
     public static final String[] ANNOTATION_COMPONENT_SCAN_PACKAGES = {"com.crazy.portal"};
 
     public static final String Authorization = "Authorization";

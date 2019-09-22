@@ -2,18 +2,16 @@ package com.crazy.portal.service.business;
 
 import com.alibaba.excel.metadata.BaseRowModel;
 import com.alibaba.excel.support.ExcelTypeEnum;
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-import com.crazy.portal.annotation.OperationLog;
-import com.crazy.portal.bean.business.idr.BusinessFileUploadBean;
-import com.crazy.portal.bean.business.idr.BusinessIdrQueryBean;
-import com.crazy.portal.bean.business.idr.IdrApprovalSubmitBean;
-import com.crazy.portal.bean.business.idr.IdrApprovalSubmitResultBean;
+import com.crazy.portal.bean.business.idr.*;
+import com.crazy.portal.bean.common.Constant;
 import com.crazy.portal.bean.customer.basic.FileVO;
 import com.crazy.portal.bean.webservice.request.IDRApprovalRequest;
 import com.crazy.portal.config.exception.BusinessException;
 import com.crazy.portal.dao.business.idr.*;
-import com.crazy.portal.entity.business.idr.*;
+import com.crazy.portal.entity.business.idr.BusinessFile;
+import com.crazy.portal.entity.business.idr.BusinessIdrApproval;
+import com.crazy.portal.entity.business.idr.BusinessIdrInfo;
+import com.crazy.portal.entity.business.idr.IdrBaseEntity;
 import com.crazy.portal.util.*;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.ArrayListMultimap;
@@ -22,13 +20,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.math.BigDecimal;
-import java.text.ParseException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -61,7 +57,7 @@ public class IDRService {
     @Value("${file.path.reader-dir}")
     private String readerFilePath;
 
-    private Multimap<Integer, String> fileCache = ArrayListMultimap.create();
+    private Multimap<Integer, String> FILE_CACHE = ArrayListMultimap.create();
 
     private static final String IDR_FILE_PATH = "business";
     /**
@@ -91,70 +87,67 @@ public class IDRService {
             info.setRList(businessReturnsInfoMapper.selectByIdrInfoId(id));
         }
         List<BusinessFile> files = businessFileMapper.selectByIdrInfoId(id);
-        for(BusinessFile file : files){
-            file.setFilePath(readerFilePath+file.getFileName());
-        }
+        files.stream().forEach(file->file.setFilePath(readerFilePath.concat(file.getFileName())));
         info.setFiles(files);
         return info;
     }
 
     /**
      * 模板下载
-     * @param type 1.保价 2.差价补偿 3.退换货
+     * @param idrType 保差退类型： 1.保价 2.差价补偿 3.退换货
      * @param response
      */
-    public void templateDownload(Integer type, HttpServletResponse response) throws Exception{
-        BusinessUtil.notNull(type, ErrorCodes.BusinessEnum.BUSINESS_TYPE_IS_NULL);
-        Map<String, List<? extends BaseRowModel>> resultMap = new HashMap<>();
-        Enums.BusinessIdrType enumType = Enums.BusinessIdrType.getDescByCode(type);
-        String sheetName = enumType.getDesc();
-        resultMap.put("sheet1", Collections.singletonList(enumType.getType()));
-        ExcelUtils.createExcelStreamMutilByEaysExcel(response, resultMap, sheetName, ExcelTypeEnum.XLSX);
+    public void templateDownload(Integer idrType, HttpServletResponse response) {
+        try {
+            BusinessUtil.notNull(idrType, ErrorCodes.BusinessEnum.BUSINESS_TYPE_IS_NULL);
+            Map<String, List<? extends BaseRowModel>> resultMap = new HashMap<>();
+            Enums.BusinessIdrType enumType = Enums.BusinessIdrType.getDescByCode(idrType);
+            resultMap.put(Constant.DEFAULT_SHEET_NAME, Collections.singletonList(enumType.getType()));
+            ExcelUtils.createExcelStreamMutilByEaysExcel(response, resultMap, enumType.getDesc(), ExcelTypeEnum.XLSX);
+        }catch (Exception ex){
+            log.error(ErrorCodes.BusinessEnum.EXCEL_TEMPLATE_DOWNLOAD_FAIL.getZhMsg(), ex);
+            throw new BusinessException(ErrorCodes.BusinessEnum.EXCEL_TEMPLATE_DOWNLOAD_FAIL);
+        }
     }
     /**
      * 上传附件
-     * @param id 保差退ID
-     * @param type 1.保价 2.差价补偿 3.退换货
-     * @param fileType 1：普通附件 2：保差退附件 3：财务完结附件
-     * @param crAmount CR金额
-     * @param file 文件
+     * @param bean
      * @return
      */
-    @OperationLog
     @Transactional
-    public BusinessFileUploadBean upload(Integer id, Integer type, Integer fileType, BigDecimal crAmount, MultipartFile file, Integer userId){
-        checkFileUploadParam(id, type, fileType, file);
+    public BusinessFileUploadBean upload(IdrUploadBean bean, Integer userId){
+        checkFileUploadParam(bean);
         BusinessFileUploadBean result = new BusinessFileUploadBean();
-        FileVO fileVo = FileUtil.upload(file, getIdrFilePath());
-        if(fileType.equals(Enums.BusinessFileType.IDR.getCode())){
-            Enums.BusinessIdrType idrType = Enums.BusinessIdrType.getDescByCode(type);
+        FileVO fileVo = FileUtil.upload(bean.getFile(), getIdrFilePath());
+        if(bean.getFileType().equals(Enums.BusinessFileType.IDR.getCode())){
+            Enums.BusinessIdrType idrType = Enums.BusinessIdrType.getDescByCode(bean.getIdrType());
             List<BaseRowModel> records = ExcelUtils.readExcel(fileVo.getFullPath(), idrType.getType().getClass());
             result.setIdrList(records);
         }
-        if(fileType.equals(Enums.BusinessFileType.FINANCIAL_CLOSURE.getCode())){
-            financialClosure(id, fileType, crAmount, userId, fileVo);
+        if(bean.getFileType().equals(Enums.BusinessFileType.FINANCIAL_CLOSURE.getCode())){
+            financialClosure(bean, userId, fileVo);
         }
         result.setFileName(fileVo.getFileName());
         result.setFilePath(fileVo.getFullPath());
-        result.setFileType(fileType);
-        fileCache.put(userId, fileVo.getFullPath());
+        result.setFileType(bean.getFileType());
+        FILE_CACHE.put(userId, fileVo.getFullPath());
         return result;
     }
 
-    private void checkFileUploadParam(Integer id, Integer type, Integer fileType, MultipartFile file) {
-        BusinessUtil.notNull(fileType, ErrorCodes.BusinessEnum.BUSINESS_FILE_TYPE_IS_NULL);
-        BusinessUtil.notNull(file, ErrorCodes.BusinessEnum.BUSINESS_FILE_IS_NULL);
-        if(fileType.equals(Enums.BusinessFileType.FINANCIAL_CLOSURE.getCode())){
-            BusinessUtil.notNull(id, ErrorCodes.BusinessEnum.BUSINESS_IDR_ID_IS_NULL);
+    private void checkFileUploadParam(IdrUploadBean bean) {
+        BusinessUtil.notNull(bean.getFileType(), ErrorCodes.BusinessEnum.BUSINESS_FILE_TYPE_IS_NULL);
+        BusinessUtil.notNull(bean.getFile(), ErrorCodes.BusinessEnum.BUSINESS_FILE_IS_NULL);
+        if(bean.getFileType().equals(Enums.BusinessFileType.FINANCIAL_CLOSURE.getCode())){
+            BusinessUtil.notNull(bean.getId(), ErrorCodes.BusinessEnum.BUSINESS_IDR_ID_IS_NULL);
         }
-        if(fileType.equals(Enums.BusinessFileType.IDR.getCode())){
-            BusinessUtil.notNull(type, ErrorCodes.BusinessEnum.BUSINESS_TYPE_IS_NULL);
+        if(bean.getFileType().equals(Enums.BusinessFileType.IDR.getCode())){
+            BusinessUtil.notNull(bean.getIdrType(), ErrorCodes.BusinessEnum.BUSINESS_TYPE_IS_NULL);
         }
     }
 
-    private void financialClosure(Integer id, Integer fileType, BigDecimal crAmount, Integer userId, FileVO fileVo) {
-        saveBusinessFile(id, fileType, userId, fileVo);
-        updateIdrInfoStatus(id, crAmount, userId);
+    private void financialClosure(IdrUploadBean bean, Integer userId, FileVO fileVo) {
+        saveBusinessFile(bean.getId(), bean.getFileType(), userId, fileVo);
+        updateIdrInfoStatus(bean.getId(), bean.getCrAmount(), userId);
     }
 
     private void updateIdrInfoStatus(Integer id, BigDecimal crAmount, Integer userId) {
@@ -183,14 +176,12 @@ public class IDRService {
         return filePath.concat(File.separator).concat(IDR_FILE_PATH).concat(File.separator);
     }
 
-    @OperationLog
     @Transactional
-    public void save(BusinessIdrInfo bean, Integer userId) throws Exception{
+    public void submit(BusinessIdrInfo bean, Integer userId) {
         bean.setStatus(Enums.BusinessIdrStatus.APPROVAL_SUBMIT.getCode());
         bean.setCreateId(userId);
         bean.setCreateTime(DateUtil.getCurrentTS());
         businessIdrInfoMapper.insertSelective(bean);
-
         if(bean.getType().equals(Enums.BusinessIdrType.INSURANCE.getCode())) {
             saveExtendsInfo(bean.getIList(), businessInsuranceInfoMapper, bean);
         }
@@ -201,10 +192,9 @@ public class IDRService {
             saveExtendsInfo(bean.getRList(), businessReturnsInfoMapper, bean);
         }
         saveExtendsInfo(bean.getFiles(), businessFileMapper, bean);
-
+        Map<String, IdrApprovalSubmitResultBean> resultMap = idrApiService.submitApprovalToBPM(bean);
+        saveApprovalRecord(bean, resultMap);
         clearDiscardFile(bean.getFiles(), userId);
-
-        submitApprovalToBPM(bean);
     }
 
     public void saveExtendsInfo(List<? extends IdrBaseEntity> list, IdrBaseMapper mapper, BusinessIdrInfo bean){
@@ -224,180 +214,27 @@ public class IDRService {
             return;
         }
         List<String> filePaths = files.stream().map(BusinessFile::getFilePath).collect(Collectors.toList());
-        Collection<String> caches = fileCache.get(userId);
+        Collection<String> caches = FILE_CACHE.get(userId);
         caches.stream().filter(e->!filePaths.contains(e)).forEach(e->new File(e).delete());
     }
 
-
-    public void submitApprovalToBPM(BusinessIdrInfo bean) throws Exception{
-        IdrApprovalSubmitBean submitBean = new IdrApprovalSubmitBean();
-        Set<String> typeSet = getApprovalSubmitType(bean);
-        for(String type : typeSet){
-            submitBean.setType(type);
-            submitBean.setShipperCode(bean.getShipperCode());
-            submitBean.setCompany(bean.getCompany());
-            submitBean.setCurrency(bean.getCurrency());
-            submitBean.setInternalCustomer(bean.getInCustomerName());
-            submitBean.setExternalCustomer(bean.getOutCustomerName());
-            submitBean.setReason(bean.getReson());
-            submitBean.setSumRemark(bean.getRemark());
-            submitBean.setInsuredPriceItem(getInsuredProceItem(bean));
-            submitBean.setRefundPriceItem(getRefundPriceItem(bean));
-            submitBean.setReturnGoods(getReturnGoods(bean));
-            submitBean.setExchangeGoods(getExchangeGoods(bean));
-            JSONObject requestBodyJson = new JSONObject();
-            requestBodyJson.put("data", submitBean);
-            String requestBody = JSON.toJSONString(requestBodyJson);
-            log.info("IDR审批申请提交至BPM");
-            log.info("requestBody:" + requestBody);
-            String responseBody = idrApiService.portalSubmitApprovalToBPM(requestBody);
-            log.info("responseBody:" + responseBody);
-            BusinessUtil.assertTrue(StringUtil.isNotBlank(responseBody), ErrorCodes.BusinessEnum.BUSINESS_IDR_SUBMIT_RESULT_IS_NULL);
-            IdrApprovalSubmitResultBean resultBean = JSON.toJavaObject(JSON.parseObject(responseBody).getJSONObject("d"), IdrApprovalSubmitResultBean.class);
-            if(resultBean.getResult().equals(Enums.BusinessIdrApprovalSubmitResult.FAILED.getCode())){
-                throw new BusinessException(ErrorCodes.BusinessEnum.BUSINESS_IDR_SUBMIT_RESULT_FAIL.getCode(), resultBean.getMessage());
-            }
-            saveApprovalRecord(bean, submitBean, resultBean);
+    private void saveApprovalRecord(BusinessIdrInfo bean, Map<String, IdrApprovalSubmitResultBean> resultMap) {
+        for(Map.Entry<String, IdrApprovalSubmitResultBean> entry : resultMap.entrySet()){
+            BusinessIdrApproval approvalRecord = new BusinessIdrApproval();
+            approvalRecord.setIdrInfoId(bean.getId());
+            approvalRecord.setOrderType(entry.getKey());
+            approvalRecord.setOrderNo(entry.getValue().getOrderNO());
+            approvalRecord.setCurrentReviewer(entry.getValue().getReviewer());
+            approvalRecord.setMessage(entry.getValue().getMessage());
+            approvalRecord.setCreateTime(DateUtil.getCurrentTS());
+            businessIdrApprovalMapper.insertSelective(approvalRecord);
         }
-    }
-
-    private List<IdrApprovalSubmitBean.ReturnGood> getReturnGoods(BusinessIdrInfo bean) {
-        List<IdrApprovalSubmitBean.ReturnGood> returnGoods = new ArrayList<>();
-        if(bean.getType().equals(Enums.BusinessIdrType.RETURNS.getCode())){
-            for(BusinessReturnsInfo e : bean.getRList()){
-                if(Enums.BusinessIdrReturnType.TH.getDesc().equals(e.getType())) {
-                    IdrApprovalSubmitBean.ReturnGood returnGood = new IdrApprovalSubmitBean.ReturnGood();
-                    returnGood.setReturnBU(e.getBu());
-                    returnGood.setReturnPDT(e.getPdt());
-                    returnGood.setReturnPlatform(e.getPlatform());
-                    returnGood.setReturnProModel(e.getProductModel());
-                    returnGood.setReturnQuantity(e.getNum());
-                    returnGood.setReturnPrice(e.getPrice() != null ? e.getPrice().floatValue() : null);
-                    //TODO 代理费率，接口获取
-                    returnGood.setAgenceRate(null);
-                    returnGood.setReturnAmount(e.getAmount() != null ? e.getAmount().floatValue() : null);
-                    returnGood.setReturnRemark(e.getRemark());
-                    returnGoods.add(returnGood);
-                }
-            }
-        }
-        return returnGoods;
-    }
-
-    private List<IdrApprovalSubmitBean.ExchangeGood> getExchangeGoods(BusinessIdrInfo bean) {
-        List<IdrApprovalSubmitBean.ExchangeGood> exchangeGoods = new ArrayList<>();
-        if(bean.getType().equals(Enums.BusinessIdrType.RETURNS.getCode())){
-            for(BusinessReturnsInfo e : bean.getRList()){
-                if(Enums.BusinessIdrReturnType.HH.getDesc().equals(e.getType())) {
-                    IdrApprovalSubmitBean.ExchangeGood exchangeGood = new IdrApprovalSubmitBean.ExchangeGood();
-                    exchangeGood.setExchangeBU(e.getBu());
-                    exchangeGood.setExchangePDT(e.getPdt());
-                    exchangeGood.setExchangePlatform(e.getPlatform());
-                    exchangeGood.setExchangeProModel(e.getProductModel());
-                    exchangeGood.setExchangeQuantity(e.getNum());
-                    exchangeGood.setExchangePrice(e.getPrice() != null ? e.getPrice().floatValue() : null);
-                    //TODO 代理费率，接口获取
-                    exchangeGood.setAgenceRate(null);
-                    exchangeGood.setExchangeAmount(e.getAmount() != null ? e.getAmount().floatValue() : null);
-                    exchangeGood.setExchangeRemark(e.getRemark());
-                    exchangeGoods.add(exchangeGood);
-                }
-            }
-        }
-        return exchangeGoods;
-    }
-
-    private List<IdrApprovalSubmitBean.RefundPrice> getRefundPriceItem(BusinessIdrInfo bean) throws ParseException {
-        List<IdrApprovalSubmitBean.RefundPrice> refundPriceItem = new ArrayList<>();
-        if(bean.getType().equals(Enums.BusinessIdrType.DIFF_PRICE.getCode())){
-            for(BusinessDiffPriceInfo e : bean.getDList()){
-                IdrApprovalSubmitBean.RefundPrice refundPrice = new IdrApprovalSubmitBean.RefundPrice();
-                refundPrice.setCustomer(e.getCustomerName());
-                refundPrice.setBU(e.getBu());
-                refundPrice.setPDT(e.getPdt());
-                refundPrice.setProductType(e.getProductType());
-                refundPrice.setPlatform(e.getPlatfom());
-                refundPrice.setProductModel(e.getProductModel());
-                refundPrice.setShipmentTime(e.getShipmentDate() != null ? DateUtil.parseDate(e.getShipmentDate(), DateUtil.WEB_FORMAT) : null);
-                refundPrice.setQuantity(e.getNum());
-                refundPrice.setCusPickPrice(e.getCustomerPrice() != null ? e.getCustomerPrice().floatValue() : null);
-                refundPrice.setAgentPickPrice(e.getAgentPrice() != null ? e.getAgentPrice().floatValue() : null);
-                //TODO 代理费率，接口获取
-                refundPrice.setAgenceRate(null);
-                refundPrice.setDifferencePrice(e.getDifferenceAmount().floatValue());
-                refundPrice.setRefundRemark(e.getRemark());
-                refundPriceItem.add(refundPrice);
-            }
-        }
-        return refundPriceItem;
-    }
-
-    private List<IdrApprovalSubmitBean.InsuredPrice> getInsuredProceItem(BusinessIdrInfo bean) throws ParseException {
-        List<IdrApprovalSubmitBean.InsuredPrice> insuredPriceItem = new ArrayList<>();
-        if(bean.getType().equals(Enums.BusinessIdrType.INSURANCE.getCode())){
-            for(BusinessInsuranceInfo e : bean.getIList()){
-                IdrApprovalSubmitBean.InsuredPrice insuredPrice = new IdrApprovalSubmitBean.InsuredPrice();
-                insuredPrice.setDeliveryTime(e.getReceiveGoodsDate() != null ? DateUtil.parseDate(e.getReceiveGoodsDate(), DateUtil.WEB_FORMAT) : null);
-                insuredPrice.setAdjustPriceTime(e.getAdjustDate() != null ? DateUtil.parseDate(e.getAdjustDate(), DateUtil.WEB_FORMAT) : null);
-                insuredPrice.setBU(e.getBu());
-                insuredPrice.setPDT(e.getPdt());
-                insuredPrice.setProductType(e.getProductType());
-                insuredPrice.setPlatform(e.getPlatform());
-                insuredPrice.setProductModel(e.getProductModel());
-                insuredPrice.setInventoryQuantity(e.getNum() != null ? Integer.valueOf(e.getNum()) : null);
-                insuredPrice.setCurrency(e.getCurrency());
-                insuredPrice.setInventoryPrice(e.getPrice() != null ? Float.valueOf(e.getPrice()) : null);
-                insuredPrice.setNewPrice(e.getNewPrice() != null ? Float.valueOf(e.getNewPrice()) : null);
-                insuredPrice.setInsured(e.getInsuranceAmount() != null ? Float.valueOf(e.getInsuranceAmount()) : null);
-                insuredPrice.setAdjustTime(e.getModifyDate() != null ? DateUtil.parseDate(e.getModifyDate(), DateUtil.WEB_FORMAT) : null);
-                insuredPrice.setInsuredRemark(e.getRemark());
-                insuredPriceItem.add(insuredPrice);
-            }
-        }
-        return insuredPriceItem;
-    }
-
-    private void saveApprovalRecord(BusinessIdrInfo bean, IdrApprovalSubmitBean submitBean, IdrApprovalSubmitResultBean resultBean) {
-        BusinessIdrApproval approvalRecord = new BusinessIdrApproval();
-        approvalRecord.setIdrInfoId(bean.getId());
-        approvalRecord.setOrderType(submitBean.getType());
-        approvalRecord.setOrderNo(resultBean.getOrderNO());
-        approvalRecord.setCurrentReviewer(resultBean.getReviewer());
-        approvalRecord.setMessage(resultBean.getMessage());
-        approvalRecord.setCreateTime(DateUtil.getCurrentTS());
-        businessIdrApprovalMapper.insertSelective(approvalRecord);
-    }
-
-    public Set<String> getApprovalSubmitType(BusinessIdrInfo bean){
-        Set<String> set = new HashSet<>();
-        if (bean.getType().equals(Enums.BusinessIdrType.INSURANCE.getCode())) {
-            set.add(Enums.BusinessIdrApprovalSubmitType.KP.toString());
-        }
-        if(bean.getType().equals(Enums.BusinessIdrType.DIFF_PRICE.getCode())){
-            set.add(Enums.BusinessIdrApprovalSubmitType.CP.toString());
-        }
-        if(bean.getType().equals(Enums.BusinessIdrType.RETURNS.getCode())){
-            return isReturnOrChange(bean, set);
-        }
-        return set;
-    }
-    public Set<String> isReturnOrChange(BusinessIdrInfo bean, Set<String> set){
-        bean.getRList().forEach(e->{
-            if(Enums.BusinessIdrReturnType.HH.getDesc().equals(e.getType())){
-                set.add(Enums.BusinessIdrApprovalSubmitType.HH.toString());
-            }
-            if(Enums.BusinessIdrReturnType.TH.getDesc().equals(e.getType())){
-                set.add(Enums.BusinessIdrApprovalSubmitType.TH.toString());
-            }
-        });
-        return set;
     }
 
     public void receiveApproval(IDRApprovalRequest request) {
         BusinessIdrApproval histortRecord = businessIdrApprovalMapper.selectByOrderNo(request.getOrderNumber());
         BusinessUtil.notNull(histortRecord, ErrorCodes.BusinessEnum.BUSINESS_IDR_APPROVAL_ORDERNO_NOT_FOUND);
         saveIdrApprovalRecord(request, histortRecord);
-
         if(request.getType().equals(Enums.BusinessIdrApprovalSubmitType.HH.toString()) || request.getType().equals(Enums.BusinessIdrApprovalSubmitType.TH.toString()) ){
             List<BusinessIdrApproval> records = businessIdrApprovalMapper.selectByIdrInfoId(histortRecord.getIdrInfoId());
             Set<String> orderNos = records.stream().map(BusinessIdrApproval::getOrderNo).collect(Collectors.toSet());

@@ -1,18 +1,18 @@
 package com.crazy.portal.controller.business;
 
+import com.crazy.portal.annotation.OperationLog;
 import com.crazy.portal.bean.BaseResponse;
 import com.crazy.portal.bean.business.idr.BusinessIdrQueryBean;
+import com.crazy.portal.bean.business.idr.IdrUploadBean;
 import com.crazy.portal.controller.BaseController;
 import com.crazy.portal.entity.business.idr.BusinessIdrInfo;
 import com.crazy.portal.service.business.IDRService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.math.BigDecimal;
 
 /**
  * Created by bill on 2019/7/30.
@@ -28,9 +28,8 @@ public class IDRController extends BaseController {
     @Resource
     private IDRService idrService;
 
-
     /**
-     * 列表
+     * 查询列表
      * @return
      */
     @GetMapping("/list")
@@ -39,7 +38,7 @@ public class IDRController extends BaseController {
     }
 
     /**
-     * 明细
+     * 查询明细
      * @param id
      * @return
      */
@@ -50,39 +49,33 @@ public class IDRController extends BaseController {
 
     /**
      * 模板下载
-     * @param type 1.保价 2.差价补偿 3.退换货
+     * @param type
      * @param response
      */
     @GetMapping("/templateDownload")
-    public void templateDownload(Integer type, HttpServletResponse response) throws Exception{
+    public void templateDownload(Integer type, HttpServletResponse response) {
         idrService.templateDownload(type, response);
     }
     /**
      * 上传附件
-     * @param id 保差退ID
-     * @param type 1.保价 2.差价补偿 3.退换货
-     * @param fileType 1：普通附件 2：保差退附件 3：财务完结附件
-     * @param crAmount CR金额
-     * @param file 文件
+     * @param bean
      * @return
      */
+    @OperationLog
     @PostMapping("/upload")
-    public BaseResponse upload(MultipartFile file,
-                               @RequestParam("id") Integer id,
-                               @RequestParam("idrType") Integer type,
-                               @RequestParam("fileType") Integer fileType,
-                               @RequestParam("crAmount") BigDecimal crAmount) throws Exception {
-        return super.successResult(idrService.upload(id, type, fileType, crAmount, file, this.getCurrentUser().getId()));
+    public BaseResponse upload(IdrUploadBean bean) {
+        return super.successResult(idrService.upload(bean, this.getCurrentUserId()));
     }
 
     /**
-     * 提交
-     * @param bean 信息
+     * 提交信息
+     * @param bean
      * @return
      */
+    @OperationLog
     @PostMapping("/submit")
-    public BaseResponse submit(@RequestBody @Valid BusinessIdrInfo bean) throws Exception{
-        idrService.save(bean, this.getCurrentUser().getId());
+    public BaseResponse submit(@RequestBody @Valid BusinessIdrInfo bean) {
+        idrService.submit(bean, this.getCurrentUserId());
         return super.successResult();
     }
 
