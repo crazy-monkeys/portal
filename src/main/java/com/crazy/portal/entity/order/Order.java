@@ -2,6 +2,7 @@ package com.crazy.portal.entity.order;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
@@ -15,6 +16,12 @@ import java.util.List;
  */
 @Data
 public class Order {
+
+
+    @JSONField(serialize = false)
+    @NotNull(message = "订单行附件不能为空")
+    private MultipartFile lineFile;
+
     /**
      * 
      */
@@ -29,7 +36,7 @@ public class Order {
      * A05-Last Buy订单；
      * A06-分销商专货订单
      */
-    @NotEmpty
+    @NotEmpty(message = "订单类型不能为空")
     private String orderType;
 
     /**
@@ -43,13 +50,13 @@ public class Order {
      * ZKE-标准客户库存出货
      * ZKB-标准客户库存补货
      */
-    @NotEmpty
+    @NotEmpty(message = "下单类型不能为空")
     private String underOrderType;
 
     /**
      * 销售组织
      */
-    @NotEmpty
+    @NotEmpty(message = "销售组织不能为空")
     private String salesOrg;
 
     /**
@@ -75,55 +82,54 @@ public class Order {
     /**
      * 售达方(代理商的外部编号)
      */
-    @NotEmpty
+    @NotEmpty(message = "售达方不能为空")
     private String soldTo;
 
     /**
      * 送达方(代理商的外部编号)
      */
-    @NotEmpty
+    @NotEmpty(message = "送达方不能为空")
     private String sendTo;
 
     /**
      * 采购订单编号
      */
-    @NotEmpty
+    @NotEmpty(message = "采购订单号不能为空")
     private String purchaseNo;
 
     /**
      * 采购订单下达日期
      */
-    @NotNull
-    private Date purchaseDate;
+    @NotEmpty(message = "采购订单下达日期不能为空")
+    private String purchaseDate;
 
     /**
      * 国际贸易条款1
      */
-    @NotEmpty
+    @NotEmpty(message = "国际贸易条款1不能为空")
     private String incoterms1;
 
     /**
      * 国际贸易条款2
      */
-    @NotEmpty
+    @NotEmpty(message = "国际贸易条款2不能为空")
     private String incoterms2;
 
     /**
      * 定价日期(需求交货日期)
      */
-    @NotNull
-    private Date priceDate;
+    private String priceDate;
 
     /**
      * 付款条件
      */
-    @NotEmpty
+    @NotEmpty(message = "付款条件不能为空")
     private String paymentTerms;
 
     /**
      * 客户属性(B1-Account Market；B2-Mass Market)
      */
-    @NotEmpty
+    @NotEmpty(message = "客户属性不能为空")
     private String customerAttr;
 
 

@@ -15,7 +15,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
@@ -77,8 +76,8 @@ public class OrderApplyService {
      * 解析附件并作调价试算
      * @return
      */
-    public List<OrderLineEO> parsingLineTmplFile(Order order,MultipartFile file){
-        List<OrderLineEO> records = ExcelUtils.readExcel(file, OrderLineEO.class);
+    public List<OrderLineEO> parsingLineTmplFile(Order order){
+        List<OrderLineEO> records = ExcelUtils.readExcel(order.getLineFile(), OrderLineEO.class);
 
         for(int i = 0;i<records.size();i++){
             OrderLineEO orderLineEO = records.get(i);

@@ -15,6 +15,8 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
+import org.springframework.validation.BindException;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -22,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -73,7 +76,13 @@ public class OperationAspect extends BaseController {
         }
         if(throwable instanceof MethodArgumentNotValidException){
             MethodArgumentNotValidException ex = (MethodArgumentNotValidException) throwable;
-            String msg = super.getValidExceptionMsg(ex);
+            List<ObjectError> allErrors = ex.getBindingResult().getAllErrors();
+            String msg = super.getValidExceptionMsg(allErrors);
+            opLog.setErrorMsg(msg);
+            throw new BusinessException(CommonEnum.REQ_PARAM_FORMAT_ERROR.getCode(),msg);
+        }
+        if(throwable instanceof BindException){
+            String msg = super.getValidExceptionMsg(((BindException) throwable).getAllErrors());
             opLog.setErrorMsg(msg);
             throw new BusinessException(CommonEnum.REQ_PARAM_FORMAT_ERROR.getCode(),msg);
         }

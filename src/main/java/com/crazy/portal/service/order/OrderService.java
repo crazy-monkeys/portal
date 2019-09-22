@@ -73,7 +73,7 @@ public class OrderService {
             BusinessUtil.assertTrue(DateUtil.isValidDateFormat(bean.getDeliveryDate(), DateUtil.WEB_FORMAT), ErrorCodes.BusinessEnum.ORDER_DELIVERY_DATE_FORMAT_FAIL);
             Order order = new Order();
             order.setId(id);
-            order.setPriceDate(DateUtil.parseDate(bean.getDeliveryDate(), DateUtil.WEB_FORMAT));
+            order.setPriceDate(bean.getDeliveryDate());
             order.setUpdateId(userId);
             order.setUpdateTime(DateUtil.getCurrentTS());
             orderMapper.updateByPrimaryKeySelective(order);
@@ -150,14 +150,13 @@ public class OrderService {
         isHeader.setSoldto(order.getSoldTo());
         isHeader.setSendto(order.getSendTo());
         isHeader.setPurchaseno(order.getPurchaseNo());
-        isHeader.setPurchasedate(DateUtil.format(order.getPurchaseDate(), DateUtil.SHORT_FORMAT));
+        isHeader.setPurchasedate(order.getPurchaseDate());
         isHeader.setPaymentterms(order.getPaymentTerms());
         isHeader.setCustomergroup1(order.getOrderType());
         isHeader.setCustomergroup2(order.getCustomerAttr());
-        isHeader.setPricedate(DateUtil.format(order.getPriceDate(), DateUtil.SHORT_FORMAT));
+        isHeader.setPricedate(order.getPurchaseDate());
         isHeader.setInco1(order.getIncoterms1());
         isHeader.setInco2(order.getIncoterms2());
-        isHeader.setAugru("005");
 
         Integer line_no = 1;
         Map<Integer, Integer> lineMap = new HashMap<>();

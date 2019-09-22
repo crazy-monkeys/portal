@@ -13,7 +13,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.ObjectError;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import javax.annotation.Resource;
 import java.util.Collection;
@@ -79,12 +78,10 @@ public class BaseController {
 
     /**
      * 获取参数校验失败信息
-     * @param exception
+     * @param errorList
      * @return
      */
-    public String getValidExceptionMsg(MethodArgumentNotValidException exception) {
-        MethodArgumentNotValidException paramException = exception;
-        List<ObjectError> errorList = paramException.getBindingResult().getAllErrors();
+    public String getValidExceptionMsg(List<ObjectError> errorList) {
 
         return errorList.stream()
                 .map(ObjectError::getDefaultMessage)

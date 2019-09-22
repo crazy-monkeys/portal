@@ -15,10 +15,10 @@
     <result column="purchase_no" jdbcType="VARCHAR" property="purchaseNo" />
     <result column="incoterms1" jdbcType="VARCHAR" property="incoterms1" />
     <result column="incoterms2" jdbcType="VARCHAR" property="incoterms2" />
-    <result column="price_date" jdbcType="DATE" property="priceDate" />
+    <result column="price_date" jdbcType="VARCHAR" property="priceDate" />
     <result column="payment_terms" jdbcType="VARCHAR" property="paymentTerms" />
     <result column="customer_attr" jdbcType="VARCHAR" property="customerAttr" />
-    <result column="purchase_date" jdbcType="DATE" property="purchaseDate" />
+    <result column="purchase_date" jdbcType="VARCHAR" property="purchaseDate" />
     <result column="ref_sap_order_id" jdbcType="VARCHAR" property="refSapOrderId" />
     <result column="r_sap_order_id" jdbcType="VARCHAR" property="rSapOrderId" />
     <result column="r_sap_currency" jdbcType="VARCHAR" property="rSapCurrency" />
@@ -187,7 +187,7 @@
         #{incoterms2,jdbcType=VARCHAR},
       </if>
       <if test="priceDate != null">
-        #{priceDate,jdbcType=DATE},
+        #{priceDate,jdbcType=VARCHAR},
       </if>
       <if test="paymentTerms != null">
         #{paymentTerms,jdbcType=VARCHAR},
@@ -196,7 +196,7 @@
         #{customerAttr,jdbcType=VARCHAR},
       </if>
       <if test="purchaseDate != null">
-        #{purchaseDate,jdbcType=DATE},
+        #{purchaseDate,jdbcType=VARCHAR},
       </if>
       <if test="refSapOrderId != null">
         #{refSapOrderId,jdbcType=VARCHAR},
@@ -276,7 +276,7 @@
         incoterms2 = #{incoterms2,jdbcType=VARCHAR},
       </if>
       <if test="priceDate != null">
-        price_date = #{priceDate,jdbcType=DATE},
+        price_date = #{priceDate,jdbcType=VARCHAR},
       </if>
       <if test="paymentTerms != null">
         payment_terms = #{paymentTerms,jdbcType=VARCHAR},
@@ -285,7 +285,7 @@
         customer_attr = #{customerAttr,jdbcType=VARCHAR},
       </if>
       <if test="purchaseDate != null">
-        purchase_date = #{purchaseDate,jdbcType=DATE},
+        purchase_date = #{purchaseDate,jdbcType=VARCHAR},
       </if>
       <if test="refSapOrderId != null">
         ref_sap_order_id = #{refSapOrderId,jdbcType=VARCHAR},

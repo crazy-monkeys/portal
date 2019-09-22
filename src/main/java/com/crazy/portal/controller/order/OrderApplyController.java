@@ -5,7 +5,6 @@ import com.crazy.portal.controller.BaseController;
 import com.crazy.portal.entity.order.Order;
 import com.crazy.portal.service.order.OrderApplyService;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
@@ -46,14 +45,12 @@ public class OrderApplyController extends BaseController {
 
     /**
      * 上传订单行模板,做调价试算
-     * @param file
      * @return
      */
     @PostMapping("/upload")
-    public BaseResponse upload(@RequestBody @Valid Order order,
-                               @RequestParam MultipartFile file){
+    public BaseResponse upload(@Valid Order order){
 
-        return successResult(orderApplyService.parsingLineTmplFile(order,file));
+        return successResult(orderApplyService.parsingLineTmplFile(order));
     }
 
 }
