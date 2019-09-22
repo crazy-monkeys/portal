@@ -25,6 +25,7 @@
     <result column="record_id" jdbcType="INTEGER" property="recordId" />
     <result column="error_msg" jdbcType="VARCHAR" property="errorMsg" />
     <result column="dealer_name" jdbcType="VARCHAR" property="dealerName" />
+    <result column="sales_organization" jdbcType="VARCHAR" property="salesOrganization" />
   </resultMap>
 
   <resultMap id="errorResultMap" extends="BaseResultMap" type="com.crazy.portal.bean.handover.DeliverTemplateBean" >
@@ -37,7 +38,7 @@
     id, third_id, customer_external_number, customer_full_name, sales, category_one, 
     category_tow, category_three, product_model, delivery_date, deliver_number, sale_price, 
     po_price, margin, currency, customer_order_number, delivery_type, order_month, delivery_company, 
-    remark, record_id, error_msg
+    remark, record_id, error_msg, sales_organization
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -136,6 +137,9 @@
       <if test="errorMsg != null" >
         error_msg,
       </if>
+      <if test="salesOrganization != null" >
+        sales_organization,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -203,6 +207,9 @@
       </if>
       <if test="errorMsg != null" >
         #{errorMsg,jdbcType=VARCHAR},
+      </if>
+      <if test="salesOrganization != null" >
+        #{salesOrganization},
       </if>
     </trim>
   </insert>
