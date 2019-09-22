@@ -71,7 +71,11 @@ public class OrderService {
     }
 
     public List<DeliverOrderLine> deliveryDetail(Integer deliveryOrderId){
-        return deliverOrderLineMapper.selectByDeliveryOrderId(deliveryOrderId);
+        DeliverOrder deliverOrder = deliverOrderMapper.selectByPrimaryKey(deliveryOrderId);
+        List<DeliverOrderLine> deliverOrderLines = deliverOrderLineMapper.selectByDeliveryOrderId(deliveryOrderId);
+        orderInvoiceMapper.selectByDeliveryOrderId(deliverOrder.getSapDeliverOrderNo());
+
+        return null;
     }
 
     /**

@@ -206,9 +206,7 @@
       <if test="updateUserId != null">
         update_user_id = #{updateUserId,jdbcType=INTEGER},
       </if>
-      <if test="updateTime != null">
-        update_time = #{updateTime,jdbcType=TIMESTAMP},
-      </if>
+        update_time = now(),
       <if test="approvalStatus != null">
         approval_status = #{approvalStatus,jdbcType=INTEGER},
       </if>
@@ -281,6 +279,16 @@
     <if test="actualDeliveryStartDate!=null and actualDeliveryStartDate!='' and (actualDeliveryEndDate == null or actualDeliveryEndDate == '')">
       and actual_delivery_date > actualDeliveryStartDate
     </if>
+  </select>
+
+  <select id="selectOfInvoiceSync" resultMap="BaseResultMap">
+    select * from t_deliver_order where sap_deliver_order_no not in (
+      select sap_delivery_id from t_order_invoice where active =1
+      )
+  </select>
+
+  <select id="selectBySapDeliveryNo" resultMap="BaseResultMap">
+    select * from t_deliver_order where active =1 and sap_deliver_order_no = #{sapDeliveryNo}
   </select>
 
 </mapper>

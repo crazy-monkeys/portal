@@ -19,4 +19,8 @@ public interface DeliverOrderMapper {
     int updateByPrimaryKey(DeliverOrder record);
 
     List<DeliverOrder> selectList(DeliveryOrderQueryVO vo);
+
+    List<DeliverOrder> selectOfInvoiceSync();
+
+    DeliverOrder selectBySapDeliveryNo(String sapDeliveryNo);
 }

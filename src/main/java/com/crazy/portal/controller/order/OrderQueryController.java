@@ -73,7 +73,7 @@ public class OrderQueryController extends BaseController {
         return successResult(orderService.deliveryOrderList(vo));
     }
 
-    @PostMapping("/list/delivery")
+    @PostMapping("/update/delivery")
     public BaseResponse DeliveryUpdate(@RequestBody DeliveryOrderQueryVO vo){
         return successResult(orderService.deliveryOrderList(vo));
     }

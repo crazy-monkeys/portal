@@ -18,4 +18,6 @@ public interface DeliverOrderLineMapper {
     int updateByPrimaryKey(DeliverOrderLine record);
 
     List<DeliverOrderLine> selectByDeliveryOrderId(Integer deliveryOrderId);
+
+    DeliverOrderLine selectBySapDeliveryOrderLineNo(String sapDeliveryOrderLineNo);
 }

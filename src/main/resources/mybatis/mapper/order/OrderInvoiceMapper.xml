@@ -327,4 +327,9 @@
       active = #{active,jdbcType=INTEGER}
     where invoice_id = #{invoiceId,jdbcType=INTEGER}
   </update>
+
+  <select id="selectByDeliveryOrderId" resultMap="BaseResultMap">
+    select * from t_order_invoice
+    where sap_delivery_id = #{deliveryOrderId}
+  </select>
 </mapper>

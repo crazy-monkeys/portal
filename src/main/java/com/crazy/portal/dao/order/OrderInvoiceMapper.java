@@ -15,4 +15,5 @@ public interface OrderInvoiceMapper {
 
     int updateByPrimaryKey(OrderInvoice record);
 
+    OrderInvoice selectByDeliveryOrderId(String deliveryOrderId);
 }
