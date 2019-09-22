@@ -92,14 +92,7 @@ public class OrderService {
      */
     @OperationLog
     public void cancel(BatchModifyOrderBean bean, Integer userId){
-        for(Integer id : bean.getOrderIds()){
-            Order order = new Order();
-            order.setId(id);
-            order.setApprovalStatus(Enums.OrderApprovalStatus.CANCEL.getValue());
-            order.setUpdateId(userId);
-            order.setUpdateTime(DateUtil.getCurrentTS());
-            orderMapper.updateByPrimaryKeySelective(order);
-        }
+
     }
 
     /**

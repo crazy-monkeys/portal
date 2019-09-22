@@ -174,6 +174,20 @@ public class Order {
     private String orderReason;
 
     /**
+     * 审批人
+     */
+    private String approver;
+
+    /**
+     * 审批意见
+     */
+    private String approvalOpinions;
+
+    /**
+     * 审批时间
+     */
+    private Date approvalTime;
+    /**
      * 审批状态 0：待审批 1：已通过 2：已驳回
      */
     private Integer approvalStatus;

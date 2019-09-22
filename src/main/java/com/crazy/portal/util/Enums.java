@@ -4,12 +4,9 @@ import com.alibaba.excel.metadata.BaseRowModel;
 import com.crazy.portal.bean.business.idr.DiffPriceEO;
 import com.crazy.portal.bean.business.idr.InsuranceEO;
 import com.crazy.portal.bean.business.idr.ReturnsEO;
-import org.apache.ibatis.javassist.runtime.Desc;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * @Desc:
@@ -528,9 +525,7 @@ public class Enums {
     public enum OrderApprovalStatus{
         WAIT_APPROVAL(0, "待审批"),
         ADOPT(1, "已通过"),
-        REJEC(2, "已驳回"),
-        CANCEL(3, "已取消")
-        ;
+        REJEC(2, "已驳回");
 
         private Integer value;
         private String desc;
