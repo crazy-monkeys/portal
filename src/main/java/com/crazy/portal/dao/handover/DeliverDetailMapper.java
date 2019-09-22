@@ -39,4 +39,9 @@ public interface DeliverDetailMapper {
     int deleteByRecordId(@Param(value = "recordId") Integer recordId);
 
     int batchDeleteByIds(@Param(value = "ids") Integer[] ids);
+
+    List<DeliverDetail> selectByIds(@Param(value = "ids") Integer[] ids);
+
+    DeliverDetail selectByThirdId(@Param(value = "thirdId") Integer thirdId);
+
 }

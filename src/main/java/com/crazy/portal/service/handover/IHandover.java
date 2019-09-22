@@ -37,4 +37,8 @@ public interface IHandover<T> {
     List<?> uploadTemplateData(MultipartFile excel, Integer userId);
 
     void batchDeleteData(Integer[] ids, Integer userId);
+
+    void downloadDataByUpdate(HttpServletResponse response, Integer[] ids);
+
+    HandoverUploadVO uploadDataByUpdate(MultipartFile excel, Integer userId);
 }

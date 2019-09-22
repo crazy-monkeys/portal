@@ -377,4 +377,18 @@
     </foreach>
   </delete>
 
+  <select id="selectByIds" resultMap="BaseResultMap" >
+    select * from t_deliver_detail
+    where 1 = 1
+    <foreach collection="ids" item="item" index="index" open="id in (" separator="," close=")" >
+      #{item}
+    </foreach>
+  </select>
+
+  <select id="selectByThirdId" resultMap="BaseResultMap" >
+    select * from t_deliver_detail
+    where third_id = #{thirdId}
+    limit 1
+  </select>
+
 </mapper>
