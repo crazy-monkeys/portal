@@ -44,6 +44,11 @@ public class OrderLine {
     private Integer num;
 
     /**
+     * 剩余数量
+     */
+    private Integer remainingNum;
+
+    /**
      * 平台
      */
     @NotEmpty
