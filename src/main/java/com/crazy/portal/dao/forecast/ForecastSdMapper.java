@@ -22,4 +22,14 @@ public interface ForecastSdMapper {
     List<SdUpdateTemplate> selectTotalByForecastIds(@Param(value = "forecastIds") Integer[] forecastIds);
 
     List<ForecastSd> selectPage();
+
+    ForecastSd selectByMonthAndProduct(@Param(value = "operationYearMonth") String operationYearMonth,
+                                       @Param(value = "company") String company,
+                                       @Param(value = "bu") String bu,
+                                       @Param(value = "pdt") String pdt,
+                                       @Param(value = "productType") String productType,
+                                       @Param(value = "platform") String platform,
+                                       @Param(value = "productModel") String productModel);
+
+    ForecastSd selectByBiId(@Param(value = "biId") String biId);
 }

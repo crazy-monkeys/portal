@@ -244,11 +244,8 @@ public class SaleForecastController extends BaseController {
     }
 
     @GetMapping(value = "/forecast/data/leader/query/sd")
-    public BaseResponse queryForecastDataBySd(Integer pageNum, Integer pageSize,
-                                          String customerAbbreviation, String agencyAbbreviation, String salePeople,
-                                          String uploadStartTime, String uploadEndTime, String channel) {
-        return super.successResult(saleForecastService.queryForecastDataBySd(pageNum, pageSize,customerAbbreviation,
-                agencyAbbreviation, salePeople, uploadStartTime, uploadEndTime, channel));
+    public BaseResponse queryForecastDataBySd(Integer pageNum, Integer pageSize) {
+        return super.successResult(saleForecastService.queryForecastDataBySd(pageNum, pageSize));
     }
 
 }

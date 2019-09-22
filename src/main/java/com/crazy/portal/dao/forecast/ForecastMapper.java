@@ -30,7 +30,8 @@ public interface ForecastMapper {
     int countErrorDataByBatch(@Param(value = "batchNo") String batchNo,
                               @Param(value = "userId") Integer userId);
 
-    int updateStatus(@Param(value = "status") Integer status,
+    int updateStatus(@Param(value = "agencyStatusType") Integer agencyStatusType,
+                     @Param(value = "status") Integer status,
                      @Param(value = "batchNo") String batchNo,
                      @Param(value = "userId") Integer userId);
 
@@ -76,4 +77,13 @@ public interface ForecastMapper {
     List<Forecast> selectByIds(@Param(value = "ids") Integer[] ids);
 
     int clearErrorMsgByBatch(@Param(value = "batchNo") String batchNo);
+
+    Forecast selectRelationByKey(Integer id);
+
+    int updateBiInfoByKey(@Param(value = "id") Integer id,
+                          @Param(value = "biId") String biId,
+                          @Param(value = "errorMsg") String errorMsg);
+
+    int updateBiInfoByBiId(@Param(value = "biId") String biId,
+                           @Param(value = "errorMsg") String errorMsg);
 }

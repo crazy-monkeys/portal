@@ -426,7 +426,7 @@
   </select>
 
   <update id="updateStatus" >
-    update t_forecast set status = #{status}
+    update t_forecast set status = #{status},agency_status_type = #{agencyStatusType}
     where batch_no = #{batchNo} and create_user_id = #{userId}
   </update>
 
@@ -564,6 +564,21 @@
 
   <update id="clearErrorMsgByBatch" >
     update t_forecast set error_msg = null where batch_no = #{batchNo}
+  </update>
+
+  <select id="selectRelationByKey" resultMap="fullFieldMap" >
+    select a.*,b.*
+    from t_forecast a
+    inner join t_forecast_line b on a.id = b.f_id
+    where a.id = #{id}
+  </select>
+
+  <update id="updateBiInfoByKey" >
+    update t_forecast set bi_id = #{biId},error_msg = #{errorMsg} where id = #{id}
+  </update>
+
+  <update id="updateBiInfoByBiId" >
+    update t_forecast set error_msg = #{errorMsg} where bi_id = #{biId}
   </update>
 
 </mapper>
