@@ -19,4 +19,6 @@ public interface UserCustomerMappingMapper {
     int updateByPrimaryKey(UserCustomerMapping record);
 
     List<UserCustomerMapping> selectByPage(UserCustomerMappingBean bean);
+
+    UserCustomerMapping selectUserMapping(Integer userId, String mappingModel);
 }
