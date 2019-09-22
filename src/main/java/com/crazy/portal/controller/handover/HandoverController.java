@@ -106,7 +106,9 @@ public class HandoverController extends BaseController {
      */
     @GetMapping(value = "/handover/template")
     public void downloadTemplate(String type, HttpServletResponse response) {
-        handoverServiceContext.getService(type).downloadTemplate(response);
+        if("deliver".equals(type)){
+            handoverServiceContext.getService(type).downloadTemplate(response);
+        }
     }
 
     /**
@@ -117,9 +119,11 @@ public class HandoverController extends BaseController {
     @OperationLog
     @PostMapping(value = "/handover/template")
     public BaseResponse uploadTemplateData(MultipartFile excel, String type) {
-        List<?> data = handoverServiceContext.getService(type).uploadTemplateData(excel, getCurrentUser().getId());
-        return super.successResult(handoverServiceContext.getService(type).verificationData(data, getCurrentUser().getId()));
-//        return super.successResult();
+        if("deliver".equals(type)){
+            List<?> data = handoverServiceContext.getService(type).uploadTemplateData(excel, getCurrentUser().getId());
+            return super.successResult(handoverServiceContext.getService(type).verificationData(data, getCurrentUser().getId()));
+        }
+        return super.successResult();
     }
 
     /**
@@ -132,8 +136,11 @@ public class HandoverController extends BaseController {
     @OperationLog
     @PostMapping(value = "/handover/error/retry")
     public BaseResponse modifyErrorData(MultipartFile excel, String type, Integer recordId) {
-        List<?> data = handoverServiceContext.getService(type).uploadTemplateData(excel, getCurrentUser().getId());
-        return super.successResult(handoverServiceContext.getService(type).verificationDataByErrorData(data, getCurrentUser().getId(), recordId));
+        if("deliver".equals(type)){
+            List<?> data = handoverServiceContext.getService(type).uploadTemplateData(excel, getCurrentUser().getId());
+            return super.successResult(handoverServiceContext.getService(type).verificationDataByErrorData(data, getCurrentUser().getId(), recordId));
+        }
+        return super.successResult();
     }
 
     /**
@@ -142,7 +149,9 @@ public class HandoverController extends BaseController {
      */
     @GetMapping(value = "/handover/error")
     public void downloadError(HttpServletResponse response, String type, String fileName) {
-        handoverServiceContext.getService(type).downloadError(response, fileName);
+        if("deliver".equals(type)){
+            handoverServiceContext.getService(type).downloadError(response, fileName);
+        }
     }
 
     /**
@@ -152,8 +161,11 @@ public class HandoverController extends BaseController {
     @OperationLog
     @PostMapping(value = "/handover/detail")
     public BaseResponse submitData(Integer recordId, String type) {
-        handoverService.checkDataStatus(recordId);
-        return super.successResult(handoverServiceContext.getService(type).saveData(recordId, getCurrentUser().getId()));
+        if("deliver".equals(type)){
+            handoverService.checkDataStatus(recordId);
+            return super.successResult(handoverServiceContext.getService(type).saveData(recordId, getCurrentUser().getId()));
+        }
+        return super.successResult();
     }
 
     /**
@@ -171,14 +183,19 @@ public class HandoverController extends BaseController {
 
     @GetMapping(value = "/handover/detail/update/download")
     public BaseResponse downloadDataByUpdate(HttpServletResponse response, String type, Integer[] ids) {
-        handoverServiceContext.getService(type).downloadDataByUpdate(response, ids);
+        if("deliver".equals(type)){
+            handoverServiceContext.getService(type).downloadDataByUpdate(response, ids);
+        }
         return super.successResult();
     }
 
     @OperationLog
     @PostMapping(value = "/handover/detail/update/upload")
     public BaseResponse uploadDataByUpdate(MultipartFile excel, String type) {
-        return super.successResult(handoverServiceContext.getService(type).uploadDataByUpdate(excel, getCurrentUser().getId()));
+        if("deliver".equals(type)){
+            return super.successResult(handoverServiceContext.getService(type).uploadDataByUpdate(excel, getCurrentUser().getId()));
+        }
+        return super.successResult();
     }
 
 }
