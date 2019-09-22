@@ -10,6 +10,7 @@ import com.crazy.portal.bean.customer.CustomerOrgBean;
 import com.crazy.portal.bean.customer.CustomerQueryBean;
 import com.crazy.portal.bean.customer.CustomerShipBean;
 import com.crazy.portal.bean.customer.approval.ApprovalBean;
+import com.crazy.portal.bean.customer.basic.DealerCreditVO;
 import com.crazy.portal.bean.customer.visitRecord.CustomerCodeEO;
 import com.crazy.portal.bean.customer.visitRecord.VisitRecordEO;
 import com.crazy.portal.bean.customer.visitRecord.VisitRecordQueryBean;
@@ -207,6 +208,19 @@ public class CustomerInfoService {
         dealer.setCreditUSE(null == zsdscredit.getZoccupy()? BigDecimal.ZERO:zsdscredit.getZoccupy());
         dealer.setCreditUnUSE(null == zsdscredit.getZremain()?BigDecimal.ZERO:zsdscredit.getZoccupy());
         return dealer;
+    }
+
+    public DealerCreditVO getDealerCredit(Integer custId){
+        CustomerInfo customerInfo = customerInfoMapper.getDealerByUser(custId);
+        if(!customerInfo.getBusinessType().equals(Enums.CUSTOMER_BUSINESS_TYPE.dealer.getCode())){
+            throw new BusinessException(ErrorCodes.BusinessEnum.CUSTOMER_NO_DEALER);
+        }
+        Zsdscredit zsdscredit = CallApiUtils.callECCCreditApi(customerInfo.getOutCode());
+        DealerCreditVO vo = new DealerCreditVO();
+        vo.setCredit(null == zsdscredit.getDmbtr()? BigDecimal.ZERO:zsdscredit.getDmbtr());
+        vo.setCreditUSE(null == zsdscredit.getZoccupy()? BigDecimal.ZERO:zsdscredit.getZoccupy());
+        vo.setCreditUnUSE(null == zsdscredit.getZremain()?BigDecimal.ZERO:zsdscredit.getZoccupy());
+        return vo;
     }
 
      /* 新建报备时 校验客户是否可报备
