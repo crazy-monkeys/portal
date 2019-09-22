@@ -50,6 +50,11 @@ public class SysController extends BaseController {
         return successResult(customerInfoService.getDealerList());
     }
 
+    @GetMapping("/dealer/getCredit/{dealerId}")
+    public BaseResponse getDealerCredit(@PathVariable("dealerId") Integer dealerId){
+        return successResult(customerInfoService.getDealerCredit(dealerId));
+    }
+
     @GetMapping("/selectCustomerShip/{custId}")
     public BaseResponse selectCustomerShip(@PathVariable("custId") Integer custId){
         return super.successResult(customerInfoService.selectCustShip(custId));

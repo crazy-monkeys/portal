@@ -157,6 +157,7 @@ public class ErrorCodes {
         CUSTOMER_REPORT_ERROR1(50005,"客户正在报备中",""),
         CUSTOMER_SYNC_ERROR(50006,"客户同步异常",""),
         CUSTOMER_ORG_ERROR(50007,"没有审批权限",""),
+        CUSTOMER_NO_DEALER(50008,"该用户非有效代理商",""),
 
         RATE_BATCH_IS_NOT_NULL(60001,"批次号已存在",""),
         //代理费率
