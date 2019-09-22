@@ -1,5 +1,6 @@
 package com.crazy.portal.controller.order;
 
+import com.crazy.portal.annotation.OperationLog;
 import com.crazy.portal.bean.BaseResponse;
 import com.crazy.portal.controller.BaseController;
 import com.crazy.portal.entity.order.Order;
@@ -28,6 +29,7 @@ public class OrderApplyController extends BaseController {
      * @return
      */
     @PostMapping("/submit")
+    @OperationLog
     public BaseResponse submit(@RequestBody @Valid Order order){
         orderApplyService.submitApply(order, getCurrentUserId());
         return successResult();
@@ -48,6 +50,7 @@ public class OrderApplyController extends BaseController {
      * @return
      */
     @PostMapping("/upload")
+    @OperationLog
     public BaseResponse upload(@Valid Order order){
 
         return successResult(orderApplyService.parsingLineTmplFile(order));

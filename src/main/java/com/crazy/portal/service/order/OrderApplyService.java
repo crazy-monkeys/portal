@@ -2,7 +2,6 @@ package com.crazy.portal.service.order;
 
 import com.alibaba.excel.metadata.BaseRowModel;
 import com.alibaba.excel.support.ExcelTypeEnum;
-import com.crazy.portal.annotation.OperationLog;
 import com.crazy.portal.bean.order.OrderLineEO;
 import com.crazy.portal.bean.order.wsdl.price.*;
 import com.crazy.portal.dao.order.OrderLineMapper;
@@ -43,7 +42,6 @@ public class OrderApplyService {
      * @param order
      * @param userId
      */
-    @OperationLog
     @Transactional
     public void submitApply(Order order, Integer userId){
         BusinessUtil.notNull(order, ErrorCodes.BusinessEnum.ORDER_INFO_IS_REQUIRED);
@@ -91,39 +89,74 @@ public class OrderApplyService {
 
             BusinessUtil.assertFlase(paramsCheck,ErrorCodes.BusinessEnum.ORDER_LINE_FILE_ERROR);
 
-            IsHeader isHeader = new IsHeader();
-            isHeader.setOrdertype(order.getOrderType());
-            isHeader.setSalesorg(order.getSalesOrg());
-            isHeader.setSoldto(order.getSoldTo());
-            isHeader.setSendto(order.getSendTo());
-            String priceDate = DateUtil.getLastDayOfMonth(DateUtil.getYear(expectedDeliveryMonth),DateUtil.getMonth(expectedDeliveryMonth));
-            isHeader.setPricedate(priceDate);
-            orderLineEO.setPriceDate(priceDate);
+            IsHeader isHeader = this.getIsHeader(order, orderLineEO, expectedDeliveryMonth);
+            ItItems itItems = this.getItItems(i, productId, num);
 
-            ItItems itItems = new ItItems();
-            ItItem itItem = new ItItem();
-
-            itItem.setSequenceno((i+1)+"");
-            itItem.setProductid(productId);
-            itItem.setOrderquantity(num);
-
-            ProductInfoDO params = new ProductInfoDO();
-            params.setSapMid(productId);
-            List<ProductInfoDO> productInfoDOS = productInfoDOMapper.selectProductInfo(params);
-            BusinessUtil.assertFlase(productInfoDOS.isEmpty(),ErrorCodes.BusinessEnum.ORDER_NOT_EXISTS_PRODUCT_ID);
-
-            ProductInfoDO productInfo = productInfoDOS.get(0);
-            itItem.setPlatform(productInfo.getPlatform());
-            itItems.setItem(Arrays.asList(itItem));
-            ZrfcsdpricesimulateContent content = new ZrfcsdpricesimulateContent(null,isHeader,itItems);
-            ZrfcsdpricesimulateBody body = new ZrfcsdpricesimulateBody(content);
-            Zrfcsdpricesimulate zrfcsdpricesimulate = new Zrfcsdpricesimulate(body);
+            Zrfcsdpricesimulate zrfcsdpricesimulate = this.getZrfcsdpricesimulate(isHeader, itItems);
             ZrfcsdpricesimulateResponse response = orderApiService.priceSimulate(zrfcsdpricesimulate);
+            BusinessUtil.notNull(response,ErrorCodes.BusinessEnum.ORDER_PRICESIMULATION_ERROR);
 
             ZpricessimulateHeaderOut esHeader = response.getEsHeader();
             orderLineEO.setGrossValue(esHeader.getGrossvalue());
             orderLineEO.setNetVale(esHeader.getNetvalue());
         }
         return records;
+    }
+
+    /**
+     * 组装wsdl传输结构
+     * @param isHeader
+     * @param itItems
+     * @return
+     */
+    private Zrfcsdpricesimulate getZrfcsdpricesimulate(IsHeader isHeader, ItItems itItems) {
+        ZrfcsdpricesimulateContent content = new ZrfcsdpricesimulateContent(null,isHeader,itItems);
+        ZrfcsdpricesimulateBody body = new ZrfcsdpricesimulateBody(content);
+        return new Zrfcsdpricesimulate(body);
+    }
+
+    /**
+     * 组装订单行入参
+     * @param i
+     * @param productId
+     * @param num
+     * @return
+     */
+    private ItItems getItItems(int i, String productId, String num) {
+        ItItems itItems = new ItItems();
+        ItItem itItem = new ItItem();
+
+        itItem.setSequenceno((i+1)+"");
+        itItem.setProductid(productId);
+        itItem.setOrderquantity(num);
+
+        ProductInfoDO params = new ProductInfoDO();
+        params.setSapMid(productId);
+        List<ProductInfoDO> productInfoDOS = productInfoDOMapper.selectProductInfo(params);
+        BusinessUtil.assertFlase(productInfoDOS.isEmpty(), ErrorCodes.BusinessEnum.ORDER_NOT_EXISTS_PRODUCT_ID);
+
+        ProductInfoDO productInfo = productInfoDOS.get(0);
+        itItem.setPlatform(productInfo.getPlatform());
+        itItems.setItem(Arrays.asList(itItem));
+        return itItems;
+    }
+
+    /**
+     * 组装订单头入参
+     * @param order
+     * @param orderLineEO
+     * @param expectedDeliveryMonth
+     * @return
+     */
+    private IsHeader getIsHeader(Order order, OrderLineEO orderLineEO, Date expectedDeliveryMonth) {
+        IsHeader isHeader = new IsHeader();
+        isHeader.setOrdertype(order.getOrderType());
+        isHeader.setSalesorg(order.getSalesOrg());
+        isHeader.setSoldto(order.getSoldTo());
+        isHeader.setSendto(order.getSendTo());
+        String priceDate = DateUtil.getLastDayOfMonth(DateUtil.getYear(expectedDeliveryMonth),DateUtil.getMonth(expectedDeliveryMonth));
+        isHeader.setPricedate(priceDate);
+        orderLineEO.setPriceDate(priceDate);
+        return isHeader;
     }
 }
