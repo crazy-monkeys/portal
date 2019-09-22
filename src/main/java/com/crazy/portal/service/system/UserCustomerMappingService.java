@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -29,8 +30,14 @@ public class UserCustomerMappingService {
 
     }
 
-    public UserCustomerMapping selectUserMapping(Integer userId, String mappingModel){
-        return userCustomerMappingMapper.selectUserMapping(userId, mappingModel);
+    public List<Integer> selectUserMapping(Integer userId, String mappingModel){
+        UserCustomerMapping mapping= userCustomerMappingMapper.selectUserMapping(userId, mappingModel);
+        List<String> strs = Arrays.asList(mapping.getCustId().split(","));
+        List<Integer> results = new ArrayList<>();
+        strs.forEach(e->{
+            results.add(Integer.valueOf(e));
+        });
+        return results;
     }
 
     public void saveOrUpdateMapping(UserCustomerMapping userCustomerMapping, Integer userId){
