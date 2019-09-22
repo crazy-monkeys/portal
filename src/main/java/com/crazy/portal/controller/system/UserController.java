@@ -6,6 +6,7 @@ import com.crazy.portal.bean.system.UserCustomerMappingBean;
 import com.crazy.portal.controller.BaseController;
 import com.crazy.portal.entity.system.User;
 import com.crazy.portal.entity.system.UserCustomerMapping;
+import com.crazy.portal.service.customer.CustomerInfoService;
 import com.crazy.portal.service.system.UserCustomerMappingService;
 import com.crazy.portal.service.system.UserService;
 import com.crazy.portal.util.BusinessUtil;
@@ -33,6 +34,8 @@ public class UserController extends BaseController {
     private UserService userService;
     @Resource
     private UserCustomerMappingService userCustomerMappingService;
+    @Resource
+    private CustomerInfoService customerInfoService;
 
     /**
      * 分页查询
@@ -132,6 +135,11 @@ public class UserController extends BaseController {
     @GetMapping(value = "/ships")
     public BaseResponse selectShips(){
         return successResult(userService.getUserShips(getCurrentUser().getDealerId()));
+    }
+
+    @GetMapping("dealer/getShip")
+    public BaseResponse getShip(){
+        return successResult(customerInfoService.getDealerShip(this.getCurrentUser().getDealerId()));
     }
 
     @PostMapping(value = "/mapping")

@@ -1,6 +1,7 @@
 package com.crazy.portal.controller.order;
 
 import com.crazy.portal.bean.BaseResponse;
+import com.crazy.portal.bean.order.DeliveryApproveVO;
 import com.crazy.portal.bean.order.OrderApprovalBean;
 import com.crazy.portal.bean.order.OrderQueryBean;
 import com.crazy.portal.controller.BaseController;
@@ -50,6 +51,17 @@ public class OrderApprovalController extends BaseController {
     @PostMapping("/approval")
     public BaseResponse approval(@RequestBody @Valid OrderApprovalBean bean){
         orderService.approval(bean, getCurrentUserId());
+        return successResult();
+    }
+
+    /**
+     * 提货单审批
+     * @param deliveryApproveVO
+     * @return
+     */
+    @PostMapping("/approval/delivery")
+    public BaseResponse approvalDelivery(@RequestBody DeliveryApproveVO deliveryApproveVO){
+        orderService.deliveryApprove(deliveryApproveVO, getCurrentUserId());
         return successResult();
     }
 }

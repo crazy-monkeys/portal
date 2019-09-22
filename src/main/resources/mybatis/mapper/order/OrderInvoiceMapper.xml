@@ -1,0 +1,335 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.crazy.portal.dao.order.OrderInvoiceMapper">
+  <resultMap id="BaseResultMap" type="com.crazy.portal.entity.order.OrderInvoice">
+    <id column="invoice_id" jdbcType="INTEGER" property="invoiceId" />
+    <result column="sap_invoice_id" jdbcType="VARCHAR" property="sapInvoiceId" />
+    <result column="slod_to" jdbcType="VARCHAR" property="slodTo" />
+    <result column="send_to" jdbcType="VARCHAR" property="sendTo" />
+    <result column="acc_doc" jdbcType="VARCHAR" property="accDoc" />
+    <result column="acc_year" jdbcType="VARCHAR" property="accYear" />
+    <result column="re_invoice_id" jdbcType="VARCHAR" property="reInvoiceId" />
+    <result column="re_flag" jdbcType="VARCHAR" property="reFlag" />
+    <result column="net_amount" jdbcType="DECIMAL" property="netAmount" />
+    <result column="tax_amount" jdbcType="DECIMAL" property="taxAmount" />
+    <result column="currency" jdbcType="VARCHAR" property="currency" />
+    <result column="created_on" jdbcType="VARCHAR" property="createdOn" />
+    <result column="changed_on" jdbcType="VARCHAR" property="changedOn" />
+    <result column="invoiceItem_id" jdbcType="VARCHAR" property="invoiceitemId" />
+    <result column="sap_order_id" jdbcType="VARCHAR" property="sapOrderId" />
+    <result column="sap_orderItem_no" jdbcType="VARCHAR" property="sapOrderitemNo" />
+    <result column="sap_delivery_id" jdbcType="VARCHAR" property="sapDeliveryId" />
+    <result column="delivery_item_no" jdbcType="VARCHAR" property="deliveryItemNo" />
+    <result column="product_id" jdbcType="VARCHAR" property="productId" />
+    <result column="product_text" jdbcType="VARCHAR" property="productText" />
+    <result column="bill_quantity" jdbcType="INTEGER" property="billQuantity" />
+    <result column="item_net_amount" jdbcType="DECIMAL" property="itemNetAmount" />
+    <result column="item_tax_amount" jdbcType="DECIMAL" property="itemTaxAmount" />
+    <result column="insert_time" jdbcType="TIMESTAMP" property="insertTime" />
+    <result column="active" jdbcType="INTEGER" property="active" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    invoice_id, sap_invoice_id, slod_to, send_to, acc_doc, acc_year, re_invoice_id, re_flag, 
+    net_amount, tax_amount, currency, created_on, changed_on, invoiceItem_id, sap_order_id, 
+    sap_orderItem_no, sap_delivery_id, delivery_item_no, product_id, product_text, bill_quantity, 
+    item_net_amount, item_tax_amount, insert_time, active
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_order_invoice
+    where invoice_id = #{invoiceId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_order_invoice
+    where invoice_id = #{invoiceId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.crazy.portal.entity.order.OrderInvoice">
+    insert into t_order_invoice (invoice_id, sap_invoice_id, slod_to, 
+      send_to, acc_doc, acc_year, 
+      re_invoice_id, re_flag, net_amount, 
+      tax_amount, currency, created_on, 
+      changed_on, invoiceItem_id, sap_order_id, 
+      sap_orderItem_no, sap_delivery_id, delivery_item_no, 
+      product_id, product_text, bill_quantity, 
+      item_net_amount, item_tax_amount, insert_time, 
+      active)
+    values (#{invoiceId,jdbcType=INTEGER}, #{sapInvoiceId,jdbcType=VARCHAR}, #{slodTo,jdbcType=VARCHAR}, 
+      #{sendTo,jdbcType=VARCHAR}, #{accDoc,jdbcType=VARCHAR}, #{accYear,jdbcType=VARCHAR}, 
+      #{reInvoiceId,jdbcType=VARCHAR}, #{reFlag,jdbcType=VARCHAR}, #{netAmount,jdbcType=DECIMAL}, 
+      #{taxAmount,jdbcType=DECIMAL}, #{currency,jdbcType=VARCHAR}, #{createdOn,jdbcType=VARCHAR}, 
+      #{changedOn,jdbcType=VARCHAR}, #{invoiceitemId,jdbcType=VARCHAR}, #{sapOrderId,jdbcType=VARCHAR}, 
+      #{sapOrderitemNo,jdbcType=VARCHAR}, #{sapDeliveryId,jdbcType=VARCHAR}, #{deliveryItemNo,jdbcType=VARCHAR}, 
+      #{productId,jdbcType=VARCHAR}, #{productText,jdbcType=VARCHAR}, #{billQuantity,jdbcType=INTEGER}, 
+      #{itemNetAmount,jdbcType=DECIMAL}, #{itemTaxAmount,jdbcType=DECIMAL}, #{insertTime,jdbcType=TIMESTAMP}, 
+      #{active,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.crazy.portal.entity.order.OrderInvoice">
+    insert into t_order_invoice
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="invoiceId != null">
+        invoice_id,
+      </if>
+      <if test="sapInvoiceId != null">
+        sap_invoice_id,
+      </if>
+      <if test="slodTo != null">
+        slod_to,
+      </if>
+      <if test="sendTo != null">
+        send_to,
+      </if>
+      <if test="accDoc != null">
+        acc_doc,
+      </if>
+      <if test="accYear != null">
+        acc_year,
+      </if>
+      <if test="reInvoiceId != null">
+        re_invoice_id,
+      </if>
+      <if test="reFlag != null">
+        re_flag,
+      </if>
+      <if test="netAmount != null">
+        net_amount,
+      </if>
+      <if test="taxAmount != null">
+        tax_amount,
+      </if>
+      <if test="currency != null">
+        currency,
+      </if>
+      <if test="createdOn != null">
+        created_on,
+      </if>
+      <if test="changedOn != null">
+        changed_on,
+      </if>
+      <if test="invoiceitemId != null">
+        invoiceItem_id,
+      </if>
+      <if test="sapOrderId != null">
+        sap_order_id,
+      </if>
+      <if test="sapOrderitemNo != null">
+        sap_orderItem_no,
+      </if>
+      <if test="sapDeliveryId != null">
+        sap_delivery_id,
+      </if>
+      <if test="deliveryItemNo != null">
+        delivery_item_no,
+      </if>
+      <if test="productId != null">
+        product_id,
+      </if>
+      <if test="productText != null">
+        product_text,
+      </if>
+      <if test="billQuantity != null">
+        bill_quantity,
+      </if>
+      <if test="itemNetAmount != null">
+        item_net_amount,
+      </if>
+      <if test="itemTaxAmount != null">
+        item_tax_amount,
+      </if>
+      <if test="insertTime != null">
+        insert_time,
+      </if>
+      <if test="active != null">
+        active,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="invoiceId != null">
+        #{invoiceId,jdbcType=INTEGER},
+      </if>
+      <if test="sapInvoiceId != null">
+        #{sapInvoiceId,jdbcType=VARCHAR},
+      </if>
+      <if test="slodTo != null">
+        #{slodTo,jdbcType=VARCHAR},
+      </if>
+      <if test="sendTo != null">
+        #{sendTo,jdbcType=VARCHAR},
+      </if>
+      <if test="accDoc != null">
+        #{accDoc,jdbcType=VARCHAR},
+      </if>
+      <if test="accYear != null">
+        #{accYear,jdbcType=VARCHAR},
+      </if>
+      <if test="reInvoiceId != null">
+        #{reInvoiceId,jdbcType=VARCHAR},
+      </if>
+      <if test="reFlag != null">
+        #{reFlag,jdbcType=VARCHAR},
+      </if>
+      <if test="netAmount != null">
+        #{netAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="taxAmount != null">
+        #{taxAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="currency != null">
+        #{currency,jdbcType=VARCHAR},
+      </if>
+      <if test="createdOn != null">
+        #{createdOn,jdbcType=VARCHAR},
+      </if>
+      <if test="changedOn != null">
+        #{changedOn,jdbcType=VARCHAR},
+      </if>
+      <if test="invoiceitemId != null">
+        #{invoiceitemId,jdbcType=VARCHAR},
+      </if>
+      <if test="sapOrderId != null">
+        #{sapOrderId,jdbcType=VARCHAR},
+      </if>
+      <if test="sapOrderitemNo != null">
+        #{sapOrderitemNo,jdbcType=VARCHAR},
+      </if>
+      <if test="sapDeliveryId != null">
+        #{sapDeliveryId,jdbcType=VARCHAR},
+      </if>
+      <if test="deliveryItemNo != null">
+        #{deliveryItemNo,jdbcType=VARCHAR},
+      </if>
+      <if test="productId != null">
+        #{productId,jdbcType=VARCHAR},
+      </if>
+      <if test="productText != null">
+        #{productText,jdbcType=VARCHAR},
+      </if>
+      <if test="billQuantity != null">
+        #{billQuantity,jdbcType=INTEGER},
+      </if>
+      <if test="itemNetAmount != null">
+        #{itemNetAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="itemTaxAmount != null">
+        #{itemTaxAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="insertTime != null">
+        #{insertTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="active != null">
+        #{active,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.crazy.portal.entity.order.OrderInvoice">
+    update t_order_invoice
+    <set>
+      <if test="sapInvoiceId != null">
+        sap_invoice_id = #{sapInvoiceId,jdbcType=VARCHAR},
+      </if>
+      <if test="slodTo != null">
+        slod_to = #{slodTo,jdbcType=VARCHAR},
+      </if>
+      <if test="sendTo != null">
+        send_to = #{sendTo,jdbcType=VARCHAR},
+      </if>
+      <if test="accDoc != null">
+        acc_doc = #{accDoc,jdbcType=VARCHAR},
+      </if>
+      <if test="accYear != null">
+        acc_year = #{accYear,jdbcType=VARCHAR},
+      </if>
+      <if test="reInvoiceId != null">
+        re_invoice_id = #{reInvoiceId,jdbcType=VARCHAR},
+      </if>
+      <if test="reFlag != null">
+        re_flag = #{reFlag,jdbcType=VARCHAR},
+      </if>
+      <if test="netAmount != null">
+        net_amount = #{netAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="taxAmount != null">
+        tax_amount = #{taxAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="currency != null">
+        currency = #{currency,jdbcType=VARCHAR},
+      </if>
+      <if test="createdOn != null">
+        created_on = #{createdOn,jdbcType=VARCHAR},
+      </if>
+      <if test="changedOn != null">
+        changed_on = #{changedOn,jdbcType=VARCHAR},
+      </if>
+      <if test="invoiceitemId != null">
+        invoiceItem_id = #{invoiceitemId,jdbcType=VARCHAR},
+      </if>
+      <if test="sapOrderId != null">
+        sap_order_id = #{sapOrderId,jdbcType=VARCHAR},
+      </if>
+      <if test="sapOrderitemNo != null">
+        sap_orderItem_no = #{sapOrderitemNo,jdbcType=VARCHAR},
+      </if>
+      <if test="sapDeliveryId != null">
+        sap_delivery_id = #{sapDeliveryId,jdbcType=VARCHAR},
+      </if>
+      <if test="deliveryItemNo != null">
+        delivery_item_no = #{deliveryItemNo,jdbcType=VARCHAR},
+      </if>
+      <if test="productId != null">
+        product_id = #{productId,jdbcType=VARCHAR},
+      </if>
+      <if test="productText != null">
+        product_text = #{productText,jdbcType=VARCHAR},
+      </if>
+      <if test="billQuantity != null">
+        bill_quantity = #{billQuantity,jdbcType=INTEGER},
+      </if>
+      <if test="itemNetAmount != null">
+        item_net_amount = #{itemNetAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="itemTaxAmount != null">
+        item_tax_amount = #{itemTaxAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="insertTime != null">
+        insert_time = #{insertTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="active != null">
+        active = #{active,jdbcType=INTEGER},
+      </if>
+    </set>
+    where invoice_id = #{invoiceId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.crazy.portal.entity.order.OrderInvoice">
+    update t_order_invoice
+    set sap_invoice_id = #{sapInvoiceId,jdbcType=VARCHAR},
+      slod_to = #{slodTo,jdbcType=VARCHAR},
+      send_to = #{sendTo,jdbcType=VARCHAR},
+      acc_doc = #{accDoc,jdbcType=VARCHAR},
+      acc_year = #{accYear,jdbcType=VARCHAR},
+      re_invoice_id = #{reInvoiceId,jdbcType=VARCHAR},
+      re_flag = #{reFlag,jdbcType=VARCHAR},
+      net_amount = #{netAmount,jdbcType=DECIMAL},
+      tax_amount = #{taxAmount,jdbcType=DECIMAL},
+      currency = #{currency,jdbcType=VARCHAR},
+      created_on = #{createdOn,jdbcType=VARCHAR},
+      changed_on = #{changedOn,jdbcType=VARCHAR},
+      invoiceItem_id = #{invoiceitemId,jdbcType=VARCHAR},
+      sap_order_id = #{sapOrderId,jdbcType=VARCHAR},
+      sap_orderItem_no = #{sapOrderitemNo,jdbcType=VARCHAR},
+      sap_delivery_id = #{sapDeliveryId,jdbcType=VARCHAR},
+      delivery_item_no = #{deliveryItemNo,jdbcType=VARCHAR},
+      product_id = #{productId,jdbcType=VARCHAR},
+      product_text = #{productText,jdbcType=VARCHAR},
+      bill_quantity = #{billQuantity,jdbcType=INTEGER},
+      item_net_amount = #{itemNetAmount,jdbcType=DECIMAL},
+      item_tax_amount = #{itemTaxAmount,jdbcType=DECIMAL},
+      insert_time = #{insertTime,jdbcType=TIMESTAMP},
+      active = #{active,jdbcType=INTEGER}
+    where invoice_id = #{invoiceId,jdbcType=INTEGER}
+  </update>
+
+  <select id="selectByDeliveryOrderId" resultMap="BaseResultMap">
+    select * from t_order_invoice
+    where sap_delivery_id = #{deliveryOrderId}
+  </select>
+</mapper>

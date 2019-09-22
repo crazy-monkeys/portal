@@ -163,6 +163,17 @@ public class CustomerInfoService {
     public List<CustomerInfo> getDealerList(){
         return customerInfoMapper.selectDealerList();
     }
+
+    /**获取代理商的关联公司**/
+    public List<CustomerInfo> getDealerShip(Integer custId){
+        CustomerInfo customerInfo = customerInfoMapper.selectByPrimaryKey(custId);
+        if(null == customerInfo || !customerInfo.getBusinessType().equals(Enums.CUSTOMER_BUSINESS_TYPE.dealer.getCode())){
+            throw new BusinessException(ErrorCodes.BusinessEnum.CUSTOMER_NO_DEALER);
+        }
+        LinkedList<CustomerInfo> dealerShips = customerInfoMapper.selectDealerShip(custId);
+        dealerShips.addFirst(customerInfo);
+        return dealerShips;
+    }
     /**
      * 获取代理商信息
      * @param dealerId

@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.crazy.portal.dao.order.DeliverOrderLineMapper">
+  <resultMap id="BaseResultMap" type="com.crazy.portal.entity.order.DeliverOrderLine">
+    <id column="deliver_order_line_id" jdbcType="INTEGER" property="deliverOrderLineId" />
+    <result column="sap_deliver_order_line_no" jdbcType="VARCHAR" property="sapDeliverOrderLineNo" />
+    <result column="sales_order_id" jdbcType="INTEGER" property="salesOrderId" />
+    <result column="sap_order_no" jdbcType="VARCHAR" property="sapOrderNo" />
+    <result column="sales_order_line_id" jdbcType="INTEGER" property="salesOrderLineId" />
+    <result column="sap_sales_order_line_no" jdbcType="VARCHAR" property="sapSalesOrderLineNo" />
+    <result column="deliver_order_id" jdbcType="INTEGER" property="deliverOrderId" />
+    <result column="sap_deliver_order_no" jdbcType="VARCHAR" property="sapDeliverOrderNo" />
+    <result column="product_id" jdbcType="VARCHAR" property="productId" />
+    <result column="product" jdbcType="VARCHAR" property="product" />
+    <result column="delivery_quantity" jdbcType="DECIMAL" property="deliveryQuantity" />
+    <result column="active" jdbcType="INTEGER" property="active" />
+    <result column="create_user_id" jdbcType="INTEGER" property="createUserId" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="update_user_id" jdbcType="INTEGER" property="updateUserId" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    deliver_order_line_id, sap_deliver_order_line_no, sales_order_id, sap_order_no, sales_order_line_id, 
+    sap_sales_order_line_no, deliver_order_id, sap_deliver_order_no, product_id, product, 
+    delivery_quantity, active, create_user_id, create_date, update_user_id, update_date
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_deliver_order_line
+    where deliver_order_line_id = #{deliverOrderLineId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_deliver_order_line
+    where deliver_order_line_id = #{deliverOrderLineId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.crazy.portal.entity.order.DeliverOrderLine">
+    insert into t_deliver_order_line (deliver_order_line_id, sap_deliver_order_line_no, 
+      sales_order_id, sap_order_no, sales_order_line_id, 
+      sap_sales_order_line_no, deliver_order_id, sap_deliver_order_no, 
+      product_id, product, delivery_quantity, 
+      active, create_user_id, create_date, 
+      update_user_id, update_date)
+    values (#{deliverOrderLineId,jdbcType=INTEGER}, #{sapDeliverOrderLineNo,jdbcType=VARCHAR}, 
+      #{salesOrderId,jdbcType=INTEGER}, #{sapOrderNo,jdbcType=VARCHAR}, #{salesOrderLineId,jdbcType=INTEGER}, 
+      #{sapSalesOrderLineNo,jdbcType=VARCHAR}, #{deliverOrderId,jdbcType=INTEGER}, #{sapDeliverOrderNo,jdbcType=VARCHAR}, 
+      #{productId,jdbcType=VARCHAR}, #{product,jdbcType=VARCHAR}, #{deliveryQuantity,jdbcType=DECIMAL}, 
+      #{active,jdbcType=INTEGER}, #{createUserId,jdbcType=INTEGER}, #{createDate,jdbcType=TIMESTAMP}, 
+      #{updateUserId,jdbcType=INTEGER}, #{updateDate,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.crazy.portal.entity.order.DeliverOrderLine" useGeneratedKeys="true" keyProperty="deliverOrderLineId">
+    insert into t_deliver_order_line
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="deliverOrderLineId != null">
+        deliver_order_line_id,
+      </if>
+      <if test="sapDeliverOrderLineNo != null">
+        sap_deliver_order_line_no,
+      </if>
+      <if test="salesOrderId != null">
+        sales_order_id,
+      </if>
+      <if test="sapOrderNo != null">
+        sap_order_no,
+      </if>
+      <if test="salesOrderLineId != null">
+        sales_order_line_id,
+      </if>
+      <if test="sapSalesOrderLineNo != null">
+        sap_sales_order_line_no,
+      </if>
+      <if test="deliverOrderId != null">
+        deliver_order_id,
+      </if>
+      <if test="sapDeliverOrderNo != null">
+        sap_deliver_order_no,
+      </if>
+      <if test="productId != null">
+        product_id,
+      </if>
+      <if test="product != null">
+        product,
+      </if>
+      <if test="deliveryQuantity != null">
+        delivery_quantity,
+      </if>
+      <if test="active != null">
+        active,
+      </if>
+      <if test="createUserId != null">
+        create_user_id,
+      </if>
+      <if test="createDate != null">
+        create_date,
+      </if>
+      <if test="updateUserId != null">
+        update_user_id,
+      </if>
+      <if test="updateDate != null">
+        update_date,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="deliverOrderLineId != null">
+        #{deliverOrderLineId,jdbcType=INTEGER},
+      </if>
+      <if test="sapDeliverOrderLineNo != null">
+        #{sapDeliverOrderLineNo,jdbcType=VARCHAR},
+      </if>
+      <if test="salesOrderId != null">
+        #{salesOrderId,jdbcType=INTEGER},
+      </if>
+      <if test="sapOrderNo != null">
+        #{sapOrderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="salesOrderLineId != null">
+        #{salesOrderLineId,jdbcType=INTEGER},
+      </if>
+      <if test="sapSalesOrderLineNo != null">
+        #{sapSalesOrderLineNo,jdbcType=VARCHAR},
+      </if>
+      <if test="deliverOrderId != null">
+        #{deliverOrderId,jdbcType=INTEGER},
+      </if>
+      <if test="sapDeliverOrderNo != null">
+        #{sapDeliverOrderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="productId != null">
+        #{productId,jdbcType=VARCHAR},
+      </if>
+      <if test="product != null">
+        #{product,jdbcType=VARCHAR},
+      </if>
+      <if test="deliveryQuantity != null">
+        #{deliveryQuantity,jdbcType=DECIMAL},
+      </if>
+      <if test="active != null">
+        #{active,jdbcType=INTEGER},
+      </if>
+      <if test="createUserId != null">
+        #{createUserId,jdbcType=INTEGER},
+      </if>
+      <if test="createDate != null">
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUserId != null">
+        #{updateUserId,jdbcType=INTEGER},
+      </if>
+      <if test="updateDate != null">
+        #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.crazy.portal.entity.order.DeliverOrderLine">
+    update t_deliver_order_line
+    <set>
+      <if test="sapDeliverOrderLineNo != null">
+        sap_deliver_order_line_no = #{sapDeliverOrderLineNo,jdbcType=VARCHAR},
+      </if>
+      <if test="salesOrderId != null">
+        sales_order_id = #{salesOrderId,jdbcType=INTEGER},
+      </if>
+      <if test="sapOrderNo != null">
+        sap_order_no = #{sapOrderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="salesOrderLineId != null">
+        sales_order_line_id = #{salesOrderLineId,jdbcType=INTEGER},
+      </if>
+      <if test="sapSalesOrderLineNo != null">
+        sap_sales_order_line_no = #{sapSalesOrderLineNo,jdbcType=VARCHAR},
+      </if>
+      <if test="deliverOrderId != null">
+        deliver_order_id = #{deliverOrderId,jdbcType=INTEGER},
+      </if>
+      <if test="sapDeliverOrderNo != null">
+        sap_deliver_order_no = #{sapDeliverOrderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="productId != null">
+        product_id = #{productId,jdbcType=VARCHAR},
+      </if>
+      <if test="product != null">
+        product = #{product,jdbcType=VARCHAR},
+      </if>
+      <if test="deliveryQuantity != null">
+        delivery_quantity = #{deliveryQuantity,jdbcType=DECIMAL},
+      </if>
+      <if test="active != null">
+        active = #{active,jdbcType=INTEGER},
+      </if>
+      <if test="createUserId != null">
+        create_user_id = #{createUserId,jdbcType=INTEGER},
+      </if>
+      <if test="createDate != null">
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUserId != null">
+        update_user_id = #{updateUserId,jdbcType=INTEGER},
+      </if>
+        update_date = now(),
+    </set>
+    where deliver_order_line_id = #{deliverOrderLineId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.crazy.portal.entity.order.DeliverOrderLine">
+    update t_deliver_order_line
+    set sap_deliver_order_line_no = #{sapDeliverOrderLineNo,jdbcType=VARCHAR},
+      sales_order_id = #{salesOrderId,jdbcType=INTEGER},
+      sap_order_no = #{sapOrderNo,jdbcType=VARCHAR},
+      sales_order_line_id = #{salesOrderLineId,jdbcType=INTEGER},
+      sap_sales_order_line_no = #{sapSalesOrderLineNo,jdbcType=VARCHAR},
+      deliver_order_id = #{deliverOrderId,jdbcType=INTEGER},
+      sap_deliver_order_no = #{sapDeliverOrderNo,jdbcType=VARCHAR},
+      product_id = #{productId,jdbcType=VARCHAR},
+      product = #{product,jdbcType=VARCHAR},
+      delivery_quantity = #{deliveryQuantity,jdbcType=DECIMAL},
+      active = #{active,jdbcType=INTEGER},
+      create_user_id = #{createUserId,jdbcType=INTEGER},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      update_user_id = #{updateUserId,jdbcType=INTEGER},
+      update_date = #{updateDate,jdbcType=TIMESTAMP}
+    where deliver_order_line_id = #{deliverOrderLineId,jdbcType=INTEGER}
+  </update>
+
+  <select id="selectByDeliveryOrderId" resultMap="BaseResultMap">
+      select * from t_deliver_order_line where deliver_order_id = #{deliveryOrderId}
+  </select>
+
+  <select id="selectBySapDeliveryOrderLineNo" resultMap="BaseResultMap">
+    select * from t_deliver_order_line where active =1 and sap_deliver_order_line_no = #{sapDeliveryOrderLineNo}
+  </select>
+</mapper>

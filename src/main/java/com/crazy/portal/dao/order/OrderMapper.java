@@ -15,4 +15,5 @@ public interface OrderMapper {
     int updateByPrimaryKeySelective(Order record);
 
     List<Order> selectByPage(OrderQueryBean bean);
+
 }

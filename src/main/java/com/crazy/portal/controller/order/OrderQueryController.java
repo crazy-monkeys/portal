@@ -2,6 +2,7 @@ package com.crazy.portal.controller.order;
 
 import com.crazy.portal.bean.BaseResponse;
 import com.crazy.portal.bean.order.BatchModifyOrderBean;
+import com.crazy.portal.bean.order.DeliveryOrderQueryVO;
 import com.crazy.portal.bean.order.OrderQueryBean;
 import com.crazy.portal.controller.BaseController;
 import com.crazy.portal.service.order.OrderService;
@@ -65,13 +66,21 @@ public class OrderQueryController extends BaseController {
     }
 
     /**
-     * 提货
-     * @param bean
-     * @return
+     *
      */
-    @PostMapping("/takeGoods")
-    public BaseResponse takeGoods(@RequestBody BatchModifyOrderBean bean) {
-        orderService.takeGoods(bean, getCurrentUserId());
-        return successResult();
+    @PostMapping("/list/delivery")
+    public BaseResponse deliveryList(@RequestBody DeliveryOrderQueryVO vo){
+        return successResult(orderService.deliveryOrderList(vo));
     }
+
+    @PostMapping("/update/delivery")
+    public BaseResponse DeliveryUpdate(@RequestBody DeliveryOrderQueryVO vo){
+        return successResult(orderService.deliveryOrderList(vo));
+    }
+
+    @GetMapping("/delivery/detail/{id}")
+    public BaseResponse deliveryDetail(@PathVariable Integer id){
+        return successResult(orderService.deliveryDetail(id));
+    }
+
 }

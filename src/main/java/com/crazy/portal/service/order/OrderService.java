@@ -1,12 +1,12 @@
 package com.crazy.portal.service.order;
 
 import com.crazy.portal.annotation.OperationLog;
-import com.crazy.portal.bean.order.BatchModifyOrderBean;
-import com.crazy.portal.bean.order.OrderApprovalBean;
-import com.crazy.portal.bean.order.OrderQueryBean;
+import com.crazy.portal.bean.order.*;
 import com.crazy.portal.bean.order.wsdl.create.*;
-import com.crazy.portal.dao.order.OrderLineMapper;
-import com.crazy.portal.dao.order.OrderMapper;
+import com.crazy.portal.config.exception.BusinessException;
+import com.crazy.portal.dao.order.*;
+import com.crazy.portal.entity.order.DeliverOrder;
+import com.crazy.portal.entity.order.DeliverOrderLine;
 import com.crazy.portal.entity.order.Order;
 import com.crazy.portal.entity.order.OrderLine;
 import com.crazy.portal.util.*;
@@ -15,11 +15,10 @@ import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestBody;
+
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 订单管理
@@ -34,6 +33,13 @@ public class OrderService {
     private OrderLineMapper orderLineMapper;
     @Resource
     private OrderApiService orderApiService;
+    @Resource
+    private DeliverOrderMapper deliverOrderMapper;
+    @Resource
+    private DeliverOrderLineMapper deliverOrderLineMapper;
+    @Resource
+    private OrderInvoiceMapper orderInvoiceMapper;
+
     /**
      * 订单列表查询
      * @param bean
@@ -42,6 +48,12 @@ public class OrderService {
     public PageInfo<Order> list(OrderQueryBean bean){
         PageHelper.startPage(bean.getPageIndex(), bean.getPageSize());
         List<Order> list = orderMapper.selectByPage(bean);
+        return new PageInfo<>(list);
+    }
+
+    public PageInfo<DeliverOrder> deliveryOrderList(DeliveryOrderQueryVO vo){
+        PageHelper.startPage(vo.getPageIndex(), vo.getPageSize());
+        List<DeliverOrder> list = deliverOrderMapper.selectList(vo);
         return new PageInfo<>(list);
     }
 
@@ -56,6 +68,14 @@ public class OrderService {
         BusinessUtil.notNull(order, ErrorCodes.BusinessEnum.ORDER_INFO_NOT_FOUND);
         order.setLines(orderLineMapper.selectByOrderId(id));
         return order;
+    }
+
+    public List<DeliverOrderLine> deliveryDetail(Integer deliveryOrderId){
+        DeliverOrder deliverOrder = deliverOrderMapper.selectByPrimaryKey(deliveryOrderId);
+        List<DeliverOrderLine> deliverOrderLines = deliverOrderLineMapper.selectByDeliveryOrderId(deliveryOrderId);
+        orderInvoiceMapper.selectByDeliveryOrderId(deliverOrder.getSapDeliverOrderNo());
+
+        return null;
     }
 
     /**
@@ -73,16 +93,6 @@ public class OrderService {
             order.setUpdateTime(DateUtil.getCurrentTS());
             orderMapper.updateByPrimaryKeySelective(order);
         }
-    }
-
-    /**
-     * 提货
-     * @param bean
-     * @param userId
-     */
-    @OperationLog
-    public void takeGoods(BatchModifyOrderBean bean, Integer userId){
-        //TODO
     }
 
     /**
@@ -191,5 +201,30 @@ public class OrderService {
         isHeader.setInco1(order.getIncoterms1());
         isHeader.setInco2(order.getIncoterms2());
         return isHeader;
+    }
+
+    @OperationLog
+    @Transactional
+    public void deliveryApprove(DeliveryApproveVO vo, Integer userId){
+        DeliverOrder deliverOrder = deliverOrderMapper.selectByPrimaryKey(vo.getDeliveryOrderId());
+        if(null == deliverOrder){
+            throw new BusinessException(ErrorCodes.BusinessEnum.ORDER_INFO_NOT_FOUND);
+        }
+        List<DeliverOrderLine> deliverOrderLines = deliverOrderLineMapper.selectByDeliveryOrderId(deliverOrder.getDeliverOrderId());
+
+        //TODO 调用ECc 创建销售单
+        deliverOrder.setApprovalUser(1);
+        deliverOrder.setApprovalStatus(vo.getApprovalStatus());
+        deliverOrder.setApprovalRemark(vo.getRemark());
+        deliverOrder.setApprovalDate(new Date());
+
+        deliverOrder.setSapDeliverOrderNo("");
+        deliverOrder.setActualDeliveryDate("");
+        deliverOrderMapper.updateByPrimaryKeySelective(deliverOrder);
+
+        deliverOrderLines.forEach(e->{
+            e.setSapDeliverOrderLineNo("");
+            deliverOrderLineMapper.updateByPrimaryKeySelective(e);
+        });
     }
 }

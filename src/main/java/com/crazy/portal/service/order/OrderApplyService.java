@@ -3,11 +3,18 @@ package com.crazy.portal.service.order;
 import com.alibaba.excel.metadata.BaseRowModel;
 import com.alibaba.excel.support.ExcelTypeEnum;
 import com.crazy.portal.bean.order.OrderLineEO;
+import com.crazy.portal.bean.order.DeliveryOrderVO;
 import com.crazy.portal.bean.order.wsdl.price.*;
+import com.crazy.portal.config.exception.BusinessException;
+import com.crazy.portal.dao.order.DeliverOrderLineMapper;
+import com.crazy.portal.dao.order.DeliverOrderMapper;
 import com.crazy.portal.dao.order.OrderLineMapper;
 import com.crazy.portal.dao.order.OrderMapper;
 import com.crazy.portal.dao.product.ProductInfoDOMapper;
+import com.crazy.portal.entity.order.DeliverOrder;
+import com.crazy.portal.entity.order.DeliverOrderLine;
 import com.crazy.portal.entity.order.Order;
+import com.crazy.portal.entity.order.OrderLine;
 import com.crazy.portal.entity.product.ProductInfoDO;
 import com.crazy.portal.util.*;
 import lombok.extern.slf4j.Slf4j;
@@ -36,6 +43,10 @@ public class OrderApplyService {
     private ProductInfoDOMapper productInfoDOMapper;
     @Resource
     private OrderApiService orderApiService;
+    @Resource
+    private DeliverOrderMapper deliverOrderMapper;
+    @Resource
+    private DeliverOrderLineMapper deliverOrderLineMapper;
 
     /**
      * 订单申请
@@ -167,5 +178,50 @@ public class OrderApplyService {
         isHeader.setSoldto(order.getSoldTo());
         isHeader.setSendto(order.getSendTo());
         return isHeader;
+    }
+    @Transactional
+    public void submitApplyDelivery(DeliveryOrderVO bean, Integer userId){
+        Order order = orderMapper.selectByPrimaryKey(bean.getOrderId());
+        if(null == order){
+            throw new BusinessException(ErrorCodes.BusinessEnum.ORDER_INFO_NOT_FOUND);
+        }
+        DeliverOrder deliverOrder = new DeliverOrder();
+        deliverOrder.setSalesOrderId(order.getId());
+        deliverOrder.setSapOrderNo(order.getRSapOrderId());
+        deliverOrder.setSendTo(order.getSendTo());
+        deliverOrder.setSoldTo(order.getSoldTo());
+        deliverOrder.setDeliverDate(bean.getDeliverDate());
+        deliverOrder.setShippingPoint(bean.getShippingPoint());
+        deliverOrder.setApprovalStatus(Enums.OrderApprovalStatus.WAIT_APPROVAL.getValue());
+        deliverOrder.setActive(1);
+        deliverOrder.setCreateUserId(userId);
+        deliverOrderMapper.insertSelective(deliverOrder);
+
+        List<OrderLine> orderLine = orderLineMapper.selectByOrderId(order.getId());
+        if(bean.getOrderLine().isEmpty()){
+            throw new BusinessException("请选择需要提货的订单");
+        }
+        orderLine.forEach(o->{
+            bean.getOrderLine().forEach(e->{
+                if(o.getId().equals(e.getId())){
+                    if(o.getRemainingNum() < e.getDeliveryQuantity()){
+                        throw new BusinessException("");
+                    }
+                    DeliverOrderLine deliverOrderLine = new DeliverOrderLine();
+                    deliverOrderLine.setDeliverOrderId(deliverOrder.getDeliverOrderId());
+                    deliverOrderLine.setSalesOrderId(order.getId());
+                    deliverOrderLine.setSapSalesOrderLineNo(order.getRSapOrderId());
+                    deliverOrderLine.setSalesOrderLineId(o.getId());
+                    deliverOrderLine.setSapSalesOrderLineNo(o.getRItemNo());
+                    deliverOrderLine.setProductId(o.getProductId());
+//                    deliverOrderLine.setProduct();
+                    deliverOrderLine.setDeliveryQuantity(e.getDeliveryQuantity());
+
+                    deliverOrderLine.setActive(1);
+                    deliverOrderLine.setCreateUserId(userId);
+                    deliverOrderLineMapper.insertSelective(deliverOrderLine);
+                }
+            });
+        });
     }
 }

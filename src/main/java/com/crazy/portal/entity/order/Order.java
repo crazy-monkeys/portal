@@ -2,6 +2,7 @@ package com.crazy.portal.entity.order;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.multipart.MultipartFile;
 import javax.validation.constraints.NotEmpty;
 import java.math.BigDecimal;
@@ -191,6 +192,7 @@ public class Order {
     /**
      * 审批时间
      */
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private Date approvalTime;
     /**
      * 审批状态 0：待审批 1：已通过 2：已驳回
@@ -214,6 +216,7 @@ public class Order {
     /**
      * 创建时间
      */
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private Date createTime;
 
     /**
@@ -225,6 +228,7 @@ public class Order {
     /**
      * 修改时间
      */
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private Date updateTime;
 
     /**
