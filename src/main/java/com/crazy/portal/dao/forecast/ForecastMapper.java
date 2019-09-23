@@ -69,7 +69,7 @@ public interface ForecastMapper {
                           @Param(value = "status") Integer status,
                           @Param(value = "operationRemark") String operationRemark);
 
-    int deleteByBiIds(@Param(value = "ids") Integer[] biIds);
+    int deleteByBiIds(@Param(value = "ids") List<String> biIds);
 
     int updateErrorMsgById(@Param(value = "id") Integer id,
                            @Param(value = "errorMsg") String errorMsg);
