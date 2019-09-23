@@ -46,6 +46,15 @@ public class ProductService {
     }
 
     /**
+     * 根据虚拟料号查询物料
+     * @param sapMid
+     * @return
+     */
+    public ProductInfoDO selectBySapMid(String sapMid){
+        return productInfoDOMapper.selectBySapMid(sapMid);
+    }
+
+    /**
      * 同步MDM的产品信息
      */
     @Transactional

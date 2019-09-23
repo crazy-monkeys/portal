@@ -7,6 +7,10 @@ import com.crazy.portal.bean.order.wsdl.change.ZrfcsdsalesorderchangeContent;
 import com.crazy.portal.bean.order.wsdl.change.ZrfcsdsalesorderchangeResponse;
 import com.crazy.portal.bean.order.wsdl.create.*;
 import com.crazy.portal.bean.order.wsdl.delivery.*;
+import com.crazy.portal.bean.order.wsdl.delivery.Item;
+import com.crazy.portal.bean.order.wsdl.delivery.create.*;
+import com.crazy.portal.bean.order.wsdl.delivery.create.TItem;
+import com.crazy.portal.bean.order.wsdl.delivery.update.*;
 import com.crazy.portal.bean.order.wsdl.price.Zrfcsdpricesimulate;
 import com.crazy.portal.bean.order.wsdl.price.ZrfcsdpricesimulateBody;
 import com.crazy.portal.bean.order.wsdl.price.ZrfcsdpricesimulateContent;
@@ -20,7 +24,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * @Desc:
@@ -167,5 +173,52 @@ public class OrderApiServiceTest {
         ZrfcsddeliverylistResponse response = eccApiService.deliveryList(zrfcsddeliverylist);
         log.info(JSON.toJSONString(response));
         Assert.assertNotNull(response);
+    }
+
+    @Test
+    private void createDeliveryOrder(){
+        ZrfcsdDeliveryCreateContent content = new ZrfcsdDeliveryCreateContent();
+        content.setDeliverydate("");
+        content.setDeliveryIoc("");
+        content.setPortalDeliveryId("");
+        content.setSapOrderId("");
+
+        TItem tItem = new TItem();
+        List<com.crazy.portal.bean.order.wsdl.delivery.create.Item> items = new ArrayList<>();
+        com.crazy.portal.bean.order.wsdl.delivery.create.Item item = new com.crazy.portal.bean.order.wsdl.delivery.create.Item();
+        item.setDeliveryItemNo("");
+        item.setDeliveryQuantity("");
+        item.setItemNo("");
+        item.setProductId("");
+        items.add(item);
+
+        tItem.setItems(items);
+        content.setTItem(tItem);
+
+        ZrfcsdDeliveryCreateBody body = new ZrfcsdDeliveryCreateBody(content);
+        ZrfcsdDeliveryCreate create = new ZrfcsdDeliveryCreate(body);
+
+    }
+
+    @Test
+    private void changerDeliveryOrder(){
+        ZrfcsdDeliveryUpdateContent content = new ZrfcsdDeliveryUpdateContent();
+        content.setDeliverydate("");
+        content.setIType("");
+        content.setSapDeliveryId("");
+
+        com.crazy.portal.bean.order.wsdl.delivery.update.TItem tItem = new com.crazy.portal.bean.order.wsdl.delivery.update.TItem();
+        List<com.crazy.portal.bean.order.wsdl.delivery.update.Item> items = new ArrayList<>();
+        com.crazy.portal.bean.order.wsdl.delivery.update.Item item = new com.crazy.portal.bean.order.wsdl.delivery.update.Item();
+        item.setDeliveryItemNo("");
+        item.setDeliveryQuantity("");
+        item.setOperationType("");
+        items.add(item);
+        tItem.setItems(items);
+        content.setTItem(tItem);
+
+        ZrfcsdDeliveryUpdateBody body = new ZrfcsdDeliveryUpdateBody(content);
+        ZrfcsdDeliveryUpdate create = new ZrfcsdDeliveryUpdate(body);
+
     }
 }

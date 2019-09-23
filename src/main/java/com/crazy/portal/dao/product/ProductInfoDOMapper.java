@@ -20,4 +20,6 @@ public interface ProductInfoDOMapper {
     List<ProductInfoDO> selectProductInfo(ProductInfoDO record);
 
     int updateProductMpq();
+
+    ProductInfoDO selectBySapMid(String sapMid);
 }
