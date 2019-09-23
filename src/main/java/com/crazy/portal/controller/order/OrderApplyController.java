@@ -51,7 +51,6 @@ public class OrderApplyController extends BaseController {
      * @return
      */
     @PostMapping("/upload")
-    @OperationLog
     public BaseResponse upload(@Valid Order order){
 
         return successResult(orderApplyService.parsingLineTmplFile(order));

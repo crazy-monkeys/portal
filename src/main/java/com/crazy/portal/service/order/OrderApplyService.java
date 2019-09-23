@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
+import java.math.BigDecimal;
 import java.util.*;
 
 /**
@@ -91,36 +92,44 @@ public class OrderApplyService {
             order.setPaymentTerms("9994");
         }
         List<OrderLineEO> records = ExcelUtils.readExcel(order.getLineFile(), OrderLineEO.class);
-
-        //逻辑只允许出现同一个月份
+//
+//        //逻辑只允许出现同一个月份
         Date expectedDeliveryMonth = records.get(0).getExpectedDeliveryMonth();
         String priceDate = DateUtil.getLastDayOfMonth(DateUtil.getYear(expectedDeliveryMonth),DateUtil.getMonth(expectedDeliveryMonth));
-        IsHeader isHeader = this.buildIsHeader(order);
-        isHeader.setPricedate(priceDate);
-        ItItems itItems = new ItItems();
-        itItems.setItem(this.buildItItems(records));
+//        IsHeader isHeader = this.buildIsHeader(order);
+//        isHeader.setPricedate(priceDate);
+//        ItItems itItems = new ItItems();
+//        itItems.setItem(this.buildItItems(records));
+//
+//        Zrfcsdpricesimulate zrfcsdpricesimulate = this.getZrfcsdpricesimulate(isHeader, itItems);
+//        ZrfcsdpricesimulateResponse response = orderApiService.priceSimulate(zrfcsdpricesimulate);
+//        BusinessUtil.notNull(response,ErrorCodes.BusinessEnum.ORDER_PRICESIMULATION_ERROR);
+//
+//        ZpricessimulateHeaderOut esHeader = response.getEsHeader();
+//        List<ZpricessimulateItemOut> items = response.getEtItems().getItem();
+//
+//        for(OrderLineEO orderLineEO : records){
+//            //设置定价
+//            orderLineEO.setPriceDate(priceDate);
+//            //设置单价
+//            for(ZpricessimulateItemOut item : items){
+//                if(item.getProductid().equals(orderLineEO.getProductId())){
+//                    orderLineEO.setPrice(item.getPrice());
+//                    orderLineEO.setNetPrice(item.getNetprice());
+//                }
+//            }
+//        }
 
-        Zrfcsdpricesimulate zrfcsdpricesimulate = this.getZrfcsdpricesimulate(isHeader, itItems);
-        ZrfcsdpricesimulateResponse response = orderApiService.priceSimulate(zrfcsdpricesimulate);
-        BusinessUtil.notNull(response,ErrorCodes.BusinessEnum.ORDER_PRICESIMULATION_ERROR);
-
-        ZpricessimulateHeaderOut esHeader = response.getEsHeader();
-        List<ZpricessimulateItemOut> items = response.getEtItems().getItem();
-
+        //mock
         for(OrderLineEO orderLineEO : records){
-            //设置定价
             orderLineEO.setPriceDate(priceDate);
-            //设置单价
-            for(ZpricessimulateItemOut item : items){
-                if(item.getProductid().equals(orderLineEO.getProductId())){
-                    orderLineEO.setPrice(item.getPrice());
-                    orderLineEO.setNetPrice(item.getNetprice());
-                }
-            }
+            orderLineEO.setNetPrice(new BigDecimal(1));
+            orderLineEO.setPrice(new BigDecimal(1));
+            orderLineEO.setPlatform("SC7731E");
         }
         map.put("lines",records);
-        map.put("grossValue",esHeader.getGrossvalue());
-        map.put("netValue",esHeader.getNetvalue());
+        map.put("grossValue",new BigDecimal(1));
+        map.put("netValue",new BigDecimal(1));
         return map;
     }
 

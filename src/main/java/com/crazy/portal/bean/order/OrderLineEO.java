@@ -31,6 +31,8 @@ public class OrderLineEO extends BaseRowModel {
     @JSONField(format = "yyyy-MM")
     private Date expectedDeliveryMonth;
 
+
+    private String platform;
     /**
      * 定价日期
      */
