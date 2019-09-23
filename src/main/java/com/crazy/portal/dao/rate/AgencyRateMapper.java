@@ -17,7 +17,7 @@ public interface AgencyRateMapper {
 
     List<AgencyRate> selectByPage(AgencyRateQueryBean bean);
 
-    int inActive();
+    int invalidationAll();
 
-    int approve(@Param("ids") List<Integer> ids);
+    int validationByIds(@Param("ids") List<Integer> ids, @Param("userId")Integer userId);
 }

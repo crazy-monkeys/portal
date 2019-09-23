@@ -10,6 +10,8 @@ public class Constant {
 
     public static final String DEFAULT_SHEET_NAME = "sheet1";
 
+    public static final String DEFAULT_SEPARATE_CHAR = ",";
+
     public static final String[] ANNOTATION_COMPONENT_SCAN_PACKAGES = {"com.crazy.portal"};
 
     public static final String Authorization = "Authorization";

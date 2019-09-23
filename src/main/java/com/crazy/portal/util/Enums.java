@@ -245,12 +245,17 @@ public class Enums {
     }
     //</editor-fold>
 
-    public enum RATE_TYPE{
-        INI(-1),ACTIVE(1),INACTIVE(0);
+    public enum RateType {
+        /** 初始化 **/
+        INITIALIZE(-1),
+        /** 生效 **/
+        ACTIVE(1),
+        /** 失效 **/
+        INACTIVE(0);
 
         private final int code;
 
-        RATE_TYPE(int code){
+        RateType(int code){
             this.code = code;
         }
 
@@ -506,18 +511,29 @@ public class Enums {
         OrderCustomerGroupOne(){
         }
     }
-    public enum OrderCustomerGroupTwo{
-        //Account Market
-        B1,
-        //Mass Market
-        B2;
-        OrderCustomerGroupTwo(){
+    public enum CustomerType {
+        B1("Account Market"),
+        B2("Mass Market");
+        private String desc;
+        CustomerType(String desc){
+            this.desc = desc;
+        }
+        public String getDesc() {
+            return desc;
+        }
+        public static String getDescByCode(String code){
+            for(CustomerType e : CustomerType.values()){
+                if(e.toString().equals(code)){
+                    return e.getDesc();
+                }
+            }
+            return null;
         }
     }
     public enum OrderMaterialNumber{
-        //虚拟料号
+        /** 虚拟料号 **/
         TAP,
-        //实体料
+        /** 实体料 **/
         ZTAN;
         OrderMaterialNumber(){
         }

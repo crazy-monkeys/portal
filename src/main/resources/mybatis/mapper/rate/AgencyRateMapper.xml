@@ -224,12 +224,12 @@
     order by create_time desc
   </select>
 
-  <update id="inActive">
-    update t_agency_rate set active = 0 where active=1
+  <update id="invalidationAll">
+    update t_agency_rate set active = 0 where active = 1
   </update>
 
-  <update id="approve">
-    update t_agency_rate set active = 1 where id in
+  <update id="validationByIds">
+    update t_agency_rate set active = 1,update_user_id = #{userId}, update_time = now() where id in
     <foreach collection="ids" item="item" index="index" open="(" separator="," close=")" >
       #{item}
     </foreach>
