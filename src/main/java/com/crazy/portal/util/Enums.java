@@ -429,7 +429,7 @@ public class Enums {
     public enum BusinessRebateStatus{
 
         EXECUTE_PROCESS(1, "执行中"),
-        FINISHED(4, "执行完成");
+        FINISHED(2, "执行完成");
 
         private Integer code;
         private String desc;
