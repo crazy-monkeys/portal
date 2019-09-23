@@ -207,7 +207,8 @@ public class RebateService {
                                 .map(BusinessRebateItem::getRebateAmount)
                                 .reduce(BigDecimal.ZERO, BigDecimal::add);
         BusinessRebate record = businessRebateMapper.selectByPrimaryKey(rebateId);
-        if(total.compareTo(record.getRebateAmount()) == 0) {
+        BusinessUtil.notNull(record, ErrorCodes.BusinessEnum.REBATE_RECORD_NOT_FOUND);
+        if(total != null && total.compareTo(record.getRebateAmount()) == 0) {
             record.setStatus(Enums.BusinessRebateStatus.FINISHED.getCode());
             record.setUpdateId(userId);
             record.setUpdateTime(DateUtil.getCurrentTS());
