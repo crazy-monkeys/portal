@@ -59,7 +59,7 @@ public class DeliverService extends AbstractHandover implements IHandover<Delive
         //数据包装，生成第三方需要的文件
         String thirdFileName = ExcelUtils.writeExcel(deliverPushPath, deliverData, DeliverDetail.class);
         //请求了第三方，并拿到了结果
-        BiCheckResult checkResult = callBiServerByFtp(CHECK_SALES_IMPORT_FILE, deliverPushPath , thirdFileName, ftpPullPath);
+        BiCheckResult checkResult = callBiServerByFtp(CHECK_SALES_IMPORT_FILE, deliverPushPath , thirdFileName, deliverPullPath);
         List<DeliverDetail> responseData = ExcelUtils.readExcel(checkResult.getFilePath(), DeliverDetail.class);
         //批次记录表
         DeliverReceiveRecord record = handoverService.genRecord(customerInfoService.getDealerByUser(userId).getCustName(), userId, 1);
