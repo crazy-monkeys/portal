@@ -18,8 +18,8 @@ import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import javax.annotation.Resource;
+import java.text.ParseException;
 import java.util.*;
 
 /**
@@ -113,7 +113,7 @@ public class OrderService {
      */
     @OperationLog
     @Transactional
-    public void approval(OrderApprovalBean bean, Integer userId){
+    public void approval(OrderApprovalBean bean, Integer userId) throws ParseException{
         Order order = orderMapper.selectByPrimaryKey(bean.getOrderId());
         BusinessUtil.notNull(order, ErrorCodes.BusinessEnum.ORDER_INFO_NOT_FOUND);
         order.setLines(orderLineMapper.selectByOrderId(order.getId()));
@@ -137,7 +137,7 @@ public class OrderService {
      * 调用ecc创单接口
      * @param order
      */
-    public void sendOrderCreateRequest(Order order){
+    public void sendOrderCreateRequest(Order order) throws ParseException{
         IsHeader isHeader = this.getIsHeader(order);
 
         Map<Integer, Integer> lineMap = new HashMap<>();
@@ -185,7 +185,7 @@ public class OrderService {
         return itItems;
     }
 
-    private IsHeader getIsHeader(Order order) {
+    private IsHeader getIsHeader(Order order) throws ParseException {
         IsHeader isHeader = new IsHeader();
         isHeader.setPortalorderid(order.getId().toString());
         isHeader.setOrdertype(order.getOrderType());
@@ -197,9 +197,9 @@ public class OrderService {
         isHeader.setPaymentterms(order.getPaymentTerms());
         isHeader.setCustomergroup1(order.getOrderType());
         isHeader.setCustomergroup2(order.getCustomerAttr());
-        Date priceDate = order.getPriceDate();
+        Date priceDate = DateUtil.parseDate(order.getPriceDate(),DateUtil.MONTH_FORMAT_HLINE);
         BusinessUtil.assertTrue(Objects.isNull(priceDate), ErrorCodes.BusinessEnum.ORDER_EMPTY_PRICE_DATE);
-        isHeader.setPricedate(DateUtil.format(priceDate,DateUtil.MONTH_FORMAT_HLINE));
+        isHeader.setPricedate(order.getPriceDate());
         isHeader.setInco1(order.getIncoterms1());
         isHeader.setInco2(order.getIncoterms2());
         return isHeader;

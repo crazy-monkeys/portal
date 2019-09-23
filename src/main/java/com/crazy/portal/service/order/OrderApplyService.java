@@ -26,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
+import java.text.ParseException;
 import java.util.*;
 
 /**
@@ -78,7 +79,13 @@ public class OrderApplyService {
             line.setOrderId(order.getId());
             line.setCreateId(userId);
             line.setCreateTime(DateUtil.getCurrentTS());
-            Date priceDate = order.getPriceDate();
+            Date priceDate;
+            try {
+                priceDate = DateUtil.parseDate(order.getPriceDate(),DateUtil.MONTH_FORMAT_HLINE);
+            } catch (ParseException e) {
+                log.error("",e);
+                throw new IllegalArgumentException("参数转换错误");
+            }
             line.setExpectedDeliveryDate(DateUtil.getLastDayOfMonth(DateUtil.getYear(priceDate),DateUtil.getMonth(priceDate)));
             orderLineMapper.insertSelective(line);
         });
