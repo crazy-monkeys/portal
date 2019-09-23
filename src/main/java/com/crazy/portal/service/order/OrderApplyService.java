@@ -11,11 +11,13 @@ import com.crazy.portal.dao.order.DeliverOrderMapper;
 import com.crazy.portal.dao.order.OrderLineMapper;
 import com.crazy.portal.dao.order.OrderMapper;
 import com.crazy.portal.dao.product.ProductInfoDOMapper;
+import com.crazy.portal.entity.cusotmer.CustomerInfo;
 import com.crazy.portal.entity.order.DeliverOrder;
 import com.crazy.portal.entity.order.DeliverOrderLine;
 import com.crazy.portal.entity.order.Order;
 import com.crazy.portal.entity.order.OrderLine;
 import com.crazy.portal.entity.product.ProductInfoDO;
+import com.crazy.portal.service.customer.CustomerInfoService;
 import com.crazy.portal.util.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -48,6 +50,8 @@ public class OrderApplyService {
     private DeliverOrderMapper deliverOrderMapper;
     @Resource
     private DeliverOrderLineMapper deliverOrderLineMapper;
+    @Resource
+    private CustomerInfoService customerInfoService;
 
     /**
      * 订单申请
@@ -58,9 +62,14 @@ public class OrderApplyService {
     public void submitApply(Order order, Integer userId){
         BusinessUtil.notNull(order, ErrorCodes.BusinessEnum.ORDER_INFO_IS_REQUIRED);
         BusinessUtil.notNull(order.getLines(), ErrorCodes.BusinessEnum.ORDER_LINES_IS_REQUIRED);
+        CustomerInfo dealerByUser = customerInfoService.getDealerByUser(userId);
+        BusinessUtil.notNull(dealerByUser, ErrorCodes.BusinessEnum.CUSTOMER_IS_EMPYT);
+        order.setDealerId(dealerByUser.getId());
         order.setApprovalStatus(Enums.OrderApprovalStatus.WAIT_APPROVAL.getValue());
         order.setCreateId(userId);
         order.setCreateTime(DateUtil.getCurrentTS());
+        order.setActive(1);
+        //TODO 建立枚举
         if(order.getSalesOrg().equals("3000")){
             order.setPaymentTerms("9994");
         }
