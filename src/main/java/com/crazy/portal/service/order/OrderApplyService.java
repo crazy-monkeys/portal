@@ -121,7 +121,7 @@ public class OrderApplyService {
 //
 //        Zrfcsdpricesimulate zrfcsdpricesimulate = this.getZrfcsdpricesimulate(isHeader, itItems);
 //        ZrfcsdpricesimulateResponse response = orderApiService.priceSimulate(zrfcsdpricesimulate);
-//        BusinessUtil.notNull(response,ErrorCodes.BusinessEnum.ORDER_PRICESIMULATION_ERROR);
+//        BusinessUtil.notNull(response,ErrorCodes.CommonEnum.SYSTEM_EXCEPTION);
 //
 //        ZpricessimulateHeaderOut esHeader = response.getEsHeader();
 //        List<ZpricessimulateItemOut> items = response.getEtItems().getItem();

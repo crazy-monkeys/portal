@@ -9,6 +9,7 @@ import com.crazy.portal.entity.order.DeliverOrder;
 import com.crazy.portal.entity.order.DeliverOrderLine;
 import com.crazy.portal.entity.order.Order;
 import com.crazy.portal.entity.order.OrderLine;
+import com.crazy.portal.entity.system.User;
 import com.crazy.portal.util.BusinessUtil;
 import com.crazy.portal.util.DateUtil;
 import com.crazy.portal.util.Enums;
@@ -113,7 +114,7 @@ public class OrderService {
      */
     @OperationLog
     @Transactional
-    public void approval(OrderApprovalBean bean, Integer userId) throws ParseException{
+    public void approval(OrderApprovalBean bean, User user) throws ParseException{
         Order order = orderMapper.selectByPrimaryKey(bean.getOrderId());
         BusinessUtil.notNull(order, ErrorCodes.BusinessEnum.ORDER_INFO_NOT_FOUND);
         order.setLines(orderLineMapper.selectByOrderId(order.getId()));
@@ -123,11 +124,12 @@ public class OrderService {
 
         //如果是通过，调用ECC创单接口
         if(bean.getApprovalStatus().equals(Enums.OrderApprovalStatus.ADOPT.getValue())){
-            this.sendOrderCreateRequest(order);
+//            this.sendOrderCreateRequest(order);
         }
         order.setApprovalStatus(bean.getApprovalStatus());
-        order.setOrderReason(bean.getReason());
-        order.setUpdateId(userId);
+        order.setApprovalOpinions(bean.getReason());
+        order.setApprover(user.getLoginName());
+        order.setUpdateId(user.getId());
         order.setUpdateTime(DateUtil.getCurrentTS());
         orderMapper.updateByPrimaryKeySelective(order);
     }
@@ -147,6 +149,7 @@ public class OrderService {
         ZrfcsdsalesordercreateBody zrfcsdsalesordercreateBody = new ZrfcsdsalesordercreateBody(content);
         Zrfcsdsalesordercreate request = new Zrfcsdsalesordercreate(zrfcsdsalesordercreateBody);
         ZrfcsdsalesordercreateResponse response = orderApiService.createSalesOrder(request);
+        BusinessUtil.notNull(response,ErrorCodes.CommonEnum.SYSTEM_EXCEPTION);
 
         order.setRGrossValue(response.getEsHeader().getGrossvalue());
         order.setRNetValue(response.getEsHeader().getNetvalue());
@@ -198,7 +201,7 @@ public class OrderService {
         isHeader.setCustomergroup1(order.getOrderType());
         isHeader.setCustomergroup2(order.getCustomerAttr());
         Date priceDate = DateUtil.parseDate(order.getPriceDate(),DateUtil.MONTH_FORMAT_HLINE);
-        BusinessUtil.assertTrue(Objects.isNull(priceDate), ErrorCodes.BusinessEnum.ORDER_EMPTY_PRICE_DATE);
+        BusinessUtil.assertFlase(Objects.isNull(priceDate), ErrorCodes.BusinessEnum.ORDER_EMPTY_PRICE_DATE);
         isHeader.setPricedate(order.getPriceDate());
         isHeader.setInco1(order.getIncoterms1());
         isHeader.setInco2(order.getIncoterms2());

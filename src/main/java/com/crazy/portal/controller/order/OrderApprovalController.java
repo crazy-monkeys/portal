@@ -51,7 +51,7 @@ public class OrderApprovalController extends BaseController {
      */
     @PostMapping("/approval")
     public BaseResponse approval(@RequestBody @Valid OrderApprovalBean bean) throws ParseException {
-        orderService.approval(bean, getCurrentUserId());
+        orderService.approval(bean, super.getCurrentUser());
         return successResult();
     }
 

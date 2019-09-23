@@ -25,4 +25,6 @@ public class OrderQueryBean extends PageBean {
     private String sendTo;
     /** 采购订单编号 **/
     private String purchaseNo;
+    /**审批状态**/
+    private String approvalStatus;
 }
