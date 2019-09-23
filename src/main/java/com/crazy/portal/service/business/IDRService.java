@@ -152,7 +152,7 @@ public class IDRService {
 
     private void updateIdrInfoStatus(Integer id, BigDecimal crAmount, Integer userId) {
         BusinessIdrInfo info = businessIdrInfoMapper.selectByPrimaryKey(id);
-        BusinessUtil.assertTrue(info.getStatus().equals(Enums.BusinessIdrStatus.APPROVAL_OVER.getCode()), ErrorCodes.BusinessEnum.BUSINESS_IDR_STATUS_NOT_APPROVAL);
+        BusinessUtil.assertTrue(info.getStatus().equals(Enums.BusinessIdrStatus.AGREE.getCode()), ErrorCodes.BusinessEnum.BUSINESS_IDR_STATUS_NOT_APPROVAL);
         info.setId(id);
         info.setCrAmount(crAmount);
         info.setStatus(Enums.BusinessIdrStatus.FINISHED.getCode());
@@ -231,30 +231,29 @@ public class IDRService {
         }
     }
 
+    /**
+     * <b>接收审批结果</b>
+     * <describe>
+     * 退换货将发送两个审批请求，所以其中一条被驳回，那么整个请求被驳回，当所有审批被通过，整个请求被通过
+     * </describe>
+     * @param request
+     */
     public void receiveApproval(IDRApprovalRequest request) {
         BusinessIdrApproval histortRecord = businessIdrApprovalMapper.selectByOrderNo(request.getOrderNumber());
         BusinessUtil.notNull(histortRecord, ErrorCodes.BusinessEnum.BUSINESS_IDR_APPROVAL_ORDERNO_NOT_FOUND);
         saveIdrApprovalRecord(request, histortRecord);
-        if(request.getType().equals(Enums.BusinessIdrApprovalSubmitType.HH.toString()) || request.getType().equals(Enums.BusinessIdrApprovalSubmitType.TH.toString()) ){
-            List<BusinessIdrApproval> records = businessIdrApprovalMapper.selectByIdrInfoId(histortRecord.getIdrInfoId());
-            Set<String> orderNos = records.stream().map(BusinessIdrApproval::getOrderNo).collect(Collectors.toSet());
-            Set<BusinessIdrApproval> agreeSet =  records.stream().filter(e-> e.getReviewStatus().equals(Enums.BusinessIdrApprovalStatus.AGREE.getCode()) && StringUtil.isBlank(e.getCurrentReviewer())).collect(Collectors.toSet());
-            Set<BusinessIdrApproval> rejectSet =  records.stream().filter(e-> e.getReviewStatus().equals(Enums.BusinessIdrApprovalStatus.REJECT.getCode())).collect(Collectors.toSet());
-            if(rejectSet.size() > 0){
-                //因为退换货，拆成了两个请求，所以其中一条被驳回，那么整个请求被驳回
-                updateIdrInfoByApproval(request.getApiUserId(), histortRecord.getIdrInfoId(), Enums.BusinessIdrStatus.REJECT.getCode());
-            }
-            if(orderNos.size() == agreeSet.size()){
-                //当所有审批被通过，整个请求被通过
-                updateIdrInfoByApproval(request.getApiUserId(), histortRecord.getIdrInfoId(), Enums.BusinessIdrStatus.APPROVAL_OVER.getCode());
-            }
-        } else {
-            if (request.getReviewStatus().equals(Enums.BusinessIdrApprovalStatus.AGREE.getCode()) && StringUtil.isBlank(request.getCurrentReviewer())) {
-                updateIdrInfoByApproval(request.getApiUserId(), histortRecord.getIdrInfoId(), Enums.BusinessIdrStatus.APPROVAL_OVER.getCode());
-            }
-            if (request.getReviewStatus().equals(Enums.BusinessIdrApprovalStatus.REJECT.getCode())) {
-                updateIdrInfoByApproval(request.getApiUserId(), histortRecord.getIdrInfoId(), Enums.BusinessIdrStatus.REJECT.getCode());
-            }
+        Integer status = null;
+        List<BusinessIdrApproval> records = businessIdrApprovalMapper.selectByIdrInfoId(histortRecord.getIdrInfoId());
+        if(records.stream().anyMatch(e-> e.getReviewStatus().equals(Enums.BusinessIdrApprovalStatus.REJECT.getCode()))){
+            status = Enums.BusinessIdrStatus.REJECT.getCode();
+        }
+        Set<String> orderNos = records.stream().map(BusinessIdrApproval::getOrderNo).collect(Collectors.toSet());
+        Set<String> agreeSet = records.stream().filter(e-> e.getReviewStatus().equals(Enums.BusinessIdrApprovalStatus.AGREE.getCode()) && StringUtil.isBlank(e.getCurrentReviewer())).map(BusinessIdrApproval::getOrderNo).collect(Collectors.toSet());
+        if(orderNos.size() == agreeSet.size()){
+            status = Enums.BusinessIdrStatus.AGREE.getCode();
+        }
+        if(status != null){
+            updateIdrInfoByApproval(request.getApiUserId(), histortRecord.getIdrInfoId(), status);
         }
     }
 

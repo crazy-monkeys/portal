@@ -297,7 +297,7 @@ public class Enums {
 
     public enum BusinessIdrStatus{
         APPROVAL_SUBMIT(1, "审批中"),
-        APPROVAL_OVER(2, "审批结束"),
+        AGREE(2, "审批通过"),
         FINISHED(3, "已完结"),
         REJECT(4, "已驳回");
 
