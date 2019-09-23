@@ -69,6 +69,8 @@ public class OrderApplyService {
             line.setOrderId(order.getId());
             line.setCreateId(userId);
             line.setCreateTime(DateUtil.getCurrentTS());
+            Date priceDate = order.getPriceDate();
+            line.setExpectedDeliveryDate(DateUtil.getLastDayOfMonth(DateUtil.getYear(priceDate),DateUtil.getMonth(priceDate)));
             orderLineMapper.insertSelective(line);
         });
     }

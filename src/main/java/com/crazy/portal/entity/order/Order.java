@@ -116,7 +116,8 @@ public class Order {
     /**
      * 定价日期(需求交货日期)
      */
-    private String priceDate;
+    @JSONField(format = "yyyy-MM")
+    private Date priceDate;
 
     /**
      * 付款条件

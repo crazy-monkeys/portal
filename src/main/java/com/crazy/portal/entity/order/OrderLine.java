@@ -28,19 +28,18 @@ public class OrderLine {
     /**
      * 物料号
      */
-    @NotEmpty
+    @NotEmpty(message = "物料号不能为空")
     private String productId;
 
     /**
      * 单位
      */
-    @NotEmpty
     private String unit;
 
     /**
      * 数量
      */
-    @NotNull
+    @NotNull(message = "数量不能为空")
     private Integer num;
 
     /**
@@ -51,19 +50,17 @@ public class OrderLine {
     /**
      * 平台
      */
-    @NotEmpty
+    @NotEmpty(message = "平台不能为空")
     private String platform;
 
     /**
-     * 
+     * 期望交货月份
      */
-    @NotEmpty
     private String expectedDeliveryMonth;
 
     /**
-     * 
+     * 期望交货日期
      */
-    @NotEmpty
     private String expectedDeliveryDate;
 
     /**
