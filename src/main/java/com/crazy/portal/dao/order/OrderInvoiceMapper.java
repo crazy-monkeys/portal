@@ -2,6 +2,8 @@ package com.crazy.portal.dao.order;
 
 import com.crazy.portal.entity.order.OrderInvoice;
 
+import java.util.List;
+
 public interface OrderInvoiceMapper {
     int deleteByPrimaryKey(Integer invoiceId);
 
@@ -15,5 +17,5 @@ public interface OrderInvoiceMapper {
 
     int updateByPrimaryKey(OrderInvoice record);
 
-    OrderInvoice selectByDeliveryOrderId(String deliveryOrderId);
+    List<OrderInvoice> selectByDeliveryOrderId(String deliveryOrderId);
 }

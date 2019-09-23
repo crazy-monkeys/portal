@@ -17,6 +17,7 @@
     <result column="update_user_id" jdbcType="INTEGER" property="updateUserId" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="approval_status" jdbcType="INTEGER" property="approvalStatus" />
+    <result column="approval_type" jdbcType="VARCHAR" property="approvalType" />
     <result column="approval_date" jdbcType="TIMESTAMP" property="approvalDate" />
     <result column="approval_remark" jdbcType="VARCHAR" property="approvalRemark" />
     <result column="approval_user" jdbcType="INTEGER" property="approvalUser" />
@@ -100,6 +101,9 @@
       <if test="approvalStatus != null">
         approval_status,
       </if>
+      <if test="approvalType != null">
+        approval_type,
+      </if>
       <if test="approvalDate != null">
         approval_date,
       </if>
@@ -156,6 +160,9 @@
       <if test="approvalStatus != null">
         #{approvalStatus,jdbcType=INTEGER},
       </if>
+      <if test="approvalType != null">
+        #{approvalType,jdbcType=INTEGER},
+      </if>
       <if test="approvalDate != null">
         #{approvalDate,jdbcType=TIMESTAMP},
       </if>
@@ -209,6 +216,9 @@
         update_time = now(),
       <if test="approvalStatus != null">
         approval_status = #{approvalStatus,jdbcType=INTEGER},
+      </if>
+      <if test="approvalType != null">
+        approval_type = #{approvalType,jdbcType=INTEGER},
       </if>
       <if test="approvalDate != null">
         approval_date = #{approvalDate,jdbcType=TIMESTAMP},

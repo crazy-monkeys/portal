@@ -222,6 +222,9 @@
 
   <select id="selectByDeliveryOrderId" resultMap="BaseResultMap">
       select * from t_deliver_order_line where deliver_order_id = #{deliveryOrderId}
+      <if test="active != null and active != ''">
+        and active = #{active}
+      </if>
   </select>
 
   <select id="selectBySapDeliveryOrderLineNo" resultMap="BaseResultMap">

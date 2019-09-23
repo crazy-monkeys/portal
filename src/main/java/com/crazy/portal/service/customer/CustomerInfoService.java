@@ -129,12 +129,18 @@ public class CustomerInfoService {
                 throw new BusinessException(ErrorCodes.BusinessEnum.CUSTOMER_ORG_ERROR);
             }
         }else{
-            //客户查询 销售查询 客户销售为自己或自己战队人员
-            InternalUser internalUser = internalUserMapper.selectUserByName(user.getLoginName());
-            if(null != internalUser){
-                List<String> sales = internalUserService.getSalesTeam(internalUser);
-                customerQueryBean.setSalesTeam(sales);
+            if(user.getUserType().equals(Enums.USER_TYPE.internal.toString())){
+                //客户查询 销售查询 客户销售为自己或自己战队人员
+                InternalUser internalUser = internalUserMapper.selectUserByName(user.getLoginName());
+                if(null != internalUser){
+                    List<String> sales = internalUserService.getSalesTeam(internalUser);
+                    customerQueryBean.setSalesTeam(sales);
+                }
+            }else{
+                CustomerInfo dealer = customerInfoMapper.selectByPrimaryKey(user.getDealerId());
+                customerQueryBean.setReportDealer(dealer.getInCode());
             }
+
         }
         List<CustomerInfo> customerInfos = customerInfoMapper.selectCustomer(customerQueryBean);
         return new PageInfo<>(customerInfos);
@@ -223,7 +229,7 @@ public class CustomerInfoService {
 
     public DealerCreditVO getDealerCredit(Integer custId){
         CustomerInfo customerInfo = customerInfoMapper.getDealerByUser(custId);
-        if(!customerInfo.getBusinessType().equals(Enums.CUSTOMER_BUSINESS_TYPE.dealer.getCode())){
+        if(null == customerInfo || !customerInfo.getBusinessType().equals(Enums.CUSTOMER_BUSINESS_TYPE.dealer.getCode())){
             throw new BusinessException(ErrorCodes.BusinessEnum.CUSTOMER_NO_DEALER);
         }
         Zsdscredit zsdscredit = CallApiUtils.callECCCreditApi(customerInfo.getOutCode());
@@ -690,7 +696,7 @@ public class CustomerInfoService {
     public void updateDealerInfo(CustomerInfo customerInfo, Integer userId){
         saveCustomerInfo(customerInfo, userId);
         saveDealerDetail(customerInfo, userId);
-        //customerInfo = queryInfo(customerInfo.getId());
+        //TODO 修改代理商信息
         customerInfoSync(customerInfo, "02");
     }
 

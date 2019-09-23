@@ -2,8 +2,14 @@ package com.crazy.portal.service.order;
 
 import com.alibaba.excel.metadata.BaseRowModel;
 import com.alibaba.excel.support.ExcelTypeEnum;
+import com.crazy.portal.bean.order.DeliveryOrderCancelVO;
 import com.crazy.portal.bean.order.OrderLineEO;
 import com.crazy.portal.bean.order.DeliveryOrderVO;
+import com.crazy.portal.bean.order.wsdl.delivery.create.ZrfcsdDeliveryCreate;
+import com.crazy.portal.bean.order.wsdl.delivery.create.ZrfcsdDeliveryCreateBody;
+import com.crazy.portal.bean.order.wsdl.delivery.create.ZrfcsdDeliveryCreateContent;
+import com.crazy.portal.bean.order.wsdl.delivery.create.ZrfcsddeliverycreateResponse;
+import com.crazy.portal.bean.order.wsdl.delivery.update.*;
 import com.crazy.portal.bean.order.wsdl.price.*;
 import com.crazy.portal.config.exception.BusinessException;
 import com.crazy.portal.dao.order.DeliverOrderLineMapper;
@@ -207,6 +213,7 @@ public class OrderApplyService {
         isHeader.setSendto(order.getSendTo());
         return isHeader;
     }
+
     @Transactional
     public void submitApplyDelivery(DeliveryOrderVO bean, Integer userId){
         Order order = orderMapper.selectByPrimaryKey(bean.getOrderId());
@@ -221,6 +228,7 @@ public class OrderApplyService {
         deliverOrder.setDeliverDate(bean.getDeliverDate());
         deliverOrder.setShippingPoint(bean.getShippingPoint());
         deliverOrder.setApprovalStatus(Enums.OrderApprovalStatus.WAIT_APPROVAL.getValue());
+        deliverOrder.setApprovalType(Enums.OrderApprovalType.CREATE.getValue());
         deliverOrder.setActive(1);
         deliverOrder.setCreateUserId(userId);
         deliverOrderMapper.insertSelective(deliverOrder);
@@ -251,5 +259,41 @@ public class OrderApplyService {
                 }
             });
         });
+    }
+
+    @Transactional
+    public void updateDeliveryOrder(DeliverOrder order){
+        if(null == order || null == order.getDeliverOrderLineList()){
+            return;
+        }
+        order.setApprovalStatus(Enums.OrderApprovalStatus.WAIT_APPROVAL.getValue());
+        order.setApprovalType(Enums.OrderApprovalType.UPDATE.getValue());
+        deliverOrderMapper.updateByPrimaryKeySelective(order);
+        order.getDeliverOrderLineList().forEach(e->{
+            deliverOrderLineMapper.updateByPrimaryKeySelective(e);
+        });
+    }
+
+    @Transactional
+    public void cancelDeliveryOrder(DeliveryOrderCancelVO vo){
+        DeliverOrder deliverOrder = deliverOrderMapper.selectByPrimaryKey(vo.getDeliveryOrderId());
+        BusinessUtil.assertTrue(null == deliverOrder,ErrorCodes.BusinessEnum.ORDER_NOT_FOUND);
+        deliverOrder.setApprovalStatus(Enums.OrderApprovalStatus.WAIT_APPROVAL.getValue());
+        deliverOrder.setApprovalType(Enums.OrderApprovalType.CANCEL.getValue());
+        deliverOrderMapper.updateByPrimaryKeySelective(deliverOrder);
+
+        vo.getDeliveryOrderLineIds().forEach(e->{
+            DeliverOrderLine deliverOrderLine = deliverOrderLineMapper.selectByPrimaryKey(e);
+            deliverOrderLine.setActive(2);
+            deliverOrderLineMapper.updateByPrimaryKeySelective(deliverOrderLine);
+        });
+    }
+
+    @Transactional
+    public void deleteDeliveryOrder(Integer id){
+        DeliverOrder deliverOrder = deliverOrderMapper.selectByPrimaryKey(id);
+        BusinessUtil.assertTrue(deliverOrder.getApprovalStatus().equals(Enums.OrderApprovalStatus.REJEC.getValue()),ErrorCodes.BusinessEnum.ORDER_NO_DELETE);
+        deliverOrderMapper.deleteByPrimaryKey(id);
+
     }
 }

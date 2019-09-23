@@ -559,6 +559,21 @@ public class Enums {
         }
     }
 
+    public enum OrderApprovalType{
+        CREATE("CREATE"),
+        UPDATE("UPDATE"),
+        CANCEL("CANCEL"),;
+
+        private String value;
+        OrderApprovalType(String value){
+            this.value = value;
+        }
+
+        public String getValue() {
+            return value;
+        }
+    }
+
     public enum CustomerMappingModel{
         Forecast("forecast"),
         HH("换货");

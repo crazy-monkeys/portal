@@ -101,6 +101,9 @@
       <if test="userType != null">
         user_type,
       </if>
+      <if test="dealerId != null">
+        dealer_id,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -150,6 +153,9 @@
       </if>
       <if test="userType != null">
         #{userType,jdbcType=INTEGER},
+      </if>
+      <if test="dealerId != null">
+        #{dealerId,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>

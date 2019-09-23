@@ -760,6 +760,9 @@
           #{item}
         </foreach>
       </if>
+      <if test="reportDealer!=null">
+        and ship.corporate_id = #{reportDealer}
+      </if>
     </if>
   </select>
 

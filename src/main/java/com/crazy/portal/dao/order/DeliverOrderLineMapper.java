@@ -1,6 +1,7 @@
 package com.crazy.portal.dao.order;
 
 import com.crazy.portal.entity.order.DeliverOrderLine;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -17,7 +18,7 @@ public interface DeliverOrderLineMapper {
 
     int updateByPrimaryKey(DeliverOrderLine record);
 
-    List<DeliverOrderLine> selectByDeliveryOrderId(Integer deliveryOrderId);
+    List<DeliverOrderLine> selectByDeliveryOrderId(@Param("deliveryOrderId") Integer deliveryOrderId, @Param("active") Integer active);
 
     DeliverOrderLine selectBySapDeliveryOrderLineNo(String sapDeliveryOrderLineNo);
 }

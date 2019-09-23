@@ -7,7 +7,9 @@ import com.crazy.portal.bean.order.wsdl.create.ZrfcsdsalesordercreateResponse;
 import com.crazy.portal.bean.order.wsdl.delivery.Zrfcsddeliverylist;
 import com.crazy.portal.bean.order.wsdl.delivery.ZrfcsddeliverylistResponse;
 import com.crazy.portal.bean.order.wsdl.delivery.create.ZrfcsdDeliveryCreate;
+import com.crazy.portal.bean.order.wsdl.delivery.create.ZrfcsddeliverycreateResponse;
 import com.crazy.portal.bean.order.wsdl.delivery.update.ZrfcsdDeliveryUpdate;
+import com.crazy.portal.bean.order.wsdl.delivery.update.ZrfcsddeliverychangeResponse;
 import com.crazy.portal.bean.order.wsdl.price.Zrfcsdpricesimulate;
 import com.crazy.portal.bean.order.wsdl.price.ZrfcsdpricesimulateResponse;
 import com.crazy.portal.bean.order.wsdl.rate.ZrfcsdcustomercrrateResponse;
@@ -117,32 +119,32 @@ public class OrderApiService {
         return null;
     }
 
-    public void deliveryCreate(ZrfcsdDeliveryCreate create){
-        String url = String.format("%s%s",ECC_API_URL,"/cxf/ECC/PORTAL/GET_DELIVERY_LIST");
+    public ZrfcsddeliverycreateResponse deliveryCreate(ZrfcsdDeliveryCreate create){
+        String url = String.format("%s%s",ECC_API_URL,"/cxf/PORTAL/ECC/CREATEDELIVERY");
         try {
             String requestXml = JaxbXmlUtil.convertToXml(create);
             log.info("request - >" + requestXml);
             String response = HttpClientUtils.post(url,requestXml);
             log.info("response - >" + response);
-            //return JaxbXmlUtil.convertSoapXmlToJavaBean(response, ZrfcsddeliverylistResponse.class);
+            return JaxbXmlUtil.convertSoapXmlToJavaBean(response, ZrfcsddeliverycreateResponse.class);
         } catch (Exception e) {
             log.error("",e);
         }
-        //return null;
+        return null;
     }
 
-    public void deliveryUpdate(ZrfcsdDeliveryUpdate update){
-        String url = String.format("%s%s",ECC_API_URL,"/cxf/ECC/PORTAL/GET_DELIVERY_LIST");
+    public ZrfcsddeliverychangeResponse deliveryUpdate(ZrfcsdDeliveryUpdate update){
+        String url = String.format("%s%s",ECC_API_URL,"/cxf/PORTAL/ECC/CHANGEDELIVERY");
         try {
             String requestXml = JaxbXmlUtil.convertToXml(update);
             log.info("request - >" + requestXml);
             String response = HttpClientUtils.post(url,requestXml);
             log.info("response - >" + response);
-            //return JaxbXmlUtil.convertSoapXmlToJavaBean(response, ZrfcsddeliverylistResponse.class);
+            return JaxbXmlUtil.convertSoapXmlToJavaBean(response, ZrfcsddeliverychangeResponse.class);
         } catch (Exception e) {
             log.error("",e);
         }
-        //return null;
+        return null;
     }
 
     /**

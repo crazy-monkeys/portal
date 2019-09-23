@@ -66,21 +66,20 @@ public class OrderQueryController extends BaseController {
     }
 
     /**
-     *
+     *查询提货单
      */
     @PostMapping("/list/delivery")
     public BaseResponse deliveryList(@RequestBody DeliveryOrderQueryVO vo){
         return successResult(orderService.deliveryOrderList(vo));
     }
 
-    @PostMapping("/update/delivery")
-    public BaseResponse DeliveryUpdate(@RequestBody DeliveryOrderQueryVO vo){
-        return successResult(orderService.deliveryOrderList(vo));
-    }
-
+    /**
+     * 查询提货单明细
+     * @param id
+     * @return
+     */
     @GetMapping("/delivery/detail/{id}")
     public BaseResponse deliveryDetail(@PathVariable Integer id){
         return successResult(orderService.deliveryDetail(id));
     }
-
 }
