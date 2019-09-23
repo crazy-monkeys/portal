@@ -14,7 +14,8 @@ public class ErrorCodes {
         SYSTEM_EXCEPTION(-1,"系统异常","system error"),
         SYSTEM_TIMEOUT(0,"系统超时","system timeout"),
         SUCCESS(1,"操作成功","operate successfully"),
-        REQ_PARAM_FORMAT_ERROR(-2, "请求参数格式异常", "");
+        REQ_PARAM_FORMAT_ERROR(-2, "请求参数格式异常", ""),
+        REQ_ILLEGAL(-3, "非法请求", "");
 
         private final int code;
         private final String zhMsg;
@@ -207,16 +208,17 @@ public class ErrorCodes {
         FORECAST_REJECT_DATA_NOT_DELETE(40016, "数据已驳回，无法删除", ""),
         FORECAST_ALREADY_COMMIT_NOT_REJECT(40017, "数据已提交BI，无法驳回", ""),
         //订单管理
-        ORDER_INFO_NOT_FOUND(90001, "订单信息不存在", ""),
-        ORDER_ID_IS_REQUIRED(90002, "订单ID不能为空", ""),
-        ORDER_INFO_IS_REQUIRED(90003, "订单信息不能为空", ""),
-        ORDER_LINES_IS_REQUIRED(90004, "订单行信息不能为空", ""),
-        ORDER_APPROCAL_STATUS_IS_REQUIRED(90005, "审批状态不能为空", ""),
-        ORDER_DELIVERY_DATE_FORMAT_FAIL(90006, "订单发货日期格式错误", ""),
-        ORDER_NO_PENDING(90007, "当前订单已经被审批", ""),
-        ORDER_LINE_FILE_ERROR(90008, "订单行附件参数格式不正确", ""),
-        ORDER_NOT_EXISTS_PRODUCT_ID(90009, "物料号不存在", ""),
-        ORDER_EMPTY_PRICE_DATE(90010, "定价日期不能为空", "")
+        ORDER_NOT_FOUND(90001, "订单信息不存在", ""),
+        ORDER_LINE_NOT_FOUND(90002, "订单行信息不存在", ""),
+        ORDER_ID_IS_REQUIRED(90003, "订单ID不能为空", ""),
+        ORDER_INFO_IS_REQUIRED(90005, "订单信息不能为空", ""),
+        ORDER_LINES_IS_REQUIRED(90006, "订单行信息不能为空", ""),
+        ORDER_APPROCAL_STATUS_IS_REQUIRED(90007, "审批状态不能为空", ""),
+        ORDER_DELIVERY_DATE_FORMAT_FAIL(90008, "订单发货日期格式错误", ""),
+        ORDER_NO_PENDING(90009, "当前订单已经被审批", ""),
+        ORDER_LINE_FILE_ERROR(900010, "订单行附件参数格式不正确", ""),
+        ORDER_NOT_EXISTS_PRODUCT_ID(900011, "物料号不存在", ""),
+        ORDER_EMPTY_PRICE_DATE(900012, "定价日期不能为空", "")
         ;
         private final int code;
         private final String zhMsg;

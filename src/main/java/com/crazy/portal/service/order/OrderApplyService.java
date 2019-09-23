@@ -76,6 +76,7 @@ public class OrderApplyService {
         }
         orderMapper.insertSelective(order);
         order.getLines().forEach(line->{
+            line.setActice(1);
             line.setOrderId(order.getId());
             line.setCreateId(userId);
             line.setCreateTime(DateUtil.getCurrentTS());
@@ -210,7 +211,7 @@ public class OrderApplyService {
     public void submitApplyDelivery(DeliveryOrderVO bean, Integer userId){
         Order order = orderMapper.selectByPrimaryKey(bean.getOrderId());
         if(null == order){
-            throw new BusinessException(ErrorCodes.BusinessEnum.ORDER_INFO_NOT_FOUND);
+            throw new BusinessException(ErrorCodes.BusinessEnum.ORDER_NOT_FOUND);
         }
         DeliverOrder deliverOrder = new DeliverOrder();
         deliverOrder.setSalesOrderId(order.getId());

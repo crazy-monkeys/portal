@@ -68,7 +68,7 @@ public class OrderService {
     public Order detail(Integer id){
         BusinessUtil.notNull(id, ErrorCodes.BusinessEnum.ORDER_ID_IS_REQUIRED);
         Order order = orderMapper.selectByPrimaryKey(id);
-        BusinessUtil.notNull(order, ErrorCodes.BusinessEnum.ORDER_INFO_NOT_FOUND);
+        BusinessUtil.notNull(order, ErrorCodes.BusinessEnum.ORDER_NOT_FOUND);
         order.setLines(orderLineMapper.selectByOrderId(id));
         return order;
     }
@@ -84,18 +84,22 @@ public class OrderService {
     /**
      * 变更交货日期
      */
-    @OperationLog
-    public void modifyDeliveryDate(BatchModifyOrderBean bean, Integer userId){
-        for (Integer id : bean.getOrderIds()) {
-            BusinessUtil.notNull(id, ErrorCodes.BusinessEnum.ORDER_ID_IS_REQUIRED);
-            BusinessUtil.assertTrue(DateUtil.isValidDateFormat(bean.getDeliveryDate(), DateUtil.WEB_FORMAT), ErrorCodes.BusinessEnum.ORDER_DELIVERY_DATE_FORMAT_FAIL);
-            Order order = new Order();
-            order.setId(id);
-//            order.setPriceDate(bean.getDeliveryDate());
-            order.setUpdateId(userId);
-            order.setUpdateTime(DateUtil.getCurrentTS());
-            orderMapper.updateByPrimaryKeySelective(order);
+    public void modifyDeliveryDate(List<DeliveryChangeVO> changeVOS, Integer userId){
+        if(changeVOS.isEmpty()){
+            return;
         }
+        changeVOS.stream().forEach(x->{
+            OrderLine orderLine = orderLineMapper.selectByPrimaryKey(x.getItemId());
+            BusinessUtil.notNull(orderLine,ErrorCodes.BusinessEnum.ORDER_LINE_NOT_FOUND);
+
+            Order order = orderMapper.selectByPrimaryKey(orderLine.getOrderId());
+            BusinessUtil.assertTrue(userId.equals(order.getCreateId()),ErrorCodes.CommonEnum.REQ_ILLEGAL);
+
+            orderLine.setExpectedDeliveryDate(x.getExpectedDeliveryDate());
+            orderLine.setUpdateId(userId);
+            orderLine.setUpdateTime(DateUtil.getCurrentTS());
+            orderMapper.updateByPrimaryKeySelective(order);
+        });
     }
 
     /**
@@ -104,7 +108,7 @@ public class OrderService {
      * @param userId
      */
     @OperationLog
-    public void cancel(BatchModifyOrderBean bean, Integer userId){
+    public void cancel(DeliveryChangeVO bean, Integer userId){
 
     }
 
@@ -116,7 +120,7 @@ public class OrderService {
     @Transactional
     public void approval(OrderApprovalBean bean, User user) throws ParseException{
         Order order = orderMapper.selectByPrimaryKey(bean.getOrderId());
-        BusinessUtil.notNull(order, ErrorCodes.BusinessEnum.ORDER_INFO_NOT_FOUND);
+        BusinessUtil.notNull(order, ErrorCodes.BusinessEnum.ORDER_NOT_FOUND);
         order.setLines(orderLineMapper.selectByOrderId(order.getId()));
 
         BusinessUtil.assertTrue(!order.getApprovalStatus().equals(Enums.OrderApprovalStatus.WAIT_APPROVAL),
@@ -213,7 +217,7 @@ public class OrderService {
     public void deliveryApprove(DeliveryApproveVO vo, Integer userId){
         DeliverOrder deliverOrder = deliverOrderMapper.selectByPrimaryKey(vo.getDeliveryOrderId());
         if(null == deliverOrder){
-            throw new BusinessException(ErrorCodes.BusinessEnum.ORDER_INFO_NOT_FOUND);
+            throw new BusinessException(ErrorCodes.BusinessEnum.ORDER_NOT_FOUND);
         }
         List<DeliverOrderLine> deliverOrderLines = deliverOrderLineMapper.selectByDeliveryOrderId(deliverOrder.getDeliverOrderId());
 

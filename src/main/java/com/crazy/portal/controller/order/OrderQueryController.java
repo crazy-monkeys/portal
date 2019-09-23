@@ -1,7 +1,7 @@
 package com.crazy.portal.controller.order;
 
 import com.crazy.portal.bean.BaseResponse;
-import com.crazy.portal.bean.order.BatchModifyOrderBean;
+import com.crazy.portal.bean.order.DeliveryChangeVO;
 import com.crazy.portal.bean.order.DeliveryOrderQueryVO;
 import com.crazy.portal.bean.order.OrderQueryBean;
 import com.crazy.portal.controller.BaseController;
@@ -9,6 +9,7 @@ import com.crazy.portal.service.order.OrderService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * 订单查询
@@ -44,13 +45,12 @@ public class OrderQueryController extends BaseController {
 
     /**
      * 变更交期
-     * @param bean
      * @return
      * @throws Exception
      */
     @PostMapping("/modifyDeliveryDate")
-    public BaseResponse modifyDeliveryDate(@RequestBody BatchModifyOrderBean bean) throws Exception {
-        orderService.modifyDeliveryDate(bean, getCurrentUserId());
+    public BaseResponse modifyDeliveryDate(@RequestBody List<DeliveryChangeVO> changeVOS){
+        orderService.modifyDeliveryDate(changeVOS, getCurrentUserId());
         return successResult();
     }
 
@@ -60,7 +60,7 @@ public class OrderQueryController extends BaseController {
      * @return
      */
     @PostMapping("/cancel")
-    public BaseResponse cancel(@RequestBody BatchModifyOrderBean bean) {
+    public BaseResponse cancel(@RequestBody DeliveryChangeVO bean) {
         orderService.cancel(bean, getCurrentUserId());
         return successResult();
     }
