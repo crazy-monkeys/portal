@@ -141,6 +141,7 @@ public class OrderLine {
     /**
      * 创建时间
      */
+    @JSONField(serialize = false)
     private Date createTime;
 
     /**
@@ -152,5 +153,6 @@ public class OrderLine {
     /**
      * 
      */
+    @JSONField(serialize = false)
     private Date updateTime;
 }

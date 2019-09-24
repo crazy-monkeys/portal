@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
-import java.text.ParseException;
 
 /**
  * 订单审批
@@ -50,7 +49,7 @@ public class OrderApprovalController extends BaseController {
      * @return
      */
     @PostMapping("/approval")
-    public BaseResponse approval(@RequestBody @Valid OrderApprovalBean bean) throws ParseException {
+    public BaseResponse approval(@RequestBody @Valid OrderApprovalBean bean) throws Exception {
         orderService.approval(bean, super.getCurrentUser());
         return successResult();
     }

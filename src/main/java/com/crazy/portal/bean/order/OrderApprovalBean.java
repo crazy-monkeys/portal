@@ -9,7 +9,7 @@ public class OrderApprovalBean {
 
     /** 订单ID **/
     @NotNull(message = "订单ID不能为空")
-    private Integer orderId;
+    private Integer applyId;
 
     /** 审批信息 **/
     private String reason;

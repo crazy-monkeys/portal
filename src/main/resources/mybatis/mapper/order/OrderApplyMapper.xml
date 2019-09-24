@@ -1,0 +1,385 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.crazy.portal.dao.order.OrderApplyMapper">
+  <resultMap id="BaseResultMap" type="com.crazy.portal.entity.order.OrderApply">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="order_type" jdbcType="VARCHAR" property="orderType" />
+    <result column="under_order_type" jdbcType="VARCHAR" property="underOrderType" />
+    <result column="sales_org" jdbcType="VARCHAR" property="salesOrg" />
+    <result column="channel" jdbcType="VARCHAR" property="channel" />
+    <result column="division" jdbcType="VARCHAR" property="division" />
+    <result column="sales_office" jdbcType="VARCHAR" property="salesOffice" />
+    <result column="sales_group" jdbcType="VARCHAR" property="salesGroup" />
+    <result column="sold_to" jdbcType="VARCHAR" property="soldTo" />
+    <result column="send_to" jdbcType="VARCHAR" property="sendTo" />
+    <result column="purchase_no" jdbcType="VARCHAR" property="purchaseNo" />
+    <result column="purchase_date" jdbcType="VARCHAR" property="purchaseDate" />
+    <result column="incoterms1" jdbcType="VARCHAR" property="incoterms1" />
+    <result column="incoterms2" jdbcType="VARCHAR" property="incoterms2" />
+    <result column="price_date" jdbcType="VARCHAR" property="priceDate" />
+    <result column="payment_terms" jdbcType="VARCHAR" property="paymentTerms" />
+    <result column="customer_attr" jdbcType="VARCHAR" property="customerAttr" />
+    <result column="ref_sap_order_id" jdbcType="VARCHAR" property="refSapOrderId" />
+    <result column="order_reason" jdbcType="VARCHAR" property="orderReason" />
+    <result column="invoice_type" jdbcType="INTEGER" property="invoiceType" />
+    <result column="invoice_delivery_type" jdbcType="INTEGER" property="invoiceDeliveryType" />
+    <result column="invoice_delivery_address" jdbcType="VARCHAR" property="invoiceDeliveryAddress" />
+    <result column="is_agreed" jdbcType="INTEGER" property="isAgreed" />
+    <result column="dealer_id" jdbcType="INTEGER" property="dealerId" />
+    <result column="appaly_type" jdbcType="INTEGER" property="appalyType" />
+    <result column="lines" typeHandler="com.crazy.portal.config.mybatis.handler.ArrayJsonHandler" />
+    <result column="approval_status" jdbcType="INTEGER" property="approvalStatus" />
+    <result column="approver" jdbcType="VARCHAR" property="approver" />
+    <result column="approval_opinions" jdbcType="VARCHAR" property="approvalOpinions" />
+    <result column="approval_time" jdbcType="TIMESTAMP" property="approvalTime" />
+    <result column="active" jdbcType="INTEGER" property="active" />
+    <result column="create_id" jdbcType="INTEGER" property="createId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_id" jdbcType="INTEGER" property="updateId" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, order_type, under_order_type, sales_org, channel, division, sales_office, sales_group, 
+    sold_to, send_to, purchase_no, purchase_date, incoterms1, incoterms2, price_date, 
+    payment_terms, customer_attr, ref_sap_order_id, order_reason, invoice_type, invoice_delivery_type, 
+    invoice_delivery_address, is_agreed, dealer_id,appaly_type,lines, approval_status, approver, approval_opinions,
+    approval_time, active, create_id, create_time, update_id, update_time
+  </sql>
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_order_apply
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_order_apply
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insertSelective" parameterType="com.crazy.portal.entity.order.OrderApply">
+    insert into t_order_apply
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="orderType != null">
+        order_type,
+      </if>
+      <if test="underOrderType != null">
+        under_order_type,
+      </if>
+      <if test="salesOrg != null">
+        sales_org,
+      </if>
+      <if test="channel != null">
+        channel,
+      </if>
+      <if test="division != null">
+        division,
+      </if>
+      <if test="salesOffice != null">
+        sales_office,
+      </if>
+      <if test="salesGroup != null">
+        sales_group,
+      </if>
+      <if test="soldTo != null">
+        sold_to,
+      </if>
+      <if test="sendTo != null">
+        send_to,
+      </if>
+      <if test="purchaseNo != null">
+        purchase_no,
+      </if>
+      <if test="purchaseDate != null">
+        purchase_date,
+      </if>
+      <if test="incoterms1 != null">
+        incoterms1,
+      </if>
+      <if test="incoterms2 != null">
+        incoterms2,
+      </if>
+      <if test="priceDate != null">
+        price_date,
+      </if>
+      <if test="paymentTerms != null">
+        payment_terms,
+      </if>
+      <if test="customerAttr != null">
+        customer_attr,
+      </if>
+      <if test="refSapOrderId != null">
+        ref_sap_order_id,
+      </if>
+      <if test="orderReason != null">
+        order_reason,
+      </if>
+      <if test="invoiceType != null">
+        invoice_type,
+      </if>
+      <if test="invoiceDeliveryType != null">
+        invoice_delivery_type,
+      </if>
+      <if test="invoiceDeliveryAddress != null">
+        invoice_delivery_address,
+      </if>
+      <if test="isAgreed != null">
+        is_agreed,
+      </if>
+      <if test="dealerId != null">
+        dealer_id,
+      </if>
+      <if test="appalyType != null">
+        appaly_type,
+      </if>
+      <if test="lines != null">
+        lines,
+      </if>
+      <if test="approvalStatus != null">
+        approval_status,
+      </if>
+      <if test="approver != null">
+        approver,
+      </if>
+      <if test="approvalOpinions != null">
+        approval_opinions,
+      </if>
+      <if test="approvalTime != null">
+        approval_time,
+      </if>
+      <if test="active != null">
+        active,
+      </if>
+      <if test="createId != null">
+        create_id,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateId != null">
+        update_id,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="orderType != null">
+        #{orderType,jdbcType=VARCHAR},
+      </if>
+      <if test="underOrderType != null">
+        #{underOrderType,jdbcType=VARCHAR},
+      </if>
+      <if test="salesOrg != null">
+        #{salesOrg,jdbcType=VARCHAR},
+      </if>
+      <if test="channel != null">
+        #{channel,jdbcType=VARCHAR},
+      </if>
+      <if test="division != null">
+        #{division,jdbcType=VARCHAR},
+      </if>
+      <if test="salesOffice != null">
+        #{salesOffice,jdbcType=VARCHAR},
+      </if>
+      <if test="salesGroup != null">
+        #{salesGroup,jdbcType=VARCHAR},
+      </if>
+      <if test="soldTo != null">
+        #{soldTo,jdbcType=VARCHAR},
+      </if>
+      <if test="sendTo != null">
+        #{sendTo,jdbcType=VARCHAR},
+      </if>
+      <if test="purchaseNo != null">
+        #{purchaseNo,jdbcType=VARCHAR},
+      </if>
+      <if test="purchaseDate != null">
+        #{purchaseDate,jdbcType=VARCHAR},
+      </if>
+      <if test="incoterms1 != null">
+        #{incoterms1,jdbcType=VARCHAR},
+      </if>
+      <if test="incoterms2 != null">
+        #{incoterms2,jdbcType=VARCHAR},
+      </if>
+      <if test="priceDate != null">
+        #{priceDate,jdbcType=VARCHAR},
+      </if>
+      <if test="paymentTerms != null">
+        #{paymentTerms,jdbcType=VARCHAR},
+      </if>
+      <if test="customerAttr != null">
+        #{customerAttr,jdbcType=VARCHAR},
+      </if>
+      <if test="refSapOrderId != null">
+        #{refSapOrderId,jdbcType=VARCHAR},
+      </if>
+      <if test="orderReason != null">
+        #{orderReason,jdbcType=VARCHAR},
+      </if>
+      <if test="invoiceType != null">
+        #{invoiceType,jdbcType=INTEGER},
+      </if>
+      <if test="invoiceDeliveryType != null">
+        #{invoiceDeliveryType,jdbcType=INTEGER},
+      </if>
+      <if test="invoiceDeliveryAddress != null">
+        #{invoiceDeliveryAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="isAgreed != null">
+        #{isAgreed,jdbcType=INTEGER},
+      </if>
+      <if test="dealerId != null">
+        #{dealerId,jdbcType=INTEGER},
+      </if>
+      <if test="appalyType != null">
+        #{appalyType,jdbcType=INTEGER},
+      </if>
+      <if test="lines != null">
+        #{lines,jdbcType=OTHER,typeHandler=com.crazy.portal.config.mybatis.handler.ArrayJsonHandler},
+      </if>
+      <if test="approvalStatus != null">
+        #{approvalStatus,jdbcType=INTEGER},
+      </if>
+      <if test="approver != null">
+        #{approver,jdbcType=VARCHAR},
+      </if>
+      <if test="approvalOpinions != null">
+        #{approvalOpinions,jdbcType=VARCHAR},
+      </if>
+      <if test="approvalTime != null">
+        #{approvalTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="active != null">
+        #{active,jdbcType=INTEGER},
+      </if>
+      <if test="createId != null">
+        #{createId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateId != null">
+        #{updateId,jdbcType=INTEGER},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.crazy.portal.entity.order.OrderApply">
+    update t_order_apply
+    <set>
+      <if test="orderType != null">
+        order_type = #{orderType,jdbcType=VARCHAR},
+      </if>
+      <if test="underOrderType != null">
+        under_order_type = #{underOrderType,jdbcType=VARCHAR},
+      </if>
+      <if test="salesOrg != null">
+        sales_org = #{salesOrg,jdbcType=VARCHAR},
+      </if>
+      <if test="channel != null">
+        channel = #{channel,jdbcType=VARCHAR},
+      </if>
+      <if test="division != null">
+        division = #{division,jdbcType=VARCHAR},
+      </if>
+      <if test="salesOffice != null">
+        sales_office = #{salesOffice,jdbcType=VARCHAR},
+      </if>
+      <if test="salesGroup != null">
+        sales_group = #{salesGroup,jdbcType=VARCHAR},
+      </if>
+      <if test="soldTo != null">
+        sold_to = #{soldTo,jdbcType=VARCHAR},
+      </if>
+      <if test="sendTo != null">
+        send_to = #{sendTo,jdbcType=VARCHAR},
+      </if>
+      <if test="purchaseNo != null">
+        purchase_no = #{purchaseNo,jdbcType=VARCHAR},
+      </if>
+      <if test="purchaseDate != null">
+        purchase_date = #{purchaseDate,jdbcType=VARCHAR},
+      </if>
+      <if test="incoterms1 != null">
+        incoterms1 = #{incoterms1,jdbcType=VARCHAR},
+      </if>
+      <if test="incoterms2 != null">
+        incoterms2 = #{incoterms2,jdbcType=VARCHAR},
+      </if>
+      <if test="priceDate != null">
+        price_date = #{priceDate,jdbcType=VARCHAR},
+      </if>
+      <if test="paymentTerms != null">
+        payment_terms = #{paymentTerms,jdbcType=VARCHAR},
+      </if>
+      <if test="customerAttr != null">
+        customer_attr = #{customerAttr,jdbcType=VARCHAR},
+      </if>
+      <if test="refSapOrderId != null">
+        ref_sap_order_id = #{refSapOrderId,jdbcType=VARCHAR},
+      </if>
+      <if test="orderReason != null">
+        order_reason = #{orderReason,jdbcType=VARCHAR},
+      </if>
+      <if test="invoiceType != null">
+        invoice_type = #{invoiceType,jdbcType=INTEGER},
+      </if>
+      <if test="invoiceDeliveryType != null">
+        invoice_delivery_type = #{invoiceDeliveryType,jdbcType=INTEGER},
+      </if>
+      <if test="invoiceDeliveryAddress != null">
+        invoice_delivery_address = #{invoiceDeliveryAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="isAgreed != null">
+        is_agreed = #{isAgreed,jdbcType=INTEGER},
+      </if>
+      <if test="dealerId != null">
+        dealer_id = #{dealerId,jdbcType=INTEGER},
+      </if>
+      <if test="appalyType != null">
+        appaly_type = #{appalyType,jdbcType=INTEGER},
+      </if>
+      <if test="lines != null">
+        lines = #{lines,jdbcType=OTHER,typeHandler=com.crazy.portal.config.mybatis.handler.ArrayJsonHandler},
+      </if>
+      <if test="approvalStatus != null">
+        approval_status = #{approvalStatus,jdbcType=INTEGER},
+      </if>
+      <if test="approver != null">
+        approver = #{approver,jdbcType=VARCHAR},
+      </if>
+      <if test="approvalOpinions != null">
+        approval_opinions = #{approvalOpinions,jdbcType=VARCHAR},
+      </if>
+      <if test="approvalTime != null">
+        approval_time = #{approvalTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="active != null">
+        active = #{active,jdbcType=INTEGER},
+      </if>
+      <if test="createId != null">
+        create_id = #{createId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateId != null">
+        update_id = #{updateId,jdbcType=INTEGER},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+</mapper>

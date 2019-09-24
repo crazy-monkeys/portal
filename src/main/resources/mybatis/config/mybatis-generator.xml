@@ -19,20 +19,20 @@
             <property name="forceBigDecimals" value="false"/>  
         </javaTypeResolver>
 
-        <javaModelGenerator targetPackage="com.crazy.portal.entity.system" targetProject="src/main/java">
+        <javaModelGenerator targetPackage="com.crazy.portal.entity.order" targetProject="src/main/java">
             <property name="enableSubPackages" value="true"/>  
             <property name="trimStrings" value="true"/>  
         </javaModelGenerator>
 
-        <sqlMapGenerator targetPackage="mybatis/mapper/system" targetProject="src/main/resources">
+        <sqlMapGenerator targetPackage="mybatis/mapper/order" targetProject="src/main/resources">
             <property name="enableSubPackages" value="true"/>  
         </sqlMapGenerator>  
 
-        <javaClientGenerator type="XMLMAPPER" targetPackage="com.crazy.portal.dao.system" targetProject="src/main/java">
+        <javaClientGenerator type="XMLMAPPER" targetPackage="com.crazy.portal.dao.order" targetProject="src/main/java">
             <property name="enableSubPackages" value="true"/>
         </javaClientGenerator>
 
-        <table tableName="t_retrieve_password" domainObjectName="RetrievePassword"
+        <table tableName="t_order_apply" domainObjectName="OrderApply"
                enableCountByExample="false"
                enableUpdateByExample="false"
                enableDeleteByExample="false"

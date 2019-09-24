@@ -7,16 +7,10 @@ import com.crazy.portal.bean.order.DeliveryOrderVO;
 import com.crazy.portal.bean.order.OrderLineEO;
 import com.crazy.portal.bean.order.wsdl.price.*;
 import com.crazy.portal.config.exception.BusinessException;
-import com.crazy.portal.dao.order.DeliverOrderLineMapper;
-import com.crazy.portal.dao.order.DeliverOrderMapper;
-import com.crazy.portal.dao.order.OrderLineMapper;
-import com.crazy.portal.dao.order.OrderMapper;
+import com.crazy.portal.dao.order.*;
 import com.crazy.portal.dao.product.ProductInfoDOMapper;
 import com.crazy.portal.entity.cusotmer.CustomerInfo;
-import com.crazy.portal.entity.order.DeliverOrder;
-import com.crazy.portal.entity.order.DeliverOrderLine;
-import com.crazy.portal.entity.order.Order;
-import com.crazy.portal.entity.order.OrderLine;
+import com.crazy.portal.entity.order.*;
 import com.crazy.portal.entity.product.ProductInfoDO;
 import com.crazy.portal.service.customer.CustomerInfoService;
 import com.crazy.portal.util.*;
@@ -43,6 +37,8 @@ public class OrderApplyService {
     @Resource
     private OrderLineMapper orderLineMapper;
     @Resource
+    private OrderApplyMapper orderApplyMapper;
+    @Resource
     private ProductInfoDOMapper productInfoDOMapper;
     @Resource
     private OrderApiService orderApiService;
@@ -59,7 +55,7 @@ public class OrderApplyService {
      * @param userId
      */
     @Transactional
-    public void submitApply(Order order, Integer userId){
+    public void submitApply(OrderApply order, Integer userId){
         BusinessUtil.notNull(order, ErrorCodes.BusinessEnum.ORDER_INFO_IS_REQUIRED);
         BusinessUtil.notNull(order.getLines(), ErrorCodes.BusinessEnum.ORDER_LINES_IS_REQUIRED);
         CustomerInfo dealerByUser = customerInfoService.getDealerByUser(userId);
@@ -69,16 +65,13 @@ public class OrderApplyService {
         order.setCreateId(userId);
         order.setCreateTime(DateUtil.getCurrentTS());
         order.setActive(1);
-        //TODO 建立枚举
         if(order.getSalesOrg().equals("3000")){
             order.setPaymentTerms("9994");
         }
-        orderMapper.insertSelective(order);
-        order.getLines().forEach(line->{
-            line.setActice(1);
-            line.setOrderId(order.getId());
-            line.setCreateId(userId);
-            line.setCreateTime(DateUtil.getCurrentTS());
+
+        List<OrderLine> orderLines = order.getOrderLines();
+        orderLines.forEach(x->{
+            x.setCreateId(userId);
             Date priceDate;
             try {
                 priceDate = DateUtil.parseDate(order.getPriceDate(),DateUtil.MONTH_FORMAT_HLINE);
@@ -86,9 +79,10 @@ public class OrderApplyService {
                 log.error("",e);
                 throw new IllegalArgumentException("参数转换错误");
             }
-            line.setExpectedDeliveryDate(DateUtil.getLastDayOfMonth(DateUtil.getYear(priceDate),DateUtil.getMonth(priceDate)));
-            orderLineMapper.insertSelective(line);
+            x.setExpectedDeliveryDate(DateUtil.getLastDayOfMonth(DateUtil.getYear(priceDate),DateUtil.getMonth(priceDate)));
         });
+        order.setLines(order.objToLineJson(orderLines));
+        orderApplyMapper.insertSelective(order);
     }
 
     /**
@@ -104,7 +98,7 @@ public class OrderApplyService {
      * 解析附件并作调价试算
      * @return
      */
-    public Map<String,Object> parsingLineTmplFile(Order order){
+    public Map<String,Object> parsingLineTmplFile(OrderApply order){
         Map<String,Object> map = new HashMap<>();
         if(order.getSalesOrg().equals("3000")){
             order.setPaymentTerms("9994");
@@ -190,16 +184,16 @@ public class OrderApplyService {
 
     /**
      * 组装订单头入参
-     * @param order
-     * @param order
+     * @param orderApply
+     * @param orderApply
      * @return
      */
-    private IsHeader buildIsHeader(Order order) {
+    private IsHeader buildIsHeader(OrderApply orderApply) {
         IsHeader isHeader = new IsHeader();
-        isHeader.setOrdertype(order.getOrderType());
-        isHeader.setSalesorg(order.getSalesOrg());
-        isHeader.setSoldto(order.getSoldTo());
-        isHeader.setSendto(order.getSendTo());
+        isHeader.setOrdertype(orderApply.getOrderType());
+        isHeader.setSalesorg(orderApply.getSalesOrg());
+        isHeader.setSoldto(orderApply.getSoldTo());
+        isHeader.setSendto(orderApply.getSendTo());
         return isHeader;
     }
 

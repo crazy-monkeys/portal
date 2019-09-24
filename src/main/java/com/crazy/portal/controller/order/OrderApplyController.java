@@ -3,11 +3,10 @@ package com.crazy.portal.controller.order;
 import com.crazy.portal.annotation.OperationLog;
 import com.crazy.portal.bean.BaseResponse;
 import com.crazy.portal.bean.order.DeliveryOrderCancelVO;
-import com.crazy.portal.bean.order.DeliveryOrderQueryVO;
 import com.crazy.portal.bean.order.DeliveryOrderVO;
 import com.crazy.portal.controller.BaseController;
 import com.crazy.portal.entity.order.DeliverOrder;
-import com.crazy.portal.entity.order.Order;
+import com.crazy.portal.entity.order.OrderApply;
 import com.crazy.portal.service.order.OrderApplyService;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,13 +28,13 @@ public class OrderApplyController extends BaseController {
 
     /**
      * 提交申请
-     * @param order
+     * @param orderApply
      * @return
      */
     @PostMapping("/submit")
     @OperationLog
-    public BaseResponse submit(@RequestBody @Valid Order order){
-        orderApplyService.submitApply(order, getCurrentUserId());
+    public BaseResponse submit(@RequestBody @Valid OrderApply orderApply){
+        orderApplyService.submitApply(orderApply, getCurrentUserId());
         return successResult();
     }
 
@@ -54,9 +53,9 @@ public class OrderApplyController extends BaseController {
      * @return
      */
     @PostMapping("/upload")
-    public BaseResponse upload(@Valid Order order){
+    public BaseResponse upload(@Valid OrderApply orderApply){
 
-        return successResult(orderApplyService.parsingLineTmplFile(order));
+        return successResult(orderApplyService.parsingLineTmplFile(orderApply));
     }
 
     /**
