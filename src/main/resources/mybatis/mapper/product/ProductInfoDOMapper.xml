@@ -303,4 +303,10 @@
     inner join t_product_batch b on t.batch_id = b.id
     where b.batch_status = 1 and t.sap_mid=#{sapMid}
   </select>
+
+  <select id="selectBySapMidAndPlatForm" resultMap="BaseResultMap">
+    select * from t_product_info t
+    inner join t_product_batch b on t.batch_id = b.id
+    where b.batch_status = 1 and t.sap_mid=#{sapMid} and t.platform = #{platForm}
+  </select>
 </mapper>

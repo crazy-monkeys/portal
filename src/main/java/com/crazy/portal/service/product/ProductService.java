@@ -54,6 +54,10 @@ public class ProductService {
         return productInfoDOMapper.selectBySapMid(sapMid);
     }
 
+    public ProductInfoDO selectBySapMidAndPlatForm(String sapMid, String platForm){
+        return productInfoDOMapper.selectBySapMidAndPlatForm(sapMid, platForm);
+    }
+
     /**
      * 同步MDM的产品信息
      */

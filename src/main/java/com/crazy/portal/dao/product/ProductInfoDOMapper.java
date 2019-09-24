@@ -1,6 +1,7 @@
 package com.crazy.portal.dao.product;
 
 import com.crazy.portal.entity.product.ProductInfoDO;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -22,4 +23,6 @@ public interface ProductInfoDOMapper {
     int updateProductMpq();
 
     ProductInfoDO selectBySapMid(String sapMid);
+
+    ProductInfoDO selectBySapMidAndPlatForm(@Param("sapMid") String sapMid, @Param("platForm") String platForm);
 }
