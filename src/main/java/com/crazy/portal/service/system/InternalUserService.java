@@ -8,6 +8,7 @@ import com.crazy.portal.entity.cusotmer.CustZrAccountTeam;
 import com.crazy.portal.entity.system.InternalUser;
 import com.crazy.portal.entity.system.OrganizationalStructure;
 import com.crazy.portal.service.customer.CustZrAccountTeamService;
+import com.crazy.portal.util.BusinessUtil;
 import com.crazy.portal.util.ErrorCodes;
 import com.crazy.portal.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -44,6 +45,7 @@ public class InternalUserService {
      */
     public OrganizationalStructure getUserOrg(String userName){
         InternalUser user = internalUserMapper.selectUserByName(userName);
+        BusinessUtil.assertFlase(null == user,ErrorCodes.SystemManagerEnum.USER_NOT_EXISTS);
         return organizationalStructureMapper.selectByOrgNo(StringUtil.isEmpty(user.getUserDepartmentCode())?0:Integer.valueOf(user.getUserDepartmentCode()));
     }
 

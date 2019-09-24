@@ -6,6 +6,9 @@ import com.crazy.portal.bean.order.DeliveryOrderQueryVO;
 import com.crazy.portal.bean.order.OrderQueryBean;
 import com.crazy.portal.controller.BaseController;
 import com.crazy.portal.service.order.OrderService;
+import com.crazy.portal.util.BusinessUtil;
+import com.crazy.portal.util.ErrorCodes;
+import com.crazy.portal.util.StringUtil;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -79,7 +82,8 @@ public class OrderQueryController extends BaseController {
      * @return
      */
     @GetMapping("/delivery/detail/{id}")
-    public BaseResponse deliveryDetail(@PathVariable Integer id){
-        return successResult(orderService.deliveryDetail(id));
+    public BaseResponse deliveryDetail(@PathVariable String id){
+        BusinessUtil.assertFlase(StringUtil.isEmpty(id), ErrorCodes.BusinessEnum.ORDER_ID_NOT_FOUND);
+        return successResult(orderService.deliveryDetail(Integer.valueOf(id)));
     }
 }

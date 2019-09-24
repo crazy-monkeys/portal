@@ -119,6 +119,11 @@ public class OrderApiService {
         return null;
     }
 
+    /**
+     * 交货单创建
+     * @param create
+     * @return
+     */
     public ZrfcsddeliverycreateResponse deliveryCreate(ZrfcsdDeliveryCreate create){
         String url = String.format("%s%s",ECC_API_URL,"/cxf/PORTAL/ECC/CREATEDELIVERY");
         try {

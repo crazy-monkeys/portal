@@ -25,7 +25,7 @@
   <sql id="Base_Column_List">
     deliver_order_id, sap_deliver_order_no, sales_order_id, sap_order_no, sold_to, send_to, 
     deliver_date, actual_delivery_date, shipping_point, active, create_user_id, create_time, 
-    update_user_id, update_time, approval_status, approval_date, approval_remark, approval_user
+    update_user_id, update_time, approval_status, approval_date, approval_remark, approval_user,approval_type
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 

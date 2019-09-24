@@ -17,7 +17,7 @@ public class ZrfcsdDeliveryCreateContent {
     @XmlElement(name = "Deliverydate")
     private String deliverydate;
 
-    @XmlElement(name = "DeliveryIoc")
+    @XmlElement(name = "Deliveryloc")
     private String deliveryIoc;
 
     @XmlElement(name = "Portaldeliveryid")

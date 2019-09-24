@@ -222,6 +222,7 @@ public class ErrorCodes {
         ORDER_NOT_EXISTS_PRODUCT_ID(900011, "物料号不存在", ""),
         ORDER_EMPTY_PRICE_DATE(900012, "定价日期不能为空", ""),
         ORDER_NO_DELETE(90011,"非驳回订单不允许删除",""),
+        ORDER_ID_NOT_FOUND(90012,"订单不存在",""),
         ;
         private final int code;
         private final String zhMsg;

@@ -1,6 +1,8 @@
 package com.crazy.portal.entity.order;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 import java.util.List;
@@ -45,6 +47,8 @@ public class DeliverOrder {
     /**
      * 
      */
+    @JSONField(format="yyyy-MM-dd")
+    @DateTimeFormat(pattern="yyyy-MM-dd")
     private Date deliverDate;
 
     /**

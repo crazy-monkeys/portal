@@ -113,6 +113,7 @@ public class CustomerInfoService {
         if(customerQueryBean.getQueryType()==3){
             if(user.getUserType().equals(Enums.USER_TYPE.internal.toString())){
                 InternalUser internalUser = internalUserMapper.selectUserByName(user.getLoginName());
+                BusinessUtil.assertFlase(null == user,ErrorCodes.SystemManagerEnum.USER_NOT_EXISTS);
                 customerQueryBean.setReportSales(internalUser.getUserNo());
             }else{
                 CustomerInfo dealer = customerInfoMapper.selectByPrimaryKey(user.getDealerId());
@@ -120,13 +121,15 @@ public class CustomerInfoService {
             }
         }else if(customerQueryBean.getQueryType()==2){
             //审批查询
-            OrganizationalStructure org = internalUserService.getUserOrg(user.getLoginName());
-            if(null != org&&org.getSeq()==1001012){
-                customerQueryBean.setBusinessType("A03");
-            }else if(null != org&&org.getSeq()==1001011){
-                customerQueryBean.setBusinessType("A02");
-            }else{
-                throw new BusinessException(ErrorCodes.BusinessEnum.CUSTOMER_ORG_ERROR);
+            if(user.getUserType().equals(Enums.USER_TYPE.internal.toString())){
+                OrganizationalStructure org = internalUserService.getUserOrg(user.getLoginName());
+                if(null != org&&org.getSeq()==1001012){
+                    customerQueryBean.setBusinessType("A03");
+                }else if(null != org&&org.getSeq()==1001011){
+                    customerQueryBean.setBusinessType("A02");
+                }else{
+                    throw new BusinessException(ErrorCodes.BusinessEnum.CUSTOMER_ORG_ERROR);
+                }
             }
         }else{
             if(user.getUserType().equals(Enums.USER_TYPE.internal.toString())){
