@@ -220,6 +220,7 @@ public class ErrorCodes {
         ORDER_NO_PENDING(90009, "当前订单已经被审批", ""),
         ORDER_LINE_FILE_ERROR(900010, "订单行附件参数格式不正确", ""),
         ORDER_EMPTY_PRICE_DATE(900011, "定价日期不能为空", ""),
+        ORDER_APPLY_ORDER_NOT_FOUND(900012, "订单信息不存在", ""),
         ORDER_NO_DELETE(900013,"非驳回订单不允许删除",""),
         ORDER_NOT_EXISTS_PRODUCT_ID(900014, "行附件平台物料号不存在", ""),
         ORDER_EMPTY_PRODUCT_ID(900015, "行附件物料号不能为空", ""),
