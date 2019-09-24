@@ -150,6 +150,7 @@ public class OrderApiServiceTest {
         itItem.setProductid("18000000017");
         itItem.setOrderquantity("10");
         itItem.setPlatform("1");
+        itItem.setKondm("Z1");
         itItems.setItem(Arrays.asList(itItem));
 
         ZrfcsdpricesimulateContent content = new ZrfcsdpricesimulateContent(null,isHeader,itItems);
@@ -176,7 +177,7 @@ public class OrderApiServiceTest {
     }
 
     @Test
-    private void createDeliveryOrder(){
+    public void createDeliveryOrder(){
         ZrfcsdDeliveryCreateContent content = new ZrfcsdDeliveryCreateContent();
         content.setDeliverydate("");
         content.setDeliveryIoc("");
@@ -201,7 +202,7 @@ public class OrderApiServiceTest {
     }
 
     @Test
-    private void changerDeliveryOrder(){
+    public void changerDeliveryOrder(){
         ZrfcsdDeliveryUpdateContent content = new ZrfcsdDeliveryUpdateContent();
         content.setDeliverydate("");
         content.setIType("");

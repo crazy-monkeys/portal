@@ -24,4 +24,7 @@ public class ItItem {
     private String orderquantity = "";
     @XmlElement(name = "Platform")
     private String platform = "";
+    @XmlElement(name = "Kondm")
+    private String kondm = "";
+
 }

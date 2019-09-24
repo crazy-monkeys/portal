@@ -18,21 +18,25 @@ public class OrderLineEO extends BaseRowModel {
      */
     @ExcelProperty(value = "物料号", index = 0)
     private String productId;
+
+    /**
+     * 平台
+     */
+    @ExcelProperty(value = "平台", index = 1)
+    private String platform;
     /**
      * 数量
      */
-    @ExcelProperty(value = "数量", index = 1)
+    @ExcelProperty(value = "数量", index = 2)
     private String num;
 
     /**
      * 期望交货月份
      */
-    @ExcelProperty(value = "期望交货月份", index = 2)
+    @ExcelProperty(value = "期望交货月份", index = 3)
     @JSONField(format = "yyyy-MM")
-    private Date expectedDeliveryMonth;
+    private Date expectedDeliveryMonth = null;
 
-
-    private String platform;
     /**
      * 定价日期
      */

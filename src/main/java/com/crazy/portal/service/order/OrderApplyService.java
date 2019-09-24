@@ -3,13 +3,8 @@ package com.crazy.portal.service.order;
 import com.alibaba.excel.metadata.BaseRowModel;
 import com.alibaba.excel.support.ExcelTypeEnum;
 import com.crazy.portal.bean.order.DeliveryOrderCancelVO;
-import com.crazy.portal.bean.order.OrderLineEO;
 import com.crazy.portal.bean.order.DeliveryOrderVO;
-import com.crazy.portal.bean.order.wsdl.delivery.create.ZrfcsdDeliveryCreate;
-import com.crazy.portal.bean.order.wsdl.delivery.create.ZrfcsdDeliveryCreateBody;
-import com.crazy.portal.bean.order.wsdl.delivery.create.ZrfcsdDeliveryCreateContent;
-import com.crazy.portal.bean.order.wsdl.delivery.create.ZrfcsddeliverycreateResponse;
-import com.crazy.portal.bean.order.wsdl.delivery.update.*;
+import com.crazy.portal.bean.order.OrderLineEO;
 import com.crazy.portal.bean.order.wsdl.price.*;
 import com.crazy.portal.config.exception.BusinessException;
 import com.crazy.portal.dao.order.DeliverOrderLineMapper;
@@ -28,10 +23,8 @@ import com.crazy.portal.util.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
-import java.math.BigDecimal;
 import java.text.ParseException;
 import java.util.*;
 
@@ -117,70 +110,66 @@ public class OrderApplyService {
             order.setPaymentTerms("9994");
         }
         List<OrderLineEO> records = ExcelUtils.readExcel(order.getLineFile(), OrderLineEO.class);
-//
-//        //逻辑只允许出现同一个月份
+        //逻辑只允许出现同一个月份
         Date expectedDeliveryMonth = records.get(0).getExpectedDeliveryMonth();
         String priceDate = DateUtil.getLastDayOfMonth(DateUtil.getYear(expectedDeliveryMonth),DateUtil.getMonth(expectedDeliveryMonth));
-//        IsHeader isHeader = this.buildIsHeader(order);
-//        isHeader.setPricedate(priceDate);
-//        ItItems itItems = new ItItems();
-//        itItems.setItem(this.buildItItems(records));
-//
-//        Zrfcsdpricesimulate zrfcsdpricesimulate = this.getZrfcsdpricesimulate(isHeader, itItems);
-//        ZrfcsdpricesimulateResponse response = orderApiService.priceSimulate(zrfcsdpricesimulate);
-//        BusinessUtil.notNull(response,ErrorCodes.CommonEnum.SYSTEM_EXCEPTION);
-//
-//        ZpricessimulateHeaderOut esHeader = response.getEsHeader();
-//        List<ZpricessimulateItemOut> items = response.getEtItems().getItem();
-//
-//        for(OrderLineEO orderLineEO : records){
-//            //设置定价
-//            orderLineEO.setPriceDate(priceDate);
-//            //设置单价
-//            for(ZpricessimulateItemOut item : items){
-//                if(item.getProductid().equals(orderLineEO.getProductId())){
-//                    orderLineEO.setPrice(item.getPrice());
-//                    orderLineEO.setNetPrice(item.getNetprice());
-//                }
-//            }
-//        }
+        IsHeader isHeader = this.buildIsHeader(order);
+        isHeader.setPricedate(priceDate);
+        ItItems itItems = new ItItems();
+        itItems.setItem(this.buildItItems(records));
 
-        //mock
+        Zrfcsdpricesimulate zrfcsdpricesimulate = this.getZrfcsdpricesimulate(isHeader, itItems);
+        ZrfcsdpricesimulateResponse response = orderApiService.priceSimulate(zrfcsdpricesimulate);
+        BusinessUtil.notNull(response,ErrorCodes.CommonEnum.SYSTEM_EXCEPTION);
+
+        ZpricessimulateHeaderOut esHeader = response.getEsHeader();
+        List<ZpricessimulateItemOut> items = response.getEtItems().getItem();
+
         for(OrderLineEO orderLineEO : records){
+            //设置定价
             orderLineEO.setPriceDate(priceDate);
-            orderLineEO.setNetPrice(new BigDecimal(1));
-            orderLineEO.setPrice(new BigDecimal(1));
-            orderLineEO.setPlatform("SC7731E");
+            //设置单价
+            for(ZpricessimulateItemOut item : items){
+                if(item.getProductid().equals(orderLineEO.getProductId())){
+                    orderLineEO.setPrice(item.getPrice());
+                    orderLineEO.setNetPrice(item.getNetprice());
+                }
+            }
         }
         map.put("lines",records);
-        map.put("grossValue",new BigDecimal(1));
-        map.put("netValue",new BigDecimal(1));
+        map.put("grossValue",esHeader.getGrossvalue());
+        map.put("netValue",esHeader.getNetvalue());
         return map;
     }
 
     private List<ItItem> buildItItems(List<OrderLineEO> records) {
         List<ItItem> items = new ArrayList<>();
         for(int i = 0;i<records.size();i++){
+
             OrderLineEO orderLineEO = records.get(i);
             String productId = orderLineEO.getProductId();
             String num = orderLineEO.getNum();
-            boolean paramsCheck = StringUtil.isEmpty(productId)
-                                        || StringUtil.isEmpty(num);
+            String platform = orderLineEO.getPlatform();
+            Date expectedDeliveryMonth = orderLineEO.getExpectedDeliveryMonth();
 
-            BusinessUtil.assertFlase(paramsCheck, ErrorCodes.BusinessEnum.ORDER_LINE_FILE_ERROR);
+            BusinessUtil.assertEmpty(productId,ErrorCodes.BusinessEnum.ORDER_EMPTY_PRODUCT_ID);
+            BusinessUtil.assertEmpty(num,ErrorCodes.BusinessEnum.ORDER_EMPTY_NUM);
+            BusinessUtil.assertEmpty(platform,ErrorCodes.BusinessEnum.ORDER_EMPTY_PLATFORM);
+            BusinessUtil.notNull(expectedDeliveryMonth,ErrorCodes.BusinessEnum.ORDER_EMPTY_EXPECTEDDELIVERYMONTH);
+
+            ProductInfoDO params = new ProductInfoDO();
+            params.setSapMid(productId);
+            params.setPlatform(platform);
+            ProductInfoDO productInfoDO = productInfoDOMapper.selectBySapMidAndPlatForm(productId,platform);
+            BusinessUtil.notNull(productInfoDO, ErrorCodes.BusinessEnum.ORDER_NOT_EXISTS_PRODUCT_ID);
+
             ItItem itItem = new ItItem();
             itItem.setSequenceno((i+1)+"");
             itItem.setProductid(productId);
             itItem.setOrderquantity(num);
-
+            itItem.setKondm(productInfoDO.getBu());
             //根据物料号获取平台
-            ProductInfoDO params = new ProductInfoDO();
-            params.setSapMid(productId);
-            List<ProductInfoDO> productInfoDOS = productInfoDOMapper.selectProductInfo(params);
-            BusinessUtil.assertFlase(productInfoDOS.isEmpty(), ErrorCodes.BusinessEnum.ORDER_NOT_EXISTS_PRODUCT_ID);
-            ProductInfoDO productInfo = productInfoDOS.get(0);
-            itItem.setPlatform(productInfo.getPlatform());
-
+            itItem.setPlatform(productInfoDO.getPlatform());
             items.add(itItem);
         }
         return items;
