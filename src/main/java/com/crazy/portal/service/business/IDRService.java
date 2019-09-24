@@ -244,11 +244,11 @@ public class IDRService {
         saveIdrApprovalRecord(request, histortRecord);
         Integer status = null;
         List<BusinessIdrApproval> records = businessIdrApprovalMapper.selectByIdrInfoId(histortRecord.getIdrInfoId());
-        if(records.stream().anyMatch(e-> e.getReviewStatus().equals(Enums.BusinessIdrApprovalStatus.REJECT.getCode()))){
+        if(records.stream().anyMatch(e-> Enums.BusinessIdrApprovalStatus.REJECT.getCode().equals(e.getReviewStatus()))){
             status = Enums.BusinessIdrStatus.REJECT.getCode();
         }
         Set<String> orderNos = records.stream().map(BusinessIdrApproval::getOrderNo).collect(Collectors.toSet());
-        Set<String> agreeSet = records.stream().filter(e-> e.getReviewStatus().equals(Enums.BusinessIdrApprovalStatus.AGREE.getCode()) && StringUtil.isBlank(e.getCurrentReviewer())).map(BusinessIdrApproval::getOrderNo).collect(Collectors.toSet());
+        Set<String> agreeSet = records.stream().filter(e-> Enums.BusinessIdrApprovalStatus.AGREE.getCode().equals(e.getReviewStatus()) && StringUtil.isBlank(e.getCurrentReviewer())).map(BusinessIdrApproval::getOrderNo).collect(Collectors.toSet());
         if(orderNos.size() == agreeSet.size()){
             status = Enums.BusinessIdrStatus.AGREE.getCode();
         }
