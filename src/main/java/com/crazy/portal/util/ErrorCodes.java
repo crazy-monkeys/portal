@@ -184,6 +184,8 @@ public class ErrorCodes {
         REBATE_ITEM_ID_IS_NULL(70104, "rebateItemId不能为空", ""),
         REBATE_EXECUTOR_EMAIL_NOT_FOUND(70105, "rebate执行人邮箱不能为空", ""),
         REBATE_SEND_EMAIL_EXCEPTION(70106, "发送确认函异常", ""),
+        REBATE_ITEM_CONFIRM_FILE_UPLOAD_EXCEPTION(70107, "上传确认文件必须是代理商", ""),
+        REBATE_ITEM_FINISHED_EXCEPTION(70108, "该Rebate已完结，不可上传文件", ""),
         //产品管理
         PRODUCT_QUERY_ERROR(70501,"产品查询异常",""),
         PRODUCT_SYNC_ERROR(70502,"产品同步异常",""),
