@@ -1,7 +1,6 @@
 package com.crazy.portal.controller.order;
 
 import com.crazy.portal.bean.BaseResponse;
-import com.crazy.portal.bean.order.DeliveryChangeVO;
 import com.crazy.portal.bean.order.DeliveryOrderQueryVO;
 import com.crazy.portal.bean.order.OrderQueryBean;
 import com.crazy.portal.controller.BaseController;
@@ -12,7 +11,6 @@ import com.crazy.portal.util.StringUtil;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.util.List;
 
 /**
  * 订单查询
@@ -22,6 +20,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/order/query")
 public class OrderQueryController extends BaseController {
+
     @Resource
     private OrderService orderService;
 
@@ -47,28 +46,6 @@ public class OrderQueryController extends BaseController {
     }
 
     /**
-     * 变更交期
-     * @return
-     * @throws Exception
-     */
-    @PostMapping("/modifyDeliveryDate")
-    public BaseResponse modifyDeliveryDate(@RequestBody List<DeliveryChangeVO> changeVOS){
-        orderService.modifyDeliveryDate(changeVOS, getCurrentUserId());
-        return successResult();
-    }
-
-    /**
-     * 取消订单
-     * @param bean
-     * @return
-     */
-    @PostMapping("/cancel")
-    public BaseResponse cancel(@RequestBody DeliveryChangeVO bean) {
-        orderService.cancel(bean, getCurrentUserId());
-        return successResult();
-    }
-
-    /**
      *查询提货单
      */
     @PostMapping("/list/delivery")
@@ -83,7 +60,7 @@ public class OrderQueryController extends BaseController {
      */
     @GetMapping("/delivery/detail/{id}")
     public BaseResponse deliveryDetail(@PathVariable String id){
-        BusinessUtil.assertFlase(StringUtil.isEmpty(id), ErrorCodes.BusinessEnum.ORDER_ID_NOT_FOUND);
+        BusinessUtil.assertFlase(StringUtil.isEmpty(id), ErrorCodes.BusinessEnum.ORDER_NOT_FOUND);
         return successResult(orderService.deliveryDetail(Integer.valueOf(id)));
     }
 }

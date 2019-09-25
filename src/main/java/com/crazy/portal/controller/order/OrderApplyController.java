@@ -2,6 +2,7 @@ package com.crazy.portal.controller.order;
 
 import com.crazy.portal.annotation.OperationLog;
 import com.crazy.portal.bean.BaseResponse;
+import com.crazy.portal.bean.order.DeliveryChangeVO;
 import com.crazy.portal.bean.order.DeliveryOrderCancelVO;
 import com.crazy.portal.bean.order.DeliveryOrderVO;
 import com.crazy.portal.controller.BaseController;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -40,6 +42,18 @@ public class OrderApplyController extends BaseController {
     }
 
     /**
+     * 订单修改申请
+     * @param orderApply
+     * @return
+     */
+    @PostMapping("/modify")
+    @OperationLog
+    public BaseResponse modify(@RequestBody @Valid OrderApply orderApply){
+        orderApplyService.modifyOrderApply(orderApply,super.getCurrentUserId());
+        return successResult();
+    }
+
+    /**
      * 订单取消申请
      * @param itemIds
      * @return
@@ -52,14 +66,13 @@ public class OrderApplyController extends BaseController {
     }
 
     /**
-     * 订单修改申请
-     * @param itemIds
+     * 变更交期
      * @return
+     * @throws Exception
      */
-    @PostMapping("/modify")
-    @OperationLog
-    public BaseResponse modify(@RequestParam Set<Integer> itemIds) throws Exception{
-        orderApplyService.cancelOrderApply(itemIds, getCurrentUserId());
+    @PostMapping("/modifyDeliveryDate")
+    public BaseResponse modifyDeliveryDate(@RequestBody List<DeliveryChangeVO> changeVOS){
+        orderApplyService.modifyDeliveryDate(changeVOS, getCurrentUserId());
         return successResult();
     }
 

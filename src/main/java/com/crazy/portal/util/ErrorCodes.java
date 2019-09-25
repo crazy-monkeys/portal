@@ -231,8 +231,7 @@ public class ErrorCodes {
         ORDER_EMPTY_PRODUCT_ID(900015, "行附件物料号不能为空", ""),
         ORDER_EMPTY_PLATFORM(900016, "行附件平台不能为空", ""),
         ORDER_EMPTY_NUM(900017, "行附件数量不能为空", ""),
-        ORDER_EMPTY_EXPECTEDDELIVERYMONTH(900018, "行附件期望交货月份不能为空", ""),
-        ORDER_ID_NOT_FOUND(900019,"订单不存在","")
+        ORDER_EMPTY_EXPECTEDDELIVERYMONTH(900018, "行附件期望交货月份不能为空", "")
         ;
         private final int code;
         private final String zhMsg;
