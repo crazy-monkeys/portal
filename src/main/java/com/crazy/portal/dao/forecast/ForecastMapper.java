@@ -86,4 +86,12 @@ public interface ForecastMapper {
 
     int updateBiInfoByBiId(@Param(value = "biId") String biId,
                            @Param(value = "errorMsg") String errorMsg);
+
+    List<String> selectBatchNoByIds(@Param(value = "ids") Integer[] ids);
+
+    int checkIdenticalMonth(@Param(value = "ids") Integer[] ids);
+
+    int countDataNumByMonthAndUser(@Param(value = "id") Integer id);
+
+    int checkAmbAdjustmentNum(@Param(value = "ids") Integer[] ids);
 }

@@ -445,6 +445,15 @@ public class SaleForecastService {
      */
     @Transactional
     public void passApprovalForecastData(Integer[] forecastIds, String passMsg) {
+        //只允许操作单个代理商同一个月的预测数据
+        int cnt = forecastMapper.checkIdenticalMonth(forecastIds);
+        BusinessUtil.assertTrue(cnt == 1, FORECAST_CHECK_IDENTICAL_MONTH_ERROR);
+        //每次必须操作全量数据
+        int dataTotalNum = forecastMapper.countDataNumByMonthAndUser(forecastIds[0]);
+        BusinessUtil.assertTrue(dataTotalNum == forecastIds.length, FORECAST_DATA_TOTAL_CHECK_ERROR);
+        //如果存在阿米巴队长没有调整的数据，则不允许操作
+        int ambAdjustmentNum = forecastMapper.checkAmbAdjustmentNum(forecastIds);
+        BusinessUtil.assertTrue(ambAdjustmentNum == 0, FORECAST_AMB_ADJUSTMENT_NUM_ERROR);
         //是否有无法识别的类型操作
         boolean isReturn = false;
         try {
@@ -519,6 +528,11 @@ public class SaleForecastService {
         forecastMapper.updateStatusByIds(forecastIds, -1, rejectMsg);
     }
 
+    /**
+     *
+     * @param response
+     * @param forecastIds
+     */
     public void downloadDataByAmb(HttpServletResponse response, Integer[] forecastIds) {
         List<Forecast> forecastList = forecastMapper.selectByIds(forecastIds);
         List<AmbUpdateTemplate> templateList = new ArrayList<>();
@@ -542,7 +556,19 @@ public class SaleForecastService {
         }
     }
 
+    /**
+     * 首代下载代理商预测数据，目前必须下载全部的
+     * @param response
+     * @param forecastIds
+     */
     public void downloadDataBySd(HttpServletResponse response, Integer[] forecastIds) {
+        //只允许操作单个代理商同一个月的预测数据
+        int cnt = forecastMapper.checkIdenticalMonth(forecastIds);
+        BusinessUtil.assertTrue(cnt == 1, FORECAST_CHECK_IDENTICAL_MONTH_ERROR);
+        //每次必须操作全量数据
+        int dataTotalNum = forecastMapper.countDataNumByMonthAndUser(forecastIds[0]);
+        BusinessUtil.assertTrue(dataTotalNum == forecastIds.length, FORECAST_DATA_TOTAL_CHECK_ERROR);
+
         List<SdUpdateTemplate> templateList = forecastSdMapper.selectTotalByForecastIds(forecastIds);
         for(SdUpdateTemplate template : templateList){
             ForecastSd forecastSd = forecastSdMapper.selectByMonthAndProduct(template.getOperationYearMonth(),
