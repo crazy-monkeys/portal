@@ -2,6 +2,7 @@ package com.crazy.portal.service.order;
 
 import com.alibaba.excel.metadata.BaseRowModel;
 import com.alibaba.excel.support.ExcelTypeEnum;
+import com.crazy.portal.bean.order.DeliveryChangeVO;
 import com.crazy.portal.bean.order.DeliveryOrderCancelVO;
 import com.crazy.portal.bean.order.DeliveryOrderVO;
 import com.crazy.portal.bean.order.OrderLineEO;
@@ -103,40 +104,6 @@ public class OrderApplyService {
     }
 
     /**
-     * 取消订单申请
-     * @param itemIds
-     * @param userId
-     */
-    @Transactional
-    public void cancelOrderApply(Set<Integer> itemIds, Integer userId) throws Exception {
-        OrderApply orderApply = new OrderApply();
-
-        List<OrderLine> lines = itemIds.stream()
-                .map(x->{
-                    OrderLine orderLine = orderLineMapper.selectByPrimaryKey(x);
-                    orderLine.setActice(0);
-                    return orderLine;
-                }).collect(Collectors.toList());
-
-        BusinessUtil.assertFlase(itemIds.size() != lines.size(),ErrorCodes.BusinessEnum.ORDER_LINE_NOT_FOUND);
-
-        Set<Integer> orderIds = lines.stream().map(x->x.getOrderId()).collect(Collectors.toSet());
-        BusinessUtil.assertFlase(orderIds.size() > 1,ErrorCodes.BusinessEnum.ORDER_LINE_NOT_FOUND);
-
-        Integer orderId = lines.get(0).getOrderId();
-
-        Order order = orderMapper.selectByPrimaryKey(orderId);
-
-        BeanUtils.copyNotNullFields(order,orderApply);
-        orderApply.setActive(1);
-        orderApply.setCreateId(userId);
-        orderApply.setCreateTime(DateUtil.getCurrentTS());
-        orderApply.setAppalyType(3);
-        orderApply.setLines(orderApply.objToLineJson(lines));
-        orderApplyMapper.insert(orderApply);
-    }
-
-    /**
      * 订单申请
      * @param order
      * @param userId
@@ -170,6 +137,72 @@ public class OrderApplyService {
         });
         order.setLines(order.objToLineJson(orderLines));
         orderApplyMapper.insertSelective(order);
+    }
+
+    /**
+     * 订单修改申请
+     * @param order
+     * @param userId
+     */
+    @Transactional
+    public void modifyOrderApply(OrderApply order, Integer userId){
+
+    }
+
+    /**
+     * 取消订单申请
+     * @param itemIds
+     * @param userId
+     */
+    @Transactional
+    public void cancelOrderApply(Set<Integer> itemIds, Integer userId) throws Exception {
+        OrderApply orderApply = new OrderApply();
+
+        List<OrderLine> lines = itemIds.stream()
+                .map(x->{
+                    OrderLine orderLine = orderLineMapper.selectByPrimaryKey(x);
+                    orderLine.setActice(0);
+                    return orderLine;
+                }).collect(Collectors.toList());
+
+        BusinessUtil.assertFlase(itemIds.size() != lines.size(),ErrorCodes.BusinessEnum.ORDER_LINE_NOT_FOUND);
+
+        Set<Integer> orderIds = lines.stream().map(x->x.getOrderId()).collect(Collectors.toSet());
+        BusinessUtil.assertFlase(orderIds.size() > 1,ErrorCodes.BusinessEnum.ORDER_LINE_NOT_FOUND);
+
+        Integer orderId = lines.get(0).getOrderId();
+
+        Order order = orderMapper.selectByPrimaryKey(orderId);
+
+        BeanUtils.copyNotNullFields(order,orderApply);
+        orderApply.setActive(1);
+        orderApply.setCreateId(userId);
+        orderApply.setCreateTime(DateUtil.getCurrentTS());
+        orderApply.setAppalyType(3);
+        orderApply.setLines(orderApply.objToLineJson(lines));
+        orderApplyMapper.insert(orderApply);
+    }
+
+
+    /**
+     * 变更交货日期
+     */
+    public void modifyDeliveryDate(List<DeliveryChangeVO> changeVOS, Integer userId){
+        if(changeVOS.isEmpty()){
+            return;
+        }
+        changeVOS.stream().forEach(x->{
+            OrderLine orderLine = orderLineMapper.selectByPrimaryKey(x.getItemId());
+            BusinessUtil.notNull(orderLine,ErrorCodes.BusinessEnum.ORDER_LINE_NOT_FOUND);
+
+            Order order = orderMapper.selectByPrimaryKey(orderLine.getOrderId());
+            BusinessUtil.assertTrue(userId.equals(order.getCreateId()),ErrorCodes.CommonEnum.REQ_ILLEGAL);
+
+            orderLine.setExpectedDeliveryDate(x.getExpectedDeliveryDate());
+            orderLine.setUpdateId(userId);
+            orderLine.setUpdateTime(DateUtil.getCurrentTS());
+            orderMapper.updateByPrimaryKeySelective(order);
+        });
     }
 
     private List<ItItem> buildItItems(List<OrderLineEO> records) {

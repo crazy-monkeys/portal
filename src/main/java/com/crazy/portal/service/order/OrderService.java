@@ -1,20 +1,28 @@
 package com.crazy.portal.service.order;
 
-import com.crazy.portal.annotation.OperationLog;
-import com.crazy.portal.bean.order.*;
+import com.crazy.portal.bean.order.DeliveryApproveVO;
+import com.crazy.portal.bean.order.DeliveryOrderQueryVO;
+import com.crazy.portal.bean.order.OrderQueryBean;
 import com.crazy.portal.bean.order.wsdl.delivery.create.ZrfcsdDeliveryCreate;
 import com.crazy.portal.bean.order.wsdl.delivery.create.ZrfcsdDeliveryCreateBody;
 import com.crazy.portal.bean.order.wsdl.delivery.create.ZrfcsdDeliveryCreateContent;
 import com.crazy.portal.bean.order.wsdl.delivery.create.ZrfcsddeliverycreateResponse;
 import com.crazy.portal.bean.order.wsdl.delivery.update.*;
 import com.crazy.portal.dao.order.*;
-import com.crazy.portal.entity.order.*;
-import com.crazy.portal.util.*;
+import com.crazy.portal.entity.order.DeliverOrder;
+import com.crazy.portal.entity.order.DeliverOrderLine;
+import com.crazy.portal.entity.order.Order;
+import com.crazy.portal.entity.order.OrderInvoice;
+import com.crazy.portal.util.BusinessUtil;
+import com.crazy.portal.util.DateUtil;
+import com.crazy.portal.util.Enums;
+import com.crazy.portal.util.ErrorCodes;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Date;
@@ -95,29 +103,6 @@ public class OrderService {
         return deliverOrder;
     }
 
-    /**
-     * 变更交货日期
-     */
-    public void modifyDeliveryDate(List<DeliveryChangeVO> changeVOS, Integer userId){
-        if(changeVOS.isEmpty()){
-            return;
-        }
-        changeVOS.stream().forEach(x->{
-            OrderLine orderLine = orderLineMapper.selectByPrimaryKey(x.getItemId());
-            BusinessUtil.notNull(orderLine,ErrorCodes.BusinessEnum.ORDER_LINE_NOT_FOUND);
-
-            Order order = orderMapper.selectByPrimaryKey(orderLine.getOrderId());
-            BusinessUtil.assertTrue(userId.equals(order.getCreateId()),ErrorCodes.CommonEnum.REQ_ILLEGAL);
-
-            orderLine.setExpectedDeliveryDate(x.getExpectedDeliveryDate());
-            orderLine.setUpdateId(userId);
-            orderLine.setUpdateTime(DateUtil.getCurrentTS());
-            orderMapper.updateByPrimaryKeySelective(order);
-        });
-    }
-
-
-    @OperationLog
     @Transactional
     public void deliveryApprove(DeliveryApproveVO vo, Integer userId){
         DeliverOrder deliverOrder = deliverOrderMapper.selectByPrimaryKey(vo.getDeliveryOrderId());
