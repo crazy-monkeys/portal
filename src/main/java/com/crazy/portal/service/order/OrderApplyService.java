@@ -17,10 +17,12 @@ import com.crazy.portal.util.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.text.ParseException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @Desc:
@@ -48,42 +50,6 @@ public class OrderApplyService {
     private DeliverOrderLineMapper deliverOrderLineMapper;
     @Resource
     private CustomerInfoService customerInfoService;
-
-    /**
-     * 订单申请
-     * @param order
-     * @param userId
-     */
-    @Transactional
-    public void submitApply(OrderApply order, Integer userId){
-        BusinessUtil.notNull(order, ErrorCodes.BusinessEnum.ORDER_INFO_IS_REQUIRED);
-        BusinessUtil.notNull(order.getLines(), ErrorCodes.BusinessEnum.ORDER_LINES_IS_REQUIRED);
-        CustomerInfo dealerByUser = customerInfoService.getDealerByUser(userId);
-        BusinessUtil.notNull(dealerByUser, ErrorCodes.BusinessEnum.CUSTOMER_IS_EMPYT);
-        order.setDealerId(dealerByUser.getId());
-        order.setApprovalStatus(Enums.OrderApprovalStatus.WAIT_APPROVAL.getValue());
-        order.setCreateId(userId);
-        order.setCreateTime(DateUtil.getCurrentTS());
-        order.setActive(1);
-        if(order.getSalesOrg().equals("3000")){
-            order.setPaymentTerms("9994");
-        }
-
-        List<OrderLine> orderLines = order.getOrderLines();
-        orderLines.forEach(x->{
-            x.setCreateId(userId);
-            Date priceDate;
-            try {
-                priceDate = DateUtil.parseDate(order.getPriceDate(),DateUtil.MONTH_FORMAT_HLINE);
-            } catch (ParseException e) {
-                log.error("",e);
-                throw new IllegalArgumentException("参数转换错误");
-            }
-            x.setExpectedDeliveryDate(DateUtil.getLastDayOfMonth(DateUtil.getYear(priceDate),DateUtil.getMonth(priceDate)));
-        });
-        order.setLines(order.objToLineJson(orderLines));
-        orderApplyMapper.insertSelective(order);
-    }
 
     /**
      * 模板下载
@@ -134,6 +100,76 @@ public class OrderApplyService {
         map.put("grossValue",esHeader.getGrossvalue());
         map.put("netValue",esHeader.getNetvalue());
         return map;
+    }
+
+    /**
+     * 取消订单申请
+     * @param itemIds
+     * @param userId
+     */
+    @Transactional
+    public void cancelOrderApply(Set<Integer> itemIds, Integer userId) throws Exception {
+        OrderApply orderApply = new OrderApply();
+
+        List<OrderLine> lines = itemIds.stream()
+                .map(x->{
+                    OrderLine orderLine = orderLineMapper.selectByPrimaryKey(x);
+                    orderLine.setActice(0);
+                    return orderLine;
+                }).collect(Collectors.toList());
+
+        BusinessUtil.assertFlase(itemIds.size() != lines.size(),ErrorCodes.BusinessEnum.ORDER_LINE_NOT_FOUND);
+
+        Set<Integer> orderIds = lines.stream().map(x->x.getOrderId()).collect(Collectors.toSet());
+        BusinessUtil.assertFlase(orderIds.size() > 1,ErrorCodes.BusinessEnum.ORDER_LINE_NOT_FOUND);
+
+        Integer orderId = lines.get(0).getOrderId();
+
+        Order order = orderMapper.selectByPrimaryKey(orderId);
+
+        BeanUtils.copyNotNullFields(order,orderApply);
+        orderApply.setActive(1);
+        orderApply.setCreateId(userId);
+        orderApply.setCreateTime(DateUtil.getCurrentTS());
+        orderApply.setAppalyType(3);
+        orderApply.setLines(orderApply.objToLineJson(lines));
+        orderApplyMapper.insert(orderApply);
+    }
+
+    /**
+     * 订单申请
+     * @param order
+     * @param userId
+     */
+    @Transactional
+    public void createOrderApply(OrderApply order, Integer userId){
+        BusinessUtil.notNull(order, ErrorCodes.BusinessEnum.ORDER_INFO_IS_REQUIRED);
+        BusinessUtil.notNull(order.getLines(), ErrorCodes.BusinessEnum.ORDER_LINES_IS_REQUIRED);
+        CustomerInfo dealerByUser = customerInfoService.getDealerByUser(userId);
+        BusinessUtil.notNull(dealerByUser, ErrorCodes.BusinessEnum.CUSTOMER_IS_EMPYT);
+        order.setDealerId(dealerByUser.getId());
+        order.setApprovalStatus(Enums.OrderApprovalStatus.WAIT_APPROVAL.getValue());
+        order.setCreateId(userId);
+        order.setCreateTime(DateUtil.getCurrentTS());
+        order.setActive(1);
+        order.setAppalyType(1);
+        if(order.getSalesOrg().equals("3000")){
+            order.setPaymentTerms("9994");
+        }
+        List<OrderLine> orderLines = order.getOrderLines();
+        orderLines.forEach(x->{
+            x.setCreateId(userId);
+            Date priceDate;
+            try {
+                priceDate = DateUtil.parseDate(order.getPriceDate(),DateUtil.MONTH_FORMAT_HLINE);
+            } catch (ParseException e) {
+                log.error("",e);
+                throw new IllegalArgumentException("参数转换错误");
+            }
+            x.setExpectedDeliveryDate(DateUtil.getLastDayOfMonth(DateUtil.getYear(priceDate),DateUtil.getMonth(priceDate)));
+        });
+        order.setLines(order.objToLineJson(orderLines));
+        orderApplyMapper.insertSelective(order);
     }
 
     private List<ItItem> buildItItems(List<OrderLineEO> records) {

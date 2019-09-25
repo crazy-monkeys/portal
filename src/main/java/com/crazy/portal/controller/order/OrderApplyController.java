@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.util.Set;
 
 /**
  * 订单申请
@@ -27,14 +28,38 @@ public class OrderApplyController extends BaseController {
     private OrderApplyService orderApplyService;
 
     /**
-     * 提交申请
+     * 订单创建申请
      * @param orderApply
      * @return
      */
-    @PostMapping("/submit")
+    @PostMapping("/create")
     @OperationLog
-    public BaseResponse submit(@RequestBody @Valid OrderApply orderApply){
-        orderApplyService.submitApply(orderApply, getCurrentUserId());
+    public BaseResponse create(@RequestBody @Valid OrderApply orderApply){
+        orderApplyService.createOrderApply(orderApply, getCurrentUserId());
+        return successResult();
+    }
+
+    /**
+     * 订单取消申请
+     * @param itemIds
+     * @return
+     */
+    @PostMapping("/cancel")
+    @OperationLog
+    public BaseResponse cancel(@RequestParam Set<Integer> itemIds) throws Exception{
+        orderApplyService.cancelOrderApply(itemIds, getCurrentUserId());
+        return successResult();
+    }
+
+    /**
+     * 订单修改申请
+     * @param itemIds
+     * @return
+     */
+    @PostMapping("/modify")
+    @OperationLog
+    public BaseResponse modify(@RequestParam Set<Integer> itemIds) throws Exception{
+        orderApplyService.cancelOrderApply(itemIds, getCurrentUserId());
         return successResult();
     }
 
