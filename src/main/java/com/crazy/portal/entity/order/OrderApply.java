@@ -173,6 +173,11 @@ public class OrderApply {
     private Integer appalyType;
 
     /**
+     * SAP订单号
+     */
+    private String rSapOrderId;
+
+    /**
      * 订单行信息
      */
     private JSONArray lines;

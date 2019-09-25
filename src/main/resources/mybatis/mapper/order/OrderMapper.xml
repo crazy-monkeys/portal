@@ -53,6 +53,13 @@
     where id = #{id,jdbcType=INTEGER}
   </select>
 
+  <select id="selectBySapOrderId" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_order
+    where r_sap_order_id = #{sapOrderId,jdbcType=VARCHAR}
+  </select>
+
   <select id="selectByPage" resultMap="BaseResultMap" parameterType="com.crazy.portal.bean.order.OrderQueryBean">
     select
     <include refid="Base_Column_List" />
