@@ -39,8 +39,8 @@ public class OrderApplyController extends BaseController {
      * @param orderApply
      * @return
      */
-    @PostMapping("/create")
     @OperationLog
+    @PostMapping("/create")
     public BaseResponse create(@RequestBody @Valid OrderApply orderApply){
         orderApplyService.createOrderApply(orderApply, getCurrentUserId());
         return successResult();
@@ -51,8 +51,8 @@ public class OrderApplyController extends BaseController {
      * @param orderApply
      * @return
      */
-    @PostMapping("/modify/{orderId}")
     @OperationLog
+    @PostMapping("/modify/{orderId}")
     public BaseResponse modify(@PathVariable Integer orderId,
                                @RequestBody @Valid OrderApply orderApply) throws Exception{
 
@@ -68,8 +68,8 @@ public class OrderApplyController extends BaseController {
      * @param itemIds
      * @return
      */
-    @PostMapping("/cancel/{orderId}")
     @OperationLog
+    @PostMapping("/cancel/{orderId}")
     public BaseResponse cancel(@PathVariable Integer orderId,
                                @RequestParam Set<Integer> itemIds) throws Exception{
 
@@ -84,6 +84,7 @@ public class OrderApplyController extends BaseController {
      * @return
      * @throws Exception
      */
+    @OperationLog
     @PostMapping("/modifyDeliveryDate/{orderId}")
     public BaseResponse modifyDeliveryDate(@PathVariable Integer orderId,
                                            @RequestBody List<DeliveryChangeVO> changeVOS) throws Exception{

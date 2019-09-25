@@ -1,5 +1,6 @@
 package com.crazy.portal.controller.order;
 
+import com.crazy.portal.annotation.OperationLog;
 import com.crazy.portal.bean.BaseResponse;
 import com.crazy.portal.bean.order.DeliveryApproveVO;
 import com.crazy.portal.bean.order.OrderApprovalBean;
@@ -51,6 +52,7 @@ public class OrderApprovalController extends BaseController {
      * @param bean
      * @return
      */
+    @OperationLog
     @PostMapping("/approval")
     public BaseResponse approval(@RequestBody @Valid OrderApprovalBean bean) throws Exception {
         orderApproveService.approval(bean, super.getCurrentUser());

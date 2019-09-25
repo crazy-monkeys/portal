@@ -205,9 +205,9 @@ public class OrderApplyService {
      * 变更交货日期
      */
     public void modifyDeliveryDateApply(Integer orderId, List<DeliveryChangeVO> changeVOS, Integer userId) throws Exception{
-        if(changeVOS.isEmpty()){
-            return;
-        }
+
+        if(changeVOS.isEmpty()) return;
+
         OrderApply orderApply = new OrderApply();
         Order order = orderMapper.selectByPrimaryKey(orderId);
         BusinessUtil.notNull(order, ErrorCodes.BusinessEnum.ORDER_NOT_FOUND);
