@@ -53,6 +53,51 @@
     from t_order_apply
     where id = #{id,jdbcType=INTEGER}
   </select>
+
+  <select id="selectByPage" resultMap="BaseResultMap" parameterType="com.crazy.portal.bean.order.OrderQueryBean">
+    select
+    <include refid="Base_Column_List" />
+    from t_order_apply
+    where 1=1
+    <if test="rSapOrderId != null and rSapOrderId != ''">
+      and r_sap_order_id = #{rSapOrderId,jdbcType=VARCHAR}
+    </if>
+    <if test="dealerId != null">
+      and dealer_id = #{dealerId,jdbcType=INTEGER}
+    </if>
+    <if test="createBeginTime != null">
+      and create_time &gt;= #{createBeginTime,jdbcType=TIMESTAMP}
+    </if>
+    <if test="createEndTime != null">
+      and create_time &lt;= #{createEndTime,jdbcType=TIMESTAMP}
+    </if>
+    <if test="orderType != null and orderType != ''">
+      and order_type = #{orderType,jdbcType=VARCHAR}
+    </if>
+    <if test="underOrderType != null and underOrderType != ''">
+      and under_order_type = #{underOrderType,jdbcType=VARCHAR}
+    </if>
+    <if test="soldTo != null and soldTo != ''">
+      and under_order_type = #{underOrderType,jdbcType=VARCHAR}
+    </if>
+    <if test="soldTo != null and soldTo != ''">
+      and sold_to = #{soldTo,jdbcType=VARCHAR}
+    </if>
+    <if test="sendTo != null and sendTo != ''">
+      and send_to = #{sendTo,jdbcType=VARCHAR}
+    </if>
+    <if test="purchaseNo != null and purchaseNo != ''">
+      and purchase_no = #{purchaseNo,jdbcType=VARCHAR}
+    </if>
+    <if test="approvalStatus != null">
+      and approval_status = #{approvalStatus,jdbcType=INTEGER}
+    </if>
+    <if test="active != null">
+      and active = #{active,jdbcType=INTEGER}
+    </if>
+    order by create_time desc
+  </select>
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from t_order_apply
     where id = #{id,jdbcType=INTEGER}

@@ -9,7 +9,6 @@ import com.crazy.portal.util.BusinessUtil;
 import com.crazy.portal.util.ErrorCodes;
 import com.crazy.portal.util.StringUtil;
 import org.springframework.web.bind.annotation.*;
-
 import javax.annotation.Resource;
 
 /**

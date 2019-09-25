@@ -168,7 +168,7 @@ public class OrderApply {
 
     /**
      * 申请类型
-     * 1.创单申请 2.订单修改 3.订单取消
+     * 1.创单申请 2.订单修改 3.订单取消 4.变更交期
      */
     private Integer appalyType;
 

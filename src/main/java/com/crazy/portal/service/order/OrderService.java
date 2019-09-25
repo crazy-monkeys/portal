@@ -84,6 +84,15 @@ public class OrderService {
     }
 
     /**
+     * 订单明细
+     * @param id
+     * @return
+     */
+    public Order findOrder(Integer id){
+        return orderMapper.selectByPrimaryKey(id);
+    }
+
+    /**
      * 提货单明细
      * @param deliveryOrderId
      * @return

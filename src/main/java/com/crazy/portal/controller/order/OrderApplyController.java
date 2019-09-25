@@ -7,10 +7,13 @@ import com.crazy.portal.bean.order.DeliveryOrderCancelVO;
 import com.crazy.portal.bean.order.DeliveryOrderVO;
 import com.crazy.portal.controller.BaseController;
 import com.crazy.portal.entity.order.DeliverOrder;
+import com.crazy.portal.entity.order.Order;
 import com.crazy.portal.entity.order.OrderApply;
 import com.crazy.portal.service.order.OrderApplyService;
+import com.crazy.portal.service.order.OrderService;
+import com.crazy.portal.util.BusinessUtil;
+import com.crazy.portal.util.ErrorCodes;
 import org.springframework.web.bind.annotation.*;
-
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -28,6 +31,8 @@ public class OrderApplyController extends BaseController {
 
     @Resource
     private OrderApplyService orderApplyService;
+    @Resource
+    private OrderService orderService;
 
     /**
      * 订单创建申请
@@ -46,9 +51,14 @@ public class OrderApplyController extends BaseController {
      * @param orderApply
      * @return
      */
-    @PostMapping("/modify")
+    @PostMapping("/modify/{orderId}")
     @OperationLog
-    public BaseResponse modify(@RequestBody @Valid OrderApply orderApply){
+    public BaseResponse modify(@PathVariable Integer orderId,
+                               @RequestBody @Valid OrderApply orderApply) throws Exception{
+
+
+        this.checkOrder(orderId);
+
         orderApplyService.modifyOrderApply(orderApply,super.getCurrentUserId());
         return successResult();
     }
@@ -58,9 +68,13 @@ public class OrderApplyController extends BaseController {
      * @param itemIds
      * @return
      */
-    @PostMapping("/cancel")
+    @PostMapping("/cancel/{orderId}")
     @OperationLog
-    public BaseResponse cancel(@RequestParam Set<Integer> itemIds) throws Exception{
+    public BaseResponse cancel(@PathVariable Integer orderId,
+                               @RequestParam Set<Integer> itemIds) throws Exception{
+
+        this.checkOrder(orderId);
+
         orderApplyService.cancelOrderApply(itemIds, getCurrentUserId());
         return successResult();
     }
@@ -70,9 +84,13 @@ public class OrderApplyController extends BaseController {
      * @return
      * @throws Exception
      */
-    @PostMapping("/modifyDeliveryDate")
-    public BaseResponse modifyDeliveryDate(@RequestBody List<DeliveryChangeVO> changeVOS){
-        orderApplyService.modifyDeliveryDate(changeVOS, getCurrentUserId());
+    @PostMapping("/modifyDeliveryDate/{orderId}")
+    public BaseResponse modifyDeliveryDate(@PathVariable Integer orderId,
+                                           @RequestBody List<DeliveryChangeVO> changeVOS) throws Exception{
+
+        this.checkOrder(orderId);
+
+        orderApplyService.modifyDeliveryDateApply(orderId,changeVOS, getCurrentUserId());
         return successResult();
     }
 
@@ -133,5 +151,15 @@ public class OrderApplyController extends BaseController {
     public BaseResponse DeliveryDelete(@PathVariable Integer id){
         orderApplyService.deleteDeliveryOrder(id);
         return successResult();
+    }
+
+    private void checkOrder(Integer orderId) {
+        Order order = orderService.findOrder(orderId);
+        BusinessUtil.notNull(order, ErrorCodes.BusinessEnum.ORDER_NOT_FOUND);
+        BusinessUtil.assertTrue(order.getActive().equals(1), ErrorCodes.BusinessEnum.ORDER_IS_FAILURE);
+        BusinessUtil.assertTrue(order.getApprovalStatus().equals(1), ErrorCodes.BusinessEnum.ORDER_UN_APPROVE_PASS_ORDER);
+
+        boolean isApprovalPendingOrder = orderApplyService.isApprovalPendingOrder(order.getRSapOrderId());
+        BusinessUtil.assertFlase(isApprovalPendingOrder, ErrorCodes.BusinessEnum.ORDER_PENDING_ORDER);
     }
 }

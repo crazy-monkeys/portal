@@ -82,6 +82,8 @@ public class OrderApproveService {
                     break;
                 case 3:
                     this.cancelOrder(order, userId);
+                case 4:
+                    this.modifyDeliveryDate(orderApply, userId);
                     break;
                 default:
                     break;
@@ -92,11 +94,11 @@ public class OrderApproveService {
         orderApply.setApprover(user.getLoginName());
         orderApply.setApprovalTime(DateUtil.getCurrentTS());
         orderApply.setApprovalOpinions(bean.getReason());
-        orderApplyMapper.updateByPrimaryKey(orderApply);
+        orderApplyMapper.updateByPrimaryKeySelective(orderApply);
     }
 
     /**
-     * 执行创单
+     * 审批通过-创单
      * @param userId
      * @param orderApply
      * @throws ParseException
@@ -138,9 +140,8 @@ public class OrderApproveService {
         }
     }
 
-
     /**
-     * 执行取消订单
+     * 审批通过-取消订单
      * @param order
      * @param userId
      */
@@ -217,6 +218,29 @@ public class OrderApproveService {
     }
 
 
+    /**
+     * 审批通过-变更交期
+     * @param orderApply
+     * @param userId
+     */
+    private void modifyDeliveryDate(OrderApply orderApply,Integer userId){
+        List<OrderLine> applyLines = orderApply.lineJsonToObj(orderApply.getLines());
+
+        Order order = orderMapper.selectBySapOrderId(orderApply.getRSapOrderId());
+        List<OrderLine> lines = orderLineMapper.selectByOrderId(order.getId());
+
+        lines.forEach(x->
+            applyLines.forEach(applyLine->{
+                if(applyLine.getProductId().equals(x.getProductId())){
+                    x.setExpectedDeliveryDate(applyLine.getExpectedDeliveryDate());
+                    x.setUpdateId(userId);
+                    x.setUpdateTime(DateUtil.getCurrentTS());
+                    orderLineMapper.updateByPrimaryKeySelective(x);
+                }
+            })
+        );
+
+    }
     /**
      * 调用Ecc修改订单接口
      * @param order

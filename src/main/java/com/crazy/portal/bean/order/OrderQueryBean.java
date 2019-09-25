@@ -26,5 +26,5 @@ public class OrderQueryBean extends PageBean {
     /** 采购订单编号 **/
     private String purchaseNo;
     /**审批状态**/
-    private String approvalStatus;
+    private Integer approvalStatus;
 }

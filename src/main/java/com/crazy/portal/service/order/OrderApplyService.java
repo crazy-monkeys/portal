@@ -2,10 +2,7 @@ package com.crazy.portal.service.order;
 
 import com.alibaba.excel.metadata.BaseRowModel;
 import com.alibaba.excel.support.ExcelTypeEnum;
-import com.crazy.portal.bean.order.DeliveryChangeVO;
-import com.crazy.portal.bean.order.DeliveryOrderCancelVO;
-import com.crazy.portal.bean.order.DeliveryOrderVO;
-import com.crazy.portal.bean.order.OrderLineEO;
+import com.crazy.portal.bean.order.*;
 import com.crazy.portal.bean.order.wsdl.price.*;
 import com.crazy.portal.config.exception.BusinessException;
 import com.crazy.portal.dao.order.*;
@@ -18,7 +15,6 @@ import com.crazy.portal.util.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.text.ParseException;
@@ -51,6 +47,19 @@ public class OrderApplyService {
     private DeliverOrderLineMapper deliverOrderLineMapper;
     @Resource
     private CustomerInfoService customerInfoService;
+
+
+    /**
+     * 查询订单是否为待审批
+     * @param sapOrderId
+     * @return
+     */
+    public boolean isApprovalPendingOrder(String sapOrderId){
+        OrderQueryBean params = new OrderQueryBean();
+        params.setRSapOrderId(sapOrderId);
+        params.setApprovalStatus(0);
+        return orderApplyMapper.selectByPage(params).isEmpty();
+    }
 
     /**
      * 模板下载
@@ -145,8 +154,15 @@ public class OrderApplyService {
      * @param userId
      */
     @Transactional
-    public void modifyOrderApply(OrderApply order, Integer userId){
-
+    public void modifyOrderApply(OrderApply order, Integer userId) throws Exception{
+        OrderApply orderApply = new OrderApply();
+        BeanUtils.copyNotNullFields(order,orderApply);
+        orderApply.setActive(1);
+        orderApply.setCreateId(userId);
+        orderApply.setCreateTime(DateUtil.getCurrentTS());
+        orderApply.setAppalyType(2);
+        orderApply.setLines(orderApply.objToLineJson(order.getOrderLines()));
+        orderApplyMapper.insertSelective(orderApply);
     }
 
     /**
@@ -173,6 +189,7 @@ public class OrderApplyService {
         Integer orderId = lines.get(0).getOrderId();
 
         Order order = orderMapper.selectByPrimaryKey(orderId);
+        BusinessUtil.notNull(order, ErrorCodes.BusinessEnum.ORDER_NOT_FOUND);
 
         BeanUtils.copyNotNullFields(order,orderApply);
         orderApply.setActive(1);
@@ -180,30 +197,41 @@ public class OrderApplyService {
         orderApply.setCreateTime(DateUtil.getCurrentTS());
         orderApply.setAppalyType(3);
         orderApply.setLines(orderApply.objToLineJson(lines));
-        orderApplyMapper.insert(orderApply);
+        orderApplyMapper.insertSelective(orderApply);
     }
 
 
     /**
      * 变更交货日期
      */
-    public void modifyDeliveryDate(List<DeliveryChangeVO> changeVOS, Integer userId){
+    public void modifyDeliveryDateApply(Integer orderId, List<DeliveryChangeVO> changeVOS, Integer userId) throws Exception{
         if(changeVOS.isEmpty()){
             return;
         }
+        OrderApply orderApply = new OrderApply();
+        Order order = orderMapper.selectByPrimaryKey(orderId);
+        BusinessUtil.notNull(order, ErrorCodes.BusinessEnum.ORDER_NOT_FOUND);
+
+        List<OrderLine> lines = new ArrayList<>();
         changeVOS.stream().forEach(x->{
             OrderLine orderLine = orderLineMapper.selectByPrimaryKey(x.getItemId());
             BusinessUtil.notNull(orderLine,ErrorCodes.BusinessEnum.ORDER_LINE_NOT_FOUND);
 
-            Order order = orderMapper.selectByPrimaryKey(orderLine.getOrderId());
-            BusinessUtil.assertTrue(userId.equals(order.getCreateId()),ErrorCodes.CommonEnum.REQ_ILLEGAL);
-
             orderLine.setExpectedDeliveryDate(x.getExpectedDeliveryDate());
             orderLine.setUpdateId(userId);
             orderLine.setUpdateTime(DateUtil.getCurrentTS());
-            orderMapper.updateByPrimaryKeySelective(order);
+            lines.add(orderLine);
         });
+
+        BeanUtils.copyNotNullFields(order,orderApply);
+        orderApply.setActive(1);
+        orderApply.setCreateId(userId);
+        orderApply.setCreateTime(DateUtil.getCurrentTS());
+        orderApply.setAppalyType(4);
+        orderApply.setLines(orderApply.objToLineJson(lines));
+        orderApplyMapper.insertSelective(orderApply);
     }
+
 
     private List<ItItem> buildItItems(List<OrderLineEO> records) {
         List<ItItem> items = new ArrayList<>();
