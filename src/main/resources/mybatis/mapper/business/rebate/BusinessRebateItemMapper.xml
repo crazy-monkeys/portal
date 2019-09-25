@@ -376,11 +376,16 @@
     <include refid="Base_Column_List" />
     from t_business_rebate_item
     where active = 1
+    <if test="dealerId != null">
+      and agency_name = (
+        select cust_name from t_customer_info where id = #{dealerId}
+      )
+    </if>
     <if test="dealerName != null and dealerName != ''">
-      and dealer_name like concat('%',#{dealerName},'%')
+      and agency_name like concat('%',#{dealerName},'%')
     </if>
     <if test="customerName != null and customerName != ''">
-      and customer_name like concat('%',#{customerName},'%')
+      and customer_short_name like concat('%',#{customerName},'%')
     </if>
     <if test="status != null">
       and status = #{status}

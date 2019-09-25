@@ -21,5 +21,6 @@ public class RebateQueryBean extends PageBean {
     private String noticeBeginDate;
     //通知结束日期-item
     private String noticeEndDate;
-
+    //代理商ID
+    private Integer dealerId;
 }
