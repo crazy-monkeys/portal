@@ -581,4 +581,44 @@
     update t_forecast set error_msg = #{errorMsg} where bi_id = #{biId}
   </update>
 
+  <select id="selectBatchNoByIds" resultType="java.lang.String" >
+    select batch_no from t_forecast a
+    where 1 = 1
+    <foreach collection="ids" item="item" index="index" open=" and a.id in (" separator="," close=")" >
+      #{item}
+    </foreach>
+    group by batch_no
+  </select>
+  
+  <select id="checkIdenticalMonth" resultType="java.lang.Integer" >
+    select count(1) from (
+    select
+    a.operation_year_month,a.create_user_id
+    from t_forecast a
+    where 1 = 1
+    <foreach collection="ids" item="item" index="index" open=" and a.id in (" separator="," close=")" >
+      #{item}
+    </foreach>
+    group by a.operation_year_month,a.create_user_id
+    ) t
+  </select>
+
+  <select id="countDataNumByMonthAndUser" resultType="java.lang.Integer" >
+    select count(1) from t_forecast t
+    inner join t_forecast d on t.operation_year_month = d.operation_year_month and t.create_user_id = d.create_user_id
+    and d.id = #{id}
+  </select>
+
+  <select id="checkAmbAdjustmentNum" resultType="java.lang.Integer" >
+    select count(1) from t_forecast a
+    inner join t_forecast_line b on a.id = b.f_id
+    where a.id in (92,93,94)
+    and (b.amb_adjustment_one is null
+    or b.amb_adjustment_two is null
+    or b.amb_adjustment_three is null
+    or b.amb_adjustment_four is null
+    or b.amb_adjustment_five is null
+    or b.amb_adjustment_six is null)
+  </select>
+
 </mapper>

@@ -126,6 +126,7 @@ public class RebateService {
             log.error(ErrorCodes.BusinessEnum.REBATE_SEND_EMAIL_EXCEPTION.getZhMsg(), e);
             throw new BusinessException(ErrorCodes.BusinessEnum.REBATE_SEND_EMAIL_EXCEPTION);
         }
+        item.setId(null);
         item.setExecutor(bean.getExecutor());
         item.setExecuteStyle(bean.getExecuteStyle());
         item.setRebateAmount(releaseItem.getReleaseAmount());
@@ -186,7 +187,7 @@ public class RebateService {
      * @return
      */
     @Transactional
-    public FileVO fileUpload(Integer rebateItemId, Integer userId, MultipartFile file){
+    public FileVO fileUpload(Integer rebateItemId, Integer userId, Integer dealerId, MultipartFile file){
         BusinessUtil.notNull(rebateItemId, ErrorCodes.BusinessEnum.REBATE_ITEM_ID_IS_NULL);
         BusinessUtil.notNull(file, ErrorCodes.BusinessEnum.REBATE_FILE_NOT_FOUND);
 
@@ -194,7 +195,7 @@ public class RebateService {
         //保存文件信息
         saveRebateFile(rebateItemId, userId, fileInfo);
         //更新item状态
-        Integer rebateId = updateRebateItemStatus(rebateItemId, userId);
+        Integer rebateId = updateRebateItemStatus(rebateItemId, userId, dealerId);
         //更新主rebate状态
         updateRebateMasterStatus(userId, rebateId);
         return fileInfo;
@@ -216,13 +217,15 @@ public class RebateService {
         }
     }
 
-    private Integer updateRebateItemStatus(Integer rebateItemId, Integer userId) {
+    private Integer updateRebateItemStatus(Integer rebateItemId, Integer userId, Integer dealerId) {
         BusinessRebateItem item = businessRebateItemMapper.selectByPrimaryKey(rebateItemId);
+        BusinessUtil.notNull(item, ErrorCodes.BusinessEnum.REBATE_RECORD_NOT_FOUND);
+        BusinessUtil.assertFlase(Enums.BusinessRebateItemStatus.FINISHED.getCode().equals(item.getStatus()), ErrorCodes.BusinessEnum.REBATE_ITEM_FINISHED_EXCEPTION);
         if(item.getStatus().equals(Enums.BusinessRebateItemStatus.WAIT_CONFIRM.getCode())){
+            BusinessUtil.notNull(dealerId, ErrorCodes.BusinessEnum.REBATE_ITEM_CONFIRM_FILE_UPLOAD_EXCEPTION);
             item.setDlExecuteDate(DateUtil.getCurrentTS());
             item.setStatus(Enums.BusinessRebateItemStatus.USED_CONFIRM.getCode());
-        }
-        if(item.getStatus().equals(Enums.BusinessRebateItemStatus.USED_CONFIRM.getCode())){
+        }else if(item.getStatus().equals(Enums.BusinessRebateItemStatus.USED_CONFIRM.getCode())){
             item.setZrExecuteDate(DateUtil.getCurrentTS());
             item.setStatus(Enums.BusinessRebateItemStatus.FINISHED.getCode());
         }

@@ -184,6 +184,8 @@ public class ErrorCodes {
         REBATE_ITEM_ID_IS_NULL(70104, "rebateItemId不能为空", ""),
         REBATE_EXECUTOR_EMAIL_NOT_FOUND(70105, "rebate执行人邮箱不能为空", ""),
         REBATE_SEND_EMAIL_EXCEPTION(70106, "发送确认函异常", ""),
+        REBATE_ITEM_CONFIRM_FILE_UPLOAD_EXCEPTION(70107, "上传确认文件必须是代理商", ""),
+        REBATE_ITEM_FINISHED_EXCEPTION(70108, "该Rebate已完结，不可上传文件", ""),
         //产品管理
         PRODUCT_QUERY_ERROR(70501,"产品查询异常",""),
         PRODUCT_SYNC_ERROR(70502,"产品同步异常",""),
@@ -209,6 +211,9 @@ public class ErrorCodes {
         FORECAST_ALREADY_COMMIT_NOT_REJECT(40017, "数据已提交BI，无法驳回", ""),
         FORECAST_DATA_TYPE_DISUNITY(40018, "请操作同一类型数据", ""),
         FORECAST_DATA_OPERATION_ERROR(40019, "请求类型暂不支持，请重新选择数据操作", ""),
+        FORECAST_CHECK_IDENTICAL_MONTH_ERROR(40020, "请操作同一个代理商同一个月的数据", ""),
+        FORECAST_DATA_TOTAL_CHECK_ERROR(40021, "数据未全部选中，请重新选择", ""),
+        FORECAST_AMB_ADJUSTMENT_NUM_ERROR(40022, "存在阿米巴队长未调整数据，请先调整数据", ""),
         //订单管理
         ORDER_NOT_FOUND(90001, "订单信息不存在", ""),
         ORDER_LINE_NOT_FOUND(90002, "订单行信息不存在", ""),
