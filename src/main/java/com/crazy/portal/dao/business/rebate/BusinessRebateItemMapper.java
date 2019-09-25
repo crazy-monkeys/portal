@@ -1,10 +1,10 @@
 package com.crazy.portal.dao.business.rebate;
 
 import com.crazy.portal.bean.business.rebate.RebateQueryBean;
+import com.crazy.portal.bean.business.rebate.RebateUploadBean;
 import com.crazy.portal.entity.business.rebate.BusinessRebateItem;
 import org.apache.ibatis.annotations.Param;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 public interface BusinessRebateItemMapper {
@@ -20,4 +20,5 @@ public interface BusinessRebateItemMapper {
 
     List<BusinessRebateItem> selectByRebateId(@Param("rebateId")Integer rebateId);
 
+    List<BusinessRebateItem> selectByParam(RebateUploadBean bean);
 }
