@@ -126,6 +126,7 @@ public class RebateService {
             log.error(ErrorCodes.BusinessEnum.REBATE_SEND_EMAIL_EXCEPTION.getZhMsg(), e);
             throw new BusinessException(ErrorCodes.BusinessEnum.REBATE_SEND_EMAIL_EXCEPTION);
         }
+        item.setId(null);
         item.setExecutor(bean.getExecutor());
         item.setExecuteStyle(bean.getExecuteStyle());
         item.setRebateAmount(releaseItem.getReleaseAmount());
