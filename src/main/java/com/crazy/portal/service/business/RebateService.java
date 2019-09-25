@@ -3,10 +3,7 @@ package com.crazy.portal.service.business;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.crazy.portal.bean.business.rebate.RebateConfirmBean;
-import com.crazy.portal.bean.business.rebate.RebateGroupParam;
-import com.crazy.portal.bean.business.rebate.RebateQueryBean;
-import com.crazy.portal.bean.business.rebate.SendMailBean;
+import com.crazy.portal.bean.business.rebate.*;
 import com.crazy.portal.bean.common.Constant;
 import com.crazy.portal.bean.customer.basic.FileVO;
 import com.crazy.portal.bean.system.MailBean;
@@ -24,7 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.util.ObjectUtils;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
@@ -106,18 +103,19 @@ public class RebateService {
     public void confirm(RebateConfirmBean bean, Integer userId) {
         BusinessUtil.notNull(bean.getRebates(), ErrorCodes.BusinessEnum.REBATE_RECORD_NOT_FOUND);
         List<BusinessRebateItem> items = Lists.newArrayList();
+        Date noticeDate = DateUtil.getCurrentTS();
         for (RebateConfirmBean.RebateRecord e : bean.getRebates()) {
             BusinessRebate info = businessRebateMapper.selectByPrimaryKey(e.getId());
             BusinessUtil.notNull(info, ErrorCodes.BusinessEnum.REBATE_RECORD_NOT_FOUND);
             BusinessUtil.assertFlase(e.getReleaseAmount().compareTo(info.getSurplusRebateAmount()) > 0, ErrorCodes.BusinessEnum.REBATE_SURPLUS_AMOUNT_BIG);
-            BusinessRebateItem item = saveRebateItem(bean, e, userId, info);
+            BusinessRebateItem item = saveRebateItem(bean, e, userId, info, noticeDate);
             updateRebateMasterInfo(e, userId, info);
             items.add(item);
         }
 //        sendConfirmEmail(items, bean.getExecutor());
     }
 
-    private BusinessRebateItem saveRebateItem(RebateConfirmBean bean, RebateConfirmBean.RebateRecord releaseItem, Integer userId, BusinessRebate info) {
+    private BusinessRebateItem saveRebateItem(RebateConfirmBean bean, RebateConfirmBean.RebateRecord releaseItem, Integer userId, BusinessRebate info, Date noticeDate) {
         BusinessRebateItem item = new BusinessRebateItem();
         item.setRebateId(releaseItem.getId());
         try {
@@ -130,7 +128,7 @@ public class RebateService {
         item.setExecutor(bean.getExecutor());
         item.setExecuteStyle(bean.getExecuteStyle());
         item.setRebateAmount(releaseItem.getReleaseAmount());
-        item.setNoticeDate(DateUtil.getCurrentTS());
+        item.setNoticeDate(noticeDate);
         item.setRemark(bean.getRemark());
         item.setStatus(Enums.BusinessRebateItemStatus.WAIT_CONFIRM.getCode());
         item.setActive(Constant.ACTIVE);
@@ -181,23 +179,24 @@ public class RebateService {
 
     /**
      * 文件上传
-     * @param rebateItemId
+     * @param bean
      * @param userId
-     * @param file
      * @return
      */
     @Transactional
-    public FileVO fileUpload(Integer rebateItemId, Integer userId, Integer dealerId, MultipartFile file){
-        BusinessUtil.notNull(rebateItemId, ErrorCodes.BusinessEnum.REBATE_ITEM_ID_IS_NULL);
-        BusinessUtil.notNull(file, ErrorCodes.BusinessEnum.REBATE_FILE_NOT_FOUND);
-
-        FileVO fileInfo = FileUtil.upload(file, getCustFilePath());
-        //保存文件信息
-        saveRebateFile(rebateItemId, userId, fileInfo);
-        //更新item状态
-        Integer rebateId = updateRebateItemStatus(rebateItemId, userId, dealerId);
-        //更新主rebate状态
-        updateRebateMasterStatus(userId, rebateId);
+    public FileVO fileUpload(RebateUploadBean bean, Integer userId, Integer dealerId){
+        BusinessUtil.notNull(bean.getFile(), ErrorCodes.BusinessEnum.REBATE_FILE_NOT_FOUND);
+        List<BusinessRebateItem> items = businessRebateItemMapper.selectByParam(bean);
+        BusinessUtil.assertFlase(ObjectUtils.isEmpty(items), ErrorCodes.BusinessEnum.REBATE_RECORD_NOT_FOUND);
+        FileVO fileInfo = FileUtil.upload(bean.getFile(), getCustFilePath());
+        for(BusinessRebateItem item : items) {
+            //保存文件信息
+            saveRebateFile(item.getId(), userId, fileInfo);
+            //更新item状态
+            Integer rebateId = updateRebateItemStatus(item.getId(), userId, dealerId);
+            //更新主rebate状态
+            updateRebateMasterStatus(userId, rebateId);
+        }
         return fileInfo;
     }
 

@@ -4,12 +4,12 @@ import com.crazy.portal.annotation.OperationLog;
 import com.crazy.portal.bean.BaseResponse;
 import com.crazy.portal.bean.business.rebate.RebateConfirmBean;
 import com.crazy.portal.bean.business.rebate.RebateQueryBean;
+import com.crazy.portal.bean.business.rebate.RebateUploadBean;
 import com.crazy.portal.controller.BaseController;
 import com.crazy.portal.entity.system.User;
 import com.crazy.portal.service.business.RebateService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
@@ -73,15 +73,14 @@ public class RebateController extends BaseController {
 
     /**
      * 上传附件
-     * @param id
-     * @param file
+     * @param bean
      * @return
      */
     @OperationLog
-    @PostMapping("/upload/{id}")
-    public BaseResponse upload(@PathVariable Integer id, MultipartFile file){
+    @PostMapping("/upload")
+    public BaseResponse upload(@Valid RebateUploadBean bean){
         User user = getCurrentUser();
-        return successResult(rebateService.fileUpload(id, user.getId(), user.getDealerId(), file));
+        return successResult(rebateService.fileUpload(bean, user.getId(), user.getDealerId()));
     }
 
     /**

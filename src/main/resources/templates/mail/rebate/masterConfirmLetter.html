@@ -29,6 +29,7 @@ table td{
 <body>
 <table>
     <tr>
+        <th>通知日期</th>
         <th>出货公司</th>
         <th>执行代理商/客户</th>
         <th>客户简称</th>
@@ -40,6 +41,7 @@ table td{
         <th>备注</th>
     </tr>
     <tr th:each="item:${list}">
+        <td th:text="${item.noticeDate}"></td>
         <td th:text="${item.shipmentCompany}"></td>
         <td th:text="${item.executor}"></td>
         <td th:text="${item.customerShortName}"></td>

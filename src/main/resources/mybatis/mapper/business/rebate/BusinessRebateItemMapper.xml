@@ -4,24 +4,11 @@
   <resultMap id="BaseResultMap" type="com.crazy.portal.entity.business.rebate.BusinessRebateItem">
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="rebate_id" jdbcType="INTEGER" property="rebateId" />
-    <result column="agency_name" jdbcType="VARCHAR" property="agencyName" />
     <result column="customer_short_name" jdbcType="VARCHAR" property="customerShortName" />
-    <result column="customer_type" jdbcType="VARCHAR" property="customerType" />
     <result column="sales_name" jdbcType="VARCHAR" property="salesName" />
     <result column="ameba_header" jdbcType="VARCHAR" property="amebaHeader" />
     <result column="ameba_department" jdbcType="VARCHAR" property="amebaDepartment" />
     <result column="shipment_company" jdbcType="VARCHAR" property="shipmentCompany" />
-    <result column="account_year_month" jdbcType="VARCHAR" property="accountYearMonth" />
-    <result column="order_month" jdbcType="VARCHAR" property="orderMonth" />
-    <result column="shipment_year_month" jdbcType="VARCHAR" property="shipmentYearMonth" />
-    <result column="bu" jdbcType="VARCHAR" property="bu" />
-    <result column="pdt" jdbcType="VARCHAR" property="pdt" />
-    <result column="product" jdbcType="VARCHAR" property="product" />
-    <result column="qty" jdbcType="INTEGER" property="qty" />
-    <result column="sales_price" jdbcType="DECIMAL" property="salesPrice" />
-    <result column="po_price" jdbcType="DECIMAL" property="poPrice" />
-    <result column="actual_price" jdbcType="DECIMAL" property="actualPrice" />
-    <result column="platform" jdbcType="VARCHAR" property="platform" />
     <result column="rebate_amount" jdbcType="DECIMAL" property="rebateAmount" />
     <result column="executor" jdbcType="VARCHAR" property="executor"/>
     <result column="execute_style" jdbcType="VARCHAR" property="executeStyle" />
@@ -37,9 +24,8 @@
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, rebate_id, agency_name, customer_short_name, customer_type, sales_name, ameba_header, ameba_department,
-    shipment_company, account_year_month, order_month, shipment_year_month, bu, pdt,
-    product, qty, sales_price, po_price, actual_price, platform,
+    id, rebate_id, customer_short_name, sales_name, ameba_header, ameba_department,
+    shipment_company,
     rebate_amount, executor, execute_style, zr_execute_date, dl_execute_date,
     notice_date, remark,
     status, active, create_id, create_time, update_id, update_time
@@ -64,14 +50,8 @@
       <if test="rebateId != null">
         rebate_id,
       </if>
-      <if test="agencyName != null">
-        agency_name,
-      </if>
       <if test="customerShortName != null">
         customer_short_name,
-      </if>
-      <if test="customerType != null">
-        customer_type,
       </if>
       <if test="salesName != null">
         sales_name,
@@ -84,39 +64,6 @@
       </if>
       <if test="shipmentCompany != null">
         shipment_company,
-      </if>
-      <if test="accountYearMonth != null">
-        account_year_month,
-      </if>
-      <if test="orderMonth != null">
-        order_month,
-      </if>
-      <if test="shipmentYearMonth != null">
-        shipment_year_month,
-      </if>
-      <if test="bu != null">
-        bu,
-      </if>
-      <if test="pdt != null">
-        pdt,
-      </if>
-      <if test="product != null">
-        product,
-      </if>
-      <if test="qty != null">
-        qty,
-      </if>
-      <if test="salesPrice != null">
-        sales_price,
-      </if>
-      <if test="poPrice != null">
-        po_price,
-      </if>
-      <if test="actualPrice != null">
-        actual_price,
-      </if>
-      <if test="platform != null">
-        platform,
       </if>
       <if test="rebateAmount != null">
         rebate_amount,
@@ -165,14 +112,8 @@
       <if test="rebateId != null">
         #{rebateId,jdbcType=INTEGER},
       </if>
-      <if test="agencyName != null">
-        #{agencyName,jdbcType=VARCHAR},
-      </if>
       <if test="customerShortName != null">
         #{customerShortName,jdbcType=VARCHAR},
-      </if>
-      <if test="customerType != null">
-        #{customerType,jdbcType=VARCHAR},
       </if>
       <if test="salesName != null">
         #{salesName,jdbcType=VARCHAR},
@@ -185,39 +126,6 @@
       </if>
       <if test="shipmentCompany != null">
         #{shipmentCompany,jdbcType=VARCHAR},
-      </if>
-      <if test="accountYearMonth != null">
-        #{accountYearMonth,jdbcType=VARCHAR},
-      </if>
-      <if test="orderMonth != null">
-        #{orderMonth,jdbcType=VARCHAR},
-      </if>
-      <if test="shipmentYearMonth != null">
-        #{shipmentYearMonth,jdbcType=VARCHAR},
-      </if>
-      <if test="bu != null">
-        #{bu,jdbcType=VARCHAR},
-      </if>
-      <if test="pdt != null">
-        #{pdt,jdbcType=VARCHAR},
-      </if>
-      <if test="product != null">
-        #{product,jdbcType=VARCHAR},
-      </if>
-      <if test="qty != null">
-        #{qty,jdbcType=INTEGER},
-      </if>
-      <if test="salesPrice != null">
-        #{salesPrice,jdbcType=DECIMAL},
-      </if>
-      <if test="poPrice != null">
-        #{poPrice,jdbcType=DECIMAL},
-      </if>
-      <if test="actualPrice != null">
-        #{actualPrice,jdbcType=DECIMAL},
-      </if>
-      <if test="platform != null">
-        #{platform,jdbcType=VARCHAR},
       </if>
       <if test="rebateAmount != null">
         #{rebateAmount,jdbcType=DECIMAL},
@@ -266,14 +174,8 @@
       <if test="rebateId != null">
         rebate_id = #{rebateId,jdbcType=INTEGER},
       </if>
-      <if test="agencyName != null">
-        agency_name = #{agencyName,jdbcType=VARCHAR},
-      </if>
       <if test="customerShortName != null">
         customer_short_name = #{customerShortName,jdbcType=VARCHAR},
-      </if>
-      <if test="customerType != null">
-        customer_type = #{customerType,jdbcType=VARCHAR},
       </if>
       <if test="salesName != null">
         sales_name = #{salesName,jdbcType=VARCHAR},
@@ -286,39 +188,6 @@
       </if>
       <if test="shipmentCompany != null">
         shipment_company = #{shipmentCompany,jdbcType=VARCHAR},
-      </if>
-      <if test="accountYearMonth != null">
-        account_year_month = #{accountYearMonth,jdbcType=VARCHAR},
-      </if>
-      <if test="orderMonth != null">
-        order_month = #{orderMonth,jdbcType=VARCHAR},
-      </if>
-      <if test="shipmentYearMonth != null">
-        shipment_year_month = #{shipmentYearMonth,jdbcType=VARCHAR},
-      </if>
-      <if test="bu != null">
-        bu = #{bu,jdbcType=VARCHAR},
-      </if>
-      <if test="pdt != null">
-        pdt = #{pdt,jdbcType=VARCHAR},
-      </if>
-      <if test="product != null">
-        product = #{product,jdbcType=VARCHAR},
-      </if>
-      <if test="qty != null">
-        qty = #{qty,jdbcType=INTEGER},
-      </if>
-      <if test="salesPrice != null">
-        sales_price = #{salesPrice,jdbcType=DECIMAL},
-      </if>
-      <if test="poPrice != null">
-        po_price = #{poPrice,jdbcType=DECIMAL},
-      </if>
-      <if test="actualPrice != null">
-        actual_price = #{actualPrice,jdbcType=DECIMAL},
-      </if>
-      <if test="platform != null">
-        platform = #{platform,jdbcType=VARCHAR},
       </if>
       <if test="rebateAmount != null">
         rebate_amount = #{rebateAmount,jdbcType=DECIMAL},
@@ -373,16 +242,25 @@
 
   <select id="selectByPage" parameterType="com.crazy.portal.bean.business.rebate.RebateQueryBean" resultMap="BaseResultMap">
     select
-    <include refid="Base_Column_List" />
+    notice_date,
+    shipment_company,
+    executor,
+    customer_short_name,
+    sales_name,
+    ameba_header,
+    ameba_department,
+    sum(rebate_amount) as rebate_amount,
+    status,
+    execute_style,
+    zr_execute_date,
+    dl_execute_date,
+    remark
     from t_business_rebate_item
     where active = 1
     <if test="dealerId != null">
-      and agency_name = (
-        select cust_name from t_customer_info where id = #{dealerId}
+      and customer_short_name = (
+        select cust_abbreviation from t_customer_info where id = #{dealerId}
       )
-    </if>
-    <if test="dealerName != null and dealerName != ''">
-      and agency_name like concat('%',#{dealerName},'%')
     </if>
     <if test="customerName != null and customerName != ''">
       and customer_short_name like concat('%',#{customerName},'%')
@@ -402,7 +280,33 @@
     <if test="noticeEndDate != null and noticeEndDate != ''">
       and notice_date &lt;= str_to_date(#{noticeEndDate}, '%Y-%m-%d')
     </if>
+    group by
+    notice_date,
+    shipment_company,
+    executor,
+    customer_short_name,
+    sales_name,
+    ameba_header,
+    ameba_department,
+    status,
+    execute_style,
+    zr_execute_date,
+    dl_execute_date,
+    remark
     order by create_time desc
   </select>
-
+  
+  <select id="selectByParam" parameterType="com.crazy.portal.bean.business.rebate.RebateUploadBean" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_business_rebate_item
+    where active = 1
+    and notice_date = #{noticeDate}
+    and shipment_company = #{shipmentCompany}
+    and executor = #{executor}
+    and customer_short_name = #{customerShortName}
+    and sales_name = #{salesName}
+    and ameba_header = #{amebaHeader}
+    and ameba_department = #{amebaDepartment}
+  </select>
 </mapper>
