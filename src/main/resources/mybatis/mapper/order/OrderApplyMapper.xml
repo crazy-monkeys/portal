@@ -28,7 +28,7 @@
     <result column="dealer_id" jdbcType="INTEGER" property="dealerId" />
     <result column="appaly_type" jdbcType="INTEGER" property="appalyType" />
     <result column="r_sap_order_id" jdbcType="VARCHAR" property="rSapOrderId" />
-    <result column="lines" property="lines" typeHandler="com.crazy.portal.config.mybatis.handler.ArrayJsonHandler" />
+    <result column="json_lines" property="jsonLines" typeHandler="com.crazy.portal.config.mybatis.handler.ArrayJsonHandler" />
     <result column="approval_status" jdbcType="INTEGER" property="approvalStatus" />
     <result column="approver" jdbcType="VARCHAR" property="approver" />
     <result column="approval_opinions" jdbcType="VARCHAR" property="approvalOpinions" />
@@ -43,7 +43,7 @@
     id, order_type, under_order_type, sales_org, channel, division, sales_office, sales_group, 
     sold_to, send_to, purchase_no, purchase_date, incoterms1, incoterms2, price_date, 
     payment_terms, customer_attr, ref_sap_order_id, order_reason, invoice_type, invoice_delivery_type, 
-    invoice_delivery_address, is_agreed, dealer_id,appaly_type,r_sap_order_id,lines, approval_status, approver, approval_opinions,
+    invoice_delivery_address, is_agreed, dealer_id,appaly_type,r_sap_order_id,json_lines, approval_status, approver, approval_opinions,
     approval_time, active, create_id, create_time, update_id, update_time
   </sql>
 
@@ -183,8 +183,8 @@
       <if test="rSapOrderId != null">
         r_sap_order_id,
       </if>
-      <if test="lines != null">
-        lines,
+      <if test="jsonLines != null">
+        json_lines,
       </if>
       <if test="approvalStatus != null">
         approval_status,
@@ -293,8 +293,8 @@
       <if test="rSapOrderId != null">
         #{rSapOrderId,jdbcType=VARCHAR},
       </if>
-      <if test="lines != null">
-        #{lines,jdbcType=OTHER,typeHandler=com.crazy.portal.config.mybatis.handler.ArrayJsonHandler},
+      <if test="jsonLines != null">
+        #{jsonLines,jdbcType=OTHER,typeHandler=com.crazy.portal.config.mybatis.handler.ArrayJsonHandler},
       </if>
       <if test="approvalStatus != null">
         #{approvalStatus,jdbcType=INTEGER},
@@ -403,8 +403,8 @@
       <if test="rSapOrderId != null">
         r_sap_order_id = #{rSapOrderId,jdbcType=VARCHAR},
       </if>
-      <if test="lines != null">
-        lines = #{lines,jdbcType=OTHER,typeHandler=com.crazy.portal.config.mybatis.handler.ArrayJsonHandler},
+      <if test="jsonLines != null">
+        json_lines = #{jsonLines,jdbcType=OTHER,typeHandler=com.crazy.portal.config.mybatis.handler.ArrayJsonHandler},
       </if>
       <if test="approvalStatus != null">
         approval_status = #{approvalStatus,jdbcType=INTEGER},

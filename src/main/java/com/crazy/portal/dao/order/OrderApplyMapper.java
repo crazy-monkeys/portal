@@ -1,7 +1,6 @@
 package com.crazy.portal.dao.order;
 
 import com.crazy.portal.bean.order.OrderQueryBean;
-import com.crazy.portal.entity.order.Order;
 import com.crazy.portal.entity.order.OrderApply;
 
 import java.util.List;
@@ -13,7 +12,7 @@ public interface OrderApplyMapper {
 
     OrderApply selectByPrimaryKey(Integer id);
 
-    List<Order> selectByPage(OrderQueryBean bean);
+    List<OrderApply> selectByPage(OrderQueryBean bean);
 
     int updateByPrimaryKeySelective(OrderApply record);
 }
