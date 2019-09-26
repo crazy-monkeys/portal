@@ -28,7 +28,7 @@
     <result column="dealer_id" jdbcType="INTEGER" property="dealerId" />
     <result column="appaly_type" jdbcType="INTEGER" property="appalyType" />
     <result column="r_sap_order_id" jdbcType="VARCHAR" property="rSapOrderId" />
-    <result column="lines" typeHandler="com.crazy.portal.config.mybatis.handler.ArrayJsonHandler" />
+    <result column="lines" property="lines" typeHandler="com.crazy.portal.config.mybatis.handler.ArrayJsonHandler" />
     <result column="approval_status" jdbcType="INTEGER" property="approvalStatus" />
     <result column="approver" jdbcType="VARCHAR" property="approver" />
     <result column="approval_opinions" jdbcType="VARCHAR" property="approvalOpinions" />
@@ -150,7 +150,7 @@
       <if test="priceDate != null">
         price_date,
       </if>
-      <if test="paymentTerms != null">
+      <if test="paymentTerms != null and paymentTerms != ''">
         payment_terms,
       </if>
       <if test="customerAttr != null">
@@ -168,7 +168,7 @@
       <if test="invoiceDeliveryType != null">
         invoice_delivery_type,
       </if>
-      <if test="invoiceDeliveryAddress != null">
+      <if test="invoiceDeliveryAddress != null and invoiceDeliveryAddress !=''">
         invoice_delivery_address,
       </if>
       <if test="isAgreed != null">
@@ -260,7 +260,7 @@
       <if test="priceDate != null">
         #{priceDate,jdbcType=VARCHAR},
       </if>
-      <if test="paymentTerms != null">
+      <if test="paymentTerms != null and paymentTerms != ''">
         #{paymentTerms,jdbcType=VARCHAR},
       </if>
       <if test="customerAttr != null">
@@ -278,7 +278,7 @@
       <if test="invoiceDeliveryType != null">
         #{invoiceDeliveryType,jdbcType=INTEGER},
       </if>
-      <if test="invoiceDeliveryAddress != null">
+      <if test="invoiceDeliveryAddress != null and invoiceDeliveryAddress !=''">
         #{invoiceDeliveryAddress,jdbcType=VARCHAR},
       </if>
       <if test="isAgreed != null">

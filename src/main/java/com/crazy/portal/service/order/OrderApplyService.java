@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -82,6 +83,8 @@ public class OrderApplyService {
         List<OrderLineEO> records = ExcelUtils.readExcel(order.getLineFile(), OrderLineEO.class);
         //逻辑只允许出现同一个月份
         Date expectedDeliveryMonth = records.get(0).getExpectedDeliveryMonth();
+        BusinessUtil.notNull(expectedDeliveryMonth,ErrorCodes.BusinessEnum.ORDER_EMPTY_EXPECTEDDELIVERYMONTH);
+
         String priceDate = DateUtil.getLastDayOfMonth(DateUtil.getYear(expectedDeliveryMonth),DateUtil.getMonth(expectedDeliveryMonth));
         IsHeader isHeader = this.buildIsHeader(order);
         isHeader.setPricedate(priceDate);
@@ -98,11 +101,17 @@ public class OrderApplyService {
         for(OrderLineEO orderLineEO : records){
             //设置定价
             orderLineEO.setPriceDate(priceDate);
-            //设置单价
+            //设置价格
+            if(items.isEmpty()){
+                orderLineEO.setPrice(BigDecimal.ZERO);
+                orderLineEO.setNetPrice(BigDecimal.ZERO);
+            }
             for(ZpricessimulateItemOut item : items){
                 if(item.getProductid().equals(orderLineEO.getProductId())){
-                    orderLineEO.setPrice(item.getPrice());
-                    orderLineEO.setNetPrice(item.getNetprice());
+                    BigDecimal price = item.getPrice();
+                    orderLineEO.setPrice(price == null ? BigDecimal.ZERO : price);
+                    BigDecimal netprice = item.getNetprice();
+                    orderLineEO.setNetPrice(netprice == null ? BigDecimal.ZERO : netprice);
                 }
             }
         }
@@ -120,7 +129,7 @@ public class OrderApplyService {
     @Transactional
     public void createOrderApply(OrderApply order, Integer userId){
         BusinessUtil.notNull(order, ErrorCodes.BusinessEnum.ORDER_INFO_IS_REQUIRED);
-        BusinessUtil.notNull(order.getLines(), ErrorCodes.BusinessEnum.ORDER_LINES_IS_REQUIRED);
+        BusinessUtil.notNull(order.getOrderLines(), ErrorCodes.BusinessEnum.ORDER_LINES_IS_REQUIRED);
         CustomerInfo dealerByUser = customerInfoService.getDealerByUser(userId);
         BusinessUtil.notNull(dealerByUser, ErrorCodes.BusinessEnum.CUSTOMER_IS_EMPYT);
         order.setDealerId(dealerByUser.getId());
@@ -258,7 +267,8 @@ public class OrderApplyService {
             itItem.setSequenceno((i+1)+"");
             itItem.setProductid(productId);
             itItem.setOrderquantity(num);
-            itItem.setKondm(productInfoDO.getBu());
+            //TODO 这里需要确认是否传BU
+            itItem.setKondm("Z1");
             //根据物料号获取平台
             itItem.setPlatform(productInfoDO.getPlatform());
             items.add(itItem);
