@@ -364,7 +364,7 @@ public class OrderApproveService {
 
     private IsHeader buildCreateIsHeader(OrderApply orderApply) {
         IsHeader isHeader = new IsHeader();
-        isHeader.setPortalorderid(orderApply.getId().toString());
+        isHeader.setPortalorderid(orderApply.getId().toString() + System.currentTimeMillis());
         isHeader.setOrdertype(orderApply.getOrderType());
         isHeader.setSalesorg(orderApply.getSalesOrg());
 
