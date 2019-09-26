@@ -14,6 +14,7 @@ import com.crazy.portal.bean.order.wsdl.price.Zrfcsdpricesimulate;
 import com.crazy.portal.bean.order.wsdl.price.ZrfcsdpricesimulateResponse;
 import com.crazy.portal.bean.order.wsdl.rate.ZrfcsdcustomercrrateResponse;
 import com.crazy.portal.config.exception.BusinessException;
+import com.crazy.portal.util.BusinessUtil;
 import com.crazy.portal.util.ErrorCodes;
 import com.crazy.portal.util.HttpClientUtils;
 import com.crazy.portal.util.JaxbXmlUtil;
@@ -93,27 +94,25 @@ public class OrderApiService {
      */
     private void invokeAfter(Object obj) throws Exception{
 
-        if(obj == null){
-            throw new BusinessException(ErrorCodes.CommonEnum.SYSTEM_EXCEPTION.getCode(),ErrorCodes.CommonEnum.SYSTEM_EXCEPTION.getZhMsg());
-        }
-
+        BusinessUtil.notNull(obj,ErrorCodes.CommonEnum.SYSTEM_EXCEPTION);
         Method getEsHeaderMethod = obj.getClass().getMethod("getEsHeader");
         Object esHeader = getEsHeaderMethod.invoke(obj, null);
 
-        if(esHeader != null){
-            Method resulttypeMethod = esHeader.getClass().getMethod("getResulttype");
-            String resultType = (String)resulttypeMethod.invoke(esHeader, null);
-            if(!resultType.equals("1")){
-                throw new BusinessException(ErrorCodes.CommonEnum.SYSTEM_EXCEPTION.getCode(),ErrorCodes.CommonEnum.SYSTEM_EXCEPTION.getZhMsg());
-            }
-            Method resultmessage = esHeader.getClass().getMethod("getResultmessage");
-            String resultMessage = String.valueOf(resultmessage.invoke(esHeader,null));
+        BusinessUtil.notNull(esHeader,ErrorCodes.CommonEnum.SYSTEM_EXCEPTION);
 
-            if(!"null".equals(resultMessage)){
-                throw new BusinessException(ErrorCodes.CommonEnum.SYSTEM_EXCEPTION.getCode(),resultMessage);
-            }
+        Method resulttypeMethod = esHeader.getClass().getMethod("getResulttype");
+        String resultType = (String)resulttypeMethod.invoke(esHeader, null);
+
+        BusinessUtil.assertTrue(resultType.equals("1"),ErrorCodes.CommonEnum.SYSTEM_EXCEPTION);
+
+        Method resultmessage = esHeader.getClass().getMethod("getResultmessage");
+        String resultMessage = String.valueOf(resultmessage.invoke(esHeader,null));
+
+        if(!"null".equals(resultMessage)){
+            throw new BusinessException(ErrorCodes.CommonEnum.SYSTEM_EXCEPTION.getCode(),resultMessage);
         }
     }
+
 
     /**
      * 修改销售单
