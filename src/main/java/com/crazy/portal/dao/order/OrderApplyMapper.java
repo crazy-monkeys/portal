@@ -15,4 +15,6 @@ public interface OrderApplyMapper {
     List<OrderApply> selectByPage(OrderQueryBean bean);
 
     int updateByPrimaryKeySelective(OrderApply record);
+
+    List<OrderApply> selectBySapOrderId(String sapOrderId);
 }

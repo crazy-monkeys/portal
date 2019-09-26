@@ -66,18 +66,6 @@ public class OrderApplyService {
 
 
     /**
-     * 查询订单是否为待审批
-     * @param sapOrderId
-     * @return
-     */
-    public boolean isApprovalPendingOrder(String sapOrderId){
-        OrderQueryBean params = new OrderQueryBean();
-        params.setRSapOrderId(sapOrderId);
-        params.setApprovalStatus(0);
-        return orderApplyMapper.selectByPage(params).isEmpty();
-    }
-
-    /**
      * 模板下载
      */
     public void downloadLineTmpl(HttpServletResponse response) throws Exception{
@@ -145,6 +133,7 @@ public class OrderApplyService {
     public void createOrderApply(OrderApply order, Integer userId){
         BusinessUtil.notNull(order, ErrorCodes.BusinessEnum.ORDER_INFO_IS_REQUIRED);
         BusinessUtil.notNull(order.getOrderLines(), ErrorCodes.BusinessEnum.ORDER_LINES_IS_REQUIRED);
+
         CustomerInfo dealerByUser = customerInfoService.getDealerByUser(userId);
         BusinessUtil.notNull(dealerByUser, ErrorCodes.BusinessEnum.CUSTOMER_IS_EMPYT);
         order.setDealerId(dealerByUser.getId());
@@ -159,13 +148,9 @@ public class OrderApplyService {
         List<OrderLine> orderLines = order.getOrderLines();
         orderLines.forEach(x->{
             x.setCreateId(userId);
-            Date priceDate;
-            try {
-                priceDate = DateUtil.parseDate(order.getPriceDate(),DateUtil.MONTH_FORMAT_HLINE);
-            } catch (ParseException e) {
-                log.error("",e);
-                throw new IllegalArgumentException("参数转换错误");
-            }
+            x.setCreateTime(DateUtil.getCurrentTS());
+            x.setActice(1);
+            Date priceDate = this.getPriceDate(order);
             x.setExpectedDeliveryDate(DateUtil.getLastDayOfMonth(DateUtil.getYear(priceDate),DateUtil.getMonth(priceDate)));
         });
         order.setJsonLines(order.objToLineJson(orderLines));
@@ -173,31 +158,106 @@ public class OrderApplyService {
     }
 
     /**
-     * 订单修改申请
+     * 订单修改
      * @param order
      * @param userId
      */
     @Transactional
-    public void modifyOrderApply(OrderApply order, Integer userId) throws Exception{
-        OrderApply orderApply = new OrderApply();
+    public void update(OrderApply order, Integer userId) throws Exception{
+        Integer applyId = order.getId();
+        BusinessUtil.notNull(applyId,ErrorCodes.BusinessEnum.ORDER_NOT_FOUND);
+
+        OrderApply orderApply = orderApplyMapper.selectByPrimaryKey(applyId);
+        BusinessUtil.notNull(orderApply,ErrorCodes.BusinessEnum.ORDER_NOT_FOUND);
+
+        //只允许修改被驳回订单
+        boolean isRejec = orderApply.getApprovalStatus().equals(Enums.OrderApprovalStatus.REJEC.getValue());
+        BusinessUtil.assertTrue(isRejec,ErrorCodes.BusinessEnum.ORDER_APPROVE_REJECT_ORDER);
+
+        CustomerInfo dealerByUser = customerInfoService.getDealerByUser(userId);
+        BusinessUtil.notNull(dealerByUser, ErrorCodes.BusinessEnum.CUSTOMER_IS_EMPYT);
+
         BeanUtils.copyNotNullFields(order,orderApply);
+        order.setDealerId(dealerByUser.getId());
+        order.setApprovalStatus(Enums.OrderApprovalStatus.WAIT_APPROVAL.getValue());
+        order.setUpdateId(userId);
+        order.setUpdateTime(DateUtil.getCurrentTS());
+        order.setApprovalStatus(Enums.OrderApprovalStatus.WAIT_APPROVAL.getValue());
+
+        List<OrderLine> orderLines = order.getOrderLines();
+        orderLines.forEach(x->{
+            Date priceDate = this.getPriceDate(order);
+            x.setExpectedDeliveryDate(DateUtil.getLastDayOfMonth(DateUtil.getYear(priceDate),DateUtil.getMonth(priceDate)));
+            x.setUpdateId(userId);
+            x.setUpdateTime(DateUtil.getCurrentTS());
+        });
+        order.setJsonLines(order.objToLineJson(orderLines));
+        orderApplyMapper.updateByPrimaryKeySelective(order);
+    }
+
+    private Date getPriceDate(OrderApply order) {
+        Date priceDate;
+        try {
+            priceDate = DateUtil.parseDate(order.getPriceDate(),DateUtil.MONTH_FORMAT_HLINE);
+        } catch (ParseException e) {
+            log.error("",e);
+            throw new IllegalArgumentException("参数转换错误");
+        }
+        return priceDate;
+    }
+
+    /**
+     * 审批通过-订单修改申请
+     * @param userId
+     */
+    @Transactional
+    public void modifyOrderApply(Integer orderId,OrderApply orderApply, Integer userId){
+
+        Order order = orderMapper.selectByPrimaryKey(orderId);
+        BusinessUtil.notNull(order, ErrorCodes.BusinessEnum.ORDER_NOT_FOUND);
+        String rSapOrderId = order.getRSapOrderId();
+        boolean result = this.hasApprovalPendingOrder(rSapOrderId);
+        BusinessUtil.assertTrue(result, ErrorCodes.BusinessEnum.ORDER_PENDING_ORDER);
+
+        orderApply.setId(null);
         orderApply.setActive(1);
         orderApply.setCreateId(userId);
         orderApply.setCreateTime(DateUtil.getCurrentTS());
         orderApply.setAppalyType(2);
-        orderApply.setJsonLines(orderApply.objToLineJson(order.getOrderLines()));
+        orderApply.setJsonLines(orderApply.objToLineJson(orderApply.getOrderLines()));
+
+        orderApply.setRSapOrderId(rSapOrderId);
         orderApplyMapper.insertSelective(orderApply);
     }
 
     /**
-     * 取消订单申请
+     * 检查是否已经存在待审批的订单
+     * @param rSapOrderId
+     * @return
+     */
+    private boolean hasApprovalPendingOrder(String rSapOrderId){
+        List<OrderApply> orderApplies = orderApplyMapper.selectBySapOrderId(rSapOrderId);
+        orderApplies = orderApplies.stream()
+                .filter(x -> x.getApprovalStatus().equals(Enums.OrderApprovalStatus.WAIT_APPROVAL.getValue()))
+                .collect(Collectors.toList());
+
+        return !orderApplies.isEmpty();
+    }
+    /**
+     * 审批通过-取消订单申请
      * @param itemIds
      * @param userId
      */
     @Transactional
-    public void cancelOrderApply(Set<Integer> itemIds, Integer userId) throws Exception {
-        OrderApply orderApply = new OrderApply();
+    public void cancelOrderApply(Integer orderId,Set<Integer> itemIds, Integer userId) throws Exception {
 
+        Order order = orderMapper.selectByPrimaryKey(orderId);
+        BusinessUtil.notNull(order, ErrorCodes.BusinessEnum.ORDER_NOT_FOUND);
+        String rSapOrderId = order.getRSapOrderId();
+        boolean result = this.hasApprovalPendingOrder(rSapOrderId);
+        BusinessUtil.assertTrue(result, ErrorCodes.BusinessEnum.ORDER_PENDING_ORDER);
+
+        OrderApply orderApply = new OrderApply();
         List<OrderLine> lines = itemIds.stream()
                 .map(x->{
                     OrderLine orderLine = orderLineMapper.selectByPrimaryKey(x);
@@ -209,11 +269,6 @@ public class OrderApplyService {
 
         Set<Integer> orderIds = lines.stream().map(x->x.getOrderId()).collect(Collectors.toSet());
         BusinessUtil.assertFlase(orderIds.size() > 1,ErrorCodes.BusinessEnum.ORDER_LINE_NOT_FOUND);
-
-        Integer orderId = lines.get(0).getOrderId();
-
-        Order order = orderMapper.selectByPrimaryKey(orderId);
-        BusinessUtil.notNull(order, ErrorCodes.BusinessEnum.ORDER_NOT_FOUND);
 
         BeanUtils.copyNotNullFields(order,orderApply);
         orderApply.setActive(1);

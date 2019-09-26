@@ -26,10 +26,6 @@
     <result column="r_net_value" jdbcType="DECIMAL" property="rNetValue" />
     <result column="order_reason" jdbcType="VARCHAR" property="orderReason" />
     <result column="is_agreed" jdbcType="INTEGER" property="isAgreed" />
-    <result column="approver" jdbcType="VARCHAR" property="approver" />
-    <result column="approval_opinions" jdbcType="VARCHAR" property="approvalOpinions" />
-    <result column="approval_time" jdbcType="TIMESTAMP" property="approvalTime" />
-    <result column="approval_status" jdbcType="INTEGER" property="approvalStatus" />
     <result column="active" jdbcType="INTEGER" property="active" />
     <result column="dealer_id" jdbcType="INTEGER" property="dealerId" />
     <result column="create_id" jdbcType="INTEGER" property="createId" />
@@ -42,7 +38,7 @@
     id, order_type, under_order_type, sales_org, channel, division, sales_office, sales_group, 
     sold_to, send_to, purchase_no, incoterms1, incoterms2, price_date, payment_terms, 
     customer_attr, purchase_date, ref_sap_order_id, r_sap_order_id, r_sap_currency, r_gross_value, 
-    r_net_value, order_reason, is_agreed,approver,approval_opinions,approval_time,approval_status, active,
+    r_net_value, order_reason, is_agreed, active,
     dealer_id,create_id, create_time, update_id,update_time
   </sql>
 
@@ -179,18 +175,6 @@
       <if test="isAgreed != null">
         is_agreed,
       </if>
-      <if test="approver != null">
-        approver,
-      </if>
-      <if test="approvalOpinions != null">
-        approval_opinions,
-      </if>
-      <if test="approvalTime != null">
-        approval_time,
-      </if>
-      <if test="approvalStatus != null">
-        approval_status,
-      </if>
       <if test="active != null">
         active,
       </if>
@@ -283,18 +267,6 @@
       <if test="isAgreed != null">
         #{isAgreed,jdbcType=INTEGER},
       </if>
-      <if test="approver != null">
-        #{approver,jdbcType=VARCHAR},
-      </if>
-      <if test="approvalOpinions != null">
-        #{approvalOpinions,jdbcType=VARCHAR},
-      </if>
-      <if test="approvalTime != null">
-        #{approvalTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="approvalStatus != null">
-        #{approvalStatus,jdbcType=INTEGER},
-      </if>
       <if test="active != null">
         #{active,jdbcType=INTEGER},
       </if>
@@ -386,18 +358,6 @@
       </if>
       <if test="isAgreed != null">
         is_agreed = #{isAgreed,jdbcType=INTEGER},
-      </if>
-      <if test="approver != null">
-        approver = #{approver,jdbcType=VARCHAR},
-      </if>
-      <if test="approvalOpinions != null">
-        approval_opinions = #{approvalOpinions,jdbcType=VARCHAR},
-      </if>
-      <if test="approvalTime != null">
-        approval_time = #{approvalTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="approvalStatus != null">
-        approval_status = #{approvalStatus,jdbcType=INTEGER},
       </if>
       <if test="active != null">
         active = #{active,jdbcType=INTEGER},

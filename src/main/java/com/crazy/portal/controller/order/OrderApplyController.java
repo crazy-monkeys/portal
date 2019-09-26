@@ -8,12 +8,8 @@ import com.crazy.portal.bean.order.DeliveryOrderVO;
 import com.crazy.portal.bean.order.OrderQueryBean;
 import com.crazy.portal.controller.BaseController;
 import com.crazy.portal.entity.order.DeliverOrder;
-import com.crazy.portal.entity.order.Order;
 import com.crazy.portal.entity.order.OrderApply;
 import com.crazy.portal.service.order.OrderApplyService;
-import com.crazy.portal.service.order.OrderService;
-import com.crazy.portal.util.BusinessUtil;
-import com.crazy.portal.util.ErrorCodes;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -33,13 +29,10 @@ public class OrderApplyController extends BaseController {
 
     @Resource
     private OrderApplyService orderApplyService;
-    @Resource
-    private OrderService orderService;
 
     @PostMapping("/list")
-    public BaseResponse list(@RequestBody @Valid OrderQueryBean orderQueryBean){
-        orderApplyService.list(orderQueryBean);
-        return successResult();
+    public BaseResponse list(@RequestBody OrderQueryBean orderQueryBean){
+        return successResult(orderApplyService.list(orderQueryBean));
     }
 
     /**
@@ -55,7 +48,20 @@ public class OrderApplyController extends BaseController {
     }
 
     /**
-     * 订单修改申请
+     * 审批驳回-订单修改申请
+     * @param orderApply
+     * @return
+     */
+    @OperationLog
+    @PostMapping("/update")
+    public BaseResponse update(@RequestBody @Valid OrderApply orderApply) throws Exception{
+
+        orderApplyService.update(orderApply, getCurrentUserId());
+        return successResult();
+    }
+
+    /**
+     * 审批成功-订单修改申请
      * @param orderApply
      * @return
      */
@@ -65,9 +71,7 @@ public class OrderApplyController extends BaseController {
                                @RequestBody @Valid OrderApply orderApply) throws Exception{
 
 
-        this.checkOrder(orderId);
-
-        orderApplyService.modifyOrderApply(orderApply,super.getCurrentUserId());
+        orderApplyService.modifyOrderApply(orderId,orderApply,super.getCurrentUserId());
         return successResult();
     }
 
@@ -81,9 +85,7 @@ public class OrderApplyController extends BaseController {
     public BaseResponse cancel(@PathVariable Integer orderId,
                                @RequestParam Set<Integer> itemIds) throws Exception{
 
-        this.checkOrder(orderId);
-
-        orderApplyService.cancelOrderApply(itemIds, getCurrentUserId());
+        orderApplyService.cancelOrderApply(orderId,itemIds, getCurrentUserId());
         return successResult();
     }
 
@@ -96,8 +98,6 @@ public class OrderApplyController extends BaseController {
     @PostMapping("/modifyDeliveryDate/{orderId}")
     public BaseResponse modifyDeliveryDate(@PathVariable Integer orderId,
                                            @RequestBody List<DeliveryChangeVO> changeVOS) throws Exception{
-
-        this.checkOrder(orderId);
 
         orderApplyService.modifyDeliveryDateApply(orderId,changeVOS, getCurrentUserId());
         return successResult();
@@ -160,15 +160,5 @@ public class OrderApplyController extends BaseController {
     public BaseResponse DeliveryDelete(@PathVariable Integer id){
         orderApplyService.deleteDeliveryOrder(id);
         return successResult();
-    }
-
-    private void checkOrder(Integer orderId) {
-        Order order = orderService.findOrder(orderId);
-        BusinessUtil.notNull(order, ErrorCodes.BusinessEnum.ORDER_NOT_FOUND);
-        BusinessUtil.assertTrue(order.getActive().equals(1), ErrorCodes.BusinessEnum.ORDER_IS_FAILURE);
-        BusinessUtil.assertTrue(order.getApprovalStatus().equals(1), ErrorCodes.BusinessEnum.ORDER_UN_APPROVE_PASS_ORDER);
-
-        boolean isApprovalPendingOrder = orderApplyService.isApprovalPendingOrder(order.getRSapOrderId());
-        BusinessUtil.assertFlase(isApprovalPendingOrder, ErrorCodes.BusinessEnum.ORDER_PENDING_ORDER);
     }
 }

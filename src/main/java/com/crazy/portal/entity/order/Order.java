@@ -180,26 +180,6 @@ public class Order {
     private String orderReason;
 
     /**
-     * 审批人
-     */
-    private String approver;
-
-    /**
-     * 审批意见
-     */
-    private String approvalOpinions;
-
-    /**
-     * 审批时间
-     */
-    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
-    private Date approvalTime;
-    /**
-     * 审批状态 0：待审批 1：已通过 2：已驳回
-     */
-    private Integer approvalStatus;
-
-    /**
      * 是否有效(0 失效 1有效)
      */
     private Integer active;

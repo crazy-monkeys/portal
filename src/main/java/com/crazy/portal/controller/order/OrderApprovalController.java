@@ -6,6 +6,7 @@ import com.crazy.portal.bean.order.DeliveryApproveVO;
 import com.crazy.portal.bean.order.OrderApprovalBean;
 import com.crazy.portal.bean.order.OrderQueryBean;
 import com.crazy.portal.controller.BaseController;
+import com.crazy.portal.service.order.OrderApplyService;
 import com.crazy.portal.service.order.OrderApproveService;
 import com.crazy.portal.service.order.OrderService;
 import org.springframework.web.bind.annotation.*;
@@ -26,6 +27,8 @@ public class OrderApprovalController extends BaseController {
     private OrderService orderService;
     @Resource
     private OrderApproveService orderApproveService;
+    @Resource
+    private OrderApplyService orderApplyService;
 
     /**
      * 审批列表
@@ -34,7 +37,7 @@ public class OrderApprovalController extends BaseController {
      */
     @PostMapping("/list")
     public BaseResponse list(@RequestBody OrderQueryBean bean){
-        return successResult(orderService.list(bean));
+        return successResult(orderApplyService.list(bean));
     }
 
     /**

@@ -45,8 +45,6 @@ public class OrderApproveService {
     @Resource
     private OrderApplyMapper orderApplyMapper;
 
-
-
     /**
      * 订单审批
      * @param bean

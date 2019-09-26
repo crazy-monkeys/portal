@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class PageBean {
 
-    protected Integer pageIndex;
+    protected Integer pageIndex=1;
 
-    protected Integer pageSize;
+    protected Integer pageSize=20;
 }
