@@ -28,4 +28,6 @@ public class ItItem {
     private String requestdate = "";
     @XmlElement(name = "Refsaporderitemno")
     private String refsaporderitemno = "";
+    @XmlElement(name = "Kondm")
+    private String kondm = "";
 }

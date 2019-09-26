@@ -17,4 +17,7 @@ public class OrderApprovalBean {
     /** 审批操作 1：通过 2：驳回 **/
     @NotNull(message = "审批状态不能为空")
     private Integer approvalStatus;
+
+    /**期望交货日期**/
+    private String expectedDeliveryDate;
 }

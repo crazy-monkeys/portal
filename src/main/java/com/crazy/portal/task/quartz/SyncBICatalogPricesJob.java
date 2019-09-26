@@ -36,7 +36,7 @@ public class SyncBICatalogPricesJob implements Job {
 
     @Override
     public void execute(JobExecutionContext context){
-        log.info("-----Start synchronizing bi catalog price data");
+        log.info("-----Start synchronizing bi catalog rPrice data");
         List<BICatalogPrice> biActualPrices = catalogPriceService.getBIActualPrices();
         log.info("-----Synchronize {} pieces of data",biActualPrices.size());
 
@@ -66,7 +66,7 @@ public class SyncBICatalogPricesJob implements Job {
             }
             catalogPriceService.insertCatalogPrice(this.buildCatalogPrice(x, new JSONArray(), now));
         });
-        log.info("-----End synchronizing bi catalog price data");
+        log.info("-----End synchronizing bi catalog rPrice data");
     }
 
     /**

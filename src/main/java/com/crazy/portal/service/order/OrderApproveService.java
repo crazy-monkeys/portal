@@ -9,9 +9,11 @@ import com.crazy.portal.bean.order.wsdl.create.*;
 import com.crazy.portal.dao.order.OrderApplyMapper;
 import com.crazy.portal.dao.order.OrderLineMapper;
 import com.crazy.portal.dao.order.OrderMapper;
+import com.crazy.portal.dao.product.ProductInfoDOMapper;
 import com.crazy.portal.entity.order.Order;
 import com.crazy.portal.entity.order.OrderApply;
 import com.crazy.portal.entity.order.OrderLine;
+import com.crazy.portal.entity.product.ProductInfoDO;
 import com.crazy.portal.entity.system.User;
 import com.crazy.portal.util.*;
 import lombok.extern.slf4j.Slf4j;
@@ -44,6 +46,8 @@ public class OrderApproveService {
     private OrderLineMapper orderLineMapper;
     @Resource
     private OrderApplyMapper orderApplyMapper;
+    @Resource
+    private ProductInfoDOMapper productInfoDOMapper;
 
     /**
      * 订单审批
@@ -73,7 +77,7 @@ public class OrderApproveService {
 
             switch (appalyType){
                 case 1:
-                    this.createOrder(orderApply, userId);
+                    this.createOrder(bean.getExpectedDeliveryDate(),orderApply, userId);
                     break;
                 case 2:
                     this.modifyOrder(order,orderApply, userId);
@@ -97,6 +101,7 @@ public class OrderApproveService {
 
     /**
      * 审批通过-创单
+     * @param expectedDeliveryDate 需求交货日期，如果审批人填写则以此为交货日期，否则以月份最后一天为交货日期
      * @param userId
      * @param orderApply
      * @throws ParseException
@@ -104,8 +109,8 @@ public class OrderApproveService {
      * @throws IllegalAccessException
      * @throws InvocationTargetException
      */
-    private void createOrder(OrderApply orderApply,Integer userId) throws ParseException, IntrospectionException, IllegalAccessException, InvocationTargetException {
-        ZrfcsdsalesordercreateResponse response = this.invokeEccCreateOrder(orderApply);
+    private void createOrder(String expectedDeliveryDate,OrderApply orderApply,Integer userId) throws ParseException, IntrospectionException, IllegalAccessException, InvocationTargetException {
+        ZrfcsdsalesordercreateResponse response = this.invokeEccCreateOrder(expectedDeliveryDate,orderApply);
         //第三方接口调用成功,将审批信息同步到结果表
         ZsalesordercreateOutHeader esHeader = response.getEsHeader();
         Order order = new Order();
@@ -114,6 +119,7 @@ public class OrderApproveService {
         order.setCreateId(userId);
         order.setRGrossValue(esHeader.getGrossvalue());
         order.setRNetValue(esHeader.getNetvalue());
+        order.setPriceDate(expectedDeliveryDate);
         orderMapper.insertSelective(order);
 
         List<OrderLine> lines = orderApply.lineJsonToObj(orderApply.getJsonLines());
@@ -128,6 +134,7 @@ public class OrderApproveService {
                     line.setRItemCategory(etItem.getItemcategory());
                     line.setRRefItemNo(etItem.getRefitemno());
                     line.setRRefItemProductId(etItem.getRefitemproductid());
+                    line.setExpectedDeliveryDate(expectedDeliveryDate);
                     line.setCreateId(userId);
                     line.setCreateTime(DateUtil.getCurrentTS());
                     line.setActice(1);
@@ -266,10 +273,10 @@ public class OrderApproveService {
      * 调用ecc创单接口
      * @param orderApply
      */
-    private ZrfcsdsalesordercreateResponse invokeEccCreateOrder(OrderApply orderApply) throws ParseException{
+    private ZrfcsdsalesordercreateResponse invokeEccCreateOrder(String expectedDeliveryDate,OrderApply orderApply) throws ParseException{
         IsHeader isHeader = this.buildCreateIsHeader(orderApply);
 
-        ItItems itItems = this.buildCreateItItems(orderApply);
+        ItItems itItems = this.buildCreateItItems(expectedDeliveryDate,orderApply);
 
         ZrfcsdsalesordercreateContent content = new ZrfcsdsalesordercreateContent(null,isHeader,itItems);
         ZrfcsdsalesordercreateBody zrfcsdsalesordercreateBody = new ZrfcsdsalesordercreateBody(content);
@@ -322,16 +329,22 @@ public class OrderApproveService {
         return itItems;
     }
 
-    private ItItems buildCreateItItems(OrderApply orderApply) {
+    private ItItems buildCreateItItems(String expectedDeliveryDate,OrderApply orderApply) {
         Integer line_no = 1;
         List<ItItem> items = new ArrayList<>();
         for (OrderLine line : orderApply.lineJsonToObj(orderApply.getJsonLines())) {
             ItItem item = new ItItem();
+            String productId = line.getProductId();
+            String platform = line.getPlatform();
+
             item.setSequenceno(String.valueOf(line_no));
-            item.setProductid(line.getProductId());
+            item.setProductid(productId);
             item.setOrderquantity(String.valueOf(line.getNum()));
             item.setPlatform(line.getPlatform());
-            item.setRequestdate(line.getExpectedDeliveryDate());
+            String requestDate = StringUtil.isNotEmpty(expectedDeliveryDate)?expectedDeliveryDate:line.getExpectedDeliveryDate();
+            item.setRequestdate(requestDate);
+            ProductInfoDO productInfoDO = productInfoDOMapper.selectBySapMidAndPlatForm(productId, platform);
+            item.setKondm(productInfoDO.getBu());
             items.add(item);
             line_no ++;
         }

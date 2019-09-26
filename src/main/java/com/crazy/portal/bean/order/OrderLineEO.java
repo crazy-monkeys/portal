@@ -45,10 +45,10 @@ public class OrderLineEO extends BaseRowModel {
     /**
      * 含税价格
      */
-    private BigDecimal price;
+    private BigDecimal rPrice;
 
     /**
      * 不含税价格
      */
-    private BigDecimal netPrice;
+    private BigDecimal rNetPrice;
 }

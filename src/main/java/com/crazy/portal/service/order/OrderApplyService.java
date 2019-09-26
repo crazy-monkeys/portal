@@ -112,15 +112,15 @@ public class OrderApplyService {
             orderLineEO.setPriceDate(priceDate);
             //设置价格
             if(items.isEmpty()){
-                orderLineEO.setPrice(BigDecimal.ZERO);
-                orderLineEO.setNetPrice(BigDecimal.ZERO);
+                orderLineEO.setRPrice(BigDecimal.ZERO);
+                orderLineEO.setRNetPrice(BigDecimal.ZERO);
             }
             for(ZpricessimulateItemOut item : items){
                 if(item.getProductid().equals(orderLineEO.getProductId())){
                     BigDecimal price = item.getPrice();
-                    orderLineEO.setPrice(price == null ? BigDecimal.ZERO : price);
+                    orderLineEO.setRPrice(price == null ? BigDecimal.ZERO : price);
                     BigDecimal netprice = item.getNetprice();
-                    orderLineEO.setNetPrice(netprice == null ? BigDecimal.ZERO : netprice);
+                    orderLineEO.setRNetPrice(netprice == null ? BigDecimal.ZERO : netprice);
                 }
             }
         }
@@ -151,13 +151,17 @@ public class OrderApplyService {
         if(order.getSalesOrg().equals("3000")){
             order.setPaymentTerms("9994");
         }
+
         List<OrderLine> orderLines = order.getOrderLines();
+        Date priceDate = this.getPriceDate(orderLines.get(0).getExpectedDeliveryMonth());
+        order.setPriceDate(DateUtil.getLastDayOfMonth(DateUtil.getYear(priceDate),DateUtil.getMonth(priceDate)));
+
         orderLines.forEach(x->{
             x.setCreateId(userId);
             x.setCreateTime(DateUtil.getCurrentTS());
             x.setActice(1);
-            Date priceDate = this.getPriceDate(order);
-            x.setExpectedDeliveryDate(DateUtil.getLastDayOfMonth(DateUtil.getYear(priceDate),DateUtil.getMonth(priceDate)));
+            Date expectedDeliveryMonth = this.getPriceDate(x.getExpectedDeliveryMonth());
+            x.setExpectedDeliveryDate(DateUtil.getLastDayOfMonth(DateUtil.getYear(expectedDeliveryMonth),DateUtil.getMonth(expectedDeliveryMonth)));
         });
         order.setJsonLines(order.objToLineJson(orderLines));
         orderApplyMapper.insertSelective(order);
@@ -192,7 +196,7 @@ public class OrderApplyService {
 
         List<OrderLine> orderLines = order.getOrderLines();
         orderLines.forEach(x->{
-            Date priceDate = this.getPriceDate(order);
+            Date priceDate = this.getPriceDate(x.getExpectedDeliveryMonth());
             x.setExpectedDeliveryDate(DateUtil.getLastDayOfMonth(DateUtil.getYear(priceDate),DateUtil.getMonth(priceDate)));
             x.setUpdateId(userId);
             x.setUpdateTime(DateUtil.getCurrentTS());
@@ -201,10 +205,10 @@ public class OrderApplyService {
         orderApplyMapper.updateByPrimaryKeySelective(order);
     }
 
-    private Date getPriceDate(OrderApply order) {
+    private Date getPriceDate(String expectedDeliveryMonth) {
         Date priceDate;
         try {
-            priceDate = DateUtil.parseDate(order.getPriceDate(),DateUtil.MONTH_FORMAT_HLINE);
+            priceDate = DateUtil.parseDate(expectedDeliveryMonth,DateUtil.MONTH_FORMAT_HLINE);
         } catch (ParseException e) {
             log.error("",e);
             throw new IllegalArgumentException("参数转换错误");
@@ -341,8 +345,7 @@ public class OrderApplyService {
             itItem.setSequenceno((i+1)+"");
             itItem.setProductid(productId);
             itItem.setOrderquantity(num);
-            //TODO 这里需要确认是否传BU
-            itItem.setKondm("Z1");
+            itItem.setKondm(productInfoDO.getBu());
             //根据物料号获取平台
             itItem.setPlatform(productInfoDO.getPlatform());
             items.add(itItem);

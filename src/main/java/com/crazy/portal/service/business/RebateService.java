@@ -373,7 +373,7 @@ public class RebateService {
             pr.setProduct(e.getString("product"));
             pr.setStartDate(e.getDate("start_date"));
             pr.setEndDate(e.getDate("end_date"));
-            pr.setPrice(e.getBigDecimal("price"));
+            pr.setPrice(e.getBigDecimal("rPrice"));
             pr.setSalesLimitLower(e.getBigDecimal("sales_limit_lower"));
             pr.setSalesLimitUpper(e.getBigDecimal("sales_limit_upper"));
             pr.setCalculateType(e.getString("calculate_type"));
