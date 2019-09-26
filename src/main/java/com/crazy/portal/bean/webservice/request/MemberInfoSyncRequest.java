@@ -6,7 +6,6 @@ import com.crazy.portal.util.StringUtil;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.ArrayUtils;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -76,9 +75,6 @@ public class MemberInfoSyncRequest extends AbstractRequest implements IRequest<M
         List<String> errorMsgLists = new ArrayList<String>();
         if(StringUtil.isEmpty(paramsMaps.get("inCode"))){
             errorMsgLists.add("inCode 不能为空");
-        }
-        if(StringUtil.isEmpty(paramsMaps.get("outCode"))){
-            errorMsgLists.add("outCode 不能为空");
         }
         if(StringUtil.isEmpty(paramsMaps.get("custName"))){
             errorMsgLists.add("custName 不能为空");

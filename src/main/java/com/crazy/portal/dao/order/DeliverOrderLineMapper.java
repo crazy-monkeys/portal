@@ -18,7 +18,7 @@ public interface DeliverOrderLineMapper {
 
     int updateByPrimaryKey(DeliverOrderLine record);
 
-    List<DeliverOrderLine> selectByDeliveryOrderId(@Param("deliveryOrderId") Integer deliveryOrderId, @Param("active") Integer active);
+    List<DeliverOrderLine> selectByDeliveryOrderId(@Param("deliveryOrderId") Integer deliveryOrderId);
 
     DeliverOrderLine selectBySapDeliveryOrderLineNo(String sapDeliveryOrderLineNo);
 }

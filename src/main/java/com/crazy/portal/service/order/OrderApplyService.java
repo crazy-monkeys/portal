@@ -2,14 +2,19 @@ package com.crazy.portal.service.order;
 
 import com.alibaba.excel.metadata.BaseRowModel;
 import com.alibaba.excel.support.ExcelTypeEnum;
+import com.crazy.portal.bean.order.DeliveryOrderCancelVO;
+import com.crazy.portal.bean.order.DeliveryOrderVO;
+import com.crazy.portal.bean.order.OrderLineEO;
 import com.crazy.portal.bean.order.*;
 import com.crazy.portal.bean.order.wsdl.price.*;
 import com.crazy.portal.config.exception.BusinessException;
 import com.crazy.portal.dao.order.*;
 import com.crazy.portal.dao.product.ProductInfoDOMapper;
+import com.crazy.portal.dao.test.DeliverOrderApprovalMapper;
 import com.crazy.portal.entity.cusotmer.CustomerInfo;
 import com.crazy.portal.entity.order.*;
 import com.crazy.portal.entity.product.ProductInfoDO;
+import com.crazy.portal.entity.test.DeliverOrderApproval;
 import com.crazy.portal.service.customer.CustomerInfoService;
 import com.crazy.portal.util.*;
 import lombok.extern.slf4j.Slf4j;
@@ -45,10 +50,11 @@ public class OrderApplyService {
     @Resource
     private DeliverOrderMapper deliverOrderMapper;
     @Resource
+    private DeliverOrderApprovalMapper deliverOrderApprovalMapper;
+    @Resource
     private DeliverOrderLineMapper deliverOrderLineMapper;
     @Resource
     private CustomerInfoService customerInfoService;
-
 
     /**
      * 查询订单是否为待审批
@@ -209,7 +215,6 @@ public class OrderApplyService {
         orderApplyMapper.insertSelective(orderApply);
     }
 
-
     /**
      * 变更交货日期
      */
@@ -240,7 +245,6 @@ public class OrderApplyService {
         orderApply.setLines(orderApply.objToLineJson(lines));
         orderApplyMapper.insertSelective(orderApply);
     }
-
 
     private List<ItItem> buildItItems(List<OrderLineEO> records) {
         List<ItItem> items = new ArrayList<>();
@@ -288,7 +292,6 @@ public class OrderApplyService {
         return new Zrfcsdpricesimulate(body);
     }
 
-
     /**
      * 组装订单头入参
      * @param orderApply
@@ -307,83 +310,122 @@ public class OrderApplyService {
     @Transactional
     public void submitApplyDelivery(DeliveryOrderVO bean, Integer userId){
         Order order = orderMapper.selectByPrimaryKey(bean.getOrderId());
-        if(null == order){
+        if(null == order || order.getActive() == 0){
             throw new BusinessException(ErrorCodes.BusinessEnum.ORDER_NOT_FOUND);
         }
-        DeliverOrder deliverOrder = new DeliverOrder();
-        deliverOrder.setSalesOrderId(order.getId());
-        deliverOrder.setSapOrderNo(order.getRSapOrderId());
-        deliverOrder.setSendTo(order.getSendTo());
-        deliverOrder.setSoldTo(order.getSoldTo());
-        deliverOrder.setDeliverDate(bean.getDeliverDate());
-        deliverOrder.setShippingPoint(bean.getShippingPoint());
-        deliverOrder.setApprovalStatus(Enums.OrderApprovalStatus.WAIT_APPROVAL.getValue());
-        deliverOrder.setApprovalType(Enums.OrderApprovalType.CREATE.getValue());
-        deliverOrder.setActive(1);
-        deliverOrder.setCreateUserId(userId);
-        deliverOrderMapper.insertSelective(deliverOrder);
+        saveDeliverOrderApproval(bean, order, userId);
+    }
+
+    private void saveDeliverOrderApproval(DeliveryOrderVO bean, Order order, Integer userId){
+        DeliverOrderApproval approval = new DeliverOrderApproval();
+        approval.setSalesOrderId(order.getId());
+        approval.setSapOrderNo(order.getRSapOrderId());
+        approval.setSendTo(order.getSendTo());
+        approval.setSoldTo(order.getSoldTo());
+        approval.setDeliverDate(bean.getDeliverDate());
+        approval.setShippingPoint(bean.getShippingPoint());
+        approval.setApprovalStatus(Enums.OrderApprovalStatus.WAIT_APPROVAL.getValue());
+        approval.setApprovalType(Enums.OrderApprovalType.CREATE.getValue());
+        approval.setActive(1);
+        approval.setCreateUserId(userId);
 
         List<OrderLine> orderLine = orderLineMapper.selectByOrderId(order.getId());
         if(bean.getOrderLine().isEmpty()){
             throw new BusinessException("请选择需要提货的订单");
         }
+        List<DeliverOrderLine> lines = new ArrayList<>();
         orderLine.forEach(o->{
             bean.getOrderLine().forEach(e->{
                 if(o.getId().equals(e.getId())){
-                    if(o.getRemainingNum() < e.getDeliveryQuantity()){
-                        throw new BusinessException("");
-                    }
+                    BusinessUtil.assertFlase(o.getRemainingNum() < e.getDeliveryQuantity(),ErrorCodes.BusinessEnum.ORDER_QTY_IS_ENOUGH);
                     DeliverOrderLine deliverOrderLine = new DeliverOrderLine();
-                    deliverOrderLine.setDeliverOrderId(deliverOrder.getDeliverOrderId());
                     deliverOrderLine.setSalesOrderId(order.getId());
                     deliverOrderLine.setSapSalesOrderLineNo(order.getRSapOrderId());
                     deliverOrderLine.setSalesOrderLineId(o.getId());
                     deliverOrderLine.setSapSalesOrderLineNo(o.getRItemNo());
                     deliverOrderLine.setProductId(o.getProductId());
-//                    deliverOrderLine.setProduct();
                     deliverOrderLine.setDeliveryQuantity(e.getDeliveryQuantity());
-
                     deliverOrderLine.setActive(1);
                     deliverOrderLine.setCreateUserId(userId);
-                    deliverOrderLineMapper.insertSelective(deliverOrderLine);
+                    lines.add(deliverOrderLine);
                 }
             });
         });
+
+        approval.setDeliveryOrderLine(approval.setSerializelDeliveryOrderLine(lines));
+        deliverOrderApprovalMapper.insertSelective(approval);
     }
 
     @Transactional
-    public void updateDeliveryOrder(DeliverOrder order){
-        if(null == order || null == order.getDeliverOrderLineList()){
-            return;
-        }
-        order.setApprovalStatus(Enums.OrderApprovalStatus.WAIT_APPROVAL.getValue());
-        order.setApprovalType(Enums.OrderApprovalType.UPDATE.getValue());
-        deliverOrderMapper.updateByPrimaryKeySelective(order);
-        order.getDeliverOrderLineList().forEach(e->{
-            deliverOrderLineMapper.updateByPrimaryKeySelective(e);
-        });
+    public void updateDeliveryOrder(DeliverOrder order, Integer userId){
+        DeliverOrder deliverOrder = deliverOrderMapper.selectByPrimaryKey(order.getDeliverOrderId());
+        BusinessUtil.assertFlase(null == deliverOrder, ErrorCodes.BusinessEnum.ORDER_NOT_FOUND);
+        List<DeliverOrderApproval> approval = deliverOrderApprovalMapper.checkApproval(deliverOrder.getSapOrderNo());
+        BusinessUtil.assertFlase(null != approval && !approval.isEmpty(), ErrorCodes.BusinessEnum.ORDER_IS_INACTIVE);
+        //生成修改审批单
+        saveDeliverOrderUpdateApproval(order, deliverOrder, Enums.OrderApprovalType.UPDATE.getValue(), userId);
     }
 
     @Transactional
-    public void cancelDeliveryOrder(DeliveryOrderCancelVO vo){
+    public void cancelDeliveryOrder(DeliveryOrderCancelVO vo, Integer userId){
         DeliverOrder deliverOrder = deliverOrderMapper.selectByPrimaryKey(vo.getDeliveryOrderId());
-        BusinessUtil.assertTrue(null == deliverOrder,ErrorCodes.BusinessEnum.ORDER_NOT_FOUND);
-        deliverOrder.setApprovalStatus(Enums.OrderApprovalStatus.WAIT_APPROVAL.getValue());
-        deliverOrder.setApprovalType(Enums.OrderApprovalType.CANCEL.getValue());
-        deliverOrderMapper.updateByPrimaryKeySelective(deliverOrder);
+        BusinessUtil.assertFlase(null == deliverOrder,ErrorCodes.BusinessEnum.ORDER_NOT_FOUND);
+        List<DeliverOrderApproval> approval = deliverOrderApprovalMapper.checkApproval(deliverOrder.getSapOrderNo());
+        BusinessUtil.assertFlase(null != approval && !approval.isEmpty(), ErrorCodes.BusinessEnum.ORDER_IS_INACTIVE);
 
-        vo.getDeliveryOrderLineIds().forEach(e->{
-            DeliverOrderLine deliverOrderLine = deliverOrderLineMapper.selectByPrimaryKey(e);
-            deliverOrderLine.setActive(2);
-            deliverOrderLineMapper.updateByPrimaryKeySelective(deliverOrderLine);
+        List<DeliverOrderLine> orderLines = deliverOrderLineMapper.selectByDeliveryOrderId(deliverOrder.getDeliverOrderId());
+        deliverOrder.setDeliverOrderLineList(orderLines);
+        saveDeliverOrderCancelApproval(deliverOrder, vo.getDeliveryOrderLineIds(), userId);
+    }
+
+    private void saveDeliverOrderUpdateApproval(DeliverOrder order, DeliverOrder oldOrder, String approvalType, Integer userId){
+        DeliverOrderApproval approval = getDeliverOrderApproval(oldOrder, approvalType, userId);
+        order.getDeliverOrderLineList().forEach(e->{
+            OrderLine orderLine = orderLineMapper.selectByPrimaryKey(e.getSalesOrderLineId());
+            BusinessUtil.assertFlase(orderLine.getRemainingNum() < e.getDeliveryQuantity(), ErrorCodes.BusinessEnum.ORDER_QTY_IS_ENOUGH);
+            BusinessUtil.assertFlase(e.getActive()==0, ErrorCodes.BusinessEnum.ORDER_IS_INACTIVE);
         });
+        approval.setDeliveryOrderLine(approval.setSerializelDeliveryOrderLine(order.getDeliverOrderLineList()));
+        deliverOrderApprovalMapper.insertSelective(approval);
+    }
+
+    private void saveDeliverOrderCancelApproval(DeliverOrder deliverOrder, List<Integer> cancelDeliverOrderLineIds, Integer userId){
+        DeliverOrderApproval approval = getDeliverOrderApproval(deliverOrder, Enums.OrderApprovalType.CANCEL.getValue(), userId);
+
+        List<DeliverOrderLine> deliveryOrderLine = new ArrayList<>();
+        deliverOrder.getDeliverOrderLineList().forEach(e->{
+            cancelDeliverOrderLineIds.forEach(o->{
+                if(e.getDeliverOrderLineId().equals(o)){
+                    BusinessUtil.assertFlase(e.getActive()==0, ErrorCodes.BusinessEnum.ORDER_IS_INACTIVE);
+                    deliveryOrderLine.add(e);
+                }
+            });
+        });
+        approval.setDeliveryOrderLine(approval.setSerializelDeliveryOrderLine(deliveryOrderLine));
+        deliverOrderApprovalMapper.insertSelective(approval);
+    }
+
+    private DeliverOrderApproval getDeliverOrderApproval(DeliverOrder order, String approvalType, Integer userId){
+        DeliverOrderApproval approval = new DeliverOrderApproval();
+        approval.setDeliverOrderId(null);
+        approval.setShippingPoint(order.getShippingPoint());
+        approval.setDeliverDate(order.getDeliverDate());
+        approval.setSalesOrderId(order.getSalesOrderId());
+        approval.setSapOrderNo(order.getSapOrderNo());
+        approval.setSoldTo(order.getSoldTo());
+        approval.setSendTo(order.getSendTo());
+        approval.setApprovalStatus(Enums.OrderApprovalStatus.WAIT_APPROVAL.getValue());
+        approval.setApprovalType(approvalType);
+        approval.setActive(1);
+        approval.setCreateUserId(userId);
+        approval.setCreateTime(new Date());
+        return approval;
     }
 
     @Transactional
     public void deleteDeliveryOrder(Integer id){
-        DeliverOrder deliverOrder = deliverOrderMapper.selectByPrimaryKey(id);
+        DeliverOrderApproval deliverOrder = deliverOrderApprovalMapper.selectByPrimaryKey(id);
         BusinessUtil.assertTrue(deliverOrder.getApprovalStatus().equals(Enums.OrderApprovalStatus.REJEC.getValue()),ErrorCodes.BusinessEnum.ORDER_NO_DELETE);
-        deliverOrderMapper.deleteByPrimaryKey(id);
-
+        deliverOrderApprovalMapper.deleteByPrimaryKey(id);
     }
 }

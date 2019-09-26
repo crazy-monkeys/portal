@@ -18,6 +18,12 @@ public class DeliveryOrderQueryVO extends PageBean {
     private String salesOrderNo;
     private String actualDeliveryStartDate;
     private String actualDeliveryEndDate;
+    private String deliveryStartDate;
+    private String deliveryEndDate;
+    private String createStartDate;
+    private String createEndDate;
 
     private Integer dealerId;
+    /**1-审批查询 2-申请查询**/
+    private Integer queryType;
 }

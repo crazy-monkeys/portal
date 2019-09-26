@@ -123,9 +123,9 @@ public class CustomerInfoService {
             //审批查询
             if(user.getUserType().equals(Enums.USER_TYPE.internal.toString())){
                 OrganizationalStructure org = internalUserService.getUserOrg(user.getLoginName());
-                if(null != org&&org.getSeq()==1001012){
+                if(null != org&&org.getSeq().equals(1001012)){
                     customerQueryBean.setBusinessType("A03");
-                }else if(null != org&&org.getSeq()==1001011){
+                }else if(null != org&&org.getSeq().equals(1001011)){
                     customerQueryBean.setBusinessType("A02");
                 }else{
                     throw new BusinessException(ErrorCodes.BusinessEnum.CUSTOMER_ORG_ERROR);

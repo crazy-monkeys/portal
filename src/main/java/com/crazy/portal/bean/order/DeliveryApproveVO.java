@@ -9,7 +9,8 @@ import lombok.Data;
  */
 @Data
 public class DeliveryApproveVO {
-    private Integer deliveryOrderId;
+    private Integer deliveryOrderApprovalId;
+    private String sapDeliveryOrderNo;
     private Integer approvalStatus;
     private String remark;
 }

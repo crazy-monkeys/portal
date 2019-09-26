@@ -12,6 +12,7 @@ import java.util.List;
 @Data
 public class DeliveryOrderVO {
     private Integer orderId;
+    private Integer deliveryOrderId;
     private Date deliverDate;
     private String shippingPoint;
     private List<DeliveryOrderLineVO> orderLine;

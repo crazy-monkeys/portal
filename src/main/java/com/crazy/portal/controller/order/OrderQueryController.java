@@ -53,6 +53,27 @@ public class OrderQueryController extends BaseController {
     }
 
     /**
+     * 提货单审批查询
+     * @param vo
+     * @return
+     */
+    @PostMapping("/list/delivery/approval")
+    public BaseResponse deliveryApprovalList(@RequestBody DeliveryOrderQueryVO vo){
+        return successResult(orderService.deliveryOrderApprovalList(vo,getCurrentUserId()));
+    }
+
+    /**
+     * 查询提货单审批明细
+     * @param id
+     * @return
+     */
+    @GetMapping("/delivery/approval/detail/{id}")
+    public BaseResponse deliveryApprovalDetail(@PathVariable String id){
+        BusinessUtil.assertFlase(StringUtil.isEmpty(id), ErrorCodes.BusinessEnum.ORDER_ID_NOT_FOUND);
+        return successResult(orderService.deliveryApprovalDetail(Integer.valueOf(id)));
+    }
+
+    /**
      * 查询提货单明细
      * @param id
      * @return

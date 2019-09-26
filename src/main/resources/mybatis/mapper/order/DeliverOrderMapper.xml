@@ -16,19 +16,14 @@
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_user_id" jdbcType="INTEGER" property="updateUserId" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
-    <result column="approval_status" jdbcType="INTEGER" property="approvalStatus" />
-    <result column="approval_type" jdbcType="VARCHAR" property="approvalType" />
-    <result column="approval_date" jdbcType="TIMESTAMP" property="approvalDate" />
-    <result column="approval_remark" jdbcType="VARCHAR" property="approvalRemark" />
-    <result column="approval_user" jdbcType="INTEGER" property="approvalUser" />
   </resultMap>
   <sql id="Base_Column_List">
-    deliver_order_id, sap_deliver_order_no, sales_order_id, sap_order_no, sold_to, send_to, 
-    deliver_date, actual_delivery_date, shipping_point, active, create_user_id, create_time, 
-    update_user_id, update_time, approval_status, approval_date, approval_remark, approval_user,approval_type
+    deliver_order_id, sap_deliver_order_no, sales_order_id, sap_order_no, sold_to, send_to,
+    deliver_date, actual_delivery_date, shipping_point, active, create_user_id, create_time,
+    update_user_id, update_time
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select 
+    select
     <include refid="Base_Column_List" />
     from t_deliver_order
     where deliver_order_id = #{deliverOrderId,jdbcType=INTEGER}
@@ -38,22 +33,20 @@
     where deliver_order_id = #{deliverOrderId,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.crazy.portal.entity.order.DeliverOrder">
-    insert into t_deliver_order (deliver_order_id, sap_deliver_order_no, 
-      sales_order_id, sap_order_no, sold_to, 
-      send_to, deliver_date, actual_delivery_date, 
-      shipping_point, active, create_user_id, 
-      create_time, update_user_id, update_time, 
-      approval_status, approval_date, approval_remark, 
-      approval_user)
-    values (#{deliverOrderId,jdbcType=INTEGER}, #{sapDeliverOrderNo,jdbcType=VARCHAR}, 
-      #{salesOrderId,jdbcType=INTEGER}, #{sapOrderNo,jdbcType=VARCHAR}, #{soldTo,jdbcType=VARCHAR}, 
-      #{sendTo,jdbcType=VARCHAR}, #{deliverDate,jdbcType=TIMESTAMP}, #{actualDeliveryDate,jdbcType=VARCHAR}, 
-      #{shippingPoint,jdbcType=VARCHAR}, #{active,jdbcType=INTEGER}, #{createUserId,jdbcType=INTEGER}, 
-      #{createTime,jdbcType=TIMESTAMP}, #{updateUserId,jdbcType=INTEGER}, #{updateTime,jdbcType=TIMESTAMP}, 
-      #{approvalStatus,jdbcType=INTEGER}, #{approvalDate,jdbcType=TIMESTAMP}, #{approvalRemark,jdbcType=VARCHAR}, 
-      #{approvalUser,jdbcType=INTEGER})
+    insert into t_deliver_order (deliver_order_id, sap_deliver_order_no,
+    sales_order_id, sap_order_no, sold_to,
+    send_to, deliver_date, actual_delivery_date,
+    shipping_point, active, create_user_id,
+    create_time, update_user_id, update_time
+    )
+    values (#{deliverOrderId,jdbcType=INTEGER}, #{sapDeliverOrderNo,jdbcType=VARCHAR},
+    #{salesOrderId,jdbcType=INTEGER}, #{sapOrderNo,jdbcType=VARCHAR}, #{soldTo,jdbcType=VARCHAR},
+    #{sendTo,jdbcType=VARCHAR}, #{deliverDate,jdbcType=TIMESTAMP}, #{actualDeliveryDate,jdbcType=VARCHAR},
+    #{shippingPoint,jdbcType=VARCHAR}, #{active,jdbcType=INTEGER}, #{createUserId,jdbcType=INTEGER},
+    #{createTime,jdbcType=TIMESTAMP}, #{updateUserId,jdbcType=INTEGER}, #{updateTime,jdbcType=TIMESTAMP}
+    )
   </insert>
-  <insert id="insertSelective" parameterType="com.crazy.portal.entity.order.DeliverOrder">
+  <insert id="insertSelective" parameterType="com.crazy.portal.entity.order.DeliverOrder" useGeneratedKeys="true" keyProperty="deliverOrderId">
     insert into t_deliver_order
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="deliverOrderId != null">
@@ -97,21 +90,6 @@
       </if>
       <if test="updateTime != null">
         update_time,
-      </if>
-      <if test="approvalStatus != null">
-        approval_status,
-      </if>
-      <if test="approvalType != null">
-        approval_type,
-      </if>
-      <if test="approvalDate != null">
-        approval_date,
-      </if>
-      <if test="approvalRemark != null">
-        approval_remark,
-      </if>
-      <if test="approvalUser != null">
-        approval_user,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -157,21 +135,6 @@
       <if test="updateTime != null">
         #{updateTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="approvalStatus != null">
-        #{approvalStatus,jdbcType=INTEGER},
-      </if>
-      <if test="approvalType != null">
-        #{approvalType,jdbcType=INTEGER},
-      </if>
-      <if test="approvalDate != null">
-        #{approvalDate,jdbcType=TIMESTAMP},
-      </if>
-      <if test="approvalRemark != null">
-        #{approvalRemark,jdbcType=VARCHAR},
-      </if>
-      <if test="approvalUser != null">
-        #{approvalUser,jdbcType=INTEGER},
-      </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.crazy.portal.entity.order.DeliverOrder">
@@ -213,21 +176,8 @@
       <if test="updateUserId != null">
         update_user_id = #{updateUserId,jdbcType=INTEGER},
       </if>
-        update_time = now(),
-      <if test="approvalStatus != null">
-        approval_status = #{approvalStatus,jdbcType=INTEGER},
-      </if>
-      <if test="approvalType != null">
-        approval_type = #{approvalType,jdbcType=INTEGER},
-      </if>
-      <if test="approvalDate != null">
-        approval_date = #{approvalDate,jdbcType=TIMESTAMP},
-      </if>
-      <if test="approvalRemark != null">
-        approval_remark = #{approvalRemark,jdbcType=VARCHAR},
-      </if>
-      <if test="approvalUser != null">
-        approval_user = #{approvalUser,jdbcType=INTEGER},
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
       </if>
     </set>
     where deliver_order_id = #{deliverOrderId,jdbcType=INTEGER}
@@ -235,24 +185,24 @@
   <update id="updateByPrimaryKey" parameterType="com.crazy.portal.entity.order.DeliverOrder">
     update t_deliver_order
     set sap_deliver_order_no = #{sapDeliverOrderNo,jdbcType=VARCHAR},
-      sales_order_id = #{salesOrderId,jdbcType=INTEGER},
-      sap_order_no = #{sapOrderNo,jdbcType=VARCHAR},
-      sold_to = #{soldTo,jdbcType=VARCHAR},
-      send_to = #{sendTo,jdbcType=VARCHAR},
-      deliver_date = #{deliverDate,jdbcType=TIMESTAMP},
-      actual_delivery_date = #{actualDeliveryDate,jdbcType=VARCHAR},
-      shipping_point = #{shippingPoint,jdbcType=VARCHAR},
-      active = #{active,jdbcType=INTEGER},
-      create_user_id = #{createUserId,jdbcType=INTEGER},
-      create_time = #{createTime,jdbcType=TIMESTAMP},
-      update_user_id = #{updateUserId,jdbcType=INTEGER},
-      update_time = #{updateTime,jdbcType=TIMESTAMP},
-      approval_status = #{approvalStatus,jdbcType=INTEGER},
-      approval_date = #{approvalDate,jdbcType=TIMESTAMP},
-      approval_remark = #{approvalRemark,jdbcType=VARCHAR},
-      approval_user = #{approvalUser,jdbcType=INTEGER}
+    sales_order_id = #{salesOrderId,jdbcType=INTEGER},
+    sap_order_no = #{sapOrderNo,jdbcType=VARCHAR},
+    sold_to = #{soldTo,jdbcType=VARCHAR},
+    send_to = #{sendTo,jdbcType=VARCHAR},
+    deliver_date = #{deliverDate,jdbcType=TIMESTAMP},
+    actual_delivery_date = #{actualDeliveryDate,jdbcType=VARCHAR},
+    shipping_point = #{shippingPoint,jdbcType=VARCHAR},
+    active = #{active,jdbcType=INTEGER},
+    create_user_id = #{createUserId,jdbcType=INTEGER},
+    create_time = #{createTime,jdbcType=TIMESTAMP},
+    update_user_id = #{updateUserId,jdbcType=INTEGER},
+    update_time = #{updateTime,jdbcType=TIMESTAMP}
     where deliver_order_id = #{deliverOrderId,jdbcType=INTEGER}
   </update>
+
+  <select id="selectBySapDeliveryNo" resultMap="BaseResultMap">
+    select * from t_deliver_order where active =1 and sap_order_no = #{sapDeliveryNo}
+  </select>
 
   <select id="selectList" resultMap="BaseResultMap">
     select *  from t_deliver_order where active =1
@@ -262,18 +212,6 @@
     <if test="createUserId != null and createUserId !=''">
       and create_user_id = #{createUserId}
     </if>
-    <if test="approvalStatus!=null and approvalStatus!=''">
-     and approval_status = #{approvalStatus}
-    </if>
-    <if test="approvalStartDate!=null and approvalStartDate!='' and approvalEndDate != null and approvalEndDate!=''">
-      and approval_date BETWEEN approvalStartDate and approvalEndDate
-    </if>
-    <if test="(approvalStartDate==null or approvalStartDate=='') and approvalEndDate != null and approvalEndDate!=''">
-      and approval_date &lt;= approvalEndDate
-    </if>
-    <if test="approvalStartDate!=null and approvalStartDate!='' and (approvalEndDate == null or approvalEndDate=='')">
-      and approval_date > approvalStartDate
-    </if>
     <if test="deliveryOrderNo!=null and deliveryOrderNo!=''">
       and sap_deliver_order_no = #{deliveryOrderNo}
     </if>
@@ -281,24 +219,24 @@
       and sap_order_no = #{salesOrderNo}
     </if>
     <if test="actualDeliveryStartDate!=null and actualDeliveryStartDate!='' and actualDeliveryEndDate != null and actualDeliveryEndDate != ''">
-      and actual_delivery_date BETWEEN actualDeliveryStartDate and actualDeliveryEndDate
+      and actual_delivery_date BETWEEN #{actualDeliveryStartDate} and #{actualDeliveryEndDate}
     </if>
     <if test="(actualDeliveryStartDate==null or actualDeliveryStartDate=='') and actualDeliveryEndDate != null and actualDeliveryEndDate != ''">
-      and actual_delivery_date &lt;= actualDeliveryEndDate
+      and actual_delivery_date &lt;= #{actualDeliveryEndDate}
     </if>
     <if test="actualDeliveryStartDate!=null and actualDeliveryStartDate!='' and (actualDeliveryEndDate == null or actualDeliveryEndDate == '')">
-      and actual_delivery_date > actualDeliveryStartDate
+      and actual_delivery_date > #{actualDeliveryStartDate}
     </if>
-  </select>
 
-  <select id="selectOfInvoiceSync" resultMap="BaseResultMap">
-    select * from t_deliver_order where sap_deliver_order_no not in (
-      select sap_delivery_id from t_order_invoice where active =1
-      )
-  </select>
-
-  <select id="selectBySapDeliveryNo" resultMap="BaseResultMap">
-    select * from t_deliver_order where active =1 and sap_deliver_order_no = #{sapDeliveryNo}
+    <if test="deliveryStartDate!=null and deliveryStartDate!='' and deliveryEndDate != null and deliveryEndDate != ''">
+      and deliver_date BETWEEN #{deliveryStartDate} and #{deliveryEndDate}
+    </if>
+    <if test="(deliveryStartDate==null or deliveryStartDate=='') and deliveryEndDate != null and deliveryEndDate != ''">
+      and deliver_date &lt;= #{deliveryEndDate}
+    </if>
+    <if test="deliveryStartDate!=null and deliveryStartDate!='' and (deliveryEndDate == null or deliveryEndDate == '')">
+      and deliver_date > #{deliveryStartDate}
+    </if>
   </select>
 
 </mapper>
