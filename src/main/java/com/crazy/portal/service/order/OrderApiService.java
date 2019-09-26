@@ -13,11 +13,15 @@ import com.crazy.portal.bean.order.wsdl.delivery.update.ZrfcsddeliverychangeResp
 import com.crazy.portal.bean.order.wsdl.price.Zrfcsdpricesimulate;
 import com.crazy.portal.bean.order.wsdl.price.ZrfcsdpricesimulateResponse;
 import com.crazy.portal.bean.order.wsdl.rate.ZrfcsdcustomercrrateResponse;
+import com.crazy.portal.config.exception.BusinessException;
+import com.crazy.portal.util.ErrorCodes;
 import com.crazy.portal.util.HttpClientUtils;
 import com.crazy.portal.util.JaxbXmlUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import java.lang.reflect.Method;
 
 /**
  * @Desc:
@@ -37,7 +41,7 @@ public class OrderApiService {
      * @param ikunnr
      * @return
      */
-    public ZrfcsdcustomercrrateResponse getCustomerRate(String ikunnr){
+    public ZrfcsdcustomercrrateResponse getCustomerRate(String ikunnr) throws Exception{
         String url = String.format("%s%s",ECC_API_URL,"/cxf/CUSTOMERRATE");
 
         String requestXML = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" " +
@@ -50,14 +54,14 @@ public class OrderApiService {
                 "   </soapenv:Body>\n" +
                 "</soapenv:Envelope>";
 
-        try {
-            String response = HttpClientUtils.post(url,requestXML);
-            log.info("CUSTOMERRATE Interface return {}",response);
-            return JaxbXmlUtil.convertSoapXmlToJavaBean(response, ZrfcsdcustomercrrateResponse.class);
-        } catch (Exception e) {
-            log.error("",e);
-        }
-        return null;
+        String response = HttpClientUtils.post(url,requestXML);
+        log.info("CUSTOMERRATE Interface return {}",response);
+
+        ZrfcsdcustomercrrateResponse zrfcsdcustomercrrateResponse = JaxbXmlUtil.convertSoapXmlToJavaBean(response, ZrfcsdcustomercrrateResponse.class);
+
+        this.invokeAfter(zrfcsdcustomercrrateResponse);
+
+        return zrfcsdcustomercrrateResponse;
     }
 
     /**
@@ -65,18 +69,50 @@ public class OrderApiService {
      * @param order
      * @return
      */
-    public ZrfcsdsalesordercreateResponse createSalesOrder(Zrfcsdsalesordercreate order){
+    public ZrfcsdsalesordercreateResponse createSalesOrder(Zrfcsdsalesordercreate order) throws Exception{
         String url = String.format("%s%s",ECC_API_URL,"/cxf/PORTAL/ECC/CREATESALESORDER");
-        try {
-            String requestXml = JaxbXmlUtil.convertToXml(order);
-            log.info("request - >" + requestXml);
-            String response = HttpClientUtils.post(url,requestXml);
-            log.info("response - >" + response);
-            return JaxbXmlUtil.convertSoapXmlToJavaBean(response, ZrfcsdsalesordercreateResponse.class);
-        } catch (Exception e) {
-            log.error("",e);
+        String requestXml = JaxbXmlUtil.convertToXml(order);
+        log.info("request - >" + requestXml);
+        String response = HttpClientUtils.post(url,requestXml);
+        log.info("response - >" + response);
+
+
+        ZrfcsdsalesordercreateResponse zrfcsdsalesordercreateResponse =
+                JaxbXmlUtil.convertSoapXmlToJavaBean(response, ZrfcsdsalesordercreateResponse.class);
+
+        this.invokeAfter(zrfcsdsalesordercreateResponse);
+
+        return zrfcsdsalesordercreateResponse;
+    }
+
+
+    /**
+     * 调用接口之后验证是否正确获取值
+     * @param obj
+     * @throws Exception
+     */
+    private void invokeAfter(Object obj) throws Exception{
+
+        if(obj == null){
+            throw new BusinessException(ErrorCodes.CommonEnum.SYSTEM_EXCEPTION.getCode(),ErrorCodes.CommonEnum.SYSTEM_EXCEPTION.getZhMsg());
         }
-        return null;
+
+        Method getEsHeaderMethod = obj.getClass().getMethod("getEsHeader");
+        Object esHeader = getEsHeaderMethod.invoke(obj, null);
+
+        if(esHeader != null){
+            Method resulttypeMethod = esHeader.getClass().getMethod("getResulttype");
+            String resultType = (String)resulttypeMethod.invoke(esHeader, null);
+            if(!resultType.equals("1")){
+                throw new BusinessException(ErrorCodes.CommonEnum.SYSTEM_EXCEPTION.getCode(),ErrorCodes.CommonEnum.SYSTEM_EXCEPTION.getZhMsg());
+            }
+            Method resultmessage = esHeader.getClass().getMethod("getResultmessage");
+            String resultMessage = String.valueOf(resultmessage.invoke(esHeader,null));
+
+            if(!"null".equals(resultMessage)){
+                throw new BusinessException(ErrorCodes.CommonEnum.SYSTEM_EXCEPTION.getCode(),resultMessage);
+            }
+        }
     }
 
     /**
@@ -84,19 +120,21 @@ public class OrderApiService {
      * @param order
      * @return
      */
-    public ZrfcsdsalesorderchangeResponse changeSalesOrder(Zrfcsdsalesorderchange order){
+    public ZrfcsdsalesorderchangeResponse changeSalesOrder(Zrfcsdsalesorderchange order) throws Exception{
         String url = String.format("%s%s",ECC_API_URL,"/cxf/PORTAL/ECC/CHANGE_SALES_ORDER");
 
-        try {
-            String requestXml = JaxbXmlUtil.convertToXml(order);
-            log.info("request - >" + requestXml);
-            String response = HttpClientUtils.post(url,requestXml);
-            log.info("response - >" + response);
-            return JaxbXmlUtil.convertSoapXmlToJavaBean(response, ZrfcsdsalesorderchangeResponse.class);
-        } catch (Exception e) {
-            log.error("",e);
-        }
-        return null;
+        String requestXml = JaxbXmlUtil.convertToXml(order);
+        log.info("request - >" + requestXml);
+        String response = HttpClientUtils.post(url,requestXml);
+        log.info("response - >" + response);
+
+        ZrfcsdsalesorderchangeResponse zrfcsdsalesorderchangeResponse
+                = JaxbXmlUtil.convertSoapXmlToJavaBean(response, ZrfcsdsalesorderchangeResponse.class);
+
+        this.invokeAfter(zrfcsdsalesorderchangeResponse);
+
+        return zrfcsdsalesorderchangeResponse;
+
     }
 
     /**
@@ -104,19 +142,17 @@ public class OrderApiService {
      * @param priceSimulate
      * @return
      */
-    public ZrfcsdpricesimulateResponse priceSimulate(Zrfcsdpricesimulate priceSimulate){
+    public ZrfcsdpricesimulateResponse priceSimulate(Zrfcsdpricesimulate priceSimulate) throws Exception{
         String url = String.format("%s%s",ECC_API_URL,"/cxf/ECC/PORTAL/GETPRICESIMULATION");
+        String requestXml = JaxbXmlUtil.convertToXml(priceSimulate);
+        log.info("request - >" + requestXml);
+        String response = HttpClientUtils.post(url,requestXml);
+        log.info("response - >" + response);
+        ZrfcsdpricesimulateResponse zrfcsdpricesimulateResponse =
+                JaxbXmlUtil.convertSoapXmlToJavaBean(response, ZrfcsdpricesimulateResponse.class);
 
-        try {
-            String requestXml = JaxbXmlUtil.convertToXml(priceSimulate);
-            log.info("request - >" + requestXml);
-            String response = HttpClientUtils.post(url,requestXml);
-            log.info("response - >" + response);
-            return JaxbXmlUtil.convertSoapXmlToJavaBean(response, ZrfcsdpricesimulateResponse.class);
-        } catch (Exception e) {
-            log.error("",e);
-        }
-        return null;
+        this.invokeAfter(zrfcsdpricesimulateResponse);
+        return zrfcsdpricesimulateResponse;
     }
 
     /**
@@ -124,18 +160,18 @@ public class OrderApiService {
      * @param create
      * @return
      */
-    public ZrfcsddeliverycreateResponse deliveryCreate(ZrfcsdDeliveryCreate create){
+    public ZrfcsddeliverycreateResponse deliveryCreate(ZrfcsdDeliveryCreate create) throws Exception{
         String url = String.format("%s%s",ECC_API_URL,"/cxf/PORTAL/ECC/CREATEDELIVERY");
-        try {
-            String requestXml = JaxbXmlUtil.convertToXml(create);
-            log.info("request - >" + requestXml);
-            String response = HttpClientUtils.post(url,requestXml);
-            log.info("response - >" + response);
-            return JaxbXmlUtil.convertSoapXmlToJavaBean(response, ZrfcsddeliverycreateResponse.class);
-        } catch (Exception e) {
-            log.error("",e);
-        }
-        return null;
+        String requestXml = JaxbXmlUtil.convertToXml(create);
+        log.info("request - >" + requestXml);
+        String response = HttpClientUtils.post(url,requestXml);
+        log.info("response - >" + response);
+        ZrfcsddeliverycreateResponse zrfcsddeliverycreateResponse = JaxbXmlUtil.convertSoapXmlToJavaBean(response, ZrfcsddeliverycreateResponse.class);
+
+        this.invokeAfter(zrfcsddeliverycreateResponse);
+
+        return zrfcsddeliverycreateResponse;
+
     }
 
     public ZrfcsddeliverychangeResponse deliveryUpdate(ZrfcsdDeliveryUpdate update){
