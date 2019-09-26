@@ -177,6 +177,7 @@ public class ErrorCodes {
         BUSINESS_IDR_APPROVAL_ORDERNO_NOT_FOUND(70010, "审批结果同步[orderNo不存在]", ""),
         BUSINESS_IDR_APPROVAL_DATE_PARSE_EXCEPTION(70011, "保差退提交BPM[不是合法的日期格式]", ""),
         BUSINESS_IDR_APPROVAL_API_EXCEPTION(70012, "保差退提交BPM[接口异常]", ""),
+        BUSINESS_IDR_APPROVAL_IDR_INFO_NOT_FOUND_EXCEPTION(70013, "审批结果同步[保差退信息不存在]", ""),
         //商务管理-客户rebate
         REBATE_RECORD_NOT_FOUND(70101, "Rebate信息不存在", ""),
         REBATE_SURPLUS_AMOUNT_BIG(70103, "释放金额不能大于rebate金额", ""),

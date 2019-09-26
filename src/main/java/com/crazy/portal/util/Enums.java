@@ -287,7 +287,7 @@ public class Enums {
         public BaseRowModel getType(){return type;}
         public static BusinessIdrType getDescByCode(Integer code){
             for(BusinessIdrType e : BusinessIdrType.values()){
-                if(code == e.getCode()){
+                if(code.equals(e.getCode())){
                     return e;
                 }
             }

@@ -28,6 +28,7 @@ public class BusinessIdrInfo {
     private String currency;
     //CR金额
     @Digits(integer=15,fraction=4,message = "请输入有效的数字")
+    @NotNull(message = "CR金额不能为空")
     private BigDecimal crAmount;
     //公司
     @NotBlank(message = "公司不能为空")
@@ -40,6 +41,7 @@ public class BusinessIdrInfo {
     //外部客户名
     private String outCustomerName;
     //原因
+    @NotBlank(message = "请输入原因")
     private String reson;
     //备注
     private String remark;
