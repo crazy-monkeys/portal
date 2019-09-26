@@ -43,13 +43,13 @@ public class OrderApiServiceTest {
     private OrderApiService eccApiService;
 
     @Test
-    public void getCustomerRate() {
+    public void getCustomerRate() throws Exception{
         ZrfcsdcustomercrrateResponse response = eccApiService.getCustomerRate("100217");
         Assert.assertNotNull(response);
     }
 
     @Test
-    public void createSalesOrder() {
+    public void createSalesOrder() throws Exception{
         IsHeader isHeader = new IsHeader();
         isHeader.setPortalorderid("4");
         isHeader.setOrdertype("ZOR");
@@ -90,7 +90,7 @@ public class OrderApiServiceTest {
     }
 
     @Test
-    public void changeSalesOrder(){
+    public void changeSalesOrder() throws Exception{
         com.crazy.portal.bean.order.wsdl.change.IsHeader isHeader = new com.crazy.portal.bean.order.wsdl.change.IsHeader();
         isHeader.setSaporderid("11900");
         isHeader.setSalesoffice("0005");
@@ -128,7 +128,7 @@ public class OrderApiServiceTest {
     }
 
     @Test
-    public void priceSimulate(){
+    public void priceSimulate() throws Exception{
 
         com.crazy.portal.bean.order.wsdl.price.IsHeader isHeader = new com.crazy.portal.bean.order.wsdl.price.IsHeader();
         isHeader.setPortalorderid("1");

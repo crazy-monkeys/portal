@@ -116,7 +116,8 @@ public class OrderApproveService {
      * @throws IllegalAccessException
      * @throws InvocationTargetException
      */
-    private void createOrder(String expectedDeliveryDate,OrderApply orderApply,Integer userId) throws ParseException, IntrospectionException, IllegalAccessException, InvocationTargetException {
+    private void createOrder(String expectedDeliveryDate,OrderApply orderApply,Integer userId) throws Exception {
+
         ZrfcsdsalesordercreateResponse response = this.invokeEccCreateOrder(expectedDeliveryDate,orderApply);
         //第三方接口调用成功,将审批信息同步到结果表
         ZsalesordercreateOutHeader esHeader = response.getEsHeader();
@@ -159,7 +160,7 @@ public class OrderApproveService {
      * @param order
      * @param userId
      */
-    private void cancelOrder(Order order,Integer userId){
+    private void cancelOrder(Order order,Integer userId) throws Exception{
         ZrfcsdsalesorderchangeResponse response = this.invokeEccModifyOrder(order,"D");
         String resultType = response.getEsHeader().getResulttype();
         //如果修改成功
@@ -193,7 +194,7 @@ public class OrderApproveService {
      * @param order
      * @param userId
      */
-    private void modifyOrder(Order order,OrderApply orderApply,Integer userId){
+    private void modifyOrder(Order order,OrderApply orderApply,Integer userId) throws Exception{
         ZrfcsdsalesorderchangeResponse response = this.invokeEccModifyOrder(order,"I");
         ZsalesorderchangeOutHeader esHeader = response.getEsHeader();
         String resulttype = esHeader.getResulttype();
@@ -261,8 +262,8 @@ public class OrderApproveService {
      * @param operationType
      * @return
      */
-    private ZrfcsdsalesorderchangeResponse invokeEccModifyOrder(
-            Order order,String operationType){
+    private ZrfcsdsalesorderchangeResponse invokeEccModifyOrder (
+            Order order,String operationType) throws Exception{
 
         com.crazy.portal.bean.order.wsdl.change.IsHeader isHeader = this.buildChangeIsHeader(order);
 
@@ -282,7 +283,9 @@ public class OrderApproveService {
      * 调用ecc创单接口
      * @param orderApply
      */
-    private ZrfcsdsalesordercreateResponse invokeEccCreateOrder(String expectedDeliveryDate,OrderApply orderApply) throws ParseException{
+    private ZrfcsdsalesordercreateResponse invokeEccCreateOrder(
+            String expectedDeliveryDate,OrderApply orderApply) throws Exception{
+
         IsHeader isHeader = this.buildCreateIsHeader(orderApply);
 
         ItItems itItems = this.buildCreateItItems(expectedDeliveryDate,orderApply);

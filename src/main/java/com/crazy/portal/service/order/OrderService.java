@@ -233,7 +233,7 @@ public class OrderService {
         }
     }
 
-    private ZrfcsddeliverycreateResponse eccDeliveryCreate(DeliverOrderApproval deliverOrder, List<DeliverOrderLine> deliverOrderLines){
+    private ZrfcsddeliverycreateResponse eccDeliveryCreate(DeliverOrderApproval deliverOrder, List<DeliverOrderLine> deliverOrderLines) throws Exception{
         ZrfcsdDeliveryCreateContent content = new ZrfcsdDeliveryCreateContent();
         content.setDeliverydate(DateUtil.format(deliverOrder.getDeliverDate(),DateUtil.SHORT_FORMAT));
         content.setDeliveryIoc(deliverOrder.getShippingPoint());

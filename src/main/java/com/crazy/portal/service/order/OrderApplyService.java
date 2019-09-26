@@ -83,7 +83,7 @@ public class OrderApplyService {
      * 解析附件并作调价试算
      * @return
      */
-    public Map<String,Object> parsingLineTmplFile(OrderApply order){
+    public Map<String,Object> parsingLineTmplFile(OrderApply order) throws Exception{
         Map<String,Object> map = new HashMap<>();
         if(order.getSalesOrg().equals("3000")){
             order.setPaymentTerms("9994");
