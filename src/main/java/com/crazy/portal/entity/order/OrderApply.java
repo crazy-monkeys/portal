@@ -180,7 +180,7 @@ public class OrderApply {
     /**
      * 订单行信息
      */
-    private JSONArray lines;
+    private JSONArray jsonLines;
 
     public List<OrderLine> lineJsonToObj(JSONArray lines) {
         return JSONObject.parseArray(lines.toJSONString(), OrderLine.class);

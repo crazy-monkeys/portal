@@ -118,7 +118,7 @@ public class OrderApproveService {
         order.setRNetValue(esHeader.getNetvalue());
         orderMapper.insertSelective(order);
 
-        List<OrderLine> lines = orderApply.lineJsonToObj(orderApply.getLines());
+        List<OrderLine> lines = orderApply.lineJsonToObj(orderApply.getJsonLines());
         for(OrderLine line : lines){
             for(ZsalesordercreateOutItem etItem : response.getEtItems().getItem()){
                 if(etItem.getProductid().equals(line.getProductId())){
@@ -184,7 +184,7 @@ public class OrderApproveService {
         ZsalesorderchangeOutHeader esHeader = response.getEsHeader();
         String resulttype = esHeader.getResulttype();
         if(resulttype.equals("1")){
-            List<OrderLine> orderLines = orderApply.lineJsonToObj(orderApply.getLines());
+            List<OrderLine> orderLines = orderApply.lineJsonToObj(orderApply.getJsonLines());
 
             Map<String,OrderLine> applyLineMap = orderLines.stream().collect(
                     Collectors.toMap(OrderLine::getProductId, Function.identity()));
@@ -224,7 +224,7 @@ public class OrderApproveService {
      * @param userId
      */
     private void modifyDeliveryDate(OrderApply orderApply,Integer userId){
-        List<OrderLine> applyLines = orderApply.lineJsonToObj(orderApply.getLines());
+        List<OrderLine> applyLines = orderApply.lineJsonToObj(orderApply.getJsonLines());
 
         Order order = orderMapper.selectBySapOrderId(orderApply.getRSapOrderId());
         List<OrderLine> lines = orderLineMapper.selectByOrderId(order.getId());
@@ -327,7 +327,7 @@ public class OrderApproveService {
     private ItItems buildCreateItItems(OrderApply orderApply) {
         Integer line_no = 1;
         List<ItItem> items = new ArrayList<>();
-        for (OrderLine line : orderApply.lineJsonToObj(orderApply.getLines())) {
+        for (OrderLine line : orderApply.lineJsonToObj(orderApply.getJsonLines())) {
             ItItem item = new ItItem();
             item.setSequenceno(String.valueOf(line_no));
             item.setProductid(line.getProductId());

@@ -12,9 +12,12 @@ import com.crazy.portal.entity.order.*;
 import com.crazy.portal.entity.product.ProductInfoDO;
 import com.crazy.portal.service.customer.CustomerInfoService;
 import com.crazy.portal.util.*;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
@@ -48,6 +51,18 @@ public class OrderApplyService {
     private DeliverOrderLineMapper deliverOrderLineMapper;
     @Resource
     private CustomerInfoService customerInfoService;
+
+
+    /**
+     * 分页查询
+     * @param bean
+     * @return
+     */
+    public PageInfo<OrderApply> list(OrderQueryBean bean){
+        PageHelper.startPage(bean.getPageIndex(), bean.getPageSize());
+        List<OrderApply> list = orderApplyMapper.selectByPage(bean);
+        return new PageInfo<>(list);
+    }
 
 
     /**
@@ -153,7 +168,7 @@ public class OrderApplyService {
             }
             x.setExpectedDeliveryDate(DateUtil.getLastDayOfMonth(DateUtil.getYear(priceDate),DateUtil.getMonth(priceDate)));
         });
-        order.setLines(order.objToLineJson(orderLines));
+        order.setJsonLines(order.objToLineJson(orderLines));
         orderApplyMapper.insertSelective(order);
     }
 
@@ -170,7 +185,7 @@ public class OrderApplyService {
         orderApply.setCreateId(userId);
         orderApply.setCreateTime(DateUtil.getCurrentTS());
         orderApply.setAppalyType(2);
-        orderApply.setLines(orderApply.objToLineJson(order.getOrderLines()));
+        orderApply.setJsonLines(orderApply.objToLineJson(order.getOrderLines()));
         orderApplyMapper.insertSelective(orderApply);
     }
 
@@ -205,7 +220,7 @@ public class OrderApplyService {
         orderApply.setCreateId(userId);
         orderApply.setCreateTime(DateUtil.getCurrentTS());
         orderApply.setAppalyType(3);
-        orderApply.setLines(orderApply.objToLineJson(lines));
+        orderApply.setJsonLines(orderApply.objToLineJson(lines));
         orderApplyMapper.insertSelective(orderApply);
     }
 
@@ -237,7 +252,7 @@ public class OrderApplyService {
         orderApply.setCreateId(userId);
         orderApply.setCreateTime(DateUtil.getCurrentTS());
         orderApply.setAppalyType(4);
-        orderApply.setLines(orderApply.objToLineJson(lines));
+        orderApply.setJsonLines(orderApply.objToLineJson(lines));
         orderApplyMapper.insertSelective(orderApply);
     }
 

@@ -5,6 +5,7 @@ import com.crazy.portal.bean.BaseResponse;
 import com.crazy.portal.bean.order.DeliveryChangeVO;
 import com.crazy.portal.bean.order.DeliveryOrderCancelVO;
 import com.crazy.portal.bean.order.DeliveryOrderVO;
+import com.crazy.portal.bean.order.OrderQueryBean;
 import com.crazy.portal.controller.BaseController;
 import com.crazy.portal.entity.order.DeliverOrder;
 import com.crazy.portal.entity.order.Order;
@@ -14,6 +15,7 @@ import com.crazy.portal.service.order.OrderService;
 import com.crazy.portal.util.BusinessUtil;
 import com.crazy.portal.util.ErrorCodes;
 import org.springframework.web.bind.annotation.*;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -33,6 +35,12 @@ public class OrderApplyController extends BaseController {
     private OrderApplyService orderApplyService;
     @Resource
     private OrderService orderService;
+
+    @PostMapping("/list")
+    public BaseResponse list(@RequestBody @Valid OrderQueryBean orderQueryBean){
+        orderApplyService.list(orderQueryBean);
+        return successResult();
+    }
 
     /**
      * 订单创建申请
