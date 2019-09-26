@@ -6,10 +6,12 @@ import com.crazy.portal.bean.order.wsdl.create.IsHeader;
 import com.crazy.portal.bean.order.wsdl.create.ItItem;
 import com.crazy.portal.bean.order.wsdl.create.ItItems;
 import com.crazy.portal.bean.order.wsdl.create.*;
+import com.crazy.portal.dao.cusotmer.CustomerInfoMapper;
 import com.crazy.portal.dao.order.OrderApplyMapper;
 import com.crazy.portal.dao.order.OrderLineMapper;
 import com.crazy.portal.dao.order.OrderMapper;
 import com.crazy.portal.dao.product.ProductInfoDOMapper;
+import com.crazy.portal.entity.cusotmer.CustomerInfo;
 import com.crazy.portal.entity.order.Order;
 import com.crazy.portal.entity.order.OrderApply;
 import com.crazy.portal.entity.order.OrderLine;
@@ -24,7 +26,9 @@ import javax.annotation.Resource;
 import java.beans.IntrospectionException;
 import java.lang.reflect.InvocationTargetException;
 import java.text.ParseException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -48,6 +52,8 @@ public class OrderApproveService {
     private OrderApplyMapper orderApplyMapper;
     @Resource
     private ProductInfoDOMapper productInfoDOMapper;
+    @Resource
+    private CustomerInfoMapper customerInfoMapper;
 
     /**
      * 订单审批
@@ -58,13 +64,14 @@ public class OrderApproveService {
         OrderApply orderApply = orderApplyMapper.selectByPrimaryKey(bean.getApplyId());
         BusinessUtil.notNull(orderApply, ErrorCodes.BusinessEnum.ORDER_APPLY_ORDER_NOT_FOUND);
 
-        Integer approvalStatus = orderApply.getApprovalStatus();
-        BusinessUtil.assertTrue(!approvalStatus.equals(Enums.OrderApprovalStatus.WAIT_APPROVAL),
+        Integer approvalStatusInDB = orderApply.getApprovalStatus();
+        BusinessUtil.assertTrue(!approvalStatusInDB.equals(Enums.OrderApprovalStatus.WAIT_APPROVAL),
                 ErrorCodes.BusinessEnum.ORDER_NO_PENDING);
 
         //如果是通过，调用ECC接口
         Integer userId = user.getId();
-        if(bean.getApprovalStatus().equals(Enums.OrderApprovalStatus.ADOPT.getValue())){
+        Integer approvalStatus = bean.getApprovalStatus();
+        if(approvalStatus.equals(Enums.OrderApprovalStatus.ADOPT.getValue())){
             //如果是创单申请
             Integer appalyType = orderApply.getAppalyType();
 
@@ -119,6 +126,8 @@ public class OrderApproveService {
         order.setCreateId(userId);
         order.setRGrossValue(esHeader.getGrossvalue());
         order.setRNetValue(esHeader.getNetvalue());
+        order.setRSapOrderId(esHeader.getSaporderid());
+        order.setPaymentTerms(esHeader.getPaymentterms());
         order.setPriceDate(expectedDeliveryDate);
         orderMapper.insertSelective(order);
 
@@ -353,20 +362,21 @@ public class OrderApproveService {
         return itItems;
     }
 
-    private IsHeader buildCreateIsHeader(OrderApply orderApply) throws ParseException {
+    private IsHeader buildCreateIsHeader(OrderApply orderApply) {
         IsHeader isHeader = new IsHeader();
         isHeader.setPortalorderid(orderApply.getId().toString());
         isHeader.setOrdertype(orderApply.getOrderType());
         isHeader.setSalesorg(orderApply.getSalesOrg());
-        isHeader.setSoldto(orderApply.getSoldTo());
-        isHeader.setSendto(orderApply.getSendTo());
+
+        CustomerInfo soldToCustomer = customerInfoMapper.selectByPrimaryKey(Integer.parseInt(orderApply.getSoldTo()));
+        isHeader.setSoldto(soldToCustomer.getOutCode());
+        CustomerInfo sendToCustomer = customerInfoMapper.selectByPrimaryKey(Integer.parseInt(orderApply.getSendTo()));
+        isHeader.setSendto(sendToCustomer.getOutCode());
         isHeader.setPurchaseno(orderApply.getPurchaseNo());
         isHeader.setPurchasedate(orderApply.getPurchaseDate());
         isHeader.setPaymentterms(orderApply.getPaymentTerms());
         isHeader.setCustomergroup1(orderApply.getOrderType());
         isHeader.setCustomergroup2(orderApply.getCustomerAttr());
-        Date priceDate = DateUtil.parseDate(orderApply.getPriceDate(),DateUtil.MONTH_FORMAT_HLINE);
-        BusinessUtil.assertFlase(Objects.isNull(priceDate), ErrorCodes.BusinessEnum.ORDER_EMPTY_PRICE_DATE);
         isHeader.setPricedate(orderApply.getPriceDate());
         isHeader.setInco1(orderApply.getIncoterms1());
         isHeader.setInco2(orderApply.getIncoterms2());

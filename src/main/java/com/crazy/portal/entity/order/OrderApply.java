@@ -123,7 +123,7 @@ public class OrderApply {
     /**
      * 付款条件
      */
-    private String paymentTerms;
+    private String paymentTerms="";
 
     /**
      * 客户属性(B1-Account Market；B2-Mass Market)

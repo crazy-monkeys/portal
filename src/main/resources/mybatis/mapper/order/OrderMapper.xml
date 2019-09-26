@@ -25,6 +25,9 @@
     <result column="r_gross_value" jdbcType="DECIMAL" property="rGrossValue" />
     <result column="r_net_value" jdbcType="DECIMAL" property="rNetValue" />
     <result column="order_reason" jdbcType="VARCHAR" property="orderReason" />
+    <result column="invoice_type" jdbcType="INTEGER" property="invoiceType" />
+    <result column="invoice_delivery_type" jdbcType="INTEGER" property="invoiceDeliveryType" />
+    <result column="invoice_delivery_address" jdbcType="VARCHAR" property="invoiceDeliveryAddress" />
     <result column="is_agreed" jdbcType="INTEGER" property="isAgreed" />
     <result column="active" jdbcType="INTEGER" property="active" />
     <result column="dealer_id" jdbcType="INTEGER" property="dealerId" />
@@ -38,7 +41,7 @@
     id, order_type, under_order_type, sales_org, channel, division, sales_office, sales_group, 
     sold_to, send_to, purchase_no, incoterms1, incoterms2, price_date, payment_terms, 
     customer_attr, purchase_date, ref_sap_order_id, r_sap_order_id, r_sap_currency, r_gross_value, 
-    r_net_value, order_reason, is_agreed, active,
+    r_net_value, order_reason, invoice_type,invoice_delivery_type,invoice_delivery_address,is_agreed, active,
     dealer_id,create_id, create_time, update_id,update_time
   </sql>
 
@@ -172,6 +175,15 @@
       <if test="orderReason != null">
         order_reason,
       </if>
+      <if test="invoiceType != null">
+        invoice_type,
+      </if>
+      <if test="invoiceDeliveryType != null">
+        invoice_delivery_type,
+      </if>
+      <if test="invoiceDeliveryAddress != null">
+        invoice_delivery_address,
+      </if>
       <if test="isAgreed != null">
         is_agreed,
       </if>
@@ -264,6 +276,15 @@
       <if test="orderReason != null">
         #{orderReason,jdbcType=VARCHAR},
       </if>
+      <if test="invoiceType != null">
+        #{invoiceType,jdbcType=INTEGER},
+      </if>
+      <if test="invoiceDeliveryType != null">
+        #{invoiceDeliveryType,jdbcType=INTEGER},
+      </if>
+      <if test="invoiceDeliveryAddress != null">
+        #{invoiceDeliveryAddress,jdbcType=VARCHAR},
+      </if>
       <if test="isAgreed != null">
         #{isAgreed,jdbcType=INTEGER},
       </if>
@@ -355,6 +376,15 @@
       </if>
       <if test="orderReason != null">
         order_reason = #{orderReason,jdbcType=VARCHAR},
+      </if>
+      <if test="invoiceType != null">
+        order_reason = #{invoiceType,jdbcType=INTEGER},
+      </if>
+      <if test="invoiceDeliveryType != null">
+        invoice_delivery_type = #{invoiceDeliveryType,jdbcType=INTEGER},
+      </if>
+      <if test="invoiceDeliveryAddress != null">
+        invoice_delivery_address = #{invoiceDeliveryAddress,jdbcType=VARCHAR},
       </if>
       <if test="isAgreed != null">
         is_agreed = #{isAgreed,jdbcType=INTEGER},
