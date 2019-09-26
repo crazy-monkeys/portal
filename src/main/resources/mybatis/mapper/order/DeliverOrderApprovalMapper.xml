@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.crazy.portal.dao.test.DeliverOrderApprovalMapper">
+  <resultMap id="BaseResultMap" type="com.crazy.portal.entity.test.DeliverOrderApproval">
+    <id column="deliver_order_id" jdbcType="INTEGER" property="deliverOrderId" />
+    <result column="sales_order_id" jdbcType="INTEGER" property="salesOrderId" />
+    <result column="sap_order_no" jdbcType="VARCHAR" property="sapOrderNo" />
+    <result column="sold_to" jdbcType="VARCHAR" property="soldTo" />
+    <result column="send_to" jdbcType="VARCHAR" property="sendTo" />
+    <result column="deliver_date" jdbcType="TIMESTAMP" property="deliverDate" />
+    <result column="shipping_point" jdbcType="VARCHAR" property="shippingPoint" />
+    <result column="active" jdbcType="INTEGER" property="active" />
+    <result column="create_user_id" jdbcType="INTEGER" property="createUserId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_user_id" jdbcType="INTEGER" property="updateUserId" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="approval_status" jdbcType="INTEGER" property="approvalStatus" />
+    <result column="approval_date" jdbcType="TIMESTAMP" property="approvalDate" />
+    <result column="approval_remark" jdbcType="VARCHAR" property="approvalRemark" />
+    <result column="approval_user" jdbcType="INTEGER" property="approvalUser" />
+    <result column="approval_type" jdbcType="VARCHAR" property="approvalType" />
+    <result column="delivery_order_line" typeHandler="com.crazy.portal.config.mybatis.handler.ArrayJsonHandler"  property="deliveryOrderLine" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    deliver_order_id, sales_order_id, sap_order_no, sold_to, send_to, deliver_date, shipping_point, 
+    active, create_user_id, create_time, update_user_id, update_time, approval_status, 
+    approval_date, approval_remark, approval_user, approval_type, delivery_order_line
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_deliver_order_approval
+    where deliver_order_id = #{deliverOrderId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_deliver_order_approval
+    where deliver_order_id = #{deliverOrderId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.crazy.portal.entity.test.DeliverOrderApproval">
+    insert into t_deliver_order_approval (deliver_order_id, sales_order_id, sap_order_no, 
+      sold_to, send_to, deliver_date, 
+      shipping_point, active, create_user_id, 
+      create_time, update_user_id, update_time, 
+      approval_status, approval_date, approval_remark, 
+      approval_user, approval_type, delivery_order_line
+      )
+    values (#{deliverOrderId,jdbcType=INTEGER}, #{salesOrderId,jdbcType=INTEGER}, #{sapOrderNo,jdbcType=VARCHAR}, 
+      #{soldTo,jdbcType=VARCHAR}, #{sendTo,jdbcType=VARCHAR}, #{deliverDate,jdbcType=TIMESTAMP}, 
+      #{shippingPoint,jdbcType=VARCHAR}, #{active,jdbcType=INTEGER}, #{createUserId,jdbcType=INTEGER}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateUserId,jdbcType=INTEGER}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{approvalStatus,jdbcType=INTEGER}, #{approvalDate,jdbcType=TIMESTAMP}, #{approvalRemark,jdbcType=VARCHAR}, 
+      #{approvalUser,jdbcType=INTEGER}, #{approvalType,jdbcType=VARCHAR}, #{deliveryOrderLine,jdbcType=OTHER,typeHandler=com.crazy.portal.config.mybatis.handler.ArrayJsonHandler}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.crazy.portal.entity.test.DeliverOrderApproval">
+    insert into t_deliver_order_approval
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="deliverOrderId != null">
+        deliver_order_id,
+      </if>
+      <if test="salesOrderId != null">
+        sales_order_id,
+      </if>
+      <if test="sapOrderNo != null">
+        sap_order_no,
+      </if>
+      <if test="soldTo != null">
+        sold_to,
+      </if>
+      <if test="sendTo != null">
+        send_to,
+      </if>
+      <if test="deliverDate != null">
+        deliver_date,
+      </if>
+      <if test="shippingPoint != null">
+        shipping_point,
+      </if>
+      <if test="active != null">
+        active,
+      </if>
+      <if test="createUserId != null">
+        create_user_id,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateUserId != null">
+        update_user_id,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="approvalStatus != null">
+        approval_status,
+      </if>
+      <if test="approvalDate != null">
+        approval_date,
+      </if>
+      <if test="approvalRemark != null">
+        approval_remark,
+      </if>
+      <if test="approvalUser != null">
+        approval_user,
+      </if>
+      <if test="approvalType != null">
+        approval_type,
+      </if>
+      <if test="deliveryOrderLine != null">
+        delivery_order_line,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="deliverOrderId != null">
+        #{deliverOrderId,jdbcType=INTEGER},
+      </if>
+      <if test="salesOrderId != null">
+        #{salesOrderId,jdbcType=INTEGER},
+      </if>
+      <if test="sapOrderNo != null">
+        #{sapOrderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="soldTo != null">
+        #{soldTo,jdbcType=VARCHAR},
+      </if>
+      <if test="sendTo != null">
+        #{sendTo,jdbcType=VARCHAR},
+      </if>
+      <if test="deliverDate != null">
+        #{deliverDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="shippingPoint != null">
+        #{shippingPoint,jdbcType=VARCHAR},
+      </if>
+      <if test="active != null">
+        #{active,jdbcType=INTEGER},
+      </if>
+      <if test="createUserId != null">
+        #{createUserId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUserId != null">
+        #{updateUserId,jdbcType=INTEGER},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="approvalStatus != null">
+        #{approvalStatus,jdbcType=INTEGER},
+      </if>
+      <if test="approvalDate != null">
+        #{approvalDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="approvalRemark != null">
+        #{approvalRemark,jdbcType=VARCHAR},
+      </if>
+      <if test="approvalUser != null">
+        #{approvalUser,jdbcType=INTEGER},
+      </if>
+      <if test="approvalType != null">
+        #{approvalType,jdbcType=VARCHAR},
+      </if>
+      <if test="deliveryOrderLine != null">
+        #{deliveryOrderLine,jdbcType=OTHER,typeHandler=com.crazy.portal.config.mybatis.handler.ArrayJsonHandler},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.crazy.portal.entity.test.DeliverOrderApproval">
+    update t_deliver_order_approval
+    <set>
+      <if test="salesOrderId != null">
+        sales_order_id = #{salesOrderId,jdbcType=INTEGER},
+      </if>
+      <if test="sapOrderNo != null">
+        sap_order_no = #{sapOrderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="soldTo != null">
+        sold_to = #{soldTo,jdbcType=VARCHAR},
+      </if>
+      <if test="sendTo != null">
+        send_to = #{sendTo,jdbcType=VARCHAR},
+      </if>
+      <if test="deliverDate != null">
+        deliver_date = #{deliverDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="shippingPoint != null">
+        shipping_point = #{shippingPoint,jdbcType=VARCHAR},
+      </if>
+      <if test="active != null">
+        active = #{active,jdbcType=INTEGER},
+      </if>
+      <if test="createUserId != null">
+        create_user_id = #{createUserId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUserId != null">
+        update_user_id = #{updateUserId,jdbcType=INTEGER},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="approvalStatus != null">
+        approval_status = #{approvalStatus,jdbcType=INTEGER},
+      </if>
+      <if test="approvalDate != null">
+        approval_date = #{approvalDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="approvalRemark != null">
+        approval_remark = #{approvalRemark,jdbcType=VARCHAR},
+      </if>
+      <if test="approvalUser != null">
+        approval_user = #{approvalUser,jdbcType=INTEGER},
+      </if>
+      <if test="approvalType != null">
+        approval_type = #{approvalType,jdbcType=VARCHAR},
+      </if>
+      <if test="deliveryOrderLine != null">
+        delivery_order_line = #{deliveryOrderLine,jdbcType=OTHER,typeHandler=com.crazy.portal.config.mybatis.handler.ArrayJsonHandler},
+      </if>
+    </set>
+    where deliver_order_id = #{deliverOrderId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.crazy.portal.entity.test.DeliverOrderApproval">
+    update t_deliver_order_approval
+    set sales_order_id = #{salesOrderId,jdbcType=INTEGER},
+      sap_order_no = #{sapOrderNo,jdbcType=VARCHAR},
+      sold_to = #{soldTo,jdbcType=VARCHAR},
+      send_to = #{sendTo,jdbcType=VARCHAR},
+      deliver_date = #{deliverDate,jdbcType=TIMESTAMP},
+      shipping_point = #{shippingPoint,jdbcType=VARCHAR},
+      active = #{active,jdbcType=INTEGER},
+      create_user_id = #{createUserId,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_user_id = #{updateUserId,jdbcType=INTEGER},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      approval_status = #{approvalStatus,jdbcType=INTEGER},
+      approval_date = #{approvalDate,jdbcType=TIMESTAMP},
+      approval_remark = #{approvalRemark,jdbcType=VARCHAR},
+      approval_user = #{approvalUser,jdbcType=INTEGER},
+      approval_type = #{approvalType,jdbcType=VARCHAR},
+      delivery_order_line = #{deliveryOrderLine,jdbcType=OTHER,typeHandler=com.crazy.portal.config.mybatis.handler.ArrayJsonHandler}
+    where deliver_order_id = #{deliverOrderId,jdbcType=INTEGER}
+  </update>
+
+  <select id="selectList" resultMap="BaseResultMap">
+    select * from t_deliver_order_approval
+    where 1=1
+    <if test="dealerId != null and dealerId != ''">
+      and create_user_id = #{dealerId}
+    </if>
+    <if test="createUserId != null and createUserId !=''">
+      and create_user_id = #{createUserId}
+    </if>
+    <if test="approvalStatus!=null">
+      and approval_status = #{approvalStatus}
+    </if>
+    <if test="approvalStartDate!=null and approvalStartDate!='' and approvalEndDate != null and approvalEndDate!=''">
+      and approval_date BETWEEN approvalStartDate and approvalEndDate
+    </if>
+    <if test="(approvalStartDate==null or approvalStartDate=='') and approvalEndDate != null and approvalEndDate!=''">
+      and approval_date &lt;= approvalEndDate
+    </if>
+    <if test="approvalStartDate!=null and approvalStartDate!='' and (approvalEndDate == null or approvalEndDate=='')">
+      and approval_date > approvalStartDate
+    </if>
+    <if test="salesOrderNo!=null and salesOrderNo!=''">
+      and sap_order_no = #{salesOrderNo}
+    </if>
+    <if test="createStartDate!=null and createEndDate!='' and createStartDate != null and createEndDate != ''">
+      and create_time BETWEEN #{createStartDate} and #{createEndDate}
+    </if>
+    <if test="(createStartDate==null or createEndDate=='') and createStartDate != null and createEndDate != ''">
+      and create_time &lt;= #{createEndDate}
+    </if>
+    <if test="createStartDate!=null and createEndDate!='' and (createStartDate == null or createEndDate == '')">
+      and create_time > #{createStartDate}
+    </if>
+  </select>
+
+  <select id="checkApproval" resultMap="BaseResultMap">
+    select * from t_deliver_order_approval
+    where active =1 and approval_status = 0
+    and sap_order_no = #{salesOrderNo}
+  </select>
+</mapper>

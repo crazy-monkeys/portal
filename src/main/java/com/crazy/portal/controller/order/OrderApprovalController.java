@@ -10,7 +10,6 @@ import com.crazy.portal.service.order.OrderApplyService;
 import com.crazy.portal.service.order.OrderApproveService;
 import com.crazy.portal.service.order.OrderService;
 import org.springframework.web.bind.annotation.*;
-
 import javax.annotation.Resource;
 import javax.validation.Valid;
 
@@ -67,7 +66,7 @@ public class OrderApprovalController extends BaseController {
      * @param deliveryApproveVO
      * @return
      */
-    @PostMapping("/approval/delivery")
+    @PostMapping("/delivery")
     public BaseResponse approvalDelivery(@RequestBody DeliveryApproveVO deliveryApproveVO){
         orderService.deliveryApprove(deliveryApproveVO, getCurrentUserId());
         return successResult();

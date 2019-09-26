@@ -23,4 +23,6 @@ public interface DeliverOrderMapper {
     List<DeliverOrder> selectOfInvoiceSync();
 
     DeliverOrder selectBySapDeliveryNo(String sapDeliveryNo);
+
+    DeliverOrder checkOrderStatus(Integer deliverOrderId);
 }
