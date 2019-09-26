@@ -238,17 +238,18 @@ public class IDRService {
      * </describe>
      * @param request
      */
+    @SuppressWarnings("all")
     public void receiveApproval(IDRApprovalRequest request) {
         BusinessIdrApproval histortRecord = businessIdrApprovalMapper.selectByOrderNo(request.getOrderNumber());
         BusinessUtil.notNull(histortRecord, ErrorCodes.BusinessEnum.BUSINESS_IDR_APPROVAL_ORDERNO_NOT_FOUND);
         saveIdrApprovalRecord(request, histortRecord);
         Integer status = null;
         List<BusinessIdrApproval> records = businessIdrApprovalMapper.selectByIdrInfoId(histortRecord.getIdrInfoId());
-        if(records.stream().anyMatch(e-> Enums.BusinessIdrApprovalStatus.REJECT.getCode().equals(e.getReviewStatus()))){
+        if(records.stream().anyMatch(e-> Enums.BusinessIdrApprovalStatus.REJECT.getCode().equalsIgnoreCase(e.getReviewStatus()))){
             status = Enums.BusinessIdrStatus.REJECT.getCode();
         }
         Set<String> orderNos = records.stream().map(BusinessIdrApproval::getOrderNo).collect(Collectors.toSet());
-        Set<String> agreeSet = records.stream().filter(e-> Enums.BusinessIdrApprovalStatus.AGREE.getCode().equals(e.getReviewStatus()) && StringUtil.isBlank(e.getCurrentReviewer())).map(BusinessIdrApproval::getOrderNo).collect(Collectors.toSet());
+        Set<String> agreeSet = records.stream().filter(e-> Enums.BusinessIdrApprovalStatus.AGREE.getCode().equalsIgnoreCase(e.getReviewStatus()) && StringUtil.isBlank(e.getCurrentReviewer())).map(BusinessIdrApproval::getOrderNo).collect(Collectors.toSet());
         if(orderNos.size() == agreeSet.size()){
             status = Enums.BusinessIdrStatus.AGREE.getCode();
         }
@@ -259,6 +260,7 @@ public class IDRService {
 
     private void updateIdrInfoByApproval(String apiUserId, Integer IdrInfoId, Integer status) {
         BusinessIdrInfo idrInfo = businessIdrInfoMapper.selectByPrimaryKey(IdrInfoId);
+        BusinessUtil.notNull(idrInfo, ErrorCodes.BusinessEnum.BUSINESS_IDR_APPROVAL_IDR_INFO_NOT_FOUND_EXCEPTION);
         idrInfo.setUpdateId(Integer.valueOf(apiUserId));
         idrInfo.setUpdateTime(DateUtil.getCurrentTS());
         idrInfo.setStatus(status);
