@@ -35,6 +35,6 @@ public class RebateUploadBean {
     @NotNull(message = "通知日期不能为空")
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private Date noticeDate;
-    @NotNull(message = "上传文件不能为空")
+
     private MultipartFile file;
 }

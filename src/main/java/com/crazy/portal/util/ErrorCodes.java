@@ -187,6 +187,7 @@ public class ErrorCodes {
         REBATE_SEND_EMAIL_EXCEPTION(70106, "发送确认函异常", ""),
         REBATE_ITEM_CONFIRM_FILE_UPLOAD_EXCEPTION(70107, "上传确认文件必须是代理商", ""),
         REBATE_ITEM_FINISHED_EXCEPTION(70108, "该Rebate已完结，不可上传文件", ""),
+        REBATE_ITEM_DL_PROHIBIT_UPLOAD_EXCEPTION(70109, "完结文件不可由代理商上传", ""),
         //产品管理
         PRODUCT_QUERY_ERROR(70501,"产品查询异常",""),
         PRODUCT_SYNC_ERROR(70502,"产品同步异常",""),

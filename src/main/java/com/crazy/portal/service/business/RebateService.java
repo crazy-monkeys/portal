@@ -225,6 +225,7 @@ public class RebateService {
             item.setDlExecuteDate(DateUtil.getCurrentTS());
             item.setStatus(Enums.BusinessRebateItemStatus.USED_CONFIRM.getCode());
         }else if(item.getStatus().equals(Enums.BusinessRebateItemStatus.USED_CONFIRM.getCode())){
+            BusinessUtil.isNull(dealerId, ErrorCodes.BusinessEnum.REBATE_ITEM_DL_PROHIBIT_UPLOAD_EXCEPTION);
             item.setZrExecuteDate(DateUtil.getCurrentTS());
             item.setStatus(Enums.BusinessRebateItemStatus.FINISHED.getCode());
         }

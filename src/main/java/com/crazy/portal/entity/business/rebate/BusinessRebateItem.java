@@ -41,8 +41,10 @@ public class BusinessRebateItem {
     //执行方式
     private String executeStyle;
     //展锐执行日期
+    @JSONField(format="yyyy-MM-dd HH:mm:ss")
     private Date zrExecuteDate;
     //代理执行日期
+    @JSONField(format="yyyy-MM-dd HH:mm:ss")
     private Date dlExecuteDate;
     //通知日期
     @JSONField(format="yyyy-MM-dd HH:mm:ss")
