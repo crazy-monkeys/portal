@@ -31,7 +31,7 @@ public class SaleForecastController extends BaseController {
      */
     @GetMapping(value = "/forecast/agency/template/download")
     public BaseResponse downloadAgencyTemplate(HttpServletResponse response, String yearMonth) {
-        saleForecastService.downloadAgencyTemplate(response, yearMonth, 1);
+        saleForecastService.downloadAgencyTemplate(response, yearMonth, getCurrentUser().getId());
         return super.successResult();
     }
 
@@ -41,7 +41,7 @@ public class SaleForecastController extends BaseController {
      */
     @PostMapping(value = "/forecast/agency/template/upload")
     public BaseResponse uploadAgencyTemplate(MultipartFile excel) {
-        return super.successResult(saleForecastService.uploadAgencyTemplate(excel, 1));
+        return super.successResult(saleForecastService.uploadAgencyTemplate(excel, getCurrentUser().getId()));
     }
 
     /**
@@ -51,7 +51,7 @@ public class SaleForecastController extends BaseController {
      */
     @GetMapping(value = "/forecast/agency/error/download")
     public void downloadAgencyError(HttpServletResponse response, String batchNo) {
-        saleForecastService.downloadAgencyError(response, batchNo, 1);
+        saleForecastService.downloadAgencyError(response, batchNo, getCurrentUser().getId());
     }
 
     /**
@@ -60,7 +60,7 @@ public class SaleForecastController extends BaseController {
      */
     @PostMapping(value = "/forecast/agency/error/upload")
     public BaseResponse modifyErrorData(MultipartFile excel, String batchNo) {
-        return super.successResult(saleForecastService.modifyErrorData(excel, batchNo, 1));
+        return super.successResult(saleForecastService.modifyErrorData(excel, batchNo, getCurrentUser().getId()));
     }
 
     /**
@@ -70,7 +70,7 @@ public class SaleForecastController extends BaseController {
     @OperationLog
     @GetMapping(value = "/forecast/agency/data/submit")
     public BaseResponse commitAgencyForecastData(String batchNo) {
-        saleForecastService.commitAgencyForecastData(batchNo, 1);
+        saleForecastService.commitAgencyForecastData(batchNo, getCurrentUser().getId());
         return super.successResult();
     }
 
@@ -83,7 +83,7 @@ public class SaleForecastController extends BaseController {
     public BaseResponse queryAgencyForecastData(Integer pageNum, Integer pageSize,
                                                 String customerAbbreviation, Integer status, String salePeople,
                                                 String uploadStartTime, String uploadEndTime) {
-        return super.successResult(saleForecastService.queryAgencyForecastData(pageNum, pageSize, 1,
+        return super.successResult(saleForecastService.queryAgencyForecastData(pageNum, pageSize, getCurrentUser().getId(),
                 customerAbbreviation, status, salePeople, uploadStartTime, uploadEndTime));
     }
 
@@ -105,7 +105,7 @@ public class SaleForecastController extends BaseController {
     @OperationLog
     @PostMapping(value = "/forecast/agency/data/update")
     public BaseResponse updateAgencyForecastData(@RequestBody List<ForecastParam> list) {
-        saleForecastService.updateAgencyForecastData(list, 1);
+        saleForecastService.updateAgencyForecastData(list, getCurrentUser().getId());
         return super.successResult();
     }
 
@@ -117,7 +117,7 @@ public class SaleForecastController extends BaseController {
      */
     @GetMapping(value = "/forecast/agency/data/reject")
     public BaseResponse queryRejectForecastData(Integer pageNum, Integer pageSize) {
-        return super.successResult(saleForecastService.queryAgencyRejectForecastData(pageNum, pageSize, 1));
+        return super.successResult(saleForecastService.queryAgencyRejectForecastData(pageNum, pageSize, getCurrentUser().getId()));
     }
 
     /**
@@ -128,7 +128,7 @@ public class SaleForecastController extends BaseController {
      */
     @GetMapping(value = "/forecast/agency/reject/download")
     public BaseResponse downloadRejectData(HttpServletResponse response, Integer[] forecastIds) {
-        saleForecastService.downloadRejectData(response, forecastIds, 1);
+        saleForecastService.downloadRejectData(response, forecastIds, getCurrentUser().getId());
         return super.successResult();
     }
 
@@ -144,7 +144,7 @@ public class SaleForecastController extends BaseController {
                                                   String uploadStartTime, String uploadEndTime,
                                                   String ambPeople, String sdPeople, String agencyAbbreviation,
                                                   String channel) {
-        return super.successResult(saleForecastService.queryApprovalForecastData(pageNum, pageSize, 1,
+        return super.successResult(saleForecastService.queryApprovalForecastData(pageNum, pageSize, getCurrentUser().getId(),
                 customerAbbreviation, null, salePeople, uploadStartTime, uploadEndTime, ambPeople, sdPeople,
                 agencyAbbreviation, channel));
     }
@@ -194,7 +194,7 @@ public class SaleForecastController extends BaseController {
      */
     @PostMapping(value = "/forecast/amb/data/upload")
     public BaseResponse uploadDataByAmb(MultipartFile excel) {
-        saleForecastService.uploadDataByAmb(excel, 1);
+        saleForecastService.uploadDataByAmb(excel, getCurrentUser().getId());
         return super.successResult();
     }
 
@@ -212,7 +212,7 @@ public class SaleForecastController extends BaseController {
 
     @PostMapping(value = "/forecast/sd/data/upload")
     public BaseResponse uploadDataBySd(MultipartFile excel) {
-        saleForecastService.uploadDataBySd(excel, 1);
+        saleForecastService.uploadDataBySd(excel, getCurrentUser().getId());
         return super.successResult();
     }
 
@@ -238,7 +238,7 @@ public class SaleForecastController extends BaseController {
     public BaseResponse queryForecastData(Integer pageNum, Integer pageSize,
                                           String customerAbbreviation, String agencyAbbreviation, String salePeople,
                                           String uploadStartTime, String uploadEndTime, String channel) {
-        return super.successResult(saleForecastService.queryApprovalForecastData(pageNum, pageSize, 1,
+        return super.successResult(saleForecastService.queryApprovalForecastData(pageNum, pageSize, getCurrentUser().getId(),
                 customerAbbreviation, 2, salePeople, uploadStartTime, uploadEndTime, null, null,
                 agencyAbbreviation, channel));
     }

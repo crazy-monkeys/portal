@@ -121,15 +121,15 @@ public class SaleForecastService {
         for(AgencyTemplate template : agencyForecastList){
             template.setAgencyAbbreviation(agencyAbbreviation);
             //获取代理商上级客户信息
-//            CustomerOrgBean customerOrgBean = getCustomerOrgInfo(template.getCustomerAbbreviation());
+            CustomerOrgBean customerOrgBean = getCustomerOrgInfo(template.getCustomerAbbreviation());
             Forecast forecast = new Forecast(userId);
             copyTemplateFields(template, forecast);
             //设置客户字段
-//            forecast.setCustomerType(customerOrgBean.getCustType());
-//            forecast.setSalePeople(customerOrgBean.getSales());
-//            forecast.setAmbLeader(customerOrgBean.getAmb());
-//            forecast.setSdPeople(customerOrgBean.getPm());
-//            forecast.setRepresentative(customerOrgBean.getOffice());
+            forecast.setCustomerType(customerOrgBean.getCustType());
+            forecast.setSalePeople(customerOrgBean.getSales());
+            forecast.setAmbLeader(customerOrgBean.getAmb());
+            forecast.setSdPeople(customerOrgBean.getPm());
+            forecast.setRepresentative(customerOrgBean.getOffice());
             //当前操作批次
             forecast.setBatchNo(batchNo);
             forecastMapper.insertSelective(forecast);
@@ -384,12 +384,18 @@ public class SaleForecastService {
                                                         String uploadStartTime, String uploadEndTime,
                                                         String ambPeople, String sdPeople, String agencyAbbreviation,
                                                         String channel) {
+        List<Integer> userList;
         PortalUtil.defaultStartPage(pageNum,pageSize);
-        List<Integer> userList = userCustomerMappingService.selectUserMapping(userId, Enums.CustomerMappingModel.Forecast.getValue());
-        Integer[] userIds = new Integer[userList.size()];
-        List<Forecast> result = forecastMapper.selectByLeader(userList.toArray(userIds), customerAbbreviation, status,
-                salePeople, uploadStartTime, uploadEndTime, ambPeople, sdPeople, agencyAbbreviation, channel);
-        return new PageInfo<>(result);
+        try {
+            userList = userCustomerMappingService.selectUserMapping(userId, Enums.CustomerMappingModel.Forecast.getValue());
+            Integer[] userIds = new Integer[userList.size()];
+            List<Forecast> result = forecastMapper.selectByLeader(userList.toArray(userIds), customerAbbreviation, status,
+                    salePeople, uploadStartTime, uploadEndTime, ambPeople, sdPeople, agencyAbbreviation, channel);
+            return new PageInfo<>(result);
+        }catch (Exception ex) {
+            log.error(FORECAST_AGENCY_QUERY_ERROR.getZhMsg(), ex);
+            throw new BusinessException(FORECAST_AGENCY_QUERY_ERROR);
+        }
     }
 
     /**

@@ -216,6 +216,7 @@ public class ErrorCodes {
         FORECAST_CHECK_IDENTICAL_MONTH_ERROR(40020, "请操作同一个代理商同一个月的数据", ""),
         FORECAST_DATA_TOTAL_CHECK_ERROR(40021, "数据未全部选中，请重新选择", ""),
         FORECAST_AMB_ADJUSTMENT_NUM_ERROR(40022, "存在阿米巴队长未调整数据，请先调整数据", ""),
+        FORECAST_AGENCY_QUERY_ERROR(40023, "获取当前用户的代理商失败，请联系管理员", ""),
         //订单管理
         ORDER_NOT_FOUND(90001, "订单信息不存在", ""),
         ORDER_LINE_NOT_FOUND(90002, "订单行信息不存在", ""),

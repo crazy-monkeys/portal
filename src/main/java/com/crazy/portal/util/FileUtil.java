@@ -3,7 +3,7 @@ package com.crazy.portal.util;
 import com.alibaba.fastjson.util.IOUtils;
 import com.crazy.portal.bean.customer.basic.FileVO;
 import com.crazy.portal.config.exception.BusinessException;
-//import com.sun.deploy.net.URLEncoder;
+import com.sun.deploy.net.URLEncoder;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -54,7 +54,7 @@ public class FileUtil {
         FileInputStream inputStream = null;
         try {
             response.setContentType("multipart/form-data");
-//            fileName = URLEncoder.encode(fileName,"utf-8");
+            fileName = URLEncoder.encode(fileName,"utf-8");
             response.setHeader("Content-disposition", "attachment;fileName=\"".concat(fileName).concat("\"; filename*=\"utf-8''").concat(fileName).concat("\""+";filename*=utf-8''").concat(fileName));
             inputStream = new FileInputStream(file);
             out = response.getOutputStream();
