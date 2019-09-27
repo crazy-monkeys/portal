@@ -64,6 +64,7 @@ file:
 portal:
   view-url: http://portal-sit.threeape.cn/portal/#/pwd
   file-url: http://portal-sit.threeape.cn/portal-api/file
+  mock-bi-server: on
 
 ecc:
   api:

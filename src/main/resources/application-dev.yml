@@ -37,7 +37,7 @@ spring:
 
 file:
   path:
-    root: /Users/Bill/Downloads #公用基础路径
+    root: /Users/lee/Documents/job_code/portal_file #公用基础路径
     root-local: ${file.path.root}/local #portal系统内文件地址入口
     root-thrid-push: ${file.path.root}/push_thrid #portal对接第三方文件出口地址
     root-thrid-pull: ${file.path.root}/pull_thrid #第三方传输文件至portal入口地址
@@ -64,6 +64,7 @@ file:
 portal:
   view-url: http://portal-sit.threeape.cn/portal/#/pwd
   file-url: http://192.168.101.6:8080/portal-api/file
+  mock-bi-server: on
 
 ecc:
   api:

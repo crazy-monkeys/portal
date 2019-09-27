@@ -57,6 +57,7 @@ file:
 portal:
   view-url: https://dmsdev.unisoc.com/portal/#/pwd
   file-url: https://dmsdev.unisoc.com/portal-api/file
+  mock-bi-server: off
 
 ecc:
   api:

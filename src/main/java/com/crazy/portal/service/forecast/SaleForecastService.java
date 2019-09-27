@@ -61,6 +61,9 @@ public class SaleForecastService {
     @Value("${ftp.path.forecast.pull}")
     private String ftpDownloadPath;
 
+    @Value("${portal.mock-bi-server}")
+    private boolean mockBiServer;
+
     private String SUCCESS_CODE = "OK";
     private String ERROR_CODE = "NG";
 
@@ -118,15 +121,15 @@ public class SaleForecastService {
         for(AgencyTemplate template : agencyForecastList){
             template.setAgencyAbbreviation(agencyAbbreviation);
             //获取代理商上级客户信息
-            CustomerOrgBean customerOrgBean = getCustomerOrgInfo(template.getCustomerAbbreviation());
+//            CustomerOrgBean customerOrgBean = getCustomerOrgInfo(template.getCustomerAbbreviation());
             Forecast forecast = new Forecast(userId);
             copyTemplateFields(template, forecast);
             //设置客户字段
-            forecast.setCustomerType(customerOrgBean.getCustType());
-            forecast.setSalePeople(customerOrgBean.getSales());
-            forecast.setAmbLeader(customerOrgBean.getAmb());
-            forecast.setSdPeople(customerOrgBean.getPm());
-            forecast.setRepresentative(customerOrgBean.getOffice());
+//            forecast.setCustomerType(customerOrgBean.getCustType());
+//            forecast.setSalePeople(customerOrgBean.getSales());
+//            forecast.setAmbLeader(customerOrgBean.getAmb());
+//            forecast.setSdPeople(customerOrgBean.getPm());
+//            forecast.setRepresentative(customerOrgBean.getOffice());
             //当前操作批次
             forecast.setBatchNo(batchNo);
             forecastMapper.insertSelective(forecast);
@@ -691,13 +694,18 @@ public class SaleForecastService {
             reqBiDataList.add(biData);
         }
         String checkFileName = ExcelUtils.writeExcel(forecastPushPath, reqBiDataList, BiAgencyCheckTemplate.class);
-        BiResponse response = requestBiCheckServer(forecastPushPath, checkFileName, forecastPullPath);
+        BiResponse response;
+        if(mockBiServer){
+            response = mockRequestBiCheckServer(checkFileName, forecastPushPath);
+        }else{
+            response = requestBiCheckServer(forecastPushPath, checkFileName, forecastPullPath);
+        }
         List<BiAgencyCheckTemplate> responseDataList = ExcelUtils.readExcel(response.getFilePath(), BiAgencyCheckTemplate.class);
         ForecastResult result = new ForecastResult();
         result.setSuccess(response.isSuccess());
         result.setBatchNo(batchNo);
         for(BiAgencyCheckTemplate responseData : responseDataList){
-            if(!response.isSuccess()){
+            if(!response.isSuccess() && mockBiServer){
                 responseData.setErrorMsg("模拟出来的错误，上线需要去掉");
             }
             if(StringUtils.isNotEmpty(responseData.getErrorMsg())){
@@ -741,6 +749,10 @@ public class SaleForecastService {
         }
     }
 
+    private BiResponse mockRequestBiCheckServer(String fileName, String pullPath) {
+        return new BiResponse(mockThirdResult(), pullPath + fileName);
+    }
+
     /**
      * 文件内容Check服务
      * @param filePath
@@ -751,7 +763,10 @@ public class SaleForecastService {
     private BiResponse requestBiCheckServer(String filePath, String fileName, String pullPath) {
         try {
             String fullPath = String.format("%s%s", filePath, fileName);
-            String response = CallApiUtils.callBiApi(CHECK_FORECAST_IMPORT_DATA, "PORTAL/BI/", fullPath, pullPath);
+            String ftpFullPath = String.format("%s%s", ftpUploadPath, fileName);
+            //上传文件到ftp
+            ftpClientUtil.put(ftpFullPath, fullPath);
+            String response = CallApiUtils.callBiApi(CHECK_FORECAST_IMPORT_DATA, "PORTAL/BI/", ftpFullPath, ftpDownloadPath);
             //检测返回信息是否空
             if(StringUtils.isEmpty(response)){
                 log.error("{} -> {}", FORECAST_BI_RESPONSE_EXCEPTION.getZhMsg(), response);
@@ -763,13 +778,15 @@ public class SaleForecastService {
                 log.debug("[forecast] Bi server response info -> pushPath:[{}], pullPath:[{}], response:[{}]", fullPath, pullPath, response);
             }
             //将返回结果信息进行截取，获取到对方的文件名
-            String BiFileName = response.split(":")[1];
+            String biFilePath = response.split(":")[1];
+            String biFileName = biFilePath.substring(biFilePath.lastIndexOf("/") + 1, biFilePath.length());
+            ftpClientUtil.get(biFilePath, pullPath+biFileName);
             //封装结果流转给下一个流程处理
             if(response.contains(SUCCESS_CODE)){
-                return new BiResponse(true, BiFileName);
+                return new BiResponse(true, pullPath+biFileName);
             }
             if(response.contains(ERROR_CODE)){
-                return new BiResponse(false, BiFileName);
+                return new BiResponse(false, pullPath+biFileName);
             }
             log.error(FORECAST_BI_RESPONSE_EXCEPTION.getZhMsg(), response);
             throw new BusinessException(FORECAST_BI_RESPONSE_EXCEPTION);
@@ -778,7 +795,6 @@ public class SaleForecastService {
             throw new BusinessException(FORECAST_BI_SERVER_EXCEPTION);
         }
     }
-
 
     /**
      * 预测数据Delete服务
