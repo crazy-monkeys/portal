@@ -188,12 +188,12 @@ public class RebateService {
         BusinessUtil.notNull(bean.getFile(), ErrorCodes.BusinessEnum.REBATE_FILE_NOT_FOUND);
         List<BusinessRebateItem> items = businessRebateItemMapper.selectByParam(bean);
         BusinessUtil.assertFlase(ObjectUtils.isEmpty(items), ErrorCodes.BusinessEnum.REBATE_RECORD_NOT_FOUND);
-        FileVO fileInfo = FileUtil.upload(bean.getFile(), getCustFilePath());
+        FileVO fileInfo = FileUtil.upload(bean.getFile(), getFilePath());
+        //保存文件信息
+        BusinessRebateFile file = saveRebateFile(userId, fileInfo);
         for(BusinessRebateItem item : items) {
-            //保存文件信息
-            saveRebateFile(item.getId(), userId, fileInfo);
             //更新item状态
-            Integer rebateId = updateRebateItemStatus(item.getId(), userId, dealerId);
+            Integer rebateId = updateRebateItemStatus(item.getId(), userId, dealerId, file.getId());
             //更新主rebate状态
             updateRebateMasterStatus(userId, rebateId);
         }
@@ -216,16 +216,18 @@ public class RebateService {
         }
     }
 
-    private Integer updateRebateItemStatus(Integer rebateItemId, Integer userId, Integer dealerId) {
+    private Integer updateRebateItemStatus(Integer rebateItemId, Integer userId, Integer dealerId, Integer fileId) {
         BusinessRebateItem item = businessRebateItemMapper.selectByPrimaryKey(rebateItemId);
         BusinessUtil.notNull(item, ErrorCodes.BusinessEnum.REBATE_RECORD_NOT_FOUND);
         BusinessUtil.assertFlase(Enums.BusinessRebateItemStatus.FINISHED.getCode().equals(item.getStatus()), ErrorCodes.BusinessEnum.REBATE_ITEM_FINISHED_EXCEPTION);
         if(item.getStatus().equals(Enums.BusinessRebateItemStatus.WAIT_CONFIRM.getCode())){
             BusinessUtil.notNull(dealerId, ErrorCodes.BusinessEnum.REBATE_ITEM_CONFIRM_FILE_UPLOAD_EXCEPTION);
+            item.setDlFileId(fileId);
             item.setDlExecuteDate(DateUtil.getCurrentTS());
             item.setStatus(Enums.BusinessRebateItemStatus.USED_CONFIRM.getCode());
         }else if(item.getStatus().equals(Enums.BusinessRebateItemStatus.USED_CONFIRM.getCode())){
             BusinessUtil.isNull(dealerId, ErrorCodes.BusinessEnum.REBATE_ITEM_DL_PROHIBIT_UPLOAD_EXCEPTION);
+            item.setZrFileId(fileId);
             item.setZrExecuteDate(DateUtil.getCurrentTS());
             item.setStatus(Enums.BusinessRebateItemStatus.FINISHED.getCode());
         }
@@ -235,9 +237,8 @@ public class RebateService {
         return item.getRebateId();
     }
 
-    private BusinessRebateFile saveRebateFile(Integer rebateItemId, Integer userId, FileVO fileInfo) {
+    private BusinessRebateFile saveRebateFile(Integer userId, FileVO fileInfo) {
         BusinessRebateFile rebateFile = new BusinessRebateFile();
-        rebateFile.setRebateItemId(rebateItemId);
         rebateFile.setFileName(fileInfo.getFileName());
         rebateFile.setFilePath(fileInfo.getFullPath());
         rebateFile.setActive(Constant.ACTIVE);
@@ -253,12 +254,12 @@ public class RebateService {
      * @param response
      */
     public void fileDownload(Integer id, HttpServletResponse response){
-        BusinessRebateFile file = businessRebateFileMapper.selectByRebateItemId(id);
+        BusinessRebateFile file = businessRebateFileMapper.selectByPrimaryKey(id);
         BusinessUtil.notNull(file, ErrorCodes.BusinessEnum.REBATE_FILE_NOT_FOUND);
-        FileUtil.download(response, getCustFilePath(), file.getFileName());
+        FileUtil.download(response, getFilePath(), file.getFileName());
     }
 
-    public String getCustFilePath(){
+    public String getFilePath(){
         return filePath.concat(File.separator).concat(REBATE_FILE_PATH).concat(File.separator);
     }
 

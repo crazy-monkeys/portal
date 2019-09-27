@@ -14,6 +14,8 @@
     <result column="execute_style" jdbcType="VARCHAR" property="executeStyle" />
     <result column="zr_execute_date" jdbcType="TIMESTAMP" property="zrExecuteDate" />
     <result column="dl_execute_date" jdbcType="TIMESTAMP" property="dlExecuteDate" />
+    <result column="zr_file_id" jdbcType="INTEGER" property="zrFileId"/>
+    <result column="dl_file_id" jdbcType="INTEGER" property="dlFileId"/>
     <result column="notice_date" jdbcType="TIMESTAMP" property="noticeDate" />
     <result column="remark" jdbcType="VARCHAR" property="remark" />
     <result column="status" jdbcType="INTEGER" property="status" />
@@ -27,7 +29,7 @@
     id, rebate_id, customer_short_name, sales_name, ameba_header, ameba_department,
     shipment_company,
     rebate_amount, executor, execute_style, zr_execute_date, dl_execute_date,
-    notice_date, remark,
+    zr_file_id, dl_file_id, notice_date, remark,
     status, active, create_id, create_time, update_id, update_time
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
@@ -79,6 +81,12 @@
       </if>
       <if test="dlExecuteDate != null">
         dl_execute_date,
+      </if>
+      <if test="zrFileId != null">
+        zr_file_id,
+      </if>
+      <if test="dlFileId != null">
+        dl_file_id,
       </if>
       <if test="noticeDate != null">
         notice_date,
@@ -142,6 +150,12 @@
       <if test="dlExecuteDate != null">
         #{dlExecuteDate,jdbcType=TIMESTAMP},
       </if>
+      <if test="zrFileId != null">
+        #{zrFileId,jdbcType=INTEGER},
+      </if>
+      <if test="dlFileId != null">
+        #{dlFileId,jdbcType=INTEGER},
+      </if>
       <if test="noticeDate != null">
         #{noticeDate,jdbcType=TIMESTAMP},
       </if>
@@ -204,6 +218,12 @@
       <if test="dlExecuteDate != null">
         dl_execute_date = #{dlExecuteDate,jdbcType=TIMESTAMP},
       </if>
+      <if test="zrFileId != null">
+        zr_file_id = #{zrFileId,jdbcType=INTEGER},
+      </if>
+      <if test="dlFileId != null">
+        dl_file_id = #{dlFileId,jdbcType=INTEGER},
+      </if>
       <if test="noticeDate != null">
         notice_date = #{noticeDate,jdbcType=TIMESTAMP},
       </if>
@@ -254,7 +274,9 @@
     execute_style,
     zr_execute_date,
     dl_execute_date,
-    remark
+    remark,
+    zr_file_id,
+    dl_file_id
     from t_business_rebate_item
     where active = 1
     <if test="dealerId != null">
@@ -292,7 +314,9 @@
     execute_style,
     zr_execute_date,
     dl_execute_date,
-    remark
+    remark,
+    zr_file_id,
+    dl_file_id
     order by notice_date desc
   </select>
   
