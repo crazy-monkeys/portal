@@ -159,7 +159,6 @@
     case when type = 1 then '出货'
     when type = 2 then '收货' else '未知' end type_desc,
     case when status = -1 then '待确认'
-    when status = 0 then '初始化'
     when status = 1 then '已确认'
     when status = 2 then '已提交'
     when status = 3 then '已驳回' else '未知' end status_desc,
@@ -167,6 +166,7 @@
     DATE_FORMAT(approval_time,'%Y-%m-%d %H:%i:%s') approval_time_str
     from t_deliver_receive_record
     where 1 = 1
+    and status != 0
     <if test="uploadStartTime != null and uploadStartTime != '' and uploadEndTime != null and uploadEndTime != ''" >
       and upload_time between #{uploadStartTime} and #{uploadEndTime}
     </if>
