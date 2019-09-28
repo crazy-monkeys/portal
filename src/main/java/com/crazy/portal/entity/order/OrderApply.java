@@ -202,7 +202,7 @@ public class OrderApply {
     /**
      * 审批时间
      */
-    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JSONField(format="yyyy-MM-dd HH:mm:ss")
     private Date approvalTime;
     /**
      * 审批状态 0：待审批 1：已通过 2：已驳回
@@ -223,6 +223,7 @@ public class OrderApply {
     /**
      * 创建时间
      */
+    @JSONField(format="yyyy-MM-dd HH:mm:ss")
     private Date createTime;
 
     /**

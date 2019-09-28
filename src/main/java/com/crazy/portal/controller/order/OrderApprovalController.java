@@ -39,15 +39,6 @@ public class OrderApprovalController extends BaseController {
         return successResult(orderApplyService.list(bean));
     }
 
-    /**
-     * 详情
-     * @param id
-     * @return
-     */
-    @GetMapping("/detail/{id}")
-    public BaseResponse detail(@PathVariable Integer id){
-        return successResult(orderService.detail(id));
-    }
 
     /**
      * 审批
