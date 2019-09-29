@@ -126,7 +126,7 @@ public class UserService {
      * @return
      */
     @Transactional
-    public void regSubAgent(SubAgentVO subAgentUser,Integer userId) {
+    public void regSubAgent(SubAgentVO subAgentUser,User currUser) {
         String username = subAgentUser.getLoginName();
         if (userMapper.findByLoginName(username) != null) {
             throw new BusinessException(ErrorCodes.SystemManagerEnum.USER_EXISTS.getCode(),
@@ -142,7 +142,8 @@ public class UserService {
         //只允许子账号注册
         user.setUserType(Enums.USER_TYPE.subAgent.toString());
         user.setRegTime(new Date());
-        user.setCreateUserId(userId);
+        user.setCreateUserId(currUser.getId());
+        user.setDealerId(currUser.getDealerId());
         user.setCreateTime(new Date());
         user.setPwdInvalidTime(DateUtil.addDays(new Date(),365 * 10));
         user.setActive((short)1);

@@ -39,7 +39,7 @@ public class SubAgentController extends BaseController {
     @OperationLog
     @PostMapping("/register")
     public BaseResponse regSubAgent(@Valid @RequestBody SubAgentVO subAgentVO){
-        userService.regSubAgent(subAgentVO,super.getCurrentUser().getId());
+        userService.regSubAgent(subAgentVO,super.getCurrentUser());
         return super.successResult();
     }
 
