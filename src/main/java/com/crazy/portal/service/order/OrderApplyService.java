@@ -373,9 +373,13 @@ public class OrderApplyService {
         IsHeader isHeader = new IsHeader();
         isHeader.setOrdertype(orderApply.getOrderType());
         isHeader.setSalesorg(orderApply.getSalesOrg());
+
         CustomerInfo soldToCustomer = this.getCustomerOutCode(orderApply.getSoldTo());
+        BusinessUtil.notNull(soldToCustomer,ErrorCodes.BusinessEnum.CUSTOMER_IS_EMPYT);
         isHeader.setSoldto(soldToCustomer.getOutCode());
+
         CustomerInfo sendToCustomer = this.getCustomerOutCode(orderApply.getSendTo());
+        BusinessUtil.notNull(sendToCustomer,ErrorCodes.BusinessEnum.CUSTOMER_IS_EMPYT);
         isHeader.setSendto(sendToCustomer.getOutCode());
         return isHeader;
     }

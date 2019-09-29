@@ -55,11 +55,11 @@ public class OrderApiService {
         String response = HttpClientUtils.post(url,requestXML);
         log.info("CUSTOMERRATE Interface return {}",response);
 
-        this.checkResponse(StringUtil.isEmpty(response), ErrorCodes.CommonEnum.SYSTEM_EXCEPTION.getZhMsg());
+        this.checkResultMessage(StringUtil.isEmpty(response));
 
         ZrfcsdcustomercrrateResponse zrfcsdcustomercrrateResponse = JaxbXmlUtil.convertSoapXmlToJavaBean(response, ZrfcsdcustomercrrateResponse.class);
 
-        this.invokeAfter(zrfcsdcustomercrrateResponse);
+        this.checkResultMessage(zrfcsdcustomercrrateResponse);
 
         return zrfcsdcustomercrrateResponse;
     }
@@ -76,30 +76,22 @@ public class OrderApiService {
         String response = HttpClientUtils.post(url,requestXml);
         log.info("response - >" + response);
 
-        this.checkResponse(StringUtil.isEmpty(response), ErrorCodes.CommonEnum.SYSTEM_EXCEPTION.getZhMsg());
+        this.checkResultMessage(StringUtil.isEmpty(response));
 
         ZrfcsdsalesordercreateResponse zrfcsdsalesordercreateResponse =
                 JaxbXmlUtil.convertSoapXmlToJavaBean(response, ZrfcsdsalesordercreateResponse.class);
 
-        this.invokeAfter(zrfcsdsalesordercreateResponse);
+        this.checkResultMessage(zrfcsdsalesordercreateResponse);
 
         return zrfcsdsalesordercreateResponse;
     }
-
-    private void checkResponse(boolean empty, String zhMsg) {
-        if (empty) {
-            throw new BusinessException(
-                    ErrorCodes.CommonEnum.SYSTEM_EXCEPTION.getCode(), zhMsg);
-        }
-    }
-
 
     /**
      * 调用接口之后验证是否正确获取值
      * @param obj
      * @throws Exception
      */
-    private void invokeAfter(Object obj) throws Exception{
+    private void checkResultMessage(Object obj) throws Exception{
 
         BusinessUtil.notNull(obj,ErrorCodes.CommonEnum.SYSTEM_EXCEPTION);
         Method getEsHeaderMethod = obj.getClass().getMethod("getEsHeader");
@@ -115,7 +107,10 @@ public class OrderApiService {
         Method resultmessage = esHeader.getClass().getMethod("getResultmessage");
         String resultMessage = String.valueOf(resultmessage.invoke(esHeader,null));
 
-        this.checkResponse(resultMessage.isEmpty() || "null".equals(resultMessage), resultMessage);
+        if(StringUtil.isEmpty(resultMessage) || "null".equals(resultMessage)){
+            return;
+        }
+        throw new BusinessException(ErrorCodes.CommonEnum.SYSTEM_EXCEPTION.getCode(), resultMessage);
     }
 
 
@@ -132,12 +127,12 @@ public class OrderApiService {
         String response = HttpClientUtils.post(url,requestXml);
         log.info("response - >" + response);
 
-        this.checkResponse(StringUtil.isEmpty(response), ErrorCodes.CommonEnum.SYSTEM_EXCEPTION.getZhMsg());
+        this.checkResultMessage(StringUtil.isEmpty(response));
 
         ZrfcsdsalesorderchangeResponse zrfcsdsalesorderchangeResponse
                 = JaxbXmlUtil.convertSoapXmlToJavaBean(response, ZrfcsdsalesorderchangeResponse.class);
 
-        this.invokeAfter(zrfcsdsalesorderchangeResponse);
+        this.checkResultMessage(zrfcsdsalesorderchangeResponse);
 
         return zrfcsdsalesorderchangeResponse;
 
@@ -157,7 +152,7 @@ public class OrderApiService {
         ZrfcsdpricesimulateResponse zrfcsdpricesimulateResponse =
                 JaxbXmlUtil.convertSoapXmlToJavaBean(response, ZrfcsdpricesimulateResponse.class);
 
-        this.invokeAfter(zrfcsdpricesimulateResponse);
+        this.checkResultMessage(zrfcsdpricesimulateResponse);
         return zrfcsdpricesimulateResponse;
     }
 
@@ -174,7 +169,7 @@ public class OrderApiService {
         log.info("response - >" + response);
         ZrfcsddeliverycreateResponse zrfcsddeliverycreateResponse = JaxbXmlUtil.convertSoapXmlToJavaBean(response, ZrfcsddeliverycreateResponse.class);
 
-        this.invokeAfter(zrfcsddeliverycreateResponse);
+        this.checkResultMessage(zrfcsddeliverycreateResponse);
 
         return zrfcsddeliverycreateResponse;
 
