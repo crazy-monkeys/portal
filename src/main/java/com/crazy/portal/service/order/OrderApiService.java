@@ -55,8 +55,6 @@ public class OrderApiService {
         String response = HttpClientUtils.post(url,requestXML);
         log.info("CUSTOMERRATE Interface return {}",response);
 
-        this.checkResultMessage(StringUtil.isEmpty(response));
-
         ZrfcsdcustomercrrateResponse zrfcsdcustomercrrateResponse = JaxbXmlUtil.convertSoapXmlToJavaBean(response, ZrfcsdcustomercrrateResponse.class);
 
         this.checkResultMessage(zrfcsdcustomercrrateResponse);
@@ -75,8 +73,6 @@ public class OrderApiService {
         log.info("request - >" + requestXml);
         String response = HttpClientUtils.post(url,requestXml);
         log.info("response - >" + response);
-
-        this.checkResultMessage(StringUtil.isEmpty(response));
 
         ZrfcsdsalesordercreateResponse zrfcsdsalesordercreateResponse =
                 JaxbXmlUtil.convertSoapXmlToJavaBean(response, ZrfcsdsalesordercreateResponse.class);
@@ -127,8 +123,6 @@ public class OrderApiService {
         String response = HttpClientUtils.post(url,requestXml);
         log.info("response - >" + response);
 
-        this.checkResultMessage(StringUtil.isEmpty(response));
-
         ZrfcsdsalesorderchangeResponse zrfcsdsalesorderchangeResponse
                 = JaxbXmlUtil.convertSoapXmlToJavaBean(response, ZrfcsdsalesorderchangeResponse.class);
 
@@ -153,6 +147,7 @@ public class OrderApiService {
                 JaxbXmlUtil.convertSoapXmlToJavaBean(response, ZrfcsdpricesimulateResponse.class);
 
         this.checkResultMessage(zrfcsdpricesimulateResponse);
+
         return zrfcsdpricesimulateResponse;
     }
 
