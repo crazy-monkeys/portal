@@ -1,5 +1,6 @@
 package com.crazy.portal.entity.system;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
 
 import java.util.Date;
@@ -22,5 +23,6 @@ public class OperationLogDO {
     private String invoke;
     private String businessKey;
     private String errorMsg;
+    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
 }
