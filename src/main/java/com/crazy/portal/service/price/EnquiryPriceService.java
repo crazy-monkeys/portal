@@ -40,10 +40,12 @@ public class EnquiryPriceService {
     public void apply(EnquiryPriceVO vo, String currentUser){
 
         String productModel = vo.getProductModel();
-        String inCustomer = vo.getInCustomer();
         BusinessUtil.assertEmpty(productModel,ErrorCodes.PriceEnum.PRICE_CATALOG_NOT_EXISTS);
 
-        CatalogPrice catalogPrice = catalogPriceMapper.selectByProductModelAndCustomerName(productModel,inCustomer);
+        String inCustomer = vo.getInCustomer();
+        String bu = vo.getBu();
+        BusinessUtil.assertEmpty(bu,ErrorCodes.PriceEnum.PRICE_EMPTY_BU);
+        CatalogPrice catalogPrice = catalogPriceMapper.selectByProductModelAndCustomerName(productModel,bu,inCustomer);
         BusinessUtil.notNull(catalogPrice,
                 StringUtil.isEmpty(inCustomer)
                         ?ErrorCodes.PriceEnum.PRICE_CATALOG_NOT_EXISTS
@@ -103,7 +105,8 @@ public class EnquiryPriceService {
                 //如果是通过,查询出目录商品信息到询价单
                 String productModel = enquiryPrice.getProductModel();
                 String inCustomer = enquiryPrice.getInCustomer();
-                CatalogPrice catalogPrice = catalogPriceMapper.selectByProductModelAndCustomerName(productModel, inCustomer);
+                String bu = enquiryPrice.getBu();
+                CatalogPrice catalogPrice = catalogPriceMapper.selectByProductModelAndCustomerName(productModel,bu,inCustomer);
                 BusinessUtil.notNull(enquiryPrice, ErrorCodes.PriceEnum.PRICE_CATALOG_NOT_EXISTS);
 
                 enquiryPrice.setBu(catalogPrice.getBu());
