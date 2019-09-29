@@ -2,19 +2,15 @@ package com.crazy.portal.service.order;
 
 import com.alibaba.excel.metadata.BaseRowModel;
 import com.alibaba.excel.support.ExcelTypeEnum;
-import com.crazy.portal.bean.order.DeliveryOrderCancelVO;
-import com.crazy.portal.bean.order.DeliveryOrderVO;
-import com.crazy.portal.bean.order.OrderLineEO;
 import com.crazy.portal.bean.order.*;
 import com.crazy.portal.bean.order.wsdl.price.*;
 import com.crazy.portal.config.exception.BusinessException;
+import com.crazy.portal.dao.cusotmer.CustomerInfoMapper;
 import com.crazy.portal.dao.order.*;
 import com.crazy.portal.dao.product.ProductInfoDOMapper;
-import com.crazy.portal.dao.order.DeliverOrderApprovalMapper;
 import com.crazy.portal.entity.cusotmer.CustomerInfo;
 import com.crazy.portal.entity.order.*;
 import com.crazy.portal.entity.product.ProductInfoDO;
-import com.crazy.portal.entity.order.DeliverOrderApproval;
 import com.crazy.portal.service.customer.CustomerInfoService;
 import com.crazy.portal.util.*;
 import com.github.pagehelper.PageHelper;
@@ -22,6 +18,7 @@ import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
@@ -55,6 +52,8 @@ public class OrderApplyService {
     private DeliverOrderApprovalMapper deliverOrderApprovalMapper;
     @Resource
     private DeliverOrderLineMapper deliverOrderLineMapper;
+    @Resource
+    private CustomerInfoMapper customerInfoMapper;
     @Resource
     private CustomerInfoService customerInfoService;
 
@@ -374,9 +373,15 @@ public class OrderApplyService {
         IsHeader isHeader = new IsHeader();
         isHeader.setOrdertype(orderApply.getOrderType());
         isHeader.setSalesorg(orderApply.getSalesOrg());
-        isHeader.setSoldto(orderApply.getSoldTo());
-        isHeader.setSendto(orderApply.getSendTo());
+        CustomerInfo soldToCustomer = this.getCustomerOutCode(orderApply.getSoldTo());
+        isHeader.setSoldto(soldToCustomer.getOutCode());
+        CustomerInfo sendToCustomer = this.getCustomerOutCode(orderApply.getSendTo());
+        isHeader.setSendto(sendToCustomer.getOutCode());
         return isHeader;
+    }
+
+    private CustomerInfo getCustomerOutCode(String soldTo) {
+        return customerInfoMapper.selectByPrimaryKey(Integer.parseInt(soldTo));
     }
 
     @Transactional
