@@ -102,7 +102,7 @@
     <if test="active != null">
       and active = #{active,jdbcType=INTEGER}
     </if>
-    order by create_time desc
+    order by create_time
   </select>
 
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">

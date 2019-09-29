@@ -128,6 +128,7 @@
     <if test="roleCode != null">
       and role_code = #{roleCode}
     </if>
+    order by create_time
   </select>
 
   <select id="findRolesByUserId" resultMap="BaseResultMap" parameterType="java.lang.Integer">

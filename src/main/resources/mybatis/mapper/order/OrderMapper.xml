@@ -100,7 +100,7 @@
     <if test="active != null">
       and active = #{active,jdbcType=INTEGER}
     </if>
-    order by create_time desc
+    order by create_time
   </select>
 
   <insert id="insertSelective" useGeneratedKeys="true" keyProperty="id" parameterType="com.crazy.portal.entity.order.Order">

@@ -41,7 +41,6 @@ public class UserController extends BaseController {
      * 分页查询
      * @return
      */
-    @OperationLog
     @PostMapping("/list")
     public BaseResponse selectAllUsers(@RequestBody(required = false) User user,
                                        @RequestParam Integer pageNum,
@@ -58,7 +57,6 @@ public class UserController extends BaseController {
      */
     @GetMapping("/find/{loginName}")
     public BaseResponse findUser(@PathVariable String loginName){
-        log.info(super.getCurrentUser().getLoginName());
         return super.successResult(userService.findUser(loginName));
     }
 
@@ -83,7 +81,6 @@ public class UserController extends BaseController {
                                   @RequestParam String oldPwd,
                                   @RequestParam String newPwd) {
 
-        log.info("用户{} 进行修改密码操作",loginName);
         //重置密码
         userService.modifyPwd(loginName,oldPwd,newPwd,super.getCurrentUser().getId());
         return super.successResult();
@@ -163,6 +160,7 @@ public class UserController extends BaseController {
         return successResult(userCustomerMappingService.selectByPage(bean));
     }
 
+    @OperationLog
     @PostMapping("/createMapping")
     public BaseResponse createMapping(@RequestBody UserCustomerMapping mapping){
         userCustomerMappingService.saveOrUpdateMapping(mapping, this.getCurrentUserId());

@@ -65,7 +65,7 @@
             and apply_time &lt;= #{applyEndTime,jdbcType=TIMESTAMP}
         </if>
     </where>
-    order by apply_time desc
+    order by apply_time
   </select>
 
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
