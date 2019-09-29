@@ -2,11 +2,16 @@ package com.crazy.portal.service.price;
 
 import com.crazy.portal.bean.price.EnquiryApprovalBean;
 import com.crazy.portal.bean.price.EnquiryPriceVO;
+import com.crazy.portal.dao.cusotmer.CustomerInfoMapper;
 import com.crazy.portal.dao.price.CatalogPriceMapper;
 import com.crazy.portal.dao.price.EnquiryPriceMapper;
+import com.crazy.portal.entity.cusotmer.CustomerInfo;
 import com.crazy.portal.entity.price.CatalogPrice;
 import com.crazy.portal.entity.price.EnquiryPrice;
-import com.crazy.portal.util.*;
+import com.crazy.portal.util.BusinessUtil;
+import com.crazy.portal.util.Enums;
+import com.crazy.portal.util.ErrorCodes;
+import com.crazy.portal.util.PortalUtil;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +35,8 @@ public class EnquiryPriceService {
     private EnquiryPriceMapper enquiryPriceMapper;
     @Resource
     private CatalogPriceMapper catalogPriceMapper;
+    @Resource
+    private CustomerInfoMapper customerInfoMapper;
 
     /**
      * 提交申请
@@ -110,7 +117,10 @@ public class EnquiryPriceService {
                 enquiryPrice.setBu(catalogPrice.getBu());
                 enquiryPrice.setPdt(catalogPrice.getPdt());
                 enquiryPrice.setStatus(catalogPrice.getStatus());
-                enquiryPrice.setInCustomer(catalogPrice.getInCustomer());
+
+                String inCustomerCode = catalogPrice.getInCustomer();
+                CustomerInfo customerInfo = customerInfoMapper.selectByOutCode(inCustomerCode);
+                enquiryPrice.setInCustomer(customerInfo == null?inCustomerCode:customerInfo.getCustAbbreviation());
                 enquiryPrice.setRemark(catalogPrice.getRemark());
                 enquiryPrice.setProductType(catalogPrice.getProductType());
                 enquiryPrice.setPriceType(catalogPrice.getPriceType());

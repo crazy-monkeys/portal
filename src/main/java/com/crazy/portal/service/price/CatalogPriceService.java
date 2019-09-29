@@ -3,7 +3,9 @@ package com.crazy.portal.service.price;
 import com.alibaba.fastjson.JSON;
 import com.crazy.portal.bean.price.BICatalogPrice;
 import com.crazy.portal.bean.price.CatalogPriceVO;
+import com.crazy.portal.dao.cusotmer.CustomerInfoMapper;
 import com.crazy.portal.dao.price.CatalogPriceMapper;
+import com.crazy.portal.entity.cusotmer.CustomerInfo;
 import com.crazy.portal.entity.price.CatalogPrice;
 import com.crazy.portal.util.CallApiUtils;
 import com.crazy.portal.util.HttpClientUtils;
@@ -32,6 +34,8 @@ public class CatalogPriceService {
 
     @Resource
     private CatalogPriceMapper catalogPriceMapper;
+    @Resource
+    private CustomerInfoMapper customerInfoMapper;
 
     /**
      * 分页查询目录价
@@ -41,6 +45,12 @@ public class CatalogPriceService {
     public PageInfo<CatalogPrice> selectWithPage(CatalogPriceVO catalogPriceVO){
         PortalUtil.defaultStartPage(catalogPriceVO.getPageIndex(), catalogPriceVO.getPageSize());
         Page<CatalogPrice> catalogPrices = catalogPriceMapper.selectByParamsWithPage(catalogPriceVO);
+
+        catalogPrices.getResult().forEach(x->{
+            String inCustomer = x.getInCustomer();
+            CustomerInfo customerInfo = customerInfoMapper.selectByOutCode(inCustomer);
+            x.setInCustomer(customerInfo == null ? inCustomer : customerInfo.getCustAbbreviation());
+        });
         return new PageInfo<>(catalogPrices);
     }
 
