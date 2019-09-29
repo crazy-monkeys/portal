@@ -112,7 +112,7 @@ public class EnquiryPriceService {
                 String inCustomer = enquiryPrice.getInCustomer();
                 String bu = enquiryPrice.getBu();
                 CatalogPrice catalogPrice = catalogPriceMapper.selectByProductModelAndCustomerName(productModel,bu,inCustomer);
-                BusinessUtil.notNull(enquiryPrice, ErrorCodes.PriceEnum.PRICE_CATALOG_NOT_EXISTS);
+                BusinessUtil.notNull(catalogPrice, ErrorCodes.PriceEnum.PRICE_CATALOG_NOT_EXISTS);
 
                 enquiryPrice.setBu(catalogPrice.getBu());
                 enquiryPrice.setPdt(catalogPrice.getPdt());
