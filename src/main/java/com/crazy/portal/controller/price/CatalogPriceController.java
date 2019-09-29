@@ -36,11 +36,12 @@ public class CatalogPriceController extends BaseController {
     public BaseResponse detail(@RequestBody CatalogPriceVO catalogPriceVO){
         String productModel = catalogPriceVO.getProductModel();
         String inCustomer = catalogPriceVO.getInCustomer();
+        String bu = catalogPriceVO.getBu();
 
         boolean check = Objects.isNull(productModel) && Objects.isNull(inCustomer);
         BusinessUtil.assertFlase(check,ErrorCodes.PriceEnum.PRICE_EMPTY_MODEL_INCUSTOMER);
 
-        CatalogPrice catalogPrice = catalogPriceService.selectByProductModelAndCustomerName(productModel, inCustomer);
+        CatalogPrice catalogPrice = catalogPriceService.selectByProductModelAndCustomerName(productModel,bu,inCustomer);
         return super.successResult(catalogPrice);
     }
 }
