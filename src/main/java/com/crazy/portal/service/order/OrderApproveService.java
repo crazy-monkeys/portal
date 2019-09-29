@@ -370,7 +370,10 @@ public class OrderApproveService {
         isHeader.setPortalorderid(orderApply.getId().toString() + System.currentTimeMillis());
         isHeader.setOrdertype(orderApply.getOrderType());
         isHeader.setSalesorg(orderApply.getSalesOrg());
-
+        isHeader.setChannel(orderApply.getChannel());
+        isHeader.setDivision(orderApply.getDivision());
+        isHeader.setSalesoffice(orderApply.getSalesOffice());
+        isHeader.setSalesgroup(orderApply.getSalesGroup());
         CustomerInfo soldToCustomer = customerInfoMapper.selectByPrimaryKey(Integer.parseInt(orderApply.getSoldTo()));
         isHeader.setSoldto(soldToCustomer.getOutCode());
         CustomerInfo sendToCustomer = customerInfoMapper.selectByPrimaryKey(Integer.parseInt(orderApply.getSendTo()));
