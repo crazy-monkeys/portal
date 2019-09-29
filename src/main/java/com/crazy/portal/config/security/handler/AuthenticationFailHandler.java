@@ -14,7 +14,6 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 import org.springframework.security.web.authentication.www.NonceExpiredException;
 import org.springframework.stereotype.Component;
 
-import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -37,42 +36,40 @@ public class AuthenticationFailHandler implements AuthenticationFailureHandler{
                                         HttpServletResponse response,
                                         AuthenticationException e) throws IOException {
 
-        BaseResponse baseResponse;
         try(ServletOutputStream os = response.getOutputStream()){
             response.reset();
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             response.setContentType("application/json;charset=utf-8");
-            //认证失败-token过期
-            if(e.getCause() instanceof NonceExpiredException){
-                baseResponse = new BaseResponse(SystemManagerEnum.TOKEN_INVALID.getCode(),
-                        SystemManagerEnum.TOKEN_INVALID.getZhMsg());
-            }
-            //认证失败-账号密码错误或者ad域认证失败
-            else if(e instanceof BadCredentialsException || e.getCause() instanceof BadCredentialsException){
-                baseResponse = new BaseResponse(SystemManagerEnum.ACCOUNT_ERROR.getCode(),
-                        SystemManagerEnum.ACCOUNT_ERROR.getZhMsg());
-            } else if(e.getCause() instanceof LockedException){
-                //密码过期
-                if(e.getMessage().equals("password expiration")){
-                    baseResponse = new BaseResponse(SystemManagerEnum.PASSWORD_INVALID.getCode(),
-                            SystemManagerEnum.PASSWORD_INVALID.getZhMsg());
-                }
-                //账户锁定
-                else{
-                    baseResponse = new BaseResponse(SystemManagerEnum.LOCKED.getCode(),SystemManagerEnum.LOCKED.getZhMsg());
-                }
-            }
-            //鉴权失败
-            else if(e instanceof InsufficientAuthenticationException){
-                baseResponse = new BaseResponse(SystemManagerEnum.AUTH_ERROR.getCode(),
-                        SystemManagerEnum.AUTH_ERROR.getZhMsg());
-            }
-            //系统异常
-            else {
-                baseResponse = new BaseResponse(CommonEnum.SYSTEM_EXCEPTION.getCode(),
-                        CommonEnum.SYSTEM_EXCEPTION.getZhMsg());
-            }
+            BaseResponse baseResponse = getBaseResponse(e);
             os.write(JSON.toJSONString(baseResponse).getBytes());
         }
+    }
+
+    /**
+     * 异常解析
+     * @param e
+     * @return
+     */
+    private BaseResponse getBaseResponse(AuthenticationException e) {
+        //认证失败-Token过期
+        if(e.getCause() instanceof NonceExpiredException){
+            return new BaseResponse(SystemManagerEnum.TOKEN_INVALID.getCode(),SystemManagerEnum.TOKEN_INVALID.getZhMsg());
+        }
+        //认证失败-账号密码错误或者ad域认证失败
+        else if(e instanceof BadCredentialsException || e.getCause() instanceof BadCredentialsException){
+           return new BaseResponse(SystemManagerEnum.ACCOUNT_ERROR.getCode(),SystemManagerEnum.ACCOUNT_ERROR.getZhMsg());
+        }
+        //账户锁定
+        else if(e instanceof LockedException || e.getCause() instanceof LockedException){
+            if(e.getMessage().equals("password expiration")){
+                return new BaseResponse(SystemManagerEnum.PASSWORD_INVALID.getCode(),SystemManagerEnum.PASSWORD_INVALID.getZhMsg());
+            }
+            return new BaseResponse(SystemManagerEnum.LOCKED.getCode(), SystemManagerEnum.LOCKED.getZhMsg());
+        }
+        //鉴权失败
+        else if(e instanceof InsufficientAuthenticationException){
+            return new BaseResponse(SystemManagerEnum.AUTH_ERROR.getCode(),SystemManagerEnum.AUTH_ERROR.getZhMsg());
+        }
+        return new BaseResponse(CommonEnum.SYSTEM_EXCEPTION.getCode(),CommonEnum.SYSTEM_EXCEPTION.getZhMsg());
     }
 }

@@ -1,12 +1,13 @@
 package com.crazy.portal.config.security;
 
 import com.crazy.portal.entity.system.User;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.util.Assert;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * @Desc:
@@ -20,6 +21,7 @@ public class JwtUser implements UserDetails {
     private String username;
     private String password;
     private Collection<? extends GrantedAuthority> authorities;
+    private boolean isEnable = true;
 
     public JwtUser(User user, String username, String password, Collection<? extends GrantedAuthority> authorities) {
         this.user = user;
@@ -37,7 +39,6 @@ public class JwtUser implements UserDetails {
         return username;
     }
 
-    @JsonIgnore
     @Override
     public String getPassword() {
         return password;
@@ -48,28 +49,28 @@ public class JwtUser implements UserDetails {
         return authorities;
     }
 
-    @JsonIgnore
+    public void setEnable(boolean enable) {
+        isEnable = enable;
+    }
+
     @Override
     public boolean isAccountNonExpired() {
         return true;
     }
 
-    @JsonIgnore
     @Override
     public boolean isAccountNonLocked() {
         return true;
     }
 
-    @JsonIgnore
     @Override
     public boolean isCredentialsNonExpired() {
         return true;
     }
 
-    @JsonIgnore
     @Override
     public boolean isEnabled() {
-        return true;
+        return isEnable;
     }
 
     public static JwtUser.UserBuilder builder() {

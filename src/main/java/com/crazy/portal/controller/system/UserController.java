@@ -51,6 +51,11 @@ public class UserController extends BaseController {
         return super.successResult(users);
     }
 
+    /**
+     * 用户详情
+     * @param loginName
+     * @return
+     */
     @GetMapping("/find/{loginName}")
     public BaseResponse findUser(@PathVariable String loginName){
         log.info(super.getCurrentUser().getLoginName());
@@ -125,6 +130,17 @@ public class UserController extends BaseController {
         log.info("管理员{} 进行重置 '{}' 用户的密码操作",currentUser.getLoginName(),loginName);
         //重置密码
         userService.resetUserPwd(loginName,currentUser);
+        return super.successResult();
+    }
+
+    /**
+     * 修改用户生命周期
+     * @return
+     */
+    @OperationLog
+    @PostMapping("/modifyLifecycle/{loginName}/{userStatus}")
+    public BaseResponse modifyLifecycle(@PathVariable String loginName,@PathVariable Integer userStatus){
+        userService.modifyLifecycle(loginName,userStatus,super.getCurrentUserId());
         return super.successResult();
     }
 

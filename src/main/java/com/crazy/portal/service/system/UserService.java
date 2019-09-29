@@ -82,6 +82,23 @@ public class UserService {
     }
 
     /**
+     * modifyLifecycle
+     * @param loginName
+     * @param userId
+     * @param userStatus 1 正常 0 冻结
+     * @return
+     */
+    @Transactional
+    public int modifyLifecycle(String loginName,Integer userStatus,Integer userId){
+        User user = this.findUser(loginName);
+        BusinessUtil.notNull(user,ErrorCodes.SystemManagerEnum.USER_NOT_EXISTS);
+        user.setUserStatus(userStatus);
+        user.setUpdateTime(DateUtil.getCurrentTS());
+        user.setUpdateUserId(userId);
+        return userMapper.updateByPrimaryKeySelective(user);
+    }
+
+    /**
      * 更改用户信息
      * @param basicInfo
      * @return

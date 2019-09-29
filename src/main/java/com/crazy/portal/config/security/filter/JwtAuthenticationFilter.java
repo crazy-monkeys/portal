@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -25,6 +26,7 @@ import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.Assert;
 import org.springframework.web.filter.OncePerRequestFilter;
+
 import javax.annotation.Resource;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -88,11 +90,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
-        //可以忽略Token权限的url
-        if (this.canIgnorePermiss(request, response, filterChain)){
-            return;
-        }
         try {
+            //可以忽略Token权限的url
+            if (this.canIgnorePermiss(request, response, filterChain)){
+                return;
+            }
+
             String token = this.getToken(request);
             if(StringUtils.isEmpty(token)){
                 this.authenticationFailure(request, response,
@@ -120,11 +123,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
             this.successfulAuthentication(request, response, authResult);
             filterChain.doFilter(request, response);
             return;
-
-        } catch(JWTDecodeException | NonceExpiredException | BadCredentialsException e) {
+        }catch (LockedException e){
+            this.authenticationFailure(request, response,e);
+        }catch(JWTDecodeException | NonceExpiredException | BadCredentialsException e) {
             log.error("",e);
-            this.authenticationFailure(request, response,
-                    new InsufficientAuthenticationException("Authentication failed", e));
+            this.authenticationFailure(request, response,new InsufficientAuthenticationException("Authentication failed", e));
         }
     }
 
