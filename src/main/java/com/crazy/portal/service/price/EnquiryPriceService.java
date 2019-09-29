@@ -42,14 +42,12 @@ public class EnquiryPriceService {
         String productModel = vo.getProductModel();
         BusinessUtil.assertEmpty(productModel,ErrorCodes.PriceEnum.PRICE_CATALOG_NOT_EXISTS);
 
-        String inCustomer = vo.getInCustomer();
         String bu = vo.getBu();
         BusinessUtil.assertEmpty(bu,ErrorCodes.PriceEnum.PRICE_EMPTY_BU);
+
+        String inCustomer = vo.getInCustomer();
         CatalogPrice catalogPrice = catalogPriceMapper.selectByProductModelAndCustomerName(productModel,bu,inCustomer);
-        BusinessUtil.notNull(catalogPrice,
-                StringUtil.isEmpty(inCustomer)
-                        ?ErrorCodes.PriceEnum.PRICE_CATALOG_NOT_EXISTS
-                        :ErrorCodes.PriceEnum.PRICE_CATALOG_CUSTOMER_NOT_EXISTS);
+        BusinessUtil.notNull(catalogPrice,ErrorCodes.PriceEnum.PRICE_CATALOG_PRICE_NOT_EXISTS);
 
         Date now = new Date();
         EnquiryPrice enquiryPrice = new EnquiryPrice();

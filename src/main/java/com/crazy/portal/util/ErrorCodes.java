@@ -276,7 +276,7 @@ public class ErrorCodes {
         PRICE_ENQUIEY_NOT_EXISTS(80000,"询价申请单未存在"),
         PRICE_ENQUIEY_APPROVAL_STATUS_NOT_EXISTS(80001,"审批状态不存在"),
         PRICE_CATALOG_NOT_EXISTS(80002,"产品型号不存在"),
-        PRICE_CATALOG_CUSTOMER_NOT_EXISTS(80003,"内部客户下产品型号不存在"),
+        PRICE_CATALOG_PRICE_NOT_EXISTS(80003,"目录价不存在"),
         PRICE_EMPTY_APPLYIDS(80004,"询价申请单ID不能为空"),
         PRICE_EMPTY_STATUS(80004,"询价申请单审批状态不能为空"),
         PRICE_NON_PENGDING_STATUS(80005,"非待审批状态询价单不允许再进行审批"),
