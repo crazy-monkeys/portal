@@ -160,6 +160,7 @@ public class ErrorCodes {
         CUSTOMER_SYNC_ERROR(50006,"客户同步异常",""),
         CUSTOMER_ORG_ERROR(50007,"没有审批权限",""),
         CUSTOMER_NO_DEALER(50008,"该用户非有效代理商",""),
+        CUSTOMER_APPROVAL_IS_NOT(50009,"不支持的操作，请确认客户状态",""),
 
         RATE_BATCH_IS_NOT_NULL(60001,"批次号已存在",""),
         //代理费率

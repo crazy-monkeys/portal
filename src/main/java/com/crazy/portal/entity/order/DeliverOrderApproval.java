@@ -1,4 +1,4 @@
-package com.crazy.portal.entity.test;
+package com.crazy.portal.entity.order;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;

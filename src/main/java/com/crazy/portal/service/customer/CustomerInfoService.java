@@ -162,7 +162,13 @@ public class CustomerInfoService {
         return getCustDetail(customerInfo);
     }
 
+    /**
+     * 删除驳回的客户信息
+     * @param custId
+     */
     public void deleteCustomer(Integer custId){
+        CustomerInfo customerInfo = customerInfoMapper.selectByPrimaryKey(custId);
+        BusinessUtil.assertFlase(customerInfo.getApproveStatus().equals(Enums.CUSTOMER_APPROVE_STATUS.REJECT.getCode()),ErrorCodes.BusinessEnum.CUSTOMER_APPROVAL_IS_NOT);
         customerInfoMapper.updateCustomerInfo(custId);
     }
 
@@ -307,14 +313,11 @@ public class CustomerInfoService {
     @Transactional
     public void updateCustomerInfo(CustomerInfo cust, User user){
         CustomerInfo customerinfo = customerInfoMapper.selectByPrimaryKey(cust.getId());
-        if(null == customerinfo){
-            throw new BusinessException(ErrorCodes.BusinessEnum.CUSTOMER_IS_EMPYT);
-        }else{
-            cust.setId(customerinfo.getId());
-            mappingCustomerInfo(cust, customerinfo);
-            customerinfo.setUpdateUser(user.getId());
-            customerInfoMapper.updateByPrimaryKeySelective(customerinfo);
-        }
+        BusinessUtil.assertFlase(null == customerinfo ,ErrorCodes.BusinessEnum.CUSTOMER_IS_EMPYT);
+        cust.setId(customerinfo.getId());
+        mappingCustomerInfo(cust, customerinfo);
+        customerinfo.setUpdateUser(user.getId());
+        customerInfoMapper.updateByPrimaryKeySelective(customerinfo);
         saveCustomerDetail(cust, user.getId());
         customerInfoSync(cust, "02");
     }

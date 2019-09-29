@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.crazy.portal.dao.test.DeliverOrderApprovalMapper">
-  <resultMap id="BaseResultMap" type="com.crazy.portal.entity.test.DeliverOrderApproval">
+<mapper namespace="com.crazy.portal.dao.order.DeliverOrderApprovalMapper">
+  <resultMap id="BaseResultMap" type="com.crazy.portal.entity.order.DeliverOrderApproval">
     <id column="deliver_order_id" jdbcType="INTEGER" property="deliverOrderId" />
     <result column="sales_order_id" jdbcType="INTEGER" property="salesOrderId" />
     <result column="sap_order_no" jdbcType="VARCHAR" property="sapOrderNo" />
@@ -36,7 +36,7 @@
     delete from t_deliver_order_approval
     where deliver_order_id = #{deliverOrderId,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.crazy.portal.entity.test.DeliverOrderApproval">
+  <insert id="insert" parameterType="com.crazy.portal.entity.order.DeliverOrderApproval">
     insert into t_deliver_order_approval (deliver_order_id, sales_order_id, sap_order_no, 
       sold_to, send_to, deliver_date, 
       shipping_point, active, create_user_id, 
@@ -52,7 +52,7 @@
       #{approvalUser,jdbcType=INTEGER}, #{approvalType,jdbcType=VARCHAR}, #{deliveryOrderLine,jdbcType=OTHER,typeHandler=com.crazy.portal.config.mybatis.handler.ArrayJsonHandler}
       )
   </insert>
-  <insert id="insertSelective" parameterType="com.crazy.portal.entity.test.DeliverOrderApproval">
+  <insert id="insertSelective" parameterType="com.crazy.portal.entity.order.DeliverOrderApproval">
     insert into t_deliver_order_approval
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="deliverOrderId != null">
@@ -167,7 +167,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.crazy.portal.entity.test.DeliverOrderApproval">
+  <update id="updateByPrimaryKeySelective" parameterType="com.crazy.portal.entity.order.DeliverOrderApproval">
     update t_deliver_order_approval
     <set>
       <if test="salesOrderId != null">
@@ -224,7 +224,7 @@
     </set>
     where deliver_order_id = #{deliverOrderId,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.crazy.portal.entity.test.DeliverOrderApproval">
+  <update id="updateByPrimaryKey" parameterType="com.crazy.portal.entity.order.DeliverOrderApproval">
     update t_deliver_order_approval
     set sales_order_id = #{salesOrderId,jdbcType=INTEGER},
       sap_order_no = #{sapOrderNo,jdbcType=VARCHAR},

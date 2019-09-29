@@ -298,7 +298,7 @@ public class MemberInfoSyncHandler extends AbstractHandler implements IHandler<M
         List<CustomerAddress> results = StringUtil.isEmpty(address)?new ArrayList<>():JSON.parseArray(address, CustomerAddress.class);
         customerAddressService.deleteByCustId(custId);
         results.forEach(e->{
-            e.setCountry(String.format("%s,%s",e.getCountry(),e.getCity()));
+            e.setCountry(String.format("%s,%s",e.getCountry(),e.getProvince()));
             e.setAddressDetail(e.getDistrict());
             e.setCustId(custId);
             e.setActive(Enums.YES_NO.YES.getCode());

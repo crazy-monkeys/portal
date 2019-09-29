@@ -1,7 +1,7 @@
-package com.crazy.portal.dao.test;
+package com.crazy.portal.dao.order;
 
 import com.crazy.portal.bean.order.DeliveryOrderQueryVO;
-import com.crazy.portal.entity.test.DeliverOrderApproval;
+import com.crazy.portal.entity.order.DeliverOrderApproval;
 
 import java.util.List;
 

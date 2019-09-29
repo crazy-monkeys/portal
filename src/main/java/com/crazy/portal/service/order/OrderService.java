@@ -10,9 +10,9 @@ import com.crazy.portal.bean.order.wsdl.delivery.create.ZrfcsddeliverycreateResp
 import com.crazy.portal.bean.order.wsdl.delivery.update.*;
 import com.crazy.portal.config.exception.BusinessException;
 import com.crazy.portal.dao.order.*;
-import com.crazy.portal.dao.test.DeliverOrderApprovalMapper;
+import com.crazy.portal.dao.order.DeliverOrderApprovalMapper;
 import com.crazy.portal.entity.order.*;
-import com.crazy.portal.entity.test.DeliverOrderApproval;
+import com.crazy.portal.entity.order.DeliverOrderApproval;
 import com.crazy.portal.util.*;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;

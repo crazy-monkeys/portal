@@ -52,7 +52,7 @@ public class IDRService {
     private BusinessIdrApprovalMapper businessIdrApprovalMapper;
     @Resource
     private IDRApiService idrApiService;
-    @Value("${file.path.root}")
+    @Value("${file.path.root-local}")
     private String filePath;
     @Value("${file.path.reader-dir}")
     private String readerFilePath;
