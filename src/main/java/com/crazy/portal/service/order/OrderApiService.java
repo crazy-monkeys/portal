@@ -115,7 +115,7 @@ public class OrderApiService {
         Method resultmessage = esHeader.getClass().getMethod("getResultmessage");
         String resultMessage = String.valueOf(resultmessage.invoke(esHeader,null));
 
-        this.checkResponse(!"null".equals(resultMessage), resultMessage);
+        this.checkResponse(resultMessage.isEmpty() || "null".equals(resultMessage), resultMessage);
     }
 
 
