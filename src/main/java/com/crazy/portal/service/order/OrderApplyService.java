@@ -263,7 +263,7 @@ public class OrderApplyService {
         BusinessUtil.notNull(order, ErrorCodes.BusinessEnum.ORDER_NOT_FOUND);
         String rSapOrderId = order.getRSapOrderId();
         boolean result = this.hasApprovalPendingOrder(rSapOrderId);
-        BusinessUtil.assertTrue(result, ErrorCodes.BusinessEnum.ORDER_PENDING_ORDER);
+        BusinessUtil.assertFlase(result, ErrorCodes.BusinessEnum.ORDER_PENDING_ORDER);
 
         OrderApply orderApply = new OrderApply();
         List<OrderLine> lines = itemIds.stream()
