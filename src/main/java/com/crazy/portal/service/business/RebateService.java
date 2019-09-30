@@ -58,7 +58,8 @@ public class RebateService {
     @Value("${file.path.root}")
     private String filePath;
     private static final String REBATE_FILE_PATH = "rebate";
-
+    @Value("${portal.file-url}")
+    private String readerFilePath;
     /**
      * 客户rebate列表
      * @param bean
@@ -253,10 +254,10 @@ public class RebateService {
      * @param id
      * @param response
      */
-    public void fileDownload(Integer id, HttpServletResponse response){
+    public String fileDownload(Integer id, HttpServletResponse response){
         BusinessRebateFile file = businessRebateFileMapper.selectByPrimaryKey(id);
         BusinessUtil.notNull(file, ErrorCodes.BusinessEnum.REBATE_FILE_NOT_FOUND);
-        FileUtil.download(response, getFilePath(), file.getFileName());
+        return readerFilePath.concat(File.separator).concat(REBATE_FILE_PATH).concat(File.separator).concat(file.getFileName());
     }
 
     public String getFilePath(){

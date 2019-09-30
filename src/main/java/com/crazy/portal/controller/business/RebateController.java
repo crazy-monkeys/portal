@@ -89,7 +89,7 @@ public class RebateController extends BaseController {
      * @param response
      */
     @GetMapping("/download/{id}")
-    public void download(@PathVariable Integer id, HttpServletResponse response){
-        rebateService.fileDownload(id, response);
+    public BaseResponse download(@PathVariable Integer id, HttpServletResponse response){
+        return successResult(rebateService.fileDownload(id, response));
     }
 }
