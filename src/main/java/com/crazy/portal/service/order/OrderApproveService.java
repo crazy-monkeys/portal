@@ -177,13 +177,14 @@ public class OrderApproveService {
      * @param userId
      */
     private void cancelOrder(Order order,Integer userId) throws Exception{
+        List<OrderLine> orderLines = orderLineMapper.selectByOrderId(order.getId());
         //ZrfcsdsalesorderchangeResponse response = this.invokeEccModifyOrder(order,"D");
         //String resultType = response.getEsHeader().getResulttype();
         //如果修改成功
         //if(resultType.equals("1")){
           //  List<ZsalesorderchangeOutItem> items = response.getEtItems().getItem();
             //items.forEach(sapLine->{
-                order.getLines().forEach(line->{
+                 orderLines.forEach(line->{
               //      if(line.getRProductId().equals(sapLine.getProductid())){
                         //修改为失效
                         line.setActice(0);
@@ -195,7 +196,6 @@ public class OrderApproveService {
             //});
         //}
         //如果所有订单行都被设置为取消,整单取消
-        List<OrderLine> orderLines = orderLineMapper.selectByOrderId(order.getId());
         List<OrderLine> results = orderLines.stream().filter(x -> x.getActice().equals(1)).collect(Collectors.toList());
         if(results.isEmpty()){
             order.setActive(0);
