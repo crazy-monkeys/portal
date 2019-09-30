@@ -1,14 +1,12 @@
 package com.crazy.portal.controller.webservice;
 
 import com.alibaba.fastjson.JSON;
-import com.crazy.portal.bean.task.TaskBean;
 import com.crazy.portal.bean.webservice.*;
 import com.crazy.portal.config.exception.BusinessException;
 import com.crazy.portal.controller.BaseController;
 import com.crazy.portal.entity.webservice.ApiUsers;
 import com.crazy.portal.service.webservice.ApiUsersService;
 import com.crazy.portal.util.AopTargetUtils;
-import com.crazy.portal.util.BusinessUtil;
 import com.crazy.portal.util.SHA1;
 import com.crazy.portal.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +16,10 @@ import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by weiying on 2019/7/29.
@@ -56,7 +57,7 @@ public class EntranceController extends BaseController{
 
     @RequestMapping(value="/invoke.html",method= RequestMethod.POST)
     public @ResponseBody IResponse authentication(@RequestBody Map<String, String> paramJson){
-        Date startDate = new Date();
+        long startDate = System.currentTimeMillis();
         String errorMessage = "";
         String responseMessage = "";
         String requestCode = paramJson.get("reqCode");

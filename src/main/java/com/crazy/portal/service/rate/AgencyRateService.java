@@ -87,7 +87,7 @@ public class AgencyRateService {
      * 审批费率
      * @param rateIds
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void approveRate(String rateIds, Integer userId){
         agencyRateMapper.invalidationAll();
         agencyRateMapper.validationByIds(Stream.of(rateIds.split(Constant.DEFAULT_SEPARATE_CHAR)).map(id->Integer.valueOf(id)).collect(Collectors.toList()), userId);

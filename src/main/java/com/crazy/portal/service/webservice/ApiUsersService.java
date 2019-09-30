@@ -28,13 +28,13 @@ public class ApiUsersService {
         return apiUsersMapper.selectByPrimaryKey(id);
     }
 
-    public void saveLog(String apiUserId, String requestMessage, String responseMessage, Date startTime, String reqCode, String errorMessage){
+    public void saveLog(String apiUserId, String requestMessage, String responseMessage, long startTime, String reqCode, String errorMessage){
         ApiLog log = new ApiLog();
         log.setReqCode(reqCode);
         log.setRequestMessage(requestMessage);
         log.setResponseMessage(responseMessage);
         log.setErrorMessage(errorMessage);
-        log.setReqTime(Integer.valueOf(new Date().getTime()-startTime.getTime()+""));
+        log.setReqTime(Integer.valueOf(System.currentTimeMillis()-startTime+""));
         log.setCreateId(Integer.parseInt(apiUserId));
         log.setCreateTime(DateUtil.getCurrentTS());
         apiLogMapper.insertSelective(log);

@@ -326,22 +326,22 @@
     from t_business_rebate_item
     where active = 1
     and notice_date = #{noticeDate}
-    <if test="shipmentCompany != null">
+    <if test="shipmentCompany != null and shipmentCompany != ''">
       and shipment_company = #{shipmentCompany}
     </if>
-    <if test="executor != null">
+    <if test="executor != null and executor != ''">
       and executor = #{executor}
     </if>
-    <if test="customerShortName != null">
+    <if test="customerShortName != null and customerShortName != ''">
       and customer_short_name = #{customerShortName}
     </if>
-    <if test="salesName != null">
+    <if test="salesName != null and salesName != ''">
       and sales_name = #{salesName}
     </if>
-    <if test="amebaHeader != null">
+    <if test="amebaHeader != null and amebaHeader != ''">
       and ameba_header = #{amebaHeader}
     </if>
-    <if test="amebaDepartment != null">
+    <if test="amebaDepartment != null and amebaDepartment != ''">
       and ameba_department = #{amebaDepartment}
     </if>
   </select>
