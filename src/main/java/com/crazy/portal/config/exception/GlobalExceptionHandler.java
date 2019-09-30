@@ -39,8 +39,7 @@ public class GlobalExceptionHandler extends BaseController {
             return new BaseResponse(CommonEnum.REQ_PARAM_FORMAT_ERROR.getCode(),msg);
         }
         if(exception instanceof HttpMessageNotReadableException){
-            String msg = exception.getMessage().indexOf(":") != -1 ? exception.getMessage().substring(exception.getMessage().lastIndexOf(":") + 2, exception.getMessage().length()) : exception.getMessage();
-            return new BaseResponse(CommonEnum.REQ_PARAM_FORMAT_ERROR.getCode(),msg.concat("格式错误"));
+            return getMessageNotReadableErrorMessage(exception);
         }
         if(exception instanceof BindException){
             String msg = super.getValidExceptionMsg(((BindException) exception).getAllErrors());
@@ -50,11 +49,13 @@ public class GlobalExceptionHandler extends BaseController {
             BusinessException ex = (BusinessException)exception;
             return new BaseResponse(ex.getErrorCode(),ex.getMessage());
         }
-
-
-
         log.error("", exception);
         return new BaseResponse(CommonEnum.SYSTEM_EXCEPTION.getCode(),CommonEnum.SYSTEM_EXCEPTION.getZhMsg());
     }
 
+    public BaseResponse getMessageNotReadableErrorMessage(Exception exception){
+        String errorMessage = exception.getMessage().indexOf(":") != -1 ? exception.getMessage().substring(exception.getMessage().lastIndexOf(":") + 2, exception.getMessage().length()) : exception.getMessage();
+        errorMessage = errorMessage.concat("格式错误");
+        return new BaseResponse(CommonEnum.REQ_PARAM_FORMAT_ERROR.getCode(), errorMessage);
+    }
 }

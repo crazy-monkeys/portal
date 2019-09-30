@@ -82,10 +82,13 @@ public class BaseController {
      * @return
      */
     public String getValidExceptionMsg(List<ObjectError> errorList) {
-
-        return errorList.stream()
+        String errMsg =  errorList.stream()
                 .map(ObjectError::getDefaultMessage)
                 .collect(Collectors.joining(","));
+        if(errMsg.contains("crAmount")){
+            return "CR金额请输入有效的数字";
+        }
+        return errMsg;
     }
 
     /**
