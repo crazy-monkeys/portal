@@ -313,6 +313,7 @@ public class OrderApplyService {
         orderApply.setCreateId(userId);
         orderApply.setCreateTime(DateUtil.getCurrentTS());
         orderApply.setAppalyType(3);
+        orderApply.setApprovalStatus(Enums.OrderApprovalStatus.WAIT_APPROVAL.getValue());
         orderApply.setJsonLines(orderApply.objToLineJson(lines));
         orderApplyMapper.insertSelective(orderApply);
     }

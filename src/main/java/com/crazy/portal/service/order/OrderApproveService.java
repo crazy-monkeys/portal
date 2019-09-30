@@ -102,6 +102,7 @@ public class OrderApproveService {
         }
         orderApply.setApprovalStatus(approvalStatus);
         orderApply.setUpdateId(userId);
+        orderApply.setUpdateTime(DateUtil.getCurrentTS());
         orderApply.setApprover(user.getLoginName());
         orderApply.setApprovalTime(DateUtil.getCurrentTS());
         orderApply.setApprovalOpinions(bean.getReason());
