@@ -236,10 +236,10 @@ public class OrderApproveService {
           //  List<ZsalesorderchangeOutItem> items = response.getEtItems().getItem();
             //items.forEach(sapLine->{
                 orderLines.forEach(line->{
-                    String rProductId = line.getRProductId();
+                    String productId = line.getProductId();
               //      if(rProductId.equals(sapLine.getProductid())){
                         //目前订单行只能修改数量
-                        line.setNum(applyLineMap.get(rProductId).getNum());
+                        line.setNum(applyLineMap.get(productId).getNum());
                         line.setUpdateId(userId);
                         line.setUpdateTime(DateUtil.getCurrentTS());
                         orderLineMapper.updateByPrimaryKeySelective(line);
