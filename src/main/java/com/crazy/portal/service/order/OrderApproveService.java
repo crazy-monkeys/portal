@@ -118,40 +118,40 @@ public class OrderApproveService {
      */
     private void createOrder(String expectedDeliveryDate,OrderApply orderApply,Integer userId) throws Exception {
 
-        ZrfcsdsalesordercreateResponse response = this.invokeEccCreateOrder(expectedDeliveryDate,orderApply);
+        //ZrfcsdsalesordercreateResponse response = this.invokeEccCreateOrder(expectedDeliveryDate,orderApply);
         //第三方接口调用成功,将审批信息同步到结果表
-        ZsalesordercreateOutHeader esHeader = response.getEsHeader();
+        //ZsalesordercreateOutHeader esHeader = response.getEsHeader();
         Order order = new Order();
         BeanUtils.copyNotNullFields(orderApply,order);
         order.setCreateTime(DateUtil.getCurrentTS());
         order.setCreateId(userId);
-        order.setRGrossValue(esHeader.getGrossvalue());
-        order.setRNetValue(esHeader.getNetvalue());
-        order.setRSapOrderId(esHeader.getSaporderid());
-        order.setPaymentTerms(esHeader.getPaymentterms());
+        //order.setRGrossValue(esHeader.getGrossvalue());
+        //order.setRNetValue(esHeader.getNetvalue());
+        //order.setRSapOrderId(esHeader.getSaporderid());
+        //order.setPaymentTerms(esHeader.getPaymentterms());
         order.setPriceDate(expectedDeliveryDate);
         orderMapper.insertSelective(order);
 
         List<OrderLine> lines = orderApply.lineJsonToObj(orderApply.getJsonLines());
         for(OrderLine line : lines){
-            for(ZsalesordercreateOutItem etItem : response.getEtItems().getItem()){
-                if(etItem.getProductid().equals(line.getProductId())){
-                    line.setRItemNo(etItem.getItemno());
-                    line.setRPrice(etItem.getPrice());
-                    line.setRNetPrice(etItem.getNetprice());
-                    line.setRCurrency(etItem.getCurrency());
-                    line.setRProductId(etItem.getProductid());
-                    line.setRItemCategory(etItem.getItemcategory());
-                    line.setRRefItemNo(etItem.getRefitemno());
-                    line.setRRefItemProductId(etItem.getRefitemproductid());
+            //for(ZsalesordercreateOutItem etItem : response.getEtItems().getItem()){
+               // if(etItem.getProductid().equals(line.getProductId())){
+                 //   line.setRItemNo(etItem.getItemno());
+                  //  line.setRPrice(etItem.getPrice());
+                   // line.setRNetPrice(etItem.getNetprice());
+                   // line.setRCurrency(etItem.getCurrency());
+                   // line.setRProductId(etItem.getProductid());
+                   // line.setRItemCategory(etItem.getItemcategory());
+                   // line.setRRefItemNo(etItem.getRefitemno());
+                   // line.setRRefItemProductId(etItem.getRefitemproductid());
                     line.setExpectedDeliveryDate(expectedDeliveryDate);
                     line.setCreateId(userId);
                     line.setCreateTime(DateUtil.getCurrentTS());
                     line.setActice(1);
                     line.setOrderId(order.getId());
                     orderLineMapper.insertSelective(line);
-                }
-            }
+               // }
+            //}
         }
     }
 
