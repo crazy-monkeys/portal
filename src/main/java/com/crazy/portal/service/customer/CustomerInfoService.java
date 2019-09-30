@@ -1010,4 +1010,12 @@ public class CustomerInfoService {
     public List<CustomerInfo> selectCustShip(Integer custId){
         return customerInfoMapper.selectCustShip(custId);
     }
+
+    private void checkCustomer(CustomerInfo customerInfo){
+        String telRegex = "[1][345678]\\d{9}";
+        BusinessUtil.assertFlase(customerInfo.getCustMobile().matches(telRegex),ErrorCodes.BusinessEnum.CUSTOMER_MOBILE_IS_INACTIVE);
+        String mailRegex = "\\w+@\\w+(\\.\\w{2,3})*\\.\\w{2,3}";
+        BusinessUtil.assertFlase(customerInfo.getCustEmail().matches(mailRegex),ErrorCodes.BusinessEnum.CUSTOMER_EMAIL_IS_INACTIVE);
+
+    }
 }

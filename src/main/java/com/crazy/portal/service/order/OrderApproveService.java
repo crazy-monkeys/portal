@@ -161,23 +161,23 @@ public class OrderApproveService {
      * @param userId
      */
     private void cancelOrder(Order order,Integer userId) throws Exception{
-        ZrfcsdsalesorderchangeResponse response = this.invokeEccModifyOrder(order,"D");
-        String resultType = response.getEsHeader().getResulttype();
+        //ZrfcsdsalesorderchangeResponse response = this.invokeEccModifyOrder(order,"D");
+        //String resultType = response.getEsHeader().getResulttype();
         //如果修改成功
-        if(resultType.equals("1")){
-            List<ZsalesorderchangeOutItem> items = response.getEtItems().getItem();
-            items.forEach(sapLine->{
+        //if(resultType.equals("1")){
+          //  List<ZsalesorderchangeOutItem> items = response.getEtItems().getItem();
+            //items.forEach(sapLine->{
                 order.getLines().forEach(line->{
-                    if(line.getRProductId().equals(sapLine.getProductid())){
+              //      if(line.getRProductId().equals(sapLine.getProductid())){
                         //修改为失效
                         line.setActice(0);
                         line.setUpdateId(userId);
                         line.setUpdateTime(DateUtil.getCurrentTS());
                         orderLineMapper.updateByPrimaryKeySelective(line);
-                    }
+                //    }
                 });
-            });
-        }
+            //});
+        //}
         //如果所有订单行都被设置为取消,整单取消
         List<OrderLine> orderLines = orderLineMapper.selectByOrderId(order.getId());
         List<OrderLine> results = orderLines.stream().filter(x -> x.getActice().equals(1)).collect(Collectors.toList());
@@ -195,10 +195,10 @@ public class OrderApproveService {
      * @param userId
      */
     private void modifyOrder(Order order,OrderApply orderApply,Integer userId) throws Exception{
-        ZrfcsdsalesorderchangeResponse response = this.invokeEccModifyOrder(order,"I");
-        ZsalesorderchangeOutHeader esHeader = response.getEsHeader();
-        String resulttype = esHeader.getResulttype();
-        if(resulttype.equals("1")){
+        //ZrfcsdsalesorderchangeResponse response = this.invokeEccModifyOrder(order,"I");
+        //ZsalesorderchangeOutHeader esHeader = response.getEsHeader();
+        //String resulttype = esHeader.getResulttype();
+        //if(resulttype.equals("1")){
             List<OrderLine> orderLines = orderApply.lineJsonToObj(orderApply.getJsonLines());
 
             Map<String,OrderLine> applyLineMap = orderLines.stream().collect(
@@ -216,20 +216,20 @@ public class OrderApproveService {
             order.setUpdateTime(DateUtil.getCurrentTS());
             orderMapper.updateByPrimaryKeySelective(order);
             //修改订单行
-            List<ZsalesorderchangeOutItem> items = response.getEtItems().getItem();
-            items.forEach(sapLine->{
+          //  List<ZsalesorderchangeOutItem> items = response.getEtItems().getItem();
+            //items.forEach(sapLine->{
                 order.getLines().forEach(line->{
                     String rProductId = line.getRProductId();
-                    if(rProductId.equals(sapLine.getProductid())){
+              //      if(rProductId.equals(sapLine.getProductid())){
                         //目前订单行只能修改数量
                         line.setNum(applyLineMap.get(rProductId).getNum());
                         line.setUpdateId(userId);
                         line.setUpdateTime(DateUtil.getCurrentTS());
                         orderLineMapper.updateByPrimaryKeySelective(line);
-                    }
+                  //  }
                 });
-            });
-        }
+            //});
+        //}
     }
 
 
