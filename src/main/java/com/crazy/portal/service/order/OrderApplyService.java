@@ -93,38 +93,67 @@ public class OrderApplyService {
         BusinessUtil.notNull(expectedDeliveryMonth,ErrorCodes.BusinessEnum.ORDER_EMPTY_EXPECTEDDELIVERYMONTH);
 
         String priceDate = DateUtil.getLastDayOfMonth(DateUtil.getYear(expectedDeliveryMonth),DateUtil.getMonth(expectedDeliveryMonth));
-        IsHeader isHeader = this.buildIsHeader(order);
-        isHeader.setPricedate(priceDate);
-        ItItems itItems = new ItItems();
-        itItems.setItem(this.buildItItems(records));
+//        IsHeader isHeader = this.buildIsHeader(order);
+//        isHeader.setPricedate(priceDate);
+//        ItItems itItems = new ItItems();
+//        itItems.setItem(this.buildItItems(records));
+//
+//        Zrfcsdpricesimulate zrfcsdpricesimulate = this.getZrfcsdpricesimulate(isHeader, itItems);
+//        ZrfcsdpricesimulateResponse response = orderApiService.priceSimulate(zrfcsdpricesimulate);
+//        BusinessUtil.notNull(response,ErrorCodes.CommonEnum.SYSTEM_EXCEPTION);
+//
+//        ZpricessimulateHeaderOut esHeader = response.getEsHeader();
+//        List<ZpricessimulateItemOut> items = response.getEtItems().getItem();
 
-        Zrfcsdpricesimulate zrfcsdpricesimulate = this.getZrfcsdpricesimulate(isHeader, itItems);
-        ZrfcsdpricesimulateResponse response = orderApiService.priceSimulate(zrfcsdpricesimulate);
-        BusinessUtil.notNull(response,ErrorCodes.CommonEnum.SYSTEM_EXCEPTION);
+//        for(OrderLineEO orderLineEO : records){
+//            //设置定价
+//            orderLineEO.setPriceDate(priceDate);
+//            //设置价格
+//            if(items.isEmpty()){
+//                orderLineEO.setRPrice(BigDecimal.ZERO);
+//                orderLineEO.setRNetPrice(BigDecimal.ZERO);
+//            }
+//            for(ZpricessimulateItemOut item : items){
+//                if(item.getProductid().equals(orderLineEO.getProductId())){
+//                    BigDecimal price = item.getPrice();
+//                    orderLineEO.setRPrice(price == null ? BigDecimal.ZERO : price);
+//                    BigDecimal netprice = item.getNetprice();
+//                    orderLineEO.setRNetPrice(netprice == null ? BigDecimal.ZERO : netprice);
+//                }
+//            }
+//        }
+//        map.put("lines",records);
+//        map.put("grossValue",esHeader.getGrossvalue());
+//        map.put("netValue",esHeader.getNetvalue());        for(OrderLineEO orderLineEO : records){
+////            //设置定价
+////            orderLineEO.setPriceDate(priceDate);
+////            //设置价格
+////            if(items.isEmpty()){
+////                orderLineEO.setRPrice(BigDecimal.ZERO);
+////                orderLineEO.setRNetPrice(BigDecimal.ZERO);
+////            }
+////            for(ZpricessimulateItemOut item : items){
+////                if(item.getProductid().equals(orderLineEO.getProductId())){
+////                    BigDecimal price = item.getPrice();
+////                    orderLineEO.setRPrice(price == null ? BigDecimal.ZERO : price);
+////                    BigDecimal netprice = item.getNetprice();
+////                    orderLineEO.setRNetPrice(netprice == null ? BigDecimal.ZERO : netprice);
+////                }
+////            }
+////        }
+////        map.put("lines",records);
+////        map.put("grossValue",esHeader.getGrossvalue());
+////        map.put("netValue",esHeader.getNetvalue());
 
-        ZpricessimulateHeaderOut esHeader = response.getEsHeader();
-        List<ZpricessimulateItemOut> items = response.getEtItems().getItem();
+        records.forEach(x->{
+            x.setRPrice(BigDecimal.ZERO);
+            x.setRNetPrice(BigDecimal.ZERO);
+            x.setPriceDate(priceDate);
+        });
 
-        for(OrderLineEO orderLineEO : records){
-            //设置定价
-            orderLineEO.setPriceDate(priceDate);
-            //设置价格
-            if(items.isEmpty()){
-                orderLineEO.setRPrice(BigDecimal.ZERO);
-                orderLineEO.setRNetPrice(BigDecimal.ZERO);
-            }
-            for(ZpricessimulateItemOut item : items){
-                if(item.getProductid().equals(orderLineEO.getProductId())){
-                    BigDecimal price = item.getPrice();
-                    orderLineEO.setRPrice(price == null ? BigDecimal.ZERO : price);
-                    BigDecimal netprice = item.getNetprice();
-                    orderLineEO.setRNetPrice(netprice == null ? BigDecimal.ZERO : netprice);
-                }
-            }
-        }
         map.put("lines",records);
-        map.put("grossValue",esHeader.getGrossvalue());
-        map.put("netValue",esHeader.getNetvalue());
+        map.put("grossValue",BigDecimal.ZERO);
+        map.put("netValue",BigDecimal.ZERO);
         return map;
     }
 
@@ -279,6 +308,7 @@ public class OrderApplyService {
         BusinessUtil.assertFlase(orderIds.size() > 1,ErrorCodes.BusinessEnum.ORDER_LINE_NOT_FOUND);
 
         BeanUtils.copyNotNullFields(order,orderApply);
+        orderApply.setId(null);
         orderApply.setActive(1);
         orderApply.setCreateId(userId);
         orderApply.setCreateTime(DateUtil.getCurrentTS());
@@ -310,6 +340,7 @@ public class OrderApplyService {
         });
 
         BeanUtils.copyNotNullFields(order,orderApply);
+        orderApply.setId(null);
         orderApply.setActive(1);
         orderApply.setCreateId(userId);
         orderApply.setCreateTime(DateUtil.getCurrentTS());

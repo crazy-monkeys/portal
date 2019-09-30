@@ -25,10 +25,12 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.beans.IntrospectionException;
 import java.lang.reflect.InvocationTargetException;
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -129,6 +131,12 @@ public class OrderApproveService {
         //order.setRNetValue(esHeader.getNetvalue());
         //order.setRSapOrderId(esHeader.getSaporderid());
         //order.setPaymentTerms(esHeader.getPaymentterms());
+
+        //TODO 删除
+        order.setRGrossValue(BigDecimal.ZERO);
+        order.setRNetValue(BigDecimal.ZERO);
+        order.setRSapOrderId(UUID.randomUUID().toString());
+
         order.setPriceDate(expectedDeliveryDate);
         orderMapper.insertSelective(order);
 
@@ -144,6 +152,13 @@ public class OrderApproveService {
                    // line.setRItemCategory(etItem.getItemcategory());
                    // line.setRRefItemNo(etItem.getRefitemno());
                    // line.setRRefItemProductId(etItem.getRefitemproductid());
+
+
+                    //TODO 删除
+                     line.setRItemNo(UUID.randomUUID().toString());
+                     line.setRPrice(BigDecimal.ZERO);
+                     line.setRNetPrice(BigDecimal.ZERO);
+
                     line.setExpectedDeliveryDate(expectedDeliveryDate);
                     line.setCreateId(userId);
                     line.setCreateTime(DateUtil.getCurrentTS());
