@@ -93,6 +93,7 @@ public class OrderApproveService {
                     break;
                 case 3:
                     this.cancelOrder(order, userId);
+                    break;
                 case 4:
                     this.modifyDeliveryDate(orderApply, userId);
                     break;
