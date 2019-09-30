@@ -159,7 +159,7 @@ public class OrderApproveService {
                      line.setRItemNo(UUID.randomUUID().toString());
                      line.setRPrice(BigDecimal.ZERO);
                      line.setRNetPrice(BigDecimal.ZERO);
-
+                    line.setRProductId(line.getProductId());
                     line.setExpectedDeliveryDate(expectedDeliveryDate);
                     line.setCreateId(userId);
                     line.setCreateTime(DateUtil.getCurrentTS());
