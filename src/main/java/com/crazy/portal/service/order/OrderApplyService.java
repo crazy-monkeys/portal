@@ -303,7 +303,7 @@ public class OrderApplyService {
             OrderLine orderLine = orderLineMapper.selectByPrimaryKey(x.getItemId());
             BusinessUtil.notNull(orderLine,ErrorCodes.BusinessEnum.ORDER_LINE_NOT_FOUND);
 
-            orderLine.setExpectedDeliveryDate(x.getExpectedDeliveryDate());
+            orderLine.setExpectedDeliveryDate(DateUtil.format(x.getExpectedDeliveryDate(),DateUtil.SHORT_FORMAT));
             orderLine.setUpdateId(userId);
             orderLine.setUpdateTime(DateUtil.getCurrentTS());
             lines.add(orderLine);

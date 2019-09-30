@@ -4,6 +4,7 @@ import lombok.Data;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.util.Date;
 
 @Data
 public class DeliveryChangeVO {
@@ -13,5 +14,5 @@ public class DeliveryChangeVO {
     private Integer itemId;
     /** 期望交货日期**/
     @NotEmpty(message = "期望交货日期不能为空")
-    private String expectedDeliveryDate;
+    private Date expectedDeliveryDate;
 }
