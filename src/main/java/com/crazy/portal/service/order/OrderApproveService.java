@@ -215,9 +215,10 @@ public class OrderApproveService {
         //ZsalesorderchangeOutHeader esHeader = response.getEsHeader();
         //String resulttype = esHeader.getResulttype();
         //if(resulttype.equals("1")){
-            List<OrderLine> orderLines = orderApply.lineJsonToObj(orderApply.getJsonLines());
+            List<OrderLine> orderLines = orderLineMapper.selectByOrderId(order.getId());
+            List<OrderLine> applyLines = orderApply.lineJsonToObj(orderApply.getJsonLines());
 
-            Map<String,OrderLine> applyLineMap = orderLines.stream().collect(
+            Map<String,OrderLine> applyLineMap = applyLines.stream().collect(
                     Collectors.toMap(OrderLine::getProductId, Function.identity()));
 
             //修改订单头
@@ -234,7 +235,7 @@ public class OrderApproveService {
             //修改订单行
           //  List<ZsalesorderchangeOutItem> items = response.getEtItems().getItem();
             //items.forEach(sapLine->{
-                order.getLines().forEach(line->{
+                orderLines.forEach(line->{
                     String rProductId = line.getRProductId();
               //      if(rProductId.equals(sapLine.getProductid())){
                         //目前订单行只能修改数量
