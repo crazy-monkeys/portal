@@ -100,7 +100,7 @@ public class RebateService {
      * @param bean
      * @param userId
      */
-    @Transactional(rollbackFor=Exception.class)
+    @Transactional(rollbackFor = Exception.class)
     public void confirm(RebateConfirmBean bean, Integer userId) {
         BusinessUtil.notNull(bean.getRebates(), ErrorCodes.BusinessEnum.REBATE_RECORD_NOT_FOUND);
         List<BusinessRebateItem> items = Lists.newArrayList();
@@ -113,7 +113,7 @@ public class RebateService {
             updateRebateMasterInfo(e, userId, info);
             items.add(item);
         }
-//        sendConfirmEmail(items, bean.getExecutor());
+        sendConfirmEmail(items, bean.getExecutor());
     }
 
     private BusinessRebateItem saveRebateItem(RebateConfirmBean bean, RebateConfirmBean.RebateRecord releaseItem, Integer userId, BusinessRebate info, Date noticeDate) {
@@ -162,9 +162,9 @@ public class RebateService {
         Map<String, Object> data = ImmutableMap.of("list", items);
         List<SendMailBean> toMails = Lists.newArrayList();
         //TODO 获取阿米巴队长邮箱
-        String amebaHeaderEmail = "";
+        String amebaHeaderEmail = "947516986@qq.com";
         //TODO 获取CS邮箱
-        String csEmail = "";
+        String csEmail = "947516986@qq.com";
         toMails.add(SendMailBean.builder().email(amebaHeaderEmail).title("Rebate确认函[阿米巴队长]").data(data).templateName(EmailHelper.MAIL_TEMPLATE.REBATE_ITEM_CONFIRM.getTemplateName()).build());
         toMails.add(SendMailBean.builder().email(csEmail).title("Rebate确认函[CS]").data(data).templateName(EmailHelper.MAIL_TEMPLATE.REBATE_MASTER_CONFIRM.getTemplateName()).build());
         CustomerInfo custInfo = customerInfoMapper.selectEmailByCustName(executor);
@@ -252,9 +252,8 @@ public class RebateService {
     /**
      * 文件下载
      * @param id
-     * @param response
      */
-    public String fileDownload(Integer id, HttpServletResponse response){
+    public String fileDownload(Integer id){
         BusinessRebateFile file = businessRebateFileMapper.selectByPrimaryKey(id);
         BusinessUtil.notNull(file, ErrorCodes.BusinessEnum.REBATE_FILE_NOT_FOUND);
         return readerFilePath.concat(File.separator).concat(REBATE_FILE_PATH).concat(File.separator).concat(file.getFileName());

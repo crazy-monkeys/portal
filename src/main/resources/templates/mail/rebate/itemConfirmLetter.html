@@ -10,6 +10,9 @@ body{
   padding:10px;
 }
 table{
+    text-align:center;
+    border-spacing: 0;
+    border-collapse:collapse;
     width:100%;
     border-right:1px solid #CCC;
     border-bottom:1px solid #CCC;
@@ -36,19 +39,8 @@ table td{
         <th>队长</th>
         <th>代表处</th>
         <th>本次执行金额($)</th>
-        <th>剩余执行金额($)</th>
         <th>执行状态</th>
         <th>执行方式</th>
-        <th>代理商</th>
-        <th>订单年月</th>
-        <th>出货年月</th>
-        <th>平台</th>
-        <th>产品型号</th>
-        <th>数量</th>
-        <th>Sales Price ($)</th>
-        <th>Old Price ($)</th>
-        <th>Actual Price ($)</th>
-        <th>Rebate Amount ($)</th>
         <th>备注</th>
     </tr>
     <tr th:each="item:${list}">
@@ -59,19 +51,8 @@ table td{
         <td th:text="${item.amebaHeader}"></td>
         <td th:text="${item.amebaDepartment}"></td>
         <td th:text="${item.rebateAmount}"></td>
-        <td th:text="${item.surplusRebateAmount}"></td>
         <td th:text="${item.status}"></td>
         <td th:text="${item.executeStyle}"></td>
-        <td th:text="${item.agencyName}"></td>
-        <td th:text="${item.orderMonth}"></td>
-        <td th:text="${item.shipmentYearMonth}"></td>
-        <td th:text="${item.platform}"></td>
-        <td th:text="${item.product}"></td>
-        <td th:text="${item.qty}"></td>
-        <td th:text="${item.salesPrice}"></td>
-        <td th:text="${item.poPrice}"></td>
-        <td th:text="${item.actualPrice}"></td>
-        <td th:text="${item.masterRebateAmount}"></td>
         <td th:text="${item.remark}"></td>
     </tr>
 </table>

@@ -12,7 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 /**
@@ -86,10 +85,9 @@ public class RebateController extends BaseController {
     /**
      * 下载附件
      * @param id
-     * @param response
      */
     @GetMapping("/download/{id}")
-    public BaseResponse download(@PathVariable Integer id, HttpServletResponse response){
-        return successResult(rebateService.fileDownload(id, response));
+    public BaseResponse download(@PathVariable Integer id){
+        return successResult(rebateService.fileDownload(id));
     }
 }
