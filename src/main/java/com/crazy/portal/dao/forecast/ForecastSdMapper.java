@@ -32,4 +32,10 @@ public interface ForecastSdMapper {
                                        @Param(value = "productModel") String productModel);
 
     ForecastSd selectByBiId(@Param(value = "biId") String biId);
+
+    List<ForecastSd> selectByMonth(@Param(value = "operationYearMonth") String operationYearMonth);
+
+    int updateBiInfoByKey(@Param(value = "id") Integer id,
+                          @Param(value = "biId") String biId,
+                          @Param(value = "errorMsg") String errorMsg);
 }

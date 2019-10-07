@@ -467,5 +467,13 @@
     select * from t_forecast_sd a
     where bi_id = #{biId}
   </select>
+
+  <select id="selectByMonth" resultMap="BaseResultMap" >
+    select * from t_forecast_sd a where a.operation_year_month = #{operationYearMonth}
+  </select>
+
+  <select id="updateBiInfoByKey" >
+    update t_forecast_sd set bi_id = #{biId},error_msg = #{errorMsg} where id = #{id}
+  </select>
   
 </mapper>
