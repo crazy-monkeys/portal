@@ -472,8 +472,8 @@
     select * from t_forecast_sd a where a.operation_year_month = #{operationYearMonth}
   </select>
 
-  <select id="updateBiInfoByKey" >
+  <update id="updateBiInfoByKey" >
     update t_forecast_sd set bi_id = #{biId},error_msg = #{errorMsg} where id = #{id}
-  </select>
+  </update>
   
 </mapper>

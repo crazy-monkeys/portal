@@ -619,7 +619,7 @@
     count(1)
     from t_forecast a
     where 1 = 1
-    <foreach collection="userList" item="item" index="index" open=" a.create_user_id in (" separator="," close=")" >
+    <foreach collection="userList" item="item" index="index" open=" and a.create_user_id in (" separator="," close=")" >
       #{item}
     </foreach>
     and a.operation_year_month = #{operationYearMonth}
@@ -628,7 +628,10 @@
   <select id="checkAmbAdjustmentNum" resultType="java.lang.Integer" >
     select count(1) from t_forecast a
     inner join t_forecast_line b on a.id = b.f_id
-    where a.id in (92,93,94)
+    where 1 = 1
+    <foreach collection="ids" item="item" index="" open=" and a.id in (" separator="," close=")" >
+      #{item}
+    </foreach>
     and (b.amb_adjustment_one is null
     or b.amb_adjustment_two is null
     or b.amb_adjustment_three is null

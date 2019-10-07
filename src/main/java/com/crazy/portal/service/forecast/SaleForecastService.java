@@ -11,7 +11,9 @@ import com.crazy.portal.entity.cusotmer.CustomerInfo;
 import com.crazy.portal.entity.forecast.Forecast;
 import com.crazy.portal.entity.forecast.ForecastLine;
 import com.crazy.portal.entity.forecast.ForecastSd;
+import com.crazy.portal.entity.product.ProductInfoDO;
 import com.crazy.portal.service.customer.CustomerInfoService;
+import com.crazy.portal.service.product.ProductService;
 import com.crazy.portal.service.system.UserCustomerMappingService;
 import com.crazy.portal.util.*;
 import com.github.pagehelper.PageInfo;
@@ -49,6 +51,8 @@ public class SaleForecastService {
     private ForecastSdMapper forecastSdMapper;
     @Resource
     private UserCustomerMappingService userCustomerMappingService;
+    @Resource
+    private ProductService productService;
 
     //Portal 本地文件交互地址
     @Value("${file.path.forecast.push}")
@@ -124,8 +128,13 @@ public class SaleForecastService {
             template.setAgencyAbbreviation(agencyAbbreviation);
             //获取代理商上级客户信息
             CustomerOrgBean customerOrgBean = getCustomerOrgInfo(template.getCustomerAbbreviation());
+            ProductInfoDO productInfo = getProductInfo(template.getVmNumber());
             Forecast forecast = new Forecast(userId);
             copyTemplateFields(template, forecast);
+            //设置产品字段
+            forecast.setBu(productInfo.getBu());
+            forecast.setPdt(productInfo.getPdt());
+            forecast.setProductType(productInfo.getType());
             //设置客户字段
             forecast.setCustomerType(customerOrgBean.getCustType());
             forecast.setSalePeople(customerOrgBean.getSales());
@@ -586,12 +595,7 @@ public class SaleForecastService {
                     template.getPlatform(), template.getProductModel());
             if(null == forecastSd){
                 forecastSd = new ForecastSd();
-                forecastSd.setBu(template.getBu());
-                forecastSd.setPdt(template.getPdt());
-                forecastSd.setProductType(template.getProductType());
-                forecastSd.setPlatform(template.getPlatform());
-                forecastSd.setProductModel(template.getProductModel());
-                forecastSd.setVmNumber("");
+                copyObjFields(template, forecastSd);
                 forecastSd.setSdAdjustmentOne(template.getSdBufferOne());
                 forecastSd.setSdAdjustmentTwo(template.getSdBufferTwo());
                 forecastSd.setSdAdjustmentThree(template.getSdBufferThree());
@@ -690,11 +694,14 @@ public class SaleForecastService {
         for(Forecast forecast : operationData){
             BiAgencyInsertTemplate insertTemplate = new BiAgencyInsertTemplate();
             copyDbFields(forecast, insertTemplate);
+            insertTemplate.setId(String.valueOf(forecast.getId()));
             insertData.add(insertTemplate);
         }
         //total
         List<BiTotalInsertTemplate> insertTotalData = new ArrayList<>();
         List<ForecastSd> sdList = forecastSdMapper.selectByMonth(operationData.get(0).getOperationYearMonth());
+        BusinessUtil.notNull(sdList, FORECAST_SD_BUFFER_ADJUSTMENT_NUM_ERROR);
+        BusinessUtil.assertFlase(sdList.isEmpty(), FORECAST_SD_BUFFER_ADJUSTMENT_NUM_ERROR);
         for(ForecastSd forecastSd : sdList) {
             handleTotalDataByInsert(insertTotalData, forecastSd);
         }
@@ -741,6 +748,7 @@ public class SaleForecastService {
         try {
             BiTotalInsertTemplate insertTemplate = new BiTotalInsertTemplate();
             BeanUtils.copyNotNullFields(forecastSd, insertTemplate);
+            insertTemplate.setId(String.valueOf(forecastSd.getId()));
             insertTemplates.add(insertTemplate);
         }catch (Exception ex) {
             log.error("BeanUtils copyNotNullFields exception", ex);
@@ -979,6 +987,15 @@ public class SaleForecastService {
         return String.valueOf(total);
     }
 
+    private void copyObjFields(Object in, Object out) {
+        try {
+            BeanUtils.copyNotNullFields(in, out);
+        }catch (Exception ex) {
+            log.error("BeanUtils copyNotNullFields exception", ex);
+            throw new BusinessException("BeanUtils copyNotNullFields exception");
+        }
+    }
+
     private void copyDbFields(Forecast forecast, Object object) {
         try {
             BeanUtils.copyNotNullFields(forecast, object);
@@ -1042,6 +1059,25 @@ public class SaleForecastService {
         }catch (Exception ex) {
             log.error(FORECAST_CUSTOMER_MATCH_ERROR.getZhMsg(), ex);
             throw new BusinessException(FORECAST_CUSTOMER_MATCH_ERROR);
+        }
+    }
+
+    /**
+     * 根据客户输入的物料号获取系统内的产品信息，同时对数据进行基础校验
+     * @param sapMid
+     * @return
+     */
+    private ProductInfoDO getProductInfo(String sapMid) {
+        try {
+            ProductInfoDO productInfoDO = productService.selectBySapMid(sapMid);
+            BusinessUtil.notNull(productInfoDO, FORECAST_PRODUCT_INFO_GET_ERROR);
+            BusinessUtil.assertEmpty(productInfoDO.getBu(), FORECAST_PRODUCT_INFO_GET_ERROR);
+            BusinessUtil.assertEmpty(productInfoDO.getPdt(), FORECAST_PRODUCT_INFO_GET_ERROR);
+            BusinessUtil.assertEmpty(productInfoDO.getType(), FORECAST_PRODUCT_INFO_GET_ERROR);
+            return productInfoDO;
+        }catch (Exception ex) {
+            log.error(FORECAST_PRODUCT_INFO_GET_ERROR.getZhMsg(), ex);
+            throw new BusinessException(FORECAST_PRODUCT_INFO_GET_ERROR);
         }
     }
 
