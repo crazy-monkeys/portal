@@ -708,11 +708,13 @@ public class SaleForecastService {
         //更新明细数据的处理结果
         List<BiAgencyInsertTemplate> insertResList = ExcelUtils.readExcel(result.getFilePath(), BiAgencyInsertTemplate.class);
         for(BiAgencyInsertTemplate detailData : insertResList){
+            BusinessUtil.assertEmpty(detailData.getId(), FORECAST_BI_CHECK_RESPONSE_ID_NOT_EXISTS);
             forecastMapper.updateBiInfoByKey(Integer.parseInt(detailData.getId()), detailData.getBiId(), detailData.getErrorMsg());
         }
         //更新汇总数据的处理结果
         List<BiTotalInsertTemplate> totalResList = ExcelUtils.readExcel(result.getTotalFilePath(), BiTotalInsertTemplate.class);
         for(BiTotalInsertTemplate totalData : totalResList){
+            BusinessUtil.assertEmpty(totalData.getId(), FORECAST_BI_CHECK_RESPONSE_ID_NOT_EXISTS);
             forecastSdMapper.updateBiInfoByKey(Integer.parseInt(totalData.getId()), totalData.getBiId(), totalData.getErrorMsg());
         }
         if(result.isSuccess()){
@@ -867,16 +869,6 @@ public class SaleForecastService {
         }
     }
 
-    public static void main(String[] args) {
-        String str = "\"OK:a/b/c/detial.xlsx,/a/b/c/total.xlsx\"";
-        System.out.println(str.replace("\"",""));
-        str = str.replace("\"","");
-        String[] array = str.split(":");
-        System.out.println(array[0] + " >>> " + array[1]);
-        String[] fileArray = array[1].split(",");
-        System.out.println(fileArray[0] + " >>> " + fileArray[1]);
-    }
-
     /**
      * 预测数据Insert服务
      * @param insertData
@@ -886,10 +878,14 @@ public class SaleForecastService {
             //detail file
             String detailFile = ExcelUtils.writeExcel(forecastPushPath, insertData, BiAgencyInsertTemplate.class);
             String ftpDetailFilePath = String.format("%s%s", ftpUploadPath, detailFile);
-            ftpClientUtil.put(ftpUploadPath+detailFile, forecastPushPath+detailFile);
             //total file
             String totalFile = ExcelUtils.writeExcel(forecastPushPath, insertTotalData, BiTotalInsertTemplate.class);
             String ftpTotalFilePath = String.format("%s%s", ftpUploadPath, totalFile);
+            //mock bi server
+            if(mockBiServer){
+                return new BiResponse(mockThirdResult(), forecastPushPath+detailFile, forecastPushPath+totalFile);
+            }
+            ftpClientUtil.put(ftpUploadPath+detailFile, forecastPushPath+detailFile);
             ftpClientUtil.put(ftpUploadPath+totalFile, forecastPushPath+totalFile);
             //http get param value
             String param = "sFromUrl=" + ftpDetailFilePath + "&sFromSummaryPath=" + ftpTotalFilePath + "&sToUrl=" + ftpDownloadPath + "&sToSummaryPath=" + ftpDownloadPath;
