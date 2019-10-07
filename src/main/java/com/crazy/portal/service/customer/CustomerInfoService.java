@@ -143,7 +143,6 @@ public class CustomerInfoService {
                 CustomerInfo dealer = customerInfoMapper.selectByPrimaryKey(user.getDealerId());
                 customerQueryBean.setReportDealer(dealer.getInCode());
             }
-
         }
         List<CustomerInfo> customerInfos = customerInfoMapper.selectCustomer(customerQueryBean);
         return new PageInfo<>(customerInfos);
@@ -289,6 +288,7 @@ public class CustomerInfoService {
     @OperationLog
     @Transactional
     public void report(CustomerInfo customerInfo, User user){
+        checkCustomer(customerInfo);
         if(user.getUserType().equals(Enums.USER_TYPE.internal.toString())){
             customerInfo.setBusinessType(Enums.CUSTOMER_BUSINESS_TYPE.account_market.getCode());
         }else{
@@ -312,6 +312,7 @@ public class CustomerInfoService {
     @OperationLog
     @Transactional
     public void updateCustomerInfo(CustomerInfo cust, User user){
+        checkCustomer(cust);
         CustomerInfo customerinfo = customerInfoMapper.selectByPrimaryKey(cust.getId());
         BusinessUtil.assertFlase(null == customerinfo ,ErrorCodes.BusinessEnum.CUSTOMER_IS_EMPYT);
         cust.setId(customerinfo.getId());
@@ -727,6 +728,7 @@ public class CustomerInfoService {
     }
 
     private void saveCustomerInfo(CustomerInfo customerInfo, Integer userId){
+        checkCustomer(customerInfo);
         if(null == customerInfo.getId()){
             customerInfo.setCreateUser(userId);
             customerInfo.setActive(1);
@@ -913,7 +915,7 @@ public class CustomerInfoService {
                     BeanUtils.copyNotNullFields(e , record);
                     String excelVisitDate = BeanUtils.getFieldValueByName("visitDate", e).toString();
                     record.setVisitDate(DateUtil.getFlexibleDate(excelVisitDate));
-                    record.setActive(Constant.DELETE);
+                    record.setActive(Constant.ACTIVE);
                     record.setCreateUserId(userId);
                     record.setCreateTime(DateUtil.getCurrentTS());
                     visitRecordMapper.insertSelective(record);
@@ -1011,11 +1013,18 @@ public class CustomerInfoService {
         return customerInfoMapper.selectCustShip(custId);
     }
 
-    private void checkCustomer(CustomerInfo customerInfo){
-        String telRegex = "[1][345678]\\d{9}";
-        BusinessUtil.assertFlase(customerInfo.getCustMobile().matches(telRegex),ErrorCodes.BusinessEnum.CUSTOMER_MOBILE_IS_INACTIVE);
-        String mailRegex = "\\w+@\\w+(\\.\\w{2,3})*\\.\\w{2,3}";
-        BusinessUtil.assertFlase(customerInfo.getCustEmail().matches(mailRegex),ErrorCodes.BusinessEnum.CUSTOMER_EMAIL_IS_INACTIVE);
-
+    private void checkCustomer(CustomerInfo customerInfo) {
+        if (StringUtil.isNotEmpty(customerInfo.getCustMobile())) {
+            String telRegex = "[1][345678]\\d{9}";
+            BusinessUtil.assertFlase(customerInfo.getCustMobile().matches(telRegex), ErrorCodes.BusinessEnum.CUSTOMER_MOBILE_IS_INACTIVE);
+        }
+        if (StringUtil.isNotEmpty(customerInfo.getCustEmail())) {
+            String mailRegex = "\\w+@\\w+(\\.\\w{2,3})*\\.\\w{2,3}";
+            BusinessUtil.assertFlase(customerInfo.getCustEmail().matches(mailRegex), ErrorCodes.BusinessEnum.CUSTOMER_EMAIL_IS_INACTIVE);
+        }
+        if (StringUtil.isNotEmpty(customerInfo.getCustWeb())) {
+            String webRegex = "^([hH][tT]{2}[pP]://|[hH][tT]{2}[pP][sS]://)(([A-Za-z0-9-~]+).)+([A-Za-z0-9-~\\/])+$";
+            BusinessUtil.assertFlase(customerInfo.getCustWeb().matches(webRegex), ErrorCodes.BusinessEnum.CUSTOMER_EMAIL_IS_INACTIVE);
+        }
     }
 }

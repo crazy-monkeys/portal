@@ -1,5 +1,4 @@
 package com.crazy.portal.controller.forecast;
-
 import com.crazy.portal.annotation.OperationLog;
 import com.crazy.portal.bean.BaseResponse;
 import com.crazy.portal.bean.forecast.ForecastParam;

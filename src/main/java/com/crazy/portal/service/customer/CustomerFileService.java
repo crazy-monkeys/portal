@@ -3,7 +3,10 @@ package com.crazy.portal.service.customer;
 import com.crazy.portal.bean.customer.basic.FileVO;
 import com.crazy.portal.dao.cusotmer.CustomerFileMapper;
 import com.crazy.portal.entity.cusotmer.CustomerFile;
+import com.crazy.portal.util.BusinessUtil;
+import com.crazy.portal.util.ErrorCodes;
 import com.crazy.portal.util.FileUtil;
+import com.crazy.portal.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -46,6 +49,7 @@ public class CustomerFileService {
         customerFiles.forEach(e->{
             if(null == e.getFileId()){
                 FileVO fileVO = FileUtil.upload(e.getFile(), filePath);
+                BusinessUtil.assertFlase(StringUtil.isEmpty(e.getType()), ErrorCodes.BusinessEnum.CUSTOMER_FILE_TYPE_IS_NOT_NULL);
                 e.setType(e.getType());
                 e.setFileName(fileVO.getFileName());
                 e.setFilePath(fileVO.getFullPath());

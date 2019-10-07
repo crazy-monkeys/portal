@@ -2,6 +2,10 @@ package com.crazy.portal.service.customer;
 
 import com.crazy.portal.dao.cusotmer.CustomerContactMapper;
 import com.crazy.portal.entity.cusotmer.CustomerContact;
+import com.crazy.portal.entity.cusotmer.CustomerInfo;
+import com.crazy.portal.util.BusinessUtil;
+import com.crazy.portal.util.ErrorCodes;
+import com.crazy.portal.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
@@ -27,6 +31,7 @@ public class CustomerContactService {
             return;
         }
         customerContacts.forEach(e->{
+            checkContact(e);
             if(null == e.getContactId()){
                 e.setCustId(custId);
                 e.setInsertUser(userId);
@@ -45,6 +50,7 @@ public class CustomerContactService {
                 customerContactMapper.deleteByCustId(custId);
             }else{
                 for(CustomerContact r : results){
+                    checkContact(r);
                     Boolean flg = true;
                     for(CustomerContact c : customerContacts){
                         if(r.getContactId().equals(c.getContactId())){
@@ -65,6 +71,18 @@ public class CustomerContactService {
     }
 
     public void save(CustomerContact record){
+        checkContact(record);
         customerContactMapper.insertSelective(record);
+    }
+
+    private void checkContact(CustomerContact record){
+        if(StringUtil.isNotEmpty(record.getMobile())){
+            String telRegex = "[1][345678]\\d{9}";
+            BusinessUtil.assertFlase(record.getMobile().matches(telRegex), ErrorCodes.BusinessEnum.CUSTOMER_MOBILE_IS_INACTIVE);
+        }
+        if(StringUtil.isNotEmpty(record.getEmail())){
+            String mailRegex = "\\w+@\\w+(\\.\\w{2,3})*\\.\\w{2,3}";
+            BusinessUtil.assertFlase(record.getEmail().matches(mailRegex),ErrorCodes.BusinessEnum.CUSTOMER_EMAIL_IS_INACTIVE);
+        }
     }
 }

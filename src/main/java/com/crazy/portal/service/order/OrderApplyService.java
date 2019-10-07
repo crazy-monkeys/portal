@@ -404,7 +404,7 @@ public class OrderApplyService {
      */
     private IsHeader buildIsHeader(OrderApply orderApply) {
         IsHeader isHeader = new IsHeader();
-        isHeader.setOrdertype(orderApply.getOrderType());
+        isHeader.setOrdertype(orderApply.getUnderOrderType());
         isHeader.setSalesorg(orderApply.getSalesOrg());
 
         CustomerInfo soldToCustomer = this.getCustomerOutCode(orderApply.getSoldTo());

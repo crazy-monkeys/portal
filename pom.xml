@@ -240,7 +240,7 @@
 							<sourceRoot>wsdl2java</sourceRoot>
 							<wsdlOptions>
 								<wsdlOption>
-									<wsdl>wsdl2java/npwsdl/CPI_QueryOrganisationalUnitIn.wsdl</wsdl>
+									<wsdl>wsdl2java/npwsdl/CPI - PORTAL TO ECC - CHANGE DELIVERY.wsdl</wsdl>
 									<extraargs>
 										<!--指定生成目录-->
 										<extraarg>-p</extraarg>
