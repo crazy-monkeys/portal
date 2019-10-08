@@ -68,6 +68,9 @@ public class RebateService {
     public PageInfo<BusinessRebate> list(RebateQueryBean bean){
         PortalUtil.defaultStartPage(bean.getPageIndex(), bean.getPageSize());
         List<BusinessRebate> list = businessRebateMapper.selectByPage(bean);
+        for(BusinessRebate record : list){
+            record.setItemList(businessRebateItemMapper.selectByRebateId(record.getId()));
+        }
         return new PageInfo<>(list);
     }
 
@@ -131,7 +134,7 @@ public class RebateService {
         item.setRebateAmount(releaseItem.getReleaseAmount());
         item.setNoticeDate(noticeDate);
         item.setRemark(bean.getRemark());
-        item.setStatus(Enums.BusinessRebateItemStatus.WAIT_CONFIRM.getCode());
+        item.setStatus(Enums.BusinessRebateStatus.WAIT_CONFIRM.getCode());
         item.setActive(Constant.ACTIVE);
         item.setCreateId(userId);
         item.setCreateTime(DateUtil.getCurrentTS());
@@ -204,13 +207,31 @@ public class RebateService {
     public void updateRebateMasterStatus(Integer userId, Integer rebateId) {
         List<BusinessRebateItem> items = businessRebateItemMapper.selectByRebateId(rebateId);
         BigDecimal total = items.stream()
-                                .filter(e->e.getStatus().equals(Enums.BusinessRebateItemStatus.FINISHED.getCode()))
+                                .filter(e->e.getStatus().equals(Enums.BusinessRebateStatus.FINISHED.getCode()))
                                 .map(BusinessRebateItem::getRebateAmount)
                                 .reduce(BigDecimal.ZERO, BigDecimal::add);
+        boolean isAllFinished = items.stream().allMatch(e->Enums.BusinessRebateStatus.FINISHED.getCode().equals(e.getStatus()));
+        boolean isAnyWaitConfirm = items.stream().anyMatch(e->Enums.BusinessRebateStatus.WAIT_CONFIRM.getCode().equals(e.getStatus()));
+        boolean isAllUsedConfirm = items.stream().allMatch(e->Enums.BusinessRebateStatus.USED_CONFIRM.getCode().equals(e.getStatus()));
         BusinessRebate record = businessRebateMapper.selectByPrimaryKey(rebateId);
         BusinessUtil.notNull(record, ErrorCodes.BusinessEnum.REBATE_RECORD_NOT_FOUND);
-        if(total != null && total.compareTo(record.getRebateAmount()) == 0) {
+        if (total != null && isAllFinished && total.compareTo(record.getRebateAmount()) == 0) {
             record.setStatus(Enums.BusinessRebateStatus.FINISHED.getCode());
+            record.setUpdateId(userId);
+            record.setUpdateTime(DateUtil.getCurrentTS());
+            businessRebateMapper.updateByPrimaryKeySelective(record);
+        } else if (isAllFinished){
+            record.setStatus(Enums.BusinessRebateStatus.IN_APPROVAL.getCode());
+            record.setUpdateId(userId);
+            record.setUpdateTime(DateUtil.getCurrentTS());
+            businessRebateMapper.updateByPrimaryKeySelective(record);
+        } else if (isAnyWaitConfirm){
+            record.setStatus(Enums.BusinessRebateStatus.WAIT_CONFIRM.getCode());
+            record.setUpdateId(userId);
+            record.setUpdateTime(DateUtil.getCurrentTS());
+            businessRebateMapper.updateByPrimaryKeySelective(record);
+        } else if (isAllUsedConfirm){
+            record.setStatus(Enums.BusinessRebateStatus.USED_CONFIRM.getCode());
             record.setUpdateId(userId);
             record.setUpdateTime(DateUtil.getCurrentTS());
             businessRebateMapper.updateByPrimaryKeySelective(record);
@@ -220,17 +241,17 @@ public class RebateService {
     private Integer updateRebateItemStatus(Integer rebateItemId, Integer userId, Integer dealerId, Integer fileId) {
         BusinessRebateItem item = businessRebateItemMapper.selectByPrimaryKey(rebateItemId);
         BusinessUtil.notNull(item, ErrorCodes.BusinessEnum.REBATE_RECORD_NOT_FOUND);
-        BusinessUtil.assertFlase(Enums.BusinessRebateItemStatus.FINISHED.getCode().equals(item.getStatus()), ErrorCodes.BusinessEnum.REBATE_ITEM_FINISHED_EXCEPTION);
-        if(item.getStatus().equals(Enums.BusinessRebateItemStatus.WAIT_CONFIRM.getCode())){
+        BusinessUtil.assertFlase(Enums.BusinessRebateStatus.FINISHED.getCode().equals(item.getStatus()), ErrorCodes.BusinessEnum.REBATE_ITEM_FINISHED_EXCEPTION);
+        if(item.getStatus().equals(Enums.BusinessRebateStatus.WAIT_CONFIRM.getCode())){
             BusinessUtil.notNull(dealerId, ErrorCodes.BusinessEnum.REBATE_ITEM_CONFIRM_FILE_UPLOAD_EXCEPTION);
             item.setDlFileId(fileId);
             item.setDlExecuteDate(DateUtil.getCurrentTS());
-            item.setStatus(Enums.BusinessRebateItemStatus.USED_CONFIRM.getCode());
-        }else if(item.getStatus().equals(Enums.BusinessRebateItemStatus.USED_CONFIRM.getCode())){
+            item.setStatus(Enums.BusinessRebateStatus.USED_CONFIRM.getCode());
+        }else if(item.getStatus().equals(Enums.BusinessRebateStatus.USED_CONFIRM.getCode())){
             BusinessUtil.isNull(dealerId, ErrorCodes.BusinessEnum.REBATE_ITEM_DL_PROHIBIT_UPLOAD_EXCEPTION);
             item.setZrFileId(fileId);
             item.setZrExecuteDate(DateUtil.getCurrentTS());
-            item.setStatus(Enums.BusinessRebateItemStatus.FINISHED.getCode());
+            item.setStatus(Enums.BusinessRebateStatus.FINISHED.getCode());
         }
         item.setUpdateId(userId);
         item.setUpdateTime(DateUtil.getCurrentTS());
@@ -294,7 +315,7 @@ public class RebateService {
                 rebateRecord.setRebateAmount(BigDecimal.ZERO);
                 rebateRecord.setReleaseAmount(BigDecimal.ZERO);
                 rebateRecord.setSurplusRebateAmount(BigDecimal.ZERO);
-                rebateRecord.setStatus(Enums.BusinessRebateStatus.EXECUTE_PROCESS.getCode());
+                rebateRecord.setStatus(Enums.BusinessRebateStatus.IN_APPROVAL.getCode());
                 rebateRecord.setActive(Constant.ACTIVE);
                 rebateRecord.setCreateId(Constant.TASK_DEFAULT_USER_ID);
                 rebateRecord.setCreateTime(currDate);

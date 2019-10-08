@@ -347,20 +347,8 @@
 
   <select id="selectByPage" parameterType="com.crazy.portal.bean.business.rebate.RebateQueryBean" resultMap="BaseResultMap">
     select
-    a.*,
-    b.id as item_id,
-    b.customer_short_name as item_customer_short_name,
-    b.sales_name as item_sales_name,
-    b.ameba_header as item_ameba_header,
-    b.ameba_department as item_ameba_department,
-    b.shipment_company as item_shipment_company,
-    b.rebate_amount as item_rebate_amount,
-    b.executor as item_executor,
-    b.execute_style as item_execute_style,
-    b.remark as item_remark,
-    b.status as item_status
+    a.*
     from t_business_rebate a
-    left join t_business_rebate_item b on b.rebate_id = a.id
     where a.active = 1
     <if test="dealerName != null and dealerName != ''">
       and a.agency_name like concat('%',#{dealerName},'%')

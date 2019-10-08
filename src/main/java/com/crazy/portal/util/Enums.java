@@ -404,36 +404,14 @@ public class Enums {
     }
     /** 保差退 end**/
     /** 客户rebate begin**/
-    public enum BusinessRebateItemStatus{
-
+    public enum BusinessRebateStatus{
         IN_APPROVAL(1, "结算中"),
         WAIT_CONFIRM(2, "客户待确认"),
         USED_CONFIRM(3, "客户已确认"),
-        FINISHED(4, "执行完成");
+        FINISHED(4, "执行完毕");
 
         private Integer code;
         private String desc;
-
-        BusinessRebateItemStatus(Integer code, String desc){
-            this.code = code;
-            this.desc = desc;
-        }
-        public Integer getCode(){
-            return code;
-        }
-        public String getDesc(){
-            return desc;
-        }
-    }
-
-    public enum BusinessRebateStatus{
-
-        EXECUTE_PROCESS(1, "执行中"),
-        FINISHED(2, "执行完成");
-
-        private Integer code;
-        private String desc;
-
         BusinessRebateStatus(Integer code, String desc){
             this.code = code;
             this.desc = desc;
@@ -445,6 +423,7 @@ public class Enums {
             return desc;
         }
     }
+
     /** 客户rebate end**/
     public enum ProductStatus{
         ACTIVE(1),INACTIVE(0);
