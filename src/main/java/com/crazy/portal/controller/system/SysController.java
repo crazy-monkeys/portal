@@ -1,17 +1,19 @@
 package com.crazy.portal.controller.system;
 
 import com.crazy.portal.bean.BaseResponse;
+import com.crazy.portal.bean.customer.basic.CustFileUploadVO;
+import com.crazy.portal.bean.customer.basic.UploadFileVO;
 import com.crazy.portal.controller.BaseController;
 import com.crazy.portal.dao.system.InternalUserMapper;
 import com.crazy.portal.service.customer.CustomerInfoService;
 import com.crazy.portal.service.group.SalesGroupService;
 import com.crazy.portal.service.system.SysParamService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
 import javax.annotation.Resource;
+import java.io.File;
+import java.util.List;
 
 /**
  * @ClassName: SysCustomerController
@@ -68,5 +70,16 @@ public class SysController extends BaseController {
     @GetMapping(value = "/list")
     public BaseResponse getList(){
         return successResult(salesGroupService.selectSalesGroup());
+    }
+
+    @PostMapping(value = "/customer/file/upload")
+    public BaseResponse customerFileUpload(CustFileUploadVO vo){
+        customerInfoService.uploadCustomerFiles(vo);
+        return successResult();
+    }
+
+    @GetMapping(value = "/customer/file/list/{outCode}")
+    public BaseResponse customerFileUpload(@PathVariable String outCode){
+        return successResult(customerInfoService.selectCustomerFile(outCode));
     }
 }

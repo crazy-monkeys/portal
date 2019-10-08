@@ -10,6 +10,7 @@ import com.crazy.portal.bean.customer.CustomerOrgBean;
 import com.crazy.portal.bean.customer.CustomerQueryBean;
 import com.crazy.portal.bean.customer.CustomerShipBean;
 import com.crazy.portal.bean.customer.approval.ApprovalBean;
+import com.crazy.portal.bean.customer.basic.CustFileUploadVO;
 import com.crazy.portal.bean.customer.basic.DealerCreditVO;
 import com.crazy.portal.bean.customer.visitRecord.CustomerCodeEO;
 import com.crazy.portal.bean.customer.visitRecord.VisitRecordEO;
@@ -1027,4 +1028,26 @@ public class CustomerInfoService {
             BusinessUtil.assertFlase(customerInfo.getCustWeb().matches(webRegex), ErrorCodes.BusinessEnum.CUSTOMER_EMAIL_IS_INACTIVE);
         }
     }
+
+    /**
+     *
+     * 外部客户附件上传
+     * @param vo
+     */
+    public void uploadCustomerFiles(CustFileUploadVO vo){
+        BusinessUtil.assertFlase(StringUtil.isEmpty(vo.getOutCode()),ErrorCodes.BusinessEnum.CUSTOMER_IS_EMPYT);
+        CustomerInfo customerInfo = customerInfoMapper.selectByOutCode(vo.getOutCode());
+        BusinessUtil.assertFlase(null == customerInfo,ErrorCodes.BusinessEnum.CUSTOMER_IS_EMPYT);
+
+        saveFile(vo.getFiles(), customerInfo.getId());
+    }
+
+    public List<CustomerFile> selectCustomerFile(String outCode){
+        BusinessUtil.assertFlase(StringUtil.isEmpty(outCode),ErrorCodes.BusinessEnum.CUSTOMER_IS_EMPYT);
+        CustomerInfo customerInfo = customerInfoMapper.selectByOutCode(outCode);
+        BusinessUtil.assertFlase(null == customerInfo,ErrorCodes.BusinessEnum.CUSTOMER_IS_EMPYT);
+
+        return customerFileService.selectByCustId(customerInfo.getId());
+    }
+
 }

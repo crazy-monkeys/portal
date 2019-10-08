@@ -10,6 +10,6 @@ import org.springframework.web.multipart.MultipartFile;
  */
 @Data
 public class UploadFileVO {
-    private Integer fileType;
+    private String type;
     private MultipartFile file;
 }
