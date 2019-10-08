@@ -3,7 +3,7 @@
 <mapper namespace="com.crazy.portal.dao.handover.DeliverDetailMapper">
   <resultMap id="BaseResultMap" type="com.crazy.portal.entity.handover.DeliverDetail">
     <id column="id" jdbcType="INTEGER" property="id" />
-    <result column="third_id" jdbcType="INTEGER" property="thirdId" />
+    <result column="third_id" jdbcType="VARCHAR" property="thirdId" />
     <result column="customer_external_number" jdbcType="VARCHAR" property="customerExternalNumber" />
     <result column="customer_full_name" jdbcType="VARCHAR" property="customerFullName" />
     <result column="sales" jdbcType="VARCHAR" property="sales" />
@@ -12,7 +12,7 @@
     <result column="category_three" jdbcType="VARCHAR" property="categoryThree" />
     <result column="product_model" jdbcType="VARCHAR" property="productModel" />
     <result column="delivery_date" jdbcType="VARCHAR" property="deliveryDate" />
-    <result column="deliver_number" jdbcType="INTEGER" property="deliverNumber" />
+    <result column="deliver_number" jdbcType="VARCHAR" property="deliverNumber" />
     <result column="sale_price" jdbcType="DECIMAL" property="salePrice" />
     <result column="po_price" jdbcType="DECIMAL" property="poPrice" />
     <result column="margin" jdbcType="DECIMAL" property="margin" />
@@ -59,10 +59,10 @@
       customer_order_number, delivery_type, order_month, 
       delivery_company, remark, record_id
       )
-    values (#{id,jdbcType=INTEGER}, #{thirdId,jdbcType=INTEGER}, #{customerExternalNumber,jdbcType=VARCHAR}, 
+    values (#{id,jdbcType=INTEGER}, #{thirdId,jdbcType=VARCHAR}, #{customerExternalNumber,jdbcType=VARCHAR},
       #{customerFullName,jdbcType=VARCHAR}, #{sales,jdbcType=VARCHAR}, #{categoryOne,jdbcType=VARCHAR}, 
       #{categoryTow,jdbcType=VARCHAR}, #{categoryThree,jdbcType=VARCHAR}, #{productModel,jdbcType=VARCHAR}, 
-      #{deliveryDate,jdbcType=VARCHAR}, #{deliverNumber,jdbcType=INTEGER}, #{salePrice,jdbcType=DECIMAL},
+      #{deliveryDate,jdbcType=VARCHAR}, #{deliverNumber,jdbcType=VARCHAR}, #{salePrice,jdbcType=DECIMAL},
       #{poPrice,jdbcType=DECIMAL}, #{margin,jdbcType=DECIMAL}, #{currency,jdbcType=VARCHAR}, 
       #{customerOrderNumber,jdbcType=VARCHAR}, #{deliveryType,jdbcType=VARCHAR}, #{orderMonth,jdbcType=VARCHAR}, 
       #{deliveryCompany,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, #{recordId,jdbcType=INTEGER}
@@ -146,7 +146,7 @@
         #{id,jdbcType=INTEGER},
       </if>
       <if test="thirdId != null">
-        #{thirdId,jdbcType=INTEGER},
+        #{thirdId,jdbcType=VARCHAR},
       </if>
       <if test="customerExternalNumber != null">
         #{customerExternalNumber,jdbcType=VARCHAR},
@@ -173,7 +173,7 @@
         #{deliveryDate,jdbcType=VARCHAR},
       </if>
       <if test="deliverNumber != null">
-        #{deliverNumber,jdbcType=INTEGER},
+        #{deliverNumber,jdbcType=VARCHAR},
       </if>
       <if test="salePrice != null">
         #{salePrice,jdbcType=DECIMAL},
@@ -217,7 +217,7 @@
     update t_deliver_detail
     <set>
       <if test="thirdId != null">
-        third_id = #{thirdId,jdbcType=INTEGER},
+        third_id = #{thirdId,jdbcType=VARCHAR},
       </if>
       <if test="customerExternalNumber != null">
         customer_external_number = #{customerExternalNumber,jdbcType=VARCHAR},
@@ -244,7 +244,7 @@
         delivery_date = #{deliveryDate,jdbcType=VARCHAR},
       </if>
       <if test="deliverNumber != null">
-        deliver_number = #{deliverNumber,jdbcType=INTEGER},
+        deliver_number = #{deliverNumber,jdbcType=VARCHAR},
       </if>
       <if test="salePrice != null">
         sale_price = #{salePrice,jdbcType=DECIMAL},
@@ -281,7 +281,7 @@
   </update>
   <update id="updateByPrimaryKey" parameterType="com.crazy.portal.entity.handover.DeliverDetail">
     update t_deliver_detail
-    set third_id = #{thirdId,jdbcType=INTEGER},
+    set third_id = #{thirdId,jdbcType=VARCHAR},
       customer_external_number = #{customerExternalNumber,jdbcType=VARCHAR},
       customer_full_name = #{customerFullName,jdbcType=VARCHAR},
       sales = #{sales,jdbcType=VARCHAR},
@@ -290,7 +290,7 @@
       category_three = #{categoryThree,jdbcType=VARCHAR},
       product_model = #{productModel,jdbcType=VARCHAR},
       delivery_date = #{deliveryDate,jdbcType=VARCHAR},
-      deliver_number = #{deliverNumber,jdbcType=INTEGER},
+      deliver_number = #{deliverNumber,jdbcType=VARCHAR},
       sale_price = #{salePrice,jdbcType=DECIMAL},
       po_price = #{poPrice,jdbcType=DECIMAL},
       margin = #{margin,jdbcType=DECIMAL},
@@ -380,7 +380,7 @@
   <select id="selectByIds" resultMap="BaseResultMap" >
     select * from t_deliver_detail
     where 1 = 1
-    <foreach collection="ids" item="item" index="index" open="id in (" separator="," close=")" >
+    <foreach collection="ids" item="item" index="index" open=" and id in (" separator="," close=")" >
       #{item}
     </foreach>
   </select>

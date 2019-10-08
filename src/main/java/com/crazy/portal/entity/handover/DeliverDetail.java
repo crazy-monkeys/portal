@@ -53,7 +53,7 @@ public class DeliverDetail extends BaseRowModel {
 
     /** 数量 */
     @ExcelProperty(index = 8, value = "数量")
-    private Integer deliverNumber;
+    private String deliverNumber;
 
     /** Sale Price */
     @ExcelProperty(index = 9, value = "Sales Price")
@@ -98,7 +98,7 @@ public class DeliverDetail extends BaseRowModel {
     private String errorMsg;
 
     @ExcelProperty(index = 19, value = "ID")
-    private Integer thirdId;
+    private String thirdId;
 
     private Integer recordId;
 

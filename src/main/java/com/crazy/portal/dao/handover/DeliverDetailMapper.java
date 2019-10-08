@@ -42,6 +42,6 @@ public interface DeliverDetailMapper {
 
     List<DeliverDetail> selectByIds(@Param(value = "ids") Integer[] ids);
 
-    DeliverDetail selectByThirdId(@Param(value = "thirdId") Integer thirdId);
+    DeliverDetail selectByThirdId(@Param(value = "thirdId") String thirdId);
 
 }

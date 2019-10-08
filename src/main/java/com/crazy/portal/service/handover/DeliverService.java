@@ -206,31 +206,42 @@ public class DeliverService extends AbstractHandover implements IHandover<Delive
 
     @Override
     public void downloadDataByUpdate(HttpServletResponse response, Integer[] ids) {
+        BusinessUtil.notNull(ids, HANDOVER_INVALID_PARAM);
+        BusinessUtil.assertFlase(ids.length == 0, HANDOVER_INVALID_PARAM);
         List<DeliverDetail> deliverData = deliverDetailMapper.selectByIds(ids);
         ExcelUtils.writeExcel(response, deliverData, DeliverDetail.class);
     }
 
     @Override
     public HandoverUploadVO uploadDataByUpdate(MultipartFile excel, Integer userId) {
+        List<DeliverDetail> deliverDetails = ExcelUtils.readExcel(excel, DeliverDetail.class);
+        //数据包装，生成第三方需要的文件
+        String thirdFileName = ExcelUtils.writeExcel(deliverPushPath, deliverDetails, DeliverDetail.class);
+        List<DeliverDetail> responseData;
         try {
-            List<DeliverDetail> deliverDetails = ExcelUtils.readExcel(excel, DeliverDetail.class);
-            //数据包装，生成第三方需要的文件
-            String thirdFileName = ExcelUtils.writeExcel(deliverPushPath, deliverDetails, DeliverDetail.class);
             //请求了第三方，并拿到了结果
             BiCheckResult checkResult = callBiServerByFtp(UPDATE_SALES_IMPORT_FILE, deliverPushPath , thirdFileName, ftpPullPath);
-            List<DeliverDetail> responseData = ExcelUtils.readExcel(checkResult.getFilePath(), DeliverDetail.class);
-            for(DeliverDetail detail : responseData){
-                DeliverDetail dbRecord = deliverDetailMapper.selectByThirdId(detail.getThirdId());
-                if(null == dbRecord){
-                    continue;
-                }
-                BeanUtils.copyNotNullFields(detail, dbRecord);
-                deliverDetailMapper.updateByPrimaryKeySelective(dbRecord);
+            responseData = ExcelUtils.readExcel(checkResult.getFilePath(), DeliverDetail.class);
+            if(!checkResult.isSuccess()){
+                throw new BusinessException(HANDOVER_UPDATE_ERROR);
             }
-            return null;
         }catch (Exception ex) {
-            throw new BusinessException("对象属性复制异常");
+            throw new BusinessException(HANDOVER_BI_SERVER_EXCEPTION);
         }
+        for(DeliverDetail detail : responseData){
+            DeliverDetail dbRecord = deliverDetailMapper.selectByThirdId(detail.getThirdId());
+            if(null == dbRecord){
+                continue;
+            }
+            try {
+                BeanUtils.copyNotNullFields(detail, dbRecord);
+            }catch (Exception ex) {
+                throw new BusinessException("对象属性复制异常");
+            }
+            deliverDetailMapper.updateByPrimaryKeySelective(dbRecord);
+        }
+        return null;
+
     }
 
     private HandoverUploadVO genThirdResult(BiCheckResult checkResult, List<DeliverDetail> responseData, Integer recordId) {

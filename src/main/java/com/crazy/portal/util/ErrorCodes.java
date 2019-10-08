@@ -150,6 +150,8 @@ public class ErrorCodes {
         HANDOVER_REJECT_REPEAT_ERROR(40011, "数据已驳回，请勿重复操作", ""),
         HANDOVER_REJECT_REMARK_NOT_EMPTY(40012, "请填写驳回原因", ""),
         HANDOVER_DELETE_ERROR(40013, "数据删除失败，请联系管理员", ""),
+        HANDOVER_EXCEL_EMPTY_ERROR(40014, "Excel数据不能为空，请重新上传", ""),
+        HANDOVER_UPDATE_ERROR(40015, "数据修改失败，请联系管理员", ""),
 
         //客户模块
         CUSTOMER_IS_EMPYT(50000, "没有对应的客户信息", ""),
