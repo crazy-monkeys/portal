@@ -146,9 +146,10 @@ public class ErrorCodes {
         HANDOVER_DATA_NOT_EXISTS(40007, "未找到数据记录，请重试", ""),
         HANDOVER_NOT_REJECT(40008, "数据已提交，无法驳回", ""),
         HANDOVER_BI_SERVER_EXCEPTION(40009, "BI服务异常，请联系管理员", ""),
-        HANDOVER_BI_RESPONSE_EXCEPTION(40009, "BI处理结果解析异常，请联系管理员", ""),
-        HANDOVER_REJECT_REPEAT_ERROR(40009, "数据已驳回，请勿重复操作", ""),
-        HANDOVER_REJECT_REMARK_NOT_EMPTY(40010, "请填写驳回原因", ""),
+        HANDOVER_BI_RESPONSE_EXCEPTION(40010, "BI处理结果解析异常，请联系管理员", ""),
+        HANDOVER_REJECT_REPEAT_ERROR(40011, "数据已驳回，请勿重复操作", ""),
+        HANDOVER_REJECT_REMARK_NOT_EMPTY(40012, "请填写驳回原因", ""),
+        HANDOVER_DELETE_ERROR(40013, "数据删除失败，请联系管理员", ""),
 
         //客户模块
         CUSTOMER_IS_EMPYT(50000, "没有对应的客户信息", ""),

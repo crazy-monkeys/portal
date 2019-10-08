@@ -177,10 +177,16 @@ public class DeliverService extends AbstractHandover implements IHandover<Delive
             DeliverDetail detail = deliverDetailMapper.selectByPrimaryKey(id);
             if(null == detail){
                 throw new BusinessException(HANDOVER_DATA_NOT_EXISTS);
-            }else{
-                sb.append(detail.getThirdId());
-                sb.append(",");
             }
+            if(null == detail.getThirdId()){
+                deliverDetailMapper.deleteByPrimaryKey(id);
+                continue;
+            }
+            sb.append(detail.getThirdId());
+            sb.append(",");
+        }
+        if(sb.length() == 0){
+            return;
         }
         String custName = customerInfoService.getDealerByUser(userId).getCustName();
         Map<String, String> param = new HashMap<>();
@@ -190,6 +196,8 @@ public class DeliverService extends AbstractHandover implements IHandover<Delive
             String response = CallApiUtils.callBiPostApi(DELETE_INVENTORY_CASE, "PORTAL/BI/", JSONObject.toJSONString(param));
             if(response.contains("删除成功")){
                 deliverDetailMapper.batchDeleteByIds(ids);
+            }else{
+                throw new BusinessException(HANDOVER_DELETE_ERROR);
             }
         }catch (Exception ex) {
             throw new BusinessException(HANDOVER_BI_SERVER_EXCEPTION);
