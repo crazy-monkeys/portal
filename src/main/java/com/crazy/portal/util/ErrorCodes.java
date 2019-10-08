@@ -132,6 +132,7 @@ public class ErrorCodes {
         ANNOUNCEMENT_FILE_PARAM_EMPTY(30002, "请先上传文件", ""),
         ANNOUNCEMENT_FILE_NOT_FOUND_BY_ID(30003, "未找到公告文件", ""),
         ANNOUNCEMENT_FILE_ERROR_BY_ID(30004, "公告文件数据异常", ""),
+        ANNOUNCEMENT_ROLE_EMPTY(30005, "未选择角色信息，请重新选择", ""),
 
         //交付模块
         //交付模块 - 出货管理 & 收货管理

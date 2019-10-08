@@ -45,4 +45,6 @@ public class Announcement {
 
     private List<AnnouncementFile> fileList;
 
+    private List<Integer> roleList;
+
 }

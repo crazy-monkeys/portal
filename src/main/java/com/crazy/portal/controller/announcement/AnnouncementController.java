@@ -28,9 +28,9 @@ public class AnnouncementController extends BaseController {
      */
     @GetMapping(value = "/list")
     public BaseResponse getPageList(String title, String releaseStartTime, String releaseEndTime,
-                                    Integer pageNum, Integer pageSize, Integer typeId) {
+                                    Integer pageNum, Integer pageSize, Integer typeId, Integer isRole) {
          return super.successResult(announcementService.getPageListByTitleOrTime(title, releaseStartTime, releaseEndTime,
-                 pageNum, pageSize, typeId));
+                 pageNum, pageSize, typeId, getCurrentRole().getId(), isRole));
     }
 
     /**
