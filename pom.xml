@@ -228,7 +228,7 @@
 					</excludes>
 				</configuration>
 			</plugin>
-			<plugin>
+			<!--<plugin>
 				<groupId>org.apache.cxf</groupId>
 				<artifactId>cxf-codegen-plugin</artifactId>
 				<version>${cxf.version}</version>
@@ -242,7 +242,7 @@
 								<wsdlOption>
 									<wsdl>wsdl2java/npwsdl/CPI - PORTAL TO ECC - CHANGE DELIVERY.wsdl</wsdl>
 									<extraargs>
-										<!--指定生成目录-->
+										&lt;!&ndash;指定生成目录&ndash;&gt;
 										<extraarg>-p</extraarg>
 										<extraarg>npcxf</extraarg>
 									</extraargs>
@@ -254,7 +254,7 @@
 						</goals>
 					</execution>
 				</executions>
-			</plugin>
+			</plugin>-->
 		</plugins>
 	</build>
 
