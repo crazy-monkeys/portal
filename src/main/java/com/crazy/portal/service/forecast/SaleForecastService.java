@@ -11,7 +11,9 @@ import com.crazy.portal.entity.cusotmer.CustomerInfo;
 import com.crazy.portal.entity.forecast.Forecast;
 import com.crazy.portal.entity.forecast.ForecastLine;
 import com.crazy.portal.entity.forecast.ForecastSd;
+import com.crazy.portal.entity.product.ProductInfoDO;
 import com.crazy.portal.service.customer.CustomerInfoService;
+import com.crazy.portal.service.product.ProductService;
 import com.crazy.portal.service.system.UserCustomerMappingService;
 import com.crazy.portal.util.*;
 import com.github.pagehelper.PageInfo;
@@ -49,18 +51,22 @@ public class SaleForecastService {
     private ForecastSdMapper forecastSdMapper;
     @Resource
     private UserCustomerMappingService userCustomerMappingService;
+    @Resource
+    private ProductService productService;
 
-
+    //Portal 本地文件交互地址
     @Value("${file.path.forecast.push}")
     private String forecastPushPath;
     @Value("${file.path.forecast.pull}")
     private String forecastPullPath;
 
+    //BI FTP交互地址
     @Value("${ftp.path.forecast.push}")
     private String ftpUploadPath;
     @Value("${ftp.path.forecast.pull}")
     private String ftpDownloadPath;
 
+    //是否模拟BI服务
     @Value("${portal.mock-bi-server}")
     private boolean mockBiServer;
 
@@ -122,8 +128,13 @@ public class SaleForecastService {
             template.setAgencyAbbreviation(agencyAbbreviation);
             //获取代理商上级客户信息
             CustomerOrgBean customerOrgBean = getCustomerOrgInfo(template.getCustomerAbbreviation());
+            ProductInfoDO productInfo = getProductInfo(template.getVmNumber());
             Forecast forecast = new Forecast(userId);
             copyTemplateFields(template, forecast);
+            //设置产品字段
+            forecast.setBu(productInfo.getBu());
+            forecast.setPdt(productInfo.getPdt());
+            forecast.setProductType(productInfo.getType());
             //设置客户字段
             forecast.setCustomerType(customerOrgBean.getCustType());
             forecast.setSalePeople(customerOrgBean.getSales());
@@ -453,73 +464,57 @@ public class SaleForecastService {
      * @param passMsg
      */
     @Transactional
-    public void passApprovalForecastData(Integer[] forecastIds, String passMsg) {
-        //只允许操作单个代理商同一个月的预测数据
-        int cnt = forecastMapper.checkIdenticalMonth(forecastIds);
-        BusinessUtil.assertTrue(cnt == 1, FORECAST_CHECK_IDENTICAL_MONTH_ERROR);
-        //每次必须操作全量数据
-        int dataTotalNum = forecastMapper.countDataNumByMonthAndUser(forecastIds[0]);
+    public void passApprovalForecastData(Integer[] forecastIds, String passMsg, Integer userId) {
+        //校验是否属于同一类型的数据操作（删除/修改/新增）
+        List<Integer> typeList =  forecastMapper.selectOperationTypeByIds(forecastIds);
+        if(null == typeList || typeList.size() != 1){
+            log.error("【预测数据通过】不能同时执行'删除/修改/新增'操作，ID:{}, type:{}", forecastIds, typeList);
+            throw new BusinessException(FORECAST_DATA_TYPE_DISUNITY);
+        }
+        //第一步：判定是否有跨月操作的行为
+        List<String> monthList = forecastMapper.selectMonthByIds(forecastIds);
+        if(null == monthList || monthList.size() != 1){
+            log.error("【预测数据通过】同时操作多月份数据异常，ids：{}", forecastIds);
+            throw new BusinessException(FORECAST_CHECK_IDENTICAL_MONTH_ERROR);
+        }
+        List<Forecast> operationData = forecastMapper.selectByIds(forecastIds);
+        Integer type = typeList.get(0);
+        /**
+         * 删除可以执行部分删除
+         */
+        if(type == -1){
+            operationDelete(operationData);
+            return;
+        }
+        /**
+         * 修改可以批量修改
+         */
+        if(type == 2){
+            operationUpdate(operationData, forecastIds, passMsg);
+            return;
+        }
+        //第二步：获取当前用户下的代理商
+        List<Integer> userList;
+        try {
+            userList = userCustomerMappingService.selectUserMapping(userId, Enums.CustomerMappingModel.Forecast.getValue());
+        }catch (Exception ex) {
+            log.error(FORECAST_AGENCY_QUERY_ERROR.getZhMsg(), ex);
+            throw new BusinessException(FORECAST_AGENCY_QUERY_ERROR);
+        }
+        //第三步：判定是否操作的当月全量代理商数据
+        int dataTotalNum = forecastMapper.countDataNumByMonthAndUser(userList, monthList.get(0));
         BusinessUtil.assertTrue(dataTotalNum == forecastIds.length, FORECAST_DATA_TOTAL_CHECK_ERROR);
-        //如果存在阿米巴队长没有调整的数据，则不允许操作
+        //第四步：是否数据都已经被调整过，否则不允许通过
         int ambAdjustmentNum = forecastMapper.checkAmbAdjustmentNum(forecastIds);
         BusinessUtil.assertTrue(ambAdjustmentNum == 0, FORECAST_AMB_ADJUSTMENT_NUM_ERROR);
-        //是否有无法识别的类型操作
-        boolean isReturn = false;
-        try {
-            List<BiAgencyInsertTemplate> insertData = new ArrayList<>();
-            List<BiAgencyUpdateTemplate> updateData = new ArrayList<>();
-            List<String> biIds = new ArrayList<>();
-            for(Integer id : forecastIds){
-                Forecast forecast = forecastMapper.selectRelationByKey(id);
-                //数据已经提交，代理商请求删除
-                if(forecast.getStatus() == 2 && forecast.getAgencyStatusType() == -1){
-                    biIds.add(forecast.getBiId());
-                    continue;
-                }
-                //数据未提交，提交给到BI
-                if(forecast.getStatus() == 1 && forecast.getAgencyStatusType() == 1){
-                    BiAgencyInsertTemplate insertTemplate = new BiAgencyInsertTemplate();
-                    copyDbFields(forecast, insertTemplate);
-                    insertData.add(insertTemplate);
-                    continue;
-                }
-                //数据已提交，代理商请求修改
-                if(forecast.getStatus() == 2 && forecast.getAgencyStatusType() == 2){
-                    BiAgencyUpdateTemplate updateTemplate = new BiAgencyUpdateTemplate();
-                    copyDbFields(forecast, updateTemplate);
-                    updateData.add(updateTemplate);
-                    continue;
-                }
-                isReturn = true;
-                return;
-            }
-            if(insertData.size() == forecastIds.length){
-                if(log.isDebugEnabled()){
-                    log.debug("【新增】批量通过代理商预测数据，数据信息：{}", JSONObject.toJSONString(insertData));
-                }
-                requestBiInsertServer(insertData, forecastIds, passMsg);
-                return;
-            }
-            if(updateData.size() == forecastIds.length){
-                if(log.isDebugEnabled()){
-                    log.debug("【修改】批量通过代理商预测数据，数据信息：{}", JSONObject.toJSONString(insertData));
-                }
-                requestBiUpdateServer(updateData, forecastIds, passMsg);
-                return;
-            }
-            if(biIds.size() == forecastIds.length){
-                if(log.isDebugEnabled()){
-                    log.debug("【删除】批量通过代理商预测数据，数据信息：{}", JSONObject.toJSONString(insertData));
-                }
-                requestBiDeleteServer(biIds);
-                return;
-            }
-            throw new BusinessException(FORECAST_DATA_TYPE_DISUNITY);
-        }finally {
-            if(isReturn){
-                throw new BusinessException(FORECAST_DATA_OPERATION_ERROR);
-            }
+        /**
+         * 新增需要全部一起新增
+         */
+        if(type == 1){
+            operationInsert(operationData, forecastIds, passMsg);
+            return;
         }
+        throw new BusinessException(FORECAST_DATA_TYPE_DISUNITY);
     }
 
     /**
@@ -570,13 +565,27 @@ public class SaleForecastService {
      * @param response
      * @param forecastIds
      */
-    public void downloadDataBySd(HttpServletResponse response, Integer[] forecastIds) {
-        //只允许操作单个代理商同一个月的预测数据
-        int cnt = forecastMapper.checkIdenticalMonth(forecastIds);
-        BusinessUtil.assertTrue(cnt == 1, FORECAST_CHECK_IDENTICAL_MONTH_ERROR);
-        //每次必须操作全量数据
-        int dataTotalNum = forecastMapper.countDataNumByMonthAndUser(forecastIds[0]);
+    public void downloadDataBySd(HttpServletResponse response, Integer[] forecastIds, Integer userId) {
+        //第一步：判定是否有跨月操作的行为
+        List<String> monthList = forecastMapper.selectMonthByIds(forecastIds);
+        if(null == monthList || monthList.size() != 1){
+            log.error("【预测数据通过】同时操作多月份数据异常，ids：{}", forecastIds);
+            throw new BusinessException(FORECAST_CHECK_IDENTICAL_MONTH_ERROR);
+        }
+        //第二步：获取当前用户下的代理商
+        List<Integer> userList;
+        try {
+            userList = userCustomerMappingService.selectUserMapping(userId, Enums.CustomerMappingModel.Forecast.getValue());
+        }catch (Exception ex) {
+            log.error(FORECAST_AGENCY_QUERY_ERROR.getZhMsg(), ex);
+            throw new BusinessException(FORECAST_AGENCY_QUERY_ERROR);
+        }
+        //第三步：判定是否操作的当月全量代理商数据
+        int dataTotalNum = forecastMapper.countDataNumByMonthAndUser(userList, monthList.get(0));
         BusinessUtil.assertTrue(dataTotalNum == forecastIds.length, FORECAST_DATA_TOTAL_CHECK_ERROR);
+        //第四步：是否数据都已经被调整过，否则不允许通过
+        int ambAdjustmentNum = forecastMapper.checkAmbAdjustmentNum(forecastIds);
+        BusinessUtil.assertTrue(ambAdjustmentNum == 0, FORECAST_AMB_ADJUSTMENT_NUM_ERROR);
 
         List<SdUpdateTemplate> templateList = forecastSdMapper.selectTotalByForecastIds(forecastIds);
         for(SdUpdateTemplate template : templateList){
@@ -586,12 +595,7 @@ public class SaleForecastService {
                     template.getPlatform(), template.getProductModel());
             if(null == forecastSd){
                 forecastSd = new ForecastSd();
-                forecastSd.setBu(template.getBu());
-                forecastSd.setPdt(template.getPdt());
-                forecastSd.setProductType(template.getProductType());
-                forecastSd.setPlatform(template.getPlatform());
-                forecastSd.setProductModel(template.getProductModel());
-                forecastSd.setVmNumber("");
+                copyObjFields(template, forecastSd);
                 forecastSd.setSdAdjustmentOne(template.getSdBufferOne());
                 forecastSd.setSdAdjustmentTwo(template.getSdBufferTwo());
                 forecastSd.setSdAdjustmentThree(template.getSdBufferThree());
@@ -600,6 +604,12 @@ public class SaleForecastService {
                 forecastSd.setSdAdjustmentSix(template.getSdBufferSix());
                 forecastSdMapper.insertSelective(forecastSd);
             }else{
+                forecastSd.setSdAdjustmentOne(template.getSdBufferOne());
+                forecastSd.setSdAdjustmentTwo(template.getSdBufferTwo());
+                forecastSd.setSdAdjustmentThree(template.getSdBufferThree());
+                forecastSd.setSdAdjustmentFour(template.getSdBufferFour());
+                forecastSd.setSdAdjustmentFive(template.getSdBufferFive());
+                forecastSd.setSdAdjustmentSix(template.getSdBufferSix());
                 forecastSdMapper.updateByPrimaryKeySelective(forecastSd);
             }
             template.setId(String.valueOf(forecastSd.getId()));
@@ -609,8 +619,8 @@ public class SaleForecastService {
 
     public void uploadDataBySd(MultipartFile excel, Integer userId) {
         List<SdUpdateTemplate> sdList = ExcelUtils.readExcel(excel, SdUpdateTemplate.class);
-        List<BiTotalInsertTemplate> insertTemplates = new ArrayList<>();
-        List<BiTotalUpdateTemplate> updateTemplates = new ArrayList<>();
+/*        List<BiTotalInsertTemplate> insertTemplates = new ArrayList<>();
+        List<BiTotalUpdateTemplate> updateTemplates = new ArrayList<>();*/
         for(SdUpdateTemplate template : sdList){
             ForecastSd forecastSd = forecastSdMapper.selectByPrimaryKey(Integer.parseInt(template.getId()));
             BusinessUtil.notNull(forecastSd, FORECAST_DB_DATA_MISMATCH);
@@ -621,13 +631,13 @@ public class SaleForecastService {
             forecastSd.setSdAdjustmentFive(template.getSdBufferFive());
             forecastSd.setSdAdjustmentSix(template.getSdBufferSix());
             forecastSdMapper.updateByPrimaryKeySelective(forecastSd);
-            if(StringUtils.isEmpty(forecastSd.getBiId())){
+/*            if(StringUtils.isEmpty(forecastSd.getBiId())){
                 handleTotalDataByInsert(insertTemplates, forecastSd);
             }else{
                 handleTotalDataByUpdate(updateTemplates, forecastSd);
-            }
+            }*/
         }
-        //新增操作
+        /*//新增操作
         if(!insertTemplates.isEmpty()){
             String insertFileName = ExcelUtils.writeExcel(forecastPushPath, insertTemplates, BiTotalInsertTemplate.class);
             BiResponse response = callBiServer(INSERT_FORECAST_IMPORT_DATA, forecastPushPath, insertFileName, forecastPullPath);
@@ -659,14 +669,86 @@ public class SaleForecastService {
             }else{
                 throw new BusinessException(FORECAST_SD_DATA_COMMIT_ERROR);
             }
-        }
+        }*/
 
+    }
+
+    private void operationDelete(List<Forecast> operationData) {
+        List<String> biIds = new ArrayList<>();
+        for(Forecast forecast : operationData) {
+            //数据已经提交，代理商请求删除
+            if (forecast.getStatus() == 2 && forecast.getAgencyStatusType() == -1) {
+                biIds.add(forecast.getBiId());
+            }
+        }
+        if(log.isDebugEnabled()){
+            log.debug("【删除】批量通过代理商预测数据，数据信息：{}", JSONObject.toJSONString(operationData));
+        }
+        requestBiDeleteServer(biIds);
+        return;
+    }
+
+    private void operationInsert(List<Forecast> operationData, Integer[] forecastIds, String passMsg) {
+        //detail
+        List<BiAgencyInsertTemplate> insertData = new ArrayList<>();
+        for(Forecast forecast : operationData){
+            BiAgencyInsertTemplate insertTemplate = new BiAgencyInsertTemplate();
+            copyDbFields(forecast, insertTemplate);
+            insertTemplate.setId(String.valueOf(forecast.getId()));
+            insertData.add(insertTemplate);
+        }
+        //total
+        List<BiTotalInsertTemplate> insertTotalData = new ArrayList<>();
+        List<ForecastSd> sdList = forecastSdMapper.selectByMonth(operationData.get(0).getOperationYearMonth());
+        BusinessUtil.notNull(sdList, FORECAST_SD_BUFFER_ADJUSTMENT_NUM_ERROR);
+        BusinessUtil.assertFlase(sdList.isEmpty(), FORECAST_SD_BUFFER_ADJUSTMENT_NUM_ERROR);
+        for(ForecastSd forecastSd : sdList) {
+            handleTotalDataByInsert(insertTotalData, forecastSd);
+        }
+        if(log.isDebugEnabled()){
+            log.debug("【新增】批量通过代理商预测数据，数据信息：{}", JSONObject.toJSONString(insertData));
+        }
+        BiResponse result = requestBiInsertServer(insertTotalData, insertData, forecastIds, passMsg);
+        if(log.isDebugEnabled()){
+            log.debug("【新增】批量通过代理商预测数据，BI处理结果：{}", JSONObject.toJSONString(result));
+        }
+        //更新明细数据的处理结果
+        List<BiAgencyInsertTemplate> insertResList = ExcelUtils.readExcel(result.getFilePath(), BiAgencyInsertTemplate.class);
+        for(BiAgencyInsertTemplate detailData : insertResList){
+            BusinessUtil.assertEmpty(detailData.getId(), FORECAST_BI_CHECK_RESPONSE_ID_NOT_EXISTS);
+            forecastMapper.updateBiInfoByKey(Integer.parseInt(detailData.getId()), detailData.getBiId(), detailData.getErrorMsg());
+        }
+        //更新汇总数据的处理结果
+        List<BiTotalInsertTemplate> totalResList = ExcelUtils.readExcel(result.getTotalFilePath(), BiTotalInsertTemplate.class);
+        for(BiTotalInsertTemplate totalData : totalResList){
+            BusinessUtil.assertEmpty(totalData.getId(), FORECAST_BI_CHECK_RESPONSE_ID_NOT_EXISTS);
+            forecastSdMapper.updateBiInfoByKey(Integer.parseInt(totalData.getId()), totalData.getBiId(), totalData.getErrorMsg());
+        }
+        if(result.isSuccess()){
+            forecastMapper.updateStatusByIds(forecastIds, 2, passMsg);
+        }
+    }
+
+    private void operationUpdate(List<Forecast> operationData, Integer[] forecastIds, String passMsg) {
+        List<BiAgencyUpdateTemplate> updateData = new ArrayList<>();
+        for(Forecast forecast : operationData){
+            if(forecast.getStatus() == 2 && forecast.getAgencyStatusType() == 2){
+                BiAgencyUpdateTemplate updateTemplate = new BiAgencyUpdateTemplate();
+                copyDbFields(forecast, updateTemplate);
+                updateData.add(updateTemplate);
+            }
+        }
+        if(log.isDebugEnabled()){
+            log.debug("【修改】批量通过代理商预测数据，数据信息：{}", JSONObject.toJSONString(updateData));
+        }
+        requestBiUpdateServer(updateData, forecastIds, passMsg);
     }
 
     private void handleTotalDataByInsert(List<BiTotalInsertTemplate> insertTemplates, ForecastSd forecastSd) {
         try {
             BiTotalInsertTemplate insertTemplate = new BiTotalInsertTemplate();
             BeanUtils.copyNotNullFields(forecastSd, insertTemplate);
+            insertTemplate.setId(String.valueOf(forecastSd.getId()));
             insertTemplates.add(insertTemplate);
         }catch (Exception ex) {
             log.error("BeanUtils copyNotNullFields exception", ex);
@@ -726,33 +808,6 @@ public class SaleForecastService {
 
     private String generateBathNo() {
         return UUID.randomUUID().toString().toUpperCase();
-    }
-
-    protected BiResponse callBiServerByFtp(Enums.BI_FUNCTION_CODE functionCode, String filePath, String fileName, String pullPath) {
-        try {
-            log.info("ftp path:======================"+filePath+"/"+pullPath);
-            //推送文件的地址信息
-            String pushServerFile = String.format("%s%s", ftpUploadPath, fileName);
-            String pushLocalFile = String.format("%s%s", filePath, fileName);
-
-            if(log.isDebugEnabled()) {
-                log.debug("[forecast] Portal to BI >> Ftp file path:{} , Local file path:{}", pushServerFile, pushLocalFile);
-            }
-            ftpClientUtil.put(pushServerFile, pushLocalFile);
-            BiResponse result = callBiServer(functionCode, ftpUploadPath, fileName, ftpDownloadPath);
-            log.info("[forecast] BI handle result info >> {}", JSONObject.toJSONString(result));
-            //获取文件的地址信息
-            String biFileName = result.getFilePath().substring(result.getFilePath().lastIndexOf("/") + 1);
-            String pullLocalFile = String.format("%s%s", pullPath, biFileName);
-            if(log.isDebugEnabled()) {
-                log.debug("[forecast] BI to Portal info >> Ftp file path:{} , Local file path:{}", result.getFilePath(), pullLocalFile);
-            }
-            ftpClientUtil.get(result.getFilePath(), pullLocalFile);
-            result.setFilePath(pullLocalFile);
-            return result;
-        }catch (Exception ex) {
-            throw new RuntimeException("Ftp exception or bi server exception", ex);
-        }
     }
 
     private BiResponse mockRequestBiCheckServer(String fileName, String pullPath) {
@@ -826,31 +881,47 @@ public class SaleForecastService {
      * 预测数据Insert服务
      * @param insertData
      */
-    private void requestBiInsertServer(List<BiAgencyInsertTemplate> insertData, Integer[] forecastIds, String passMsg) {
+    private BiResponse requestBiInsertServer(List<BiTotalInsertTemplate> insertTotalData, List<BiAgencyInsertTemplate> insertData, Integer[] forecastIds, String passMsg) {
         try {
-            String insertFileName = ExcelUtils.writeExcel(forecastPushPath, insertData, BiAgencyInsertTemplate.class);
-            String fullPath = String.format("%s%s", ftpUploadPath, insertFileName);
-            String param = "sFromUrl=" + fullPath + "&sToUrl=" + ftpDownloadPath;
+            //detail file
+            String detailFile = ExcelUtils.writeExcel(forecastPushPath, insertData, BiAgencyInsertTemplate.class);
+            String ftpDetailFilePath = String.format("%s%s", ftpUploadPath, detailFile);
+            //total file
+            String totalFile = ExcelUtils.writeExcel(forecastPushPath, insertTotalData, BiTotalInsertTemplate.class);
+            String ftpTotalFilePath = String.format("%s%s", ftpUploadPath, totalFile);
+            //mock bi server
+            if(mockBiServer){
+                return new BiResponse(mockThirdResult(), forecastPushPath+detailFile, forecastPushPath+totalFile);
+            }
+            ftpClientUtil.put(ftpUploadPath+detailFile, forecastPushPath+detailFile);
+            ftpClientUtil.put(ftpUploadPath+totalFile, forecastPushPath+totalFile);
+            //http get param value
+            String param = "sFromUrl=" + ftpDetailFilePath + "&sFromSummaryPath=" + ftpTotalFilePath + "&sToUrl=" + ftpDownloadPath + "&sToSummaryPath=" + ftpDownloadPath;
+
             String response = CallApiUtils.callBiGetApi(INSERT_FORECAST_IMPORT_DATA, "PORTAL/BI/", param);
             //检测返回信息是否空
             if(StringUtils.isEmpty(response)){
                 log.error("{} -> {}", FORECAST_BI_RESPONSE_EXCEPTION.getZhMsg(), response);
                 throw new BusinessException(FORECAST_BI_RESPONSE_EXCEPTION);
             }
-            //解析BI返回的结果信息，去掉多余的字符
-            response = response.replace("\"", "");
-            if(log.isDebugEnabled()){
-                log.debug("[forecast] Bi server response info -> pushPath:[{}], pullPath:[{}], response:[{}]", fullPath, forecastPullPath, response);
-            }
-            //将返回结果信息进行截取，获取到对方的文件名
-            String biFileName = response.split(":")[1];
-            List<BiTotalInsertTemplate> insertResList = ExcelUtils.readExcel(forecastPullPath+biFileName, BiTotalInsertTemplate.class);
-            for(BiTotalInsertTemplate insertTemplate : insertResList){
-                forecastMapper.updateBiInfoByKey(Integer.parseInt(insertTemplate.getId()), insertTemplate.getBiId(), insertTemplate.getErrorMsg());
-            }
+            //去掉返回字符中的引号
+            response = response.replace("\"","");
+            String[] resFileArray = response.split(":")[1].split(",");
+            //BI返回的明细数据文件
+            String biDetailFileName = resFileArray[0].substring(resFileArray[0].lastIndexOf("/") + 1, resFileArray[0].length());
+            ftpClientUtil.get(resFileArray[0], forecastPullPath+biDetailFileName);
+            //BI返回的汇总数据文件
+            String biTotalFileName = resFileArray[0].substring(resFileArray[0].lastIndexOf("/") + 1, resFileArray[0].length());
+            ftpClientUtil.get(resFileArray[1], forecastPullPath+biTotalFileName);
+            //封装结果流转给下一个流程处理
             if(response.contains(SUCCESS_CODE)){
-                forecastMapper.updateStatusByIds(forecastIds, 2, passMsg);
+                return new BiResponse(true, forecastPullPath+biDetailFileName, forecastPullPath+biTotalFileName);
             }
+            if(response.contains(ERROR_CODE)){
+                return new BiResponse(true, forecastPullPath+biDetailFileName, forecastPullPath+biTotalFileName);
+            }
+            log.error(FORECAST_BI_RESPONSE_EXCEPTION.getZhMsg(), response);
+            throw new BusinessException(FORECAST_BI_RESPONSE_EXCEPTION);
         }catch (Exception ex) {
             log.error(FORECAST_BI_SERVER_EXCEPTION.getZhMsg(), ex);
             throw new BusinessException(FORECAST_BI_SERVER_EXCEPTION);
@@ -894,42 +965,6 @@ public class SaleForecastService {
         }
     }
 
-    private BiResponse callBiServer(Enums.BI_FUNCTION_CODE functionCode, String filePath, String fileName, String pullPath) {
-        try {
-            String fullPath = String.format("%s%s", filePath, fileName);
-            String response;
-            if(functionCode == Enums.BI_FUNCTION_CODE.CHECK_FORECAST_IMPORT_DATA){
-                response = mockThirdResult() ? "\"OK:"+fullPath+"\"" :
-                        "\"NG:"+fullPath+"\"";
-            }else{
-
-                response = "";
-            }
-//            String response = CallApiUtils.callBiApi(functionCode, "PORTAL/BI/", fullPath, pullPath);
-            if(StringUtils.isEmpty(response)){
-                log.error("{} -> {}", FORECAST_BI_RESPONSE_EXCEPTION.getZhMsg(), response);
-                throw new BusinessException(FORECAST_BI_RESPONSE_EXCEPTION);
-            }
-            response = response.replace("\"", "");
-            if(log.isDebugEnabled()){
-                log.debug("[forecast] Bi server response info -> pushPath:[{}], pullPath:[{}], response:[{}]", fullPath, pullPath, response);
-            }
-            String BiFileName = response.split(":")[1];
-            if(response.contains(SUCCESS_CODE)){
-                return new BiResponse(true, BiFileName);
-            }
-            if(response.contains(ERROR_CODE)){
-                return new BiResponse(false, BiFileName);
-            }
-            log.error(FORECAST_BI_RESPONSE_EXCEPTION.getZhMsg(), response);
-            throw new BusinessException(FORECAST_BI_RESPONSE_EXCEPTION);
-
-        }catch (Exception ex) {
-            log.error(FORECAST_BI_SERVER_EXCEPTION.getZhMsg(), ex);
-            throw new BusinessException(FORECAST_BI_SERVER_EXCEPTION);
-        }
-    }
-
     private boolean mockThirdResult() {
         String time = String.valueOf(new Date().getTime());
         int len = time.length();
@@ -950,6 +985,15 @@ public class SaleForecastService {
             return null;
         }
         return String.valueOf(total);
+    }
+
+    private void copyObjFields(Object in, Object out) {
+        try {
+            BeanUtils.copyNotNullFields(in, out);
+        }catch (Exception ex) {
+            log.error("BeanUtils copyNotNullFields exception", ex);
+            throw new BusinessException("BeanUtils copyNotNullFields exception");
+        }
     }
 
     private void copyDbFields(Forecast forecast, Object object) {
@@ -1018,12 +1062,33 @@ public class SaleForecastService {
         }
     }
 
+    /**
+     * 根据客户输入的物料号获取系统内的产品信息，同时对数据进行基础校验
+     * @param sapMid
+     * @return
+     */
+    private ProductInfoDO getProductInfo(String sapMid) {
+        try {
+            ProductInfoDO productInfoDO = productService.selectBySapMid(sapMid);
+            BusinessUtil.notNull(productInfoDO, FORECAST_PRODUCT_INFO_GET_ERROR);
+            BusinessUtil.assertEmpty(productInfoDO.getBu(), FORECAST_PRODUCT_INFO_GET_ERROR);
+            BusinessUtil.assertEmpty(productInfoDO.getPdt(), FORECAST_PRODUCT_INFO_GET_ERROR);
+            BusinessUtil.assertEmpty(productInfoDO.getType(), FORECAST_PRODUCT_INFO_GET_ERROR);
+            return productInfoDO;
+        }catch (Exception ex) {
+            log.error(FORECAST_PRODUCT_INFO_GET_ERROR.getZhMsg(), ex);
+            throw new BusinessException(FORECAST_PRODUCT_INFO_GET_ERROR);
+        }
+    }
+
     class BiResponse {
 
         //是否成功处理
         private boolean isSuccess = false;
         //文件地址（完整路径+文件名称）
         private String filePath;
+        //total file path
+        private String totalFilePath;
 
         BiResponse() {
         }
@@ -1031,6 +1096,12 @@ public class SaleForecastService {
         public BiResponse(boolean isSuccess, String filePath) {
             this.isSuccess = isSuccess;
             this.filePath = filePath;
+        }
+
+        public BiResponse(boolean isSuccess, String filePath, String totalFilePath) {
+            this.isSuccess = isSuccess;
+            this.filePath = filePath;
+            this.totalFilePath = totalFilePath;
         }
 
         public boolean isSuccess() {
@@ -1043,6 +1114,14 @@ public class SaleForecastService {
 
         public void setFilePath(String filePath) {
             this.filePath = filePath;
+        }
+
+        public String getTotalFilePath() {
+            return totalFilePath;
+        }
+
+        public void setTotalFilePath(String totalFilePath) {
+            this.totalFilePath = totalFilePath;
         }
     }
 

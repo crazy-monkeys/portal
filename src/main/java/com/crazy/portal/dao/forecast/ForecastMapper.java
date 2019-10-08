@@ -89,9 +89,14 @@ public interface ForecastMapper {
 
     List<String> selectBatchNoByIds(@Param(value = "ids") Integer[] ids);
 
+    List<String> selectMonthByIds(@Param(value = "ids") Integer[] ids);
+
     int checkIdenticalMonth(@Param(value = "ids") Integer[] ids);
 
-    int countDataNumByMonthAndUser(@Param(value = "id") Integer id);
+    int countDataNumByMonthAndUser(@Param(value = "userList") List<Integer> userList,
+                                   @Param(value = "operationYearMonth") String operationYearMonth);
 
     int checkAmbAdjustmentNum(@Param(value = "ids") Integer[] ids);
+
+    List<Integer> selectOperationTypeByIds(@Param(value = "ids") Integer[] ids);
 }

@@ -157,7 +157,7 @@ public class SaleForecastController extends BaseController {
     @OperationLog
     @GetMapping(value = "/forecast/approval/data/pass")
     public BaseResponse passApprovalForecastData(Integer[] forecastIds, String passMsg) {
-        saleForecastService.passApprovalForecastData(forecastIds, passMsg);
+        saleForecastService.passApprovalForecastData(forecastIds, passMsg, getCurrentUser().getId());
         return super.successResult();
     }
 
@@ -205,7 +205,7 @@ public class SaleForecastController extends BaseController {
      */
     @GetMapping(value = "/forecast/sd/data/download")
     public BaseResponse downloadDataBySd(HttpServletResponse response, Integer[] forecastIds) {
-        saleForecastService.downloadDataBySd(response, forecastIds);
+        saleForecastService.downloadDataBySd(response, forecastIds, getCurrentUser().getId());
         return super.successResult();
     }
 

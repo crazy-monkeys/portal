@@ -25,4 +25,5 @@ public interface AnnouncementDOMapper {
                                           @Param(value = "releaseStartTime") String releaseStartTime,
                                           @Param(value = "releaseEndTime") String releaseEndTime,
                                           @Param(value = "typeId") Integer typeId);
+
 }
