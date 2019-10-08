@@ -4,10 +4,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.crazy.portal.bean.customer.basic.FileVO;
 import com.crazy.portal.dao.announcement.AnnouncementDOMapper;
 import com.crazy.portal.dao.announcement.AnnouncementFileMapper;
-import com.crazy.portal.dao.announcement.AnnouncementRoleRelationMapper;
 import com.crazy.portal.entity.announcement.Announcement;
 import com.crazy.portal.entity.announcement.AnnouncementFile;
-import com.crazy.portal.entity.announcement.AnnouncementRoleRelation;
 import com.crazy.portal.util.BusinessUtil;
 import com.crazy.portal.util.DateUtil;
 import com.crazy.portal.util.FileUtil;
@@ -42,8 +40,6 @@ public class AnnouncementService {
     private AnnouncementDOMapper announcementDOMapper;
     @Resource
     private AnnouncementFileMapper announcementFileMapper;
-    @Resource
-    private AnnouncementRoleRelationMapper announcementRoleRelationMapper;
 
     /**
      * 分页获取公告列表
@@ -55,15 +51,9 @@ public class AnnouncementService {
      * @return
      */
     public PageInfo<Announcement> getPageListByTitleOrTime(String title, String releaseStartTime, String releaseEndTime,
-                                                           Integer pageNum, Integer pageSize, Integer typeId, Integer roleId,
-                                                           Integer isRole){
+                                                           Integer pageNum, Integer pageSize, Integer typeId){
         PortalUtil.defaultStartPage(pageNum,pageSize);
-        Page<Announcement> result;
-        if(isRole == 1){
-            result = announcementDOMapper.selectPageDataByRole(title, releaseStartTime, releaseEndTime, typeId, roleId);
-        }else{
-            result = announcementDOMapper.selectPageListData(title, releaseStartTime, releaseEndTime, typeId);
-        }
+        Page<Announcement> result = announcementDOMapper.selectPageListData(title, releaseStartTime, releaseEndTime, typeId);
         return new PageInfo<>(result);
     }
 
@@ -98,20 +88,8 @@ public class AnnouncementService {
         }
         int num = isExists ? saveAnnouncementInfo(reqRecord, userId) : updateAnnouncementInfo(dbRecord, reqRecord, userId);
         editFile(reqRecord.getFileList(), reqRecord.getId());
-        saveRoleInfo(dbRecord.getId(), reqRecord.getRoleList());
         log.info("Announcement information edit completion, num:{}", num);
         return isExists ? reqRecord.getId() : dbRecord.getId();
-    }
-
-    private void saveRoleInfo(Integer id, List<Integer> roleList) {
-        BusinessUtil.notNull(roleList, ANNOUNCEMENT_ROLE_EMPTY);
-        BusinessUtil.assertFlase(roleList.isEmpty(), ANNOUNCEMENT_ROLE_EMPTY);
-        for(Integer roleId : roleList){
-            AnnouncementRoleRelation roleRelation = new AnnouncementRoleRelation();
-            roleRelation.setRoleId(roleId);
-            roleRelation.setAnnouncementId(id);
-            announcementRoleRelationMapper.insertSelective(roleRelation);
-        }
     }
 
     /**

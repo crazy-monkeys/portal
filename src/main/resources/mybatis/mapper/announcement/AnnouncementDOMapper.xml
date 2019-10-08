@@ -214,32 +214,4 @@
     order by t.release_time asc
   </select>
 
-  <select id="selectPageDataByRole" resultMap="ResultMapWithBLOBs" >
-    select t.id,t.title,t.status,p.zh_name,
-    t.create_user_id,a.customer_name as create_user_name,
-    date_format(t.create_time,'%Y-%m-%d %H:%i:%s') create_time_str,
-    date_format(t.release_time,'%Y-%m-%d %H:%i:%s') release_time_str
-    from t_announcement t
-    inner join t_sys_parameter p on t.type_id = p.p_value and p.p_model = 1 and p.p_function = 1
-    inner join t_user a on t.create_user_id = a.id
-    inner join t_announcement_role_relation b on t.id = b.announcement_id
-    where 1 = 1 and t.status = 1 and b.role_id = #{roleId}
-    <if test="title != null and title != ''" >
-      and t.title like concat('%',#{title},'%')
-    </if>
-    <if test="releaseStartTime != null and releaseStartTime != '' and releaseEndTime != null and releaseEndTime != ''" >
-      and t.release_time between #{releaseStartTime} and #{releaseEndTime}
-    </if>
-    <if test="releaseStartTime != null and releaseStartTime != '' and (releaseEndTime == null or releaseEndTime == '')" >
-      and t.release_time >= #{releaseStartTime}
-    </if>
-    <if test="(releaseStartTime == null or releaseStartTime == '') and releaseEndTime != null and releaseEndTime != ''" >
-      <![CDATA[ and t.release_time <= #{releaseEndTime} ]]>
-    </if>
-    <if test="typeId != null" >
-      and t.type_id = #{typeId}
-    </if>
-    order by t.release_time asc
-  </select>
-
 </mapper>
