@@ -1073,7 +1073,7 @@ public class SaleForecastService {
             BusinessUtil.notNull(productInfoDO, FORECAST_PRODUCT_INFO_GET_ERROR);
             BusinessUtil.assertEmpty(productInfoDO.getBu(), FORECAST_PRODUCT_INFO_GET_ERROR);
             BusinessUtil.assertEmpty(productInfoDO.getPdt(), FORECAST_PRODUCT_INFO_GET_ERROR);
-            BusinessUtil.assertEmpty(productInfoDO.getType(), FORECAST_PRODUCT_INFO_GET_ERROR);
+//            BusinessUtil.assertEmpty(productInfoDO.getType(), FORECAST_PRODUCT_INFO_GET_ERROR);
             return productInfoDO;
         }catch (Exception ex) {
             log.error(FORECAST_PRODUCT_INFO_GET_ERROR.getZhMsg(), ex);
