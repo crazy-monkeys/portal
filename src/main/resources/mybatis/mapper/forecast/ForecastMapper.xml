@@ -177,6 +177,12 @@
       <if test="batchNo != null" >
         batch_no,
       </if>
+      <if test="agencyAbbreviation != null" >
+        agency_abbreviation,
+      </if>
+      <if test="operationRemark != null" >
+        operation_remark,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -271,6 +277,12 @@
       </if>
       <if test="batchNo != null" >
         #{batchNo},
+      </if>
+      <if test="agencyAbbreviation != null" >
+        #{agencyAbbreviation},
+      </if>
+      <if test="operationRemark != null" >
+        #{operationRemark},
       </if>
     </trim>
   </insert>
