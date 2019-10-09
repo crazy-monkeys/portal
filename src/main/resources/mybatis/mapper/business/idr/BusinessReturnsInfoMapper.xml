@@ -4,19 +4,30 @@
   <resultMap id="BaseResultMap" type="com.crazy.portal.entity.business.idr.BusinessReturnsInfo">
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="idr_info_id" jdbcType="INTEGER" property="idrInfoId" />
-    <result column="replacement_date" jdbcType="VARCHAR" property="replacementDate" />
-    <result column="amount" jdbcType="DECIMAL" property="amount" />
-    <result column="price" jdbcType="DECIMAL" property="price" />
-    <result column="currency" jdbcType="VARCHAR" property="currency" />
-    <result column="num" jdbcType="INTEGER" property="num" />
-    <result column="product_model" jdbcType="VARCHAR" property="productModel" />
-    <result column="platform" jdbcType="VARCHAR" property="platform" />
-    <result column="pdt" jdbcType="VARCHAR" property="pdt" />
-    <result column="bu" jdbcType="VARCHAR" property="bu" />
-    <result column="product_line" jdbcType="VARCHAR" property="productLine" />
+    <result column="shipment_company" jdbcType="VARCHAR" property="shipmentCompany" />
+    <result column="agency_name" jdbcType="VARCHAR" property="agencyName" />
     <result column="take_goods_date" jdbcType="VARCHAR" property="takeGoodsDate" />
-    <result column="order_number" jdbcType="VARCHAR" property="orderNumber" />
-    <result column="type" jdbcType="VARCHAR" property="type" />
+    <result column="return_product_line" jdbcType="VARCHAR" property="returnProductLine" />
+    <result column="return_bu" jdbcType="VARCHAR" property="returnBu" />
+    <result column="return_pdt" jdbcType="VARCHAR" property="returnPdt" />
+    <result column="return_platform" jdbcType="VARCHAR" property="returnPlatform" />
+    <result column="return_product_model" jdbcType="VARCHAR" property="returnProductModel" />
+    <result column="return_num" jdbcType="INTEGER" property="returnNum" />
+    <result column="return_currency" jdbcType="VARCHAR" property="returnCurrency" />
+    <result column="return_price" jdbcType="DECIMAL" property="returnPrice" />
+    <result column="return_customer_attribute" jdbcType="VARCHAR" property="returnCustomerAttribute" />
+    <result column="return_agency_rate" jdbcType="VARCHAR" property="returnAgencyRate" />
+    <result column="return_amount" jdbcType="DECIMAL" property="returnAmount" />
+    <result column="exchange_product_line" jdbcType="VARCHAR" property="exchangeProductLine" />
+    <result column="exchange_bu" jdbcType="VARCHAR" property="exchangeBu" />
+    <result column="exchange_pdt" jdbcType="VARCHAR" property="exchangePdt" />
+    <result column="exchange_platform" jdbcType="VARCHAR" property="exchangePlatform" />
+    <result column="exchange_product_model" jdbcType="VARCHAR" property="exchangeProductModel" />
+    <result column="exchange_num" jdbcType="INTEGER" property="exchangeNum" />
+    <result column="exchange_currency" jdbcType="VARCHAR" property="exchangeCurrency" />
+    <result column="exchange_price" jdbcType="DECIMAL" property="exchangePrice" />
+    <result column="exchange_amount" jdbcType="DECIMAL" property="exchangeAmount" />
+    <result column="exchange_date" jdbcType="VARCHAR" property="exchangeDate" />
     <result column="remark" jdbcType="VARCHAR" property="remark" />
     <result column="create_id" jdbcType="INTEGER" property="createId" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
@@ -24,9 +35,12 @@
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, idr_info_id, replacement_date, amount, price, currency, num, product_model, platform, 
-    pdt, bu, product_line, take_goods_date, order_number, type, remark, create_id, create_time, 
-    update_id, update_time
+    id, idr_info_id, shipment_company, agency_name, take_goods_date, return_product_line,
+    return_bu, return_pdt, return_platform, return_product_model, return_num, return_currency,
+    return_price, return_customer_attribute, return_agency_rate, return_amount, exchange_product_line,
+    exchange_bu, exchange_pdt, exchange_platform, exchange_product_model, exchange_num,
+    exchange_currency, exchange_price, exchange_amount, exchange_date, remark, create_id,
+    create_time, update_id, update_time
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -48,44 +62,77 @@
       <if test="idrInfoId != null">
         idr_info_id,
       </if>
-      <if test="replacementDate != null">
-        replacement_date,
+      <if test="shipmentCompany != null">
+        shipment_company,
       </if>
-      <if test="amount != null">
-        amount,
-      </if>
-      <if test="price != null">
-        price,
-      </if>
-      <if test="currency != null">
-        currency,
-      </if>
-      <if test="num != null">
-        num,
-      </if>
-      <if test="productModel != null">
-        product_model,
-      </if>
-      <if test="platform != null">
-        platform,
-      </if>
-      <if test="pdt != null">
-        pdt,
-      </if>
-      <if test="bu != null">
-        bu,
-      </if>
-      <if test="productLine != null">
-        product_line,
+      <if test="agencyName != null">
+        agency_name,
       </if>
       <if test="takeGoodsDate != null">
         take_goods_date,
       </if>
-      <if test="orderNumber != null">
-        order_number,
+      <if test="returnProductLine != null">
+        return_product_line,
       </if>
-      <if test="type != null">
-        type,
+      <if test="returnBu != null">
+        return_bu,
+      </if>
+      <if test="returnPdt != null">
+        return_pdt,
+      </if>
+      <if test="returnPlatform != null">
+        return_platform,
+      </if>
+      <if test="returnProductModel != null">
+        return_product_model,
+      </if>
+      <if test="returnNum != null">
+        return_num,
+      </if>
+      <if test="returnCurrency != null">
+        return_currency,
+      </if>
+      <if test="returnPrice != null">
+        return_price,
+      </if>
+      <if test="returnCustomerAttribute != null">
+        return_customer_attribute,
+      </if>
+      <if test="returnAgencyRate != null">
+        return_agency_rate,
+      </if>
+      <if test="returnAmount != null">
+        return_amount,
+      </if>
+      <if test="exchangeProductLine != null">
+        exchange_product_line,
+      </if>
+      <if test="exchangeBu != null">
+        exchange_bu,
+      </if>
+      <if test="exchangePdt != null">
+        exchange_pdt,
+      </if>
+      <if test="exchangePlatform != null">
+        exchange_platform,
+      </if>
+      <if test="exchangeProductModel != null">
+        exchange_product_model,
+      </if>
+      <if test="exchangeNum != null">
+        exchange_num,
+      </if>
+      <if test="exchangeCurrency != null">
+        exchange_currency,
+      </if>
+      <if test="exchangePrice != null">
+        exchange_price,
+      </if>
+      <if test="exchangeAmount != null">
+        exchange_amount,
+      </if>
+      <if test="exchangeDate != null">
+        exchange_date,
       </if>
       <if test="remark != null">
         remark,
@@ -110,44 +157,77 @@
       <if test="idrInfoId != null">
         #{idrInfoId,jdbcType=INTEGER},
       </if>
-      <if test="replacementDate != null">
-        #{replacementDate,jdbcType=VARCHAR},
+      <if test="shipmentCompany != null">
+        #{shipmentCompany,jdbcType=VARCHAR},
       </if>
-      <if test="amount != null">
-        #{amount,jdbcType=DECIMAL},
-      </if>
-      <if test="price != null">
-        #{price,jdbcType=DECIMAL},
-      </if>
-      <if test="currency != null">
-        #{currency,jdbcType=VARCHAR},
-      </if>
-      <if test="num != null">
-        #{num,jdbcType=INTEGER},
-      </if>
-      <if test="productModel != null">
-        #{productModel,jdbcType=VARCHAR},
-      </if>
-      <if test="platform != null">
-        #{platform,jdbcType=VARCHAR},
-      </if>
-      <if test="pdt != null">
-        #{pdt,jdbcType=VARCHAR},
-      </if>
-      <if test="bu != null">
-        #{bu,jdbcType=VARCHAR},
-      </if>
-      <if test="productLine != null">
-        #{productLine,jdbcType=VARCHAR},
+      <if test="agencyName != null">
+        #{agencyName,jdbcType=VARCHAR},
       </if>
       <if test="takeGoodsDate != null">
         #{takeGoodsDate,jdbcType=VARCHAR},
       </if>
-      <if test="orderNumber != null">
-        #{orderNumber,jdbcType=VARCHAR},
+      <if test="returnProductLine != null">
+        #{returnProductLine,jdbcType=VARCHAR},
       </if>
-      <if test="type != null">
-        #{type,jdbcType=VARCHAR},
+      <if test="returnBu != null">
+        #{returnBu,jdbcType=VARCHAR},
+      </if>
+      <if test="returnPdt != null">
+        #{returnPdt,jdbcType=VARCHAR},
+      </if>
+      <if test="returnPlatform != null">
+        #{returnPlatform,jdbcType=VARCHAR},
+      </if>
+      <if test="returnProductModel != null">
+        #{returnProductModel,jdbcType=VARCHAR},
+      </if>
+      <if test="returnNum != null">
+        #{returnNum,jdbcType=INTEGER},
+      </if>
+      <if test="returnCurrency != null">
+        #{returnCurrency,jdbcType=VARCHAR},
+      </if>
+      <if test="returnPrice != null">
+        #{returnPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="returnCustomerAttribute != null">
+        #{returnCustomerAttribute,jdbcType=VARCHAR},
+      </if>
+      <if test="returnAgencyRate != null">
+        #{returnAgencyRate,jdbcType=VARCHAR},
+      </if>
+      <if test="returnAmount != null">
+        #{returnAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="exchangeProductLine != null">
+        #{exchangeProductLine,jdbcType=VARCHAR},
+      </if>
+      <if test="exchangeBu != null">
+        #{exchangeBu,jdbcType=VARCHAR},
+      </if>
+      <if test="exchangePdt != null">
+        #{exchangePdt,jdbcType=VARCHAR},
+      </if>
+      <if test="exchangePlatform != null">
+        #{exchangePlatform,jdbcType=VARCHAR},
+      </if>
+      <if test="exchangeProductModel != null">
+        #{exchangeProductModel,jdbcType=VARCHAR},
+      </if>
+      <if test="exchangeNum != null">
+        #{exchangeNum,jdbcType=INTEGER},
+      </if>
+      <if test="exchangeCurrency != null">
+        #{exchangeCurrency,jdbcType=VARCHAR},
+      </if>
+      <if test="exchangePrice != null">
+        #{exchangePrice,jdbcType=DECIMAL},
+      </if>
+      <if test="exchangeAmount != null">
+        #{exchangeAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="exchangeDate != null">
+        #{exchangeDate,jdbcType=VARCHAR},
       </if>
       <if test="remark != null">
         #{remark,jdbcType=VARCHAR},
@@ -172,44 +252,77 @@
       <if test="idrInfoId != null">
         idr_info_id = #{idrInfoId,jdbcType=INTEGER},
       </if>
-      <if test="replacementDate != null">
-        replacement_date = #{replacementDate,jdbcType=VARCHAR},
+      <if test="shipmentCompany != null">
+        shipment_company = #{shipmentCompany,jdbcType=VARCHAR},
       </if>
-      <if test="amount != null">
-        amount = #{amount,jdbcType=DECIMAL},
-      </if>
-      <if test="price != null">
-        price = #{price,jdbcType=DECIMAL},
-      </if>
-      <if test="currency != null">
-        currency = #{currency,jdbcType=VARCHAR},
-      </if>
-      <if test="num != null">
-        num = #{num,jdbcType=INTEGER},
-      </if>
-      <if test="productModel != null">
-        product_model = #{productModel,jdbcType=VARCHAR},
-      </if>
-      <if test="platform != null">
-        platform = #{platform,jdbcType=VARCHAR},
-      </if>
-      <if test="pdt != null">
-        pdt = #{pdt,jdbcType=VARCHAR},
-      </if>
-      <if test="bu != null">
-        bu = #{bu,jdbcType=VARCHAR},
-      </if>
-      <if test="productLine != null">
-        product_line = #{productLine,jdbcType=VARCHAR},
+      <if test="agencyName != null">
+        agency_name = #{agencyName,jdbcType=VARCHAR},
       </if>
       <if test="takeGoodsDate != null">
         take_goods_date = #{takeGoodsDate,jdbcType=VARCHAR},
       </if>
-      <if test="orderNumber != null">
-        order_number = #{orderNumber,jdbcType=VARCHAR},
+      <if test="returnProductLine != null">
+        return_product_line = #{returnProductLine,jdbcType=VARCHAR},
       </if>
-      <if test="type != null">
-        type = #{type,jdbcType=VARCHAR},
+      <if test="returnBu != null">
+        return_bu = #{returnBu,jdbcType=VARCHAR},
+      </if>
+      <if test="returnPdt != null">
+        return_pdt = #{returnPdt,jdbcType=VARCHAR},
+      </if>
+      <if test="returnPlatform != null">
+        return_platform = #{returnPlatform,jdbcType=VARCHAR},
+      </if>
+      <if test="returnProductModel != null">
+        return_product_model = #{returnProductModel,jdbcType=VARCHAR},
+      </if>
+      <if test="returnNum != null">
+        return_num = #{returnNum,jdbcType=INTEGER},
+      </if>
+      <if test="returnCurrency != null">
+        return_currency = #{returnCurrency,jdbcType=VARCHAR},
+      </if>
+      <if test="returnPrice != null">
+        return_price = #{returnPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="returnCustomerAttribute != null">
+        return_customer_attribute = #{returnCustomerAttribute,jdbcType=VARCHAR},
+      </if>
+      <if test="returnAgencyRate != null">
+        return_agency_rate = #{returnAgencyRate,jdbcType=VARCHAR},
+      </if>
+      <if test="returnAmount != null">
+        return_amount = #{returnAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="exchangeProductLine != null">
+        exchange_product_line = #{exchangeProductLine,jdbcType=VARCHAR},
+      </if>
+      <if test="exchangeBu != null">
+        exchange_bu = #{exchangeBu,jdbcType=VARCHAR},
+      </if>
+      <if test="exchangePdt != null">
+        exchange_pdt = #{exchangePdt,jdbcType=VARCHAR},
+      </if>
+      <if test="exchangePlatform != null">
+        exchange_platform = #{exchangePlatform,jdbcType=VARCHAR},
+      </if>
+      <if test="exchangeProductModel != null">
+        exchange_product_model = #{exchangeProductModel,jdbcType=VARCHAR},
+      </if>
+      <if test="exchangeNum != null">
+        exchange_num = #{exchangeNum,jdbcType=INTEGER},
+      </if>
+      <if test="exchangeCurrency != null">
+        exchange_currency = #{exchangeCurrency,jdbcType=VARCHAR},
+      </if>
+      <if test="exchangePrice != null">
+        exchange_price = #{exchangePrice,jdbcType=DECIMAL},
+      </if>
+      <if test="exchangeAmount != null">
+        exchange_amount = #{exchangeAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="exchangeDate != null">
+        exchange_date = #{exchangeDate,jdbcType=VARCHAR},
       </if>
       <if test="remark != null">
         remark = #{remark,jdbcType=VARCHAR},

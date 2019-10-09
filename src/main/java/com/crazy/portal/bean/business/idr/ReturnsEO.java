@@ -36,7 +36,7 @@ public class ReturnsEO extends BaseRowModel {
     @ExcelProperty(value = "退货价格", index = 10)
     private BigDecimal returnPrice;
     @ExcelProperty(value = "客户属性", index = 11)
-    private String returnCustomerttribute;
+    private String returnCustomerAttribute;
     @ExcelProperty(value = "代理费率", index = 12)
     private String returnAgencyRate;
     @ExcelProperty(value = "退货金额", index = 13)
@@ -49,13 +49,13 @@ public class ReturnsEO extends BaseRowModel {
     private String exchangeBu;
     @ExcelProperty(value = "换货PDT", index = 16)
     private String exchangePdt;
-    @ExcelProperty(value = "退货平台", index = 17)
+    @ExcelProperty(value = "换货平台", index = 17)
     private String exchangePlatform;
     @ExcelProperty(value = "换货产品型号", index = 18)
     private String exchangeProductModel;
     @ExcelProperty(value = "换货数量", index = 19)
     private Integer exchangeNum;
-    @ExcelProperty(value = "退货币种", index = 20)
+    @ExcelProperty(value = "换货币种", index = 20)
     private String exchangeCurrency;
     @ExcelProperty(value = "换货价格", index = 21)
     private BigDecimal exchangePrice;

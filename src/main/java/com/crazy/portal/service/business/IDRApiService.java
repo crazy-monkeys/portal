@@ -90,10 +90,10 @@ public class IDRApiService {
 
     public Set<String> isReturnOrChange(BusinessIdrInfo bean, Set<String> set){
         bean.getRList().forEach(e->{
-            if(Enums.BusinessIdrReturnType.HH.getDesc().equals(e.getType())){
+            if(e.getExchangeNum() != null && e.getExchangeNum() > 0){
                 set.add(Enums.BusinessIdrApprovalSubmitType.HH.toString());
             }
-            if(Enums.BusinessIdrReturnType.TH.getDesc().equals(e.getType())){
+            if(e.getReturnNum() != null && e.getReturnNum() > 0){
                 set.add(Enums.BusinessIdrApprovalSubmitType.TH.toString());
             }
         });
@@ -104,20 +104,17 @@ public class IDRApiService {
         List<IdrApprovalSubmitBean.ReturnGood> returnGoods = new ArrayList<>();
         if(bean.getType().equals(Enums.BusinessIdrType.RETURNS.getCode())){
             for(BusinessReturnsInfo e : bean.getRList()){
-                if(Enums.BusinessIdrReturnType.TH.getDesc().equals(e.getType())) {
-                    IdrApprovalSubmitBean.ReturnGood returnGood = new IdrApprovalSubmitBean.ReturnGood();
-                    returnGood.setReturnBU(e.getBu());
-                    returnGood.setReturnPDT(e.getPdt());
-                    returnGood.setReturnPlatform(e.getPlatform());
-                    returnGood.setReturnProModel(e.getProductModel());
-                    returnGood.setReturnQuantity(e.getNum());
-                    returnGood.setReturnPrice(e.getPrice() != null ? e.getPrice().floatValue() : null);
-                    //TODO 代理费率，接口获取
-                    returnGood.setAgenceRate(null);
-                    returnGood.setReturnAmount(e.getAmount() != null ? e.getAmount().floatValue() : null);
-                    returnGood.setReturnRemark(e.getRemark());
-                    returnGoods.add(returnGood);
-                }
+                IdrApprovalSubmitBean.ReturnGood returnGood = new IdrApprovalSubmitBean.ReturnGood();
+                returnGood.setReturnBU(e.getReturnBu());
+                returnGood.setReturnPDT(e.getReturnPdt());
+                returnGood.setReturnPlatform(e.getReturnPlatform());
+                returnGood.setReturnProModel(e.getReturnProductModel());
+                returnGood.setReturnQuantity(e.getReturnNum());
+                returnGood.setReturnPrice(e.getReturnPrice() != null ? e.getReturnPrice().floatValue() : null);
+                returnGood.setAgenceRate(Float.valueOf(e.getReturnAgencyRate()));
+                returnGood.setReturnAmount(e.getReturnAmount() != null ? e.getReturnAmount().floatValue() : null);
+                returnGood.setReturnRemark(e.getRemark());
+                returnGoods.add(returnGood);
             }
         }
         return returnGoods;
@@ -127,20 +124,17 @@ public class IDRApiService {
         List<IdrApprovalSubmitBean.ExchangeGood> exchangeGoods = new ArrayList<>();
         if(bean.getType().equals(Enums.BusinessIdrType.RETURNS.getCode())){
             for(BusinessReturnsInfo e : bean.getRList()){
-                if(Enums.BusinessIdrReturnType.HH.getDesc().equals(e.getType())) {
-                    IdrApprovalSubmitBean.ExchangeGood exchangeGood = new IdrApprovalSubmitBean.ExchangeGood();
-                    exchangeGood.setExchangeBU(e.getBu());
-                    exchangeGood.setExchangePDT(e.getPdt());
-                    exchangeGood.setExchangePlatform(e.getPlatform());
-                    exchangeGood.setExchangeProModel(e.getProductModel());
-                    exchangeGood.setExchangeQuantity(e.getNum());
-                    exchangeGood.setExchangePrice(e.getPrice() != null ? e.getPrice().floatValue() : null);
-                    //TODO 代理费率，接口获取
-                    exchangeGood.setAgenceRate(null);
-                    exchangeGood.setExchangeAmount(e.getAmount() != null ? e.getAmount().floatValue() : null);
-                    exchangeGood.setExchangeRemark(e.getRemark());
-                    exchangeGoods.add(exchangeGood);
-                }
+                IdrApprovalSubmitBean.ExchangeGood exchangeGood = new IdrApprovalSubmitBean.ExchangeGood();
+                exchangeGood.setExchangeBU(e.getExchangeBu());
+                exchangeGood.setExchangePDT(e.getExchangePdt());
+                exchangeGood.setExchangePlatform(e.getExchangePlatform());
+                exchangeGood.setExchangeProModel(e.getExchangeProductModel());
+                exchangeGood.setExchangeQuantity(e.getExchangeNum());
+                exchangeGood.setExchangePrice(e.getExchangePrice() != null ? e.getExchangePrice().floatValue() : null);
+                exchangeGood.setAgenceRate(null);
+                exchangeGood.setExchangeAmount(e.getExchangeAmount() != null ? e.getExchangeAmount().floatValue() : null);
+                exchangeGood.setExchangeRemark(e.getRemark());
+                exchangeGoods.add(exchangeGood);
             }
         }
         return exchangeGoods;
