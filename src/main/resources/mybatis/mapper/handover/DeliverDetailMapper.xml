@@ -332,6 +332,7 @@
     select b.* from t_deliver_receive_record a
     inner join t_deliver_detail b on a.id = b.record_id
     where a.dealer_id = #{dealerId}
+    and a.status != 0
     <if test="uploadStartTime != null and uploadStartTime != '' and uploadEndTime != null and uploadEndTime != ''" >
       and a.upload_time between #{uploadStartTime} and #{uploadEndTime}
     </if>
