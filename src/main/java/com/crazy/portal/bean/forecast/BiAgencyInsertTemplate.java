@@ -23,7 +23,7 @@ public class BiAgencyInsertTemplate extends BaseRowModel {
     @ExcelProperty(index = 3, value = "客户简称")
     private String customerAbbreviation;
 
-    @ExcelProperty(index = 4, value = "platform")
+    @ExcelProperty(index = 4, value = "Platform")
     private String platform;
 
     @ExcelProperty(index = 5, value = "产品型号")
