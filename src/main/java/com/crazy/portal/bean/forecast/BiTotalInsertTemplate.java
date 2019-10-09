@@ -53,7 +53,7 @@ public class BiTotalInsertTemplate extends BaseRowModel {
     @ExcelProperty(index = 13, value = "首代备注3")
     private String sdRemarkThree;
 
-    @ExcelProperty(index = 14, value = "首代备注3")
+    @ExcelProperty(index = 14, value = "月份4")
     private String forecastMonthFour;
 
     @ExcelProperty(index = 15, value = "首代调整4")
@@ -71,7 +71,7 @@ public class BiTotalInsertTemplate extends BaseRowModel {
     @ExcelProperty(index = 19, value = "首代备注5")
     private String sdRemarkFive;
 
-    @ExcelProperty(index = 20, value = "首代备注5")
+    @ExcelProperty(index = 20, value = "月份6")
     private String forecastMonthSix;
 
     @ExcelProperty(index = 21, value = "首代调整6")

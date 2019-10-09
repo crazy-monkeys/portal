@@ -27,7 +27,7 @@ public class AgencyTemplate extends BaseRowModel {
     private String forecastType;
 
     @ExcelProperty(index = 5, value = "Platform")
-    private String Platform;
+    private String platform;
 
     @ExcelProperty(index = 6, value = "产品型号")
     private String productModel;

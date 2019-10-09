@@ -834,7 +834,7 @@ public class SaleForecastService {
                 throw new BusinessException(FORECAST_BI_RESPONSE_EXCEPTION);
             }
             //解析BI返回的结果信息，去掉多余的字符
-            response = response.replace("\"", "");
+            response = response.replace("\"", "").replace("\\", "");
             if(log.isDebugEnabled()){
                 log.debug("[forecast] Bi server response info -> pushPath:[{}], pullPath:[{}], response:[{}]", fullPath, pullPath, response);
             }
