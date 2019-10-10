@@ -286,6 +286,9 @@ public class SaleForecastService {
     public void deleteAgencyForecastData(Integer[] forecastIds) {
         for(Integer id : forecastIds){
             Forecast forecast = forecastMapper.selectByPrimaryKey(id);
+            if(forecast.getStatus() == 3){
+                throw new BusinessException(FORECAST_OPERATION_DELETE_REPEAT);
+            }
             BusinessUtil.notNull(forecast, FORECAST_DB_DATA_MISMATCH);
             //数据已驳回，无法删除
             if(forecast.getStatus() == -1){
@@ -299,6 +302,7 @@ public class SaleForecastService {
             //数据已经提交，则需要提交给审批人员进行删除
             if(forecast.getStatus() == 2){
                 forecast.setAgencyStatusType(-1);
+                forecast.setStatus(3);
                 forecastMapper.updateByPrimaryKeySelective(forecast);
                 continue;
             }
@@ -318,6 +322,9 @@ public class SaleForecastService {
             if(null == forecast){
                 log.error("{} , parameter value : {}", FORECAST_DB_DATA_MISMATCH.getZhMsg(), data);
                 throw new BusinessException(FORECAST_DB_DATA_MISMATCH);
+            }
+            if(forecast.getStatus() == 4){
+                throw new BusinessException(FORECAST_OPERATION_UPDATE_REPEAT);
             }
             //数据已驳回，无法修改
             if(forecast.getStatus() == -1){
@@ -346,6 +353,7 @@ public class SaleForecastService {
             }
             //数据已提交，修改需提交审批人再提交BI
             if(forecast.getStatus() == 2){
+                forecast.setStatus(4);
                 forecast.setAgencyStatusType(2);
             }
             forecastLineMapper.updateByPrimaryKeySelective(dbLine);

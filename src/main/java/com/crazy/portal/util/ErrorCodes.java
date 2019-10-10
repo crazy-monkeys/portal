@@ -227,6 +227,8 @@ public class ErrorCodes {
         FORECAST_AGENCY_QUERY_ERROR(80023, "获取当前用户的代理商失败，请联系管理员", ""),
         FORECAST_SD_BUFFER_ADJUSTMENT_NUM_ERROR(80024, "存在首代Buffer未调整数据，请先调整数据", ""),
         FORECAST_PRODUCT_INFO_GET_ERROR(80025, "产品信息获取失败，请联系管理员", ""),
+        FORECAST_OPERATION_DELETE_REPEAT(80026, "删除记录未审批，请勿重复操作", ""),
+        FORECAST_OPERATION_UPDATE_REPEAT(80026, "修改记录未审批，请勿重复操作", ""),
         //订单管理
         ORDER_NOT_FOUND(90001, "订单信息不存在", ""),
         ORDER_LINE_NOT_FOUND(90002, "订单行信息不存在", ""),

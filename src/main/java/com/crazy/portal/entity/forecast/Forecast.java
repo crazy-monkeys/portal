@@ -121,7 +121,7 @@ public class Forecast {
     private String productModel;
 
     /**
-     *
+     * 状态 -1：驳回，1：新增待处理 2：已提交 3：删除待处理 4：修改待处理
      */
     private Integer status;
 
