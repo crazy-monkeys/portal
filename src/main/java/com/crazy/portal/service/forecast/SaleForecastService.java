@@ -738,18 +738,43 @@ public class SaleForecastService {
     }
 
     private void operationUpdate(List<Forecast> operationData, Integer[] forecastIds, String passMsg) {
+        //detail
         List<BiAgencyUpdateTemplate> updateData = new ArrayList<>();
         for(Forecast forecast : operationData){
-            if(forecast.getStatus() == 2 && forecast.getAgencyStatusType() == 2){
+            if(forecast.getStatus() == 4 && forecast.getAgencyStatusType() == 2){
                 BiAgencyUpdateTemplate updateTemplate = new BiAgencyUpdateTemplate();
                 copyDbFields(forecast, updateTemplate);
                 updateData.add(updateTemplate);
             }
         }
+        //total
+        List<BiTotalUpdateTemplate> updateTotalData = new ArrayList<>();
+        List<ForecastSd> sdList = forecastSdMapper.selectByMonth(operationData.get(0).getOperationYearMonth());
+        BusinessUtil.notNull(sdList, FORECAST_SD_BUFFER_ADJUSTMENT_NUM_ERROR);
+        BusinessUtil.assertFlase(sdList.isEmpty(), FORECAST_SD_BUFFER_ADJUSTMENT_NUM_ERROR);
+        for(ForecastSd forecastSd : sdList) {
+            handleTotalDataByUpdate(updateTotalData, forecastSd);
+        }
         if(log.isDebugEnabled()){
             log.debug("【修改】批量通过代理商预测数据，数据信息：{}", JSONObject.toJSONString(updateData));
         }
-        requestBiUpdateServer(updateData, forecastIds, passMsg);
+        BiResponse result = requestBiUpdateServer(updateTotalData, updateData, forecastIds, passMsg);
+        if(log.isDebugEnabled()){
+            log.debug("【修改】批量通过代理商预测数据，BI处理结果：{}", JSONObject.toJSONString(result));
+        }
+        //更新明细数据的处理结果
+        List<BiAgencyUpdateTemplate> updateResList = ExcelUtils.readExcel(result.getFilePath(), BiAgencyUpdateTemplate.class);
+        for(BiAgencyUpdateTemplate detailData : updateResList){
+            forecastMapper.updateBiInfoByBiId(detailData.getBiId(), detailData.getErrorMsg());
+        }
+        //更新汇总数据的处理结果
+        List<BiTotalUpdateTemplate> totalResList = ExcelUtils.readExcel(result.getTotalFilePath(), BiTotalUpdateTemplate.class);
+        for(BiTotalUpdateTemplate totalData : totalResList){
+            forecastSdMapper.updateBiInfoByBiId(totalData.getBiId(), totalData.getErrorMsg());
+        }
+        if(result.isSuccess()){
+            forecastMapper.updateStatusByIds(forecastIds, 2, passMsg);
+        }
     }
 
     private void handleTotalDataByInsert(List<BiTotalInsertTemplate> insertTemplates, ForecastSd forecastSd) {
@@ -919,7 +944,7 @@ public class SaleForecastService {
             String biDetailFileName = resFileArray[0].substring(resFileArray[0].lastIndexOf("/") + 1, resFileArray[0].length());
             ftpClientUtil.get(resFileArray[0], forecastPullPath+biDetailFileName);
             //BI返回的汇总数据文件
-            String biTotalFileName = resFileArray[0].substring(resFileArray[0].lastIndexOf("/") + 1, resFileArray[0].length());
+            String biTotalFileName = resFileArray[1].substring(resFileArray[1].lastIndexOf("/") + 1, resFileArray[1].length());
             ftpClientUtil.get(resFileArray[1], forecastPullPath+biTotalFileName);
             //封装结果流转给下一个流程处理
             if(response.contains(SUCCESS_CODE)){
@@ -940,33 +965,47 @@ public class SaleForecastService {
      * 预测数据Update服务
      * @param updateData
      */
-    private void requestBiUpdateServer(List<BiAgencyUpdateTemplate> updateData, Integer[] forecastIds, String passMsg) {
+    private BiResponse requestBiUpdateServer(List<BiTotalUpdateTemplate> updateTotalData, List<BiAgencyUpdateTemplate> updateData, Integer[] forecastIds, String passMsg) {
         try {
-            String updateFileName = ExcelUtils.writeExcel(forecastPushPath, updateData, BiAgencyUpdateTemplate.class);
-            String fullPath = String.format("%s%s", ftpUploadPath, updateFileName);
-            String param = "sFromUrl=" + fullPath + "&sToUrl=" + ftpDownloadPath;
-            String response = CallApiUtils.callBiGetApi(UPDATE_FORECAST_IMPORT_DAT, "PORTAL/BI/", param);
+            //detail file
+            String detailFile = ExcelUtils.writeExcel(forecastPushPath, updateData, BiAgencyUpdateTemplate.class);
+            String ftpDetailFilePath = String.format("%s%s", ftpUploadPath, detailFile);
+            //total file
+            String totalFile = ExcelUtils.writeExcel(forecastPushPath, updateTotalData, BiTotalUpdateTemplate.class);
+            String ftpTotalFilePath = String.format("%s%s", ftpUploadPath, totalFile);
+            //mock bi server
+            if(mockBiServer){
+                return new BiResponse(mockThirdResult(), forecastPushPath+detailFile, forecastPushPath+totalFile);
+            }
+            ftpClientUtil.put(ftpUploadPath+detailFile, forecastPushPath+detailFile);
+            ftpClientUtil.put(ftpUploadPath+totalFile, forecastPushPath+totalFile);
+            //http get param value
+            String param = "sFromUrl=" + ftpDetailFilePath + "&sFromSummaryPath=" + ftpTotalFilePath + "&sToUrl=" + ftpDownloadPath + "&sToSummaryPath=" + ftpDownloadPath;
+
+            String response = CallApiUtils.callBiGetApi(UPDATE_FORECAST_IMPORT_DATA, "PORTAL/BI/", param);
             //检测返回信息是否空
             if(StringUtils.isEmpty(response)){
                 log.error("{} -> {}", FORECAST_BI_RESPONSE_EXCEPTION.getZhMsg(), response);
                 throw new BusinessException(FORECAST_BI_RESPONSE_EXCEPTION);
             }
-            //解析BI返回的结果信息，去掉多余的字符
-            response = response.replace("\"", "");
-            if(log.isDebugEnabled()){
-                log.debug("[forecast] Bi server response info -> pushPath:[{}], pullPath:[{}], response:[{}]", fullPath, forecastPullPath, response);
-            }
-            //将返回结果信息进行截取，获取到对方的文件名
-            String biFileName = response.split(":")[1];
-            List<BiAgencyUpdateTemplate> updateResList = ExcelUtils.readExcel(forecastPullPath+biFileName, BiAgencyUpdateTemplate.class);
-            for(BiAgencyUpdateTemplate updateTemplate : updateResList){
-                if(StringUtils.isNotEmpty(updateTemplate.getErrorMsg())){
-                    forecastMapper.updateBiInfoByBiId(updateTemplate.getBiId(), updateTemplate.getErrorMsg());
-                }
-            }
+            //去掉返回字符中的引号
+            response = response.replace("\"","");
+            String[] resFileArray = response.split(":")[1].split(",");
+            //BI返回的明细数据文件
+            String biDetailFileName = resFileArray[0].substring(resFileArray[0].lastIndexOf("/") + 1, resFileArray[0].length());
+            ftpClientUtil.get(resFileArray[0], forecastPullPath+biDetailFileName);
+            //BI返回的汇总数据文件
+            String biTotalFileName = resFileArray[1].substring(resFileArray[1].lastIndexOf("/") + 1, resFileArray[1].length());
+            ftpClientUtil.get(resFileArray[1], forecastPullPath+biTotalFileName);
+            //封装结果流转给下一个流程处理
             if(response.contains(SUCCESS_CODE)){
-                forecastMapper.updateStatusByIds(forecastIds, 2, passMsg);
+                return new BiResponse(true, forecastPullPath+biDetailFileName, forecastPullPath+biTotalFileName);
             }
+            if(response.contains(ERROR_CODE)){
+                return new BiResponse(true, forecastPullPath+biDetailFileName, forecastPullPath+biTotalFileName);
+            }
+            log.error(FORECAST_BI_RESPONSE_EXCEPTION.getZhMsg(), response);
+            throw new BusinessException(FORECAST_BI_RESPONSE_EXCEPTION);
         }catch (Exception ex) {
             log.error(FORECAST_BI_SERVER_EXCEPTION.getZhMsg(), ex);
             throw new BusinessException(FORECAST_BI_SERVER_EXCEPTION);

@@ -38,4 +38,7 @@ public interface ForecastSdMapper {
     int updateBiInfoByKey(@Param(value = "id") Integer id,
                           @Param(value = "biId") String biId,
                           @Param(value = "errorMsg") String errorMsg);
+
+    int updateBiInfoByBiId(@Param(value = "biId") String biId,
+                           @Param(value = "errorMsg") String errorMsg);
 }

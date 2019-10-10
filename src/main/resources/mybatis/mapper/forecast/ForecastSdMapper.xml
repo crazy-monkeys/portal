@@ -475,5 +475,9 @@
   <update id="updateBiInfoByKey" >
     update t_forecast_sd set bi_id = #{biId},error_msg = #{errorMsg} where id = #{id}
   </update>
+
+  <update id="updateBiInfoByBiId" >
+    update t_forecast_sd set error_msg = #{errorMsg} where bi_id = #{biId}
+  </update>
   
 </mapper>
