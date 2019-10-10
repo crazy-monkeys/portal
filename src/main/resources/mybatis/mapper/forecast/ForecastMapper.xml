@@ -631,6 +631,7 @@
     count(1)
     from t_forecast a
     where 1 = 1
+    and a.status in (-1,1,2)
     <foreach collection="userList" item="item" index="index" open=" and a.create_user_id in (" separator="," close=")" >
       #{item}
     </foreach>
