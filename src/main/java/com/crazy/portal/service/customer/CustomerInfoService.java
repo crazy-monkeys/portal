@@ -1002,6 +1002,7 @@ public class CustomerInfoService {
      */
     public CustomerOrgBean selectByAbbreviation(String custAbbreviation){
         CustomerInfo customerinfo = customerInfoMapper.selectByCustAbbreviation(custAbbreviation);
+        BusinessUtil.assertFlase(null == customerinfo, ErrorCodes.BusinessEnum.CUSTOMER_IS_EMPYT);
         CustomerOrgBean customerOrgBean = internalUserService.getSalesInfo(customerinfo.getId());
 
         SysParameter sysParameter = sysParamService.selectParam("2","1",customerinfo.getBusinessType());

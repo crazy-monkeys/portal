@@ -16,13 +16,13 @@ public class AgencyRateQueryBean extends BaseRowModel {
     private String customerType;
     @ExcelProperty(value = "内部客户", index = 1)
     private String insideCustomer;
-    @ExcelProperty(value = "产品层次一", index = 2)
+    @ExcelProperty(value = "BU", index = 2)
     private String productLevelOne;
-    @ExcelProperty(value = "产品层次二", index = 3)
+    @ExcelProperty(value = "PDT", index = 3)
     private String productLevelTwo;
-    @ExcelProperty(value = "产品层次三", index = 4)
+    @ExcelProperty(value = "Product Type", index = 4)
     private String productLevelThree;
-    @ExcelProperty(value = "产品类型", index = 5)
+    @ExcelProperty(value = "Platform", index = 5)
     private String productType;
     @ExcelProperty(value = "基准代理费率", index = 6)
     private Float basicAgencyRate;

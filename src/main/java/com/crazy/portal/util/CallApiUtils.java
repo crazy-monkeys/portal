@@ -205,7 +205,6 @@ public class CallApiUtils {
         String url = String.format("%s%s", ECC_API_URL, C4C_CUSTOMER_INFO);
         try {
             String requestXml = JaxbXmlUtil.convertToXml(create).replace("</y4r:CorporateAssets currencyCode=\"CNY\">", "</y4r:CorporateAssets>");
-            ;
             log.info(requestXml);
             String response = HttpClientUtils.post(url, requestXml);
             log.info(response);

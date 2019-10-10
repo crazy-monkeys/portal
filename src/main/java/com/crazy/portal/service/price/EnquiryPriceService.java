@@ -53,7 +53,7 @@ public class EnquiryPriceService {
         BusinessUtil.assertEmpty(bu,ErrorCodes.PriceEnum.PRICE_EMPTY_BU);
 
         String inCustomer = vo.getInCustomer();
-        CatalogPrice catalogPrice = catalogPriceMapper.selectByProductModelAndCustomerName(productModel,bu,inCustomer);
+        CatalogPrice catalogPrice = catalogPriceMapper.selectByProductModelAndCustomerName(bu,productModel,inCustomer);
         BusinessUtil.notNull(catalogPrice,ErrorCodes.PriceEnum.PRICE_CATALOG_PRICE_NOT_EXISTS);
 
         Date now = new Date();
