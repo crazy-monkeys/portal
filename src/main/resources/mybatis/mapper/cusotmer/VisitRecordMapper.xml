@@ -7,6 +7,7 @@
     <result column="visit_date" jdbcType="VARCHAR" property="visitDate" />
     <result column="customer_location" jdbcType="VARCHAR" property="customerLocation" />
     <result column="customer_code" jdbcType="VARCHAR" property="customerCode" />
+    <result column="customer_name" jdbcType="VARCHAR" property="customerName" />
     <result column="visit_number" jdbcType="INTEGER" property="visitNumber" />
     <result column="visit_purpose" jdbcType="VARCHAR" property="visitPurpose" />
     <result column="project_name" jdbcType="VARCHAR" property="projectName" />
@@ -27,7 +28,7 @@
     <result column="c4c_id" jdbcType="VARCHAR" property="c4cId" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, cust_id, visit_date, customer_location, customer_code, visit_number, visit_purpose, 
+    id, cust_id, visit_date, customer_location, customer_code, visit_number, visit_purpose,
     project_name, project_status, project_department, talk_content, follow_plan, claim_description, 
     participants_zr, participants_ct, participants_dl, error_message, active, create_user_id, 
     create_time, update_user_id, update_time
@@ -296,22 +297,23 @@
 
     <select id="selectByPage" parameterType="com.crazy.portal.bean.customer.visitRecord.VisitRecordQueryBean" resultMap="BaseResultMap">
       select
-      <include refid="Base_Column_List" />
-      from t_visit_record
-      where create_user_id = #{userId,jdbcType=INTEGER} and active = 1
+      a.*,b.cust_name as customer_name
+      from t_visit_record a
+      left join t_customer_info b on a.customer_code = b.out_code
+      where a.create_user_id = #{userId,jdbcType=INTEGER} and a.active = 1
       <if test="customerCode != null and customerCode != ''">
-        and customer_code like concat('%', #{customerCode}, '%')
+        and a.customer_code like concat('%', #{customerCode}, '%')
       </if>
       <if test="projectName != null and projectName != ''">
-        and project_name like concat('%', #{projectName}, '%')
+        and a.project_name like concat('%', #{projectName}, '%')
       </if>
       <if test="visitPurpose != null and visitPurpose != ''">
-        and visit_purpose like concat('%', #{visitPurpose}, '%')
+        and a.visit_purpose like concat('%', #{visitPurpose}, '%')
       </if>
       <if test="visitStartDate != null and visitEndDate != null and visitStartDate != '' and visitEndDate != ''">
-        and visit_date BETWEEN  str_to_date(#{visitStartDate}, '%m-%d-%Y %h:%i:%s') and str_to_date(#{visitEndDate}, '%m-%d-%Y %h:%i:%s')
+        and a.visit_date BETWEEN  str_to_date(#{visitStartDate}, '%m-%d-%Y %h:%i:%s') and str_to_date(#{visitEndDate}, '%m-%d-%Y %h:%i:%s')
       </if>
-      order by create_time desc
+      order by a.create_time desc
     </select>
 
     <update id="approve">

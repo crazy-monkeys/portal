@@ -22,52 +22,56 @@ public class VisitRecord {
     private Integer custId;
 
     /**
-     * 
+     * 拜访日期
      */
     private String visitDate;
 
     /**
-     * 
+     * 客户地址
      */
     private String customerLocation;
 
     /**
-     * 
+     * 客户编号
      */
     private String customerCode;
 
     /**
-     * 
+     * 客户名称
+     */
+    private String customerName;
+    /**
+     * 拜访次数
      */
     private Integer visitNumber;
 
     /**
-     * 
+     * 拜访目的
      */
     private String visitPurpose;
 
     /**
-     * 
+     * 项目名
      */
     private String projectName;
 
     /**
-     * 
+     * 项目状态
      */
     private String projectStatus;
 
     /**
-     * 
+     * 项目部门
      */
     private String projectDepartment;
 
     /**
-     * 
+     * 会谈内容
      */
     private String talkContent;
 
     /**
-     * 
+     * 行动计划
      */
     private String followPlan;
 
