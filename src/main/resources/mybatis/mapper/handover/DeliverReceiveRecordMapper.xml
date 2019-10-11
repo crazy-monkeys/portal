@@ -192,7 +192,20 @@
   </select>
 
   <update id="updateStatusById" >
-    update t_deliver_receive_record set status = #{status} where id = #{id}
+    update t_deliver_receive_record set status = #{status}
+    where 1 = 1
+    <foreach collection="ids" item="item" index="index" open=" and id in (" separator="," close=")" >
+      #{item}
+    </foreach>
   </update>
+
+  <select id="selectStatusByIds" resultType="java.lang.Integer" >
+    select t.status from t_deliver_receive_record t
+    where 1 = 1
+    <foreach collection="ids" item="item" index="index" open=" and t.id in (" separator="," close="" >
+      #{item}
+    </foreach>
+    group by t.status
+  </select>
 
 </mapper>

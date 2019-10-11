@@ -234,8 +234,7 @@ public class ReceiveService extends AbstractHandover implements IHandover<Receiv
     }
 
     @Override
-    public HandoverUploadVO uploadDataByUpdate(MultipartFile excel, Integer userId) {
-        return null;
+    public void uploadDataByUpdate(MultipartFile excel, Integer userId) {
     }
 
     private HandoverUploadVO genThirdResult(BiCheckResult checkResult, List<?> responseData, Integer recordId) {

@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.crazy.portal.dao.handover.DeliverDetailUpdateMapper">
+  <resultMap id="BaseResultMap" type="com.crazy.portal.entity.handover.DeliverDetailUpdate">
+    <result column="id" jdbcType="INTEGER" property="id" />
+    <result column="third_id" jdbcType="INTEGER" property="thirdId" />
+    <result column="customer_external_number" jdbcType="VARCHAR" property="customerExternalNumber" />
+    <result column="customer_full_name" jdbcType="VARCHAR" property="customerFullName" />
+    <result column="sales" jdbcType="VARCHAR" property="sales" />
+    <result column="category_one" jdbcType="VARCHAR" property="categoryOne" />
+    <result column="category_tow" jdbcType="VARCHAR" property="categoryTow" />
+    <result column="category_three" jdbcType="VARCHAR" property="categoryThree" />
+    <result column="product_model" jdbcType="VARCHAR" property="productModel" />
+    <result column="delivery_date" jdbcType="VARCHAR" property="deliveryDate" />
+    <result column="deliver_number" jdbcType="VARCHAR" property="deliverNumber" />
+    <result column="sale_price" jdbcType="DECIMAL" property="salePrice" />
+    <result column="po_price" jdbcType="DECIMAL" property="poPrice" />
+    <result column="margin" jdbcType="DECIMAL" property="margin" />
+    <result column="currency" jdbcType="VARCHAR" property="currency" />
+    <result column="customer_order_number" jdbcType="VARCHAR" property="customerOrderNumber" />
+    <result column="delivery_type" jdbcType="VARCHAR" property="deliveryType" />
+    <result column="order_month" jdbcType="VARCHAR" property="orderMonth" />
+    <result column="delivery_company" jdbcType="VARCHAR" property="deliveryCompany" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="record_id" jdbcType="INTEGER" property="recordId" />
+    <result column="error_msg" jdbcType="VARCHAR" property="errorMsg" />
+    <result column="sales_organization" jdbcType="VARCHAR" property="salesOrganization" />
+  </resultMap>
+  <insert id="insert" parameterType="com.crazy.portal.entity.handover.DeliverDetailUpdate">
+    insert into t_deliver_detail_update (id, third_id, customer_external_number, 
+      customer_full_name, sales, category_one, 
+      category_tow, category_three, product_model, 
+      delivery_date, deliver_number, sale_price, 
+      po_price, margin, currency, 
+      customer_order_number, delivery_type, order_month, 
+      delivery_company, remark, record_id, 
+      error_msg, sales_organization)
+    values (#{id,jdbcType=INTEGER}, #{thirdId,jdbcType=INTEGER}, #{customerExternalNumber,jdbcType=VARCHAR}, 
+      #{customerFullName,jdbcType=VARCHAR}, #{sales,jdbcType=VARCHAR}, #{categoryOne,jdbcType=VARCHAR}, 
+      #{categoryTow,jdbcType=VARCHAR}, #{categoryThree,jdbcType=VARCHAR}, #{productModel,jdbcType=VARCHAR}, 
+      #{deliveryDate,jdbcType=VARCHAR}, #{deliverNumber,jdbcType=VARCHAR}, #{salePrice,jdbcType=DECIMAL}, 
+      #{poPrice,jdbcType=DECIMAL}, #{margin,jdbcType=DECIMAL}, #{currency,jdbcType=VARCHAR}, 
+      #{customerOrderNumber,jdbcType=VARCHAR}, #{deliveryType,jdbcType=VARCHAR}, #{orderMonth,jdbcType=VARCHAR}, 
+      #{deliveryCompany,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, #{recordId,jdbcType=INTEGER}, 
+      #{errorMsg,jdbcType=VARCHAR}, #{salesOrganization,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.crazy.portal.entity.handover.DeliverDetailUpdate">
+    insert into t_deliver_detail_update
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="thirdId != null">
+        third_id,
+      </if>
+      <if test="customerExternalNumber != null">
+        customer_external_number,
+      </if>
+      <if test="customerFullName != null">
+        customer_full_name,
+      </if>
+      <if test="sales != null">
+        sales,
+      </if>
+      <if test="categoryOne != null">
+        category_one,
+      </if>
+      <if test="categoryTow != null">
+        category_tow,
+      </if>
+      <if test="categoryThree != null">
+        category_three,
+      </if>
+      <if test="productModel != null">
+        product_model,
+      </if>
+      <if test="deliveryDate != null">
+        delivery_date,
+      </if>
+      <if test="deliverNumber != null">
+        deliver_number,
+      </if>
+      <if test="salePrice != null">
+        sale_price,
+      </if>
+      <if test="poPrice != null">
+        po_price,
+      </if>
+      <if test="margin != null">
+        margin,
+      </if>
+      <if test="currency != null">
+        currency,
+      </if>
+      <if test="customerOrderNumber != null">
+        customer_order_number,
+      </if>
+      <if test="deliveryType != null">
+        delivery_type,
+      </if>
+      <if test="orderMonth != null">
+        order_month,
+      </if>
+      <if test="deliveryCompany != null">
+        delivery_company,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+      <if test="recordId != null">
+        record_id,
+      </if>
+      <if test="errorMsg != null">
+        error_msg,
+      </if>
+      <if test="salesOrganization != null">
+        sales_organization,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="thirdId != null">
+        #{thirdId,jdbcType=INTEGER},
+      </if>
+      <if test="customerExternalNumber != null">
+        #{customerExternalNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="customerFullName != null">
+        #{customerFullName,jdbcType=VARCHAR},
+      </if>
+      <if test="sales != null">
+        #{sales,jdbcType=VARCHAR},
+      </if>
+      <if test="categoryOne != null">
+        #{categoryOne,jdbcType=VARCHAR},
+      </if>
+      <if test="categoryTow != null">
+        #{categoryTow,jdbcType=VARCHAR},
+      </if>
+      <if test="categoryThree != null">
+        #{categoryThree,jdbcType=VARCHAR},
+      </if>
+      <if test="productModel != null">
+        #{productModel,jdbcType=VARCHAR},
+      </if>
+      <if test="deliveryDate != null">
+        #{deliveryDate,jdbcType=VARCHAR},
+      </if>
+      <if test="deliverNumber != null">
+        #{deliverNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="salePrice != null">
+        #{salePrice,jdbcType=DECIMAL},
+      </if>
+      <if test="poPrice != null">
+        #{poPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="margin != null">
+        #{margin,jdbcType=DECIMAL},
+      </if>
+      <if test="currency != null">
+        #{currency,jdbcType=VARCHAR},
+      </if>
+      <if test="customerOrderNumber != null">
+        #{customerOrderNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="deliveryType != null">
+        #{deliveryType,jdbcType=VARCHAR},
+      </if>
+      <if test="orderMonth != null">
+        #{orderMonth,jdbcType=VARCHAR},
+      </if>
+      <if test="deliveryCompany != null">
+        #{deliveryCompany,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="recordId != null">
+        #{recordId,jdbcType=INTEGER},
+      </if>
+      <if test="errorMsg != null">
+        #{errorMsg,jdbcType=VARCHAR},
+      </if>
+      <if test="salesOrganization != null">
+        #{salesOrganization,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+
+  <insert id="batchInsertByBiId" >
+    insert into t_deliver_detail_update
+    select * from t_deliver_detail t
+    where 1 = 1
+    <foreach collection="biIds" item="item" index="index" open=" and t.third_id in (" separator="," close=")" >
+      #{item}
+    </foreach>
+  </insert>
+
+  <delete id="batchDeleteByBiId" >
+    delete from t_deliver_detail_update
+    where third_id = #{biId}
+  </delete>
+
+</mapper>

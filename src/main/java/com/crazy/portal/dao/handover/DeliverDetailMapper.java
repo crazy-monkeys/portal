@@ -44,4 +44,9 @@ public interface DeliverDetailMapper {
 
     DeliverDetail selectByThirdId(@Param(value = "thirdId") String thirdId);
 
+    List<DeliverDetail> selectUpdateDataById(@Param(value = "recordId") Integer recordId);
+
+    int updateErrorInfoByBiId(@Param(value = "thirdId") String thirdId,
+                              @Param(value = "errorMsg") String errorMsg);
+
 }

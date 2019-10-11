@@ -3,6 +3,7 @@ package com.crazy.portal.dao.handover;
 import com.crazy.portal.entity.handover.DeliverReceiveRecord;
 import org.apache.ibatis.annotations.Param;
 import java.util.List;
+import java.util.Set;
 
 public interface DeliverReceiveRecordMapper {
     int deleteByPrimaryKey(Integer id);
@@ -24,7 +25,9 @@ public interface DeliverReceiveRecordMapper {
                                               @Param(value = "dealerId") Integer dealerId,
                                               @Param(value = "type") Integer type);
 
-    int updateStatusById(@Param(value = "id") Integer id,
+    int updateStatusById(@Param(value = "ids") List<Integer> ids,
                          @Param(value = "status") Integer status);
+
+    List<Integer> selectStatusByIds(@Param(value = "ids") Set<Integer> ids);
 
 }

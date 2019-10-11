@@ -8,8 +8,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import static com.crazy.portal.util.ErrorCodes.BusinessEnum.*;
 /**
@@ -23,6 +25,8 @@ public class HandoverService {
 
     @Resource
     private DeliverReceiveRecordMapper deliverReceiveRecordMapper;
+    @Resource(name = "deliver")
+    private DeliverService deliverService;
 
     private String deliver_type = "deliver";
     private String receive_type = "receive";
@@ -62,12 +66,9 @@ public class HandoverService {
     }
 
 
-    @Transactional
+//    @Transactional
     public void operationDeliverInfo(Integer id, Integer userId, String type, Integer status, String remark) {
         checkTypeValue(type);
-//        if(deliver_type.equals(type)){
-//
-//        }
         DeliverReceiveRecord record = deliverReceiveRecordMapper.selectByPrimaryKey(id);
         BusinessUtil.assertFlase(null == record, HANDOVER_INVALID_PARAM);
         BusinessUtil.assertFlase(status == record.getStatus(), HANDOVER_REJECT_REPEAT_ERROR);
@@ -78,12 +79,16 @@ public class HandoverService {
         }
         //执行确认
         if(status == 1){
-
-            BusinessUtil.assertFlase(record.getStatus() != -1, HANDOVER_NOT_CONFIRM);
+            if(record.getStatus() == 4){
+                deliverService.updateDataToBi(id);
+                status = 2;
+            }else{
+                BusinessUtil.assertFlase(record.getStatus() != -1, HANDOVER_NOT_CONFIRM);
+            }
         }
-        if(false){
+/*        if(false){
             //TODO 用户不是 销售运作部 不允许操作
-        }
+        }*/
         record.setStatus(status);
         record.setRemark(remark);
         record.setApprovalUserId(userId);
@@ -105,7 +110,11 @@ public class HandoverService {
     }
 
     public void updateStatus(Integer recordId, Integer status){
-        deliverReceiveRecordMapper.updateStatusById(recordId, status);
+        deliverReceiveRecordMapper.updateStatusById(Arrays.asList(recordId), status);
+    }
+
+    public void updateStatus(List<Integer> ids, Integer status){
+        deliverReceiveRecordMapper.updateStatusById(ids, status);
     }
 
     /**
@@ -122,6 +131,10 @@ public class HandoverService {
             deliverReceiveRecordMapper.updateByPrimaryKeySelective(record);
             throw new BusinessException(HANDOVER_WAITING_CONFIRM);
         }*/
+    }
+
+    public List<Integer> getStatusByIds(Set<Integer> ids) {
+        return deliverReceiveRecordMapper.selectStatusByIds(ids);
     }
 
     private void checkTypeValue(String type) {

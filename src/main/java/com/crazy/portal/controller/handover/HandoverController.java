@@ -196,7 +196,8 @@ public class HandoverController extends BaseController {
     @PostMapping(value = "/handover/detail/update/upload")
     public BaseResponse uploadDataByUpdate(MultipartFile excel, String type) {
         if("deliver".equals(type)){
-            return super.successResult(handoverServiceContext.getService(type).uploadDataByUpdate(excel, getCurrentUser().getId()));
+            handoverServiceContext.getService(type).uploadDataByUpdate(excel, getCurrentUser().getId());
+            return super.successResult();
         }
         return super.successResult();
     }

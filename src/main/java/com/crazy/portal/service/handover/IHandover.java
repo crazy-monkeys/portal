@@ -40,5 +40,5 @@ public interface IHandover<T> {
 
     void downloadDataByUpdate(HttpServletResponse response, Integer[] ids);
 
-    HandoverUploadVO uploadDataByUpdate(MultipartFile excel, Integer userId);
+    void uploadDataByUpdate(MultipartFile excel, Integer userId);
 }

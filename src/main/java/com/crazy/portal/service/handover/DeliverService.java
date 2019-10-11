@@ -5,7 +5,9 @@ import com.crazy.portal.bean.handover.DeliverTemplateBean;
 import com.crazy.portal.bean.handover.HandoverUploadVO;
 import com.crazy.portal.config.exception.BusinessException;
 import com.crazy.portal.dao.handover.DeliverDetailMapper;
+import com.crazy.portal.dao.handover.DeliverDetailUpdateMapper;
 import com.crazy.portal.entity.handover.DeliverDetail;
+import com.crazy.portal.entity.handover.DeliverDetailUpdate;
 import com.crazy.portal.entity.handover.DeliverReceiveRecord;
 import com.crazy.portal.service.customer.CustomerInfoService;
 import com.crazy.portal.util.*;
@@ -17,9 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.crazy.portal.util.Enums.BI_FUNCTION_CODE.*;
 import static com.crazy.portal.util.ErrorCodes.BusinessEnum.*;
@@ -39,6 +39,8 @@ public class DeliverService extends AbstractHandover implements IHandover<Delive
     private DeliverDetailMapper deliverDetailMapper;
     @Resource
     private CustomerInfoService customerInfoService;
+    @Resource
+    private DeliverDetailUpdateMapper deliverDetailUpdateMapper;
 
     @Value("${file.path.deliver.template}")
     private String deliverTemplatePath;
@@ -212,9 +214,11 @@ public class DeliverService extends AbstractHandover implements IHandover<Delive
         ExcelUtils.writeExcel(response, deliverData, DeliverDetail.class);
     }
 
-    @Override
-    public HandoverUploadVO uploadDataByUpdate(MultipartFile excel, Integer userId) {
-        List<DeliverDetail> deliverDetails = ExcelUtils.readExcel(excel, DeliverDetail.class);
+    public void updateDataToBi(Integer recordId) {
+        List<DeliverDetail> deliverDetails = deliverDetailMapper.selectUpdateDataById(recordId);
+        if(null == deliverDetails || deliverDetails.isEmpty()){
+            throw new BusinessException(HANDOVER_DATA_NOT_EXISTS);
+        }
         //数据包装，生成第三方需要的文件
         String thirdFileName = ExcelUtils.writeExcel(deliverPushPath, deliverDetails, DeliverDetail.class);
         List<DeliverDetail> responseData;
@@ -223,25 +227,48 @@ public class DeliverService extends AbstractHandover implements IHandover<Delive
             BiCheckResult checkResult = callBiServerByFtp(UPDATE_SALES_IMPORT_FILE, deliverPushPath , thirdFileName, ftpPullPath);
             responseData = ExcelUtils.readExcel(checkResult.getFilePath(), DeliverDetail.class);
             if(!checkResult.isSuccess()){
+                for(DeliverDetail resData : responseData){
+                    deliverDetailMapper.updateErrorInfoByBiId(resData.getThirdId(), resData.getErrorMsg());
+                }
                 throw new BusinessException(HANDOVER_UPDATE_ERROR);
+            }else{
+                for(DeliverDetail detail : responseData){
+                    DeliverDetail dbRecord = deliverDetailMapper.selectByThirdId(detail.getThirdId());
+                    if(null == dbRecord){
+                        continue;
+                    }
+                    try {
+                        BeanUtils.copyNotNullFields(detail, dbRecord);
+                    }catch (Exception ex) {
+                        throw new BusinessException("对象属性复制异常");
+                    }
+                    deliverDetailMapper.updateByPrimaryKeySelective(dbRecord);
+                    deliverDetailUpdateMapper.batchDeleteByBiId(detail.getThirdId());
+                }
             }
         }catch (Exception ex) {
             throw new BusinessException(HANDOVER_BI_SERVER_EXCEPTION);
         }
-        for(DeliverDetail detail : responseData){
-            DeliverDetail dbRecord = deliverDetailMapper.selectByThirdId(detail.getThirdId());
-            if(null == dbRecord){
-                continue;
-            }
-            try {
-                BeanUtils.copyNotNullFields(detail, dbRecord);
-            }catch (Exception ex) {
-                throw new BusinessException("对象属性复制异常");
-            }
-            deliverDetailMapper.updateByPrimaryKeySelective(dbRecord);
-        }
-        return null;
+    }
 
+    @Transactional
+    @Override
+    public void uploadDataByUpdate(MultipartFile excel, Integer userId) {
+        Set<Integer> recordIds = new HashSet<>();
+        List<String> biIds = new ArrayList<>();
+        //
+        List<DeliverDetailUpdate> deliverDetails = ExcelUtils.readExcel(excel, DeliverDetailUpdate.class);
+        for(DeliverDetailUpdate detail : deliverDetails){
+            biIds.add(String.valueOf(detail.getThirdId()));
+            recordIds.add(detail.getRecordId());
+        }
+        //
+        List<Integer> statusList = handoverService.getStatusByIds(recordIds);
+        if(null == statusList || statusList.contains(4)){
+            throw new BusinessException(HANDOVER_UPDATE_STATUS_ERROR);
+        }
+        deliverDetailUpdateMapper.batchInsertByBiId(biIds);
+        handoverService.updateStatus(new ArrayList<>(recordIds), 4);
     }
 
     private HandoverUploadVO genThirdResult(BiCheckResult checkResult, List<DeliverDetail> responseData, Integer recordId) {
