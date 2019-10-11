@@ -787,7 +787,7 @@
   </update>
 
   <select id="selectNameAndCodeByUserId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select cust_name, in_code from t_customer_info
+    select cust_name, in_code, out_code from t_customer_info
     where active = 1 and create_user = #{userId}
   </select>
 

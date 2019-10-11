@@ -150,11 +150,11 @@ public class OrderService {
         //如果是通过，调用ECC创单接口
         try{
             if(vo.getApprovalStatus().equals(Enums.OrderApprovalStatus.ADOPT.getValue())){
-                //ZrfcsddeliverycreateResponse response = eccDeliveryCreate(approval, approval.getDeliveryOrderLine());
-                //if(response.getResulttype().equals("0") || 1==1){
+                ZrfcsddeliverycreateResponse response = eccDeliveryCreate(approval, approval.getSerializelDeliveryOrderLine());
+                if(response.getResulttype().equals("0") || 1==1){
                     DeliverOrder deliverOrder = new DeliverOrder();
                     BeanUtils.copyNotNullFields(approval, deliverOrder);
-                    //deliverOrder.setSapDeliverOrderNo(response.getSapdeliveryid());
+                    deliverOrder.setSapDeliverOrderNo(response.getSapdeliveryid());
                     deliverOrderMapper.insertSelective(deliverOrder);
                     for(DeliverOrderLine line: approval.getSerializelDeliveryOrderLine()){
                         OrderLine orderLine = orderLineMapper.selectByPrimaryKey(line.getSalesOrderLineId());
@@ -165,7 +165,7 @@ public class OrderService {
                         deliverOrderLine.setDeliverOrderId(deliverOrder.getDeliverOrderId());
                         deliverOrderLineMapper.insertSelective(deliverOrderLine);
                     }
-               // }
+                }
             }
         }catch (Exception e){
             log.error("",e);
@@ -181,8 +181,8 @@ public class OrderService {
             deliverOrder.setDeliverDate(approval.getDeliverDate());
             deliverOrder.setShippingPoint(approval.getShippingPoint());
 
-            //ZrfcsddeliverychangeResponse response = eccDeliveryUpdate(deliverOrder, approval.getDeliveryOrderLine());
-            //if(response.getResulttype().equals("0")){
+            ZrfcsddeliverychangeResponse response = eccDeliveryUpdate(deliverOrder, approval.getSerializelDeliveryOrderLine());
+            if(response.getResulttype().equals("0")){
                 deliverOrder.setActualDeliveryDate("");
                 deliverOrderMapper.updateByPrimaryKeySelective(deliverOrder);
 
@@ -197,7 +197,7 @@ public class OrderService {
                     deliverOrderLine.setDeliveryQuantity(e.getDeliveryQuantity());
                     deliverOrderLineMapper.updateByPrimaryKeySelective(deliverOrderLine);
                 });
-            //}
+            }
         }
     }
 
@@ -214,8 +214,8 @@ public class OrderService {
             DeliverOrder deliverOrder = deliverOrderMapper.selectBySapDeliveryNo(vo.getSapDeliveryOrderNo());
             BusinessUtil.assertFlase(null == deliverOrder,ErrorCodes.BusinessEnum.ORDER_NOT_FOUND);
 
-            //ZrfcsddeliverychangeResponse response = eccDeliveryUpdate(deliverOrder, approval.getSerializelDeliveryOrderLine());
-            //if(response.getResulttype().equals("0")){
+            ZrfcsddeliverychangeResponse response = eccDeliveryUpdate(deliverOrder, approval.getSerializelDeliveryOrderLine());
+            if(response.getResulttype().equals("0")){
                 List<DeliverOrderLine> deliverOrderLines = deliverOrderLineMapper.selectByDeliveryOrderId(deliverOrder.getDeliverOrderId());
                 if(approval.getDeliveryOrderLine().size() == deliverOrderLines.size()){
                     deliverOrder.setActive(0);
@@ -229,7 +229,7 @@ public class OrderService {
                     deliverOrderLine.setActive(0);
                     deliverOrderLineMapper.updateByPrimaryKeySelective(deliverOrderLine);
                 });
-            //}
+            }
         }
     }
 

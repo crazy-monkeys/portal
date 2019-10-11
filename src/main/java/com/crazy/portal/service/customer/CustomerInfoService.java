@@ -878,7 +878,7 @@ public class CustomerInfoService {
         custList.forEach(cust -> {
             CustomerCodeEO eo = new CustomerCodeEO();
             eo.setCustomerName(cust.getCustName());
-            eo.setCustomerCode(cust.getInCode());
+            eo.setCustomerCode(cust.getOutCode());
             custCodeList.add(eo);
         });
         List<VisitRecordEO> visitRecordList = new ArrayList<>();
@@ -916,7 +916,7 @@ public class CustomerInfoService {
                     BeanUtils.copyNotNullFields(e , record);
                     String excelVisitDate = BeanUtils.getFieldValueByName("visitDate", e).toString();
                     record.setVisitDate(DateUtil.getFlexibleDate(excelVisitDate));
-                    record.setActive(Constant.ACTIVE);
+                    record.setActive(Constant.DELETE);
                     record.setCreateUserId(userId);
                     record.setCreateTime(DateUtil.getCurrentTS());
                     visitRecordMapper.insertSelective(record);
@@ -954,7 +954,7 @@ public class CustomerInfoService {
         //客户 c4c id
         CustomerInfo customerInfo = customerInfoMapper.selectByOutCode(visitRecord.getCustomerCode());
         MainActivityPartyBean mainActivityPartyBean = new MainActivityPartyBean();
-        mainActivityPartyBean.setBusinessPartnerInternalID(customerInfo.getOutCode());
+        mainActivityPartyBean.setBusinessPartnerInternalID(customerInfo.getInCode());
         visitBean.setMainActivityPartyBean(mainActivityPartyBean);
 
         //代理商 c4c id
