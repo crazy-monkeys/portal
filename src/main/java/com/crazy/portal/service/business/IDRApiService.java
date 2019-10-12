@@ -131,7 +131,7 @@ public class IDRApiService {
                 exchangeGood.setExchangeProModel(e.getExchangeProductModel());
                 exchangeGood.setExchangeQuantity(e.getExchangeNum());
                 exchangeGood.setExchangePrice(e.getExchangePrice() != null ? e.getExchangePrice().floatValue() : null);
-                exchangeGood.setAgenceRate(null);
+                exchangeGood.setAgenceRate(Float.valueOf(e.getReturnAgencyRate()));
                 exchangeGood.setExchangeAmount(e.getExchangeAmount() != null ? e.getExchangeAmount().floatValue() : null);
                 exchangeGood.setExchangeRemark(e.getRemark());
                 exchangeGoods.add(exchangeGood);
