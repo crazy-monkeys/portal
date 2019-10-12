@@ -36,6 +36,7 @@
     <result column="status_desc" jdbcType="VARCHAR" property="statusDesc" />
     <result column="operation_remark" jdbcType="VARCHAR" property="operationRemark" />
     <result column="create_time_str" jdbcType="VARCHAR" property="createTimeStr" />
+    <result column="agency_abbreviation" jdbcType="VARCHAR" property="agencyAbbreviation" />
   </resultMap>
 
   <resultMap id="fullFieldMap" type="com.crazy.portal.entity.forecast.Forecast" extends="BaseResultMap" >
