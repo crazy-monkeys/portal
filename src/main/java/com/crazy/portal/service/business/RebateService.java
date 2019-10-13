@@ -285,6 +285,21 @@ public class RebateService {
     }
 
     /**
+     * 修改备注
+     * @param id
+     * @param remark
+     * @param userId
+     */
+    public void modifyRemark(Integer id, String remark, Integer userId){
+        BusinessRebateItem record = new BusinessRebateItem();
+        record.setId(id);
+        record.setRemark(remark);
+        record.setUpdateId(userId);
+        record.setUpdateTime(DateUtil.getCurrentTS());
+        businessRebateItemMapper.updateByPrimaryKeySelective(record);
+    }
+
+    /**
      * rebate数据同步
      * BI -> portal
      * 每天0点

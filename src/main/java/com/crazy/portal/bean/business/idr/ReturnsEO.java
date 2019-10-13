@@ -3,7 +3,6 @@ package com.crazy.portal.bean.business.idr;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.excel.metadata.BaseRowModel;
 import com.crazy.portal.util.DateUtil;
-import com.crazy.portal.util.StringUtil;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
@@ -41,30 +40,32 @@ public class ReturnsEO extends BaseRowModel {
     private String returnAgencyRate;
     @ExcelProperty(value = "退货金额", index = 13)
     private BigDecimal returnAmount;
+    @ExcelProperty(value = "退货代理费金额", index = 14)
+    private BigDecimal returnRateAmount;
 
 
-    @ExcelProperty(value = "换货产品线", index = 14)
+    @ExcelProperty(value = "换货产品线", index = 15)
     private String exchangeProductLine;
-    @ExcelProperty(value = "换货BU", index = 15)
+    @ExcelProperty(value = "换货BU", index = 16)
     private String exchangeBu;
-    @ExcelProperty(value = "换货PDT", index = 16)
+    @ExcelProperty(value = "换货PDT", index = 17)
     private String exchangePdt;
-    @ExcelProperty(value = "换货平台", index = 17)
+    @ExcelProperty(value = "换货平台", index = 18)
     private String exchangePlatform;
-    @ExcelProperty(value = "换货产品型号", index = 18)
+    @ExcelProperty(value = "换货产品型号", index = 19)
     private String exchangeProductModel;
-    @ExcelProperty(value = "换货数量", index = 19)
+    @ExcelProperty(value = "换货数量", index = 20)
     private Integer exchangeNum;
-    @ExcelProperty(value = "换货币种", index = 20)
+    @ExcelProperty(value = "换货币种", index = 21)
     private String exchangeCurrency;
-    @ExcelProperty(value = "换货价格", index = 21)
+    @ExcelProperty(value = "换货价格", index = 22)
     private BigDecimal exchangePrice;
-    @ExcelProperty(value = "换货金额", index = 22)
+    @ExcelProperty(value = "换货金额", index = 23)
     private BigDecimal exchangeAmount;
-    @ExcelProperty(value = "换货日期", index = 23, format = "yyyy-MM-dd")
+    @ExcelProperty(value = "换货日期", index = 24, format = "yyyy-MM-dd")
     private String exchangeDate;
 
-    @ExcelProperty(value = "备注", index = 24)
+    @ExcelProperty(value = "备注", index = 25)
     private String remark;
 
     @SuppressWarnings("all")

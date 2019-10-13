@@ -18,6 +18,7 @@
     <result column="return_customer_attribute" jdbcType="VARCHAR" property="returnCustomerAttribute" />
     <result column="return_agency_rate" jdbcType="VARCHAR" property="returnAgencyRate" />
     <result column="return_amount" jdbcType="DECIMAL" property="returnAmount" />
+    <result column="return_rate_amount" jdbcType="DECIMAL" property="returnRateAmount"/>
     <result column="exchange_product_line" jdbcType="VARCHAR" property="exchangeProductLine" />
     <result column="exchange_bu" jdbcType="VARCHAR" property="exchangeBu" />
     <result column="exchange_pdt" jdbcType="VARCHAR" property="exchangePdt" />
@@ -37,7 +38,7 @@
   <sql id="Base_Column_List">
     id, idr_info_id, shipment_company, agency_name, take_goods_date, return_product_line,
     return_bu, return_pdt, return_platform, return_product_model, return_num, return_currency,
-    return_price, return_customer_attribute, return_agency_rate, return_amount, exchange_product_line,
+    return_price, return_customer_attribute, return_agency_rate, return_amount, return_rate_amount, exchange_product_line,
     exchange_bu, exchange_pdt, exchange_platform, exchange_product_model, exchange_num,
     exchange_currency, exchange_price, exchange_amount, exchange_date, remark, create_id,
     create_time, update_id, update_time
@@ -103,6 +104,9 @@
       </if>
       <if test="returnAmount != null">
         return_amount,
+      </if>
+      <if test="returnRateAmount != null">
+        return_rate_amount,
       </if>
       <if test="exchangeProductLine != null">
         exchange_product_line,
@@ -199,6 +203,9 @@
       <if test="returnAmount != null">
         #{returnAmount,jdbcType=DECIMAL},
       </if>
+      <if test="returnRateAmount != null">
+        #{returnRateAmount,jdbcType=DECIMAL},
+      </if>
       <if test="exchangeProductLine != null">
         #{exchangeProductLine,jdbcType=VARCHAR},
       </if>
@@ -293,6 +300,9 @@
       </if>
       <if test="returnAmount != null">
         return_amount = #{returnAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="returnRateAmount != null">
+        return_rate_amount = #{returnRateAmount,jdbcType=DECIMAL},
       </if>
       <if test="exchangeProductLine != null">
         exchange_product_line = #{exchangeProductLine,jdbcType=VARCHAR},

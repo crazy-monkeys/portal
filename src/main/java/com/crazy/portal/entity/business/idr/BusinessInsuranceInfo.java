@@ -12,34 +12,95 @@ public class BusinessInsuranceInfo implements IdrBaseEntity{
 
     private Integer idrInfoId;
 
+
+    /**
+     * 发货公司
+     */
+    private String shipmentCompany;
+
+    /**
+     * 客户名称
+     */
     private String customerName;
-    //调价时间
-    private String adjustDate;
-    //收货时间
+
+    /**
+     * 收货时间
+     */
     private String receiveGoodsDate;
-    //BU
+
+    /**
+     * 调价时间
+     */
+    private String adjustDate;
+
+    /**
+     *
+     */
     private String bu;
-    //PDT
+
+    /**
+     *
+     */
     private String pdt;
-    //产品类型
+
+    /**
+     * 产品类型
+     */
     private String productType;
-    //平台
+
+    /**
+     * 平台
+     */
     private String platform;
-    //产品型号
+
+    /**
+     * 产品型号
+     */
     private String productModel;
-    //库存数量
+
+    /**
+     * 库存数量
+     */
     private String num;
-    //库存价格
-    private String price;
-    //币种
+
+    /**
+     * 币种
+     */
     private String currency;
-    //新价格
+
+    /**
+     * 客户属性
+     */
+    private String customerAttribute;
+
+    /**
+     * 代理费率
+     */
+    private String agencyRate;
+
+    /**
+     * 库存价格
+     */
+    private String price;
+
+    /**
+     * 新价格
+     */
     private String newPrice;
-    //保价金额
+
+    /**
+     * 保价金额
+     */
     private String insuranceAmount;
-    //调整时间
+
+    /**
+     * 调整时间
+     */
     private String modifyDate;
-    //备注
+
+    /**
+     * 备注
+     */
     private String remark;
 
     @JsonIgnore

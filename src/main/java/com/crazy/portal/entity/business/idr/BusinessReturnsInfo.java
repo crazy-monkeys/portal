@@ -81,7 +81,10 @@ public class BusinessReturnsInfo implements IdrBaseEntity{
      * 退货金额
      */
     private BigDecimal returnAmount;
-
+    /**
+     * 退货代理费金额
+     */
+    private BigDecimal returnRateAmount;
     /**
      * 换货产品线
      */

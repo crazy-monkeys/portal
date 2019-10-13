@@ -90,4 +90,17 @@ public class RebateController extends BaseController {
     public BaseResponse download(@PathVariable Integer id){
         return successResult(rebateService.fileDownload(id));
     }
+
+    /**
+     * 修改备注
+     * @param id
+     * @param remark
+     * @return
+     */
+    @OperationLog
+    @PostMapping("/modifyRemark")
+    public BaseResponse modifyRemark(Integer id, String remark){
+        rebateService.modifyRemark(id, remark, getCurrentUserId());
+        return successResult();
+    }
 }
