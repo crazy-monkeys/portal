@@ -13,6 +13,7 @@ import com.crazy.portal.service.customer.CustomerInfoService;
 import com.crazy.portal.util.*;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -166,7 +167,12 @@ public class DeliverService extends AbstractHandover implements IHandover<Delive
         //判断当前用户是否为 代理商
         BusinessUtil.assertFlase(false, HANDOVER_NOT_DEALER);
         List<DeliverTemplateBean> deliverData =  ExcelUtils.readExcel(excel, DeliverTemplateBean.class , 1);
-        for(DeliverTemplateBean templateBean : deliverData){
+        Iterator<DeliverTemplateBean> iterator = deliverData.iterator();
+        while (iterator.hasNext()) {
+            DeliverTemplateBean templateBean = iterator.next();
+            if(StringUtils.isEmpty(templateBean.getCustomerFullName())){
+                continue;
+            }
             templateBean.setDealerName(customerInfoService.getDealerByUser(userId).getCustName());
         }
         return deliverData;
