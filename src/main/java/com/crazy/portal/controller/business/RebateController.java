@@ -103,4 +103,9 @@ public class RebateController extends BaseController {
         rebateService.modifyRemark(id, remark, getCurrentUserId());
         return successResult();
     }
+
+    @GetMapping("/test")
+    public BaseResponse test(){
+        return successResult();
+    }
 }

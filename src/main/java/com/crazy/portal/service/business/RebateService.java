@@ -304,7 +304,7 @@ public class RebateService {
      * BI -> portal
      * 每天0点
      */
-    @Transactional(rollbackFor=Exception.class)
+    @Transactional(rollbackFor = Exception.class)
     public void rebateDataSync(String param) throws Exception {
         String currMonth = StringUtil.isBlank(param) ? DateUtil.format(new Date(), DateUtil.MONTH_FORMAT) : param;
         String preMonth = DateUtil.getPerMonth();
