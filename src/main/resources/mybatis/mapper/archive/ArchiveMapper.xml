@@ -253,6 +253,7 @@
       and t.type_id = #{typeId}
     </if>
     and t.release_user_id = #{userId}
+    and t.status != -1
     order by t.release_time desc
   </select>
 
