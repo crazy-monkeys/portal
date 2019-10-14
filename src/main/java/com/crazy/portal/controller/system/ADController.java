@@ -48,7 +48,7 @@ public class ADController extends BaseController {
     }
 
     @GetMapping("/forward")
-    public void authTicket(HttpServletResponse response){
+    public void forward(HttpServletResponse response){
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
         response.setContentType("application/json;charset=utf-8");
         BusinessUtil.assertTrue(false, ErrorCodes.SystemManagerEnum.ACCOUNT_ERROR);
