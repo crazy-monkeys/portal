@@ -122,53 +122,41 @@ public class OrderApproveService {
      */
     private void createOrder(String expectedDeliveryDate,OrderApply orderApply,Integer userId) throws Exception {
 
-        //ZrfcsdsalesordercreateResponse response = this.invokeEccCreateOrder(expectedDeliveryDate,orderApply);
+        ZrfcsdsalesordercreateResponse response = this.invokeEccCreateOrder(expectedDeliveryDate,orderApply);
         //第三方接口调用成功,将审批信息同步到结果表
-        //ZsalesordercreateOutHeader esHeader = response.getEsHeader();
+        ZsalesordercreateOutHeader esHeader = response.getEsHeader();
         Order order = new Order();
         BeanUtils.copyNotNullFields(orderApply,order);
         order.setCreateTime(DateUtil.getCurrentTS());
         order.setCreateId(userId);
-        //order.setRGrossValue(esHeader.getGrossvalue());
-        //order.setRNetValue(esHeader.getNetvalue());
-        //order.setRSapOrderId(esHeader.getSaporderid());
-        //order.setPaymentTerms(esHeader.getPaymentterms());
-
-        //TODO 删除
-        order.setRGrossValue(BigDecimal.ZERO);
-        order.setRNetValue(BigDecimal.ZERO);
-        order.setRSapOrderId(UUID.randomUUID().toString());
+        order.setRGrossValue(esHeader.getGrossvalue());
+        order.setRNetValue(esHeader.getNetvalue());
+        order.setRSapOrderId(esHeader.getSaporderid());
+        order.setPaymentTerms(esHeader.getPaymentterms());
 
         order.setPriceDate(expectedDeliveryDate);
         orderMapper.insertSelective(order);
 
         List<OrderLine> lines = orderApply.lineJsonToObj(orderApply.getJsonLines());
         for(OrderLine line : lines){
-            //for(ZsalesordercreateOutItem etItem : response.getEtItems().getItem()){
-               // if(etItem.getProductid().equals(line.getProductId())){
-                 //   line.setRItemNo(etItem.getItemno());
-                  //  line.setRPrice(etItem.getPrice());
-                   // line.setRNetPrice(etItem.getNetprice());
-                   // line.setRCurrency(etItem.getCurrency());
-                   // line.setRProductId(etItem.getProductid());
-                   // line.setRItemCategory(etItem.getItemcategory());
-                   // line.setRRefItemNo(etItem.getRefitemno());
-                   // line.setRRefItemProductId(etItem.getRefitemproductid());
-
-
-                    //TODO 删除
-                     line.setRItemNo(UUID.randomUUID().toString());
-                     line.setRPrice(BigDecimal.ZERO);
-                     line.setRNetPrice(BigDecimal.ZERO);
-                    line.setRProductId(line.getProductId());
+            for(ZsalesordercreateOutItem etItem : response.getEtItems().getItem()){
+                if(etItem.getProductid().equals(line.getProductId())){
+                    line.setRItemNo(etItem.getItemno());
+                    line.setRPrice(etItem.getPrice());
+                    line.setRNetPrice(etItem.getNetprice());
+                    line.setRCurrency(etItem.getCurrency());
+                    line.setRProductId(etItem.getProductid());
+                    line.setRItemCategory(etItem.getItemcategory());
+                    line.setRRefItemNo(etItem.getRefitemno());
+                    line.setRRefItemProductId(etItem.getRefitemproductid());
                     line.setExpectedDeliveryDate(expectedDeliveryDate);
                     line.setCreateId(userId);
                     line.setCreateTime(DateUtil.getCurrentTS());
                     line.setActice(1);
                     line.setOrderId(order.getId());
                     orderLineMapper.insertSelective(line);
-               // }
-            //}
+                }
+            }
         }
     }
 
@@ -179,23 +167,23 @@ public class OrderApproveService {
      */
     private void cancelOrder(Order order,Integer userId) throws Exception{
         List<OrderLine> orderLines = orderLineMapper.selectByOrderId(order.getId());
-        //ZrfcsdsalesorderchangeResponse response = this.invokeEccModifyOrder(order,"D");
-        //String resultType = response.getEsHeader().getResulttype();
+        ZrfcsdsalesorderchangeResponse response = this.invokeEccModifyOrder(order,"D");
+        String resultType = response.getEsHeader().getResulttype();
         //如果修改成功
-        //if(resultType.equals("1")){
-          //  List<ZsalesorderchangeOutItem> items = response.getEtItems().getItem();
-            //items.forEach(sapLine->{
+        if(resultType.equals("1")){
+            List<ZsalesorderchangeOutItem> items = response.getEtItems().getItem();
+            items.forEach(sapLine->{
                  orderLines.forEach(line->{
-              //      if(line.getRProductId().equals(sapLine.getProductid())){
+                    if(line.getRProductId().equals(sapLine.getProductid())){
                         //修改为失效
                         line.setActice(0);
                         line.setUpdateId(userId);
                         line.setUpdateTime(DateUtil.getCurrentTS());
                         orderLineMapper.updateByPrimaryKeySelective(line);
-                //    }
+                    }
                 });
-            //});
-        //}
+            });
+        }
         //如果所有订单行都被设置为取消,整单取消
         List<OrderLine> results = orderLines.stream().filter(x -> x.getActice().equals(1)).collect(Collectors.toList());
         if(results.isEmpty()){
@@ -212,10 +200,10 @@ public class OrderApproveService {
      * @param userId
      */
     private void modifyOrder(Order order,OrderApply orderApply,Integer userId) throws Exception{
-        //ZrfcsdsalesorderchangeResponse response = this.invokeEccModifyOrder(order,"I");
-        //ZsalesorderchangeOutHeader esHeader = response.getEsHeader();
-        //String resulttype = esHeader.getResulttype();
-        //if(resulttype.equals("1")){
+        ZrfcsdsalesorderchangeResponse response = this.invokeEccModifyOrder(order,"I");
+        ZsalesorderchangeOutHeader esHeader = response.getEsHeader();
+        String resulttype = esHeader.getResulttype();
+        if(resulttype.equals("1")){
             List<OrderLine> orderLines = orderLineMapper.selectByOrderId(order.getId());
             List<OrderLine> applyLines = orderApply.lineJsonToObj(orderApply.getJsonLines());
 
@@ -234,20 +222,20 @@ public class OrderApproveService {
             order.setUpdateTime(DateUtil.getCurrentTS());
             orderMapper.updateByPrimaryKeySelective(order);
             //修改订单行
-          //  List<ZsalesorderchangeOutItem> items = response.getEtItems().getItem();
-            //items.forEach(sapLine->{
+            List<ZsalesorderchangeOutItem> items = response.getEtItems().getItem();
+            items.forEach(sapLine->{
                 orderLines.forEach(line->{
                     String productId = line.getProductId();
-              //      if(rProductId.equals(sapLine.getProductid())){
+                    if(line.getRProductId().equals(sapLine.getProductid())){
                         //目前订单行只能修改数量
                         line.setNum(applyLineMap.get(productId).getNum());
                         line.setUpdateId(userId);
                         line.setUpdateTime(DateUtil.getCurrentTS());
                         orderLineMapper.updateByPrimaryKeySelective(line);
-                  //  }
+                    }
                 });
-            //});
-        //}
+            });
+        }
     }
 
 
@@ -386,7 +374,7 @@ public class OrderApproveService {
     private IsHeader buildCreateIsHeader(OrderApply orderApply) {
         IsHeader isHeader = new IsHeader();
         isHeader.setPortalorderid(orderApply.getId().toString() + System.currentTimeMillis());
-        isHeader.setOrdertype(orderApply.getOrderType());
+        isHeader.setOrdertype(orderApply.getUnderOrderType());
         isHeader.setSalesorg(orderApply.getSalesOrg());
         isHeader.setChannel(orderApply.getChannel());
         isHeader.setDivision(orderApply.getDivision());

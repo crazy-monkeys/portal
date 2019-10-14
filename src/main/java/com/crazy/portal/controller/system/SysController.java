@@ -38,11 +38,37 @@ public class SysController extends BaseController {
         return successResult(customerInfoService.selecAllCustomer());
     }
 
+    /**
+     * 获取销售
+     * @return
+     */
     @GetMapping("/sales/list")
     public BaseResponse getAllSales(){
         return successResult(internalUserMapper.selectSales());
     }
 
+    /**
+     * 获取cs
+     * @return
+     */
+    @GetMapping("/cs/list")
+    public BaseResponse getAllCS(){
+        return successResult(internalUserMapper.selectCS());
+    }
+
+    /**
+     * 获取代理商经营部
+     * @return
+     */
+    @GetMapping("/ds/list")
+    public BaseResponse getAllDS(){
+        return successResult(internalUserMapper.selectDS());
+    }
+
+    /**
+     * 获取代理商
+     * @return
+     */
     @GetMapping("/dealer/list")
     public BaseResponse getDealerList(){
         return successResult(customerInfoService.getDealerList());

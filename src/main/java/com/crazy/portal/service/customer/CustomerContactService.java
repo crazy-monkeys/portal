@@ -50,7 +50,6 @@ public class CustomerContactService {
                 customerContactMapper.deleteByCustId(custId);
             }else{
                 for(CustomerContact r : results){
-                    checkContact(r);
                     Boolean flg = true;
                     for(CustomerContact c : customerContacts){
                         if(r.getContactId().equals(c.getContactId())){
@@ -78,11 +77,11 @@ public class CustomerContactService {
     private void checkContact(CustomerContact record){
         if(StringUtil.isNotEmpty(record.getMobile())){
             String telRegex = "[1][345678]\\d{9}";
-            BusinessUtil.assertFlase(record.getMobile().matches(telRegex), ErrorCodes.BusinessEnum.CUSTOMER_MOBILE_IS_INACTIVE);
+            BusinessUtil.assertTrue(record.getMobile().matches(telRegex), ErrorCodes.BusinessEnum.CUSTOMER_MOBILE_IS_INACTIVE);
         }
         if(StringUtil.isNotEmpty(record.getEmail())){
             String mailRegex = "\\w+@\\w+(\\.\\w{2,3})*\\.\\w{2,3}";
-            BusinessUtil.assertFlase(record.getEmail().matches(mailRegex),ErrorCodes.BusinessEnum.CUSTOMER_EMAIL_IS_INACTIVE);
+            BusinessUtil.assertTrue(record.getEmail().matches(mailRegex),ErrorCodes.BusinessEnum.CUSTOMER_EMAIL_IS_INACTIVE);
         }
     }
 }

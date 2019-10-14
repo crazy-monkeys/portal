@@ -197,6 +197,14 @@
       )
   </select>
 
+  <select id="selectDS" resultMap="BaseResultMap">
+    select * from t_internal_user where user_department_code = '1001012'
+  </select>
+
+  <select id="selectCS" resultMap="BaseResultMap">
+    select * from t_internal_user where user_department_code = '1001011'
+  </select>
+
   <select id="selectUserByName" resultMap="BaseResultMap">
       select * From t_internal_user where substring_index(user_mail,'@',1) = #{userName}
   </select>

@@ -131,6 +131,7 @@ public class SaleForecastService {
             ProductInfoDO productInfo = getProductInfo(template.getVmNumber());
             Forecast forecast = new Forecast(userId);
             copyTemplateFields(template, forecast);
+            forecast.setAgencyAbbreviation(agencyAbbreviation);
             //设置产品字段
             forecast.setBu(productInfo.getBu());
             forecast.setPdt(productInfo.getPdt());
@@ -931,7 +932,9 @@ public class SaleForecastService {
             //http get param value
             String param = "sFromUrl=" + ftpDetailFilePath + "&sFromSummaryPath=" + ftpTotalFilePath + "&sToUrl=" + ftpDownloadPath + "&sToSummaryPath=" + ftpDownloadPath;
 
+            log.info("BI insert url :"+param);
             String response = CallApiUtils.callBiGetApi(INSERT_FORECAST_IMPORT_DATA, "PORTAL/BI/", param);
+            log.info("BI insert response :"+response);
             //检测返回信息是否空
             if(StringUtils.isEmpty(response)){
                 log.error("{} -> {}", FORECAST_BI_RESPONSE_EXCEPTION.getZhMsg(), response);

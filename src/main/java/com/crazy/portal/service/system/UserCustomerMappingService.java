@@ -41,8 +41,8 @@ public class UserCustomerMappingService {
     }
 
     public void saveOrUpdateMapping(UserCustomerMapping userCustomerMapping, Integer userId){
+        userCustomerMapping.setActive(1);
         if(null != userCustomerMapping.getMappingId()){
-            userCustomerMapping.setActive(1);
             userCustomerMapping.setUpdateUserId(userId);
             userCustomerMappingMapper.updateByPrimaryKeySelective(userCustomerMapping);
         }else{

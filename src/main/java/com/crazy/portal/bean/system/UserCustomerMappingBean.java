@@ -10,7 +10,7 @@ import lombok.Data;
  */
 @Data
 public class UserCustomerMappingBean extends PageBean{
-    private Integer mappingModel;
+    private String mappingModel;
     /**
      * 营销运作部
      */

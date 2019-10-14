@@ -58,6 +58,7 @@ public class EnquiryPriceService {
 
         Date now = new Date();
         EnquiryPrice enquiryPrice = new EnquiryPrice();
+        enquiryPrice.setBu(bu);
         enquiryPrice.setInCustomer(vo.getInCustomer());
         enquiryPrice.setProductModel(vo.getProductModel());
         enquiryPrice.setApplyRemark(vo.getApplyRemark());
@@ -111,7 +112,7 @@ public class EnquiryPriceService {
                 String productModel = enquiryPrice.getProductModel();
                 String inCustomer = enquiryPrice.getInCustomer();
                 String bu = enquiryPrice.getBu();
-                CatalogPrice catalogPrice = catalogPriceMapper.selectByProductModelAndCustomerName(productModel,bu,inCustomer);
+                CatalogPrice catalogPrice = catalogPriceMapper.selectByProductModelAndCustomerName(bu,productModel,inCustomer);
                 BusinessUtil.notNull(catalogPrice, ErrorCodes.PriceEnum.PRICE_CATALOG_NOT_EXISTS);
 
                 enquiryPrice.setBu(catalogPrice.getBu());

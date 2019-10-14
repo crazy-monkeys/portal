@@ -51,7 +51,7 @@ public class Customer {
     private String generalProductTaxExemptionListCompleteTransmissionIndicator = "true";
 
     @XmlAttribute(name="contactPersonListCompleteTransmissionIndicator")
-    private String contactPersonListCompleteTransmissionIndicator = "false";
+    private String contactPersonListCompleteTransmissionIndicator = "true";
 
     @XmlAttribute(name="paymentDataListCompleteTransmissionIndicator")
     private String paymentDataListCompleteTransmissionIndicator = "true";
