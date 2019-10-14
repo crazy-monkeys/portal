@@ -32,4 +32,9 @@ public class CatalogPriceVO extends PageBean {
 
     private String effectEndTime;
 
+    /**
+     * 当前登录人
+     */
+    private Integer createId;
+
 }

@@ -39,6 +39,7 @@ public class EnquiryController extends BaseController {
      */
     @PostMapping("/query")
     public BaseResponse query(@RequestBody EnquiryPriceVO enquiryPriceVO){
+        enquiryPriceVO.setCreateId(super.getCurrentUserId());
         PageInfo<EnquiryPrice> enquiryPrices = enquiryPriceService.query(enquiryPriceVO);
         return super.successResult(enquiryPrices);
     }

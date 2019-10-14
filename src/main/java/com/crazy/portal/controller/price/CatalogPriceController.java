@@ -28,6 +28,7 @@ public class CatalogPriceController extends BaseController {
 
     @PostMapping("/query")
     public BaseResponse list(@RequestBody CatalogPriceVO catalogPriceVO){
+        catalogPriceVO.setCreateId(super.getCurrentUserId());
         PageInfo<CatalogPrice> catalogPricePageInfo =  catalogPriceService.selectWithPage(catalogPriceVO);
         return super.successResult(catalogPricePageInfo);
     }

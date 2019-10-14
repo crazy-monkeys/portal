@@ -41,30 +41,35 @@
     select
     <include refid="Base_Column_List" />
     from t_enquiry_price
-    <where>
-        1=1
-        <if test="bu != null and bu != ''">
-            and bu = #{bu,jdbcType=VARCHAR}
-        </if>
-        <if test="productModel != null and productModel != ''">
-            and product_model = #{productModel,jdbcType=VARCHAR}
-        </if>
-        <if test="inCustomer != null and inCustomer != ''">
-            and in_customer = #{inCustomer,jdbcType=VARCHAR}
-        </if>
-        <if test="approvalStatus != null and approvalStatus != ''">
-            and approval_status = #{approvalStatus,jdbcType=VARCHAR}
-        </if>
-        <if test="proposer != null and proposer != '' ">
-            and proposer = #{proposer,jdbcType=VARCHAR}
-        </if>
-        <if test="applyBeginTime != null">
-            and apply_time &gt;= #{applyBeginTime,jdbcType=TIMESTAMP}
-        </if>
-        <if test="applyEndTime != null">
-            and apply_time &lt;= #{applyEndTime,jdbcType=TIMESTAMP}
-        </if>
-    </where>
+    where (
+      sap_code in (
+      select distinct product_id from t_order_line where create_id = #{createId,jdbcType=INTEGER}
+      )
+      or sap_code in (
+      select distinct vm_number from t_forecast where create_user_id = #{createId,jdbcType=INTEGER}
+      )
+    )
+    <if test="bu != null and bu != ''">
+        and bu = #{bu,jdbcType=VARCHAR}
+    </if>
+    <if test="productModel != null and productModel != ''">
+        and product_model = #{productModel,jdbcType=VARCHAR}
+    </if>
+    <if test="inCustomer != null and inCustomer != ''">
+        and in_customer = #{inCustomer,jdbcType=VARCHAR}
+    </if>
+    <if test="approvalStatus != null and approvalStatus != ''">
+        and approval_status = #{approvalStatus,jdbcType=VARCHAR}
+    </if>
+    <if test="proposer != null and proposer != '' ">
+        and proposer = #{proposer,jdbcType=VARCHAR}
+    </if>
+    <if test="applyBeginTime != null">
+        and apply_time &gt;= #{applyBeginTime,jdbcType=TIMESTAMP}
+    </if>
+    <if test="applyEndTime != null">
+        and apply_time &lt;= #{applyEndTime,jdbcType=TIMESTAMP}
+    </if>
     order by apply_time
   </select>
 

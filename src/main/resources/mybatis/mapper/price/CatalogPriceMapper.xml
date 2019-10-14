@@ -47,7 +47,14 @@
     select
     <include refid="Base_Column_List" />
     from t_catalog_price
-    where 1 = 1
+    where (
+        sap_code in (
+            select distinct product_id from t_order_line where create_id = #{createId,jdbcType=INTEGER}
+        )
+        or sap_code in (
+            select distinct vm_number from t_forecast where create_user_id = #{createId,jdbcType=INTEGER}
+        )
+    )
     <if test="bu != null and bu != ''">
       and bu = #{bu,jdbcType=VARCHAR}
     </if>

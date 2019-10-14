@@ -62,4 +62,10 @@ public class EnquiryPriceVO extends PageBean {
      * 申请结束时间
      */
     private Date applyEndTime;
+
+
+    /**
+     * 当前登录人
+     */
+    private Integer createId;
 }
