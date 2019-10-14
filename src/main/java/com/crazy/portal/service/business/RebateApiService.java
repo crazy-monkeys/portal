@@ -1,5 +1,8 @@
 package com.crazy.portal.service.business;
 
+import com.alibaba.fastjson.JSON;
+import com.crazy.portal.entity.business.rebate.BusinessPriceRoleAO;
+import com.crazy.portal.entity.business.rebate.BusinessSalesDetailAO;
 import com.crazy.portal.util.CallApiUtils;
 import com.crazy.portal.util.HttpClientUtils;
 import com.crazy.portal.util.StringUtil;
@@ -7,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -23,9 +27,11 @@ public class RebateApiService {
      * @return
      * @throws IOException
      */
-    public String syncRebatePriceRoleData(String startDate, String endDate) throws IOException{
+    public List<BusinessPriceRoleAO> syncRebatePriceRoleData(String startDate, String endDate) throws IOException{
         String url = CallApiUtils.ECC_API_URL.concat(REBATE_PRICE_ROLE_URL).concat("?sStartYearMonth=").concat(startDate).concat("&sEndYearMonth=").concat(endDate);
-        return StringUtil.getJsonMessage(HttpClientUtils.get(url));
+        String result =  StringUtil.getJsonMessage(HttpClientUtils.get(url));
+        List<BusinessPriceRoleAO> priceRoleResult = JSON.parseArray(result, BusinessPriceRoleAO.class);
+        return priceRoleResult;
     }
 
     /**
@@ -35,8 +41,10 @@ public class RebateApiService {
      * @return
      * @throws IOException
      */
-    public String syncRebatePriceSalesDetails(String startDate, String endDate) throws IOException{
+    public List<BusinessSalesDetailAO> syncRebatePriceSalesDetails(String startDate, String endDate) throws IOException{
         String url = CallApiUtils.ECC_API_URL.concat(REBATE_SALES_DETAILS_URL).concat("?sStartYearMonth=").concat(startDate).concat("&sEndYearMonth=").concat(endDate);
-        return StringUtil.getJsonMessage(HttpClientUtils.get(url));
+        String result =  StringUtil.getJsonMessage(HttpClientUtils.get(url));
+        List<BusinessSalesDetailAO> salesDetailResult = JSON.parseArray(result, BusinessSalesDetailAO.class);
+        return salesDetailResult;
     }
 }

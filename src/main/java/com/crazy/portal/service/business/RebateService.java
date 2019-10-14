@@ -301,13 +301,11 @@ public class RebateService {
 
     /**
      * rebate数据同步
-     * BI -> portal
-     * 每天0点
      */
     @Transactional(rollbackFor = Exception.class)
     public void rebateDataSync(String param) throws Exception {
         String currMonth = StringUtil.isBlank(param) ? DateUtil.format(new Date(), DateUtil.MONTH_FORMAT) : param;
-        String preMonth = DateUtil.getPerMonth();
+        String preMonth = DateUtil.getPerMonth(currMonth);
 
         Date currDate = DateUtil.getCurrentTS();
 
@@ -343,96 +341,46 @@ public class RebateService {
         rebateIds.forEach(e-> businessSalesDetailMapper.updateRebateAmountByRebateId(e));
     }
 
-    private void batchUpdateSalesDetail(String currMonth, String preMonth, Date currDate) throws IOException {
-        String salesDetails = rebateApiService.syncRebatePriceSalesDetails(currMonth, preMonth);
-        JSONArray salesDetailResult = JSON.parseArray(salesDetails);
-        Iterator item = salesDetailResult.iterator();
-        while (item.hasNext()){
-            JSONObject e = (JSONObject) item.next();
-            BusinessSalesDetail sd = new BusinessSalesDetail();
-            if(e.getInteger("sales_report_id") == null){
+    private void batchUpdateSalesDetail(String currMonth, String preMonth, Date currDate) throws Exception {
+        List<BusinessSalesDetailAO> salesDetailResult = rebateApiService.syncRebatePriceSalesDetails(currMonth, preMonth);
+        for (BusinessSalesDetailAO salesDetailAO : salesDetailResult) {
+            BusinessSalesDetail salesDetail = new BusinessSalesDetail();
+            if(salesDetailAO.getId() == null){
                 continue;
             }
-            sd.setId(e.getInteger("sales_report_id"));
-            sd.setAgencyShortName(e.getString("agency_short_name"));
-            sd.setAgencyName(e.getString("agency_name"));
-            sd.setCustomerShortName(e.getString("customer_short_name"));
-            sd.setCustomerCode(e.getString("customer_code"));
-            sd.setCustomerType(e.getString("customer_type"));
-            sd.setAmebaHeader(e.getString("ameba_header"));
-            sd.setAmebaDepartment(e.getString("ameba_department"));
-            sd.setBu(e.getString("bu"));
-            sd.setProduct(e.getString("product"));
-            sd.setShipmentType(e.getString("shipment_type"));
-            sd.setQty(e.getInteger("qty"));
-            sd.setSalesPrice(e.getBigDecimal("sales_price"));
-            sd.setPoPrice(e.getBigDecimal("po_price"));
-            sd.setActualPrice(e.getBigDecimal("actual_price"));
-            sd.setRebateAmount(e.getBigDecimal("rebate_amount"));
-            sd.setAccountYearMonth(e.getString("year_month"));
-            sd.setShipmentYearMonth(e.getString("shipment_year_month"));
-            sd.setShipmentDate(e.getString("shipment_date"));
-            sd.setOrderMonth(e.getString("order_month"));
-            sd.setPriceRoleId(e.getString("price_role_id"));
-            sd.setShipmentCompany(e.getString("shipment_company"));
-            sd.setRebateType(e.getString("rebate_type"));
-            sd.setClass3(e.getString("class3"));
-            sd.setActive(Constant.ACTIVE);
-
-            int recordCount = businessSalesDetailMapper.selectCountByPrimaryKey(sd.getId());
+            BeanUtils.copyNotNullFields(salesDetailAO, salesDetail);
+            salesDetail.setActive(Constant.ACTIVE);
+            int recordCount = businessSalesDetailMapper.selectCountByPrimaryKey(salesDetail.getId());
             if(recordCount == 0){
-                sd.setCreateId(Constant.TASK_DEFAULT_USER_ID);
-                sd.setCreateTime(currDate);
-                businessSalesDetailMapper.insertSelective(sd);
-            }else{
-                sd.setUpdateId(Constant.TASK_DEFAULT_USER_ID);
-                sd.setUpdateTime(currDate);
-                businessSalesDetailMapper.updateByPrimaryKeySelective(sd);
+                salesDetail.setCreateId(Constant.TASK_DEFAULT_USER_ID);
+                salesDetail.setCreateTime(currDate);
+                businessSalesDetailMapper.insertSelective(salesDetail);
+            } else {
+                salesDetail.setUpdateId(Constant.TASK_DEFAULT_USER_ID);
+                salesDetail.setUpdateTime(currDate);
+                businessSalesDetailMapper.updateByPrimaryKeySelective(salesDetail);
             }
-
         }
     }
 
-    private void batchUpdatePriceRole(String currMonth, String preMonth, Date currDate) throws IOException {
-        String priceRoles = rebateApiService.syncRebatePriceRoleData(currMonth, preMonth);
-        JSONArray priceRoleResult = JSON.parseArray(priceRoles);
-        Iterator prs = priceRoleResult.iterator();
-        while (prs.hasNext()){
-            JSONObject e = (JSONObject) prs.next();
-            BusinessPriceRole pr = new BusinessPriceRole();
-            if(e.getInteger("id") == null){
+    private void batchUpdatePriceRole(String currMonth, String preMonth, Date currDate) throws Exception {
+        List<BusinessPriceRoleAO> priceRoleResult  = rebateApiService.syncRebatePriceRoleData(currMonth, preMonth);
+        for (BusinessPriceRoleAO priceRoleAO : priceRoleResult) {
+            BusinessPriceRole priceRole = new BusinessPriceRole();
+            if(priceRoleAO.getId() == null){
                 continue;
             }
-            pr.setId(e.getInteger("id"));
-            pr.setCustomerCode(e.getString("customer_code"));
-            pr.setCustomerName(e.getString("customer_name"));
-            pr.setCustomerIncode(e.getString("customer_incode"));
-            pr.setCustomerShortName(e.getString("customer_short_name"));
-            pr.setProduct(e.getString("product"));
-            pr.setStartDate(e.getDate("start_date"));
-            pr.setEndDate(e.getDate("end_date"));
-            pr.setPrice(e.getBigDecimal("rPrice"));
-            pr.setSalesLimitLower(e.getBigDecimal("sales_limit_lower"));
-            pr.setSalesLimitUpper(e.getBigDecimal("sales_limit_upper"));
-            pr.setCalculateType(e.getString("calculate_type"));
-            pr.setRebateExcuteMode(e.getString("rebate_excute_mode"));
-            pr.setPriceProposer(e.getString("price_proposer"));
-            pr.setShipmentType(e.getString("shipment_type"));
-            pr.setRelatedCustomerCode(e.getString("related_customer_code"));
-            pr.setRelatedCustomerName(e.getString("related_customer_name"));
-            pr.setRelatedProduct(e.getString("related_product"));
-            pr.setCreateTime(e.getString("create_time"));
-            pr.setActive(Constant.ACTIVE);
-
-            int recordCount = businessPriceRoleMapper.selectCountByPrimaryKey(pr.getId());
+            BeanUtils.copyNotNullFields(priceRoleAO, priceRole);
+            priceRole.setActive(Constant.ACTIVE);
+            int recordCount = businessPriceRoleMapper.selectCountByPrimaryKey(priceRole.getId());
             if(recordCount == 0){
-                pr.setCreateId(Constant.TASK_DEFAULT_USER_ID);
-                pr.setInsertTime(currDate);
-                businessPriceRoleMapper.insertSelective(pr);
-            }else{
-                pr.setUpdateId(Constant.TASK_DEFAULT_USER_ID);
-                pr.setUpdateTime(currDate);
-                businessPriceRoleMapper.updateByPrimaryKeySelective(pr);
+                priceRole.setCreateId(Constant.TASK_DEFAULT_USER_ID);
+                priceRole.setInsertTime(currDate);
+                businessPriceRoleMapper.insertSelective(priceRole);
+            } else {
+                priceRole.setUpdateId(Constant.TASK_DEFAULT_USER_ID);
+                priceRole.setUpdateTime(currDate);
+                businessPriceRoleMapper.updateByPrimaryKeySelective(priceRole);
             }
         }
     }

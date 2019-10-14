@@ -1011,6 +1011,13 @@ public class DateUtil {
 		return dft.format(calendar.getTime());
 	}
 
+	public static String getPerMonth(String currMonth) throws ParseException{
+		SimpleDateFormat dft = new SimpleDateFormat("yyyyMM");
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(dft.parse(currMonth));
+		calendar.add(Calendar.MONTH, 1);
+		return dft.format(calendar.getTime());
+	}
 
 	/**
 	 * 获取指定年月的最后一天
