@@ -61,7 +61,7 @@ public class CatalogPriceService {
      * @return
      */
     public CatalogPrice selectByProductModelAndCustomerName(String productModel,String bu,String inCustomer){
-        return catalogPriceMapper.selectByProductModelAndCustomerName(productModel,bu,inCustomer);
+        return catalogPriceMapper.selectByProductModelAndCustomerName(bu,productModel,inCustomer);
     }
 
     /**

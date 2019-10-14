@@ -1,5 +1,6 @@
 package com.crazy.portal.controller.system;
 
+import com.crazy.portal.annotation.OperationLog;
 import com.crazy.portal.bean.BaseResponse;
 import com.crazy.portal.bean.customer.basic.CustFileUploadVO;
 import com.crazy.portal.bean.customer.basic.UploadFileVO;
@@ -38,11 +39,37 @@ public class SysController extends BaseController {
         return successResult(customerInfoService.selecAllCustomer());
     }
 
+    /**
+     * 获取销售
+     * @return
+     */
     @GetMapping("/sales/list")
     public BaseResponse getAllSales(){
         return successResult(internalUserMapper.selectSales());
     }
 
+    /**
+     * 获取cs
+     * @return
+     */
+    @GetMapping("/cs/list")
+    public BaseResponse getAllCS(){
+        return successResult(internalUserMapper.selectCS());
+    }
+
+    /**
+     * 获取代理商经营部
+     * @return
+     */
+    @GetMapping("/ds/list")
+    public BaseResponse getAllDS(){
+        return successResult(internalUserMapper.selectDS());
+    }
+
+    /**
+     * 获取代理商
+     * @return
+     */
     @GetMapping("/dealer/list")
     public BaseResponse getDealerList(){
         return successResult(customerInfoService.getDealerList());
@@ -72,6 +99,7 @@ public class SysController extends BaseController {
         return successResult(salesGroupService.selectSalesGroup());
     }
 
+    @OperationLog
     @PostMapping(value = "/customer/file/upload")
     public BaseResponse customerFileUpload(CustFileUploadVO vo){
         customerInfoService.uploadCustomerFiles(vo);

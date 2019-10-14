@@ -93,57 +93,35 @@ public class OrderApplyService {
         BusinessUtil.notNull(expectedDeliveryMonth,ErrorCodes.BusinessEnum.ORDER_EMPTY_EXPECTEDDELIVERYMONTH);
 
         String priceDate = DateUtil.getLastDayOfMonth(DateUtil.getYear(expectedDeliveryMonth),DateUtil.getMonth(expectedDeliveryMonth));
-//        IsHeader isHeader = this.buildIsHeader(order);
-//        isHeader.setPricedate(priceDate);
-//        ItItems itItems = new ItItems();
-//        itItems.setItem(this.buildItItems(records));
-//
-//        Zrfcsdpricesimulate zrfcsdpricesimulate = this.getZrfcsdpricesimulate(isHeader, itItems);
-//        ZrfcsdpricesimulateResponse response = orderApiService.priceSimulate(zrfcsdpricesimulate);
-//        BusinessUtil.notNull(response,ErrorCodes.CommonEnum.SYSTEM_EXCEPTION);
-//
-//        ZpricessimulateHeaderOut esHeader = response.getEsHeader();
-//        List<ZpricessimulateItemOut> items = response.getEtItems().getItem();
+        IsHeader isHeader = this.buildIsHeader(order);
+        isHeader.setPricedate(priceDate);
+        ItItems itItems = new ItItems();
+        itItems.setItem(this.buildItItems(records));
 
-//        for(OrderLineEO orderLineEO : records){
-//            //设置定价
-//            orderLineEO.setPriceDate(priceDate);
-//            //设置价格
-//            if(items.isEmpty()){
-//                orderLineEO.setRPrice(BigDecimal.ZERO);
-//                orderLineEO.setRNetPrice(BigDecimal.ZERO);
-//            }
-//            for(ZpricessimulateItemOut item : items){
-//                if(item.getProductid().equals(orderLineEO.getProductId())){
-//                    BigDecimal price = item.getPrice();
-//                    orderLineEO.setRPrice(price == null ? BigDecimal.ZERO : price);
-//                    BigDecimal netprice = item.getNetprice();
-//                    orderLineEO.setRNetPrice(netprice == null ? BigDecimal.ZERO : netprice);
-//                }
-//            }
-//        }
-//        map.put("lines",records);
-//        map.put("grossValue",esHeader.getGrossvalue());
-//        map.put("netValue",esHeader.getNetvalue());        for(OrderLineEO orderLineEO : records){
-////            //设置定价
-////            orderLineEO.setPriceDate(priceDate);
-////            //设置价格
-////            if(items.isEmpty()){
-////                orderLineEO.setRPrice(BigDecimal.ZERO);
-////                orderLineEO.setRNetPrice(BigDecimal.ZERO);
-////            }
-////            for(ZpricessimulateItemOut item : items){
-////                if(item.getProductid().equals(orderLineEO.getProductId())){
-////                    BigDecimal price = item.getPrice();
-////                    orderLineEO.setRPrice(price == null ? BigDecimal.ZERO : price);
-////                    BigDecimal netprice = item.getNetprice();
-////                    orderLineEO.setRNetPrice(netprice == null ? BigDecimal.ZERO : netprice);
-////                }
-////            }
-////        }
-////        map.put("lines",records);
-////        map.put("grossValue",esHeader.getGrossvalue());
-////        map.put("netValue",esHeader.getNetvalue());
+        Zrfcsdpricesimulate zrfcsdpricesimulate = this.getZrfcsdpricesimulate(isHeader, itItems);
+        ZrfcsdpricesimulateResponse response = orderApiService.priceSimulate(zrfcsdpricesimulate);
+        BusinessUtil.notNull(response,ErrorCodes.CommonEnum.SYSTEM_EXCEPTION);
+
+        ZpricessimulateHeaderOut esHeader = response.getEsHeader();
+        List<ZpricessimulateItemOut> items = response.getEtItems().getItem();
+
+        for(OrderLineEO orderLineEO : records){
+            //设置定价
+            orderLineEO.setPriceDate(priceDate);
+            //设置价格
+            if(items.isEmpty()){
+                orderLineEO.setRPrice(BigDecimal.ZERO);
+                orderLineEO.setRNetPrice(BigDecimal.ZERO);
+            }
+            for(ZpricessimulateItemOut item : items){
+                if(item.getProductid().equals(orderLineEO.getProductId())){
+                    BigDecimal price = item.getPrice();
+                    orderLineEO.setRPrice(price == null ? BigDecimal.ZERO : price);
+                    BigDecimal netprice = item.getNetprice();
+                    orderLineEO.setRNetPrice(netprice == null ? BigDecimal.ZERO : netprice);
+                }
+            }
+        }
 
         records.forEach(x->{
             x.setRPrice(BigDecimal.ZERO);

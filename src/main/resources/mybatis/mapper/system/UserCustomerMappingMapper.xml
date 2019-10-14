@@ -154,17 +154,17 @@
   <select id="selectByPage" parameterType="com.crazy.portal.bean.system.UserCustomerMappingBean" resultMap="BaseResultMap">
     select * from t_user_customer_mapping
     where active=1
-    <if test="mappingModel!=null">
+    <if test="mappingModel!=null and mappingModel!=''">
       and mapping_model = #{mappingModel}
     </if>
-    <if test="cdUserId !=null">
+    <if test="cdUserId !=null and cdUserId!= ''">
       and cd_user_id = #{cdUserId}
     </if>
-    <if test="dealerUserId !=null">
+    <if test="dealerUserId !=null and dealerUserId != ''">
       and dealer_user_id = #{dealerUserId}
     </if>
-    <if test="custId !=null">
-      and cust_id like '%'+#{mappingModel}+'%'
+    <if test="custId !=null and custId != '' ">
+      and cust_id like concat('%',#{custId},'%')
     </if>
   </select>
 

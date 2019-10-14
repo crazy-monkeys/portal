@@ -1018,15 +1018,15 @@ public class CustomerInfoService {
     private void checkCustomer(CustomerInfo customerInfo) {
         if (StringUtil.isNotEmpty(customerInfo.getCustMobile())) {
             String telRegex = "[1][345678]\\d{9}";
-            BusinessUtil.assertFlase(customerInfo.getCustMobile().matches(telRegex), ErrorCodes.BusinessEnum.CUSTOMER_MOBILE_IS_INACTIVE);
+            BusinessUtil.assertTrue(customerInfo.getCustMobile().matches(telRegex), ErrorCodes.BusinessEnum.CUSTOMER_MOBILE_IS_INACTIVE);
         }
         if (StringUtil.isNotEmpty(customerInfo.getCustEmail())) {
             String mailRegex = "\\w+@\\w+(\\.\\w{2,3})*\\.\\w{2,3}";
-            BusinessUtil.assertFlase(customerInfo.getCustEmail().matches(mailRegex), ErrorCodes.BusinessEnum.CUSTOMER_EMAIL_IS_INACTIVE);
+            BusinessUtil.assertTrue(customerInfo.getCustEmail().matches(mailRegex), ErrorCodes.BusinessEnum.CUSTOMER_EMAIL_IS_INACTIVE);
         }
         if (StringUtil.isNotEmpty(customerInfo.getCustWeb())) {
             String webRegex = "^([hH][tT]{2}[pP]://|[hH][tT]{2}[pP][sS]://)(([A-Za-z0-9-~]+).)+([A-Za-z0-9-~\\/])+$";
-            BusinessUtil.assertFlase(customerInfo.getCustWeb().matches(webRegex), ErrorCodes.BusinessEnum.CUSTOMER_EMAIL_IS_INACTIVE);
+            BusinessUtil.assertTrue(customerInfo.getCustWeb().matches(webRegex), ErrorCodes.BusinessEnum.CUSTOMER_WEB_IS_INACTIVE);
         }
     }
 
@@ -1036,6 +1036,7 @@ public class CustomerInfoService {
      * @param vo
      */
     public void uploadCustomerFiles(CustFileUploadVO vo){
+        log.info("外部客户附件上传Code"+vo.getOutCode());
         BusinessUtil.assertFlase(StringUtil.isEmpty(vo.getOutCode()),ErrorCodes.BusinessEnum.CUSTOMER_IS_EMPYT);
         CustomerInfo customerInfo = customerInfoMapper.selectByOutCode(vo.getOutCode());
         BusinessUtil.assertFlase(null == customerInfo,ErrorCodes.BusinessEnum.CUSTOMER_IS_EMPYT);
