@@ -2,87 +2,258 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.crazy.portal.dao.archive.ArchiveMapper">
   <resultMap id="BaseResultMap" type="com.crazy.portal.entity.archive.Archive">
-    <id column="archive_id" jdbcType="INTEGER" property="archiveId" />
-    <id column="user_id" jdbcType="INTEGER" property="userId" />
-    <result column="role_id" jdbcType="INTEGER" property="roleId" />
-    <result column="role_name" jdbcType="VARCHAR" property="roleName" />
-    <result column="user_name" jdbcType="VARCHAR" property="userName" />
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="third_file_name" jdbcType="VARCHAR" property="thirdFileName" />
+    <result column="version" jdbcType="VARCHAR" property="version" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="file_storage_path" jdbcType="VARCHAR" property="fileStoragePath" />
+    <result column="active" jdbcType="INTEGER" property="active" />
+    <result column="file_source" jdbcType="VARCHAR" property="fileSource" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="release_user_id" jdbcType="INTEGER" property="releaseUserId" />
+    <result column="release_file_name" jdbcType="VARCHAR" property="releaseFileName" />
+    <result column="release_introduction" jdbcType="VARCHAR" property="releaseIntroduction" />
+    <result column="operational_mode" jdbcType="INTEGER" property="operationalMode" />
+    <result column="release_time" jdbcType="TIMESTAMP" property="releaseTime" />
+
+    <result column="create_time_str" jdbcType="VARCHAR" property="createTimeStr" />
+    <result column="release_time_str" jdbcType="VARCHAR" property="releaseTimeStr" />
+    <result column="release_user_name" jdbcType="VARCHAR" property="releaseUserName" />
   </resultMap>
   <sql id="Base_Column_List">
-    archive_id, user_id, role_id
+    id, third_file_name, version, status, file_storage_path, active, file_source, create_time,
+    update_time, release_user_id, release_file_name, release_introduction, operational_mode,
+    release_time
   </sql>
-  <select id="selectByPrimaryKey" parameterType="com.crazy.portal.entity.archive.ArchiveUserRelationKey" resultMap="BaseResultMap">
-    select 
-    <include refid="Base_Column_List" />
-    from t_archive_user_relation
-    where archive_id = #{archiveId,jdbcType=INTEGER}
-      and user_id = #{userId,jdbcType=INTEGER}
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />,
+    date_format(create_time,'%Y-%m-%d %H:%i:%s') create_time_str,
+    date_format(release_time,'%Y-%m-%d %H:%i:%s') release_time_str
+    from t_archive
+    where id = #{id,jdbcType=INTEGER}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="com.crazy.portal.entity.archive.ArchiveUserRelationKey">
-    delete from t_archive_user_relation
-    where archive_id = #{archiveId,jdbcType=INTEGER}
-      and user_id = #{userId,jdbcType=INTEGER}
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_archive
+    where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.crazy.portal.entity.archive.ArchiveUserRelation">
-    insert into t_archive_user_relation (archive_id, user_id, role_id
-      )
-    values (#{archiveId,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{roleId,jdbcType=INTEGER}
-      )
+  <insert id="insert" parameterType="com.crazy.portal.entity.archive.Archive">
+    insert into t_archive (id, third_file_name, version,
+    status, file_storage_path, active,
+    file_source, create_time, update_time,
+    release_user_id, release_file_name, release_introduction,
+    operational_mode, release_time)
+    values (#{id,jdbcType=INTEGER}, #{thirdFileName,jdbcType=VARCHAR}, #{version,jdbcType=VARCHAR},
+    #{status,jdbcType=INTEGER}, #{fileStoragePath,jdbcType=VARCHAR}, #{active,jdbcType=INTEGER},
+    #{fileSource,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP},
+    #{releaseUserId,jdbcType=INTEGER}, #{releaseFileName,jdbcType=VARCHAR}, #{releaseIntroduction,jdbcType=VARCHAR},
+    #{operationalMode,jdbcType=INTEGER}, #{releaseTime,jdbcType=TIMESTAMP})
   </insert>
-  <insert id="insertSelective" parameterType="com.crazy.portal.entity.archive.ArchiveUserRelation">
-    insert into t_archive_user_relation
+  <insert id="insertSelective" useGeneratedKeys="true" keyProperty="id" parameterType="com.crazy.portal.entity.archive.Archive">
+    insert into t_archive
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="archiveId != null">
-        archive_id,
+      <if test="id != null">
+        id,
       </if>
-      <if test="userId != null">
-        user_id,
+      <if test="thirdFileName != null">
+        third_file_name,
       </if>
-      <if test="roleId != null">
-        role_id,
+      <if test="version != null">
+        version,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="fileStoragePath != null">
+        file_storage_path,
+      </if>
+      <if test="active != null">
+        active,
+      </if>
+      <if test="fileSource != null">
+        file_source,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="releaseUserId != null">
+        release_user_id,
+      </if>
+      <if test="releaseFileName != null">
+        release_file_name,
+      </if>
+      <if test="releaseIntroduction != null">
+        release_introduction,
+      </if>
+      <if test="operationalMode != null">
+        operational_mode,
+      </if>
+      <if test="releaseTime != null">
+        release_time,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="archiveId != null">
-        #{archiveId,jdbcType=INTEGER},
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
       </if>
-      <if test="userId != null">
-        #{userId,jdbcType=INTEGER},
+      <if test="thirdFileName != null">
+        #{thirdFileName,jdbcType=VARCHAR},
       </if>
-      <if test="roleId != null">
-        #{roleId,jdbcType=INTEGER},
+      <if test="version != null">
+        #{version,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="fileStoragePath != null">
+        #{fileStoragePath,jdbcType=VARCHAR},
+      </if>
+      <if test="active != null">
+        #{active,jdbcType=INTEGER},
+      </if>
+      <if test="fileSource != null">
+        #{fileSource,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="releaseUserId != null">
+        #{releaseUserId,jdbcType=INTEGER},
+      </if>
+      <if test="releaseFileName != null">
+        #{releaseFileName,jdbcType=VARCHAR},
+      </if>
+      <if test="releaseIntroduction != null">
+        #{releaseIntroduction,jdbcType=VARCHAR},
+      </if>
+      <if test="operationalMode != null">
+        #{operationalMode,jdbcType=INTEGER},
+      </if>
+      <if test="releaseTime != null">
+        #{releaseTime,jdbcType=TIMESTAMP},
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.crazy.portal.entity.archive.ArchiveUserRelation">
-    update t_archive_user_relation
+  <update id="updateByPrimaryKeySelective" parameterType="com.crazy.portal.entity.archive.Archive">
+    update t_archive
     <set>
-      <if test="roleId != null">
-        role_id = #{roleId,jdbcType=INTEGER},
+      <if test="thirdFileName != null">
+        third_file_name = #{thirdFileName,jdbcType=VARCHAR},
+      </if>
+      <if test="version != null">
+        version = #{version,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="fileStoragePath != null">
+        file_storage_path = #{fileStoragePath,jdbcType=VARCHAR},
+      </if>
+      <if test="active != null">
+        active = #{active,jdbcType=INTEGER},
+      </if>
+      <if test="fileSource != null">
+        file_source = #{fileSource,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="releaseUserId != null">
+        release_user_id = #{releaseUserId,jdbcType=INTEGER},
+      </if>
+      <if test="releaseFileName != null">
+        release_file_name = #{releaseFileName,jdbcType=VARCHAR},
+      </if>
+      <if test="releaseIntroduction != null">
+        release_introduction = #{releaseIntroduction,jdbcType=VARCHAR},
+      </if>
+      <if test="operationalMode != null">
+        operational_mode = #{operationalMode,jdbcType=INTEGER},
+      </if>
+      <if test="releaseTime != null">
+        release_time = #{releaseTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="typeId != null" >
+        type_id = #{typeId},
       </if>
     </set>
-    where archive_id = #{archiveId,jdbcType=INTEGER}
-      and user_id = #{userId,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.crazy.portal.entity.archive.ArchiveUserRelation">
-    update t_archive_user_relation
-    set role_id = #{roleId,jdbcType=INTEGER}
-    where archive_id = #{archiveId,jdbcType=INTEGER}
-      and user_id = #{userId,jdbcType=INTEGER}
+  <update id="updateByPrimaryKey" parameterType="com.crazy.portal.entity.archive.Archive">
+    update t_archive
+    set third_file_name = #{thirdFileName,jdbcType=VARCHAR},
+    version = #{version,jdbcType=VARCHAR},
+    status = #{status,jdbcType=INTEGER},
+    file_storage_path = #{fileStoragePath,jdbcType=VARCHAR},
+    active = #{active,jdbcType=INTEGER},
+    file_source = #{fileSource,jdbcType=VARCHAR},
+    create_time = #{createTime,jdbcType=TIMESTAMP},
+    update_time = #{updateTime,jdbcType=TIMESTAMP},
+    release_user_id = #{releaseUserId,jdbcType=INTEGER},
+    release_file_name = #{releaseFileName,jdbcType=VARCHAR},
+    release_introduction = #{releaseIntroduction,jdbcType=VARCHAR},
+    operational_mode = #{operationalMode,jdbcType=INTEGER},
+    release_time = #{releaseTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
   </update>
 
-  <delete id="deleteByArchiveId" >
-    delete from t_archive_user_relation where archive_id = #{archiveId}
-  </delete>
-
-  <select id="selectByArchiveId" resultMap="BaseResultMap" >
+  <select id="selectPageListData" resultMap="BaseResultMap" >
     select
-    role_id,
-    user_id,
-    'role test' role_name,
-    'user test' user_name
-    from t_archive_user_relation
-    where archive_id = #{archiveId}
+    t.id,
+    t.third_file_name,
+    release_file_name,
+    release_user_id,
+    file_storage_path,
+    date_format(t.release_time,'%Y-%m-%d %H:%i:%s') release_time_str,
+    t.status,
+    a.customer_name as release_user_name
+    from t_archive t
+    inner join t_user a on t.release_user_id = a.id
+    inner join t_sys_parameter p on t.type_id = p.p_value and p.p_model = 1 and p.p_function = 2
+    where 1 = 1
+    <if test="thirdFileName != null and thirdFileName != ''">
+      and t.third_file_name like concat('%',#{thirdFileName},'%')
+    </if>
+    <if test="typeId != null" >
+      and t.type_id = #{typeId}
+    </if>
+    and t.release_user_id = #{userId}
+    order by t.release_time desc
+  </select>
+
+  <select id="selectPageListDataByRole" resultMap="BaseResultMap" >
+    select
+    t.id,
+    t.third_file_name,
+    release_file_name,
+    release_user_id,
+    file_storage_path,
+    date_format(t.release_time,'%Y-%m-%d %H:%i:%s') release_time_str,
+    t.status,
+    a.customer_name as release_user_name
+    from t_archive t
+    inner join t_user a on t.release_user_id = a.id
+    inner join t_sys_parameter p on t.type_id = p.p_value and p.p_model = 1 and p.p_function = 2
+    inner join t_archive_user_relation d on t.id = d.archive_id and d.user_id = #{userId}
+    where 1 = 1
+    <if test="thirdFileName != null and thirdFileName != ''">
+      and t.third_file_name like concat('%',#{thirdFileName},'%')
+    </if>
+    <if test="typeId != null" >
+      and t.type_id = #{typeId}
+    </if>
+    and t.release_user_id = #{userId}
+    order by t.release_time desc
   </select>
 
 </mapper>

@@ -34,12 +34,14 @@ public class Archive {
     @JsonIgnore
     private Integer releaseUserId;
 
+    private String releaseUserName;
+
     private String releaseFileName;
-    @NotNull(message = "发布简介[releaseIntroduction]不能为空")
+//    @NotNull(message = "发布简介[releaseIntroduction]不能为空")
     private String releaseIntroduction;
 
-    @NotNull(message = "操作方式[operationalMode]不能为空")
-    @Range(max = 1, min = 0, message = "请输入有效的参数值operationalMode:[0,1]")
+//    @NotNull(message = "操作方式[operationalMode]不能为空")
+//    @Range(max = 1, min = 0, message = "请输入有效的参数值operationalMode:[0,1]")
     private Integer operationalMode;
     @JsonIgnore
     private Date releaseTime;
@@ -49,5 +51,9 @@ public class Archive {
 
     @Valid
     private List<ArchiveUserRelation> relations;
+
+    private List<Integer> userIds;
+
+    private Integer typeId;
 
 }

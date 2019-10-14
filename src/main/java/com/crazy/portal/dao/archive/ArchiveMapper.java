@@ -17,6 +17,11 @@ public interface ArchiveMapper {
 
     int updateByPrimaryKey(Archive record);
 
-    Page<Archive> selectPageListData(@Param(value = "thirdFileName") String thirdFileName,
-                                     @Param(value = "version") String version);
+    Page<Archive> selectPageListData(@Param(value = "thirdFileName") String fileName,
+                                     @Param(value = "typeId") Integer typeId,
+                                     @Param(value = "userId") Integer userId);
+
+    Page<Archive> selectPageListDataByRole(@Param(value = "thirdFileName") String fileName,
+                                          @Param(value = "typeId") Integer typeId,
+                                          @Param(value = "userId") Integer userId);
 }

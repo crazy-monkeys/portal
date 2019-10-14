@@ -6,8 +6,10 @@ import com.crazy.portal.entity.archive.Archive;
 import com.crazy.portal.service.archive.ArchiveService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 /**
@@ -26,8 +28,8 @@ public class ArchiveController extends BaseController {
      * 分页列表
      */
     @GetMapping(value = "/list")
-    public BaseResponse getListByPage(String thirdFileName, String version, Integer pageNum, Integer pageSize){
-        return super.successResult(archiveService.getListByPage(thirdFileName, version, pageNum, pageSize));
+    public BaseResponse getListByPage(String fileName, Integer typeId, Integer isRole, Integer pageNum, Integer pageSize){
+        return super.successResult(archiveService.getListByPage(fileName, typeId, isRole, pageNum, pageSize, super.getCurrentUser().getId()));
     }
 
     @GetMapping(value = "/{id}")
@@ -52,4 +54,16 @@ public class ArchiveController extends BaseController {
         archiveService.revokeById(id, super.getCurrentUser().getId());
         return super.successResult();
     }
+
+    @PostMapping(value = "/file")
+    public BaseResponse pushFile(MultipartFile file) {
+        return super.successResult(archiveService.pushFile(file));
+    }
+
+    @GetMapping(value = "/file/download")
+    public void downloadFile(HttpServletResponse response, Integer id) {
+        archiveService.downloadFile(response, id);
+        super.successResult();
+    }
+
 }

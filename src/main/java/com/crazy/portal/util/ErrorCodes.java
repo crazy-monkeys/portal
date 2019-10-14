@@ -257,6 +257,11 @@ public class ErrorCodes {
         ORDER_IS_CANCEL(900020,"不允许的操作,提货单已取消",""),
         ORDER_IS_INACTIVE(900021,"不允许的操作,订单状态不满足",""),
         ORDER_QTY_IS_ENOUGH(900022,"订单可提数量不足",""),
+
+        //文档管理
+        ARCHIVE_FILE_NOT_EMPTY(100001, "请选择需要上传的文件", ""),
+        ARCHIVE_DB_RECORD_NOT_FOUND(100002, "未找到对应数据记录，请重新操作", ""),
+        ARCHIVE_DB_RECORD_STATUS_ERROR(100003, "记录未发布或已经撤销，请重新操作", ""),
         ;
         private final int code;
         private final String zhMsg;

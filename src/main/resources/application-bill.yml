@@ -47,6 +47,7 @@ file:
     reader-dir: ${portal.file-url}/business/
     announcement: #公告管理模块
       local: ${file.path.root-local}/announcement/
+    archive: ${file.path.root-local}/archive/
     deliver: #出货管理模块
       template: ${file.path.root-template}/deliver/
       push: ${file.path.root-thrid-push}/deliver/
