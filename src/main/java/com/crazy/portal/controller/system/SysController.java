@@ -1,5 +1,6 @@
 package com.crazy.portal.controller.system;
 
+import com.crazy.portal.annotation.OperationLog;
 import com.crazy.portal.bean.BaseResponse;
 import com.crazy.portal.bean.customer.basic.CustFileUploadVO;
 import com.crazy.portal.bean.customer.basic.UploadFileVO;
@@ -98,6 +99,7 @@ public class SysController extends BaseController {
         return successResult(salesGroupService.selectSalesGroup());
     }
 
+    @OperationLog
     @PostMapping(value = "/customer/file/upload")
     public BaseResponse customerFileUpload(CustFileUploadVO vo){
         customerInfoService.uploadCustomerFiles(vo);
