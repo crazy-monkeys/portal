@@ -1,5 +1,6 @@
 package com.crazy.portal.controller.price;
 
+import com.crazy.portal.annotation.OperationLog;
 import com.crazy.portal.bean.BaseResponse;
 import com.crazy.portal.bean.price.EnquiryApprovalBean;
 import com.crazy.portal.bean.price.EnquiryPriceVO;
@@ -35,6 +36,7 @@ public class EnquiryApprovalController extends BaseController {
      * @return
      */
     @PostMapping("/approval")
+    @OperationLog
     public BaseResponse approval(@RequestBody EnquiryApprovalBean enquiryApprovalBean){
         enquiryApprovalBean.setApprover(super.getCurrentUser().getLoginName());
         enquiryPriceService.approve(enquiryApprovalBean);

@@ -58,6 +58,7 @@ public class OrderApprovalController extends BaseController {
      * @return
      */
     @PostMapping("/delivery")
+    @OperationLog
     public BaseResponse approvalDelivery(@RequestBody DeliveryApproveVO deliveryApproveVO){
         orderService.deliveryApprove(deliveryApproveVO, getCurrentUserId());
         return successResult();

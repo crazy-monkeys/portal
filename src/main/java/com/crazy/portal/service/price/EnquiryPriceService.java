@@ -87,11 +87,8 @@ public class EnquiryPriceService {
         BusinessUtil.assertFlase(applyIds.isEmpty(), ErrorCodes.PriceEnum.PRICE_EMPTY_APPLYIDS);
 
         String approvalStatus = enquiryApprovalBean.getApprovalStatus();
-        String approvalRemark = enquiryApprovalBean.getApprovalRemark();
-        String approver = enquiryApprovalBean.getApprover();
 
         applyIds.forEach(applyId->{
-            log.info("用户[{}] 进行 [{}] 审批操作,审批状态为[{}]",approver,applyId,approvalStatus);
             EnquiryPrice enquiryPrice = enquiryPriceMapper.selectByPrimaryKey(applyId);
             BusinessUtil.notNull(enquiryPrice, ErrorCodes.PriceEnum.PRICE_ENQUIEY_NOT_EXISTS);
 
@@ -103,8 +100,8 @@ public class EnquiryPriceService {
             BusinessUtil.assertTrue(checkApprovalStatus,ErrorCodes.PriceEnum.PRICE_NON_PENGDING_STATUS);
 
             enquiryPrice.setApprovalStatus(approvalStatus);
-            enquiryPrice.setApprovalRemark(approvalRemark);
-            enquiryPrice.setApprover(approver);
+            enquiryPrice.setApprovalRemark(enquiryApprovalBean.getApprovalRemark());
+            enquiryPrice.setApprover(enquiryApprovalBean.getApprover());
 
             //如果是通过状态，查询出目录价格
             if(approvalStatus.equals(Enums.APPROVAL_STATUS.pass.toString())) {

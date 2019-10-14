@@ -129,6 +129,7 @@ public class OrderApplyController extends BaseController {
      * @return
      */
     @PostMapping("/submitOrderDelivery")
+    @OperationLog
     public BaseResponse submitOrderDelivery(@RequestBody DeliveryOrderVO bean) {
         orderApplyService.submitApplyDelivery(bean, getCurrentUserId());
         return successResult();
@@ -140,6 +141,7 @@ public class OrderApplyController extends BaseController {
      * @return
      */
     @PostMapping("/update/delivery")
+    @OperationLog
     public BaseResponse DeliveryUpdate(@RequestBody DeliverOrder order){
         orderApplyService.updateDeliveryOrder(order, getCurrentUserId());
         return successResult();
@@ -151,6 +153,7 @@ public class OrderApplyController extends BaseController {
      * @return
      */
     @PostMapping("/cancel/delivery")
+    @OperationLog
     public BaseResponse DeliveryCancel(@RequestBody DeliveryOrderCancelVO order){
         orderApplyService.cancelDeliveryOrder(order, getCurrentUserId());
         return successResult();

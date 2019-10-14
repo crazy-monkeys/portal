@@ -1,5 +1,6 @@
 package com.crazy.portal.controller.price;
 
+import com.crazy.portal.annotation.OperationLog;
 import com.crazy.portal.bean.BaseResponse;
 import com.crazy.portal.bean.price.EnquiryPriceVO;
 import com.crazy.portal.controller.BaseController;
@@ -28,6 +29,7 @@ public class EnquiryController extends BaseController {
      * @return
      */
     @PostMapping("/apply")
+    @OperationLog
     public BaseResponse apply(@RequestBody EnquiryPriceVO enquiryPriceVO){
         enquiryPriceService.apply(enquiryPriceVO,super.getCurrentUser().getLoginName());
         return super.successResult();
@@ -49,6 +51,7 @@ public class EnquiryController extends BaseController {
      * @return
      */
     @DeleteMapping("/delete/{applyId}")
+    @OperationLog
     public BaseResponse delete(@PathVariable Integer applyId){
         enquiryPriceService.delete(applyId);
         return super.successResult();
