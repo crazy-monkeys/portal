@@ -780,6 +780,7 @@
 
   <select id="selectAllCustomer" resultMap="BaseResultMap">
       select * from t_customer_info where active = 1
+      order by business_type desc
   </select>
 
   <update id="updateCustomerInfo">

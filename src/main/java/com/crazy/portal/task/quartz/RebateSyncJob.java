@@ -12,8 +12,12 @@ import org.quartz.JobExecutionContext;
 
 import javax.annotation.Resource;
 
-
-@Task(value = "rebate数据同步",scheduleCode = "rebate_sync")
+/**
+ * Rebate数据同步
+ * BI => portal
+ * 频率：每天0点执行一次
+ */
+@Task(value = "Rebate数据同步",scheduleCode = "rebate_sync")
 @Slf4j
 @DisallowConcurrentExecution
 public class RebateSyncJob implements Job{
