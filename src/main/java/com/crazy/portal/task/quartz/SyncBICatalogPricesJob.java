@@ -46,10 +46,9 @@ public class SyncBICatalogPricesJob implements Job {
 
         biActualPrices.forEach(x->{
             final String sapCode = x.getSap_code();
-            final Date now = new Date();
             //根据sapCode查询唯一记录
             CatalogPrice catalogPrice = catalogPriceService.selectBySapCode(sapCode);
-
+            final Date now = new Date();
             if(Objects.nonNull(catalogPrice)){
                 String createDate = DateUtil.format(catalogPrice.getCreateTime(),DateUtil.SHORT_FORMAT);
                 String nowDate = DateUtil.format(now,DateUtil.SHORT_FORMAT);
@@ -63,7 +62,7 @@ public class SyncBICatalogPricesJob implements Job {
                     JSONArray boms = catalogPrice.getBoms();
                     CatalogPrice updateCatalogPrice = this.buildCatalogPrice(x, boms, now);
                     updateCatalogPrice.setId(catalogPrice.getId());
-                    updateCatalogPrice.setModifyTime(new Date());
+                    updateCatalogPrice.setModifyTime(now);
                     catalogPriceService.update(updateCatalogPrice);
                     return;
                 }
