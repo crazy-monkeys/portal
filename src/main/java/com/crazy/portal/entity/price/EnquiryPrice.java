@@ -44,6 +44,10 @@ public class EnquiryPrice {
     private Date applyTime;
 
     /**
+     * 虚拟物料号
+     */
+    private String sapCode;
+    /**
      * 
      */
     private String bu;

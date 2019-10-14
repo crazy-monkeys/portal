@@ -131,6 +131,7 @@ public class EnquiryPriceService {
                 enquiryPrice.setEffectTime(catalogPrice.getEffectTime());
                 enquiryPrice.setDeadTime(catalogPrice.getDeadTime());
                 enquiryPrice.setModifyTime(catalogPrice.getModifyTime());
+                enquiryPrice.setSapCode(catalogPrice.getSapCode());
             }
             enquiryPriceMapper.updateByPrimaryKeySelective(enquiryPrice);
         });

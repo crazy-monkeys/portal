@@ -6,6 +6,7 @@
 
     <result column="apply_remark" jdbcType="VARCHAR" property="applyRemark" />
     <result column="apply_time" jdbcType="TIMESTAMP" property="applyTime" />
+    <result column="sap_code" jdbcType="VARCHAR" property="sapCode" />
     <result column="bu" jdbcType="VARCHAR" property="bu" />
     <result column="pdt" jdbcType="VARCHAR" property="pdt" />
     <result column="status" jdbcType="VARCHAR" property="status" />
@@ -26,7 +27,7 @@
     <result column="boms" property="boms" typeHandler="com.crazy.portal.config.mybatis.handler.ArrayJsonHandler" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, apply_remark, apply_time, bu, pdt,status, product_model,product_type,price_type,
+    id, apply_remark, apply_time, sap_code,bu, pdt,status, product_model,product_type,price_type,
     platform, catalog_price, in_customer, effect_time, dead_time, modify_time, approval_status, 
     approval_remark, approver, proposer,remark,boms
   </sql>
@@ -93,6 +94,9 @@
       <if test="applyTime != null">
         apply_time,
       </if>
+      <if test="sapCode != null">
+        sap_code,
+      </if>
       <if test="bu != null">
         bu,
       </if>
@@ -158,6 +162,9 @@
       <if test="applyTime != null">
         #{applyTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="sapCode != null">
+        #{sapCode,jdbcType=VARCHAR},
+      </if>
       <if test="bu != null">
         #{bu,jdbcType=VARCHAR},
       </if>
@@ -222,6 +229,9 @@
       </if>
       <if test="applyTime != null">
         apply_time = #{applyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="sapCode != null">
+        sap_code = #{sapCode,jdbcType=VARCHAR},
       </if>
       <if test="bu != null">
         bu = #{bu,jdbcType=VARCHAR},
