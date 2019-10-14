@@ -227,6 +227,7 @@
     <if test="typeId != null" >
       and t.type_id = #{typeId}
     </if>
+    and t.status in (-1,1)
     and t.release_user_id = #{userId}
     order by t.release_time desc
   </select>
@@ -253,7 +254,7 @@
       and t.type_id = #{typeId}
     </if>
     and t.release_user_id = #{userId}
-    and t.status != -1
+    and t.status = 1
     order by t.release_time desc
   </select>
 
