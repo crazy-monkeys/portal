@@ -36,6 +36,7 @@ CREATE TABLE `t_archive` (
   `release_introduction` varchar(1000) DEFAULT NULL COMMENT '简介',
   `operational_mode` int(11) DEFAULT NULL COMMENT '操作方式 0:可见 1:可下载',
   `release_time` datetime DEFAULT NULL COMMENT '发布时间',
+  `type_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
