@@ -104,8 +104,4 @@ public class RebateController extends BaseController {
         return successResult();
     }
 
-    @GetMapping("/test")
-    public BaseResponse test(){
-        return successResult();
-    }
 }
