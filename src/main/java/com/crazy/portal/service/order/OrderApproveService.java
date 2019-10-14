@@ -25,12 +25,10 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.beans.IntrospectionException;
 import java.lang.reflect.InvocationTargetException;
-import java.math.BigDecimal;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -172,7 +170,7 @@ public class OrderApproveService {
         //如果修改成功
         if(resultType.equals("1")){
             List<ZsalesorderchangeOutItem> items = response.getEtItems().getItem();
-            items.forEach(sapLine->{
+            items.forEach(sapLine->
                  orderLines.forEach(line->{
                     if(line.getRProductId().equals(sapLine.getProductid())){
                         //修改为失效
@@ -181,8 +179,8 @@ public class OrderApproveService {
                         line.setUpdateTime(DateUtil.getCurrentTS());
                         orderLineMapper.updateByPrimaryKeySelective(line);
                     }
-                });
-            });
+                })
+            );
         }
         //如果所有订单行都被设置为取消,整单取消
         List<OrderLine> results = orderLines.stream().filter(x -> x.getActice().equals(1)).collect(Collectors.toList());
@@ -223,7 +221,7 @@ public class OrderApproveService {
             orderMapper.updateByPrimaryKeySelective(order);
             //修改订单行
             List<ZsalesorderchangeOutItem> items = response.getEtItems().getItem();
-            items.forEach(sapLine->{
+            items.forEach(sapLine->
                 orderLines.forEach(line->{
                     String productId = line.getProductId();
                     if(line.getRProductId().equals(sapLine.getProductid())){
@@ -233,8 +231,8 @@ public class OrderApproveService {
                         line.setUpdateTime(DateUtil.getCurrentTS());
                         orderLineMapper.updateByPrimaryKeySelective(line);
                     }
-                });
-            });
+                })
+            );
         }
     }
 
