@@ -1036,7 +1036,6 @@ public class CustomerInfoService {
      * @param vo
      */
     public void uploadCustomerFiles(CustFileUploadVO vo){
-        log.info("外部客户附件上传Code"+vo.getOutCode());
         BusinessUtil.assertFlase(StringUtil.isEmpty(vo.getOutCode()),ErrorCodes.BusinessEnum.CUSTOMER_IS_EMPYT);
         CustomerInfo customerInfo = customerInfoMapper.selectByOutCode(vo.getOutCode());
         BusinessUtil.assertFlase(null == customerInfo,ErrorCodes.BusinessEnum.CUSTOMER_IS_EMPYT);

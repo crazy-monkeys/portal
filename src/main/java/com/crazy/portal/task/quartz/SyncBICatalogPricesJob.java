@@ -4,6 +4,8 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.crazy.portal.annotation.Task;
 import com.crazy.portal.bean.price.BICatalogPrice;
+import com.crazy.portal.dao.cusotmer.CustomerInfoMapper;
+import com.crazy.portal.entity.cusotmer.CustomerInfo;
 import com.crazy.portal.entity.price.CatalogBomsPrice;
 import com.crazy.portal.entity.price.CatalogPrice;
 import com.crazy.portal.service.price.CatalogPriceService;
@@ -33,6 +35,8 @@ public class SyncBICatalogPricesJob implements Job {
 
     @Resource
     private CatalogPriceService catalogPriceService;
+    @Resource
+    private CustomerInfoMapper customerInfoMapper;
 
     @Override
     public void execute(JobExecutionContext context){
@@ -101,7 +105,10 @@ public class SyncBICatalogPricesJob implements Job {
         catalogPrice.setBu(x.getBU());
         catalogPrice.setPdt(x.getPDT());
         catalogPrice.setSapCode(x.getSap_code());
-        catalogPrice.setInCustomer(x.getCustomer_incode());
+
+        CustomerInfo customerInfo = customerInfoMapper.selectByOutCode(x.getCustomer_incode());
+        String inCustomer = null == customerInfo?x.getCustomer_incode():customerInfo.getCustAbbreviation();
+        catalogPrice.setInCustomer(inCustomer);
         catalogPrice.setProductModel(x.getProduct());
         catalogPrice.setPriceType(x.getPrice_type());
         catalogPrice.setProductType(x.getClass2());
@@ -127,7 +134,7 @@ public class SyncBICatalogPricesJob implements Job {
         CatalogBomsPrice bom = new CatalogBomsPrice();
         bom.setBomId(x.getBom_id());
         bom.setBomName(x.getBom_name());
-        bom.setInCustomer(x.getCustomer_incode());
+        bom.setInCustomer(inCustomer);
         bom.setPrice(new BigDecimal(x.getPrice()));
         bom.setQty(Integer.parseInt(x.getQty()));
         boms.add(bom);
