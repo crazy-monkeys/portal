@@ -4,17 +4,20 @@
   <resultMap id="BaseResultMap" type="com.crazy.portal.entity.business.idr.BusinessInsuranceInfo">
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="idr_info_id" jdbcType="INTEGER" property="idrInfoId" />
+    <result column="shipment_company" jdbcType="VARCHAR" property="shipmentCompany" />
     <result column="customer_name" jdbcType="VARCHAR" property="customerName" />
-    <result column="adjust_date" jdbcType="VARCHAR" property="adjustDate" />
     <result column="receive_goods_date" jdbcType="VARCHAR" property="receiveGoodsDate" />
+    <result column="adjust_date" jdbcType="VARCHAR" property="adjustDate" />
     <result column="bu" jdbcType="VARCHAR" property="bu" />
     <result column="pdt" jdbcType="VARCHAR" property="pdt" />
     <result column="product_type" jdbcType="VARCHAR" property="productType" />
     <result column="platform" jdbcType="VARCHAR" property="platform" />
     <result column="product_model" jdbcType="VARCHAR" property="productModel" />
     <result column="num" jdbcType="VARCHAR" property="num" />
-    <result column="price" jdbcType="VARCHAR" property="price" />
     <result column="currency" jdbcType="VARCHAR" property="currency" />
+    <result column="customer_attribute" jdbcType="VARCHAR" property="customerAttribute" />
+    <result column="agency_rate" jdbcType="VARCHAR" property="agencyRate" />
+    <result column="price" jdbcType="VARCHAR" property="price" />
     <result column="new_price" jdbcType="VARCHAR" property="newPrice" />
     <result column="insurance_amount" jdbcType="VARCHAR" property="insuranceAmount" />
     <result column="modify_date" jdbcType="VARCHAR" property="modifyDate" />
@@ -25,12 +28,13 @@
     <result column="remark" jdbcType="VARCHAR" property="remark" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, idr_info_id, customer_name, adjust_date, receive_goods_date, bu, pdt, product_type, 
-    platform, product_model, num, price, currency, new_price, insurance_amount, modify_date, 
-    create_id, create_time, update_id, update_time, remark
+    id, idr_info_id, shipment_company, customer_name, receive_goods_date, adjust_date,
+    bu, pdt, product_type, platform, product_model, num, currency, customer_attribute,
+    agency_rate, price, new_price, insurance_amount, modify_date, create_id, create_time,
+    update_id, update_time, remark
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select 
+    select
     <include refid="Base_Column_List" />
     from t_business_insurance_info
     where id = #{id,jdbcType=INTEGER}
@@ -49,14 +53,17 @@
       <if test="idrInfoId != null">
         idr_info_id,
       </if>
+      <if test="shipmentCompany != null">
+        shipment_company,
+      </if>
       <if test="customerName != null">
         customer_name,
       </if>
-      <if test="adjustDate != null">
-        adjust_date,
-      </if>
       <if test="receiveGoodsDate != null">
         receive_goods_date,
+      </if>
+      <if test="adjustDate != null">
+        adjust_date,
       </if>
       <if test="bu != null">
         bu,
@@ -76,11 +83,17 @@
       <if test="num != null">
         num,
       </if>
-      <if test="price != null">
-        price,
-      </if>
       <if test="currency != null">
         currency,
+      </if>
+      <if test="customerAttribute != null">
+        customer_attribute,
+      </if>
+      <if test="agencyRate != null">
+        agency_rate,
+      </if>
+      <if test="price != null">
+        price,
       </if>
       <if test="newPrice != null">
         new_price,
@@ -114,14 +127,17 @@
       <if test="idrInfoId != null">
         #{idrInfoId,jdbcType=INTEGER},
       </if>
+      <if test="shipmentCompany != null">
+        #{shipmentCompany,jdbcType=VARCHAR},
+      </if>
       <if test="customerName != null">
         #{customerName,jdbcType=VARCHAR},
       </if>
-      <if test="adjustDate != null">
-        #{adjustDate,jdbcType=VARCHAR},
-      </if>
       <if test="receiveGoodsDate != null">
         #{receiveGoodsDate,jdbcType=VARCHAR},
+      </if>
+      <if test="adjustDate != null">
+        #{adjustDate,jdbcType=VARCHAR},
       </if>
       <if test="bu != null">
         #{bu,jdbcType=VARCHAR},
@@ -141,11 +157,17 @@
       <if test="num != null">
         #{num,jdbcType=VARCHAR},
       </if>
-      <if test="price != null">
-        #{price,jdbcType=VARCHAR},
-      </if>
       <if test="currency != null">
         #{currency,jdbcType=VARCHAR},
+      </if>
+      <if test="customerAttribute != null">
+        #{customerAttribute,jdbcType=VARCHAR},
+      </if>
+      <if test="agencyRate != null">
+        #{agencyRate,jdbcType=VARCHAR},
+      </if>
+      <if test="price != null">
+        #{price,jdbcType=VARCHAR},
       </if>
       <if test="newPrice != null">
         #{newPrice,jdbcType=VARCHAR},
@@ -179,14 +201,17 @@
       <if test="idrInfoId != null">
         idr_info_id = #{idrInfoId,jdbcType=INTEGER},
       </if>
+      <if test="shipmentCompany != null">
+        shipment_company = #{shipmentCompany,jdbcType=VARCHAR},
+      </if>
       <if test="customerName != null">
         customer_name = #{customerName,jdbcType=VARCHAR},
       </if>
-      <if test="adjustDate != null">
-        adjust_date = #{adjustDate,jdbcType=VARCHAR},
-      </if>
       <if test="receiveGoodsDate != null">
         receive_goods_date = #{receiveGoodsDate,jdbcType=VARCHAR},
+      </if>
+      <if test="adjustDate != null">
+        adjust_date = #{adjustDate,jdbcType=VARCHAR},
       </if>
       <if test="bu != null">
         bu = #{bu,jdbcType=VARCHAR},
@@ -206,11 +231,17 @@
       <if test="num != null">
         num = #{num,jdbcType=VARCHAR},
       </if>
-      <if test="price != null">
-        price = #{price,jdbcType=VARCHAR},
-      </if>
       <if test="currency != null">
         currency = #{currency,jdbcType=VARCHAR},
+      </if>
+      <if test="customerAttribute != null">
+        customer_attribute = #{customerAttribute,jdbcType=VARCHAR},
+      </if>
+      <if test="agencyRate != null">
+        agency_rate = #{agencyRate,jdbcType=VARCHAR},
+      </if>
+      <if test="price != null">
+        price = #{price,jdbcType=VARCHAR},
       </if>
       <if test="newPrice != null">
         new_price = #{newPrice,jdbcType=VARCHAR},

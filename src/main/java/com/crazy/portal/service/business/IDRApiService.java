@@ -155,8 +155,7 @@ public class IDRApiService {
                 refundPrice.setQuantity(e.getNum());
                 refundPrice.setCusPickPrice(e.getCustomerPrice() != null ? e.getCustomerPrice().floatValue() : null);
                 refundPrice.setAgentPickPrice(e.getAgentPrice() != null ? e.getAgentPrice().floatValue() : null);
-                //TODO 代理费率，接口获取
-                refundPrice.setAgenceRate(null);
+                refundPrice.setAgenceRate(Float.valueOf(e.getAgencyRate()));
                 refundPrice.setDifferencePrice(e.getDifferenceAmount().floatValue());
                 refundPrice.setRefundRemark(e.getRemark());
                 refundPriceItem.add(refundPrice);

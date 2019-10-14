@@ -76,6 +76,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
         registry.addViewController("/").setViewName("forward:/scheduleJob/list");
+        registry.addViewController("/login").setViewName("task/login");
     }
 
     @Bean

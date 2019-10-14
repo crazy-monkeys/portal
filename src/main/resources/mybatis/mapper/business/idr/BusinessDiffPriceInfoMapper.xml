@@ -4,7 +4,9 @@
   <resultMap id="BaseResultMap" type="com.crazy.portal.entity.business.idr.BusinessDiffPriceInfo">
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="idr_info_id" jdbcType="INTEGER" property="idrInfoId" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
     <result column="difference_amount" jdbcType="DECIMAL" property="differenceAmount" />
+    <result column="agency_rate" jdbcType="VARCHAR" property="agencyRate" />
     <result column="agent_price" jdbcType="DECIMAL" property="agentPrice" />
     <result column="customer_price" jdbcType="DECIMAL" property="customerPrice" />
     <result column="num" jdbcType="INTEGER" property="num" />
@@ -14,20 +16,21 @@
     <result column="product_type" jdbcType="VARCHAR" property="productType" />
     <result column="pdt" jdbcType="VARCHAR" property="pdt" />
     <result column="bu" jdbcType="VARCHAR" property="bu" />
+    <result column="customer_attribute" jdbcType="VARCHAR" property="customerAttribute" />
     <result column="customer_name" jdbcType="VARCHAR" property="customerName" />
-    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="shipment_company" jdbcType="VARCHAR" property="shipmentCompany" />
     <result column="create_id" jdbcType="INTEGER" property="createId" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_id" jdbcType="INTEGER" property="updateId" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, idr_info_id, difference_amount, agent_price, customer_price, num, shipment_date, 
-    product_model, platfom, product_type, pdt, bu, customer_name, remark, create_id, 
-    create_time, update_id, update_time
+    id, idr_info_id, remark, difference_amount, agency_rate, agent_price, customer_price,
+    num, shipment_date, product_model, platfom, product_type, pdt, bu, customer_attribute,
+    customer_name, shipment_company, create_id, create_time, update_id, update_time
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select 
+    select
     <include refid="Base_Column_List" />
     from t_business_diff_price_info
     where id = #{id,jdbcType=INTEGER}
@@ -46,8 +49,14 @@
       <if test="idrInfoId != null">
         idr_info_id,
       </if>
+      <if test="remark != null">
+        remark,
+      </if>
       <if test="differenceAmount != null">
         difference_amount,
+      </if>
+      <if test="agencyRate != null">
+        agency_rate,
       </if>
       <if test="agentPrice != null">
         agent_price,
@@ -76,11 +85,14 @@
       <if test="bu != null">
         bu,
       </if>
+      <if test="customerAttribute != null">
+        customer_attribute,
+      </if>
       <if test="customerName != null">
         customer_name,
       </if>
-      <if test="remark != null">
-        remark,
+      <if test="shipmentCompany != null">
+        shipment_company,
       </if>
       <if test="createId != null">
         create_id,
@@ -102,8 +114,14 @@
       <if test="idrInfoId != null">
         #{idrInfoId,jdbcType=INTEGER},
       </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
       <if test="differenceAmount != null">
         #{differenceAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="agencyRate != null">
+        #{agencyRate,jdbcType=VARCHAR},
       </if>
       <if test="agentPrice != null">
         #{agentPrice,jdbcType=DECIMAL},
@@ -132,11 +150,14 @@
       <if test="bu != null">
         #{bu,jdbcType=VARCHAR},
       </if>
+      <if test="customerAttribute != null">
+        #{customerAttribute,jdbcType=VARCHAR},
+      </if>
       <if test="customerName != null">
         #{customerName,jdbcType=VARCHAR},
       </if>
-      <if test="remark != null">
-        #{remark,jdbcType=VARCHAR},
+      <if test="shipmentCompany != null">
+        #{shipmentCompany,jdbcType=VARCHAR},
       </if>
       <if test="createId != null">
         #{createId,jdbcType=INTEGER},
@@ -158,8 +179,14 @@
       <if test="idrInfoId != null">
         idr_info_id = #{idrInfoId,jdbcType=INTEGER},
       </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
       <if test="differenceAmount != null">
         difference_amount = #{differenceAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="agencyRate != null">
+        agency_rate = #{agencyRate,jdbcType=VARCHAR},
       </if>
       <if test="agentPrice != null">
         agent_price = #{agentPrice,jdbcType=DECIMAL},
@@ -188,11 +215,14 @@
       <if test="bu != null">
         bu = #{bu,jdbcType=VARCHAR},
       </if>
+      <if test="customerAttribute != null">
+        customer_attribute = #{customerAttribute,jdbcType=VARCHAR},
+      </if>
       <if test="customerName != null">
         customer_name = #{customerName,jdbcType=VARCHAR},
       </if>
-      <if test="remark != null">
-        remark = #{remark,jdbcType=VARCHAR},
+      <if test="shipmentCompany != null">
+        shipment_company = #{shipmentCompany,jdbcType=VARCHAR},
       </if>
       <if test="createId != null">
         create_id = #{createId,jdbcType=INTEGER},
