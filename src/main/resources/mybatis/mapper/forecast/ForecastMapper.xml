@@ -453,7 +453,7 @@
         and a.status is not null and a.status = #{status}
       </when>
       <when test="status == null" >
-        and a.status != -1 and and a.status is not null
+        and a.status != -1 and a.status is not null
       </when>
       <otherwise>
         and a.status = #{status}

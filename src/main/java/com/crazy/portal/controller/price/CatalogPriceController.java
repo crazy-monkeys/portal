@@ -6,6 +6,7 @@ import com.crazy.portal.controller.BaseController;
 import com.crazy.portal.entity.price.CatalogPrice;
 import com.crazy.portal.service.price.CatalogPriceService;
 import com.crazy.portal.util.BusinessUtil;
+import com.crazy.portal.util.Enums;
 import com.crazy.portal.util.ErrorCodes;
 import com.github.pagehelper.PageInfo;
 import org.springframework.web.bind.annotation.*;
@@ -29,6 +30,10 @@ public class CatalogPriceController extends BaseController {
     @PostMapping("/query")
     public BaseResponse list(@RequestBody CatalogPriceVO catalogPriceVO){
         catalogPriceVO.setCreateId(super.getCurrentUserId());
+        catalogPriceVO.setProposer(super.getCurrentUser().getLoginName());
+        if(super.getCurrentUser().getUserType().equals(Enums.USER_TYPE.internal.toString())){
+            catalogPriceVO.setUserType(Enums.USER_TYPE.internal.toString());
+        }
         PageInfo<CatalogPrice> catalogPricePageInfo =  catalogPriceService.selectWithPage(catalogPriceVO);
         return super.successResult(catalogPricePageInfo);
     }

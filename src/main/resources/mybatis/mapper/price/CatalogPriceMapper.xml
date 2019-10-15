@@ -50,14 +50,20 @@
     select
     <include refid="Base_Column_List" />
     from t_catalog_price
-    where (
-        sap_code in (
-            select distinct product_id from t_order_line where create_id = #{createId,jdbcType=INTEGER}
-        )
-        or sap_code in (
-            select distinct vm_number from t_forecast where create_user_id = #{createId,jdbcType=INTEGER}
-        )
-    )
+    where 1=1
+    <if test="userType != 'internal'">
+      and (
+      sap_code in (
+      select distinct product_id from t_order_line where create_id = #{createId,jdbcType=INTEGER}
+      )
+      or sap_code in (
+      select distinct vm_number from t_forecast where create_user_id = #{createId,jdbcType=INTEGER}
+      )
+      or sap_code in (
+      select distinct sap_code from t_enquiry_price where proposer = #{proposer,jdbcType=VARCHAR}
+      )
+      )
+    </if>
     <if test="bu != null and bu != ''">
       and bu = #{bu,jdbcType=VARCHAR}
     </if>

@@ -7,6 +7,7 @@ import com.crazy.portal.bean.business.idr.IdrUploadBean;
 import com.crazy.portal.controller.BaseController;
 import com.crazy.portal.entity.business.idr.BusinessIdrInfo;
 import com.crazy.portal.service.business.IDRService;
+import com.crazy.portal.util.Enums;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,6 +35,9 @@ public class IDRController extends BaseController {
      */
     @GetMapping("/list")
     public BaseResponse list(BusinessIdrQueryBean bean){
+        if(super.getCurrentUser().getUserType().equals(Enums.USER_TYPE.agent.toString())){
+            bean.setDealerId(super.getCurrentUserId());
+        }
         return super.successResult(idrService.selectByPage(bean));
     }
 

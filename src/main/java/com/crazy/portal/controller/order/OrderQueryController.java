@@ -6,6 +6,7 @@ import com.crazy.portal.bean.order.OrderQueryBean;
 import com.crazy.portal.controller.BaseController;
 import com.crazy.portal.service.order.OrderService;
 import com.crazy.portal.util.BusinessUtil;
+import com.crazy.portal.util.Enums;
 import com.crazy.portal.util.ErrorCodes;
 import com.crazy.portal.util.StringUtil;
 import org.springframework.web.bind.annotation.*;
@@ -31,6 +32,9 @@ public class OrderQueryController extends BaseController {
      */
     @PostMapping("/list")
     public BaseResponse list(@RequestBody OrderQueryBean bean) {
+        if(super.getCurrentUser().getUserType().equals(Enums.USER_TYPE.agent.toString())){
+            bean.setDealerId(super.getCurrentUserId());
+        }
         return successResult(orderService.list(bean));
     }
 
@@ -49,6 +53,9 @@ public class OrderQueryController extends BaseController {
      */
     @PostMapping("/list/delivery")
     public BaseResponse deliveryList(@RequestBody DeliveryOrderQueryVO vo){
+        if(super.getCurrentUser().getUserType().equals(Enums.USER_TYPE.agent.toString())){
+            vo.setDealerId(super.getCurrentUserId());
+        }
         return successResult(orderService.deliveryOrderList(vo));
     }
 
@@ -59,6 +66,9 @@ public class OrderQueryController extends BaseController {
      */
     @PostMapping("/list/delivery/approval")
     public BaseResponse deliveryApprovalList(@RequestBody DeliveryOrderQueryVO vo){
+        if(super.getCurrentUser().getUserType().equals(Enums.USER_TYPE.agent.toString())){
+            vo.setDealerId(super.getCurrentUserId());
+        }
         return successResult(orderService.deliveryOrderApprovalList(vo,getCurrentUserId()));
     }
 

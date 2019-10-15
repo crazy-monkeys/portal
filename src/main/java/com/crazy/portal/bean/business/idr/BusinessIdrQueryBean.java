@@ -28,4 +28,5 @@ public class BusinessIdrQueryBean extends PageBean {
     //外部客户名
     private String outCustomerName;
 
+    private Integer dealerId;
 }

@@ -32,6 +32,9 @@ public class UserCustomerMappingService {
 
     public List<Integer> selectUserMapping(Integer userId, String mappingModel){
         UserCustomerMapping mapping= userCustomerMappingMapper.selectUserMapping(userId, mappingModel);
+        if(null == mapping){
+            return new ArrayList<>();
+        }
         List<String> strs = Arrays.asList(mapping.getCustId().split(","));
         List<Integer> results = new ArrayList<>();
         strs.forEach(e->{

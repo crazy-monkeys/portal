@@ -36,5 +36,7 @@ public class CatalogPriceVO extends PageBean {
      * 当前登录人
      */
     private Integer createId;
+    private String userType;
+    private String proposer;
 
 }

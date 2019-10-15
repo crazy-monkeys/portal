@@ -213,6 +213,9 @@
         where b.id = (select max(c.id) from t_business_idr_approval c where c.idr_info_id = b.idr_info_id group by c.idr_info_id)
     ) b on b.idr_info_id = a.id
     where 1=1
+    <if test=" dealerId != null and dealerId !=''">
+      and create_id = #{dealerId}
+    </if>
     <if test="type != null">
       and type = #{type,jdbcType=INTEGER}
     </if>
