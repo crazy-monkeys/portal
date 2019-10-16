@@ -99,4 +99,6 @@ public interface ForecastMapper {
     int checkAmbAdjustmentNum(@Param(value = "ids") Integer[] ids);
 
     List<Integer> selectOperationTypeByIds(@Param(value = "ids") Integer[] ids);
+
+    int checkRecord(Forecast record);
 }

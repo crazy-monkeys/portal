@@ -17,121 +17,121 @@ public class AgencyTemplate extends BaseRowModel {
     @ExcelProperty(index = 1, value = "出货公司")
     private String company;
 
-    @ExcelProperty(index = 2, value = "渠道")
+//    @ExcelProperty(index = 2, value = "渠道")
     private String channel;
 
-    @ExcelProperty(index = 3, value = "客户简称")
+    @ExcelProperty(index = 2, value = "客户简称")
     private String customerAbbreviation;
 
-    @ExcelProperty(index = 4, value = "预测类别")
+    @ExcelProperty(index = 3, value = "预测类型")
     private String forecastType;
 
-    @ExcelProperty(index = 5, value = "Platform")
+    @ExcelProperty(index = 4, value = "Platform")
     private String platform;
 
-    @ExcelProperty(index = 6, value = "产品型号")
+    @ExcelProperty(index = 5, value = "产品型号")
     private String productModel;
 
-    @ExcelProperty(index = 7, value = "虚拟料号")
+//    @ExcelProperty(index = 7, value = "虚拟料号")
     private String vmNumber;
 
-    @ExcelProperty(index = 8, value = "版本要求")
+    @ExcelProperty(index = 6, value = "版本要求")
     private String version;
 
-    @ExcelProperty(index = 9, value = "客户专货库存截止日期")
+    @ExcelProperty(index = 7, value = "客户专货库存截止日期")
     private String closeDate;
 
-    @ExcelProperty(index = 10, value = "客户未完成的所有专货库存")
+    @ExcelProperty(index = 8, value = "客户未完成的所有专货库存")
     private String delayStock;
 
-    @ExcelProperty(index = 11, value = "月份1")
+    @ExcelProperty(index = 9, value = "月份1")
     private String forecastMonthOne;
 
-    @ExcelProperty(index = 12, value = "上次填写1")
+    @ExcelProperty(index = 10, value = "上次填写1")
     private String lastWriteOne;
 
-    @ExcelProperty(index = 13, value = "本次填写1")
+    @ExcelProperty(index = 11, value = "本次填写1")
     private String currentWriteOne;
 
-    @ExcelProperty(index = 14, value = "GAP1")
+//    @ExcelProperty(index = 14, value = "GAP1")
     private String gapOne;
 
-    @ExcelProperty(index = 15, value = "备注1")
+    @ExcelProperty(index = 12, value = "备注1")
     private String remarkOne;
 
-    @ExcelProperty(index = 16, value = "月份2")
+    @ExcelProperty(index = 13, value = "月份2")
     private String forecastMonthTwo;
 
-    @ExcelProperty(index = 17, value = "上次填写2")
+    @ExcelProperty(index = 14, value = "上次填写2")
     private String lastWriteTwo;
 
-    @ExcelProperty(index = 18, value = "本次填写2")
+    @ExcelProperty(index = 15, value = "本次填写2")
     private String currentWriteTwo;
 
-    @ExcelProperty(index = 19, value = "GAP2")
+//    @ExcelProperty(index = 19, value = "GAP2")
     private String gapTwo;
 
-    @ExcelProperty(index = 20, value = "备注2")
+    @ExcelProperty(index = 16, value = "备注2")
     private String remarkTwo;
 
-    @ExcelProperty(index = 21, value = "月份3")
+    @ExcelProperty(index = 17, value = "月份3")
     private String forecastMonthThree;
 
-    @ExcelProperty(index = 22, value = "上次填写3")
+    @ExcelProperty(index = 18, value = "上次填写3")
     private String lastWriteThree;
 
-    @ExcelProperty(index = 23, value = "本次填写3")
+    @ExcelProperty(index = 19, value = "本次填写3")
     private String currentWriteThree;
 
-    @ExcelProperty(index = 24, value = "GAP3")
+//    @ExcelProperty(index = 24, value = "GAP3")
     private String gapThree;
 
-    @ExcelProperty(index = 25, value = "备注3")
+    @ExcelProperty(index = 20, value = "备注3")
     private String remarkThree;
 
-    @ExcelProperty(index = 26, value = "月份4")
+    @ExcelProperty(index = 21, value = "月份4")
     private String forecastMonthFour;
 
-    @ExcelProperty(index = 27, value = "上次填写4")
+    @ExcelProperty(index = 22, value = "上次填写4")
     private String lastWriteFour;
 
-    @ExcelProperty(index = 28, value = "本次填写4")
+    @ExcelProperty(index = 23, value = "本次填写4")
     private String currentWriteFour;
 
-    @ExcelProperty(index = 29, value = "GAP4")
+//    @ExcelProperty(index = 29, value = "GAP4")
     private String gapFour;
 
-    @ExcelProperty(index = 30, value = "备注4")
+    @ExcelProperty(index = 24, value = "备注4")
     private String remarkFour;
 
-    @ExcelProperty(index = 31, value = "月份5")
+    @ExcelProperty(index = 25, value = "月份5")
     private String forecastMonthFive;
 
-    @ExcelProperty(index = 32, value = "上次填写5")
+    @ExcelProperty(index = 26, value = "上次填写5")
     private String lastWriteFive;
 
-    @ExcelProperty(index = 33, value = "本次填写5")
+    @ExcelProperty(index = 27, value = "本次填写5")
     private String currentWriteFive;
 
-    @ExcelProperty(index = 34, value = "GAP5")
+//    @ExcelProperty(index = 34, value = "GAP5")
     private String gapFive;
 
-    @ExcelProperty(index = 35, value = "备注5")
+    @ExcelProperty(index = 28, value = "备注5")
     private String remarkFive;
 
-    @ExcelProperty(index = 36, value = "月份6")
+    @ExcelProperty(index = 29, value = "月份6")
     private String forecastMonthSix;
 
-    @ExcelProperty(index = 37, value = "上次填写6")
+    @ExcelProperty(index = 30, value = "上次填写6")
     private String lastWriteSix;
 
-    @ExcelProperty(index = 38, value = "本次填写6")
+    @ExcelProperty(index = 31, value = "本次填写6")
     private String currentWriteSix;
 
-    @ExcelProperty(index = 39, value = "GAP6")
+//    @ExcelProperty(index = 39, value = "GAP6")
     private String gapSix;
 
-    @ExcelProperty(index = 40, value = "备注6")
+    @ExcelProperty(index = 32, value = "备注6")
     private String remarkSix;
 
     private String agencyAbbreviation;
