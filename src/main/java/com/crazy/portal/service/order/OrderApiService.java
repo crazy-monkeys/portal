@@ -98,10 +98,12 @@ public class OrderApiService {
         Method resulttypeMethod = esHeader.getClass().getMethod("getResulttype");
         String resultType = (String)resulttypeMethod.invoke(esHeader, null);
 
-        BusinessUtil.assertFlase(resultType.equals("1"),ErrorCodes.BusinessEnum.ORDER_PRICE_ERROR);
-
-        Method resultmessage = esHeader.getClass().getMethod("getResultmessage");
-        String resultMessage = String.valueOf(resultmessage.invoke(esHeader,null));
+        String resultMessage = null;
+        //如果对方返回失败
+        if(resultType.equals("1")){
+            Method resultMethod = esHeader.getClass().getMethod("getResultmessage");
+            resultMessage = String.valueOf(resultMethod.invoke(esHeader,null));
+        }
 
         if(StringUtil.isEmpty(resultMessage) || "null".equals(resultMessage)){
             return;
