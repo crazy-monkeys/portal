@@ -167,29 +167,31 @@ public class OrderApproveService {
     private void cancelOrder(Order order,Integer userId) throws Exception{
         List<OrderLine> orderLines = orderLineMapper.selectByOrderId(order.getId());
         ZrfcsdsalesorderchangeResponse response = this.invokeEccModifyOrder(order,"D");
-        String resultType = response.getEsHeader().getResulttype();
-        //如果修改成功
-        if(resultType.equals("1")){
-            List<ZsalesorderchangeOutItem> items = response.getEtItems().getItem();
-            items.forEach(sapLine->
-                 orderLines.forEach(line->{
-                    if(line.getRProductId().equals(sapLine.getProductid())){
-                        //修改为失效
-                        line.setActice(0);
-                        line.setUpdateId(userId);
-                        line.setUpdateTime(DateUtil.getCurrentTS());
-                        orderLineMapper.updateByPrimaryKeySelective(line);
-                    }
-                })
-            );
-        }
-        //如果所有订单行都被设置为取消,整单取消
-        List<OrderLine> results = orderLines.stream().filter(x -> x.getActice().equals(1)).collect(Collectors.toList());
-        if(results.isEmpty()){
-            order.setActive(0);
-            order.setUpdateId(userId);
-            order.setUpdateTime(DateUtil.getCurrentTS());
-            orderMapper.updateByPrimaryKeySelective(order);
+        TableOfZsalesorderchangeOutItem etItems = response.getEtItems();
+        if(null != etItems) {
+            List<ZsalesorderchangeOutItem> items = etItems.getItem();
+            if (null != items && !items.isEmpty()) {
+                items.forEach(sapLine ->
+                        orderLines.forEach(line -> {
+                            if (line.getRProductId().equals(sapLine.getProductid())) {
+                                //修改为失效
+                                line.setActice(0);
+                                line.setUpdateId(userId);
+                                line.setUpdateTime(DateUtil.getCurrentTS());
+                                orderLineMapper.updateByPrimaryKeySelective(line);
+                            }
+                        })
+                );
+
+                //最终检查:如果所有订单行都被设置为取消,将订单头设置为失效
+                List<OrderLine> results = orderLines.stream().filter(x -> x.getActice().equals(1)).collect(Collectors.toList());
+                if (results.isEmpty()) {
+                    order.setActive(0);
+                    order.setUpdateId(userId);
+                    order.setUpdateTime(DateUtil.getCurrentTS());
+                    orderMapper.updateByPrimaryKeySelective(order);
+                }
+            }
         }
     }
 
