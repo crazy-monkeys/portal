@@ -195,6 +195,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
             "/loginCheck",
             "/scheduleJob/**",
             "/ajax/scheduleJob/**",
-            "/webservice/**"
+            "/webservice/**",
+            "/archive/**"
     };
 }

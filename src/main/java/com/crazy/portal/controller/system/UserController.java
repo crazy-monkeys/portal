@@ -150,7 +150,7 @@ public class UserController extends BaseController {
         return successResult(userService.getUserShips(getCurrentUser().getDealerId()));
     }
 
-    @GetMapping("dealer/getShip")
+    @GetMapping("/dealer/getShip")
     public BaseResponse getShip(){
         return successResult(customerInfoService.getDealerShip(this.getCurrentUser().getDealerId()));
     }
