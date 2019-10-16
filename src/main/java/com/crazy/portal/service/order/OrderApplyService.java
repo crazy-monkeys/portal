@@ -303,7 +303,7 @@ public class OrderApplyService {
         BusinessUtil.notNull(order, ErrorCodes.BusinessEnum.ORDER_NOT_FOUND);
 
         List<OrderLine> lines = new ArrayList<>();
-        changeVOS.stream().forEach(x->{
+        changeVOS.forEach(x->{
             OrderLine orderLine = orderLineMapper.selectByPrimaryKey(x.getItemId());
             BusinessUtil.notNull(orderLine,ErrorCodes.BusinessEnum.ORDER_LINE_NOT_FOUND);
 

@@ -1,5 +1,6 @@
 package com.crazy.portal.bean.order;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
 
 import javax.validation.constraints.NotEmpty;
@@ -13,6 +14,8 @@ public class DeliveryChangeVO {
     @NotNull(message = "订单行ID不能为空")
     private Integer itemId;
     /** 期望交货日期**/
+
     @NotEmpty(message = "期望交货日期不能为空")
+    @JSONField(format="yyyyMMdd")
     private Date expectedDeliveryDate;
 }
