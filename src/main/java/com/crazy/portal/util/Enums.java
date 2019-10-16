@@ -406,7 +406,7 @@ public class Enums {
     /** 客户rebate begin**/
     public enum BusinessRebateStatus{
         IN_APPROVAL(1, "结算中"),
-        WAIT_CONFIRM(2, "客户待确认"),
+        WAIT_CONFIRM(2, "客户未确认"),
         USED_CONFIRM(3, "客户已确认"),
         FINISHED(4, "执行完毕");
 

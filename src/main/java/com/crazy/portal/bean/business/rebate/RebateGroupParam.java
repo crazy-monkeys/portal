@@ -10,9 +10,9 @@ import java.math.BigDecimal;
 public class RebateGroupParam {
 
     /**
-     * 代理商全称
+     * 代理商简称
      */
-    private String agencyName;
+    private String agencyShortName;
 
     /**
      * 客户简称

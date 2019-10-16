@@ -3,7 +3,7 @@
 <mapper namespace="com.crazy.portal.dao.business.rebate.BusinessRebateMapper">
   <resultMap id="BaseResultMap" type="com.crazy.portal.entity.business.rebate.BusinessRebate">
     <id column="id" jdbcType="INTEGER" property="id" />
-    <result column="agency_name" jdbcType="VARCHAR" property="agencyName" />
+    <result column="agency_short_name" jdbcType="VARCHAR" property="agencyShortName" />
     <result column="customer_short_name" jdbcType="VARCHAR" property="customerShortName" />
     <result column="customer_type" jdbcType="VARCHAR" property="customerType" />
     <result column="sales_name" jdbcType="VARCHAR" property="salesName" />
@@ -47,7 +47,7 @@
     </collection>
   </resultMap>
   <sql id="Base_Column_List">
-    id, agency_name, customer_short_name, customer_type, sales_name, ameba_header, ameba_department,
+    id, agency_short_name, customer_short_name, customer_type, sales_name, ameba_header, ameba_department,
     shipment_company, account_year_month, order_month, shipment_year_month, bu, pdt,
     product, qty, sales_price, po_price, actual_price, platform, rebate_amount, release_amount,
     surplus_rebate_amount, status, dealer_code, customer_code,
@@ -70,8 +70,8 @@
       <if test="id != null">
         id,
       </if>
-      <if test="agencyName != null">
-        agency_name,
+      <if test="agencyShortName != null">
+        agency_short_name,
       </if>
       <if test="customerShortName != null">
         customer_short_name,
@@ -162,8 +162,8 @@
       <if test="id != null">
         #{id,jdbcType=INTEGER},
       </if>
-      <if test="agencyName != null">
-        #{agencyName,jdbcType=VARCHAR},
+      <if test="agencyShortName != null">
+        #{agencyShortName,jdbcType=VARCHAR},
       </if>
       <if test="customerShortName != null">
         #{customerShortName,jdbcType=VARCHAR},
@@ -254,8 +254,8 @@
   <update id="updateByPrimaryKeySelective" parameterType="com.crazy.portal.entity.business.rebate.BusinessRebate">
     update t_business_rebate
     <set>
-      <if test="agencyName != null">
-        agency_name = #{agencyName,jdbcType=VARCHAR},
+      <if test="agencyShortName != null">
+        agency_short_name = #{agencyShortName,jdbcType=VARCHAR},
       </if>
       <if test="customerShortName != null">
         customer_short_name = #{customerShortName,jdbcType=VARCHAR},
@@ -351,7 +351,7 @@
     from t_business_rebate a
     where a.active = 1
     <if test="dealerName != null and dealerName != ''">
-      and a.agency_name like concat('%',#{dealerName},'%')
+      and a.agency_short_name like concat('%',#{dealerName},'%')
     </if>
     <if test="customerName != null and customerName != ''">
       and a.customer_short_name like concat('%',#{customerName},'%')
@@ -365,7 +365,7 @@
   <select id="selectRebateIdByGroupParam" resultType="java.lang.Integer" parameterType="com.crazy.portal.bean.business.rebate.RebateGroupParam">
     select id from t_business_rebate
     where active = 1
-    and agency_name = #{agencyName}
+    and agency_short_name = #{agencyShortName}
     and customer_short_name = #{customerShortName}
     and customer_type = #{customerType}
     and sales_name = #{salesName}

@@ -12,9 +12,9 @@ import java.util.List;
 public class BusinessRebate {
     private Integer id;
     /**
-     * 代理商全称
+     * 代理商简称
      */
-    private String agencyName;
+    private String agencyShortName;
 
     /**
      * 客户简称

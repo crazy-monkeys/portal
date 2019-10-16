@@ -37,7 +37,7 @@
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
   <resultMap id="GroupParamResult" type="com.crazy.portal.bean.business.rebate.RebateGroupParam">
-    <result column="agency_name" jdbcType="VARCHAR" property="agencyName" />
+    <result column="agency_short_name" jdbcType="VARCHAR" property="agencyShortName" />
     <result column="customer_short_name" jdbcType="VARCHAR" property="customerShortName" />
     <result column="customer_type" jdbcType="VARCHAR" property="customerType"/>
     <result column="sales_name" jdbcType="VARCHAR" property="salesName"/>
@@ -399,7 +399,7 @@
 
   <select id="selectGroupParamList" resultMap="GroupParamResult">
     select
-      agency_name,
+      agency_short_name,
       customer_short_name,
       customer_type,
       sales_name,
@@ -420,7 +420,7 @@
     from t_business_sales_detail
     where shipment_year_month >= #{beginMonth} and shipment_year_month &lt; #{endMonth}
     group by
-      agency_name,
+      agency_short_name,
       customer_short_name,
       customer_type,
       sales_name,
@@ -443,7 +443,7 @@
   <update id="updateRebateId">
     update t_business_sales_detail a
     inner join t_business_rebate b on
-          b.agency_name = a.agency_name
+          b.agency_short_name = a.agency_short_name
       and b.customer_short_name = a.customer_short_name
       and b.customer_type = a.customer_type
       and ifnull(b.sales_name,'') = ifnull(a.sales_name,'')
@@ -453,7 +453,7 @@
       and b.account_year_month = a.account_year_month
       and b.order_month = a.order_month
       and b.shipment_year_month = a.shipment_year_month
-      and b.bu = a.bu
+      and ifnull(b.bu,'') = ifnull(a.bu,'')
       and ifnull(b.pdt,'') = ifnull(a.pdt,'')
       and b.product = a.product
       and b.qty = a.qty

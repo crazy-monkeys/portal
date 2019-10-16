@@ -1,8 +1,5 @@
 package com.crazy.portal.service.business;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.crazy.portal.bean.business.rebate.*;
 import com.crazy.portal.bean.common.Constant;
 import com.crazy.portal.bean.customer.basic.FileVO;
@@ -24,11 +21,12 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
 import java.io.File;
-import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 客户Rebate
@@ -349,6 +347,12 @@ public class RebateService {
                 continue;
             }
             BeanUtils.copyNotNullFields(salesDetailAO, salesDetail);
+            if("7100".equals(salesDetail.getShipmentCompany()) || "3000".equals(salesDetail.getShipmentCompany()) || "30001".equals(salesDetail.getShipmentCompany())){
+                salesDetail.setShipmentCompany("SPRD");
+            }
+            if("4800".equals(salesDetail.getShipmentCompany())){
+                salesDetail.setShipmentCompany("RDA");
+            }
             salesDetail.setActive(Constant.ACTIVE);
             int recordCount = businessSalesDetailMapper.selectCountByPrimaryKey(salesDetail.getId());
             if(recordCount == 0){
