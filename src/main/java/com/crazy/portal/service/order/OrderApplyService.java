@@ -98,7 +98,7 @@ public class OrderApplyService {
         ItItems itItems = new ItItems();
         itItems.setItem(this.buildItItems(records));
 
-        Zrfcsdpricesimulate zrfcsdpricesimulate = this.getZrfcsdpricesimulate(isHeader, itItems);
+        Zrfcsdpricesimulate zrfcsdpricesimulate = this.getZrfcsdpricesimulate(isHeader, new EtItems(),itItems);
         ZrfcsdpricesimulateResponse response = orderApiService.priceSimulate(zrfcsdpricesimulate);
         BusinessUtil.notNull(response,ErrorCodes.CommonEnum.SYSTEM_EXCEPTION);
 
@@ -123,15 +123,9 @@ public class OrderApplyService {
             }
         }
 
-        records.forEach(x->{
-            x.setRPrice(BigDecimal.ZERO);
-            x.setRNetPrice(BigDecimal.ZERO);
-            x.setPriceDate(priceDate);
-        });
-
         map.put("lines",records);
-        map.put("grossValue",BigDecimal.ZERO);
-        map.put("netValue",BigDecimal.ZERO);
+        map.put("grossValue",esHeader.getGrossvalue());
+        map.put("netValue",esHeader.getNetvalue());
         return map;
     }
 
@@ -368,8 +362,8 @@ public class OrderApplyService {
      * @param itItems
      * @return
      */
-    private Zrfcsdpricesimulate getZrfcsdpricesimulate(IsHeader isHeader, ItItems itItems) {
-        ZrfcsdpricesimulateContent content = new ZrfcsdpricesimulateContent(null,isHeader,itItems);
+    private Zrfcsdpricesimulate getZrfcsdpricesimulate(IsHeader isHeader, EtItems etItems,ItItems itItems) {
+        ZrfcsdpricesimulateContent content = new ZrfcsdpricesimulateContent(etItems,isHeader,itItems);
         ZrfcsdpricesimulateBody body = new ZrfcsdpricesimulateBody(content);
         return new Zrfcsdpricesimulate(body);
     }

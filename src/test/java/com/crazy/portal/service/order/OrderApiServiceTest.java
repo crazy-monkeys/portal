@@ -153,7 +153,7 @@ public class OrderApiServiceTest {
         itItem.setKondm("Z1");
         itItems.setItem(Arrays.asList(itItem));
 
-        ZrfcsdpricesimulateContent content = new ZrfcsdpricesimulateContent(null,isHeader,itItems);
+        ZrfcsdpricesimulateContent content = new ZrfcsdpricesimulateContent(new com.crazy.portal.bean.order.wsdl.price.EtItems(),isHeader,itItems);
         ZrfcsdpricesimulateBody body = new ZrfcsdpricesimulateBody(content);
         Zrfcsdpricesimulate zrfcsdpricesimulate = new Zrfcsdpricesimulate(body);
         ZrfcsdpricesimulateResponse response = eccApiService.priceSimulate(zrfcsdpricesimulate);
