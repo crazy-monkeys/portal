@@ -347,7 +347,7 @@ public class RebateService {
                 continue;
             }
             BeanUtils.copyNotNullFields(salesDetailAO, salesDetail);
-            if("7100".equals(salesDetail.getShipmentCompany()) || "3000".equals(salesDetail.getShipmentCompany()) || "30001".equals(salesDetail.getShipmentCompany())){
+            if("7100".equals(salesDetail.getShipmentCompany()) || "3000".equals(salesDetail.getShipmentCompany()) || "3001".equals(salesDetail.getShipmentCompany())){
                 salesDetail.setShipmentCompany("SPRD");
             }
             if("4800".equals(salesDetail.getShipmentCompany())){
