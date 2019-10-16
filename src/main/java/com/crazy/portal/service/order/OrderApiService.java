@@ -98,7 +98,7 @@ public class OrderApiService {
         Method resulttypeMethod = esHeader.getClass().getMethod("getResulttype");
         String resultType = (String)resulttypeMethod.invoke(esHeader, null);
 
-        BusinessUtil.assertTrue(resultType.equals("1"),ErrorCodes.CommonEnum.SYSTEM_EXCEPTION);
+        BusinessUtil.assertFlase(resultType.equals("1"),ErrorCodes.BusinessEnum.ORDER_PRICE_ERROR);
 
         Method resultmessage = esHeader.getClass().getMethod("getResultmessage");
         String resultMessage = String.valueOf(resultmessage.invoke(esHeader,null));
