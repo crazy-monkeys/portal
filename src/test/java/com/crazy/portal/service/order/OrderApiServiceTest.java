@@ -81,7 +81,7 @@ public class OrderApiServiceTest {
         itItem.setRefsaporderitemno("");
         itItems.setItem(Arrays.asList(itItem));
 
-        ZrfcsdsalesordercreateContent content = new ZrfcsdsalesordercreateContent(null,isHeader,itItems);
+        ZrfcsdsalesordercreateContent content = new ZrfcsdsalesordercreateContent(new EtItems(),isHeader,itItems);
         ZrfcsdsalesordercreateBody zrfcsdsalesordercreateBody = new ZrfcsdsalesordercreateBody(content);
         Zrfcsdsalesordercreate order = new Zrfcsdsalesordercreate(zrfcsdsalesordercreateBody);
 
@@ -119,7 +119,7 @@ public class OrderApiServiceTest {
         itItems.setItem(Arrays.asList(itItem));
 
 
-        ZrfcsdsalesorderchangeContent content = new ZrfcsdsalesorderchangeContent(null,isHeader,itItems);
+        ZrfcsdsalesorderchangeContent content = new ZrfcsdsalesorderchangeContent(new com.crazy.portal.bean.order.wsdl.change.EtItems(),isHeader,itItems);
         ZrfcsdsalesorderchangeBody body = new ZrfcsdsalesorderchangeBody(content);
         Zrfcsdsalesorderchange zrfcsdsalesorderchange = new Zrfcsdsalesorderchange(body);
         ZrfcsdsalesorderchangeResponse response = eccApiService.changeSalesOrder(zrfcsdsalesorderchange);

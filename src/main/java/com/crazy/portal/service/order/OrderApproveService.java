@@ -2,6 +2,7 @@ package com.crazy.portal.service.order;
 
 import com.crazy.portal.bean.order.OrderApprovalBean;
 import com.crazy.portal.bean.order.wsdl.change.*;
+import com.crazy.portal.bean.order.wsdl.create.EtItems;
 import com.crazy.portal.bean.order.wsdl.create.IsHeader;
 import com.crazy.portal.bean.order.wsdl.create.ItItem;
 import com.crazy.portal.bean.order.wsdl.create.ItItems;
@@ -274,7 +275,7 @@ public class OrderApproveService {
         List<OrderLine> orderLines = orderLineMapper.selectByOrderId(order.getId());
         com.crazy.portal.bean.order.wsdl.change.ItItems itItems = this.buildChangeItItems(orderLines,operationType);
 
-        ZrfcsdsalesorderchangeContent content = new ZrfcsdsalesorderchangeContent(null,isHeader,itItems);
+        ZrfcsdsalesorderchangeContent content = new ZrfcsdsalesorderchangeContent(new com.crazy.portal.bean.order.wsdl.change.EtItems(),isHeader,itItems);
         ZrfcsdsalesorderchangeBody zrfcsdsalesordercreateBody = new ZrfcsdsalesorderchangeBody(content);
         Zrfcsdsalesorderchange request = new Zrfcsdsalesorderchange(zrfcsdsalesordercreateBody);
         ZrfcsdsalesorderchangeResponse response = orderApiService.changeSalesOrder(request);
@@ -294,7 +295,7 @@ public class OrderApproveService {
 
         ItItems itItems = this.buildCreateItItems(expectedDeliveryDate,orderApply);
 
-        ZrfcsdsalesordercreateContent content = new ZrfcsdsalesordercreateContent(null,isHeader,itItems);
+        ZrfcsdsalesordercreateContent content = new ZrfcsdsalesordercreateContent(new EtItems(),isHeader,itItems);
         ZrfcsdsalesordercreateBody zrfcsdsalesordercreateBody = new ZrfcsdsalesordercreateBody(content);
         Zrfcsdsalesordercreate request = new Zrfcsdsalesordercreate(zrfcsdsalesordercreateBody);
         ZrfcsdsalesordercreateResponse response = orderApiService.createSalesOrder(request);

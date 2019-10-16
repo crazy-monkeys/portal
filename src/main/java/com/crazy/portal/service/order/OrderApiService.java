@@ -77,7 +77,7 @@ public class OrderApiService {
         ZrfcsdsalesordercreateResponse zrfcsdsalesordercreateResponse =
                 JaxbXmlUtil.convertSoapXmlToJavaBean(response, ZrfcsdsalesordercreateResponse.class);
 
-        //this.checkResultMessage(zrfcsdsalesordercreateResponse);
+        this.checkResultMessage(zrfcsdsalesordercreateResponse);
 
         return zrfcsdsalesordercreateResponse;
     }
