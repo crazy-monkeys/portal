@@ -214,7 +214,7 @@ public class ErrorCodes {
         FORECAST_BI_DELETE_FAIL(80008, "数据删除失败，请联系管理员", ""),
         FORECAST_BI_CHECK_RESPONSE_ID_NOT_EXISTS(80009, "BI Excel数据 - Portal ID未正确返回", ""),
         FORECAST_NOT_FOUND_CUSTOMER_INFO(80010, "请填写正确的客户简称信息", ""),
-        FORECAST_AGENCY_INFO_ERROR(80011, "请使用代理商身份进行操作", ""),
+        FORECAST_AGENCY_INFO_ERROR(80011, "获取代理商信息失败，请联系管理员", ""),
         FORECAST_SD_DATA_COMMIT_ERROR(80012, "预测汇总数据提交BI校验不通过", ""),
         FORECAST_BI_ID_NOT_EXISTS(80013, "BI数据ID无法匹配数据，请检查数据", ""),
         FORECAST_AGENCY_MATCH_ERROR(80014, "无法匹配代理商信息，请联系管理员", ""),
@@ -231,6 +231,7 @@ public class ErrorCodes {
         FORECAST_PRODUCT_INFO_GET_ERROR(80025, "产品信息获取失败，请联系管理员", ""),
         FORECAST_OPERATION_DELETE_REPEAT(80026, "删除记录未审批，请勿重复操作", ""),
         FORECAST_OPERATION_UPDATE_REPEAT(80027, "修改记录未审批，请勿重复操作", ""),
+        FORECAST_DATA_REPEAT_ERROR(80028, "请勿上传重复数据", ""),
         //订单管理
         ORDER_NOT_FOUND(90001, "订单信息不存在", ""),
         ORDER_LINE_NOT_FOUND(90002, "订单行信息不存在", ""),

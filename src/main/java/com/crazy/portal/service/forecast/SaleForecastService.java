@@ -122,10 +122,12 @@ public class SaleForecastService {
             throw new BusinessException(FORECAST_DATA_NOT_EMPTY);
         }
         //获取代理商信息
-        String agencyAbbreviation = getAgencyAbbreviation(userId);
+        CustomerInfo customerInfo = getCustomerInfo(userId);
+        String agencyAbbreviation = customerInfo.getCustAbbreviation();
         String batchNo = generateBathNo();
         for(AgencyTemplate template : agencyForecastList){
             template.setAgencyAbbreviation(agencyAbbreviation);
+            template.setChannel("A04".equals(customerInfo.getBusinessType()) ? "代理" : "直供");
             //获取代理商上级客户信息
             CustomerOrgBean customerOrgBean = getCustomerOrgInfo(template.getCustomerAbbreviation());
             ProductInfoDO productInfo = getProductInfo(template.getVmNumber());
@@ -144,6 +146,8 @@ public class SaleForecastService {
             forecast.setRepresentative(customerOrgBean.getOffice());
             //当前操作批次
             forecast.setBatchNo(batchNo);
+            int cnt = forecastMapper.checkRecord(forecast);
+            BusinessUtil.assertTrue((cnt != 0), FORECAST_DATA_REPEAT_ERROR);
             forecastMapper.insertSelective(forecast);
             if(log.isDebugEnabled()){
                 log.debug("[upload data] Save forecast head data , userId:{} , data:{}", userId, JSONObject.toJSON(forecast));
@@ -1079,12 +1083,13 @@ public class SaleForecastService {
      * @param userId
      * @return
      */
-    private String getAgencyAbbreviation(Integer userId) {
+    private CustomerInfo getCustomerInfo(Integer userId) {
         try {
             CustomerInfo customerInfo = customerInfoService.getDealerByUser(userId);
             BusinessUtil.notNull(customerInfo, FORECAST_AGENCY_INFO_ERROR);
             BusinessUtil.assertEmpty(customerInfo.getCustAbbreviation(), FORECAST_AGENCY_INFO_ERROR);
-            return customerInfo.getCustAbbreviation();
+            BusinessUtil.assertEmpty(customerInfo.getBusinessType(), FORECAST_AGENCY_INFO_ERROR);
+            return customerInfo;
         }catch (Exception ex) {
             log.error(FORECAST_AGENCY_MATCH_ERROR.getZhMsg(), ex);
             throw new BusinessException(FORECAST_AGENCY_MATCH_ERROR);
