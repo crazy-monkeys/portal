@@ -147,7 +147,7 @@ public class SaleForecastService {
             //当前操作批次
             forecast.setBatchNo(batchNo);
             int cnt = forecastMapper.checkRecord(forecast);
-            BusinessUtil.assertTrue((cnt != 0), FORECAST_DATA_REPEAT_ERROR);
+            BusinessUtil.assertTrue((cnt == 0), FORECAST_DATA_REPEAT_ERROR);
             forecastMapper.insertSelective(forecast);
             if(log.isDebugEnabled()){
                 log.debug("[upload data] Save forecast head data , userId:{} , data:{}", userId, JSONObject.toJSON(forecast));

@@ -231,7 +231,7 @@ public class ErrorCodes {
         FORECAST_PRODUCT_INFO_GET_ERROR(80025, "产品信息获取失败，请联系管理员", ""),
         FORECAST_OPERATION_DELETE_REPEAT(80026, "删除记录未审批，请勿重复操作", ""),
         FORECAST_OPERATION_UPDATE_REPEAT(80027, "修改记录未审批，请勿重复操作", ""),
-        FORECAST_DATA_REPEAT_ERROR(80028, "请勿上传重复数据", ""),
+        FORECAST_DATA_REPEAT_ERROR(80028, "检测到数据已存在，请重新上传", ""),
         //订单管理
         ORDER_NOT_FOUND(90001, "订单信息不存在", ""),
         ORDER_LINE_NOT_FOUND(90002, "订单行信息不存在", ""),
