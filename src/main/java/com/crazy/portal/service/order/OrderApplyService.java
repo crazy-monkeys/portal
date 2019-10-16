@@ -109,12 +109,11 @@ public class OrderApplyService {
             //设置定价
             orderLineEO.setPriceDate(priceDate);
             //设置价格
-            if(items.isEmpty()){
-                orderLineEO.setRPrice(BigDecimal.ZERO);
-                orderLineEO.setRNetPrice(BigDecimal.ZERO);
-            }
+            orderLineEO.setRPrice(BigDecimal.ZERO);
+            orderLineEO.setRNetPrice(BigDecimal.ZERO);
             for(ZpricessimulateItemOut item : items){
                 if(item.getProductid().equals(orderLineEO.getProductId())){
+                    log.info("Set the price.....");
                     BigDecimal price = item.getPrice();
                     orderLineEO.setRPrice(price == null ? BigDecimal.ZERO : price);
                     BigDecimal netprice = item.getNetprice();
@@ -122,7 +121,6 @@ public class OrderApplyService {
                 }
             }
         }
-
         map.put("lines",records);
         map.put("grossValue",esHeader.getGrossvalue());
         map.put("netValue",esHeader.getNetvalue());
