@@ -296,7 +296,7 @@ public class OrderApplyService {
      */
     public void modifyDeliveryDateApply(Integer orderId, List<DeliveryChangeVO> changeVOS, Integer userId) throws Exception{
 
-        if(changeVOS.isEmpty()) return;
+        BusinessUtil.assertTrue(!changeVOS.isEmpty(),ErrorCodes.BusinessEnum.ORDER_LINES_IS_REQUIRED);
 
         OrderApply orderApply = new OrderApply();
         Order order = orderMapper.selectByPrimaryKey(orderId);
