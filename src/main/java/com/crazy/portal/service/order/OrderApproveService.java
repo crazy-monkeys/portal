@@ -28,6 +28,7 @@ import java.beans.IntrospectionException;
 import java.lang.reflect.InvocationTargetException;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -128,25 +129,39 @@ public class OrderApproveService {
         order.setPaymentTerms(esHeader.getPaymentterms());
 
         order.setPriceDate(expectedDeliveryDate);
+        order.setUpdateTime(null);
+        order.setUpdateId(null);
         orderMapper.insertSelective(order);
 
+
         List<OrderLine> lines = orderApply.lineJsonToObj(orderApply.getJsonLines());
+        //默认取出第一个订单行的期望交货月份
+        String expectedDeliveryMonth = lines.get(0).getExpectedDeliveryMonth();
+        if(StringUtil.isEmpty(order.getPriceDate())){
+            //设置月份的最后一天
+            Date month = DateUtil.parseDate(expectedDeliveryMonth,DateUtil.MONTH_FORMAT);
+            order.setPriceDate(DateUtil.getLastDayOfMonth(DateUtil.getYear(month),DateUtil.getMonth(month)));
+        }
         for(OrderLine line : lines){
+
             for(ZsalesordercreateOutItem etItem : response.getEtItems().getItem()){
-                if(etItem.getProductid().equals(line.getProductId())){
+                //去掉默认返回的7个0
+                String productid = etItem.getProductid().substring(7);
+                if(productid.equals(line.getProductId())){
                     line.setRItemNo(etItem.getItemno());
                     line.setRPrice(etItem.getPrice());
                     line.setRNetPrice(etItem.getNetprice());
                     line.setRCurrency(etItem.getCurrency());
-                    line.setRProductId(etItem.getProductid());
+                    line.setRProductId(productid);
                     line.setRItemCategory(etItem.getItemcategory());
                     line.setRRefItemNo(etItem.getRefitemno());
                     line.setRRefItemProductId(etItem.getRefitemproductid());
-                    line.setExpectedDeliveryDate(expectedDeliveryDate);
+                    line.setExpectedDeliveryDate(order.getPriceDate());
                     line.setCreateId(userId);
                     line.setCreateTime(DateUtil.getCurrentTS());
                     line.setActice(1);
                     line.setOrderId(order.getId());
+                    line.setRemainingNum(line.getNum());
                     orderLineMapper.insertSelective(line);
                 }
             }
@@ -201,41 +216,37 @@ public class OrderApproveService {
         Order order = this.getOrderBySapOrderId(sapOrderId);
 
         ZrfcsdsalesorderchangeResponse response = this.invokeEccModifyOrder(order,"I");
-        ZsalesorderchangeOutHeader esHeader = response.getEsHeader();
-        String resulttype = esHeader.getResulttype();
-        if(resulttype.equals("1")){
-            List<OrderLine> orderLines = orderLineMapper.selectByOrderId(order.getId());
-            List<OrderLine> applyLines = orderApply.lineJsonToObj(orderApply.getJsonLines());
+        List<OrderLine> orderLines = orderLineMapper.selectByOrderId(order.getId());
+        List<OrderLine> applyLines = orderApply.lineJsonToObj(orderApply.getJsonLines());
 
-            Map<String,OrderLine> applyLineMap = applyLines.stream().collect(
-                    Collectors.toMap(OrderLine::getProductId, Function.identity()));
+        Map<String,OrderLine> applyLineMap = applyLines.stream().collect(
+                Collectors.toMap(OrderLine::getProductId, Function.identity()));
 
-            //修改订单头
-            order.setSendTo(orderApply.getSendTo());
-            order.setPurchaseNo(orderApply.getPurchaseNo());
-            order.setPurchaseDate(orderApply.getPurchaseDate());
-            order.setIncoterms1(orderApply.getIncoterms1());
-            order.setIncoterms2(orderApply.getIncoterms2());
-            order.setOrderType(orderApply.getOrderType());
-            order.setCustomerAttr(orderApply.getCustomerAttr());
-            order.setUpdateId(userId);
-            order.setUpdateTime(DateUtil.getCurrentTS());
-            orderMapper.updateByPrimaryKeySelective(order);
-            //修改订单行
-            List<ZsalesorderchangeOutItem> items = response.getEtItems().getItem();
-            items.forEach(sapLine->
-                orderLines.forEach(line->{
-                    String productId = line.getProductId();
-                    if(line.getRProductId().equals(sapLine.getProductid())){
-                        //目前订单行只能修改数量
-                        line.setNum(applyLineMap.get(productId).getNum());
-                        line.setUpdateId(userId);
-                        line.setUpdateTime(DateUtil.getCurrentTS());
-                        orderLineMapper.updateByPrimaryKeySelective(line);
-                    }
-                })
-            );
-        }
+        //修改订单头
+        order.setSendTo(orderApply.getSendTo());
+        order.setPurchaseNo(orderApply.getPurchaseNo());
+        order.setPurchaseDate(orderApply.getPurchaseDate());
+        order.setIncoterms1(orderApply.getIncoterms1());
+        order.setIncoterms2(orderApply.getIncoterms2());
+        order.setOrderType(orderApply.getOrderType());
+        order.setCustomerAttr(orderApply.getCustomerAttr());
+        order.setUpdateId(userId);
+        order.setUpdateTime(DateUtil.getCurrentTS());
+        orderMapper.updateByPrimaryKeySelective(order);
+        //修改订单行
+        List<ZsalesorderchangeOutItem> items = response.getEtItems().getItem();
+        items.forEach(sapLine->
+            orderLines.forEach(line->{
+                String productId = line.getProductId();
+                if(line.getRProductId().equals(sapLine.getProductid())){
+                    //目前订单行只能修改数量
+                    line.setNum(applyLineMap.get(productId).getNum());
+                    line.setUpdateId(userId);
+                    line.setUpdateTime(DateUtil.getCurrentTS());
+                    orderLineMapper.updateByPrimaryKeySelective(line);
+                }
+            })
+        );
     }
 
     /**

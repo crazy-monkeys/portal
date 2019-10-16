@@ -105,15 +105,12 @@ public class OrderApplyService {
         ZpricessimulateHeaderOut esHeader = response.getEsHeader();
         List<ZpricessimulateItemOut> items = response.getEtItems().getItem();
 
-        for(OrderLineEO orderLineEO : records){
-            //设置定价
-            orderLineEO.setPriceDate(priceDate);
-            //设置价格
-            orderLineEO.setRPrice(BigDecimal.ZERO);
-            orderLineEO.setRNetPrice(BigDecimal.ZERO);
-            for(ZpricessimulateItemOut item : items){
-                if(item.getProductid().equals(orderLineEO.getProductId())){
-                    log.info("Set the price.....");
+        for(ZpricessimulateItemOut item : items){
+            for(OrderLineEO orderLineEO : records){
+                //设置定价
+                orderLineEO.setPriceDate(priceDate);
+                //对方返回默认追加7个0,此处兼容
+                if(item.getProductid().substring(7).equals(orderLineEO.getProductId())){
                     BigDecimal price = item.getPrice();
                     orderLineEO.setRPrice(price == null ? BigDecimal.ZERO : price);
                     BigDecimal netprice = item.getNetprice();
@@ -121,6 +118,7 @@ public class OrderApplyService {
                 }
             }
         }
+
         map.put("lines",records);
         map.put("grossValue",esHeader.getGrossvalue());
         map.put("netValue",esHeader.getNetvalue());

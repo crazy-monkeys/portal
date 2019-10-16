@@ -33,7 +33,7 @@ public class OrderLineEO extends BaseRowModel {
     /**
      * 期望交货月份
      */
-    @ExcelProperty(value = "期望交货月份", index = 3)
+    @ExcelProperty(value = "期望交货月份(yyyy-MM)", index = 3)
     @JSONField(format = "yyyy-MM")
     private Date expectedDeliveryMonth = null;
 
@@ -45,10 +45,10 @@ public class OrderLineEO extends BaseRowModel {
     /**
      * 含税价格
      */
-    private BigDecimal rPrice;
+    private BigDecimal rPrice = BigDecimal.ZERO;
 
     /**
      * 不含税价格
      */
-    private BigDecimal rNetPrice;
+    private BigDecimal rNetPrice = BigDecimal.ZERO;
 }
