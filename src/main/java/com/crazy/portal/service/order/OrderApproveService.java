@@ -69,29 +69,23 @@ public class OrderApproveService {
         BusinessUtil.assertTrue(!approvalStatusInDB.equals(Enums.OrderApprovalStatus.WAIT_APPROVAL),
                 ErrorCodes.BusinessEnum.ORDER_NO_PENDING);
 
-        //如果是通过，调用ECC接口
         Integer userId = user.getId();
         Integer approvalStatus = bean.getApprovalStatus();
+
+        //审批通过
         if(approvalStatus.equals(Enums.OrderApprovalStatus.ADOPT.getValue())){
             //如果是创单申请
             Integer appalyType = orderApply.getAppalyType();
-
-            Order order = null;
-            String sapOrderId = orderApply.getRSapOrderId();
-            if(StringUtil.isNotEmpty(sapOrderId)){
-                order = orderMapper.selectBySapOrderId(sapOrderId);
-                BusinessUtil.notNull(order, ErrorCodes.BusinessEnum.ORDER_NOT_FOUND);
-            }
 
             switch (appalyType){
                 case 1:
                     this.createOrder(bean.getExpectedDeliveryDate(),orderApply, userId);
                     break;
                 case 2:
-                    this.modifyOrder(order,orderApply, userId);
+                    this.modifyOrder(orderApply, userId);
                     break;
                 case 3:
-                    this.cancelOrder(order, userId);
+                    this.cancelOrder(orderApply.getRSapOrderId(),userId);
                     break;
                 case 4:
                     this.modifyDeliveryDate(orderApply, userId);
@@ -161,10 +155,12 @@ public class OrderApproveService {
 
     /**
      * 审批通过-取消订单
-     * @param order
+     * @param sapOrderId
      * @param userId
      */
-    private void cancelOrder(Order order,Integer userId) throws Exception{
+    private void cancelOrder(String sapOrderId,Integer userId) throws Exception{
+
+        Order order = this.getOrderBySapOrderId(sapOrderId);
         List<OrderLine> orderLines = orderLineMapper.selectByOrderId(order.getId());
         ZrfcsdsalesorderchangeResponse response = this.invokeEccModifyOrder(order,"D");
         TableOfZsalesorderchangeOutItem etItems = response.getEtItems();
@@ -197,10 +193,13 @@ public class OrderApproveService {
 
     /**
      * 执行修改订单
-     * @param order
      * @param userId
      */
-    private void modifyOrder(Order order,OrderApply orderApply,Integer userId) throws Exception{
+    private void modifyOrder(OrderApply orderApply,Integer userId) throws Exception{
+
+        String sapOrderId = orderApply.getRSapOrderId();
+        Order order = this.getOrderBySapOrderId(sapOrderId);
+
         ZrfcsdsalesorderchangeResponse response = this.invokeEccModifyOrder(order,"I");
         ZsalesorderchangeOutHeader esHeader = response.getEsHeader();
         String resulttype = esHeader.getResulttype();
@@ -237,6 +236,18 @@ public class OrderApproveService {
                 })
             );
         }
+    }
+
+    /**
+     * 根据sapOrderId获取订单信息
+     * @param sapOrderId
+     * @return
+     */
+    private Order getOrderBySapOrderId(String sapOrderId) {
+        BusinessUtil.assertEmpty(sapOrderId, ErrorCodes.BusinessEnum.ORDER_NOT_FOUND);
+        Order order = orderMapper.selectBySapOrderId(sapOrderId);
+        BusinessUtil.notNull(order, ErrorCodes.BusinessEnum.ORDER_NOT_FOUND);
+        return order;
     }
 
 
