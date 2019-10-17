@@ -114,13 +114,17 @@ public class BusinessRebate {
      */
     private BigDecimal surplusRebateAmount;
     /**
-     * 状态 1-已提交 2-已结束
+     * 状态 1-结算中 2-客户未确认 3-客户已确认 4-已完结
      */
     private Integer status;
 
     private String dealerCode;
 
     private String customerCode;
+    /**
+     * 备注
+     */
+    private String remark;
     @JsonIgnore
     @JSONField(serialize = false)
     private Integer active;

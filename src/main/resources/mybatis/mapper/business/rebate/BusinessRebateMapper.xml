@@ -27,6 +27,7 @@
     <result column="status" jdbcType="INTEGER" property="status" />
     <result column="dealer_code" jdbcType="VARCHAR" property="dealerCode" />
     <result column="customer_code" jdbcType="VARCHAR" property="customerCode" />
+    <result column="remark" jdbcType="VARCHAR" property="remark"/>
     <result column="active" jdbcType="INTEGER" property="active" />
     <result column="create_id" jdbcType="INTEGER" property="createId" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
@@ -50,7 +51,7 @@
     id, agency_short_name, customer_short_name, customer_type, sales_name, ameba_header, ameba_department,
     shipment_company, account_year_month, order_month, shipment_year_month, bu, pdt,
     product, qty, sales_price, po_price, actual_price, platform, rebate_amount, release_amount,
-    surplus_rebate_amount, status, dealer_code, customer_code,
+    surplus_rebate_amount, status, dealer_code, customer_code, remark,
     active, create_id, create_time, update_id, update_time
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
@@ -141,6 +142,9 @@
       </if>
       <if test="customerCode != null">
         customer_code,
+      </if>
+      <if test="remark != null">
+        remark,
       </if>
       <if test="active != null">
         active,
@@ -234,6 +238,9 @@
       <if test="customerCode != null">
         #{customerCode,jdbcType=VARCHAR},
       </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
       <if test="active != null">
         #{active,jdbcType=INTEGER},
       </if>
@@ -326,6 +333,9 @@
       <if test="customerCode != null">
         customer_code = #{customerCode,jdbcType=VARCHAR},
       </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
       <if test="active != null">
         active = #{active,jdbcType=INTEGER},
       </if>
@@ -384,7 +394,5 @@
     and actual_price = #{actualPrice}
     and platform = #{platform}
   </select>
-
-
 
 </mapper>

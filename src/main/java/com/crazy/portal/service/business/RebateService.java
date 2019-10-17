@@ -289,12 +289,12 @@ public class RebateService {
      * @param userId
      */
     public void modifyRemark(Integer id, String remark, Integer userId){
-        BusinessRebateItem record = new BusinessRebateItem();
+        BusinessRebate record = new BusinessRebate();
         record.setId(id);
         record.setRemark(remark);
         record.setUpdateId(userId);
         record.setUpdateTime(DateUtil.getCurrentTS());
-        businessRebateItemMapper.updateByPrimaryKeySelective(record);
+        businessRebateMapper.updateByPrimaryKeySelective(record);
     }
 
     /**
