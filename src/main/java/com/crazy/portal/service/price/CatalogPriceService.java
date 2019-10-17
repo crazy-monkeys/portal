@@ -111,4 +111,14 @@ public class CatalogPriceService {
         }
         return Collections.EMPTY_LIST;
     }
+
+    /**
+     * 获取产品的价格
+     * @param productModel
+     * @param platform
+     * @return
+     */
+    public CatalogPrice getPriceByProduct(String productModel, String platform){
+        return catalogPriceMapper.getPriceByProduct(productModel, platform);
+    }
 }

@@ -18,4 +18,5 @@ public interface CatalogPriceMapper {
 
     int updateByPrimaryKeySelective(CatalogPrice record);
 
+    CatalogPrice getPriceByProduct(@Param("productModel") String productModel, @Param("platform") String platform);
 }

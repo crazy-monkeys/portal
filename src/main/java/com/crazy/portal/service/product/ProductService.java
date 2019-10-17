@@ -54,8 +54,24 @@ public class ProductService {
         return productInfoDOMapper.selectBySapMid(sapMid);
     }
 
+    /**
+     * 通过虚拟料号和平台获取产品
+     * @param sapMid
+     * @param platForm
+     * @return
+     */
     public ProductInfoDO selectBySapMidAndPlatForm(String sapMid, String platForm){
         return productInfoDOMapper.selectBySapMidAndPlatForm(sapMid, platForm);
+    }
+
+    /**
+     *通过产品型号和平台获取产品信息
+     * @param productModel
+     * @param platForm
+     * @return
+     */
+    public ProductInfoDO selectByProductModelAndPlatForm(String productModel, String platForm){
+        return productInfoDOMapper.selectByProductModelAndPlatForm(productModel, platForm);
     }
 
     /**

@@ -46,6 +46,14 @@
     </if>
   </select>
 
+  <select id="getPriceByProduct" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_catalog_price
+    where product_model = #{productModel,jdbcType=VARCHAR}
+    and platform = #{platform,jdbcType=VARCHAR}
+  </select>
+
   <select id="selectByParamsWithPage" parameterType="com.crazy.portal.bean.price.CatalogPriceVO" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />

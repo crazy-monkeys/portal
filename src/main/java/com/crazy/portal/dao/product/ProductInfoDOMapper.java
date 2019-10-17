@@ -25,4 +25,6 @@ public interface ProductInfoDOMapper {
     ProductInfoDO selectBySapMid(String sapMid);
 
     ProductInfoDO selectBySapMidAndPlatForm(@Param("sapMid") String sapMid, @Param("platForm") String platForm);
+
+    ProductInfoDO selectByProductModelAndPlatForm(@Param("productModel") String productModel, @Param("platForm") String platForm);
 }
