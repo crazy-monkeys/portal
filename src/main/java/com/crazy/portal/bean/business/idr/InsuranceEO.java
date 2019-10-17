@@ -22,9 +22,9 @@ public class InsuranceEO extends BaseRowModel {
     private String bu;
     @ExcelProperty(value = "PDT", index = 5)
     private String pdt;
-    @ExcelProperty(value = "产品类型", index = 6)
+    @ExcelProperty(value = "Product Type", index = 6)
     private String productType;
-    @ExcelProperty(value = "平台", index = 7)
+    @ExcelProperty(value = "Platform", index = 7)
     private String platform;
     @ExcelProperty(value = "产品型号", index = 8)
     private String productModel;
