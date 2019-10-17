@@ -56,4 +56,10 @@ public class ContactPerson {
 
     @XmlElement(name = "y4r:SecondaryDept")
     private String secondaryDept;
+
+    @XmlElement(name = "y4r:Z_SECONDARY_DEPT")
+    private String contantType;
+
+    @XmlElement(name = "y4r:Z_CONTACT_TYPE")
+    private String departMent;
 }

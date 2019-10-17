@@ -34,7 +34,7 @@ public class CustCorporateRelationship {
     private String corporateName;
 
     /**
-     * 
+     * Rebate 确认人 -  C2  出货确认人 -  C1
      */
     private String corporateType;
 

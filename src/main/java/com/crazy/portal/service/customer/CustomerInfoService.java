@@ -666,7 +666,8 @@ public class CustomerInfoService {
         contacts.forEach(e->{
             ContactPerson person = new ContactPerson();
             person.setObjectNodeSenderTechnicalID(e.getContactId().toString());
-            person.setBusinessPartnerFunctionTypeCode(e.getType());
+//            person.setBusinessPartnerFunctionTypeCode(e.getType());
+            person.setContantType(e.getType());
             person.setFamilyName(e.getContactName());
 
            if(StringUtil.isNotEmpty(e.getMobile())){
@@ -679,8 +680,9 @@ public class CustomerInfoService {
             email1.setURI(e.getEmail());
             person.setWorkplaceEmail(email1);
 
-            person.setWorkplaceDepartmentName(e.getDepartment());
-            person.setSecondaryDept(e.getSubDepartment());
+//            person.setWorkplaceDepartmentName(e.getDepartment());
+            person.setDepartMent(e.getDepartment());
+            person.setSecondaryDept(e.getDepartment());
             person.setBusinessPartnerFunctionTypeCode(e.getPosition());
             contactPersonList.add(person);
         });
@@ -1049,5 +1051,4 @@ public class CustomerInfoService {
 
         return customerFileService.selectByCustId(customerInfo.getId());
     }
-
 }
