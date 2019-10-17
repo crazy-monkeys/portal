@@ -26,6 +26,10 @@ public class CustomerContactService {
         return customerContactMapper.selectByCustId(custId);
     }
 
+    public List<CustomerContact> selectByCustName(String custName){
+        return customerContactMapper.selectByCustName(custName);
+    }
+
     public void saveOrUpdate(List<CustomerContact> customerContacts, Integer custId, Integer userId){
         if(null == customerContacts || customerContacts.isEmpty()){
             return;
