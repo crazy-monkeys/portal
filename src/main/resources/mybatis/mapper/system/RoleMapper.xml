@@ -126,7 +126,7 @@
     <include refid="Base_Column_List" />
     FROM t_role where active = 1
     <if test="roleCode != null">
-      and role_code = #{roleCode}
+      and role_code = #{roleCode,jdbcType=VARCHAR}
     </if>
     order by create_time
   </select>
@@ -139,12 +139,12 @@
 
   <select id="findRoleByCode" resultMap="BaseResultMap">
     select * from t_role
-    where role_code = #{roleCode}
+    where role_code = #{roleCode,jdbcType=VARCHAR}
   </select>
 
   <select id="findByName" resultMap="BaseResultMap">
     select * from t_role
-    where role_name = #{roleName}
+    where role_name = #{roleName,jdbcType=VARCHAR}
   </select>
 
   <select id="findRolesByResourceId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
@@ -160,7 +160,7 @@
 
   <select id="findRoleByType" resultMap="BaseResultMap">
     select <include refid="Base_Column_List" />
-    from t_role where role_type = #{roleType} and active = 1
+    from t_role where role_type = #{roleType,jdbcType=INTEGER} and active = 1
   </select>
 
 

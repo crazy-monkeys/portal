@@ -36,7 +36,7 @@
     select
     <include refid="Base_Column_List" />
     from t_user
-    where id = #{id}
+    where id = #{id,jdbcType=INTEGER}
   </select>
 
   <select id="findByLoginName" parameterType="java.lang.String" resultMap="BaseResultMap">
@@ -227,19 +227,19 @@
         and a.user_type = #{userType,jdbcType=INTEGER}
       </if>
       <if test="regStartTime != null and regEndTime == null">
-        and a.reg_time &gt;= #{regStartTime}
+        and a.reg_time &gt;= #{regStartTime,jdbcType=TIMESTAMP}
       </if>
       <if test="regStartTime == null and regEndTime != null">
-        and a.reg_time &lt;= #{regEndTime}
+        and a.reg_time &lt;= #{regEndTime,jdbcType=TIMESTAMP}
       </if>
       <if test="regStartTime != null and regEndTime != null">
-        and a.reg_time &gt;= #{regStartTime} and a.reg_time &lt;= #{regEndTime}
+        and a.reg_time &gt;= #{regStartTime,jdbcType=TIMESTAMP} and a.reg_time &lt;= #{regEndTime,jdbcType=TIMESTAMP}
       </if>
       <if test="customerName != null and customerName != ''">
-        and a.customer_name = #{customerName}
+        and a.customer_name = #{customerName,jdbcType=VARCHAR}
       </if>
       <if test="role != null and role.roleName != null and role.roleName != ''">
-        and ro.role_name = #{roleName}
+        and ro.role_name = #{roleName,jdbcType=VARCHAR}
       </if>
       <if test="createUserId != null">
         and a.create_user_id = #{createUserId,jdbcType=INTEGER}

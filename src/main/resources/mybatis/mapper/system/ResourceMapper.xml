@@ -49,13 +49,13 @@
     from t_resource where active = 1
     <if test="roleId != null">
       and id in(
-        select resource_id from t_role_resource where role_id = #{roleId}
+        select resource_id from t_role_resource where role_id = #{roleId,jdbcType=INTEGER}
       )
     </if>
   </select>
 
   <select id="getRoleCountByResourceId" resultType="int">
-    SELECT COUNT(1) FROM t_role_resource WHERE resource_id = #{id}
+    SELECT COUNT(1) FROM t_role_resource WHERE resource_id = #{id,jdbcType=INTEGER}
   </select>
 
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
