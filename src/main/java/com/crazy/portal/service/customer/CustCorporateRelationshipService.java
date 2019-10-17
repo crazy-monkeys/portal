@@ -1,10 +1,13 @@
 package com.crazy.portal.service.customer;
 
 import com.crazy.portal.dao.cusotmer.CustCorporateRelationshipMapper;
+import com.crazy.portal.dao.cusotmer.CustomerInfoMapper;
 import com.crazy.portal.entity.cusotmer.CustCorporateRelationship;
 import com.crazy.portal.entity.cusotmer.CustomerInfo;
 import com.crazy.portal.entity.system.User;
+import com.crazy.portal.util.BusinessUtil;
 import com.crazy.portal.util.Enums;
+import com.crazy.portal.util.ErrorCodes;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +24,8 @@ import java.util.List;
 public class CustCorporateRelationshipService {
     @Resource
     private CustCorporateRelationshipMapper custCorporateRelationshipMapper;
+    @Resource
+    private CustomerInfoMapper customerInfoMapper;
 
     public List<CustCorporateRelationship> selectByCustId(Integer custId){
         return custCorporateRelationshipMapper.selectDealerShip(custId);

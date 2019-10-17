@@ -168,7 +168,7 @@ public class CustomerInfoService {
      */
     public void deleteCustomer(Integer custId){
         CustomerInfo customerInfo = customerInfoMapper.selectByPrimaryKey(custId);
-        BusinessUtil.assertFlase(customerInfo.getApproveStatus().equals(Enums.CUSTOMER_APPROVE_STATUS.REJECT.getCode()),ErrorCodes.BusinessEnum.CUSTOMER_APPROVAL_IS_NOT);
+        BusinessUtil.assertTrue(customerInfo.getApproveStatus().equals(Enums.CUSTOMER_APPROVE_STATUS.REJECT.getCode()),ErrorCodes.BusinessEnum.CUSTOMER_APPROVAL_IS_NOT);
         customerInfoMapper.updateCustomerInfo(custId);
     }
 
@@ -623,7 +623,6 @@ public class CustomerInfoService {
             Relationship relationship = new Relationship();
             relationship.setRelationshipBusinessPartnerInternalID(e.getCorporateId().toString());
             relationship.setRoleCode(e.getCorporateType());
-
             relationshipList.add(relationship);
         });
         customer.setRelationship(relationshipList);

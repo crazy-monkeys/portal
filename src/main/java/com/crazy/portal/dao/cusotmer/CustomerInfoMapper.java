@@ -47,6 +47,8 @@ public interface CustomerInfoMapper {
 
     CustomerInfo selectByOutCode(String outCode);
 
+    CustomerInfo selectByInCode(String inCode);
+
     CustomerInfo selectByCustAbbreviation(String custAbbreviation);
 
     List<CustomerInfo> selectCustShip(Integer custId);

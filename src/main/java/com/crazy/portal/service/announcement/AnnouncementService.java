@@ -57,6 +57,10 @@ public class AnnouncementService {
         return new PageInfo<>(result);
     }
 
+    public List<Announcement> getAnnouncement(Integer typeId){
+        return announcementDOMapper.getAnnouncement(typeId);
+    }
+
     /**
      * 获取单条公告详细记录
      * @param id 公告ID

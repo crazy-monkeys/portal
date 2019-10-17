@@ -165,9 +165,6 @@ public class OrderApiService {
         String response = HttpClientUtils.post(url,requestXml);
         log.info("response - >" + response);
         ZrfcsddeliverycreateResponse zrfcsddeliverycreateResponse = JaxbXmlUtil.convertSoapXmlToJavaBean(response, ZrfcsddeliverycreateResponse.class);
-
-        this.checkResultMessage(zrfcsddeliverycreateResponse);
-
         return zrfcsddeliverycreateResponse;
 
     }

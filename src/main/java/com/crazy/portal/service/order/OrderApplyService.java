@@ -105,18 +105,24 @@ public class OrderApplyService {
         ZpricessimulateHeaderOut esHeader = response.getEsHeader();
         List<ZpricessimulateItemOut> items = response.getEtItems().getItem();
 
-        for(ZpricessimulateItemOut item : items){
-            for(OrderLineEO orderLineEO : records){
-                //设置定价
-                orderLineEO.setPriceDate(priceDate);
+
+
+        for(OrderLineEO orderLineEO : records){
+            //设置定价
+            orderLineEO.setPriceDate(priceDate);
+            BigDecimal price = BigDecimal.ZERO;
+            BigDecimal netprice = BigDecimal.ZERO;
+
+            for(ZpricessimulateItemOut item : items){
                 //对方返回默认追加7个0,此处兼容
-                if(item.getProductid().substring(7).equals(orderLineEO.getProductId())){
-                    BigDecimal price = item.getPrice();
-                    orderLineEO.setRPrice(price == null ? BigDecimal.ZERO : price);
-                    BigDecimal netprice = item.getNetprice();
-                    orderLineEO.setRNetPrice(netprice == null ? BigDecimal.ZERO : netprice);
+                if(item.getRefitemproductid().substring(7).equals(orderLineEO.getProductId()) &&
+                        !item.getProductid().substring(7).equals(orderLineEO.getProductId())){
+                    price = price.add(item.getPrice());
+                    netprice = netprice.add(item.getNetprice());
                 }
             }
+            orderLineEO.setRPrice(price == null ? BigDecimal.ZERO : price);
+            orderLineEO.setRNetPrice(netprice == null ? BigDecimal.ZERO : netprice);
         }
 
         map.put("lines",records);

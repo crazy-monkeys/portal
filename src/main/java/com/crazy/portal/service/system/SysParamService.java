@@ -1,7 +1,9 @@
 package com.crazy.portal.service.system;
 
 import com.crazy.portal.dao.system.SysParameterMapper;
+import com.crazy.portal.entity.announcement.Announcement;
 import com.crazy.portal.entity.system.SysParameter;
+import com.crazy.portal.service.announcement.AnnouncementService;
 import com.crazy.portal.util.BusinessUtil;
 import com.crazy.portal.util.ErrorCodes;
 import com.crazy.portal.util.PortalUtil;
@@ -20,7 +22,8 @@ import java.util.List;
 public class SysParamService {
     @Resource
     private SysParameterMapper sysParameterMapper;
-
+    @Resource
+    private AnnouncementService announcementService;
     /**
      * 查询所有的系统参数
      */
@@ -59,6 +62,10 @@ public class SysParamService {
         Integer checkResult = sysParameterMapper.checkValue(sysParameter.getPModel(), sysParameter.getPFunction(), sysParameter.getPValue(), sysParameter.getId());
         BusinessUtil.assertFlase(checkResult==1, ErrorCodes.SystemManagerEnum.SYS_PARAM_VALUE);
         if(null!=sysParameter.getId()){
+            if(sysParameter.getActive()==0){
+                List<Announcement> announcements = announcementService.getAnnouncement(sysParameter.getId());
+                BusinessUtil.assertTrue(announcements.isEmpty(),ErrorCodes.BusinessEnum.NOT_DELETE);
+            }
             sysParameter.setUpdateTime(new Date());
             sysParameter.setUpdateUser(userId);
             sysParameterMapper.updateByPrimaryKeySelective(sysParameter);

@@ -7,6 +7,7 @@ import com.crazy.portal.bean.order.wsdl.create.IsHeader;
 import com.crazy.portal.bean.order.wsdl.create.ItItem;
 import com.crazy.portal.bean.order.wsdl.create.ItItems;
 import com.crazy.portal.bean.order.wsdl.create.*;
+import com.crazy.portal.bean.order.wsdl.price.ZpricessimulateItemOut;
 import com.crazy.portal.dao.cusotmer.CustomerInfoMapper;
 import com.crazy.portal.dao.order.OrderApplyMapper;
 import com.crazy.portal.dao.order.OrderLineMapper;
@@ -26,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.beans.IntrospectionException;
 import java.lang.reflect.InvocationTargetException;
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -143,28 +145,37 @@ public class OrderApproveService {
             order.setPriceDate(DateUtil.getLastDayOfMonth(DateUtil.getYear(month),DateUtil.getMonth(month)));
         }
         for(OrderLine line : lines){
-
-            for(ZsalesordercreateOutItem etItem : response.getEtItems().getItem()){
-                //去掉默认返回的7个0
-                String productid = etItem.getProductid().substring(7);
-                if(productid.equals(line.getProductId())){
-                    line.setRItemNo(etItem.getItemno());
-                    line.setRPrice(etItem.getPrice());
-                    line.setRNetPrice(etItem.getNetprice());
-                    line.setRCurrency(etItem.getCurrency());
-                    line.setRProductId(productid);
-                    line.setRItemCategory(etItem.getItemcategory());
-                    line.setRRefItemNo(etItem.getRefitemno());
-                    line.setRRefItemProductId(etItem.getRefitemproductid());
-                    line.setExpectedDeliveryDate(order.getPriceDate());
-                    line.setCreateId(userId);
-                    line.setCreateTime(DateUtil.getCurrentTS());
-                    line.setActice(1);
-                    line.setOrderId(order.getId());
-                    line.setRemainingNum(line.getNum());
-                    orderLineMapper.insertSelective(line);
+            BigDecimal price = BigDecimal.ZERO;
+            BigDecimal netprice = BigDecimal.ZERO;
+            ZsalesordercreateOutItem etItem = new ZsalesordercreateOutItem();
+            for(ZsalesordercreateOutItem item : response.getEtItems().getItem()){
+                if(item.getProductid().substring(7).equals(line.getProductId())){
+                    etItem = item;
+                }else{
+                    //对方返回默认追加7个0,此处兼容
+                    if(item.getRefitemproductid().substring(7).equals(line.getProductId()) &&
+                            !item.getProductid().substring(7).equals(line.getProductId())){
+                        price = price.add(item.getPrice());
+                        netprice = netprice.add(item.getNetprice());
+                    }
                 }
             }
+            String productid = etItem.getProductid().substring(7);
+            line.setRItemNo(etItem.getItemno());
+            line.setRPrice(price == null ? BigDecimal.ZERO : price);
+            line.setRNetPrice(netprice == null ? BigDecimal.ZERO : netprice);
+            line.setRCurrency(etItem.getCurrency());
+            line.setRProductId(productid);
+            line.setRItemCategory(etItem.getItemcategory());
+            line.setRRefItemNo(etItem.getRefitemno());
+            line.setRRefItemProductId(etItem.getRefitemproductid());
+            line.setExpectedDeliveryDate(order.getPriceDate());
+            line.setCreateId(userId);
+            line.setCreateTime(DateUtil.getCurrentTS());
+            line.setActice(1);
+            line.setOrderId(order.getId());
+            line.setRemainingNum(line.getNum());
+            orderLineMapper.insertSelective(line);
         }
     }
 

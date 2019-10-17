@@ -143,4 +143,9 @@ public class CustomerController extends BaseController{
     public BaseResponse queryAllCustomer(){
         return successResult(customerInfoService.selecAllCustomer());
     }
+
+    @GetMapping("/getShipp")
+    public BaseResponse getShip(){
+        return successResult();
+    }
 }

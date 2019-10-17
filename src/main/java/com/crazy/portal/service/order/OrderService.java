@@ -17,6 +17,7 @@ import com.crazy.portal.util.*;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.cxf.Bus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
@@ -151,7 +152,7 @@ public class OrderService {
         try{
             if(vo.getApprovalStatus().equals(Enums.OrderApprovalStatus.ADOPT.getValue())){
                 ZrfcsddeliverycreateResponse response = eccDeliveryCreate(approval, approval.getSerializelDeliveryOrderLine());
-                if(response.getResulttype().equals("0") || 1==1){
+                if(response.getResulttype().equals("0")){
                     DeliverOrder deliverOrder = new DeliverOrder();
                     BeanUtils.copyNotNullFields(approval, deliverOrder);
                     deliverOrder.setSapDeliverOrderNo(response.getSapdeliveryid());
@@ -165,10 +166,13 @@ public class OrderService {
                         deliverOrderLine.setDeliverOrderId(deliverOrder.getDeliverOrderId());
                         deliverOrderLineMapper.insertSelective(deliverOrderLine);
                     }
+                }else{
+                    throw new BusinessException(response.getResultmessage());
                 }
             }
         }catch (Exception e){
             log.error("",e);
+            throw new BusinessException(e.getMessage());
         }
     }
 
@@ -235,7 +239,7 @@ public class OrderService {
 
     private ZrfcsddeliverycreateResponse eccDeliveryCreate(DeliverOrderApproval deliverOrder, List<DeliverOrderLine> deliverOrderLines) throws Exception{
         ZrfcsdDeliveryCreateContent content = new ZrfcsdDeliveryCreateContent();
-        content.setDeliverydate(DateUtil.format(deliverOrder.getDeliverDate(),DateUtil.SHORT_FORMAT));
+        content.setDeliverydate(DateUtil.format(deliverOrder.getDeliverDate(),DateUtil.WEB_FORMAT));
         content.setDeliveryIoc(deliverOrder.getShippingPoint());
         content.setPortalDeliveryId(String.valueOf(deliverOrder.getDeliverOrderId()));
         content.setSapOrderId(deliverOrder.getSapOrderNo());
@@ -251,6 +255,7 @@ public class OrderService {
         deliverOrderLineList.forEach(e->{
             com.crazy.portal.bean.order.wsdl.delivery.create.Item item = new com.crazy.portal.bean.order.wsdl.delivery.create.Item();
             item.setDeliveryQuantity(String.valueOf(e.getDeliveryQuantity()));
+            item.setDeliveryItemNo(e.getSapSalesOrderLineNo());
             item.setItemNo(e.getSapSalesOrderLineNo());
             item.setProductId(e.getProductId());
             items.add(item);

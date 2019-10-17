@@ -803,6 +803,10 @@
     select * from t_customer_info where active =1 and out_code = #{outCode}
   </select>
 
+  <select id="selectByInCode" resultMap="BaseResultMap">
+      select * from t_customer_info where active =1 and in_code = #{inCode}
+  </select>
+
   <select id="selectDealerList" resultMap="BaseResultMap">
     select * from t_customer_info where active =1 and business_type = 'A04'
   </select>

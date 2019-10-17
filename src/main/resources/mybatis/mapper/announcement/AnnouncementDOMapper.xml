@@ -214,4 +214,8 @@
     order by t.release_time asc
   </select>
 
+  <select id="getAnnouncement" resultMap="BaseResultMap">
+    select * from t_announcement where status = 1 and type_id = #{typeId}
+  </select>
+
 </mapper>

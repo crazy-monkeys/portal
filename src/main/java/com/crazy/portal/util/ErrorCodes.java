@@ -133,6 +133,7 @@ public class ErrorCodes {
         ANNOUNCEMENT_FILE_NOT_FOUND_BY_ID(30003, "未找到公告文件", ""),
         ANNOUNCEMENT_FILE_ERROR_BY_ID(30004, "公告文件数据异常", ""),
         ANNOUNCEMENT_ROLE_EMPTY(30005, "未选择角色信息，请重新选择", ""),
+        NOT_DELETE(30005, "该类型下已有公告，不允许删除", ""),
 
         //交付模块
         //交付模块 - 出货管理 & 收货管理
@@ -165,7 +166,7 @@ public class ErrorCodes {
         CUSTOMER_SYNC_ERROR(50006,"客户同步异常",""),
         CUSTOMER_ORG_ERROR(50007,"没有审批权限",""),
         CUSTOMER_NO_DEALER(50008,"该用户非有效代理商",""),
-        CUSTOMER_APPROVAL_IS_NOT(50009,"不支持的操作，请确认客户状态",""),
+        CUSTOMER_APPROVAL_IS_NOT(50009,"不支持的操作，只能删除驳回状态的客户",""),
         CUSTOMER_MOBILE_IS_INACTIVE(50010,"手机号格式不正确",""),
         CUSTOMER_EMAIL_IS_INACTIVE(50011,"邮箱格式不正确",""),
         CUSTOMER_WEB_IS_INACTIVE(50013,"网站格式不正确",""),
