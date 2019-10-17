@@ -16,8 +16,6 @@ import java.util.Vector;
  */
 @Slf4j
 public class SFTPUtil {
-    private ChannelSftp sftp;
-
     private Session session;
     /** FTP 登录用户名*/
     private String username;
@@ -69,7 +67,8 @@ public class SFTPUtil {
      *
      * @throws Exception
      */
-    public void login() throws Exception{
+    public void login() throws JSchException{
+        ChannelSftp sftp = null;
         try {
             JSch jsch = new JSch();
             if (privateKey != null) {
@@ -86,23 +85,9 @@ public class SFTPUtil {
             Channel channel = session.openChannel("sftp");
             channel.connect();
             sftp = (ChannelSftp) channel;
-        } catch (JSchException e) {
-            throw e;
-        }
-    }
-
-    /**
-     * 关闭连接 server
-     */
-    public void logout(){
-        if (sftp != null) {
-            if (sftp.isConnected()) {
+        } finally {
+            if(sftp != null){
                 sftp.disconnect();
-            }
-        }
-        if (session != null) {
-            if (session.isConnected()) {
-                session.disconnect();
             }
         }
     }
@@ -116,13 +101,16 @@ public class SFTPUtil {
      * @throws Exception
      */
     public void upload(String directory, String sftpFileName, InputStream input) throws SftpException{
+        ChannelSftp sftp = null;
         try {
             sftp.cd(directory);
-        } catch (SftpException e) {
-            sftp.mkdir(directory);
-            sftp.cd(directory);
+            sftp.put(input, sftpFileName);
+        } finally {
+            if(sftp != null){
+                sftp.disconnect();
+            }
         }
-        sftp.put(input, sftpFileName);
+
     }
 
     /**
@@ -178,11 +166,18 @@ public class SFTPUtil {
      * @throws Exception
      */
     public void download(String directory, String downloadFile, String saveFile) throws SftpException, FileNotFoundException{
-        if (directory != null && !"".equals(directory)) {
-            sftp.cd(directory);
+        ChannelSftp sftp = null;
+        try {
+            if (directory != null && !"".equals(directory)) {
+                sftp.cd(directory);
+            }
+            File file = new File(saveFile);
+            sftp.get(downloadFile, new FileOutputStream(file));
+        } finally {
+            if(sftp != null){
+                sftp.disconnect();
+            }
         }
-        File file = new File(saveFile);
-        sftp.get(downloadFile, new FileOutputStream(file));
     }
     /**
      * 下载文件
@@ -193,13 +188,20 @@ public class SFTPUtil {
      * @throws IOException
      * @throws Exception
      */
-    public byte[] download(String directory, String downloadFile) throws SftpException, IOException{
-        if (directory != null && !"".equals(directory)) {
-            sftp.cd(directory);
+    public byte[] download(String directory, String downloadFile) throws SftpException,IOException{
+        ChannelSftp sftp = null;
+        try {
+            if (directory != null && !"".equals(directory)) {
+                sftp.cd(directory);
+            }
+            InputStream is = sftp.get(downloadFile);
+            byte[] fileData = IOUtils.toByteArray(is);
+            return fileData;
+        } finally {
+            if(sftp != null){
+                sftp.disconnect();
+            }
         }
-        InputStream is = sftp.get(downloadFile);
-        byte[] fileData = IOUtils.toByteArray(is);
-        return fileData;
     }
 
     /**
@@ -211,8 +213,16 @@ public class SFTPUtil {
      * @throws Exception
      */
     public void delete(String directory, String deleteFile) throws SftpException{
-        sftp.cd(directory);
-        sftp.rm(deleteFile);
+        ChannelSftp sftp = null;
+        try {
+            sftp.cd(directory);
+            sftp.rm(deleteFile);
+        }finally {
+            if(sftp != null){
+                sftp.disconnect();
+            }
+        }
+
     }
 
     /**
@@ -222,7 +232,14 @@ public class SFTPUtil {
      * @return
      * @throws SftpException
      */
-    public Vector<?> listFiles(String directory) throws SftpException {
-        return sftp.ls(directory);
+    public Vector<?> listFiles(String directory) throws SftpException{
+        ChannelSftp sftp = null;
+        try {
+            return sftp.ls(directory);
+        }finally {
+            if(sftp != null){
+                sftp.disconnect();
+            }
+        }
     }
 }
