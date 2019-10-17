@@ -7,7 +7,6 @@ import com.crazy.portal.util.PortalUtil;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
 import org.springframework.stereotype.Service;
-
 import javax.annotation.Resource;
 
 /**
