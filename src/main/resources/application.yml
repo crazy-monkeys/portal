@@ -47,3 +47,7 @@ spring:
 login:
   password: 1234
   username: admin
+
+jasypt:
+  encryptor:
+    password: SkhPSEZLSCUyM0klMjMlMjYlMjglMjhAJTI5RlVGSw==

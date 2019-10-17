@@ -23,8 +23,8 @@ spring:
     default-encoding: UTF-8
 
   datasource:
-    username: crmportalqa
-    password: Crm$20%My99
+    username: ENC(ozr2CUvjzeuGH61yIs8ERywH5hCzwutA)
+    password: ENC(34vf5Yde3MCbluoRi/Y5MeTGMYD241uKQUgLCXELRJXdnkM7dXj71JLv7BSW7gk9)
     url: jdbc:mysql://10.29.60.170:3306/crmportalqa?useUnicode=true&characterEncoding=utf8&rewriteBatchedStatements=true&serverTimezone=UTC
     driver-class-name: com.mysql.jdbc.Driver
 
@@ -64,14 +64,14 @@ ecc:
   api:
     url: https://e600180-hcioem.hcisbt.cn1.hana.ondemand.com
   auth:
-    username: S0020469033
-    password: CRM@Unisoc
+    username: ENC(VAu6waPK+JIWbDN6Cfdwo5iHv3ePbw2B)
+    password: ENC(zHAmhTGuifaMYH01fPSoPhJbhglwRXlS)
 
 ftp:
   host: 10.29.24.20
   port: 21
-  username: crmftp
-  password: '123@qwe'
+  username: ENC(OuMz8deoy+7DaD9SVcMHEQ==)
+  password: ENC(ReKuxL1yPnDetI3SBsVgymv4nq75+qPB)
   path:
     handover:
       push: /home/crmftp/bitest/upload/

@@ -30,8 +30,8 @@ spring:
     from: ${spring.mail.username} #与上面的username保持一致
 
   datasource:
-    username: root
-    password: ThreeApe!@#$2019
+    username: ENC(5D/pQEiAkevKf9ZCi17Bpg==)
+    password: ENC(WPlmS8Iglj986bEXU0GAnZdcBth5XgEvpRO2QXVfzTs=)
     url: jdbc:mysql://47.100.106.186:3306/portal?useUnicode=true&characterEncoding=utf8&rewriteBatchedStatements=true&serverTimezone=UTC
     driver-class-name: com.mysql.jdbc.Driver
 
@@ -71,14 +71,14 @@ ecc:
   api:
     url: https://e600180-hcioem.hcisbt.cn1.hana.ondemand.com
   auth:
-    username: S0020469033
-    password: CRM@Unisoc
+    username: ENC(iA2HVbGvteAJ9t7IRxLNRgib+plchEkK)
+    password: ENC(bhuMWppbRMJUCZnxn079kxl7alyHGSOv)
 
 ftp:
   host: 10.29.24.20
   port: 21
-  username: crmftp
-  password: '123@qwe'
+  username: ENC(OuMz8deoy+7DaD9SVcMHEQ==)
+  password: ENC(ReKuxL1yPnDetI3SBsVgymv4nq75+qPB)
   path:
     handover:
       push: /handover/push/
