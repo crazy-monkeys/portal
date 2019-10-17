@@ -52,7 +52,6 @@ public class UserService {
     @Value("${portal.view-url}")
     private String portalViewUrl;
 
-
     private PasswordEncoder passwordEncoder =
             PasswordEncoderFactories.createDelegatingPasswordEncoder();
 
@@ -372,4 +371,6 @@ public class UserService {
         mailBean.setTemplateName(EmailHelper.MAIL_TEMPLATE.USER_CREATE.getTemplateName());
         emailHelper.sendHtmlMail(mailBean);
     }
+
+
 }

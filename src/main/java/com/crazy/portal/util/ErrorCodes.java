@@ -76,7 +76,9 @@ public class ErrorCodes {
 
         SYS_PARAM_VALUE(10048,"该选项下Code已存在",""),
         SYS_BEAN_ERROR(10049,"对象映射异常",""),
-        SYS_IN_USER_ERROR(10050,"没有对应的内部员工信息","")
+        SYS_IN_USER_ERROR(10050,"没有对应的内部员工信息",""),
+
+        VERIFY_CODE_ERROR(10051, "验证码错误", "")
         ;
 
 
