@@ -1,14 +1,20 @@
 package com.crazy.portal.service.handover;
 
 import com.alibaba.fastjson.JSONObject;
+import com.crazy.portal.bean.BaseResponse;
 import com.crazy.portal.bean.handover.DeliverTemplateBean;
 import com.crazy.portal.bean.handover.HandoverUploadVO;
+import com.crazy.portal.bean.system.MailBean;
+import com.crazy.portal.config.email.EmailHelper;
 import com.crazy.portal.config.exception.BusinessException;
 import com.crazy.portal.dao.handover.DeliverDetailMapper;
 import com.crazy.portal.dao.handover.DeliverDetailUpdateMapper;
+import com.crazy.portal.entity.cusotmer.CustomerContact;
 import com.crazy.portal.entity.handover.DeliverDetail;
 import com.crazy.portal.entity.handover.DeliverDetailUpdate;
 import com.crazy.portal.entity.handover.DeliverReceiveRecord;
+import com.crazy.portal.service.customer.CustCorporateRelationshipService;
+import com.crazy.portal.service.customer.CustomerContactService;
 import com.crazy.portal.service.customer.CustomerInfoService;
 import com.crazy.portal.util.*;
 import com.github.pagehelper.PageInfo;
@@ -42,6 +48,10 @@ public class DeliverService extends AbstractHandover implements IHandover<Delive
     private CustomerInfoService customerInfoService;
     @Resource
     private DeliverDetailUpdateMapper deliverDetailUpdateMapper;
+    @Resource
+    private EmailHelper emailHelper;
+    @Resource
+    private CustomerContactService customerContactService;
 
     @Value("${file.path.deliver.template}")
     private String deliverTemplatePath;
@@ -55,6 +65,9 @@ public class DeliverService extends AbstractHandover implements IHandover<Delive
     private String ftpPushPath;
     @Value("${ftp.path.handover.pull}")
     private String ftpPullPath;
+
+    @Value("${portal.view-url}")
+    private String portalViewUrl;
 
 
     @Override
@@ -275,6 +288,40 @@ public class DeliverService extends AbstractHandover implements IHandover<Delive
         }
         deliverDetailUpdateMapper.batchInsertByBiId(biIds);
         handoverService.updateStatus(new ArrayList<>(recordIds), 4);
+    }
+
+    public void sendConfirmEmail(Integer recordId) {
+        BusinessUtil.notNull(recordId, HANDOVER_PARAM_TYPE_ERROR);
+        List<DeliverDetail> deliverDetails = deliverDetailMapper.selectEmailInfoByRecordId(recordId);
+        BusinessUtil.notNull(deliverDetails, HANDOVER_PARAM_TYPE_ERROR);
+        for(DeliverDetail detail : deliverDetails){
+            try {
+                List<CustomerContact> customerContacts = customerContactService.selectByCustName(detail.getCustomerFullName());
+                BusinessUtil.notNull(customerContacts, HANDOVER_DATA_EMAIL_ERROR);
+                for(CustomerContact customerContact : customerContacts){
+                    if(!"C01".equals(customerContact.getType()) || StringUtils.isEmpty(customerContact.getEmail())){
+                        continue;
+                    }
+                    MailBean mailBean = new MailBean();
+                    mailBean.setTos(customerContact.getEmail());
+                    mailBean.setSubject("出货数据确认");
+                    mailBean.setTemplateName(EmailHelper.MAIL_TEMPLATE.DELIVER_DATA_CONFIRM.getTemplateName());
+                    String confirmLink = String.format("%s%s?detailIds=%s", portalViewUrl, "/deliver/confirm", detail.getIdStr());
+                    mailBean.setContent("请点击右侧链接进行出货数据确认：<a>" + confirmLink + "</a>");
+                    Map<String, Object> params = new HashMap<>();
+                    params.put("remind", "请点击链接进行出货数据确认");
+                    params.put("url", confirmLink);
+                    mailBean.setParams(params);
+                    emailHelper.sendHtmlMail(mailBean);
+                }
+            }catch (Exception ex) {
+                throw new BusinessException(HANDOVER_DATA_EMAIL_ERROR);
+            }
+        }
+    }
+
+    public void confirmData(Integer[] detailIds, String confirmMsg) {
+        deliverDetailMapper.updateConfirmMsgByIds(detailIds, confirmMsg);
     }
 
     private HandoverUploadVO genThirdResult(BiCheckResult checkResult, List<DeliverDetail> responseData, Integer recordId) {

@@ -14,6 +14,8 @@ import java.math.BigDecimal;
 @Data
 public class DeliverDetail extends BaseRowModel {
 
+    private String idStr;
+
     private Integer id;
 
     @ExcelProperty(index = 0, value = "代理全称")
@@ -101,5 +103,11 @@ public class DeliverDetail extends BaseRowModel {
     private String thirdId;
 
     private Integer recordId;
+
+    //确认备注
+    private String confirmMsg;
+
+    //0：未确认 1：已确认
+    private Integer confirmStatus;
 
 }
