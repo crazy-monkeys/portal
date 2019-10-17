@@ -31,6 +31,10 @@ public class CustCorporateRelationshipService {
         return custCorporateRelationshipMapper.selectDealerShip(custId);
     }
 
+    public List<CustCorporateRelationship> selectByCustName(String custName){
+        return custCorporateRelationshipMapper.selectDealerShipByName(custName);
+    }
+
     public void saveOrUpdate(List<CustCorporateRelationship> custCorporateRelationships, Integer custId, Integer userId){
         if(null == custCorporateRelationships || custCorporateRelationships.isEmpty()){
             return;

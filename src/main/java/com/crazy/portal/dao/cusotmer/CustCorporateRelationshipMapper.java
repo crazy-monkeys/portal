@@ -19,6 +19,8 @@ public interface CustCorporateRelationshipMapper {
 
     List<CustCorporateRelationship> selectDealerShip(Integer dealerId);
 
+    List<CustCorporateRelationship> selectDealerShipByName(String dealerName);
+
     List<CustCorporateRelationship> selectByCustId(Integer custId);
 
     int deleteByCustId(Integer custId);

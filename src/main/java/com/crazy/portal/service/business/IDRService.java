@@ -26,6 +26,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -183,12 +184,15 @@ public class IDRService {
         bean.setCreateTime(DateUtil.getCurrentTS());
         businessIdrInfoMapper.insertSelective(bean);
         if(bean.getType().equals(Enums.BusinessIdrType.INSURANCE.getCode())) {
+            BusinessUtil.assertFlase(null == bean.getCrAmount(),ErrorCodes.BusinessEnum.CRM_AMOUNT_ERROR);
             saveExtendsInfo(bean.getIList(), businessInsuranceInfoMapper, bean);
         }
         if(bean.getType().equals(Enums.BusinessIdrType.DIFF_PRICE.getCode())) {
             saveExtendsInfo(bean.getDList(), businessDiffPriceInfoMapper, bean);
         }
         if(bean.getType().equals(Enums.BusinessIdrType.RETURNS.getCode())) {
+            BusinessUtil.assertFlase(null == bean.getCrAmount(),ErrorCodes.BusinessEnum.CRM_AMOUNT_ERROR);
+            BusinessUtil.assertFlase(null == bean.getCrAmount(),ErrorCodes.BusinessEnum.CRM_AMOUNT_ERROR);
             saveExtendsInfo(bean.getRList(), businessReturnsInfoMapper, bean);
         }
         saveExtendsInfo(bean.getFiles(), businessFileMapper, bean);

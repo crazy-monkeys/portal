@@ -27,8 +27,6 @@ public class BusinessIdrInfo {
     @NotBlank(message = "请选择币种")
     private String currency;
     //CR金额
-    @Digits(integer=15,fraction=4,message = "请输入有效的数字")
-    @NotNull(message = "CR金额不能为空")
     private BigDecimal crAmount;
     //公司
     @NotBlank(message = "公司不能为空")
