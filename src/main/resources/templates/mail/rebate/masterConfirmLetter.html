@@ -44,7 +44,7 @@ table td{
         <th>备注</th>
     </tr>
     <tr th:each="item:${list}">
-        <td th:text="${#dates.format(item.noticeDate,'yyyy-MM-dd HH:mm:ss')}"></td>
+        <td th:text="${#dates.format(item.noticeDate,'yyyy-MM-dd')}"></td>
         <td th:text="${item.shipmentCompany}"></td>
         <td th:text="${item.executor}"></td>
         <td th:text="${item.customerShortName}"></td>
