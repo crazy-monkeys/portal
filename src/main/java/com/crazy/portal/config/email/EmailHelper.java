@@ -40,7 +40,8 @@ public class EmailHelper {
         RESET_PWD("mail/resetPwd"),
         FORGET_PWD("mail/forgetPwd"),
         REBATE_MASTER_CONFIRM("mail/rebate/masterConfirmLetter"),
-        REBATE_ITEM_CONFIRM("mail/rebate/itemConfirmLetter");
+        REBATE_ITEM_CONFIRM("mail/rebate/itemConfirmLetter"),
+        DELIVER_DATA_CONFIRM("mail/deliver/dataConfirm");
 
         private String templateName;
 

@@ -63,7 +63,7 @@ file:
       pull: ${file.path.root-thrid-pull}/forecast/
 
 portal:
-  view-url: http://portal-sit.threeape.cn/portal/#/pwd
+  view-url: http://portal-sit.threeape.cn/portal/#
   file-url: http://192.168.101.6:8080/portal-api/file
   mock-bi-server: on
 

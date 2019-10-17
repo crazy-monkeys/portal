@@ -56,7 +56,7 @@ file:
       pull: ${file.path.root-thrid-pull}/forecast/
 
 portal:
-  view-url: https://dmsdev.unisoc.com/portal/#/pwd
+  view-url: https://dmsdev.unisoc.com/portal/#
   file-url: https://dmsdev.unisoc.com/portal-api/file
   mock-bi-server: off
 

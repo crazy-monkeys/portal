@@ -18,7 +18,7 @@ import java.util.Map;
 public class MailBean {
 
     /**
-     * 发送人
+     * 收件人地址
      */
     private String tos;
 

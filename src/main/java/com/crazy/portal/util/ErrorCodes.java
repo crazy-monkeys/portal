@@ -157,6 +157,7 @@ public class ErrorCodes {
         HANDOVER_UPDATE_ERROR(40015, "数据修改存在错误数据，请重新修正", ""),
         HANDOVER_UPDATE_STATUS_ERROR(40016, "数据未审批，请联系上级进行操作", ""),
         CRM_AMOUNT_ERROR(40017, "请输入有效的CR金额", ""),
+        HANDOVER_DATA_EMAIL_ERROR(40018, "获取客户邮箱失败，请联系管理员", ""),
 
         //客户模块
         CUSTOMER_IS_EMPYT(50000, "没有对应的客户信息", ""),

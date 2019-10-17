@@ -26,6 +26,9 @@
     <result column="error_msg" jdbcType="VARCHAR" property="errorMsg" />
     <result column="dealer_name" jdbcType="VARCHAR" property="dealerName" />
     <result column="sales_organization" jdbcType="VARCHAR" property="salesOrganization" />
+    <result column="id_str" jdbcType="VARCHAR" property="idStr" />
+    <result column="confirm_msg" jdbcType="VARCHAR" property="confirmMsg" />
+    <result column="confirm_status" jdbcType="INTEGER" property="confirmStatus" />
   </resultMap>
 
   <resultMap id="errorResultMap" extends="BaseResultMap" type="com.crazy.portal.bean.handover.DeliverTemplateBean" >
@@ -402,5 +405,19 @@
     update t_deliver_detail set error_msg = #{errorMsg}
     where third_id = #{thirdId}
   </select>
+
+  <select id="selectEmailInfoByRecordId" resultMap="BaseResultMap" >
+    select a.customer_full_name,group_concat(a.id) id_str
+    from t_deliver_detail a
+    group by a.customer_full_name
+  </select>
+
+  <update id="updateConfirmMsgByIds" >
+    update t_deliver_detail set confirm_msg = #{confirmMsg},confirm_status = 1
+    where 1 = 1
+    <foreach collection="detailIds" index="index" item="item" open=" and id in (" separator="," close=")" >
+      #{item}
+    </foreach>
+  </update>
 
 </mapper>

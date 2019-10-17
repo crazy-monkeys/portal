@@ -3,6 +3,7 @@ package com.crazy.portal.controller.handover;
 import com.crazy.portal.annotation.OperationLog;
 import com.crazy.portal.bean.BaseResponse;
 import com.crazy.portal.controller.BaseController;
+import com.crazy.portal.service.handover.DeliverService;
 import com.crazy.portal.service.handover.HandoverServiceContext;
 import com.crazy.portal.service.handover.HandoverService;
 import com.crazy.portal.service.handover.ReceiveService;
@@ -28,6 +29,8 @@ public class HandoverController extends BaseController {
     private HandoverServiceContext handoverServiceContext;
     @Resource(name = "receive")
     private ReceiveService receive;
+    @Resource(name = "deliver")
+    private DeliverService deliverService;
 
     /**
      * 出货数据查询
@@ -210,6 +213,18 @@ public class HandoverController extends BaseController {
     @GetMapping(value = "/handover/receive/detail/error/download")
     public BaseResponse downloadReceiveErrorList(HttpServletResponse response, Integer recordId) {
         receive.downloadReceiveErrorList(response, recordId);
+        return super.successResult();
+    }
+
+    @GetMapping(value = "/handover/deliver/data/email")
+    public BaseResponse sendConfirmEmail(Integer recordId) {
+        deliverService.sendConfirmEmail(recordId);
+        return super.successResult();
+    }
+
+    @GetMapping(value = "/handover/deliver/data/confirm")
+    public BaseResponse confirmData(Integer[] detailIds, String confirmMsg) {
+        deliverService.confirmData(detailIds, confirmMsg);
         return super.successResult();
     }
 

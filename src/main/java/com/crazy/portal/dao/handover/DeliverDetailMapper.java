@@ -49,4 +49,9 @@ public interface DeliverDetailMapper {
     int updateErrorInfoByBiId(@Param(value = "thirdId") String thirdId,
                               @Param(value = "errorMsg") String errorMsg);
 
+    List<DeliverDetail> selectEmailInfoByRecordId(@Param(value = "recordId") Integer recordId);
+
+    int updateConfirmMsgByIds(@Param(value = "detailIds") Integer[] detailIds,
+                              @Param(value = "confirmMsg") String confirmMsg);
+
 }
