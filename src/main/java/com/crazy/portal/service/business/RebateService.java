@@ -284,14 +284,13 @@ public class RebateService {
 
     /**
      * 修改备注
-     * @param id
-     * @param remark
+     * @param bean
      * @param userId
      */
-    public void modifyRemark(Integer id, String remark, Integer userId){
+    public void modifyRemark(RebateModifyRemarkBean bean, Integer userId){
         BusinessRebate record = new BusinessRebate();
-        record.setId(id);
-        record.setRemark(remark);
+        record.setId(bean.getId());
+        record.setRemark(bean.getRemark());
         record.setUpdateId(userId);
         record.setUpdateTime(DateUtil.getCurrentTS());
         businessRebateMapper.updateByPrimaryKeySelective(record);

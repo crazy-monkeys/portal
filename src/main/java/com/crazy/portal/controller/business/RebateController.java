@@ -3,6 +3,7 @@ package com.crazy.portal.controller.business;
 import com.crazy.portal.annotation.OperationLog;
 import com.crazy.portal.bean.BaseResponse;
 import com.crazy.portal.bean.business.rebate.RebateConfirmBean;
+import com.crazy.portal.bean.business.rebate.RebateModifyRemarkBean;
 import com.crazy.portal.bean.business.rebate.RebateQueryBean;
 import com.crazy.portal.bean.business.rebate.RebateUploadBean;
 import com.crazy.portal.controller.BaseController;
@@ -93,14 +94,13 @@ public class RebateController extends BaseController {
 
     /**
      * 修改备注
-     * @param id
-     * @param remark
+     * @param bean
      * @return
      */
     @OperationLog
     @PostMapping("/modifyRemark")
-    public BaseResponse modifyRemark(Integer id, String remark){
-        rebateService.modifyRemark(id, remark, getCurrentUserId());
+    public BaseResponse modifyRemark(@RequestBody RebateModifyRemarkBean bean){
+        rebateService.modifyRemark(bean, getCurrentUserId());
         return successResult();
     }
 
