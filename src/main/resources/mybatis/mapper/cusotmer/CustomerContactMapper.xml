@@ -225,6 +225,13 @@
     select * from t_customer_contact where active =1 and cust_id = #{custId}
   </select>
 
+  <select id="selectByCustName" resultMap="BaseResultMap">
+      select * from t_customer_contact where active =1 and cust_id in (
+	select id from t_customer_info where cust_name =#{custName}
+  )
+
+  </select>
+
   <update id="deleteByCustId">
       update t_customer_contact set active = 0 where active=1 and cust_id = #{custId}
   </update>

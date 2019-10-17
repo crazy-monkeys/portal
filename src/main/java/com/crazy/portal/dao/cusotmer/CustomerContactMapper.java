@@ -19,5 +19,7 @@ public interface CustomerContactMapper {
 
     List<CustomerContact> selectByCustId(Integer custId);
 
+    List<CustomerContact> selectByCustName(String custName);
+
     int deleteByCustId(Integer custId);
 }
