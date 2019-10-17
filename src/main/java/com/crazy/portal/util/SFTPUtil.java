@@ -16,6 +16,8 @@ import java.util.Vector;
  */
 @Slf4j
 public class SFTPUtil {
+
+    private ChannelSftp sftp = null;
     private Session session;
     /** FTP 登录用户名*/
     private String username;
@@ -68,7 +70,6 @@ public class SFTPUtil {
      * @throws Exception
      */
     public void login() throws JSchException{
-        ChannelSftp sftp = null;
         try {
             JSch jsch = new JSch();
             if (privateKey != null) {
@@ -101,7 +102,6 @@ public class SFTPUtil {
      * @throws Exception
      */
     public void upload(String directory, String sftpFileName, InputStream input) throws SftpException{
-        ChannelSftp sftp = null;
         try {
             sftp.cd(directory);
             sftp.put(input, sftpFileName);
@@ -166,7 +166,6 @@ public class SFTPUtil {
      * @throws Exception
      */
     public void download(String directory, String downloadFile, String saveFile) throws SftpException, FileNotFoundException{
-        ChannelSftp sftp = null;
         try {
             if (directory != null && !"".equals(directory)) {
                 sftp.cd(directory);
@@ -189,7 +188,6 @@ public class SFTPUtil {
      * @throws Exception
      */
     public byte[] download(String directory, String downloadFile) throws SftpException,IOException{
-        ChannelSftp sftp = null;
         try {
             if (directory != null && !"".equals(directory)) {
                 sftp.cd(directory);
@@ -213,7 +211,6 @@ public class SFTPUtil {
      * @throws Exception
      */
     public void delete(String directory, String deleteFile) throws SftpException{
-        ChannelSftp sftp = null;
         try {
             sftp.cd(directory);
             sftp.rm(deleteFile);
@@ -233,7 +230,6 @@ public class SFTPUtil {
      * @throws SftpException
      */
     public Vector<?> listFiles(String directory) throws SftpException{
-        ChannelSftp sftp = null;
         try {
             return sftp.ls(directory);
         }finally {
