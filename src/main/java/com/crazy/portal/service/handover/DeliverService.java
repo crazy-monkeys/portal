@@ -290,6 +290,24 @@ public class DeliverService extends AbstractHandover implements IHandover<Delive
         handoverService.updateStatus(new ArrayList<>(recordIds), 4);
     }
 
+    private void sendConfirmEmail(CustomerContact customerContact, DeliverDetail detail) {
+        try {
+            MailBean mailBean = new MailBean();
+            mailBean.setTos(customerContact.getEmail());
+            mailBean.setSubject("出货数据确认");
+            mailBean.setTemplateName(EmailHelper.MAIL_TEMPLATE.DELIVER_DATA_CONFIRM.getTemplateName());
+            String confirmLink = String.format("%s%s?detailIds=%s", portalViewUrl, "/deliver/confirm", detail.getIdStr());
+            mailBean.setContent("请点击右侧链接进行出货数据确认：<a>" + confirmLink + "</a>");
+            Map<String, Object> params = new HashMap<>();
+            params.put("remind", "请点击链接进行出货数据确认");
+            params.put("url", confirmLink);
+            mailBean.setParams(params);
+            emailHelper.sendHtmlMail(mailBean);
+        }catch (Exception ex) {
+            throw new BusinessException(HANDOVER_SEND_EMAIL_ERROR);
+        }
+    }
+
     public void sendConfirmEmail(Integer recordId) {
         BusinessUtil.notNull(recordId, HANDOVER_PARAM_TYPE_ERROR);
         List<DeliverDetail> deliverDetails = deliverDetailMapper.selectEmailInfoByRecordId(recordId);
@@ -302,17 +320,7 @@ public class DeliverService extends AbstractHandover implements IHandover<Delive
                     if(!"C01".equals(customerContact.getType()) || StringUtils.isEmpty(customerContact.getEmail())){
                         continue;
                     }
-                    MailBean mailBean = new MailBean();
-                    mailBean.setTos(customerContact.getEmail());
-                    mailBean.setSubject("出货数据确认");
-                    mailBean.setTemplateName(EmailHelper.MAIL_TEMPLATE.DELIVER_DATA_CONFIRM.getTemplateName());
-                    String confirmLink = String.format("%s%s?detailIds=%s", portalViewUrl, "/deliver/confirm", detail.getIdStr());
-                    mailBean.setContent("请点击右侧链接进行出货数据确认：<a>" + confirmLink + "</a>");
-                    Map<String, Object> params = new HashMap<>();
-                    params.put("remind", "请点击链接进行出货数据确认");
-                    params.put("url", confirmLink);
-                    mailBean.setParams(params);
-                    emailHelper.sendHtmlMail(mailBean);
+                    sendConfirmEmail(customerContact, detail);
                 }
             }catch (Exception ex) {
                 throw new BusinessException(HANDOVER_DATA_EMAIL_ERROR);
@@ -320,8 +328,8 @@ public class DeliverService extends AbstractHandover implements IHandover<Delive
         }
     }
 
-    public void confirmData(Integer[] detailIds, String confirmMsg) {
-        deliverDetailMapper.updateConfirmMsgByIds(detailIds, confirmMsg);
+    public void confirmData(Integer[] detailIds, String confirmMsg, Integer confirmStatus) {
+        deliverDetailMapper.updateConfirmMsgByIds(detailIds, confirmMsg, confirmStatus);
     }
 
     private HandoverUploadVO genThirdResult(BiCheckResult checkResult, List<DeliverDetail> responseData, Integer recordId) {

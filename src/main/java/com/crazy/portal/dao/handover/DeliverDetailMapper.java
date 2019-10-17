@@ -52,6 +52,7 @@ public interface DeliverDetailMapper {
     List<DeliverDetail> selectEmailInfoByRecordId(@Param(value = "recordId") Integer recordId);
 
     int updateConfirmMsgByIds(@Param(value = "detailIds") Integer[] detailIds,
-                              @Param(value = "confirmMsg") String confirmMsg);
+                              @Param(value = "confirmMsg") String confirmMsg,
+                              @Param(value = "confirmStatus") Integer confirmStatus);
 
 }

@@ -223,8 +223,8 @@ public class HandoverController extends BaseController {
     }
 
     @GetMapping(value = "/handover/deliver/data/confirm")
-    public BaseResponse confirmData(Integer[] detailIds, String confirmMsg) {
-        deliverService.confirmData(detailIds, confirmMsg);
+    public BaseResponse confirmData(Integer[] detailIds, String confirmMsg, Integer confirmStatus) {
+        deliverService.confirmData(detailIds, confirmMsg, confirmStatus);
         return super.successResult();
     }
 

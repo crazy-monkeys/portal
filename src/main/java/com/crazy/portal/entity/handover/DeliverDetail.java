@@ -107,7 +107,7 @@ public class DeliverDetail extends BaseRowModel {
     //确认备注
     private String confirmMsg;
 
-    //0：未确认 1：已确认
+    //NULL：未确认 1：已确认 -1：拒绝
     private Integer confirmStatus;
 
 }

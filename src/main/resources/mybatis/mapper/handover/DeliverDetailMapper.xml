@@ -413,7 +413,7 @@
   </select>
 
   <update id="updateConfirmMsgByIds" >
-    update t_deliver_detail set confirm_msg = #{confirmMsg},confirm_status = 1
+    update t_deliver_detail set confirm_msg = #{confirmMsg},confirm_status = #{confirmStatus}
     where 1 = 1
     <foreach collection="detailIds" index="index" item="item" open=" and id in (" separator="," close=")" >
       #{item}
