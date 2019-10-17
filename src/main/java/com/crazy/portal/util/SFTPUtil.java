@@ -225,17 +225,4 @@ public class SFTPUtil {
     public Vector<?> listFiles(String directory) throws SftpException {
         return sftp.ls(directory);
     }
-
-    public static void main(String[] args) throws SftpException, IOException {
-        try {
-            SFTPUtil sftp = new SFTPUtil("10.11.15.32", 22, "crm01", "crm01@1234");
-            sftp.login();
-            File file = new File("C:\\Users\\xsh12148\\Desktop\\sql0826.txt");
-            InputStream is = new FileInputStream(file);
-            sftp.upload("/upload/", "sql0826.txt", is);
-            sftp.logout();
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-    }
 }
