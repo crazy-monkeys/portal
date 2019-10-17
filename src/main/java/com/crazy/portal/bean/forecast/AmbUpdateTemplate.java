@@ -239,4 +239,7 @@ public class AmbUpdateTemplate extends BaseRowModel {
     @ExcelProperty(index = 69, value = "队长备注6")
     private String ambRemarkSix;
 
+    @ExcelProperty(index = 69, value = "PO价格")
+    private String poPrice;
+
 }

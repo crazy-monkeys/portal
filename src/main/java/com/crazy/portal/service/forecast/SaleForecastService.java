@@ -11,8 +11,10 @@ import com.crazy.portal.entity.cusotmer.CustomerInfo;
 import com.crazy.portal.entity.forecast.Forecast;
 import com.crazy.portal.entity.forecast.ForecastLine;
 import com.crazy.portal.entity.forecast.ForecastSd;
+import com.crazy.portal.entity.price.CatalogPrice;
 import com.crazy.portal.entity.product.ProductInfoDO;
 import com.crazy.portal.service.customer.CustomerInfoService;
+import com.crazy.portal.service.price.CatalogPriceService;
 import com.crazy.portal.service.product.ProductService;
 import com.crazy.portal.service.system.UserCustomerMappingService;
 import com.crazy.portal.util.*;
@@ -53,6 +55,8 @@ public class SaleForecastService {
     private UserCustomerMappingService userCustomerMappingService;
     @Resource
     private ProductService productService;
+    @Resource
+    private CatalogPriceService catalogPriceService;
 
     //Portal 本地文件交互地址
     @Value("${file.path.forecast.push}")
@@ -556,6 +560,7 @@ public class SaleForecastService {
         List<AmbUpdateTemplate> templateList = new ArrayList<>();
         for(Forecast forecast : forecastList) {
             AmbUpdateTemplate agencyTemplate = new AmbUpdateTemplate();
+            agencyTemplate.setPoPrice(getPriceByProduct(forecast.getProductModel(), forecast.getPlatform()));
             copyDbFields(forecast, agencyTemplate);
             agencyTemplate.setId(String.valueOf(forecast.getId()));
             agencyTemplate.setTotalForecastSalesVolume(sumValue(agencyTemplate));
@@ -1076,6 +1081,17 @@ public class SaleForecastService {
         }catch (Exception ex) {
             log.error("BeanUtils copyNotNullFields exception", ex);
             throw new BusinessException("BeanUtils copyNotNullFields exception");
+        }
+    }
+
+    private String getPriceByProduct(String productModel, String platform) {
+        try {
+            CatalogPrice catalogPrice = catalogPriceService.getPriceByProduct(productModel, platform);
+            BusinessUtil.notNull(catalogPrice, FORECAST_PO_PRICE_GET_ERROR);
+            BusinessUtil.notNull(catalogPrice.getCatalogPrice(), FORECAST_PO_PRICE_GET_ERROR);
+            return String.valueOf(catalogPrice.getCatalogPrice());
+        }catch (Exception ex) {
+            throw new BusinessException(FORECAST_PO_PRICE_GET_ERROR);
         }
     }
 

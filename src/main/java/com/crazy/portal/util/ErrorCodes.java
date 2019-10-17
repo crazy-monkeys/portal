@@ -202,7 +202,7 @@ public class ErrorCodes {
         PRODUCT_QUERY_ERROR(70501,"产品查询异常",""),
         PRODUCT_SYNC_ERROR(70502,"产品同步异常",""),
 
-        //
+        //预测管理
         FORECAST_YEAR_MONTH_FORMAT_ERROR(80000, "月份格式不符合要求，请重新输入", ""),
         FORECAST_EXCEL_CHECK_ERROR(80001, "请使用Excel文件上传数据", ""),
         FORECAST_DATA_NOT_EMPTY(80002, "Excel数据解析为空，请重新输入", ""),
@@ -232,6 +232,8 @@ public class ErrorCodes {
         FORECAST_OPERATION_DELETE_REPEAT(80026, "删除记录未审批，请勿重复操作", ""),
         FORECAST_OPERATION_UPDATE_REPEAT(80027, "修改记录未审批，请勿重复操作", ""),
         FORECAST_DATA_REPEAT_ERROR(80028, "检测到数据已存在，请重新上传", ""),
+        FORECAST_PO_PRICE_GET_ERROR(80029, "获取产品价格信息失败，请联系管理员", ""),
+
         //订单管理
         ORDER_NOT_FOUND(90001, "订单信息不存在", ""),
         ORDER_LINE_NOT_FOUND(90002, "订单行信息不存在", ""),
