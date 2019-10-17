@@ -130,7 +130,7 @@ public class SaleForecastService {
             template.setChannel("A04".equals(customerInfo.getBusinessType()) ? "代理" : "直供");
             //获取代理商上级客户信息
             CustomerOrgBean customerOrgBean = getCustomerOrgInfo(template.getCustomerAbbreviation());
-            ProductInfoDO productInfo = getProductInfo(template.getVmNumber());
+            ProductInfoDO productInfo = getProductInfo(template.getProductModel(), template.getPlatform());
             Forecast forecast = new Forecast(userId);
             copyTemplateFields(template, forecast);
             forecast.setAgencyAbbreviation(agencyAbbreviation);
@@ -138,6 +138,7 @@ public class SaleForecastService {
             forecast.setBu(productInfo.getBu());
             forecast.setPdt(productInfo.getPdt());
             forecast.setProductType(productInfo.getType());
+            forecast.setVmNumber(productInfo.getSapMid());
             //设置客户字段
             forecast.setCustomerType(customerOrgBean.getCustType());
             forecast.setSalePeople(customerOrgBean.getSales());
@@ -1119,16 +1120,15 @@ public class SaleForecastService {
 
     /**
      * 根据客户输入的物料号获取系统内的产品信息，同时对数据进行基础校验
-     * @param sapMid
      * @return
      */
-    private ProductInfoDO getProductInfo(String sapMid) {
+    private ProductInfoDO getProductInfo(String productModel, String platForm) {
         try {
-            ProductInfoDO productInfoDO = productService.selectBySapMid(sapMid);
+            ProductInfoDO productInfoDO = productService.selectByProductModelAndPlatForm(productModel, platForm);
             BusinessUtil.notNull(productInfoDO, FORECAST_PRODUCT_INFO_GET_ERROR);
             BusinessUtil.assertEmpty(productInfoDO.getBu(), FORECAST_PRODUCT_INFO_GET_ERROR);
             BusinessUtil.assertEmpty(productInfoDO.getPdt(), FORECAST_PRODUCT_INFO_GET_ERROR);
-//            BusinessUtil.assertEmpty(productInfoDO.getType(), FORECAST_PRODUCT_INFO_GET_ERROR);
+            BusinessUtil.assertEmpty(productInfoDO.getSapMid(), FORECAST_PRODUCT_INFO_GET_ERROR);
             return productInfoDO;
         }catch (Exception ex) {
             log.error(FORECAST_PRODUCT_INFO_GET_ERROR.getZhMsg(), ex);
