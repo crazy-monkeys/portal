@@ -91,29 +91,28 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
             throws ServletException, IOException {
 
         try {
+            Authentication authResult = null;
+            String token = this.getToken(request);
+            if(StringUtils.isNotEmpty(token)){
+                authResult = this.getAuthentication(token);
+            }
             //可以忽略Token权限的url
             if (this.canIgnorePermiss(request, response, filterChain)){
+                if(authResult != null){
+                    this.successfulAuthentication(request, response, authResult);
+                }
+                filterChain.doFilter(request, response);
                 return;
             }
-
-            String token = this.getToken(request);
-            if(StringUtils.isEmpty(token)){
-                this.authenticationFailure(request, response,
-                        new InsufficientAuthenticationException("Url does not carry tokens"));
-                return;
-            }
-            //根据token获取身份认证
-            Authentication authResult = this.getAuthentication(token);
             //token认证不成功
             if(authResult == null){
                 this.authenticationFailure(request, response,
                         new InsufficientAuthenticationException("Token authentication failed"));
                 return;
             }
-
             UserDetails userDetails = (UserDetails) authResult.getPrincipal();
+            //鉴权
             if(!authRequest(request,userDetails.getUsername())){
-                //鉴权失败处理
                 this.authenticationFailure(request, response,
                         new InsufficientAuthenticationException("Insufficient permissions"));
 
@@ -122,7 +121,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
             //认证成功并放行
             this.successfulAuthentication(request, response, authResult);
             filterChain.doFilter(request, response);
-            return;
         }catch (LockedException e){
             this.authenticationFailure(request, response,e);
         }catch(JWTDecodeException | NonceExpiredException | BadCredentialsException e) {
@@ -177,7 +175,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
             for(RequestMatcher permissiveMatcher : permissiveRequestMatchers) {
                 if(permissiveMatcher.matches(request)){
                     //匹配则放行
-                    filterChain.doFilter(request, response);
                     return true;
                 }
             }
@@ -185,7 +182,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
         String requestUrl = request.getServletPath();
         //对ad登录的链接设置不校验token
         if(requestUrl.contains(AD_LOGIN_URL)){
-            filterChain.doFilter(request, response);
             return true;
         }
         return false;
@@ -198,7 +194,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
      */
     private Authentication getAuthentication(String token){
         JwtAuthenticationToken authToken = new JwtAuthenticationToken(JWT.decode(token));
-        Authentication authResult = this.getAuthenticationManager().authenticate(authToken);
+        Authentication authResult = authenticationManager.authenticate(authToken);
         return authResult;
     }
 
@@ -218,9 +214,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
         successHandler.onAuthenticationSuccess(request, response, authResult);
     }
 
-    protected AuthenticationManager getAuthenticationManager() {
-        return authenticationManager;
-    }
 
     public void setAuthenticationManager(AuthenticationManager authenticationManager) {
         this.authenticationManager = authenticationManager;

@@ -196,6 +196,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
             "/scheduleJob/**",
             "/ajax/scheduleJob/**",
             "/webservice/**",
-            "/verifyCode"
+            "/verifyCode",
+            "/announcement/list",
+            "/archive/list"
     };
 }
