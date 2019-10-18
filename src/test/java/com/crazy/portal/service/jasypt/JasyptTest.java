@@ -28,7 +28,7 @@ public class JasyptTest {
 
     @Test
     public void encrypt(){
-        String a = encryptor.encrypt("1234");
+        String a = encryptor.encrypt("caCA$617");
         log.info(">>>>>>>"+a);
         Assert.assertTrue(a.length() > 0);
     }

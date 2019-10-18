@@ -18,13 +18,13 @@ spring:
     host: smtp.unisoc.com
     port: 587
     username: CRM.Admin@UniSoC.com
-    password: caCA$617
+    password: ENC(Aa3rGBFa4gh+WfTxpFPYKJRCo1Oc9EoJ)
     protocol: smtp
     default-encoding: UTF-8
 
   datasource:
     username: ENC(ozr2CUvjzeuGH61yIs8ERywH5hCzwutA)
-    password: ENC(34vf5Yde3MCbluoRi/Y5MeTGMYD241uKQUgLCXELRJXdnkM7dXj71JLv7BSW7gk9)
+    password: ENC(42VbUUT3hLAIyZbsFuF2fkEwUYGfLp2+)
     url: jdbc:mysql://10.29.60.170:3306/crmportalqa?useUnicode=true&characterEncoding=utf8&rewriteBatchedStatements=true&serverTimezone=UTC
     driver-class-name: com.mysql.jdbc.Driver
 
