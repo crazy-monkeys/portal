@@ -65,7 +65,7 @@ ftp:
   host: 10.29.24.20
   port: 21
   username: ENC(aQKLIDnqSnZNYduvrPL6Ww==)
-  password: ENC(MIaehcd7+3t18wXNAh061s8ORIobXg89)
+  password: ENC(PTvfcaEe7aWsz/2Ot4+8zA==)
   path:
     handover:
       push: /home/crmftp/bitest/upload/
