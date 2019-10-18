@@ -45,8 +45,8 @@ spring:
 
 ##自定义配置
 login:
-  password: 1234
-  username: admin
+  password: ENC(jHpYO65XSQcUMwI+jU21XA==)
+  username: ENC(kh7pY3XRijWZwJq++o1hJw==)
 
 jasypt:
   encryptor:
