@@ -136,6 +136,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
      */
     protected String getToken(HttpServletRequest request) {
         String authInfo = request.getHeader(Constant.Authorization);
+
+        //Negotiate 域登录也会添加同名token,此token并不作为用户认证故返回null
+        if(authInfo == null || authInfo.contains("Negotiate")) return null;
+
         return StringUtils.removeStart(authInfo, "Bearer ");
     }
 
