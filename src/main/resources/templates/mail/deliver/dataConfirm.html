@@ -4,8 +4,65 @@
     <meta charset="UTF-8" />
     <title>Test</title>
 </head>
+<style>
+    td,th{
+        border: 1px solid #000000;
+    }
+    p{
+        color: red;
+    }
+</style>
 <body>
-<p>Hello!<span th:text="${remind}"></span>!<br /></p>
-<a th:href="${url}" th:text="${url}"></a>
+    <p><span th:text="${remind}"></span>!<br /></p>
+    <a th:href="${url}" th:text="${url}"></a>
+
+    <div style="text-align: center">
+        <table style="width: 90%;">
+            <thead>
+            <tr>
+                <th>代理全称</th>
+                <th>客户外部号</th>
+                <th>客户全称</th>
+                <th>销售</th>
+                <th>类别二(子类型)</th>
+                <th>类别三(平台)</th>
+                <th>产品型号</th>
+                <th>出货日期</th>
+                <th>数量</th>
+                <th>Sales Price</th>
+                <th>Po Price</th>
+                <th>margin</th>
+                <th>销售组织</th>
+                <th>客户订单号</th>
+                <th>出货类型</th>
+                <th>订单月份</th>
+                <th>发货公司</th>
+                <th>备注</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="detail:${detailList}">
+                <td th:text="${detail.dealerName}"></td>
+                <td th:text="${detail.customerExternalNumber}"></td>
+                <td th:text="${detail.customerFullName}"></td>
+                <td th:text="${detail.sales}"></td>
+                <td th:text="${detail.categoryTow}"></td>
+                <td th:text="${detail.categoryThree}"></td>
+                <td th:text="${detail.productModel}"></td>
+                <td th:text="${detail.deliveryDate}"></td>
+                <td th:text="${detail.deliverNumber}"></td>
+                <td th:text="${detail.salePrice}"></td>
+                <td th:text="${detail.poPrice}"></td>
+                <td th:text="${detail.margin}"></td>
+                <td th:text="${detail.salesOrganization}"></td>
+                <td th:text="${detail.customerOrderNumber}"></td>
+                <td th:text="${detail.deliveryType}"></td>
+                <td th:text="${detail.orderMonth}"></td>
+                <td th:text="${detail.deliveryCompany}"></td>
+                <td th:text="${detail.remark}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
 </body>
 </html>

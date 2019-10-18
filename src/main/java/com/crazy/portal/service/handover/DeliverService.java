@@ -290,7 +290,7 @@ public class DeliverService extends AbstractHandover implements IHandover<Delive
         handoverService.updateStatus(new ArrayList<>(recordIds), 4);
     }
 
-    private void sendConfirmEmail(CustomerContact customerContact, DeliverDetail detail) {
+    private void sendConfirmEmail(CustomerContact customerContact, DeliverDetail detail, List<DeliverDetail> detailList) {
         try {
             MailBean mailBean = new MailBean();
             mailBean.setTos(customerContact.getEmail());
@@ -301,6 +301,7 @@ public class DeliverService extends AbstractHandover implements IHandover<Delive
             Map<String, Object> params = new HashMap<>();
             params.put("remind", "请点击链接进行出货数据确认");
             params.put("url", confirmLink);
+            params.put("detailList", detailList);
             mailBean.setParams(params);
             emailHelper.sendHtmlMail(mailBean);
         }catch (Exception ex) {
@@ -308,23 +309,37 @@ public class DeliverService extends AbstractHandover implements IHandover<Delive
         }
     }
 
+    private List<DeliverDetail> getDetailData(String idStr) {
+        String[] idArray = idStr.split(",");
+        List<DeliverDetail> detailList = new ArrayList<>();
+        for(String id : idArray){
+            DeliverDetail detail = deliverDetailMapper.selectByPrimaryKey(Integer.parseInt(id));
+            detailList.add(detail);
+        }
+        return detailList;
+    }
+
     public void sendConfirmEmail(Integer recordId) {
         BusinessUtil.notNull(recordId, HANDOVER_PARAM_TYPE_ERROR);
         List<DeliverDetail> deliverDetails = deliverDetailMapper.selectEmailInfoByRecordId(recordId);
         BusinessUtil.notNull(deliverDetails, HANDOVER_PARAM_TYPE_ERROR);
         for(DeliverDetail detail : deliverDetails){
-            try {
+            List<DeliverDetail> detailList = getDetailData(detail.getIdStr());
+            /*try {
                 List<CustomerContact> customerContacts = customerContactService.selectByCustName(detail.getCustomerFullName());
                 BusinessUtil.notNull(customerContacts, HANDOVER_DATA_EMAIL_ERROR);
                 for(CustomerContact customerContact : customerContacts){
                     if(!"C01".equals(customerContact.getType()) || StringUtils.isEmpty(customerContact.getEmail())){
                         continue;
                     }
-                    sendConfirmEmail(customerContact, detail);
+                    sendConfirmEmail(customerContact, detail, detailList);
                 }
             }catch (Exception ex) {
                 throw new BusinessException(HANDOVER_DATA_EMAIL_ERROR);
-            }
+            }*/
+            CustomerContact customerContact = new CustomerContact();
+            customerContact.setEmail("l_joose@163.com");
+            sendConfirmEmail(customerContact, detail, detailList);
         }
     }
 
