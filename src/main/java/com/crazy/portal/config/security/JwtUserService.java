@@ -8,6 +8,7 @@ import com.crazy.portal.dao.system.UserRoleMapper;
 import com.crazy.portal.entity.system.Role;
 import com.crazy.portal.entity.system.User;
 import com.crazy.portal.entity.system.UserRole;
+import com.crazy.portal.service.system.UserService;
 import com.crazy.portal.util.DateUtil;
 import com.crazy.portal.util.Enums;
 import com.crazy.portal.util.PortalUtil;
@@ -42,6 +43,8 @@ public class JwtUserService implements UserDetailsService {
     @Resource
     private UserRoleMapper userRoleMapper;
     @Resource
+    private UserService userService;
+    @Resource
     private RoleMapper roleMapper;
     @Value("${app.ad-domain}")
     private String adDomain;
@@ -73,7 +76,7 @@ public class JwtUserService implements UserDetailsService {
                 log.error(errorMsg);
                 throw new UsernameNotFoundException(errorMsg);
             }
-            log.info("Initialize the domain user %s",username);
+            log.info("Initialize the domain user {}",username);
             //初始化用户
             String loginName = this.getLoginName(username);
             user = new User();
@@ -88,16 +91,10 @@ public class JwtUserService implements UserDetailsService {
             user.setRegTime(new Date());
             user.setUserType(Enums.USER_TYPE.internal.toString());
             user.setCreateUserId(1);
-            user.setCreateTime(new Date());
+            user.setCreateTime(DateUtil.getCurrentTS());
             userMapper.insertSelective(user);
 
-            Role basicRole = roleMapper.queryRoleList("BASIC_ROLE").get(0);
-            UserRole userRole = new UserRole();
-            userRole.setCreateId(1);
-            userRole.setCreateTime(new Date());
-            userRole.setRoleId(basicRole.getId());
-            userRole.setUserId(user.getId());
-            userRoleMapper.insertSelective(userRole);
+            userService.createUserRole(user);
 
             return new JwtUser(user,user.getLoginName(),user.getLoginPwd(),
                     Collections.singleton(new SimpleGrantedAuthority("BASIC_ROLE")));

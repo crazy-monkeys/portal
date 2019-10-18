@@ -155,14 +155,18 @@ public class UserService {
         this.subAgentEmpowerment(subAgentUser, user.getId());
 
         //发送邮件通知用户
+        this.sendEmail(user, password, "账号开通邮件", EmailHelper.MAIL_TEMPLATE.USER_CREATE);
+    }
+
+    private void sendEmail(User user, String password, String subject, EmailHelper.MAIL_TEMPLATE userCreate) {
         MailBean mailBean = new MailBean();
         mailBean.setTos(user.getEmail());
-        mailBean.setSubject("账号开通邮件");
+        mailBean.setSubject(subject);
         Map<String, Object> map = new HashMap<>();
-        map.put("loginName",user.getLoginName());
-        map.put("password",password);
+        map.put("loginName", user.getLoginName());
+        map.put("password", password);
         mailBean.setParams(map);
-        mailBean.setTemplateName(EmailHelper.MAIL_TEMPLATE.USER_CREATE.getTemplateName());
+        mailBean.setTemplateName(userCreate.getTemplateName());
         emailHelper.sendHtmlMail(mailBean);
     }
 
@@ -213,16 +217,7 @@ public class UserService {
         userMapper.updateByPrimaryKeySelective(user);
 
         //发送邮件
-        MailBean mailBean = new MailBean();
-        mailBean.setTos(user.getEmail());
-        mailBean.setSubject("密码重置邮件");
-
-        Map<String, Object> map = new HashMap<>();
-        map.put("loginName",user.getLoginName());
-        map.put("password",newPasswod);
-        mailBean.setParams(map);
-        mailBean.setTemplateName(EmailHelper.MAIL_TEMPLATE.RESET_PWD.getTemplateName());
-        emailHelper.sendHtmlMail(mailBean);
+        this.sendEmail(user, newPasswod, "密码重置邮件", EmailHelper.MAIL_TEMPLATE.RESET_PWD);
     }
 
     /**
@@ -323,15 +318,6 @@ public class UserService {
         return customerInfoService.selectDealerShip(dealerId);
     }
 
-    /**
-     * 获取登陆用户的负责代理商
-     * @param userId
-     * @return
-     */
-    public List<Integer> getUserDealers(Integer userId){
-        return Arrays.asList(1);
-    }
-
     @Transactional
     public void createUser(String username, String loginName, String email, Integer dealerId){
         User user = new User();
@@ -352,6 +338,12 @@ public class UserService {
         user.setCreateTime(new Date());
         userMapper.insertSelective(user);
 
+        this.createUserRole(user);
+        this.sendEmail(user, password, "账号开通邮件", EmailHelper.MAIL_TEMPLATE.USER_CREATE);
+
+    }
+
+    public void createUserRole(User user) {
         Role basicRole = roleMapper.queryRoleList("BASIC_ROLE").get(0);
         UserRole userRole = new UserRole();
         userRole.setCreateId(1);
@@ -359,17 +351,6 @@ public class UserService {
         userRole.setRoleId(basicRole.getId());
         userRole.setUserId(user.getId());
         userRoleMapper.insertSelective(userRole);
-
-        //发送邮件通知用户
-        MailBean mailBean = new MailBean();
-        mailBean.setTos(user.getEmail());
-        mailBean.setSubject("账号开通邮件");
-        Map<String, Object> map = new HashMap<>();
-        map.put("loginName",user.getLoginName());
-        map.put("password",password);
-        mailBean.setParams(map);
-        mailBean.setTemplateName(EmailHelper.MAIL_TEMPLATE.USER_CREATE.getTemplateName());
-        emailHelper.sendHtmlMail(mailBean);
     }
 
 
