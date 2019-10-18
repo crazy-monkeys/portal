@@ -28,8 +28,7 @@ public class JasyptTest {
 
     @Test
     public void encrypt(){
-        String a = encryptor.encrypt("123@qwe");
-        log.info(encryptor.decrypt(a));
+        String a = encryptor.encrypt("123");
         log.info(a);
         Assert.assertTrue(a.length() > 0);
     }
