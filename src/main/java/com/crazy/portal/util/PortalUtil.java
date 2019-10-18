@@ -9,7 +9,10 @@ import com.github.pagehelper.PageHelper;
 public class PortalUtil {
 
     private static int DEFAULT_PAGE_NUM = 1;
+
     private static int DEFAULT_PAGE_SIZE = 10;
+
+    public static String ENVIRONMENT = "";
 
     /**
      * 开启分页查询

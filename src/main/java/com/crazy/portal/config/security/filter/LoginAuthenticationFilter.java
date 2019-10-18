@@ -2,7 +2,10 @@ package com.crazy.portal.config.security.filter;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.crazy.portal.util.PortalUtil;
+import com.crazy.portal.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -14,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.Optional;
 
 /**
  * @Desc:
@@ -39,7 +43,11 @@ public class LoginAuthenticationFilter extends AbstractAuthenticationProcessingF
             JSONObject jsonObj = JSON.parseObject(body);
             String userNameStr = jsonObj.getString("loginName");
             String passStr = jsonObj.getString("loginPwd");
-
+            String verifyCode = jsonObj.getString("verifyCode");
+            Object sessionVerifyCode = request.getSession().getAttribute("verifyCode");
+            if(!"dev".equals(PortalUtil.ENVIRONMENT) && (StringUtil.isBlank(verifyCode) || !StringUtil.equals(verifyCode, String.valueOf(sessionVerifyCode)))){
+                throw new BadCredentialsException("Verify Code Inaccurate");
+            }
             if(userNameStr != null) loginName = userNameStr;
             if(passStr != null) loginPwd = passStr;
         }

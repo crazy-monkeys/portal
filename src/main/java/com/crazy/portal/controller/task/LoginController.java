@@ -28,7 +28,10 @@ public class LoginController {
 	 * @return
 	 */
 	@RequestMapping("/loginCheck")
-	public String loginCheck(String userName, String password, HttpServletRequest request){
+	public String loginCheck(String userName, String password, String verifyCode, HttpServletRequest request){
+		if(!verifyCode.equals(request.getSession().getAttribute("verifyCode"))){
+			return "verify_code_error";
+		}
 		if(userName.equals(this.userName) && password.equals(this.password)){
 			request.getSession().setAttribute("isLogin", true);
 			return "succeed";

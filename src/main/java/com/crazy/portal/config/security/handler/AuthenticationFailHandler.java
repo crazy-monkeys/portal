@@ -57,7 +57,10 @@ public class AuthenticationFailHandler implements AuthenticationFailureHandler{
         }
         //认证失败-账号密码错误或者ad域认证失败
         else if(e instanceof BadCredentialsException || e.getCause() instanceof BadCredentialsException){
-           return new BaseResponse(SystemManagerEnum.ACCOUNT_ERROR.getCode(),SystemManagerEnum.ACCOUNT_ERROR.getZhMsg());
+            if(e.getMessage().equals("Verify Code Inaccurate")){
+                return new BaseResponse(SystemManagerEnum.VERIFY_CODE_ERROR.getCode(), SystemManagerEnum.VERIFY_CODE_ERROR.getZhMsg());
+            }
+            return new BaseResponse(SystemManagerEnum.ACCOUNT_ERROR.getCode(),SystemManagerEnum.ACCOUNT_ERROR.getZhMsg());
         }
         //账户锁定
         else if(e instanceof LockedException || e.getCause() instanceof LockedException){

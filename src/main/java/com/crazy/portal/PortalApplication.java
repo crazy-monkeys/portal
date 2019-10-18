@@ -1,6 +1,7 @@
 package com.crazy.portal;
 
 import com.crazy.portal.util.HttpClientUtils;
+import com.crazy.portal.util.PortalUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.net.util.Base64;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,12 +32,16 @@ public class PortalApplication extends SpringBootServletInitializer {
 	@Value("${ecc.auth.password}")
 	private String ECC_PASSWORD;
 
+	@Value("${spring.profiles.active}")
+	private String ENVIRONMENT;
+
 	@PostConstruct
 	public void onStartup(){
 		log.info("========================================【AppContext Start】");
 		String authInfo = String.format("%s:%s",ECC_USERNAME,ECC_PASSWORD);
 		String base64AuthInfo = Base64.encodeBase64String(authInfo.getBytes());
 		HttpClientUtils.AUTH_SECRET = "Basic " + base64AuthInfo;
+		PortalUtil.ENVIRONMENT = ENVIRONMENT;
 		log.info("========================================【AppContext End】");
 	}
 

@@ -32,13 +32,12 @@ public class VerifyCodeController {
         Map<String, Object> codeMap = VerifyCodeUtil.generateCodeAndPic();
         // 将四位数字的验证码保存到Session中。
         HttpSession session = req.getSession();
-        session.setAttribute("code", codeMap.get("code").toString());
+        session.setAttribute("verifyCode", codeMap.get("code").toString());
         // 禁止图像缓存。
         resp.setHeader("Pragma", "no-cache");
         resp.setHeader("Cache-Control", "no-cache");
         resp.setDateHeader("Expires", -1);
         resp.setContentType("image/jpeg");
-        // 将图像输出到Servlet输出流中。
         ServletOutputStream sos;
         try {
             sos = resp.getOutputStream();

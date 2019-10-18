@@ -38,13 +38,13 @@
 	        <img alt="" th:src='@{/static/login/img/tick.png}'></img>
 	      </div>
 	    </div>
-	    <div class='login_fields__password' style="display:none;">
-	      <div class='icon'>
-	        <img alt="" th:src='@{/static/login/img/key.png}'></img>
-	      </div>
+	    <div class='login_fields__password'>
+			<div class='icon'>
+				<img alt="" th:src='@{/static/login/img/key.png}'></img>
+			</div>
 	      <input name="code" placeholder='验证码' maxlength="4" type='text' autocomplete="off" />
-	      <div class='validation' style="opacity: 1; right: -5px;top: -3px;">
-          <canvas class="J_codeimg" id="myCanvas" onclick="Code();">对不起，您的浏览器不支持canvas，请下载最新版浏览器!</canvas>
+	      <div id="verifyCodeDiv" class='validation' style="opacity: 1; right: 15px;top: 10px;" >
+			  <img id="verifyCodeImg" alt="" th:src='@{/verifyCode}'></img>
 	      </div>
 	    </div>
 	    <div class='login_fields__submit' style="text-align:center;">
@@ -117,14 +117,23 @@
 	    });
 	    var open = 0;
 	    layui.use('layer', function () {
+	    	$("#verifyCodeDiv").click(function(){
+	    		var imgPath = $("#verifyCodeImg").attr("src");
+	    		var timestamp = (new Date()).valueOf();
+	    		$("#verifyCodeImg").attr("src", imgPath + "?timestamp=" + timestamp);
+
+	    	});
 	        //非空验证
 	        $('input[type="button"]').click(function () {
 	            var login = $('input[name="login"]').val();
 	            var pwd = $('input[name="pwd"]').val();
+	            var code = $('input[name="code"]').val();
 	            if (login == '') {
 	                ErroAlert('请输入您的账号');
 	            } else if (pwd == '') {
 	                ErroAlert('请输入密码');
+	            } else if(code == ''){
+	                ErroAlert('请输入验证码');
 	            } else {
 	                //认证中..
 	                //fullscreen();//全屏显示
@@ -151,7 +160,8 @@
                         dataTypa : 'json',
 	                    data : {
 	                        'userName' : login,
-	                        'password' : pwd
+	                        'password' : pwd,
+	                        'verifyCode' : code
 	                    },
 	                    success : function(data) {
 	                    	setTimeout(function () {
@@ -176,6 +186,8 @@
                                      //$('.success').html("恭喜，登录成功");
 									 //跳转操作
 									 window.location.href = /*[[@{/scheduleJob/list}]]*/;	
+                                 } else if(data == 'verify_code_error'){
+                                 	 ErroAlert("验证码错误");
                                  } else {
                                 	 ErroAlert("账号名或密码有误");
                                  }
