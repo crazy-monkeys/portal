@@ -147,12 +147,12 @@ public class OrderApproveService {
         List<ZsalesordercreateOutItem> outItems = response.getEtItems().getItem();
         outItems.forEach(x->
             lines.forEach(line->{
-                String productid = x.getProductid().replaceAll("^(0+)", "");
+                String eccProductId = x.getProductid().replaceAll("^(0+)", "");
                 //ecc物料号如果前面有0 直接替换成空字符
-                x.setProductid(productid);
+                x.setProductid(eccProductId);
                 //主物料信息保存
                 String lineProductId = line.getProductId();
-                if(productid.equals(lineProductId)){
+                if(eccProductId.equals(lineProductId)){
                     //设置剩余数量
                     line.setRemainingNum(line.getNum());
 
