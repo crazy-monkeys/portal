@@ -175,15 +175,15 @@ public class OrderApproveService {
     private void insertOrderLine(Integer userId, Order order, OrderLine line, ZsalesordercreateOutItem etItem) {
         line.setOrderId(order.getId());
         line.setExpectedDeliveryDate(order.getPriceDate());
-        line.setProductId(line.getProductId());
-        line.setRItemNo(etItem.getItemno());
         line.setRPrice(line.getRPrice());
         line.setRNetPrice(line.getRNetPrice());
         line.setRCurrency(etItem.getCurrency());
-        line.setRProductId(line.getProductId());
+        line.setRProductId(etItem.getProductid());
         line.setRItemCategory(etItem.getItemcategory());
         line.setRRefItemNo(etItem.getRefitemno());
         line.setRRefItemProductId(etItem.getRefitemproductid());
+        line.setProductId(etItem.getProductid());
+        line.setRItemNo(etItem.getItemno());
         line.setCreateId(userId);
         line.setCreateTime(DateUtil.getCurrentTS());
         line.setActice(1);
