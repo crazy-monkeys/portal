@@ -614,7 +614,7 @@ public class SaleForecastService {
         for(SdUpdateTemplate template : templateList){
             ForecastSd forecastSd = forecastSdMapper.selectByMonthAndProduct(template.getOperationYearMonth(),
                     template.getCompany(),
-                    template.getBu(), template.getPdt(), template.getProductType(),
+                    template.getBu(), template.getPdt(), template.getVmNumber(),
                     template.getPlatform(), template.getProductModel());
             if(null == forecastSd){
                 forecastSd = new ForecastSd();
