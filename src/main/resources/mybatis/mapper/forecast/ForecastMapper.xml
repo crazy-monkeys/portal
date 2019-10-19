@@ -482,7 +482,7 @@
     from t_forecast a
     inner join t_forecast_line b on a.id = b.f_id
     where 1 = 1
-    and a.status in (-1,1,2)
+    and a.status in (1,3,4)
     <if test="status != null" >
       and a.status = #{status,jdbcType=INTEGER}
     </if>
@@ -506,6 +506,39 @@
     </if>
     <if test="sdPeople != null and sdPeople != ''" >
       and a.sd_people like concat('%', #{sdPeople,jdbcType=VARCHAR}, '%')
+    </if>
+    <if test="agencyAbbreviation != null and agencyAbbreviation != ''" >
+      and a.agency_abbreviation like concat('%', #{agencyAbbreviation,jdbcType=VARCHAR}, '%')
+    </if>
+    <if test="channel != null and channel != ''" >
+      and a.channel like concat('%', #{channel,jdbcType=VARCHAR}, '%')
+    </if>
+    <foreach collection="userIds" item="item" index="index" open="and a.create_user_id in (" separator="," close=")" >
+      #{item,jdbcType=INTEGER}
+    </foreach>
+    order by a.create_time desc, a.batch_no asc
+  </select>
+
+  <select id="selectBiDataByLeader" resultMap="fullFieldMap" >
+    select a.status statusDesc,a.*,b.*,date_format(a.create_time, '%Y-%m-%d %H:%i:%s') create_time_str
+    from t_forecast a
+    inner join t_forecast_line b on a.id = b.f_id
+    where 1 = 1
+    and a.status = 2
+    <if test="customerAbbreviation != null and customerAbbreviation != ''" >
+      and a.customer_abbreviation like concat('%', #{customerAbbreviation,jdbcType=VARCHAR}, '%')
+    </if>
+    <if test="salePeople != null and salePeople != ''" >
+      and a.sale_people like concat('%', #{salePeople,jdbcType=VARCHAR}, '%')
+    </if>
+    <if test="uploadStartTime != null and uploadStartTime != '' and uploadEndTime != null and uploadEndTime != ''" >
+      and a.create_time between #{uploadStartTime,jdbcType=VARCHAR} and #{uploadEndTime,jdbcType=VARCHAR}
+    </if>
+    <if test="uploadStartTime != null and uploadStartTime != '' and (uploadEndTime == null or uploadEndTime == '')" >
+      and a.create_time >= #{uploadStartTime,jdbcType=VARCHAR}
+    </if>
+    <if test="(uploadStartTime == null or uploadStartTime == '') and uploadEndTime != null and uploadEndTime != ''" >
+      <![CDATA[ and a.create_time <= #{uploadEndTime,jdbcType=VARCHAR} ]]>
     </if>
     <if test="agencyAbbreviation != null and agencyAbbreviation != ''" >
       and a.agency_abbreviation like concat('%', #{agencyAbbreviation,jdbcType=VARCHAR}, '%')

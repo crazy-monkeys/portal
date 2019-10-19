@@ -398,18 +398,6 @@ public class SaleForecastService {
 
     /**
      * 查询代理商预测数据
-     * @param pageNum
-     * @param pageSize
-     * @param userId
-     * @param customerAbbreviation
-     * @param status
-     * @param salePeople
-     * @param uploadStartTime
-     * @param uploadEndTime
-     * @param ambPeople
-     * @param sdPeople
-     * @param agencyAbbreviation
-     * @param channel
      * @return
      */
     public PageInfo<Forecast> queryApprovalForecastData(Integer pageNum, Integer pageSize, Integer userId,
@@ -424,6 +412,24 @@ public class SaleForecastService {
             Integer[] userIds = new Integer[userList.size()];
             List<Forecast> result = forecastMapper.selectByLeader(userList.toArray(userIds), customerAbbreviation, status,
                     salePeople, uploadStartTime, uploadEndTime, ambPeople, sdPeople, agencyAbbreviation, channel);
+            return new PageInfo<>(result);
+        }catch (Exception ex) {
+            log.error(FORECAST_AGENCY_QUERY_ERROR.getZhMsg(), ex);
+            throw new BusinessException(FORECAST_AGENCY_QUERY_ERROR);
+        }
+    }
+
+    public PageInfo<Forecast> queryBiForecastData(Integer pageNum, Integer pageSize, Integer userId,
+                                                        String customerAbbreviation, String salePeople,
+                                                        String uploadStartTime, String uploadEndTime,
+                                                        String agencyAbbreviation, String channel) {
+        List<Integer> userList;
+        PortalUtil.defaultStartPage(pageNum,pageSize);
+        try {
+            userList = userCustomerMappingService.selectUserMapping(userId, Enums.CustomerMappingModel.Forecast.getValue());
+            Integer[] userIds = new Integer[userList.size()];
+            List<Forecast> result = forecastMapper.selectBiDataByLeader(userList.toArray(userIds), customerAbbreviation,
+                    salePeople, uploadStartTime, uploadEndTime, agencyAbbreviation, channel);
             return new PageInfo<>(result);
         }catch (Exception ex) {
             log.error(FORECAST_AGENCY_QUERY_ERROR.getZhMsg(), ex);
@@ -527,8 +533,8 @@ public class SaleForecastService {
         int dataTotalNum = forecastMapper.countDataNumByMonthAndUser(userList, monthList.get(0));
         BusinessUtil.assertTrue(dataTotalNum == forecastIds.length, FORECAST_DATA_TOTAL_CHECK_ERROR);
         //第四步：是否数据都已经被调整过，否则不允许通过
-        int ambAdjustmentNum = forecastMapper.checkAmbAdjustmentNum(forecastIds);
-        BusinessUtil.assertTrue(ambAdjustmentNum == 0, FORECAST_AMB_ADJUSTMENT_NUM_ERROR);
+//        int ambAdjustmentNum = forecastMapper.checkAmbAdjustmentNum(forecastIds);
+//        BusinessUtil.assertTrue(ambAdjustmentNum == 0, FORECAST_AMB_ADJUSTMENT_NUM_ERROR);
         /**
          * 新增需要全部一起新增
          */
@@ -545,6 +551,8 @@ public class SaleForecastService {
      * @param rejectMsg
      */
     public void rejectApprovalForecastData(Integer[] forecastIds, String rejectMsg) {
+        //如果选择驳回，则不管数据选择多少，都将未提交BI的数据全部驳回
+
         for(Integer id : forecastIds) {
             Forecast forecast = forecastMapper.selectByPrimaryKey(id);
             if(forecast.getStatus() == 2){
@@ -607,8 +615,8 @@ public class SaleForecastService {
         int dataTotalNum = forecastMapper.countDataNumByMonthAndUser(userList, monthList.get(0));
         BusinessUtil.assertTrue(dataTotalNum == forecastIds.length, FORECAST_DATA_TOTAL_CHECK_ERROR);
         //第四步：是否数据都已经被调整过，否则不允许通过
-        int ambAdjustmentNum = forecastMapper.checkAmbAdjustmentNum(forecastIds);
-        BusinessUtil.assertTrue(ambAdjustmentNum == 0, FORECAST_AMB_ADJUSTMENT_NUM_ERROR);
+//        int ambAdjustmentNum = forecastMapper.checkAmbAdjustmentNum(forecastIds);
+//        BusinessUtil.assertTrue(ambAdjustmentNum == 0, FORECAST_AMB_ADJUSTMENT_NUM_ERROR);
 
         List<SdUpdateTemplate> templateList = forecastSdMapper.selectTotalByForecastIds(forecastIds);
         for(SdUpdateTemplate template : templateList){

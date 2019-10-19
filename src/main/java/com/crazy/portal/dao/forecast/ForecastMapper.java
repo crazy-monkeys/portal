@@ -65,6 +65,14 @@ public interface ForecastMapper {
                                   @Param(value = "agencyAbbreviation") String agencyAbbreviation,
                                   @Param(value = "channel") String channel);
 
+    List<Forecast> selectBiDataByLeader(@Param(value = "userIds") Integer[] userIds,
+                                  @Param(value = "customerAbbreviation") String customerAbbreviation,
+                                  @Param(value = "salePeople") String salePeople,
+                                  @Param(value = "uploadStartTime") String uploadStartTime,
+                                  @Param(value = "uploadEndTime") String uploadEndTime,
+                                  @Param(value = "agencyAbbreviation") String agencyAbbreviation,
+                                  @Param(value = "channel") String channel);
+
     int updateStatusByIds(@Param(value = "ids") Integer[] ids,
                           @Param(value = "status") Integer status,
                           @Param(value = "operationRemark") String operationRemark);
