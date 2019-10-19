@@ -144,7 +144,7 @@ public class SaleForecastController extends BaseController {
                                                   String ambPeople, String sdPeople, String agencyAbbreviation,
                                                   String channel) {
         return super.successResult(saleForecastService.queryApprovalForecastData(pageNum, pageSize, getCurrentUser().getId(),
-                customerAbbreviation, 1, salePeople, uploadStartTime, uploadEndTime, ambPeople, sdPeople,
+                customerAbbreviation, salePeople, uploadStartTime, uploadEndTime, ambPeople, sdPeople,
                 agencyAbbreviation, channel));
     }
 
@@ -237,9 +237,8 @@ public class SaleForecastController extends BaseController {
     public BaseResponse queryForecastData(Integer pageNum, Integer pageSize,
                                           String customerAbbreviation, String agencyAbbreviation, String salePeople,
                                           String uploadStartTime, String uploadEndTime, String channel) {
-        return super.successResult(saleForecastService.queryApprovalForecastData(pageNum, pageSize, getCurrentUser().getId(),
-                customerAbbreviation, 2, salePeople, uploadStartTime, uploadEndTime, null, null,
-                agencyAbbreviation, channel));
+        return super.successResult(saleForecastService.queryBiForecastData(pageNum, pageSize, getCurrentUser().getId(),
+                customerAbbreviation, salePeople, uploadStartTime, uploadEndTime, agencyAbbreviation, channel));
     }
 
     @GetMapping(value = "/forecast/data/leader/query/sd")
