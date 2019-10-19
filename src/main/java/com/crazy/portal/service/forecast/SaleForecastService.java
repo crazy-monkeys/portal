@@ -401,7 +401,7 @@ public class SaleForecastService {
      * @return
      */
     public PageInfo<Forecast> queryApprovalForecastData(Integer pageNum, Integer pageSize, Integer userId,
-                                                        String customerAbbreviation, Integer status, String salePeople,
+                                                        String customerAbbreviation, String salePeople,
                                                         String uploadStartTime, String uploadEndTime,
                                                         String ambPeople, String sdPeople, String agencyAbbreviation,
                                                         String channel) {
@@ -410,7 +410,7 @@ public class SaleForecastService {
         try {
             userList = userCustomerMappingService.selectUserMapping(userId, Enums.CustomerMappingModel.Forecast.getValue());
             Integer[] userIds = new Integer[userList.size()];
-            List<Forecast> result = forecastMapper.selectByLeader(userList.toArray(userIds), customerAbbreviation, status,
+            List<Forecast> result = forecastMapper.selectByLeader(userList.toArray(userIds), customerAbbreviation,
                     salePeople, uploadStartTime, uploadEndTime, ambPeople, sdPeople, agencyAbbreviation, channel);
             return new PageInfo<>(result);
         }catch (Exception ex) {

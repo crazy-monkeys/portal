@@ -144,7 +144,7 @@ public class SaleForecastController extends BaseController {
                                                   String ambPeople, String sdPeople, String agencyAbbreviation,
                                                   String channel) {
         return super.successResult(saleForecastService.queryApprovalForecastData(pageNum, pageSize, getCurrentUser().getId(),
-                customerAbbreviation, 1, salePeople, uploadStartTime, uploadEndTime, ambPeople, sdPeople,
+                customerAbbreviation, salePeople, uploadStartTime, uploadEndTime, ambPeople, sdPeople,
                 agencyAbbreviation, channel));
     }
 

@@ -56,7 +56,6 @@ public interface ForecastMapper {
 
     List<Forecast> selectByLeader(@Param(value = "userIds") Integer[] userIds,
                                   @Param(value = "customerAbbreviation") String customerAbbreviation,
-                                  @Param(value = "status") Integer status,
                                   @Param(value = "salePeople") String salePeople,
                                   @Param(value = "uploadStartTime") String uploadStartTime,
                                   @Param(value = "uploadEndTime") String uploadEndTime,
