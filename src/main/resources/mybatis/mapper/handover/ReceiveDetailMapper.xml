@@ -211,7 +211,7 @@
   <select id="selectByRecordId" resultMap="BaseResultMap" >
     select d.dealer_name,t.* from t_receive_detail t
     inner join t_deliver_receive_record d on t.record_id = d.id
-    where record_id = #{recordId}
+    where record_id = #{recordId,jdbcType=INTEGER}
   </select>
 
   <select id="selectErrorDataByRecord" resultMap="errorResultMap" >
@@ -219,58 +219,58 @@
     warehouse, delivery_time, invoice_number, delivery_num, delivery_company, purchase_number,
     remark,id as error_id_str,error_msg as third_error_msg
     from t_receive_detail
-    where record_id = #{recordId} and error_msg is not null
+    where record_id = #{recordId,jdbcType=INTEGER} and error_msg is not null
   </select>
 
   <select id="selectByDealerId" resultMap="BaseResultMap" >
     select b.* from t_deliver_receive_record a
     inner join t_receive_detail b on a.id = b.record_id
-    where a.dealer_id = #{dealerId}
+    where a.dealer_id = #{dealerId,jdbcType=INTEGER}
     <if test="uploadStartTime != null and uploadStartTime != '' and uploadEndTime != null and uploadEndTime != ''" >
-      and a.upload_time between #{uploadStartTime} and #{uploadEndTime}
+      and a.upload_time between #{uploadStartTime,jdbcType=VARCHAR} and #{uploadEndTime,jdbcType=VARCHAR}
     </if>
     <if test="uploadStartTime != null and uploadStartTime != '' and (uploadEndTime == null or uploadEndTime == '')" >
-      and a.upload_time >= #{uploadStartTime}
+      and a.upload_time >= #{uploadStartTime,jdbcType=VARCHAR}
     </if>
     <if test="(uploadStartTime == null or uploadStartTime == '') and uploadEndTime != null and uploadEndTime != ''" >
-      <![CDATA[ and a.upload_time <= #{uploadEndTime} ]]>
+      <![CDATA[ and a.upload_time <= #{uploadEndTime,jdbcType=VARCHAR} ]]>
     </if>
     <!-- 配送时间条件 -->
     <if test="handoverStartTime != null and handoverStartTime != '' and handoverEndTime != null and handoverEndTime != ''" >
-      and b.delivery_time between #{handoverStartTime} and #{handoverEndTime}
+      and b.delivery_time between #{handoverStartTime,jdbcType=VARCHAR} and #{handoverEndTime,jdbcType=VARCHAR}
     </if>
     <if test="handoverStartTime != null and handoverStartTime != '' and (handoverEndTime == null or handoverEndTime == '')" >
-      and b.delivery_time >= #{handoverStartTime}
+      and b.delivery_time >= #{handoverStartTime,jdbcType=VARCHAR}
     </if>
     <if test="(handoverStartTime == null or handoverStartTime == '') and handoverEndTime != null and handoverEndTime != ''" >
-      <![CDATA[ and b.delivery_time <= #{handoverEndTime} ]]>
+      <![CDATA[ and b.delivery_time <= #{handoverEndTime,jdbcType=VARCHAR} ]]>
     </if>
     <if test="productModel != null and productModel != ''" >
-      and b.product_model like concat('%', #{productModel}, '%')
+      and b.product_model like concat('%', #{productModel,jdbcType=VARCHAR}, '%')
     </if>
     <if test="warehouse != null and warehouse != ''" >
-      and b.warehouse like concat('%', #{warehouse}, '%')
+      and b.warehouse like concat('%', #{warehouse,jdbcType=VARCHAR}, '%')
     </if>
     <if test="deliveryCompany != null and deliveryCompany != ''" >
-      and b.delivery_company like concat('%', #{deliveryCompany}, '%')
+      and b.delivery_company like concat('%', #{deliveryCompany,jdbcType=VARCHAR}, '%')
     </if>
     order by a.create_time desc
   </select>
 
   <select id="countErrorData" resultType="java.lang.Integer" >
     select count(1) from t_receive_detail
-    where record_id = #{recordId} and error_msg is not null
+    where record_id = #{recordId,jdbcType=INTEGER} and error_msg is not null
   </select>
 
   <delete id="deleteByRecordId" >
-    delete from t_receive_detail where record_id = #{recordId}
+    delete from t_receive_detail where record_id = #{recordId,jdbcType=INTEGER}
   </delete>
 
   <delete id="batchDeleteByIds" >
     delete from t_receive_detail
     where 1 = 1
     <foreach collection="ids" item="item" index="index" open="id in (" separator="," close=")" >
-      #{item}
+      #{item,jdbcType=INTEGER}
     </foreach>
   </delete>
 

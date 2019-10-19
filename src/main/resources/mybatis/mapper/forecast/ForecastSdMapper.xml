@@ -442,7 +442,7 @@
     inner join t_forecast_line b on a.id = b.f_id
     where 1 = 1
     <foreach collection="forecastIds" item="item" index="index" open="and a.id in (" separator="," close=")" >
-      #{item}
+      #{item,jdbcType=INTEGER}
     </foreach>
     group by a.operation_year_month,a.company,a.bu,a.pdt,a.product_type,a.platform,a.product_model,a.vm_number,
     b.forecast_month_one,b.forecast_month_two,b.forecast_month_three,b.forecast_month_four,b.forecast_month_five,b.forecast_month_six
@@ -454,30 +454,30 @@
 
   <select id="selectByMonthAndProduct" resultMap="BaseResultMap" >
     select * from t_forecast_sd a
-    where a.operation_year_month = #{operationYearMonth}
-    and a.company = #{company}
-    and a.bu = #{bu}
-    and a.pdt = #{pdt}
-    and a.product_type = #{productType}
-    and a.platform = #{platform}
-    and a.product_model = #{productModel}
+    where a.operation_year_month = #{operationYearMonth,jdbcType=VARCHAR}
+    and a.company = #{company,jdbcType=VARCHAR}
+    and a.bu = #{bu,jdbcType=VARCHAR}
+    and a.pdt = #{pdt,jdbcType=VARCHAR}
+    and a.product_type = #{productType,jdbcType=VARCHAR}
+    and a.platform = #{platform,jdbcType=VARCHAR}
+    and a.product_model = #{productModel,jdbcType=VARCHAR}
   </select>
 
   <select id="selectByBiId" resultMap="BaseResultMap" >
     select * from t_forecast_sd a
-    where bi_id = #{biId}
+    where bi_id = #{biId,jdbcType=VARCHAR}
   </select>
 
   <select id="selectByMonth" resultMap="BaseResultMap" >
-    select * from t_forecast_sd a where a.operation_year_month = #{operationYearMonth}
+    select * from t_forecast_sd a where a.operation_year_month = #{operationYearMonth,jdbcType=VARCHAR}
   </select>
 
   <update id="updateBiInfoByKey" >
-    update t_forecast_sd set bi_id = #{biId},error_msg = #{errorMsg} where id = #{id}
+    update t_forecast_sd set bi_id = #{biId,jdbcType=VARCHAR},error_msg = #{errorMsg,jdbcType=VARCHAR} where id = #{id,jdbcType=INTEGER}
   </update>
 
   <update id="updateBiInfoByBiId" >
-    update t_forecast_sd set error_msg = #{errorMsg} where bi_id = #{biId}
+    update t_forecast_sd set error_msg = #{errorMsg,jdbcType=VARCHAR} where bi_id = #{biId,jdbcType=VARCHAR}
   </update>
   
 </mapper>
