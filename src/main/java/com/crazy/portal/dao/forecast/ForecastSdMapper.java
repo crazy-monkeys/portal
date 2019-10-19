@@ -27,7 +27,7 @@ public interface ForecastSdMapper {
                                        @Param(value = "company") String company,
                                        @Param(value = "bu") String bu,
                                        @Param(value = "pdt") String pdt,
-                                       @Param(value = "productType") String productType,
+                                       @Param(value = "vmNumber") String vmNumber,
                                        @Param(value = "platform") String platform,
                                        @Param(value = "productModel") String productModel);
 

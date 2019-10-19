@@ -40,6 +40,7 @@
     <result column="product_type" jdbcType="VARCHAR" property="productType" />
     <result column="platform" jdbcType="VARCHAR" property="platform" />
     <result column="product_model" jdbcType="VARCHAR" property="productModel" />
+    <result column="vm_number" jdbcType="VARCHAR" property="vmNumber" />
 
     <result column="forecast_month_one" jdbcType="VARCHAR" property="forecastMonthOne" />
     <result column="last_write_one" jdbcType="VARCHAR" property="lastWriteOne" />
@@ -413,7 +414,7 @@
   </update>
   
   <select id="selectTotalByForecastIds" resultMap="sdTotalMap" >
-    select a.operation_year_month,a.company,a.bu,a.pdt,a.product_type,a.platform,a.product_model,
+    select a.operation_year_month,a.company,a.bu,a.pdt,a.product_type,a.platform,a.product_model,a.vm_number,
     b.forecast_month_one,
     sum(b.last_write_one) last_write_one,
     sum(b.current_write_one) current_write_one,
@@ -458,9 +459,9 @@
     and a.company = #{company,jdbcType=VARCHAR}
     and a.bu = #{bu,jdbcType=VARCHAR}
     and a.pdt = #{pdt,jdbcType=VARCHAR}
-    and a.product_type = #{productType,jdbcType=VARCHAR}
     and a.platform = #{platform,jdbcType=VARCHAR}
     and a.product_model = #{productModel,jdbcType=VARCHAR}
+    and a.vm_number = #{vmNumber,jdbcType=VARCHAR}
   </select>
 
   <select id="selectByBiId" resultMap="BaseResultMap" >
