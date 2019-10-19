@@ -1,6 +1,5 @@
 package com.crazy.portal.config.security.config;
 
-import com.crazy.portal.bean.common.Constant;
 import com.crazy.portal.config.security.JwtUserService;
 import com.crazy.portal.config.security.filter.JwtAuthenticationProvider;
 import com.crazy.portal.config.security.filter.RequestFilter;
@@ -30,12 +29,9 @@ import org.springframework.security.kerberos.web.authentication.SpnegoAuthentica
 import org.springframework.security.kerberos.web.authentication.SpnegoEntryPoint;
 import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
-import org.springframework.security.web.header.Header;
-import org.springframework.security.web.header.writers.StaticHeadersWriter;
 import org.springframework.web.filter.CorsFilter;
 
 import javax.annotation.Resource;
-import java.util.Arrays;
 
 @EnableWebSecurity
 @Configuration
@@ -90,10 +86,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                 .sessionManagement().disable()
                 .csrf().disable()
                 .cors()
-                .and()
-                .headers().addHeaderWriter(new StaticHeadersWriter(Arrays.asList(
-                new Header("Access-Control-Allow-Origin","*"),
-                new Header("Access-Control-Expose-Headers", Constant.Authorization))))
                 .and()
                 //拦截OPTIONS请求，直接返回header
                 .addFilterAfter(new RequestFilter(), CorsFilter.class)

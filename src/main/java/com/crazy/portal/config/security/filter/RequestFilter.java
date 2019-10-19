@@ -1,5 +1,6 @@
 package com.crazy.portal.config.security.filter;
 
+import com.crazy.portal.bean.common.Constant;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
@@ -20,10 +21,12 @@ public class RequestFilter extends OncePerRequestFilter{
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
+        response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
         response.setHeader("Access-Control-Allow-Methods", "DELETE,GET,POST,OPTIONS");
         response.setHeader("Access-Control-Allow-Headers", "Content-Type,Authorization");
         response.setHeader("Access-Control-Allow-Credentials", "true");
-        response.setHeader("Access-Control-Max-Age", "1");
+        response.setHeader("Access-Control-Expose-Headers",  Constant.Authorization);
+        response.setHeader("Access-Control-Max-Age", "1800");
         if(request.getMethod().equals("OPTIONS")) {
             return;
         }
