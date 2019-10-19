@@ -59,10 +59,11 @@ public class LoginAuthenticationFilter extends AbstractAuthenticationProcessingF
         String verifyCode = jsonObj.getString("verifyCode");
         String timestamp = jsonObj.getString("timestamp");
         Object requestVerifyCode = PortalUtil.VERIFY_CODE_MAP.getIfPresent(timestamp);
-        boolean isSuccess = StringUtil.isBlank(verifyCode) || !StringUtil.equals(verifyCode, String.valueOf(requestVerifyCode));
-        if(!"dev".equals(PortalUtil.ENVIRONMENT) && isSuccess){
+        boolean isDiff = StringUtil.isBlank(verifyCode) || !StringUtil.equals(verifyCode, String.valueOf(requestVerifyCode));
+        if(!"dev".equals(PortalUtil.ENVIRONMENT) && isDiff){
             throw new BadCredentialsException("Verify Code Inaccurate");
         }
+        PortalUtil.VERIFY_CODE_MAP.invalidate(timestamp);
     }
 
 }
