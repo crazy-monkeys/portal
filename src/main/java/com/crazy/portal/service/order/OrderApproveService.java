@@ -145,20 +145,19 @@ public class OrderApproveService {
         }
 
         List<ZsalesordercreateOutItem> outItems = response.getEtItems().getItem();
-        outItems.forEach(x->
+        outItems.forEach(eccLine->
             lines.forEach(line->{
-                String eccProductId = x.getProductid().replaceAll("^(0+)", "");
                 //ecc物料号如果前面有0 直接替换成空字符
-                x.setProductid(eccProductId);
+                eccLine.setProductid(eccLine.getProductid().replaceAll("^(0+)", ""));
                 //主物料信息保存
-                String lineProductId = line.getProductId();
-                if(eccProductId.equals(lineProductId)){
+                String portalProductId = line.getProductId();
+                if(eccLine.getProductid().equals(portalProductId)){
                     //设置剩余数量
                     line.setRemainingNum(line.getNum());
 
                     //过滤出主物料对应的组合物料信息
                     List<ZsalesordercreateOutItem> currProductItems = outItems.stream()
-                            .filter(f -> f.getRefitemproductid().equals(lineProductId) || f.getProductid().equals(lineProductId))
+                            .filter(f -> f.getRefitemproductid().equals(portalProductId) || f.getProductid().equals(portalProductId))
                             .collect(Collectors.toList());
 
                     //主物料计算总价
@@ -166,10 +165,10 @@ public class OrderApproveService {
                     line.setRNetPrice(currProductStream.map(ZsalesordercreateOutItem::getNetprice).reduce(BigDecimal.ZERO,BigDecimal::add));
                     line.setRPrice((currProductStream.map(ZsalesordercreateOutItem::getPrice).reduce(BigDecimal.ZERO,BigDecimal::add)));
                 }else {
-                    line.setRNetPrice(x.getNetprice());
-                    line.setRPrice(x.getPrice());
+                    line.setRNetPrice(eccLine.getNetprice());
+                    line.setRPrice(eccLine.getPrice());
                 }
-                this.insertOrderLine(userId,order,line,x);
+                this.insertOrderLine(userId,order,line,eccLine);
             })
         );
     }
