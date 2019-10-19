@@ -45,7 +45,7 @@ public class LoginAuthenticationFilter extends AbstractAuthenticationProcessingF
             String passStr = jsonObj.getString("loginPwd");
             String verifyCode = jsonObj.getString("verifyCode");
             Object sessionVerifyCode = request.getSession().getAttribute("verifyCode");
-            if(!"dev".equals(PortalUtil.ENVIRONMENT) && (StringUtil.isBlank(verifyCode) || !StringUtil.equals(verifyCode, String.valueOf(sessionVerifyCode)))){
+            if(!"sit".equals(PortalUtil.ENVIRONMENT) && !"dev".equals(PortalUtil.ENVIRONMENT) && (StringUtil.isBlank(verifyCode) || !StringUtil.equals(verifyCode, String.valueOf(sessionVerifyCode)))){
                 throw new BadCredentialsException("Verify Code Inaccurate");
             }
             if(userNameStr != null) loginName = userNameStr;

@@ -168,34 +168,34 @@
     where 1 = 1
     and status != 0
     <if test="uploadStartTime != null and uploadStartTime != '' and uploadEndTime != null and uploadEndTime != ''" >
-      and upload_time between #{uploadStartTime} and #{uploadEndTime}
+      and upload_time between #{uploadStartTime,jdbcType=VARCHAR} and #{uploadEndTime,jdbcType=VARCHAR}
     </if>
     <if test="uploadStartTime != null and uploadStartTime != '' and (uploadEndTime == null or uploadEndTime == '')" >
-      and upload_time >= #{uploadStartTime}
+      and upload_time >= #{uploadStartTime,jdbcType=VARCHAR}
     </if>
     <if test="(uploadStartTime == null or uploadStartTime == '') and uploadEndTime != null and uploadEndTime != ''" >
-      <![CDATA[ and upload_time <= #{uploadEndTime} ]]>
+      <![CDATA[ and upload_time <= #{uploadEndTime,jdbcType=VARCHAR} ]]>
     </if>
     <if test="dealerName != null and dealerName != ''" >
-      and dealer_name like concat('%',#{dealerName},'%')
+      and dealer_name like concat('%',#{dealerName,jdbcType=VARCHAR},'%')
     </if>
     <if test="status != null" >
-      and status = #{status}
+      and status = #{status,jdbcType=INTEGER}
     </if>
     <if test="dealerId != null" >
-      and dealer_id = #{dealerId}
+      and dealer_id = #{dealerId,jdbcType=INTEGER}
     </if>
     <if test="type != null" >
-      and type = #{type}
+      and type = #{type,jdbcType=INTEGER}
     </if>
     order by create_time desc
   </select>
 
   <update id="updateStatusById" >
-    update t_deliver_receive_record set status = #{status}
+    update t_deliver_receive_record set status = #{status,jdbcType=INTEGER}
     where 1 = 1
     <foreach collection="ids" item="item" index="index" open=" and id in (" separator="," close=")" >
-      #{item}
+      #{item,jdbcType=INTEGER}
     </foreach>
   </update>
 
@@ -203,7 +203,7 @@
     select t.status from t_deliver_receive_record t
     where 1 = 1
     <foreach collection="ids" item="item" index="index" open=" and t.id in (" separator="," close="" >
-      #{item}
+      #{item,jdbcType=INTEGER}
     </foreach>
     group by t.status
   </select>

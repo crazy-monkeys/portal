@@ -95,7 +95,7 @@
     select
     <include refid="Base_Column_List" />
     from t_announcement_file
-    where announcement_id = #{announcementId}
+    where announcement_id = #{announcementId,jdbcType=INTEGER}
   </select>
 
   <select id="selectByIds" resultMap="BaseResultMap" >
@@ -105,7 +105,7 @@
     <choose>
       <when test="ids != null and ids.size() != 0" >
         <foreach collection="ids" item="item" index="index" open="where id in (" close=")" separator=",">
-          #{item}
+          #{item,jdbcType=INTEGER}
         </foreach>
       </when>
       <otherwise>

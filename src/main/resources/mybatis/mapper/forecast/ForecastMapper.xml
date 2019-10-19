@@ -412,8 +412,8 @@
     a.*,b.*,date_format(a.create_time, '%Y-%m-%d %H:%i:%s') create_time_str
     from t_forecast a
     inner join t_forecast_line b on a.id = b.f_id
-    where a.operation_year_month = #{yearMonth}
-    and a.create_user_id = #{userId}
+    where a.operation_year_month = #{yearMonth,jdbcType=VARCHAR}
+    and a.create_user_id = #{userId,jdbcType=INTEGER}
   </select>
 
   <select id="selectErrorDataByBatch" resultMap="fullFieldMap" >
@@ -421,7 +421,7 @@
     from t_forecast a
     inner join t_forecast_line b on a.id = b.f_id
     where a.error_msg is not null and a.error_msg != ''
-    and a.batch_no = #{batchNo} and a.create_user_id = #{userId}
+    and a.batch_no = #{batchNo,jdbcType=VARCHAR} and a.create_user_id = #{userId,jdbcType=INTEGER}
   </select>
 
   <select id="selectNotErrorDataByBatch" resultMap="fullFieldMap" >
@@ -429,50 +429,50 @@
     from t_forecast a
     inner join t_forecast_line b on a.id = b.f_id
     where (a.error_msg is null or a.error_msg = '')
-    and a.batch_no = #{batchNo} and a.create_user_id = #{userId}
+    and a.batch_no = #{batchNo,jdbcType=VARCHAR} and a.create_user_id = #{userId,jdbcType=INTEGER}
   </select>
 
   <select id="countErrorDataByBatch" resultType="java.lang.Integer" >
     select count(1) from t_forecast a
     where a.error_msg is not null and a.error_msg != ''
-    and a.batch_no = #{batchNo} and a.create_user_id = #{userId}
+    and a.batch_no = #{batchNo,jdbcType=VARCHAR} and a.create_user_id = #{userId,jdbcType=INTEGER}
   </select>
 
   <update id="updateStatus" >
     update t_forecast set status = #{status},agency_status_type = #{agencyStatusType}
-    where batch_no = #{batchNo} and create_user_id = #{userId}
+    where batch_no = #{batchNo,jdbcType=VARCHAR} and create_user_id = #{userId,jdbcType=INTEGER}
   </update>
 
   <select id="selectPageByUser" resultMap="fullFieldMap" >
     select a.*,b.*,date_format(a.create_time, '%Y-%m-%d %H:%i:%s') create_time_str
     from t_forecast a
     inner join t_forecast_line b on a.id = b.f_id
-    where a.create_user_id = #{userId}
+    where a.create_user_id = #{userId,jdbcType=INTEGER}
     <choose>
       <when test="status != null" >
-        and a.status is not null and a.status = #{status}
+        and a.status is not null and a.status = #{status,jdbcType=INTEGER}
       </when>
       <when test="status == null" >
         and a.status != -1 and a.status is not null
       </when>
       <otherwise>
-        and a.status = #{status}
+        and a.status = #{status,jdbcType=INTEGER}
       </otherwise>
     </choose>
     <if test="customerAbbreviation != null and customerAbbreviation != ''" >
-      and a.customer_abbreviation like concat('%', #{customerAbbreviation}, '%')
+      and a.customer_abbreviation like concat('%', #{customerAbbreviation,jdbcType=VARCHAR}, '%')
     </if>
     <if test="salePeople != null and salePeople != ''" >
-      and a.sale_people like concat('%', #{salePeople}, '%')
+      and a.sale_people like concat('%', #{salePeople,jdbcType=VARCHAR}, '%')
     </if>
     <if test="uploadStartTime != null and uploadStartTime != '' and uploadEndTime != null and uploadEndTime != ''" >
-      and a.create_time between #{uploadStartTime} and #{uploadEndTime}
+      and a.create_time between #{uploadStartTime,jdbcType=VARCHAR} and #{uploadEndTime,jdbcType=VARCHAR}
     </if>
     <if test="uploadStartTime != null and uploadStartTime != '' and (uploadEndTime == null or uploadEndTime == '')" >
-      and a.create_time >= #{uploadStartTime}
+      and a.create_time >= #{uploadStartTime,jdbcType=VARCHAR}
     </if>
     <if test="(uploadStartTime == null or uploadStartTime == '') and uploadEndTime != null and uploadEndTime != ''" >
-      <![CDATA[ and a.create_time <= #{uploadEndTime} ]]>
+      <![CDATA[ and a.create_time <= #{uploadEndTime,jdbcType=VARCHAR} ]]>
     </if>
     order by a.create_time desc, a.batch_no asc
   </select>
@@ -484,71 +484,71 @@
     where 1 = 1
     and a.status in (-1,1,2)
     <if test="status != null" >
-      and a.status = #{status}
+      and a.status = #{status,jdbcType=INTEGER}
     </if>
     <if test="customerAbbreviation != null and customerAbbreviation != ''" >
-      and a.customer_abbreviation like concat('%', #{customerAbbreviation}, '%')
+      and a.customer_abbreviation like concat('%', #{customerAbbreviation,jdbcType=VARCHAR}, '%')
     </if>
     <if test="salePeople != null and salePeople != ''" >
-      and a.sale_people like concat('%', #{salePeople}, '%')
+      and a.sale_people like concat('%', #{salePeople,jdbcType=VARCHAR}, '%')
     </if>
     <if test="uploadStartTime != null and uploadStartTime != '' and uploadEndTime != null and uploadEndTime != ''" >
-      and a.create_time between #{uploadStartTime} and #{uploadEndTime}
+      and a.create_time between #{uploadStartTime,jdbcType=VARCHAR} and #{uploadEndTime,jdbcType=VARCHAR}
     </if>
     <if test="uploadStartTime != null and uploadStartTime != '' and (uploadEndTime == null or uploadEndTime == '')" >
-      and a.create_time >= #{uploadStartTime}
+      and a.create_time >= #{uploadStartTime,jdbcType=VARCHAR}
     </if>
     <if test="(uploadStartTime == null or uploadStartTime == '') and uploadEndTime != null and uploadEndTime != ''" >
-      <![CDATA[ and a.create_time <= #{uploadEndTime} ]]>
+      <![CDATA[ and a.create_time <= #{uploadEndTime,jdbcType=VARCHAR} ]]>
     </if>
     <if test="ambPeople != null and ambPeople != ''" >
-      and a.amb_leader like concat('%', #{ambPeople}, '%')
+      and a.amb_leader like concat('%', #{ambPeople,jdbcType=VARCHAR}, '%')
     </if>
     <if test="sdPeople != null and sdPeople != ''" >
-      and a.sd_people like concat('%', #{sdPeople}, '%')
+      and a.sd_people like concat('%', #{sdPeople,jdbcType=VARCHAR}, '%')
     </if>
     <if test="agencyAbbreviation != null and agencyAbbreviation != ''" >
-      and a.agency_abbreviation like concat('%', #{agencyAbbreviation}, '%')
+      and a.agency_abbreviation like concat('%', #{agencyAbbreviation,jdbcType=VARCHAR}, '%')
     </if>
     <if test="channel != null and channel != ''" >
-      and a.channel like concat('%', #{channel}, '%')
+      and a.channel like concat('%', #{channel,jdbcType=VARCHAR}, '%')
     </if>
     <foreach collection="userIds" item="item" index="index" open="and a.create_user_id in (" separator="," close=")" >
-      #{item}
+      #{item,jdbcType=INTEGER}
     </foreach>
     order by a.create_time desc, a.batch_no asc
   </select>
 
   <select id="selectCntByBatchAndId" resultType="java.lang.Integer" >
     select count(1) from t_forecast a
-    where a.batch_no = #{batchNo}
+    where a.batch_no = #{batchNo,jdbcType=VARCHAR}
     <foreach collection="list" item="item" index="index" open="and a.id in (" separator="," close=")" >
-       #{item.id}
+       #{item.id,jdbcType=INTEGER}
     </foreach>
-    and a.create_user_id = #{userId}
+    and a.create_user_id = #{userId,jdbcType=INTEGER}
   </select>
 
   <delete id="deleteByBatchNo" >
     delete from t_forecast
-    where batch_no = #{batchNo} and create_user_id = #{userId}
+    where batch_no = #{batchNo,jdbcType=VARCHAR} and create_user_id = #{userId,jdbcType=INTEGER}
   </delete>
 
   <select id="selectRejectDataByIds" resultMap="fullFieldMap" >
     select a.*,b.*,date_format(a.create_time, '%Y-%m-%d %H:%i:%s') create_time_str
     from t_forecast a
     inner join t_forecast_line b on a.id = b.f_id
-    where a.create_user_id = #{userId}
+    where a.create_user_id = #{userId,jdbcType=INTEGER}
     and a.status = -1
     <foreach collection="ids" item="item" index="index" open="and a.id in (" separator="," close=")" >
-      #{item}
+      #{item,jdbcType=INTEGER}
     </foreach>
   </select>
 
   <update id="updateStatusByIds" >
-    update t_forecast set status = #{status},operation_remark = #{operationRemark}
+    update t_forecast set status = #{status},operation_remark = #{operationRemark,jdbcType=VARCHAR}
     where 1 = 1
     <foreach collection="ids" item="item" index="index" open="and id in (" separator="," close=")" >
-      #{item}
+      #{item,jdbcType=INTEGER}
     </foreach>
   </update>
 
@@ -556,20 +556,20 @@
     delete from t_forecast
     where 1 = 1
     <foreach collection="ids" item="item" index="index" open="and bi_id in (" separator="," close=")" >
-      #{item}
+      #{item,jdbcType=INTEGER}
     </foreach>
   </delete>
 
   <update id="updateErrorMsgById" >
-    update t_forecast set error_msg = #{errorMsg}
-    where id = #{id}
+    update t_forecast set error_msg = #{errorMsg,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
   </update>
 
   <select id="selectByBatchNo" resultMap="fullFieldMap" >
     select a.*,b.*,date_format(a.create_time, '%Y-%m-%d %H:%i:%s') create_time_str
     from t_forecast a
     inner join t_forecast_line b on a.id = b.f_id
-    where a.batch_no = #{batchNo}
+    where a.batch_no = #{batchNo,jdbcType=VARCHAR}
   </select>
 
   <select id="selectByIds" resultMap="fullFieldMap" >
@@ -578,34 +578,34 @@
     inner join t_forecast_line b on a.id = b.f_id
     where 1 = 1
     <foreach collection="ids" item="item" index="index" open=" and a.id in (" separator="," close=")" >
-      #{item}
+      #{item,jdbcType=INTEGER}
     </foreach>
   </select>
 
   <update id="clearErrorMsgByBatch" >
-    update t_forecast set error_msg = null where batch_no = #{batchNo}
+    update t_forecast set error_msg = null where batch_no = #{batchNo,jdbcType=VARCHAR}
   </update>
 
   <select id="selectRelationByKey" resultMap="fullFieldMap" >
     select a.*,b.*
     from t_forecast a
     inner join t_forecast_line b on a.id = b.f_id
-    where a.id = #{id}
+    where a.id = #{id,jdbcType=INTEGER}
   </select>
 
   <update id="updateBiInfoByKey" >
-    update t_forecast set bi_id = #{biId},error_msg = #{errorMsg} where id = #{id}
+    update t_forecast set bi_id = #{biId,jdbcType=VARCHAR},error_msg = #{errorMsg,jdbcType=VARCHAR} where id = #{id,jdbcType=INTEGER}
   </update>
 
   <update id="updateBiInfoByBiId" >
-    update t_forecast set error_msg = #{errorMsg} where bi_id = #{biId}
+    update t_forecast set error_msg = #{errorMsg,jdbcType=VARCHAR} where bi_id = #{biId,jdbcType=VARCHAR}
   </update>
 
   <select id="selectBatchNoByIds" resultType="java.lang.String" >
     select batch_no from t_forecast a
     where 1 = 1
     <foreach collection="ids" item="item" index="index" open=" and a.id in (" separator="," close=")" >
-      #{item}
+      #{item,jdbcType=INTEGER}
     </foreach>
     group by batch_no
   </select>
@@ -617,7 +617,7 @@
     from t_forecast a
     where 1 = 1
     <foreach collection="ids" item="item" index="index" open=" and a.id in (" separator="," close=")" >
-      #{item}
+      #{item,jdbcType=INTEGER}
     </foreach>
     group by a.operation_year_month,a.create_user_id
     ) t
@@ -629,7 +629,7 @@
     from t_forecast a
     where 1 = 1
     <foreach collection="ids" item="item" index="index" open=" and a.id in (" separator="," close=")" >
-      #{item}
+      #{item,jdbcType=INTEGER}
     </foreach>
     group by a.operation_year_month
   </select>
@@ -641,9 +641,9 @@
     where 1 = 1
     and a.status in (1,2)
     <foreach collection="userList" item="item" index="index" open=" and a.create_user_id in (" separator="," close=")" >
-      #{item}
+      #{item,jdbcType=INTEGER}
     </foreach>
-    and a.operation_year_month = #{operationYearMonth}
+    and a.operation_year_month = #{operationYearMonth,jdbcType=VARCHAR}
   </select>
 
   <select id="checkAmbAdjustmentNum" resultType="java.lang.Integer" >
@@ -651,7 +651,7 @@
     inner join t_forecast_line b on a.id = b.f_id
     where 1 = 1
     <foreach collection="ids" item="item" index="" open=" and a.id in (" separator="," close=")" >
-      #{item}
+      #{item,jdbcType=INTEGER}
     </foreach>
     and (b.amb_adjustment_one is null
     or b.amb_adjustment_two is null
@@ -665,22 +665,22 @@
     select a.agency_status_type from t_forecast a
     where 1 = 1
     <foreach collection="ids" item="item" index="index" open=" and a.id in (" separator="," close=")" >
-      #{item}
+      #{item,jdbcType=INTEGER}
     </foreach>
     group by a.agency_status_type
   </select>
 
   <select id="checkRecord" parameterType="com.crazy.portal.entity.forecast.Forecast" resultType="java.lang.Integer" >
     select count(1) from t_forecast
-    where operation_year_month = #{operationYearMonth}
-    and company = #{company}
-    and customer_abbreviation = #{customerAbbreviation}
-    and forecast_type = #{forecastType}
-    and platform = #{platform}
-    and product_model = #{productModel}
-    and version = #{version}
-    and close_date = #{closeDate}
-    and delay_stock = #{delayStock}
+    where operation_year_month = #{operationYearMonth,jdbcType=VARCHAR}
+    and company = #{company,jdbcType=VARCHAR}
+    and customer_abbreviation = #{customerAbbreviation,jdbcType=VARCHAR}
+    and forecast_type = #{forecastType,jdbcType=VARCHAR}
+    and platform = #{platform,jdbcType=VARCHAR}
+    and product_model = #{productModel,jdbcType=VARCHAR}
+    and version = #{version,jdbcType=VARCHAR}
+    and close_date = #{closeDate,jdbcType=VARCHAR}
+    and delay_stock = #{delayStock,jdbcType=VARCHAR}
   </select>
 
 </mapper>

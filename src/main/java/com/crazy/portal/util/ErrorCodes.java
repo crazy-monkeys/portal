@@ -239,6 +239,7 @@ public class ErrorCodes {
         FORECAST_OPERATION_UPDATE_REPEAT(80027, "修改记录未审批，请勿重复操作", ""),
         FORECAST_DATA_REPEAT_ERROR(80028, "检测到数据已存在，请重新上传", ""),
         FORECAST_PO_PRICE_GET_ERROR(80029, "获取产品价格信息失败，请联系管理员", ""),
+        FORECAST_DATE_FORMAT_ERROR(80030, "时间格式不符合要求，请重新输入", ""),
 
         //订单管理
         ORDER_NOT_FOUND(90001, "订单信息不存在", ""),

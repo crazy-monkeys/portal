@@ -281,26 +281,26 @@
     where active = 1
     <if test="dealerId != null">
       and customer_short_name = (
-        select cust_abbreviation from t_customer_info where id = #{dealerId}
+        select cust_abbreviation from t_customer_info where id = #{dealerId,jdbcType=INTEGER}
       )
     </if>
     <if test="customerName != null and customerName != ''">
-      and customer_short_name like concat('%',#{customerName},'%')
+      and customer_short_name like concat('%',#{customerName,jdbcType=VARCHAR},'%')
     </if>
     <if test="status != null">
-      and status = #{status}
+      and status = #{status,jdbcType=INTEGER}
     </if>
     <if test="executor != null and executor != ''">
-      and executor = #{executor}
+      and executor = #{executor,jdbcType=VARCHAR}
     </if>
     <if test="executeStyle != null and executeStyle != ''">
-      and execute_style = #{executeStyle}
+      and execute_style = #{executeStyle,jdbcType=VARCHAR}
     </if>
     <if test="noticeBeginDate != null and noticeBeginDate != ''">
-      and notice_date >= str_to_date(#{noticeBeginDate}, '%Y-%m-%d')
+      and notice_date >= str_to_date(#{noticeBeginDate,jdbcType=VARCHAR}, '%Y-%m-%d')
     </if>
     <if test="noticeEndDate != null and noticeEndDate != ''">
-      and notice_date &lt;= str_to_date(#{noticeEndDate}, '%Y-%m-%d')
+      and notice_date &lt;= str_to_date(#{noticeEndDate,jdbcType=VARCHAR}, '%Y-%m-%d')
     </if>
     group by
     notice_date,
@@ -327,22 +327,22 @@
     where active = 1
     and notice_date = #{noticeDate}
     <if test="shipmentCompany != null and shipmentCompany != ''">
-      and shipment_company = #{shipmentCompany}
+      and shipment_company = #{shipmentCompany,jdbcType=VARCHAR}
     </if>
     <if test="executor != null and executor != ''">
-      and executor = #{executor}
+      and executor = #{executor,jdbcType=VARCHAR}
     </if>
     <if test="customerShortName != null and customerShortName != ''">
-      and customer_short_name = #{customerShortName}
+      and customer_short_name = #{customerShortName,jdbcType=VARCHAR}
     </if>
     <if test="salesName != null and salesName != ''">
-      and sales_name = #{salesName}
+      and sales_name = #{salesName,jdbcType=VARCHAR}
     </if>
     <if test="amebaHeader != null and amebaHeader != ''">
-      and ameba_header = #{amebaHeader}
+      and ameba_header = #{amebaHeader,jdbcType=VARCHAR}
     </if>
     <if test="amebaDepartment != null and amebaDepartment != ''">
-      and ameba_department = #{amebaDepartment}
+      and ameba_department = #{amebaDepartment,jdbcType=VARCHAR}
     </if>
   </select>
 </mapper>

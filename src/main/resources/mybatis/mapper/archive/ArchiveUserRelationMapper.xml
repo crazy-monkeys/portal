@@ -72,7 +72,7 @@
   </update>
 
   <delete id="deleteByArchiveId" >
-    delete from t_archive_user_relation where archive_id = #{archiveId}
+    delete from t_archive_user_relation where archive_id = #{archiveId,jdbcType=INTEGER}
   </delete>
 
   <select id="selectByArchiveId" resultMap="BaseResultMap" >
@@ -82,7 +82,7 @@
     'role test' role_name,
     'user test' user_name
     from t_archive_user_relation
-    where archive_id = #{archiveId}
+    where archive_id = #{archiveId,jdbcType=INTEGER}
   </select>
 
 </mapper>

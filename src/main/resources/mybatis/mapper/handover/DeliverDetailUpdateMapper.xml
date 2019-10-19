@@ -195,13 +195,13 @@
     select * from t_deliver_detail t
     where 1 = 1
     <foreach collection="biIds" item="item" index="index" open=" and t.third_id in (" separator="," close=")" >
-      #{item}
+      #{item,jdbcType=INTEGER}
     </foreach>
   </insert>
 
   <delete id="batchDeleteByBiId" >
     delete from t_deliver_detail_update
-    where third_id = #{biId}
+    where third_id = #{biId,jdbcType=INTEGER}
   </delete>
 
 </mapper>

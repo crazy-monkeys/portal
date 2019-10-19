@@ -309,13 +309,13 @@
 
   <select id="countErrorData" resultType="java.lang.Integer" >
     select count(1) from t_deliver_detail
-    where record_id = #{recordId} and error_msg is not null
+    where record_id = #{recordId,jdbcType=INTEGER} and error_msg is not null
   </select>
 
   <select id="selectByRecordId" resultMap="BaseResultMap" >
     select d.dealer_name,t.* from t_deliver_detail t
     inner join t_deliver_receive_record d on t.record_id = d.id
-    where t.record_id = #{recordId}
+    where t.record_id = #{recordId,jdbcType=INTEGER}
   </select>
 
   <select id="selectErrorDataByRecord" resultMap="errorResultMap" >
@@ -324,51 +324,51 @@
     po_price, margin, currency, customer_order_number, delivery_type, order_month, delivery_company,
     remark,id as error_id_str,error_msg as third_error_msg
     from t_deliver_detail
-    where record_id = #{recordId} and error_msg is not null
+    where record_id = #{recordId,jdbcType=INTEGER} and error_msg is not null
   </select>
 
   <delete id="deleteByRecordId" >
-    delete from t_deliver_detail where record_id = #{recordId}
+    delete from t_deliver_detail where record_id = #{recordId,jdbcType=INTEGER}
   </delete>
 
   <select id="selectByDealerId" resultMap="BaseResultMap" >
     select b.* from t_deliver_receive_record a
     inner join t_deliver_detail b on a.id = b.record_id
-    where a.dealer_id = #{dealerId}
+    where a.dealer_id = #{dealerId,jdbcType=INTEGER}
     and a.status != 0
     <if test="uploadStartTime != null and uploadStartTime != '' and uploadEndTime != null and uploadEndTime != ''" >
-      and a.upload_time between #{uploadStartTime} and #{uploadEndTime}
+      and a.upload_time between #{uploadStartTime,jdbcType=VARCHAR} and #{uploadEndTime,jdbcType=VARCHAR}
     </if>
     <if test="uploadStartTime != null and uploadStartTime != '' and (uploadEndTime == null or uploadEndTime == '')" >
-      and a.upload_time >= #{uploadStartTime}
+      and a.upload_time >= #{uploadStartTime,jdbcType=VARCHAR}
     </if>
     <if test="(uploadStartTime == null or uploadStartTime == '') and uploadEndTime != null and uploadEndTime != ''" >
-      <![CDATA[ and a.upload_time <= #{uploadEndTime} ]]>
+      <![CDATA[ and a.upload_time <= #{uploadEndTime,jdbcType=VARCHAR} ]]>
     </if>
     <!-- 配送时间条件 -->
     <if test="handoverStartTime != null and handoverStartTime != '' and handoverEndTime != null and handoverEndTime != ''" >
-      and b.delivery_date between #{handoverStartTime} and #{handoverEndTime}
+      and b.delivery_date between #{handoverStartTime,jdbcType=VARCHAR} and #{handoverEndTime,jdbcType=VARCHAR}
     </if>
     <if test="handoverStartTime != null and handoverStartTime != '' and (handoverEndTime == null or handoverEndTime == '')" >
-      and b.delivery_date >= #{handoverStartTime}
+      and b.delivery_date >= #{handoverStartTime,jdbcType=VARCHAR}
     </if>
     <if test="(handoverStartTime == null or handoverStartTime == '') and handoverEndTime != null and handoverEndTime != ''" >
-      <![CDATA[ and b.delivery_date <= #{handoverEndTime} ]]>
+      <![CDATA[ and b.delivery_date <= #{handoverEndTime,jdbcType=VARCHAR} ]]>
     </if>
     <if test="customerFullName != null and customerFullName != ''" >
-      and b.customer_full_name like concat('%', #{customerFullName}, '%')
+      and b.customer_full_name like concat('%', #{customerFullName,jdbcType=VARCHAR}, '%')
     </if>
     <if test="productModel != null and productModel != ''" >
-      and b.product_model like concat('%', #{productModel}, '%')
+      and b.product_model like concat('%', #{productModel,jdbcType=VARCHAR}, '%')
     </if>
     <if test="deliveryType != null and deliveryType != ''" >
-      and b.delivery_type like concat('%', #{deliveryType}, '%')
+      and b.delivery_type like concat('%', #{deliveryType,jdbcType=VARCHAR}, '%')
     </if>
     <if test="orderMonth != null and orderMonth != ''" >
-      and b.order_month like concat('%', #{orderMonth}, '%')
+      and b.order_month like concat('%', #{orderMonth,jdbcType=VARCHAR}, '%')
     </if>
     <if test="customerOrderNumber != null and customerOrderNumber != ''" >
-      and b.customer_order_number like concat('%', #{customerOrderNumber}, '%')
+      and b.customer_order_number like concat('%', #{customerOrderNumber,jdbcType=VARCHAR}, '%')
     </if>
     order by a.create_time desc
   </select>
@@ -377,7 +377,7 @@
     delete from t_deliver_detail
     where 1 = 1
     <foreach collection="ids" item="item" index="index" open="id in (" separator="," close=")" >
-      #{item}
+      #{item,jdbcType=INTEGER}
     </foreach>
   </delete>
 
@@ -385,39 +385,39 @@
     select * from t_deliver_detail
     where 1 = 1
     <foreach collection="ids" item="item" index="index" open=" and id in (" separator="," close=")" >
-      #{item}
+      #{item,jdbcType=INTEGER}
     </foreach>
   </select>
 
   <select id="selectByThirdId" resultMap="BaseResultMap" >
     select * from t_deliver_detail
-    where third_id = #{thirdId}
+    where third_id = #{thirdId,jdbcType=VARCHAR}
     limit 1
   </select>
 
   <select id="selectUpdateDataById" resultMap="BaseResultMap" >
     select b.* from t_deliver_detail a
     inner join t_deliver_detail_update b on a.third_id = b.third_id
-    where a.id = #{recordId}
+    where a.id = #{recordId,jdbcType=INTEGER}
   </select>
 
   <select id="updateErrorInfoByBiId" >
-    update t_deliver_detail set error_msg = #{errorMsg}
-    where third_id = #{thirdId}
+    update t_deliver_detail set error_msg = #{errorMsg,jdbcType=VARCHAR}
+    where third_id = #{thirdId,jdbcType=VARCHAR}
   </select>
 
   <select id="selectEmailInfoByRecordId" resultMap="BaseResultMap" >
     select a.customer_full_name,group_concat(a.id) id_str
     from t_deliver_detail a
-    where a.record_id = #{recordId}
+    where a.record_id = #{recordId,jdbcType=INTEGER}
     group by a.customer_full_name
   </select>
 
   <update id="updateConfirmMsgByIds" >
-    update t_deliver_detail set confirm_msg = #{confirmMsg},confirm_status = #{confirmStatus}
+    update t_deliver_detail set confirm_msg = #{confirmMsg,jdbcType=VARCHAR},confirm_status = #{confirmStatus,jdbcType=INTEGER}
     where 1 = 1
     <foreach collection="detailIds" index="index" item="item" open=" and id in (" separator="," close=")" >
-      #{item}
+      #{item,jdbcType=INTEGER}
     </foreach>
   </update>
 

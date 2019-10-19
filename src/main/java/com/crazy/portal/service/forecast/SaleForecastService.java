@@ -130,6 +130,8 @@ public class SaleForecastService {
         String agencyAbbreviation = customerInfo.getCustAbbreviation();
         String batchNo = generateBathNo();
         for(AgencyTemplate template : agencyForecastList){
+            boolean isDate = BusinessUtil.isDateTime(template.getCloseDate());
+            BusinessUtil.assertTrue(isDate, FORECAST_DATE_FORMAT_ERROR);
             template.setAgencyAbbreviation(agencyAbbreviation);
             template.setChannel("A04".equals(customerInfo.getBusinessType()) ? "代理" : "直供");
             //获取代理商上级客户信息
@@ -224,6 +226,8 @@ public class SaleForecastService {
         //将数据库中的错误信息清除
         forecastMapper.clearErrorMsgByBatch(batchNo);
         for(AgencyErrorTemplate errorTemplate : errorTemplateList){
+            boolean isDate = BusinessUtil.isDateTime(errorTemplate.getCloseDate());
+            BusinessUtil.assertTrue(isDate, FORECAST_DATE_FORMAT_ERROR);
             Forecast forecast = forecastMapper.selectByPrimaryKey(Integer.parseInt(errorTemplate.getForecastId()));
             //不允许用户擅自更改ID，每行数据都要进行校验
             BusinessUtil.notNull(forecast, FORECAST_DB_DATA_MISMATCH);
