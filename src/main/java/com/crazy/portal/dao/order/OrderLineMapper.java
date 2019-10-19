@@ -14,5 +14,4 @@ public interface OrderLineMapper {
     int updateByPrimaryKeySelective(OrderLine record);
 
     List<OrderLine> selectByOrderId(Integer orderId);
-
 }

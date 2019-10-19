@@ -7,7 +7,6 @@ import com.crazy.portal.bean.order.wsdl.create.IsHeader;
 import com.crazy.portal.bean.order.wsdl.create.ItItem;
 import com.crazy.portal.bean.order.wsdl.create.ItItems;
 import com.crazy.portal.bean.order.wsdl.create.*;
-import com.crazy.portal.bean.order.wsdl.price.ZpricessimulateItemOut;
 import com.crazy.portal.dao.cusotmer.CustomerInfoMapper;
 import com.crazy.portal.dao.order.OrderApplyMapper;
 import com.crazy.portal.dao.order.OrderLineMapper;
@@ -35,6 +34,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @Desc:
@@ -135,7 +135,6 @@ public class OrderApproveService {
         order.setUpdateId(null);
         orderMapper.insertSelective(order);
 
-
         List<OrderLine> lines = orderApply.lineJsonToObj(orderApply.getJsonLines());
         //默认取出第一个订单行的期望交货月份
         String expectedDeliveryMonth = lines.get(0).getExpectedDeliveryMonth();
@@ -144,39 +143,51 @@ public class OrderApproveService {
             Date month = DateUtil.parseDate(expectedDeliveryMonth,DateUtil.MONTH_FORMAT);
             order.setPriceDate(DateUtil.getLastDayOfMonth(DateUtil.getYear(month),DateUtil.getMonth(month)));
         }
-        for(OrderLine line : lines){
-            BigDecimal price = BigDecimal.ZERO;
-            BigDecimal netprice = BigDecimal.ZERO;
-            ZsalesordercreateOutItem etItem = new ZsalesordercreateOutItem();
-            for(ZsalesordercreateOutItem item : response.getEtItems().getItem()){
-                if(item.getProductid().substring(7).equals(line.getProductId())){
-                    etItem = item;
-                }else{
-                    //对方返回默认追加7个0,此处兼容
-                    if(item.getRefitemproductid().substring(7).equals(line.getProductId()) &&
-                            !item.getProductid().substring(7).equals(line.getProductId())){
-                        price = price.add(item.getPrice());
-                        netprice = netprice.add(item.getNetprice());
-                    }
+
+        List<ZsalesordercreateOutItem> outItems = response.getEtItems().getItem();
+        outItems.forEach(x->
+            lines.forEach(line->{
+                String productid = x.getProductid().replaceAll("^(0+)", "");
+                x.setProductid(productid);
+                //主物料信息保存
+                String lineProductId = line.getProductId();
+                if(productid.equals(lineProductId)){
+                    line.setRemainingNum(line.getNum());
+
+                    //过滤出主物料对应的组合物料信息
+                    List<ZsalesordercreateOutItem> currProductItems = outItems.stream()
+                            .filter(f -> f.getRefitemproductid().equals(lineProductId) || f.getProductid().equals(lineProductId))
+                            .collect(Collectors.toList());
+
+                    //主物料计算总价
+                    Stream<ZsalesordercreateOutItem> currProductStream = currProductItems.stream();
+                    line.setRNetPrice(currProductStream.map(ZsalesordercreateOutItem::getNetprice).reduce(BigDecimal.ZERO,BigDecimal::add));
+                    line.setRPrice((currProductStream.map(ZsalesordercreateOutItem::getPrice).reduce(BigDecimal.ZERO,BigDecimal::add)));
+                }else {
+                    line.setRNetPrice(x.getNetprice());
+                    line.setRPrice(x.getPrice());
                 }
-            }
-            String productid = etItem.getProductid().substring(7);
-            line.setRItemNo(etItem.getItemno());
-            line.setRPrice(price);
-            line.setRNetPrice(netprice);
-            line.setRCurrency(etItem.getCurrency());
-            line.setRProductId(productid);
-            line.setRItemCategory(etItem.getItemcategory());
-            line.setRRefItemNo(etItem.getRefitemno());
-            line.setRRefItemProductId(etItem.getRefitemproductid());
-            line.setExpectedDeliveryDate(order.getPriceDate());
-            line.setCreateId(userId);
-            line.setCreateTime(DateUtil.getCurrentTS());
-            line.setActice(1);
-            line.setOrderId(order.getId());
-            line.setRemainingNum(line.getNum());
-            orderLineMapper.insertSelective(line);
-        }
+                this.insertOrderLine(userId,order,line,x);
+            })
+        );
+    }
+
+    private void insertOrderLine(Integer userId, Order order, OrderLine line, ZsalesordercreateOutItem etItem) {
+        line.setOrderId(order.getId());
+        line.setExpectedDeliveryDate(order.getPriceDate());
+        line.setProductId(line.getProductId());
+        line.setRItemNo(etItem.getItemno());
+        line.setRPrice(line.getRPrice());
+        line.setRNetPrice(line.getRNetPrice());
+        line.setRCurrency(etItem.getCurrency());
+        line.setRProductId(line.getProductId());
+        line.setRItemCategory(etItem.getItemcategory());
+        line.setRRefItemNo(etItem.getRefitemno());
+        line.setRRefItemProductId(etItem.getRefitemproductid());
+        line.setCreateId(userId);
+        line.setCreateTime(DateUtil.getCurrentTS());
+        line.setActice(1);
+        orderLineMapper.insertSelective(line);
     }
 
     /**
