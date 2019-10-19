@@ -162,8 +162,8 @@ public class OrderApproveService {
             }
             String productid = etItem.getProductid().substring(7);
             line.setRItemNo(etItem.getItemno());
-            line.setRPrice(price == null ? BigDecimal.ZERO : price);
-            line.setRNetPrice(netprice == null ? BigDecimal.ZERO : netprice);
+            line.setRPrice(price);
+            line.setRNetPrice(netprice);
             line.setRCurrency(etItem.getCurrency());
             line.setRProductId(productid);
             line.setRItemCategory(etItem.getItemcategory());
