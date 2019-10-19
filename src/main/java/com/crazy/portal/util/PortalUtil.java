@@ -24,7 +24,7 @@ public class PortalUtil {
 
     public static Cache<String,String> VERIFY_CODE_MAP = CacheBuilder.newBuilder()
                                          .maximumSize(200)
-                                         .expireAfterWrite(5, TimeUnit.SECONDS)
+                                         .expireAfterWrite(5, TimeUnit.MINUTES)
                                          .build();
 
     /**

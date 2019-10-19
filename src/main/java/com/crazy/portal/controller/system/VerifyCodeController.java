@@ -34,9 +34,9 @@ public class VerifyCodeController {
         // 将四位数字的验证码保存到Session中。
         if(req.getParameter("timestamp") != null) {
             PortalUtil.VERIFY_CODE_MAP.put(req.getParameter("timestamp"), codeMap.get("code").toString());
-        }else {
-            req.getSession().setAttribute("verifyCode", codeMap.get("code").toString());
         }
+        req.getSession().setAttribute("verifyCode", codeMap.get("code").toString());
+
         // 禁止图像缓存。
         resp.setHeader("Pragma", "no-cache");
         resp.setHeader("Cache-Control", "no-cache");
