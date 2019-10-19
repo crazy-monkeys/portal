@@ -18,12 +18,14 @@ import com.crazy.portal.util.*;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 /**
@@ -351,6 +353,24 @@ public class UserService {
         userRole.setRoleId(basicRole.getId());
         userRole.setUserId(user.getId());
         userRoleMapper.insertSelective(userRole);
+    }
+
+    /**
+     * 校验验证码
+     * @param verifyCode
+     * @param request
+     */
+    public boolean checkVerifyCode(String verifyCode, HttpServletRequest request){
+        //如果不是dev环境,校验验证码
+        if(!"dev".equals(PortalUtil.ENVIRONMENT)){
+            String sessionVerifyCode = String.valueOf(request.getSession().getAttribute("verifyCode"));
+            if(StringUtil.isBlank(verifyCode)
+                    || !StringUtil.equals(verifyCode, String.valueOf(sessionVerifyCode))){
+
+               return false;
+            }
+        }
+        return true;
     }
 
 

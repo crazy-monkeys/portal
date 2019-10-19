@@ -2,6 +2,7 @@ package com.crazy.portal.config.security.filter;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.crazy.portal.service.system.UserService;
 import com.crazy.portal.util.PortalUtil;
 import com.crazy.portal.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -28,9 +29,12 @@ import java.util.Optional;
 @Slf4j
 public class LoginAuthenticationFilter extends AbstractAuthenticationProcessingFilter{
 
-    public LoginAuthenticationFilter() {
+    private UserService userService;
+
+    public LoginAuthenticationFilter(UserService userService) {
         //拦截url为 "/user/login" 的POST请求
         super(new AntPathRequestMatcher("/user/login", "POST"));
+        this.userService = userService;
     }
 
     @Override
@@ -44,8 +48,8 @@ public class LoginAuthenticationFilter extends AbstractAuthenticationProcessingF
             String userNameStr = jsonObj.getString("loginName");
             String passStr = jsonObj.getString("loginPwd");
             String verifyCode = jsonObj.getString("verifyCode");
-            Object sessionVerifyCode = request.getSession().getAttribute("verifyCode");
-            if((StringUtil.isBlank(verifyCode) || !StringUtil.equals(verifyCode, String.valueOf(sessionVerifyCode)))){
+            //校验验证码
+            if(!userService.checkVerifyCode(verifyCode,request)){
                 throw new BadCredentialsException("Verify Code Inaccurate");
             }
             if(userNameStr != null) loginName = userNameStr;

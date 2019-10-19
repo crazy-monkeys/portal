@@ -2,6 +2,7 @@ package com.crazy.portal.config.security.config;
 
 import com.crazy.portal.config.security.filter.LoginAuthenticationFilter;
 import com.crazy.portal.config.security.handler.AuthenticationFailHandler;
+import com.crazy.portal.service.system.UserService;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.HttpSecurityBuilder;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -19,8 +20,8 @@ public class LoginConfigurer<T extends LoginConfigurer<T, B>, B extends HttpSecu
 
     private LoginAuthenticationFilter authFilter;
 
-    public LoginConfigurer() {
-        this.authFilter = new LoginAuthenticationFilter();
+    public LoginConfigurer(UserService userService) {
+        this.authFilter = new LoginAuthenticationFilter(userService);
     }
 
     @Override

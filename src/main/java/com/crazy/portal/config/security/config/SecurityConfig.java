@@ -6,6 +6,7 @@ import com.crazy.portal.config.security.filter.RequestFilter;
 import com.crazy.portal.config.security.handler.JwtRefreshSuccessHandler;
 import com.crazy.portal.config.security.handler.LoginSuccessHandler;
 import com.crazy.portal.config.security.handler.TokenClearLogoutHandler;
+import com.crazy.portal.service.system.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -46,6 +47,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
     @Value("${app.krb5-config}")
     private String krb5Config;
+
+    @Resource
+    private UserService userService;
 
     @Resource
     private LoginSuccessHandler loginSuccessHandler;
@@ -90,7 +94,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                 //拦截OPTIONS请求，直接返回header
                 .addFilterAfter(new RequestFilter(), CorsFilter.class)
                 //添加登录filter
-                .apply(new LoginConfigurer<>()).loginSuccessHandler(loginSuccessHandler)
+                .apply(new LoginConfigurer<>(userService)).loginSuccessHandler(loginSuccessHandler)
                 .and()
                 //添加token的filter
                 .apply(new JwtAccessConfigurer<>()).tokenValidSuccessHandler(jwtRefreshSuccessHandler)

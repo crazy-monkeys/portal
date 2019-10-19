@@ -1,10 +1,12 @@
 package com.crazy.portal.controller.task;
 
+import com.crazy.portal.service.system.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -20,6 +22,8 @@ public class LoginController {
 	private String userName;
 	@Value("${login.password}")
 	private String password;
+	@Resource
+	private UserService userService;
 
 	/**
 	 * 登录验证
@@ -29,7 +33,7 @@ public class LoginController {
 	 */
 	@RequestMapping("/loginCheck")
 	public String loginCheck(String userName, String password, String verifyCode, HttpServletRequest request){
-		if(!verifyCode.equals(request.getSession().getAttribute("verifyCode"))){
+		if(!userService.checkVerifyCode(verifyCode,request)){
 			return "verify_code_error";
 		}
 		if(userName.equals(this.userName) && password.equals(this.password)){
