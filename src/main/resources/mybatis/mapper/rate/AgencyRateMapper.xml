@@ -186,40 +186,40 @@
     from t_agency_rate
     where active = 1
     <if test="customerType != null and customerType != ''">
-      and customer_type like concat('%',#{customerType},'%')
+      and customer_type like concat('%',#{customerType,jdbcType=VARCHAR},'%')
     </if>
     <if test="insideCustomer != null and insideCustomer != ''">
-      and inside_customer like concat('%',#{insideCustomer},'%')
+      and inside_customer like concat('%',#{insideCustomer,jdbcType=VARCHAR},'%')
     </if>
     <if test="productLevelOne != null and productLevelOne != ''">
-      and product_level_one = #{productLevelOne}
+      and product_level_one = #{productLevelOne,jdbcType=VARCHAR}
     </if>
     <if test="productLevelTwo != null and productLevelTwo != ''">
-      and product_level_two = #{productLevelTwo}
+      and product_level_two = #{productLevelTwo,jdbcType=VARCHAR}
     </if>
     <if test="productLevelThree != null and productLevelThree != ''">
-      and product_level_three = #{productLevelThree}
+      and product_level_three = #{productLevelThree,jdbcType=VARCHAR}
     </if>
     <if test="productType != null and productType != ''">
-      and product_type = #{productType}
+      and product_type = #{productType,jdbcType=VARCHAR}
     </if>
     <if test="basicAgencyRate != null">
-      and basic_agency_rate = #{basicAgencyRate}
+      and basic_agency_rate = #{basicAgencyRate,jdbcType=DECIMAL}
     </if>
     <if test="floatAgencyRate != null">
-      and float_agency_rate = #{floatAgencyRate}
+      and float_agency_rate = #{floatAgencyRate,jdbcType=DECIMAL}
     </if>
     <if test="validStartDate != null and validStartDate != ''">
-      and valid_start_date = #{validStartDate}
+      and valid_start_date = #{validStartDate,jdbcType=VARCHAR}
     </if>
     <if test="startTime != null and startTime != ''">
-      and valid_start_date >= DATE_FORMAT(#{startTime},'%Y%m%d')
+      and valid_start_date >= DATE_FORMAT(#{startTime,jdbcType=VARCHAR},'%Y%m%d')
     </if>
     <if test="endTime != null and endTime != ''">
-      <![CDATA[ and valid_start_date < DATE_FORMAT(#{endTime},'%Y%m%d') ]]>
+      <![CDATA[ and valid_start_date < DATE_FORMAT(#{endTime,jdbcType=VARCHAR},'%Y%m%d') ]]>
     </if>
     <if test="startTime != null and startTime != '' and endTime != null and endTime != ''">
-      and valid_start_date between DATE_FORMAT(#{startTime},'%Y%m%d') and DATE_FORMAT(#{endTime},'%Y%m%d')
+      and valid_start_date between DATE_FORMAT(#{startTime,jdbcType=VARCHAR},'%Y%m%d') and DATE_FORMAT(#{endTime,jdbcType=VARCHAR},'%Y%m%d')
     </if>
     order by create_time desc
   </select>

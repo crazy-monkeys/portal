@@ -141,7 +141,7 @@
     select
     <include refid="Base_Column_List" />
     from t_business_idr_approval
-    where idr_info_id = #{idrInfoId}
+    where idr_info_id = #{idrInfoId,jdbcType=INTEGER}
   </select>
 
 </mapper>

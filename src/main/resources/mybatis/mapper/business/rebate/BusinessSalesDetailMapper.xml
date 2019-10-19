@@ -469,11 +469,11 @@
     update t_business_rebate a
     inner join (
       select b.rebate_id, sum(b.rebate_amount) as rebate_amount from t_business_sales_detail b
-      where b.rebate_id = #{rebateId}
+      where b.rebate_id = #{rebateId,jdbcType=INTEGER}
       group by b.rebate_id
     ) b on b.rebate_id = a.id
     set a.rebate_amount = b.rebate_amount, a.surplus_rebate_amount = (b.rebate_amount - a.release_amount)
-    where a.id = #{rebateId}
+    where a.id = #{rebateId,jdbcType=INTEGER}
   </update>
 
 </mapper>

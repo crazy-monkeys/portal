@@ -214,34 +214,34 @@
     ) b on b.idr_info_id = a.id
     where 1=1
     <if test=" dealerId != null and dealerId !=''">
-      and create_id = #{dealerId}
+      and create_id = #{dealerId,jdbcType=INTEGER}
     </if>
     <if test="type != null">
       and type = #{type,jdbcType=INTEGER}
     </if>
     <if test="shipperCode != null and shipperCode != ''">
-      and shipper_code like concat('%',#{shipperCode},'%')
+      and shipper_code like concat('%',#{shipperCode,jdbcType=VARCHAR},'%')
     </if>
     <if test="company != null and company != ''">
-      and company like concat('%',#{company},'%')
+      and company like concat('%',#{company,jdbcType=VARCHAR},'%')
     </if>
     <if test="crAmount != null">
-      and cr_amount = #{crAmount}
+      and cr_amount = #{crAmount,jdbcType=DECIMAL}
     </if>
     <if test="applyStartTime != null and  applyStartTime != ''">
-      and apply_time >= str_to_date(#{applyStartTime}, '%Y-%m-%d')
+      and apply_time >= str_to_date(#{applyStartTime,jdbcType=VARCHAR}, '%Y-%m-%d')
     </if>
     <if test="applyEndTime != null and applyEndTime != ''">
-      and apply_time &lt;= str_to_date(#{applyEndTime}, '%Y-%m-%d')
+      and apply_time &lt;= str_to_date(#{applyEndTime,jdbcType=VARCHAR}, '%Y-%m-%d')
     </if>
     <if test="currency != null and currency != ''">
-      and currency = #{currency}
+      and currency = #{currency,jdbcType=VARCHAR}
     </if>
     <if test="inCustomerName != null and inCustomerName != ''">
-      and in_customer_name like concat('%',#{inCustomerName},'%')
+      and in_customer_name like concat('%',#{inCustomerName,jdbcType=VARCHAR},'%')
     </if>
     <if test="outCustomerName != null and outCustomerName != ''">
-      and out_customer_name like concat('%',#{outCustomerName},'%')
+      and out_customer_name like concat('%',#{outCustomerName,jdbcType=VARCHAR},'%')
     </if>
     order by create_time desc
   </select>

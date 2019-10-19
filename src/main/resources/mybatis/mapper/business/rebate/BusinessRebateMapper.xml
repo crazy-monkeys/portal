@@ -361,13 +361,13 @@
     from t_business_rebate a
     where a.active = 1
     <if test="dealerName != null and dealerName != ''">
-      and a.agency_short_name like concat('%',#{dealerName},'%')
+      and a.agency_short_name like concat('%',#{dealerName,jdbcType=VARCHAR},'%')
     </if>
     <if test="customerName != null and customerName != ''">
-      and a.customer_short_name like concat('%',#{customerName},'%')
+      and a.customer_short_name like concat('%',#{customerName,jdbcType=VARCHAR},'%')
     </if>
     <if test="status != null">
-      and a.status = #{status}
+      and a.status = #{status,jdbcType=INTEGER}
     </if>
     order by a.create_time desc
   </select>
@@ -375,24 +375,24 @@
   <select id="selectRebateIdByGroupParam" resultType="java.lang.Integer" parameterType="com.crazy.portal.bean.business.rebate.RebateGroupParam">
     select id from t_business_rebate
     where active = 1
-    and agency_short_name = #{agencyShortName}
-    and customer_short_name = #{customerShortName}
-    and customer_type = #{customerType}
-    and sales_name = #{salesName}
-    and ameba_header = #{amebaHeader}
-    and ameba_department = #{amebaDepartment}
-    and shipment_company = #{shipmentCompany}
-    and account_year_month = #{accountYearMonth}
-    and order_month = #{orderMonth}
-    and shipment_year_month = #{shipmentYearMonth}
-    and bu = #{bu}
-    and pdt = #{pdt}
-    and product = #{product}
-    and qty = #{qty}
-    and sales_price = #{salesPrice}
-    and po_price = #{poPrice}
-    and actual_price = #{actualPrice}
-    and platform = #{platform}
+    and agency_short_name = #{agencyShortName,jdbcType=VARCHAR}
+    and customer_short_name = #{customerShortName,jdbcType=VARCHAR}
+    and customer_type = #{customerType,jdbcType=VARCHAR}
+    and sales_name = #{salesName,jdbcType=VARCHAR}
+    and ameba_header = #{amebaHeader,jdbcType=VARCHAR}
+    and ameba_department = #{amebaDepartment,jdbcType=VARCHAR}
+    and shipment_company = #{shipmentCompany,jdbcType=VARCHAR}
+    and account_year_month = #{accountYearMonth,jdbcType=VARCHAR}
+    and order_month = #{orderMonth,jdbcType=VARCHAR}
+    and shipment_year_month = #{shipmentYearMonth,jdbcType=VARCHAR}
+    and bu = #{bu,jdbcType=VARCHAR}
+    and pdt = #{pdt,jdbcType=VARCHAR}
+    and product = #{product,jdbcType=VARCHAR}
+    and qty = #{qty,jdbcType=INTEGER}
+    and sales_price = #{salesPrice,jdbcType=DECIMAL}
+    and po_price = #{poPrice,jdbcType=DECIMAL}
+    and actual_price = #{actualPrice,jdbcType=DECIMAL}
+    and platform = #{platform,jdbcType=VARCHAR}
   </select>
 
 </mapper>
