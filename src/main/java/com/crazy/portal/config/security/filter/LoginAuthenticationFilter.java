@@ -43,11 +43,7 @@ public class LoginAuthenticationFilter extends AbstractAuthenticationProcessingF
             JSONObject jsonObj = JSON.parseObject(body);
             String userNameStr = jsonObj.getString("loginName");
             String passStr = jsonObj.getString("loginPwd");
-            String verifyCode = jsonObj.getString("verifyCode");
-            Object sessionVerifyCode = request.getSession().getAttribute("verifyCode");
-//            if(!"sit".equals(PortalUtil.ENVIRONMENT) && !"dev".equals(PortalUtil.ENVIRONMENT) && (StringUtil.isBlank(verifyCode) || !StringUtil.equals(verifyCode, String.valueOf(sessionVerifyCode)))){
-//                throw new BadCredentialsException("Verify Code Inaccurate");
-//            }
+            checkVerifyCode(jsonObj);
             if(userNameStr != null) loginName = userNameStr;
             if(passStr != null) loginPwd = passStr;
         }
@@ -57,6 +53,17 @@ public class LoginAuthenticationFilter extends AbstractAuthenticationProcessingF
                 loginName, loginPwd);
 
         return this.getAuthenticationManager().authenticate(authRequest);
+    }
+
+    private void checkVerifyCode(JSONObject jsonObj) {
+        String verifyCode = jsonObj.getString("verifyCode");
+        String timestamp = jsonObj.getString("timestamp");
+        Object requestVerifyCode = PortalUtil.VERIFY_CODE_MAP.get(timestamp);
+        boolean isSuccess = StringUtil.isBlank(verifyCode) || !StringUtil.equals(verifyCode, String.valueOf(requestVerifyCode));
+        if(!"dev".equals(PortalUtil.ENVIRONMENT) && isSuccess){
+            throw new BadCredentialsException("Verify Code Inaccurate");
+        }
+        PortalUtil.VERIFY_CODE_MAP.remove(timestamp);
     }
 
 }

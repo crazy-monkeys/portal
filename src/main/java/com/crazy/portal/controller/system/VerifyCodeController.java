@@ -1,6 +1,7 @@
 package com.crazy.portal.controller.system;
 
 import com.crazy.portal.service.system.UserService;
+import com.crazy.portal.util.PortalUtil;
 import com.crazy.portal.util.VerifyCodeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,8 +32,7 @@ public class VerifyCodeController {
         // 调用工具类生成的验证码和验证码图片
         Map<String, Object> codeMap = VerifyCodeUtil.generateCodeAndPic();
         // 将四位数字的验证码保存到Session中。
-        HttpSession session = req.getSession();
-        session.setAttribute("verifyCode", codeMap.get("code").toString());
+        PortalUtil.VERIFY_CODE_MAP.put(req.getParameter("timestamp"), codeMap.get("code").toString());
         // 禁止图像缓存。
         resp.setHeader("Pragma", "no-cache");
         resp.setHeader("Cache-Control", "no-cache");

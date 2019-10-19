@@ -3,6 +3,11 @@ package com.crazy.portal.util;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 
+import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
 /**
  * Created by lee on 2019/6/5.
  */
@@ -14,6 +19,7 @@ public class PortalUtil {
 
     public static String ENVIRONMENT = "";
 
+    public static Map<String, String> VERIFY_CODE_MAP = new HashMap<>();
     /**
      * 开启分页查询
      * 默认页码：1

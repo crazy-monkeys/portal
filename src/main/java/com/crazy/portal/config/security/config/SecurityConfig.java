@@ -92,8 +92,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                 .cors()
                 .and()
                 .headers().addHeaderWriter(new StaticHeadersWriter(Arrays.asList(
-                    new Header("Access-Control-Allow-Origin","*"),
-                    new Header("Access-Control-Expose-Headers", Constant.Authorization))))
+                new Header("Access-Control-Allow-Origin","*"),
+                new Header("Access-Control-Expose-Headers", Constant.Authorization))))
                 .and()
                 //拦截OPTIONS请求，直接返回header
                 .addFilterAfter(new RequestFilter(), CorsFilter.class)
@@ -124,10 +124,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
     @Override
     protected void configure(AuthenticationManagerBuilder auth) {
         auth
-            .authenticationProvider(daoAuthenticationProvider())
-            .authenticationProvider(kerberosAuthenticationProvider())
-            .authenticationProvider(kerberosServiceAuthenticationProvider())
-            .authenticationProvider(jwtAuthenticationProvider());
+                .authenticationProvider(daoAuthenticationProvider())
+                .authenticationProvider(kerberosAuthenticationProvider())
+                .authenticationProvider(kerberosServiceAuthenticationProvider())
+                .authenticationProvider(jwtAuthenticationProvider());
     }
 
     @Override
@@ -161,7 +161,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
         try {
             globalSunJaasKerberosConfig.afterPropertiesSet();
         } catch (Exception e) {
-           log.error("设置krb5.ini({})文件出现异常",krb5Config);
+            log.error("设置krb5.ini({})文件出现异常",krb5Config);
         }
         SunJaasKerberosTicketValidator ticketValidator = new SunJaasKerberosTicketValidator();
         ticketValidator.setServicePrincipal(servicePrincipal);
