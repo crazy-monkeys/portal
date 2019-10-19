@@ -321,7 +321,7 @@ public class CustomerInfoService {
         customerinfo.setUpdateUser(user.getId());
         customerInfoMapper.updateByPrimaryKeySelective(customerinfo);
         saveCustomerDetail(cust, user.getId());
-        customerInfoSync(cust, "02");
+        //customerInfoSync(cust, "02");
     }
 
     private void mappingCustomerInfo(CustomerInfo cust, CustomerInfo customerInfo){
@@ -641,9 +641,11 @@ public class CustomerInfoService {
             postalAddress.setStreetName(e.getDistrict());
             address.setPostalAddress(postalAddress);
 
-            Telephone telephone = new Telephone();
-            telephone.setFormattedNumberDescription("+86 "+e.getMobile());
-            address.setTelephone(telephone);
+            if(StringUtil.isNotEmpty(e.getMobile())){
+                Telephone telephone = new Telephone();
+                telephone.setFormattedNumberDescription("+86 "+e.getMobile());
+                address.setTelephone(telephone);
+            }
 
             Email email = new Email();
             email.setURI(e.getEamil());
@@ -665,9 +667,9 @@ public class CustomerInfoService {
         List<ContactPerson> contactPersonList = new ArrayList<>();
         contacts.forEach(e->{
             ContactPerson person = new ContactPerson();
-            person.setObjectNodeSenderTechnicalID(e.getContactId().toString());
+            person.setObjectNodeSenderTechnicalID("01");
 //            person.setBusinessPartnerFunctionTypeCode(e.getType());
-            person.setContantType(e.getType());
+            person.setContactType(e.getType());
             person.setFamilyName(e.getContactName());
 
            if(StringUtil.isNotEmpty(e.getMobile())){
@@ -680,9 +682,7 @@ public class CustomerInfoService {
             email1.setURI(e.getEmail());
             person.setWorkplaceEmail(email1);
 
-//            person.setWorkplaceDepartmentName(e.getDepartment());
-            person.setDepartMent(e.getDepartment());
-            person.setSecondaryDept(e.getDepartment());
+            person.setSecondaryDept(e.getSubDepartment());
             person.setBusinessPartnerFunctionTypeCode(e.getPosition());
             contactPersonList.add(person);
         });
@@ -706,7 +706,7 @@ public class CustomerInfoService {
         saveCustomerInfo(customerInfo, userId);
         saveDealerDetail(customerInfo, userId);
         //TODO 修改代理商信息
-        customerInfoSync(customerInfo, "02");
+      //  customerInfoSync(customerInfo, "02");
     }
 
     /**

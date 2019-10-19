@@ -33,8 +33,8 @@ public class RebateUploadBean {
     private String executor;
     /** 通知日期 **/
     @NotNull(message = "通知日期不能为空")
-    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
-    private Date noticeDate;
+    @DateTimeFormat(pattern="yyyy-MM-dd")
+    private String noticeDate;
 
     private MultipartFile file;
 }

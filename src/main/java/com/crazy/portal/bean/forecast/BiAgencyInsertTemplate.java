@@ -134,13 +134,15 @@ public class BiAgencyInsertTemplate extends BaseRowModel {
     @ExcelProperty(index = 40, value = "阿米巴队长备注6")
     private String ambRemarkSix;
 
-    @ExcelProperty(index = 41, value = "错误信息")
+    @ExcelProperty(index = 41, value = "Portal ID")
+    private String id;
+
+    @ExcelProperty(index = 42, value = "错误信息")
     private String errorMsg;
 
-    @ExcelProperty(index = 42, value = "ID")
+    @ExcelProperty(index = 43, value = "ID")
     private String biId;
 
-    @ExcelProperty(index = 43, value = "Portal ID")
-    private String id;
+
 
 }

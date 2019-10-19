@@ -80,13 +80,15 @@ public class BiTotalInsertTemplate extends BaseRowModel {
     @ExcelProperty(index = 22, value = "首代备注6")
     private String sdRemarkSix;
 
-    @ExcelProperty(index = 23, value = "错误信息")
+    @ExcelProperty(index = 23, value = "Portal ID")
+    private String id;
+
+    @ExcelProperty(index = 24, value = "错误信息")
     private String errorMsg;
 
-    @ExcelProperty(index = 24, value = "ID")
+    @ExcelProperty(index = 25, value = "ID")
     private String biId;
 
-    @ExcelProperty(index = 25, value = "PortalID")
-    private String id;
+
 
 }
