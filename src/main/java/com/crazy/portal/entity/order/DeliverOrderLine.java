@@ -67,6 +67,8 @@ public class DeliverOrderLine {
      */
     private Integer deliveryQuantity;
 
+    private Integer receiveQuantity;
+
     /**
      * 
      */

@@ -9,9 +9,11 @@ import com.crazy.portal.dao.cusotmer.CustomerInfoMapper;
 import com.crazy.portal.dao.order.*;
 import com.crazy.portal.dao.product.ProductInfoDOMapper;
 import com.crazy.portal.entity.cusotmer.CustomerInfo;
+import com.crazy.portal.entity.handover.ReceiveDetail;
 import com.crazy.portal.entity.order.*;
 import com.crazy.portal.entity.product.ProductInfoDO;
 import com.crazy.portal.service.customer.CustomerInfoService;
+import com.crazy.portal.service.handover.ReceiveService;
 import com.crazy.portal.util.*;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -56,6 +58,8 @@ public class OrderApplyService {
     private CustomerInfoMapper customerInfoMapper;
     @Resource
     private CustomerInfoService customerInfoService;
+    @Resource
+    private ReceiveService receiveService;
 
     /**
      * 分页查询
@@ -517,5 +521,26 @@ public class OrderApplyService {
         DeliverOrderApproval deliverOrder = deliverOrderApprovalMapper.selectByPrimaryKey(id);
         BusinessUtil.assertTrue(deliverOrder.getApprovalStatus().equals(Enums.OrderApprovalStatus.REJEC.getValue()),ErrorCodes.BusinessEnum.ORDER_NO_DELETE);
         deliverOrderApprovalMapper.deleteByPrimaryKey(id);
+    }
+
+    public void receiving(DeliveryOrderVO bean, Integer userId){
+
+        List<ReceiveDetail> receiveData = new ArrayList<>();
+        List<DeliveryOrderLineVO> orderLineVOS = bean.getOrderLine();
+        orderLineVOS.forEach(e->{
+            DeliverOrderLine deliverOrderLine = deliverOrderLineMapper.selectByPrimaryKey(e.getId());
+            if(e.getDeliveryQuantity()!=0){
+                BusinessUtil.assertFlase(deliverOrderLine.getReceiveQuantity() < e.getDeliveryQuantity(), ErrorCodes.BusinessEnum.QTY_IS_NOT);
+            }
+
+
+
+        });
+        receiveService.pushReceiveDataToBi(receiveData, userId);
+    }
+
+    private ReceiveDetail mappingRecive(DeliverOrderLine deliverOrderLine, Integer qty){
+        ReceiveDetail detail = new ReceiveDetail();
+        return detail;
     }
 }

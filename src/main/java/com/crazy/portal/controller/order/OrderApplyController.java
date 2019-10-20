@@ -163,4 +163,11 @@ public class OrderApplyController extends BaseController {
         orderApplyService.deleteDeliveryOrder(id);
         return successResult();
     }
+
+    //收货
+    @GetMapping("/delete/delivery/receiving/{id}")
+    public BaseResponse DeliveryReceiving(@RequestBody DeliveryOrderVO bean){
+        orderApplyService.receiving(bean, this.getCurrentUserId());
+        return successResult();
+    }
 }

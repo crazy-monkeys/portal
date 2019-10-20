@@ -72,6 +72,9 @@ public class DeliverService extends AbstractHandover implements IHandover<Delive
 
     @Override
     public HandoverUploadVO verificationData(List<DeliverDetail> deliverData, Integer userId) {
+        if(null == deliverData || deliverData.isEmpty()){
+            throw new BusinessException(BUSINESS_FILE_IS_NULL);
+        }
         //数据包装，生成第三方需要的文件
         String thirdFileName = ExcelUtils.writeExcel(deliverPushPath, deliverData, DeliverDetail.class);
         //请求了第三方，并拿到了结果
@@ -88,6 +91,9 @@ public class DeliverService extends AbstractHandover implements IHandover<Delive
 
     @Override
     public HandoverUploadVO verificationDataByErrorData(List<?> data, Integer userId, Integer recordId) {
+        if(null == data || data.isEmpty()){
+            throw new BusinessException(BUSINESS_FILE_IS_NULL);
+        }
         List<DeliverTemplateBean> errorList = (List<DeliverTemplateBean>) data;
         for(DeliverTemplateBean errorData : errorList) {
             DeliverDetail dbRecord = deliverDetailMapper.selectByPrimaryKey(Integer.parseInt(errorData.getErrorId()));
@@ -184,6 +190,7 @@ public class DeliverService extends AbstractHandover implements IHandover<Delive
         while (iterator.hasNext()) {
             DeliverTemplateBean templateBean = iterator.next();
             if(StringUtils.isEmpty(templateBean.getCustomerFullName())){
+                iterator.remove();
                 continue;
             }
             templateBean.setDealerName(customerInfoService.getDealerByUser(userId).getCustName());
@@ -325,7 +332,7 @@ public class DeliverService extends AbstractHandover implements IHandover<Delive
         BusinessUtil.notNull(deliverDetails, HANDOVER_PARAM_TYPE_ERROR);
         for(DeliverDetail detail : deliverDetails){
             List<DeliverDetail> detailList = getDetailData(detail.getIdStr());
-            /*try {
+            try {
                 List<CustomerContact> customerContacts = customerContactService.selectByCustName(detail.getCustomerFullName());
                 BusinessUtil.notNull(customerContacts, HANDOVER_DATA_EMAIL_ERROR);
                 for(CustomerContact customerContact : customerContacts){
@@ -336,10 +343,7 @@ public class DeliverService extends AbstractHandover implements IHandover<Delive
                 }
             }catch (Exception ex) {
                 throw new BusinessException(HANDOVER_DATA_EMAIL_ERROR);
-            }*/
-            CustomerContact customerContact = new CustomerContact();
-            customerContact.setEmail("l_joose@163.com");
-            sendConfirmEmail(customerContact, detail, detailList);
+            }
         }
     }
 

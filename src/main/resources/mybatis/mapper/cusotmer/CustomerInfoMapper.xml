@@ -559,7 +559,7 @@
  left join t_cust_sales sales on sales.cust_id = cust.id and sales.active=1
  left join t_customer_address address on address.cust_id = cust.id and address.active=1
  left join t_customer_account_team account on account.cust_id = cust.id and account.active=1
-  where cust.business_type = 'A04' and cust.active =1 and cust.id=#{id}
+  where cust.business_type = 'A04' and cust.active =1 and cust.id=#{id,jdbcType=INTEGER}
   </select>
   
   <select id="queryCustomerInfo" resultMap="CustomerResultMap">
@@ -654,7 +654,7 @@
     left join t_customer_address address on address.cust_id = cust.id and address.active=1
     left join t_customer_account_team account on account.cust_id = cust.id and account.active=1
     left join t_customer_product product on product.cust_id = cust.id and product.active =1
-    where cust.active =1 and cust.id=#{custId}
+    where cust.active =1 and cust.id=#{custId,jdbcType=INTEGER}
   </select>
 
   <select id="selectCustomer" resultMap="BaseResultMap">
@@ -699,61 +699,61 @@
     where cust.business_type!='A04'
     and cust.active = 1
     <if test="customerName != null and customerName != ''">
-      and cust.cust_name like concat('%',#{customerName},'%')
+      and cust.cust_name like concat('%',#{customerName,jdbcType=VARCHAR},'%')
     </if>
     <if test="custAbbreviation != null and custAbbreviation != ''">
-      and cust_abbreviation like concat('%',#{custAbbreviation},'%')
+      and cust_abbreviation like concat('%',#{custAbbreviation,jdbcType=VARCHAR},'%')
     </if>
     <if test="customerOutCode != null and customerOutCode!=''">
-      and cust.out_code = #{customerOutCode}
+      and cust.out_code = #{customerOutCode,jdbcType=VARCHAR}
     </if>
     <if test="isLicense != null">
-      and cust.is_license = #{isLicense}
+      and cust.is_license = #{isLicense,jdbcType=INTEGER}
     </if>
     <if test="businessType != null and businessType != ''">
-      and cust.business_type = #{businessType}
+      and cust.business_type = #{businessType,jdbcType=VARCHAR}
     </if>
     <if test=" custRole != null and custRole !=''">
-      and cust_role = #{custRole}
+      and cust_role = #{custRole,jdbcType=VARCHAR}
     </if>
     <if test="reportStartDate != null and reportStartDate != '' and reportEndDate != null and reportEndDate != ''">
-      and date_format( cust.approve_time, '%Y-%m-%d' ) BETWEEN  #{reportStartDate} and #{reportEndDate}
+      and date_format( cust.approve_time, '%Y-%m-%d' ) BETWEEN  #{reportStartDate,jdbcType=TIMESTAMP} and #{reportEndDate,jdbcType=TIMESTAMP}
     </if>
     <if test="reportStartDate != null and reportStartDate != '' and (reportEndDate == null or reportEndDate == '')">
-      and date_format( cust.approve_time, '%Y-%m-%d' ) >=  #{reportStartDate}
+      and date_format( cust.approve_time, '%Y-%m-%d' ) >=  #{reportStartDate,jdbcType=TIMESTAMP}
     </if>
     <if test="(reportStartDate == null or reportStartDate == '') and reportEndDate != null and reportEndDate != ''">
-      and date_format( cust.approve_time, '%Y-%m-%d' ) &lt;= #{reportEndDate}
+      and date_format( cust.approve_time, '%Y-%m-%d' ) &lt;= #{reportEndDate,jdbcType=TIMESTAMP}
     </if>
     <if test="createStartDate != null and createStartDate != '' and createEndDate != null and createEndDate != ''">
-      and date_format( cust.create_time, '%Y-%m-%d' ) BETWEEN #{createStartDate} and #{createEndDate}
+      and date_format( cust.create_time, '%Y-%m-%d' ) BETWEEN #{createStartDate,jdbcType=TIMESTAMP} and #{createEndDate,jdbcType=TIMESTAMP}
     </if>
     <if test="createStartDate != null and createStartDate != '' and (createEndDate == null or createEndDate == '')">
-      and date_format( cust.create_time, '%Y-%m-%d' )>= #{createStartDate}
+      and date_format( cust.create_time, '%Y-%m-%d' )>= #{createStartDate,jdbcType=TIMESTAMP}
     </if>
     <if test="(createStartDate == null or createStartDate == '') and createEndDate != null and createEndDate != ''">
-      and date_format( cust.create_time, '%Y-%m-%d' ) &lt;= #{createEndDate}
+      and date_format( cust.create_time, '%Y-%m-%d' ) &lt;= #{createEndDate,jdbcType=TIMESTAMP}
     </if>
     <if test="queryType == 3 ">
       <if test="reportDealer!=null">
-        and ship.corporate_id = #{reportDealer}
+        and ship.corporate_id = #{reportDealer,jdbcType=INTEGER}
       </if>
       <if test="reportSales != null">
-        and team.employee_id = #{reportSales}
+        and team.employee_id = #{reportSales,jdbcType=INTEGER}
       </if>
       <if test="customerStatus != '' and customerStatus != null">
-        and cust.approve_status = #{customerStatus}
+        and cust.approve_status = #{customerStatus,jdbcType=INTEGER}
       </if>
     </if>
     <if test="queryType == 2 ">
       <if test="customerStatus != '' and customerStatus != null">
-        and cust.approve_status = #{customerStatus}
+        and cust.approve_status = #{customerStatus,jdbcType=INTEGER}
       </if>
     </if>
     <if test="queryType == 1 ">
       and cust.approve_status != 4
       <if test="custType != '' and custType != null">
-        and cust.cust_type = #{custType}
+        and cust.cust_type = #{custType,jdbcType=INTEGER}
       </if>
       <if test="salesTeam != null">
         <foreach collection="salesTeam" item="item" index="index" open="and team.employee_id in (" separator="," close=")" >
@@ -761,7 +761,7 @@
         </foreach>
       </if>
       <if test="reportDealer!=null">
-        and ship.corporate_id = #{reportDealer}
+        and ship.corporate_id = #{reportDealer,jdbcType=INTEGER}
       </if>
     </if>
   </select>
@@ -769,13 +769,13 @@
   <select id="selectByCustName" parameterType="java.lang.String" resultMap="BaseResultMap">
     select * from t_customer_info cust
     where cust.active=1 and cust.business_type in ('A02','A03')
-    and cust.cust_name = #{custName}
+    and cust.cust_name = #{custName,jdbcType=VARCHAR}
   </select>
 
   <select id="getDealerByUser" resultMap="BaseResultMap">
     select * from t_customer_info cust
     inner join t_user u on cust.id = u.dealer_id
-    where u.id=#{userId}
+    where u.id=#{userId,jdbcType=INTEGER}
   </select>
 
   <select id="selectAllCustomer" resultMap="BaseResultMap">
@@ -784,27 +784,27 @@
   </select>
 
   <update id="updateCustomerInfo">
-      update t_customer_info set active =0 where id = #{custId}
+      update t_customer_info set active =0 where id = #{custId,jdbcType=INTEGER}
   </update>
 
   <select id="selectNameAndCodeByUserId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select cust_name, in_code, out_code from t_customer_info
-    where active = 1 and create_user = #{userId}
+    where active = 1 and create_user = #{userId,jdbcType=INTEGER}
   </select>
 
   <select id="selectEmailByCustName" parameterType="java.lang.String" resultMap="BaseResultMap">
     select a.business_type,b.email cust_email from t_customer_info a
     inner join t_customer_contact b on b.cust_id = a.id and b.type = 'C01'
-    where a.cust_name = #{custName} and a.active = 1 and b.email is not null
+    where a.cust_name = #{custName,jdbcType=VARCHAR} and a.active = 1 and b.email is not null
   </select>
 
 
   <select id="selectByOutCode" resultMap="BaseResultMap">
-    select * from t_customer_info where active =1 and out_code = #{outCode}
+    select * from t_customer_info where active =1 and out_code = #{outCode,jdbcType=VARCHAR}
   </select>
 
   <select id="selectByInCode" resultMap="BaseResultMap">
-      select * from t_customer_info where active =1 and in_code = #{inCode}
+      select * from t_customer_info where active =1 and in_code = #{inCode,jdbcType=VARCHAR}
   </select>
 
   <select id="selectDealerList" resultMap="BaseResultMap">
@@ -812,17 +812,17 @@
   </select>
 
   <select id="selectByCustAbbreviation" resultMap="BaseResultMap">
-      select * from t_customer_info where active =1 and business_type != 'A04' and cust_abbreviation =#{custAbbreviation}
+      select * from t_customer_info where active =1 and business_type != 'A04' and cust_abbreviation =#{custAbbreviation,jdbcType=VARCHAR}
   </select>
 
   <update id="updateC4CId">
-    update t_customer_info set in_code = #{inCode,jdbcType=VARCHAR} where active =1 and id = #{custId}
+    update t_customer_info set in_code = #{inCode,jdbcType=VARCHAR} where active =1 and id = #{custId,jdbcType=INTEGER}
   </update>
 
   <select id="selectDealerShip" resultMap="BaseResultMap">
    select * from t_customer_info cust
     where id in (
-    select corporate_id from t_cust_corporate_relationship where corporate_type = 'Z003' and cust_id=#{custId}
+    select corporate_id from t_cust_corporate_relationship where corporate_type = 'Z003' and cust_id=#{custId,jdbcType=INTEGER}
     )
   </select>
 </mapper>

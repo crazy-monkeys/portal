@@ -79,10 +79,11 @@ public class MemberInfoSyncHandler extends AbstractHandler implements IHandler<M
 
     private void saveOrUpdateCustomer(MemberInfoSyncRequest request){
         boolean dealerCreate = false;
+        log.info("request outcode"+request.getOutCode());
         CustomerInfo customerinfo = customerInfoMapper.selectByOutCode(request.getOutCode());
         if(null == customerinfo){
             customerinfo = new CustomerInfo();
-            customerinfo.setCustType(Enums.CUSTOMER_TYPE.WAIT_REPORT.getCode());
+            customerinfo.setCustType(Enums.CUSTOMER_TYPE.WAIT_SUBMIT.getCode());
             customerinfo.setApproveStatus(Enums.CUSTOMER_APPROVE_STATUS.WAIT_SUBMIT.getCode());
             customerinfo.setActive(1);
             mappingCustomerInfo(request, customerinfo);

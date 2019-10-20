@@ -153,17 +153,17 @@
 
   <select id="selectDealerShip" resultMap="BaseResultMap">
     select * from t_cust_corporate_relationship
-    where cust_id=#{dealerId} and active=1
+    where cust_id=#{dealerId,jdbcType=INTEGER} and active=1
   </select>
 
   <select id="selectDealerShipByName" resultMap="BaseResultMap">
   select * from t_cust_corporate_relationship
     where cust_id in (
-	select id from t_customer_info where cust_name =#{dealerId}
+	select id from t_customer_info where cust_name =#{dealerId,jdbcType=INTEGER}
   ) and active=1
   </select>
   
   <update id="deleteByCustId">
-    update t_cust_corporate_relationship set active = 0 where active =1 and cust_id = #{custId}
+    update t_cust_corporate_relationship set active = 0 where active =1 and cust_id = #{custId,jdbcType=INTEGER}
   </update>
 </mapper>

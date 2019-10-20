@@ -84,7 +84,7 @@ public class CustomerContactService {
             BusinessUtil.assertTrue(record.getMobile().matches(telRegex), ErrorCodes.BusinessEnum.CUSTOMER_MOBILE_IS_INACTIVE);
         }
         if(StringUtil.isNotEmpty(record.getEmail())){
-            String mailRegex = "\\w+@\\w+(\\.\\w{2,3})*\\.\\w{2,3}";
+            String mailRegex = "^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+(\\.[a-zA-Z0-9-]+)*\\.[a-zA-Z0-9]{2,6}$";
             BusinessUtil.assertTrue(record.getEmail().matches(mailRegex),ErrorCodes.BusinessEnum.CUSTOMER_EMAIL_IS_INACTIVE);
         }
     }

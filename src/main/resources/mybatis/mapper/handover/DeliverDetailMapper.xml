@@ -315,7 +315,7 @@
   <select id="selectByRecordId" resultMap="BaseResultMap" >
     select d.dealer_name,t.* from t_deliver_detail t
     inner join t_deliver_receive_record d on t.record_id = d.id
-    where t.record_id = #{recordId,jdbcType=INTEGER}
+    where t.record_id = #{recordId,jdbcType=INTEGER} and customer_full_name is not null
   </select>
 
   <select id="selectErrorDataByRecord" resultMap="errorResultMap" >

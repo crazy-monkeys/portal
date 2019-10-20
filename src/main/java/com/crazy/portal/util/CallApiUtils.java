@@ -230,7 +230,7 @@ public class CallApiUtils {
     public static void callC4cCustomerDetail(CustomerDetailCreate create) {
         String url = String.format("%s%s", ECC_API_URL, C4C_CUSTOMER_DETAIL);
         try {
-            String requestXml = JaxbXmlUtil.convertToXml(create);
+            String requestXml = JaxbXmlUtil.convertToXml(create).replace("</Revenue currencyCode=\"?\">", "</Revenue>").replace("</NetAssets currencyCode=\"?\">","</NetAssets>").replace("</TotalAssets currencyCode=\"?\">","</TotalAssets>");
             log.info(requestXml);
             String response = HttpClientUtils.post(url, requestXml);
             log.info(response);

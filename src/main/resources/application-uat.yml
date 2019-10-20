@@ -72,4 +72,4 @@ ftp:
       pull: /home/crmftp/bitest/download/
     forecast:
       push: /home/crmftp/bitest/upload/
-      pull: /home/crmftp/bitest/upload/
+      pull: /home/crmftp/bitest/download/

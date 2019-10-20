@@ -161,9 +161,13 @@ public class OrderApproveService {
                             .collect(Collectors.toList());
 
                     //主物料计算总价
-                    Stream<ZsalesordercreateOutItem> currProductStream = currProductItems.stream();
-                    line.setRNetPrice(currProductStream.map(ZsalesordercreateOutItem::getNetprice).reduce(BigDecimal.ZERO,BigDecimal::add));
-                    line.setRPrice((currProductStream.map(ZsalesordercreateOutItem::getPrice).reduce(BigDecimal.ZERO,BigDecimal::add)));
+                    line.setRNetPrice(currProductItems.stream()
+                            .map(ZsalesordercreateOutItem::getNetprice)
+                            .reduce(BigDecimal.ZERO,BigDecimal::add));
+
+                    line.setRPrice(currProductItems.stream()
+                            .map(ZsalesordercreateOutItem::getPrice)
+                            .reduce(BigDecimal.ZERO,BigDecimal::add));
                 }else {
                     line.setRNetPrice(eccLine.getNetprice());
                     line.setRPrice(eccLine.getPrice());
@@ -182,7 +186,7 @@ public class OrderApproveService {
         line.setRProductId(etItem.getProductid());
         line.setRItemCategory(etItem.getItemcategory());
         line.setRRefItemNo(etItem.getRefitemno());
-        line.setRRefItemProductId(etItem.getRefitemproductid());
+        line.setRRefItemProductId(etItem.getRefitemproductid().replaceAll("^(0+)", ""));
         line.setProductId(etItem.getProductid());
         line.setRItemNo(etItem.getItemno());
         line.setCreateId(userId);

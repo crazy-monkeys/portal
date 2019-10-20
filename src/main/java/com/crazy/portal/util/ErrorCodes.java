@@ -207,6 +207,7 @@ public class ErrorCodes {
         //产品管理
         PRODUCT_QUERY_ERROR(70501,"产品查询异常",""),
         PRODUCT_SYNC_ERROR(70502,"产品同步异常",""),
+        QTY_IS_NOT(70503,"可收货数量不足",""),
 
         //预测管理
         FORECAST_YEAR_MONTH_FORMAT_ERROR(80000, "月份格式不符合要求，请重新输入", ""),
