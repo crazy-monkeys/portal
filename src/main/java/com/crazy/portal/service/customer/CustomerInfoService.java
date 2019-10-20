@@ -237,7 +237,7 @@ public class CustomerInfoService {
     }
 
     public DealerCreditVO getDealerCredit(Integer custId){
-        CustomerInfo customerInfo = customerInfoMapper.getDealerByUser(custId);
+        CustomerInfo customerInfo = customerInfoMapper.selectByPrimaryKey(custId);
         if(null == customerInfo || !customerInfo.getBusinessType().equals(Enums.CUSTOMER_BUSINESS_TYPE.dealer.getCode())){
             throw new BusinessException(ErrorCodes.BusinessEnum.CUSTOMER_NO_DEALER);
         }

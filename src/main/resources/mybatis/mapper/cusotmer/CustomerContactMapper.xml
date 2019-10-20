@@ -222,17 +222,17 @@
   </update>
 
   <select id="selectByCustId" resultMap="BaseResultMap">
-    select * from t_customer_contact where active =1 and cust_id = #{custId}
+    select * from t_customer_contact where active =1 and cust_id = #{custId,jdbcType=INTEGER}
   </select>
 
   <select id="selectByCustName" resultMap="BaseResultMap">
       select * from t_customer_contact where active =1 and cust_id in (
-	select id from t_customer_info where cust_name =#{custName}
+	select id from t_customer_info where cust_name =#{custName,jdbcType=VARCHAR}
   )
 
   </select>
 
   <update id="deleteByCustId">
-      update t_customer_contact set active = 0 where active=1 and cust_id = #{custId}
+      update t_customer_contact set active = 0 where active=1 and cust_id = #{custId,jdbcType=INTEGER}
   </update>
 </mapper>

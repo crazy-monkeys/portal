@@ -176,10 +176,10 @@
   </update>
 
   <select id="selectByCustId" resultMap="BaseResultMap">
-    select * from t_cust_invoice_info where active =1 and cust_id = #{custId}
+    select * from t_cust_invoice_info where active =1 and cust_id = #{custId,jdbcType=INTEGER}
   </select>
 
   <update id="deleteByCustId">
-    update t_cust_invoice_info set active = 0 where active =1 and cust_id = #{custId}
+    update t_cust_invoice_info set active = 0 where active =1 and cust_id = #{custId,jdbcType=INTEGER}
   </update>
 </mapper>

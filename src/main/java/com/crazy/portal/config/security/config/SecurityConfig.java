@@ -195,6 +195,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
             "/webservice/**",
             "/verifyCode",
             "/announcement/list",
-            "/archive/list"
+            "/archive/list",
+            "/user/dealer/**"
     };
 }

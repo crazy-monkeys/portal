@@ -2,6 +2,7 @@ package com.crazy.portal.service.order;
 
 import com.crazy.portal.bean.order.DeliveryApproveVO;
 import com.crazy.portal.bean.order.DeliveryOrderQueryVO;
+import com.crazy.portal.bean.order.OrderLineEO;
 import com.crazy.portal.bean.order.OrderQueryBean;
 import com.crazy.portal.bean.order.wsdl.delivery.create.ZrfcsdDeliveryCreate;
 import com.crazy.portal.bean.order.wsdl.delivery.create.ZrfcsdDeliveryCreateBody;
@@ -242,7 +243,7 @@ public class OrderService {
         content.setDeliverydate(DateUtil.format(deliverOrder.getDeliverDate(),DateUtil.WEB_FORMAT));
         content.setDeliveryIoc(deliverOrder.getShippingPoint());
         content.setPortalDeliveryId(String.valueOf(deliverOrder.getDeliverOrderId()));
-        content.setSapOrderId(deliverOrder.getSapOrderNo());
+        content.setSapOrderId(deliverOrder.getSapOrderNo().replaceAll("^(0+)", ""));
         content.setTItem(gettItemcreate(deliverOrderLines));
         ZrfcsdDeliveryCreateBody body = new ZrfcsdDeliveryCreateBody(content);
         ZrfcsdDeliveryCreate create = new ZrfcsdDeliveryCreate(body);
@@ -253,12 +254,15 @@ public class OrderService {
         com.crazy.portal.bean.order.wsdl.delivery.create.TItem tItem = new com.crazy.portal.bean.order.wsdl.delivery.create.TItem();
         List<com.crazy.portal.bean.order.wsdl.delivery.create.Item> items = new ArrayList<>();
         deliverOrderLineList.forEach(e->{
-            com.crazy.portal.bean.order.wsdl.delivery.create.Item item = new com.crazy.portal.bean.order.wsdl.delivery.create.Item();
-            item.setDeliveryQuantity(String.valueOf(e.getDeliveryQuantity()));
-            item.setDeliveryItemNo(e.getSapSalesOrderLineNo());
-            item.setItemNo(e.getSapSalesOrderLineNo());
-            item.setProductId(e.getProductId());
-            items.add(item);
+            List<OrderLine> liens = orderLineMapper.selectByProduct(e.getSalesOrderId(), e.getProductId());
+            liens.forEach(o->{
+                com.crazy.portal.bean.order.wsdl.delivery.create.Item item = new com.crazy.portal.bean.order.wsdl.delivery.create.Item();
+                item.setDeliveryQuantity(String.valueOf(e.getDeliveryQuantity()));
+                item.setDeliveryItemNo("");
+                item.setItemNo(o.getRItemNo().replaceAll("^(0+)", ""));
+                item.setProductId(e.getProductId());
+                items.add(item);
+            });
         });
         tItem.setItems(items);
         return tItem;
