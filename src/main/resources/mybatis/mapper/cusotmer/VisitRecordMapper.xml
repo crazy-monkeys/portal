@@ -317,7 +317,7 @@
     </select>
 
     <update id="approve">
-      update t_visit_record set active = 1,c4c_id = #{c4cId} where id = #{id}
+      update t_visit_record set active = 1,c4c_id = #{c4cId} where id = #{id,jdbcType=INTEGER}
     <!--  <foreach collection="ids" item="item" index="index" open="(" separator="," close=")" >
         #{item}
       </foreach>-->

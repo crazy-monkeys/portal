@@ -213,10 +213,10 @@
   </update>
 
   <select id="selectByCustId" resultMap="BaseResultMap">
-    select * from t_customer_product where active =1 and cust_id = #{custId}
+    select * from t_customer_product where active =1 and cust_id = #{custId,jdbcType=INTEGER}
   </select>
 
   <update id="deleteByCustId" >
-    update t_customer_product set active = 0 where active =1 and cust_id = #{custId}
+    update t_customer_product set active = 0 where active =1 and cust_id = #{custId,jdbcType=INTEGER}
   </update>
 </mapper>

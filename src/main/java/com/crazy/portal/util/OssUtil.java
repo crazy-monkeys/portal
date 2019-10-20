@@ -82,14 +82,4 @@ public class OssUtil {
         closeClient(ossClient);
         return url;
     }
-
-    public static void main(String[] args) {
-        String objectName = "test";
-        String filePath = "/Users/weiying/Desktop/test/2000.jpg";
-        String downloadfilePath = "/Users/weiying/Desktop/test/2000.jpg";
-//        uploadFile(objectName,filePath);
-       // downloadFile(objectName,downloadfilePath);
-        URL url = getObjectUrl(objectName);
-        System.out.println(url.toString());
-    }
 }
