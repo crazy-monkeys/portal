@@ -229,9 +229,9 @@
   </update>
 
   <update id="validationByIds">
-    update t_agency_rate set active = 1,update_user_id = #{userId}, update_time = now() where id in
+    update t_agency_rate set active = 1,update_user_id = #{userId,jdbcType=INTEGER}, update_time = now() where id in
     <foreach collection="ids" item="item" index="index" open="(" separator="," close=")" >
-      #{item}
+      #{item,jdbcType=INTEGER}
     </foreach>
 </update>
 </mapper>

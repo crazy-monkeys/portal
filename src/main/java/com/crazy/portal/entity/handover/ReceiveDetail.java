@@ -12,6 +12,8 @@ public class ReceiveDetail extends BaseRowModel {
 
     private Integer id;
 
+    private Integer deliveryOrderId;
+
     @ExcelProperty(index = 0, value = "代理全称")
     private String dealerName;
 

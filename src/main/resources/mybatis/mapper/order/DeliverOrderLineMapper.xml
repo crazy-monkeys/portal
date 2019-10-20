@@ -13,16 +13,18 @@
     <result column="product_id" jdbcType="VARCHAR" property="productId" />
     <result column="product" jdbcType="VARCHAR" property="product" />
     <result column="delivery_quantity" jdbcType="DECIMAL" property="deliveryQuantity" />
+    <result column="receive_quantity" jdbcType="DECIMAL" property="receiveQuantity" />
     <result column="active" jdbcType="INTEGER" property="active" />
     <result column="create_user_id" jdbcType="INTEGER" property="createUserId" />
     <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
     <result column="update_user_id" jdbcType="INTEGER" property="updateUserId" />
     <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+
   </resultMap>
   <sql id="Base_Column_List">
     deliver_order_line_id, sap_deliver_order_line_no, sales_order_id, sap_order_no, sales_order_line_id, 
     sap_sales_order_line_no, deliver_order_id, sap_deliver_order_no, product_id, product, 
-    delivery_quantity, active, create_user_id, create_date, update_user_id, update_date
+    delivery_quantity, active, create_user_id, create_date, update_user_id, update_date,receive_quantity
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -221,10 +223,14 @@
   </update>
 
   <select id="selectByDeliveryOrderId" resultMap="BaseResultMap">
-      select * from t_deliver_order_line where deliver_order_id = #{deliveryOrderId}
+      select * from t_deliver_order_line where deliver_order_id = #{deliveryOrderId,jdbcType=INTEGER}
   </select>
 
   <select id="selectBySapDeliveryOrderLineNo" resultMap="BaseResultMap">
-    select * from t_deliver_order_line where active =1 and sap_deliver_order_line_no = #{sapDeliveryOrderLineNo}
+    select * from t_deliver_order_line where active =1 and sap_deliver_order_line_no = #{sapDeliveryOrderLineNo,jdbcType=VARCHAR}
   </select>
+
+  <update id="updateReciveQty">
+    UPDATE t_deliver_order_line set receive_quantity = receive_quantity+#{qty,jdbcType=DECIMAL} where deliver_order_line_id = #{deliverOrderId,jdbcType=INTEGER}
+  </update>
 </mapper>

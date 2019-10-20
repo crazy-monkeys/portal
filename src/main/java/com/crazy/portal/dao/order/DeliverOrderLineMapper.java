@@ -3,6 +3,7 @@ package com.crazy.portal.dao.order;
 import com.crazy.portal.entity.order.DeliverOrderLine;
 import org.apache.ibatis.annotations.Param;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface DeliverOrderLineMapper {
@@ -21,4 +22,6 @@ public interface DeliverOrderLineMapper {
     List<DeliverOrderLine> selectByDeliveryOrderId(@Param("deliveryOrderId") Integer deliveryOrderId);
 
     DeliverOrderLine selectBySapDeliveryOrderLineNo(String sapDeliveryOrderLineNo);
+
+    int updateReciveQty(@Param("deliverOrderId") Integer deliverOrderId, @Param("qty")BigDecimal qty);
 }

@@ -239,7 +239,7 @@
     SELECT * FROM t_resource WHERE id IN
     <foreach item="item" index="index" collection="ids" open="("
              separator="," close=")">
-      #{item}
+      #{item,jdbcType=INTEGER}
     </foreach>
     ORDER BY RESOURCE_ORDER
   </select>

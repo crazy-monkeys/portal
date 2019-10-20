@@ -1,5 +1,6 @@
 package com.crazy.portal.controller.order;
 
+import com.crazy.portal.service.order.OrderApplyService;
 import com.crazy.portal.annotation.OperationLog;
 import com.crazy.portal.bean.BaseResponse;
 import com.crazy.portal.bean.order.DeliveryChangeVO;
@@ -9,6 +10,7 @@ import com.crazy.portal.bean.order.OrderQueryBean;
 import com.crazy.portal.controller.BaseController;
 import com.crazy.portal.entity.order.DeliverOrder;
 import com.crazy.portal.entity.order.OrderApply;
+import com.crazy.portal.util.Enums;
 import com.crazy.portal.service.order.OrderApplyService;
 import com.crazy.portal.util.Enums;
 import org.springframework.web.bind.annotation.*;
@@ -170,7 +172,7 @@ public class OrderApplyController extends BaseController {
     }
 
     //收货
-    @GetMapping("/delivery/receiving")
+    @PostMapping("/delivery/receiving")
     public BaseResponse deliveryReceiving(@RequestBody DeliveryOrderVO bean){
         orderApplyService.receiving(bean, this.getCurrentUserId());
         return successResult();

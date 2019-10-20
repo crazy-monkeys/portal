@@ -198,7 +198,7 @@
   <select id="selectByJobName" resultMap="BaseResultMap" parameterType="string">
    select 
    <include refid="Base_Column_List" />
-       from t_schedule_job where job_name = #{jobName}
+       from t_schedule_job where job_name = #{jobName,jdbcType=VARCHAR}
   </select>
   
   

@@ -528,17 +528,33 @@ public class OrderApplyService {
         List<DeliveryOrderLineVO> orderLineVOS = bean.getOrderLine();
         orderLineVOS.forEach(e->{
             DeliverOrderLine deliverOrderLine = deliverOrderLineMapper.selectByPrimaryKey(e.getId());
-            Integer qty = e.getDeliveryQuantity();
-            if(qty!=0){
-                BusinessUtil.assertFlase(e.getDeliveryQuantity()-deliverOrderLine.getReceiveQuantity() < qty, ErrorCodes.BusinessEnum.QTY_IS_NOT);
+            if(null == e.getDeliveryQuantity()){
+                BusinessUtil.assertFlase(e.getDeliveryQuantity() < e.getDeliveryQuantity()+deliverOrderLine.getReceiveQuantity(), ErrorCodes.BusinessEnum.QTY_IS_NOT);
             }
-            receiveData.add(mappingRecive(deliverOrderLine, qty));
+            receiveData.add(mappingRecive(deliverOrderLine, e.getDeliveryQuantity(), deliverOrderLine.getDeliverOrderLineId()));
         });
-        receiveService.pushReceiveDataToBi(receiveData, userId);
+        boolean flg = receiveService.pushReceiveDataToBi(receiveData, userId);
+        if(flg){
+            receiveData.forEach(e->{
+                deliverOrderLineMapper.updateReciveQty(e.getDeliveryOrderId(),new BigDecimal(e.getDeliveryNum()));
+            });
+        }
     }
 
-    private ReceiveDetail mappingRecive(DeliverOrderLine deliverOrderLine, Integer qty){
+    private ReceiveDetail mappingRecive(DeliverOrderLine deliverOrderLine, Integer qty, Integer deliveryOrderId){
         ReceiveDetail detail = new ReceiveDetail();
+        detail.setDeliveryOrderId(deliveryOrderId);
+        detail.setDealerName("");
+        detail.setCustomerType("");
+        detail.setDeliveryNum(String.valueOf(qty));
+        detail.setProductModel("");
+        detail.setPlatform("");
+        detail.setInventoryCategory("");
+        detail.setInventoryUnitPrice(new BigDecimal("1"));
+        detail.setSalesOrganization("");
+        detail.setDeliveryTime("2019-10-10");
+        detail.setDeliveryCompany("");
+        detail.setPurchaseNumber("");
         return detail;
     }
 }
