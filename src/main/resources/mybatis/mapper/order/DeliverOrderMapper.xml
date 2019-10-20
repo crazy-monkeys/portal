@@ -201,41 +201,41 @@
   </update>
 
   <select id="selectBySapDeliveryNo" resultMap="BaseResultMap">
-    select * from t_deliver_order where active =1 and sap_order_no = #{sapDeliveryNo}
+    select * from t_deliver_order where active =1 and sap_order_no = #{sapDeliveryNo,jdbcType=VARCHAR}
   </select>
 
   <select id="selectList" resultMap="BaseResultMap">
     select *  from t_deliver_order where active =1
     <if test="dealerId != null and dealerId != ''">
-      and create_user_id = #{dealerId}
+      and create_user_id = #{dealerId,jdbcType=INTEGER}
     </if>
     <if test="createUserId != null and createUserId !=''">
-      and create_user_id = #{createUserId}
+      and create_user_id = #{createUserId,jdbcType=INTEGER}
     </if>
     <if test="deliveryOrderNo!=null and deliveryOrderNo!=''">
-      and sap_deliver_order_no = #{deliveryOrderNo}
+      and sap_deliver_order_no = #{deliveryOrderNo,jdbcType=VARCHAR}
     </if>
     <if test="salesOrderNo!=null and salesOrderNo!=''">
-      and sap_order_no = #{salesOrderNo}
+      and sap_order_no = #{salesOrderNo,jdbcType=VARCHAR}
     </if>
     <if test="actualDeliveryStartDate!=null and actualDeliveryStartDate!='' and actualDeliveryEndDate != null and actualDeliveryEndDate != ''">
-      and actual_delivery_date BETWEEN #{actualDeliveryStartDate} and #{actualDeliveryEndDate}
+      and actual_delivery_date BETWEEN #{actualDeliveryStartDate,jdbcType=VARCHAR} and #{actualDeliveryEndDate,jdbcType=VARCHAR}
     </if>
     <if test="(actualDeliveryStartDate==null or actualDeliveryStartDate=='') and actualDeliveryEndDate != null and actualDeliveryEndDate != ''">
-      and actual_delivery_date &lt;= #{actualDeliveryEndDate}
+      and actual_delivery_date &lt;= #{actualDeliveryEndDate,jdbcType=VARCHAR}
     </if>
     <if test="actualDeliveryStartDate!=null and actualDeliveryStartDate!='' and (actualDeliveryEndDate == null or actualDeliveryEndDate == '')">
-      and actual_delivery_date > #{actualDeliveryStartDate}
+      and actual_delivery_date > #{actualDeliveryStartDate,jdbcType=VARCHAR}
     </if>
 
     <if test="deliveryStartDate!=null and deliveryStartDate!='' and deliveryEndDate != null and deliveryEndDate != ''">
-      and deliver_date BETWEEN #{deliveryStartDate} and #{deliveryEndDate}
+      and deliver_date BETWEEN #{deliveryStartDate,jdbcType=VARCHAR} and #{deliveryEndDate,jdbcType=VARCHAR}
     </if>
     <if test="(deliveryStartDate==null or deliveryStartDate=='') and deliveryEndDate != null and deliveryEndDate != ''">
-      and deliver_date &lt;= #{deliveryEndDate}
+      and deliver_date &lt;= #{deliveryEndDate,jdbcType=VARCHAR}
     </if>
     <if test="deliveryStartDate!=null and deliveryStartDate!='' and (deliveryEndDate == null or deliveryEndDate == '')">
-      and deliver_date > #{deliveryStartDate}
+      and deliver_date > #{deliveryStartDate,jdbcType=VARCHAR}
     </if>
   </select>
 

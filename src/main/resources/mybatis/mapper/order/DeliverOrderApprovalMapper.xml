@@ -250,40 +250,40 @@
     select * from t_deliver_order_approval
     where 1=1
     <if test="dealerId != null and dealerId != ''">
-      and create_user_id = #{dealerId}
+      and create_user_id = #{dealerId,jdbcType=INTEGER}
     </if>
     <if test="createUserId != null and createUserId !=''">
-      and create_user_id = #{createUserId}
+      and create_user_id = #{createUserId,jdbcType=INTEGER}
     </if>
     <if test="approvalStatus!=null">
-      and approval_status = #{approvalStatus}
+      and approval_status = #{approvalStatus,jdbcType=INTEGER}
     </if>
     <if test="approvalStartDate!=null and approvalStartDate!='' and approvalEndDate != null and approvalEndDate!=''">
-      and approval_date BETWEEN approvalStartDate and approvalEndDate
+      and approval_date BETWEEN #{approvalStartDate,jdbcType=VARCHAR} and #{approvalEndDate,jdbcType=VARCHAR}
     </if>
     <if test="(approvalStartDate==null or approvalStartDate=='') and approvalEndDate != null and approvalEndDate!=''">
-      and approval_date &lt;= approvalEndDate
+      and approval_date &lt;= #{approvalEndDate,jdbcType=VARCHAR}
     </if>
     <if test="approvalStartDate!=null and approvalStartDate!='' and (approvalEndDate == null or approvalEndDate=='')">
-      and approval_date > approvalStartDate
+      and approval_date > #{approvalStartDate,jdbcType=VARCHAR}
     </if>
     <if test="salesOrderNo!=null and salesOrderNo!=''">
-      and sap_order_no = #{salesOrderNo}
+      and sap_order_no = #{salesOrderNo,jdbcType=VARCHAR}
     </if>
     <if test="createStartDate!=null and createEndDate!='' and createStartDate != null and createEndDate != ''">
-      and create_time BETWEEN #{createStartDate} and #{createEndDate}
+      and create_time BETWEEN #{createStartDate,jdbcType=VARCHAR} and #{createEndDate,jdbcType=VARCHAR}
     </if>
     <if test="(createStartDate==null or createEndDate=='') and createStartDate != null and createEndDate != ''">
-      and create_time &lt;= #{createEndDate}
+      and create_time &lt;= #{createEndDate,jdbcType=VARCHAR}
     </if>
     <if test="createStartDate!=null and createEndDate!='' and (createStartDate == null or createEndDate == '')">
-      and create_time > #{createStartDate}
+      and create_time > #{createStartDate,jdbcType=VARCHAR}
     </if>
   </select>
 
   <select id="checkApproval" resultMap="BaseResultMap">
     select * from t_deliver_order_approval
     where active =1 and approval_status = 0
-    and sap_order_no = #{salesOrderNo}
+    and sap_order_no = #{salesOrderNo,jdbcType=VARCHAR}
   </select>
 </mapper>
