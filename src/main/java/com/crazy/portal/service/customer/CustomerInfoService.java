@@ -1022,7 +1022,7 @@ public class CustomerInfoService {
             BusinessUtil.assertTrue(customerInfo.getCustMobile().matches(telRegex), ErrorCodes.BusinessEnum.CUSTOMER_MOBILE_IS_INACTIVE);
         }
         if (StringUtil.isNotEmpty(customerInfo.getCustEmail())) {
-            String mailRegex = "\\w+@\\w+(\\.\\w{2,3})*\\.\\w{2,3}";
+            String mailRegex = "^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+(\\.[a-zA-Z0-9-]+)*\\.[a-zA-Z0-9]{2,6}$";
             BusinessUtil.assertTrue(customerInfo.getCustEmail().matches(mailRegex), ErrorCodes.BusinessEnum.CUSTOMER_EMAIL_IS_INACTIVE);
         }
         if (StringUtil.isNotEmpty(customerInfo.getCustWeb())) {
@@ -1030,7 +1030,6 @@ public class CustomerInfoService {
             BusinessUtil.assertTrue(customerInfo.getCustWeb().matches(webRegex), ErrorCodes.BusinessEnum.CUSTOMER_WEB_IS_INACTIVE);
         }
     }
-
     /**
      *
      * 外部客户附件上传
