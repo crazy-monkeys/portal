@@ -523,17 +523,15 @@ public class OrderApplyService {
     }
 
     public void receiving(DeliveryOrderVO bean, Integer userId){
-
         List<ReceiveDetail> receiveData = new ArrayList<>();
         List<DeliveryOrderLineVO> orderLineVOS = bean.getOrderLine();
         orderLineVOS.forEach(e->{
             DeliverOrderLine deliverOrderLine = deliverOrderLineMapper.selectByPrimaryKey(e.getId());
-            if(e.getDeliveryQuantity()!=0){
-                BusinessUtil.assertFlase(deliverOrderLine.getReceiveQuantity() < e.getDeliveryQuantity(), ErrorCodes.BusinessEnum.QTY_IS_NOT);
+            Integer qty = e.getDeliveryQuantity();
+            if(qty!=0){
+                BusinessUtil.assertFlase(e.getDeliveryQuantity()-deliverOrderLine.getReceiveQuantity() < qty, ErrorCodes.BusinessEnum.QTY_IS_NOT);
             }
-
-
-
+            receiveData.add(mappingRecive(deliverOrderLine, qty));
         });
         receiveService.pushReceiveDataToBi(receiveData, userId);
     }

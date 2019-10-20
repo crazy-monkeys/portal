@@ -38,10 +38,7 @@
     from t_catalog_price
     where product_model = #{productModel,jdbcType=VARCHAR}
     and bu = #{bu,jdbcType=VARCHAR}
-    <if test="inCustomer == null">
-      and in_customer is null
-    </if>
-    <if test="inCustomer != null">
+    <if test="inCustomer != null and inCustomer != ''">
       and in_customer = #{inCustomer,jdbcType=VARCHAR}
     </if>
   </select>

@@ -165,7 +165,7 @@ public class OrderApplyController extends BaseController {
     }
 
     //收货
-    @GetMapping("/delete/delivery/receiving/{id}")
+    @GetMapping("/delete/delivery/receiving")
     public BaseResponse DeliveryReceiving(@RequestBody DeliveryOrderVO bean){
         orderApplyService.receiving(bean, this.getCurrentUserId());
         return successResult();
