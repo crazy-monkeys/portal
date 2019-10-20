@@ -163,7 +163,7 @@
     SELECT
     <include refid="Status_Column_List" />
     from t_sys_parameter
-    where active=1 and p_model=#{model} and p_function=#{function}
+    where active=1 and p_model=#{model,jdbcType=INTEGER} and p_function=#{function,jdbcType=INTEGER}
   </select>
 
   <select id="selectAll" resultMap="BaseResultMap">
@@ -172,13 +172,13 @@
     from t_sys_parameter
     where 1=1
     <if test="active != null">
-      and active = #{active}
+      and active = #{active,jdbcType=INTEGER}
     </if>
     <if test="model != null">
-      and p_model = #{model}
+      and p_model = #{model,jdbcType=INTEGER}
     </if>
     <if test="function != null">
-      and p_function = #{function}
+      and p_function = #{function,jdbcType=INTEGER}
     </if>
     order by insert_time desc
   </select>
@@ -188,15 +188,15 @@
     from t_sys_parameter
     where active=1
     <if test="id != null">
-      and id != #{id}
+      and id != #{id,jdbcType=INTEGER}
     </if>
-    and p_model=#{model} and p_function=#{function} and p_value=#{pValue}
+    and p_model=#{model,jdbcType=INTEGER} and p_function=#{function,jdbcType=INTEGER} and p_value=#{pValue,jdbcType=VARCHAR}
   </select>
 
   <select id="selectByPvalue" resultMap="BaseResultMap">
     SELECT
     <include refid="Status_Column_List" />
     from t_sys_parameter
-    where active=1 and p_model=#{model} and p_function=#{function} and p_value = #{pValue}
+    where active=1 and p_model=#{model,jdbcType=INTEGER} and p_function=#{function,jdbcType=INTEGER} and p_value = #{pValue,jdbcType=VARCHAR}
   </select>
 </mapper>

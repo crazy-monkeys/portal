@@ -184,11 +184,11 @@
     select * from t_internal_user  iu
     inner join t_user u on iu.user_mail = u.customer_name
     inner join t_organizational_structure os on os.seq = iu.user_department_code
-    where iu.active =1 and u.active =1 and os.active=1 and u.id=#{userId}
+    where iu.active =1 and u.active =1 and os.active=1 and u.id=#{userId,jdbcType=INTEGER}
   </select>
 
   <select id="selectByUserNo" resultMap="BaseResultMap">
-    select * from t_internal_user where active =1 and user_no = #{userNo}
+    select * from t_internal_user where active =1 and user_no = #{userNo,jdbcType=VARCHAR}
   </select>
 
   <select id="selectSales" resultMap="BaseResultMap">
@@ -206,16 +206,16 @@
   </select>
 
   <select id="selectUserByName" resultMap="BaseResultMap">
-      select * From t_internal_user where substring_index(user_mail,'@',1) = #{userName}
+      select * From t_internal_user where substring_index(user_mail,'@',1) = #{userName,jdbcType=VARCHAR}
   </select>
   
   <select id="selectUserbyOrg" resultType="java.lang.String">
-    select user_no from t_internal_user where user_department_code = #{org}
+    select user_no from t_internal_user where user_department_code = #{org,jdbcType=VARCHAR}
   </select>
 
   <select id="selectUserbyParenOrg" resultType="java.lang.String">
     select user_no from t_internal_user where user_department_code in (
-      select seq from t_organizational_structure where parent_org =#{org}
+      select seq from t_organizational_structure where parent_org =#{org,jdbcType=VARCHAR}
       )
   </select>
 </mapper>

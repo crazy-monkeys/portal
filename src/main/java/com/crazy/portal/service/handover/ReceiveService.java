@@ -54,7 +54,14 @@ public class ReceiveService extends AbstractHandover implements IHandover<Receiv
     private String ftpPullPath;
 
     public boolean pushReceiveDataToBi(List<ReceiveDetail> receiveData, Integer userId) {
-        String thirdFileName = ExcelUtils.writeExcel(receivePushPath, receiveData, ReceiveDetail.class);
+        DeliverReceiveRecord record = handoverService.genRecord(customerInfoService.getDealerByUser(userId).getCustName(), userId, 2);
+        for(ReceiveDetail detail : receiveData){
+            detail.setRecordId(record.getId());
+            receiveDetailMapper.insertSelective(detail);
+        }
+        handoverService.updateStatus(record.getId(), 2);
+        return true;
+        /*String thirdFileName = ExcelUtils.writeExcel(receivePushPath, receiveData, ReceiveDetail.class);
         BiCheckResult checkResult = callBiServerByFtp(CHECK_INVENTORY_IMPORT_FILE, receivePushPath, thirdFileName, receivePullPath);
         List<ReceiveDetail> responseData = ExcelUtils.readExcel(checkResult.getFilePath(), ReceiveDetail.class);
         //批次记录表
@@ -81,7 +88,7 @@ public class ReceiveService extends AbstractHandover implements IHandover<Receiv
             return false;
         }
         handoverService.updateStatus(record.getId(), -2);
-        return false;
+        return false;*/
     }
 
     public void downloadReceiveErrorList(HttpServletResponse response, Integer recordId) {

@@ -149,7 +149,7 @@
 
   <select id="findRolesByResourceId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select <include refid="Base_Column_List" />
-    from t_role a inner join t_role_resource b on a.role_id = b.role_id where b.resource_id = #{resourceId}
+    from t_role a inner join t_role_resource b on a.role_id = b.role_id where b.resource_id = #{resourceId,jdbcType=INTEGER}
   </select>
 
 
