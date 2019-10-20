@@ -365,7 +365,7 @@ public class UserService {
         if(!"dev".equals(PortalUtil.ENVIRONMENT)){
             String sessionVerifyCode = String.valueOf(request.getSession().getAttribute("verifyCode"));
             if(StringUtil.isBlank(verifyCode)
-                    || !StringUtil.equals(verifyCode, String.valueOf(sessionVerifyCode))){
+                    || !StringUtil.equals(verifyCode, sessionVerifyCode)){
 
                return false;
             }
