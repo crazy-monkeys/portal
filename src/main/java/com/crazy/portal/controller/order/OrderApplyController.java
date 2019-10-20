@@ -10,6 +10,7 @@ import com.crazy.portal.bean.order.OrderQueryBean;
 import com.crazy.portal.controller.BaseController;
 import com.crazy.portal.entity.order.DeliverOrder;
 import com.crazy.portal.entity.order.OrderApply;
+import com.crazy.portal.util.Enums;
 import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
@@ -32,6 +33,9 @@ public class OrderApplyController extends BaseController {
 
     @PostMapping("/list")
     public BaseResponse list(@RequestBody OrderQueryBean orderQueryBean){
+        if(super.getCurrentUser().getUserType().equals(Enums.USER_TYPE.agent.toString())){
+            orderQueryBean.setCreateId(super.getCurrentUserId());
+        }
         return successResult(orderApplyService.list(orderQueryBean));
     }
 
