@@ -73,7 +73,7 @@ public class DeliverService extends AbstractHandover implements IHandover<Delive
     @Override
     public HandoverUploadVO verificationData(List<DeliverDetail> deliverData, Integer userId) {
         if(null == deliverData || deliverData.isEmpty()){
-            throw new BusinessException(BUSINESS_FILE_IS_NULL);
+            throw new BusinessException("verificationData");
         }
         //数据包装，生成第三方需要的文件
         String thirdFileName = ExcelUtils.writeExcel(deliverPushPath, deliverData, DeliverDetail.class);
@@ -92,7 +92,7 @@ public class DeliverService extends AbstractHandover implements IHandover<Delive
     @Override
     public HandoverUploadVO verificationDataByErrorData(List<?> data, Integer userId, Integer recordId) {
         if(null == data || data.isEmpty()){
-            throw new BusinessException(BUSINESS_FILE_IS_NULL);
+            throw new BusinessException("verificationData");
         }
         List<DeliverTemplateBean> errorList = (List<DeliverTemplateBean>) data;
         for(DeliverTemplateBean errorData : errorList) {
