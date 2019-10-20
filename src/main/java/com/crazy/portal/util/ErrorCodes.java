@@ -159,7 +159,7 @@ public class ErrorCodes {
         CRM_AMOUNT_ERROR(40017, "请输入有效的CR金额", ""),
         HANDOVER_DATA_EMAIL_ERROR(40018, "获取客户邮箱失败，请联系管理员", ""),
         HANDOVER_SEND_EMAIL_ERROR(40019, "邮件发送失败，请联系管理员", ""),
-        HANDOVER__FIL_DATA_IS_NULL(40020, "数据不能为空，请重新输入", ""),
+        HANDOVER__FILE_DATA_IS_NULL(40020, "数据不能为空，请重新输入", ""),
 
         //客户模块
         CUSTOMER_IS_EMPYT(50000, "没有对应的客户信息", ""),
