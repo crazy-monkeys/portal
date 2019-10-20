@@ -112,7 +112,7 @@ public class OrderApplyController extends BaseController {
      * @param response
      * @throws Exception
      */
-    @GetMapping("/lineTmpl")
+//    @GetMapping("/lineTmpl")
     public void lineTmpl(HttpServletResponse response) throws Exception{
         orderApplyService.downloadLineTmpl(response);
     }
@@ -169,7 +169,7 @@ public class OrderApplyController extends BaseController {
     }
 
     //收货
-    @GetMapping("/delete/delivery/receiving/{id}")
+    @GetMapping("/delivery/receiving/{id}")
     public BaseResponse DeliveryReceiving(@RequestBody DeliveryOrderVO bean){
         orderApplyService.receiving(bean, this.getCurrentUserId());
         return successResult();

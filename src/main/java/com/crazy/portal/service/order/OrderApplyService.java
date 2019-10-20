@@ -75,6 +75,7 @@ public class OrderApplyService {
     /**
      * 模板下载
      */
+    @Deprecated
     public void downloadLineTmpl(HttpServletResponse response) throws Exception{
         Map<String, List<? extends BaseRowModel>> resultMap = new HashMap<>();
         resultMap.put("sheet1", Collections.singletonList(new OrderLineEO()));
