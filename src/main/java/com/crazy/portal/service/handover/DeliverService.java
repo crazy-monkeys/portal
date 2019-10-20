@@ -325,7 +325,7 @@ public class DeliverService extends AbstractHandover implements IHandover<Delive
         BusinessUtil.notNull(deliverDetails, HANDOVER_PARAM_TYPE_ERROR);
         for(DeliverDetail detail : deliverDetails){
             List<DeliverDetail> detailList = getDetailData(detail.getIdStr());
-            /*try {
+            try {
                 List<CustomerContact> customerContacts = customerContactService.selectByCustName(detail.getCustomerFullName());
                 BusinessUtil.notNull(customerContacts, HANDOVER_DATA_EMAIL_ERROR);
                 for(CustomerContact customerContact : customerContacts){
@@ -336,10 +336,7 @@ public class DeliverService extends AbstractHandover implements IHandover<Delive
                 }
             }catch (Exception ex) {
                 throw new BusinessException(HANDOVER_DATA_EMAIL_ERROR);
-            }*/
-            CustomerContact customerContact = new CustomerContact();
-            customerContact.setEmail("l_joose@163.com");
-            sendConfirmEmail(customerContact, detail, detailList);
+            }
         }
     }
 
