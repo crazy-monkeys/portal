@@ -235,6 +235,10 @@ public class SaleForecastService {
             copyTemplateFields(errorTemplate, forecast);
             forecast.setErrorMsg("clear");
             forecastMapper.updateByPrimaryKeySelective(forecast);
+            //update line record
+            ForecastLine line = forecastLineMapper.selectByForecastId(forecast.getId());
+            copyTemplateFields(errorTemplate, line);
+            forecastLineMapper.updateByPrimaryKeySelective(line);
         }
         return checkForecastData(batchNo);
     }
