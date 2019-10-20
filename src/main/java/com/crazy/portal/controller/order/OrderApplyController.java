@@ -145,7 +145,7 @@ public class OrderApplyController extends BaseController {
      */
     @PostMapping("/update/delivery")
     @OperationLog
-    public BaseResponse DeliveryUpdate(@RequestBody DeliverOrder order){
+    public BaseResponse deliveryUpdate(@RequestBody DeliverOrder order){
         orderApplyService.updateDeliveryOrder(order, getCurrentUserId());
         return successResult();
     }
@@ -157,20 +157,20 @@ public class OrderApplyController extends BaseController {
      */
     @PostMapping("/cancel/delivery")
     @OperationLog
-    public BaseResponse DeliveryCancel(@RequestBody DeliveryOrderCancelVO order){
+    public BaseResponse deliveryCancel(@RequestBody DeliveryOrderCancelVO order){
         orderApplyService.cancelDeliveryOrder(order, getCurrentUserId());
         return successResult();
     }
 
     @GetMapping("/delete/delivery/{id}")
-    public BaseResponse DeliveryDelete(@PathVariable Integer id){
+    public BaseResponse deliveryDelete(@PathVariable Integer id){
         orderApplyService.deleteDeliveryOrder(id);
         return successResult();
     }
 
     //收货
-    @GetMapping("/delivery/receiving/{id}")
-    public BaseResponse DeliveryReceiving(@RequestBody DeliveryOrderVO bean){
+    @GetMapping("/delivery/receiving")
+    public BaseResponse deliveryReceiving(@RequestBody DeliveryOrderVO bean){
         orderApplyService.receiving(bean, this.getCurrentUserId());
         return successResult();
     }
