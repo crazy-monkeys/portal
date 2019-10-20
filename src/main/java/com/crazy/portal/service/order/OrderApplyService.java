@@ -20,7 +20,6 @@ import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
@@ -76,6 +75,7 @@ public class OrderApplyService {
     /**
      * 模板下载
      */
+    @Deprecated
     public void downloadLineTmpl(HttpServletResponse response) throws Exception{
         Map<String, List<? extends BaseRowModel>> resultMap = new HashMap<>();
         resultMap.put("sheet1", Collections.singletonList(new OrderLineEO()));
@@ -93,9 +93,10 @@ public class OrderApplyService {
         }
         List<OrderLineEO> records = ExcelUtils.readExcel(order.getLineFile(), OrderLineEO.class);
         //逻辑只允许出现同一个月份
-        Date expectedDeliveryMonth = records.get(0).getExpectedDeliveryMonth();
-        BusinessUtil.notNull(expectedDeliveryMonth,ErrorCodes.BusinessEnum.ORDER_EMPTY_EXPECTEDDELIVERYMONTH);
+        String expectedDeliveryMonthStr = records.get(0).getExpectedDeliveryMonth();
+        BusinessUtil.notNull(expectedDeliveryMonthStr,ErrorCodes.BusinessEnum.ORDER_EMPTY_EXPECTEDDELIVERYMONTH);
 
+        Date expectedDeliveryMonth = DateUtil.parseDate(expectedDeliveryMonthStr,DateUtil.MONTH_FORMAT_HLINE);
         String priceDate = DateUtil.getLastDayOfMonth(DateUtil.getYear(expectedDeliveryMonth),DateUtil.getMonth(expectedDeliveryMonth));
         IsHeader isHeader = this.buildIsHeader(order);
         isHeader.setPricedate(priceDate);
@@ -338,12 +339,12 @@ public class OrderApplyService {
             String productId = orderLineEO.getProductId();
             String num = orderLineEO.getNum();
             String platform = orderLineEO.getPlatform();
-            Date expectedDeliveryMonth = orderLineEO.getExpectedDeliveryMonth();
-
+            //逻辑只允许出现同一个月份
+            String expectedDeliveryMonthStr = orderLineEO.getExpectedDeliveryMonth();
             BusinessUtil.assertEmpty(productId,ErrorCodes.BusinessEnum.ORDER_EMPTY_PRODUCT_ID);
             BusinessUtil.assertEmpty(num,ErrorCodes.BusinessEnum.ORDER_EMPTY_NUM);
             BusinessUtil.assertEmpty(platform,ErrorCodes.BusinessEnum.ORDER_EMPTY_PLATFORM);
-            BusinessUtil.notNull(expectedDeliveryMonth,ErrorCodes.BusinessEnum.ORDER_EMPTY_EXPECTEDDELIVERYMONTH);
+            BusinessUtil.notNull(expectedDeliveryMonthStr,ErrorCodes.BusinessEnum.ORDER_EMPTY_EXPECTEDDELIVERYMONTH);
 
             ProductInfoDO params = new ProductInfoDO();
             params.setSapMid(productId);

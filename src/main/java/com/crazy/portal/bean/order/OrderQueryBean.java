@@ -11,6 +11,8 @@ public class OrderQueryBean extends PageBean {
     private String rSapOrderId;
     /** 下单人 **/
     private Integer dealerId;
+    /** 创建人*/
+    private Integer createId;
     /** 下单开始日期 **/
     private Date createBeginTime;
     /** 下单结束日期 **/

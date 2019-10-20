@@ -259,7 +259,7 @@ public class ExcelUtils {
         Sheet sheet = new Sheet(sheetNo, headLineNum, clazz);
         reader.read(sheet);
         List<T> data = excelListener.getData();
-        BusinessUtil.assertTrue((data != null && data.size() > 0), ErrorCodes.BusinessEnum.BUSINESS_FILE_IS_NULL);
+        BusinessUtil.assertTrue((data != null && data.size() > 0), ErrorCodes.BusinessEnum.BUSINESS_IDR_FILE_IS_REQUIRED);
         return data;
     }
 

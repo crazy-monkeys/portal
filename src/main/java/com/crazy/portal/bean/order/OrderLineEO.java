@@ -34,8 +34,7 @@ public class OrderLineEO extends BaseRowModel {
      * 期望交货月份
      */
     @ExcelProperty(value = "期望交货月份(yyyy-MM)", index = 3)
-    @JSONField(format = "yyyy-MM")
-    private Date expectedDeliveryMonth = null;
+    private String expectedDeliveryMonth = null;
 
     /**
      * 定价日期

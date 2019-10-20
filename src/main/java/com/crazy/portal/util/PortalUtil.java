@@ -2,14 +2,6 @@ package com.crazy.portal.util;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Created by lee on 2019/6/5.
@@ -21,11 +13,6 @@ public class PortalUtil {
     private static int DEFAULT_PAGE_SIZE = 10;
 
     public static String ENVIRONMENT = "";
-
-    public static Cache<String,String> VERIFY_CODE_MAP = CacheBuilder.newBuilder()
-                                         .maximumSize(200)
-                                         .expireAfterWrite(5, TimeUnit.MINUTES)
-                                         .build();
 
     /**
      * 开启分页查询

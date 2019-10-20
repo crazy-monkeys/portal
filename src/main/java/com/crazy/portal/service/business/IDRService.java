@@ -26,7 +26,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.math.BigDecimal;
 import java.util.*;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -79,7 +78,7 @@ public class IDRService {
      */
     public BusinessIdrInfo selectIdrDetail(Integer id){
         BusinessIdrInfo info = businessIdrInfoMapper.selectByPrimaryKey(id);
-        BusinessUtil.notNull(info, ErrorCodes.BusinessEnum.BUSINESS_IDRINFO_IS_NULL);
+        BusinessUtil.notNull(info, ErrorCodes.BusinessEnum.BUSINESS_IDR_INFO_IS_NOT_FOUND);
         if(info.getType().equals(Enums.BusinessIdrType.INSURANCE.getCode())){
             info.setIList(businessInsuranceInfoMapper.selectByIdrInfoId(id));
         }else if(info.getType().equals(Enums.BusinessIdrType.DIFF_PRICE.getCode())){
@@ -100,7 +99,7 @@ public class IDRService {
      */
     public void templateDownload(Integer idrType, HttpServletResponse response) {
         try {
-            BusinessUtil.notNull(idrType, ErrorCodes.BusinessEnum.BUSINESS_TYPE_IS_NULL);
+            BusinessUtil.notNull(idrType, ErrorCodes.BusinessEnum.BUSINESS_IDR_TYPE_IS_REQUIRED);
             Map<String, List<? extends BaseRowModel>> resultMap = new HashMap<>();
             Enums.BusinessIdrType enumType = Enums.BusinessIdrType.getDescByCode(idrType);
             resultMap.put(Constant.DEFAULT_SHEET_NAME, Collections.singletonList(enumType.getType()));
@@ -120,6 +119,7 @@ public class IDRService {
         checkFileUploadParam(bean);
         BusinessFileUploadBean result = new BusinessFileUploadBean();
         FileVO fileVo = FileUtil.upload(bean.getFile(), getIdrFilePath());
+        BusinessUtil.notNull(fileVo, ErrorCodes.BusinessEnum.BUSINESS_IDR_UPLOAD_FILE_IS_NULL);
         if(bean.getFileType().equals(Enums.BusinessFileType.IDR.getCode())){
             Enums.BusinessIdrType idrType = Enums.BusinessIdrType.getDescByCode(bean.getIdrType());
             List<BaseRowModel> records = ExcelUtils.readExcel(fileVo.getFullPath(), idrType.getType().getClass());
@@ -136,13 +136,13 @@ public class IDRService {
     }
 
     private void checkFileUploadParam(IdrUploadBean bean) {
-        BusinessUtil.notNull(bean.getFileType(), ErrorCodes.BusinessEnum.BUSINESS_FILE_TYPE_IS_NULL);
-        BusinessUtil.notNull(bean.getFile(), ErrorCodes.BusinessEnum.BUSINESS_FILE_IS_NULL);
+        BusinessUtil.notNull(bean.getFileType(), ErrorCodes.BusinessEnum.BUSINESS_IDR_FILE_TYPE_IS_REQUIRED);
+        BusinessUtil.notNull(bean.getFile(), ErrorCodes.BusinessEnum.BUSINESS_IDR_FILE_IS_REQUIRED);
         if(bean.getFileType().equals(Enums.BusinessFileType.FINANCIAL_CLOSURE.getCode())){
-            BusinessUtil.notNull(bean.getId(), ErrorCodes.BusinessEnum.BUSINESS_IDR_ID_IS_NULL);
+            BusinessUtil.notNull(bean.getId(), ErrorCodes.BusinessEnum.BUSINESS_IDR_ID_IS_REQUIRED);
         }
         if(bean.getFileType().equals(Enums.BusinessFileType.IDR.getCode())){
-            BusinessUtil.notNull(bean.getIdrType(), ErrorCodes.BusinessEnum.BUSINESS_TYPE_IS_NULL);
+            BusinessUtil.notNull(bean.getIdrType(), ErrorCodes.BusinessEnum.BUSINESS_IDR_TYPE_IS_REQUIRED);
         }
     }
 
@@ -177,6 +177,12 @@ public class IDRService {
         return filePath.concat(File.separator).concat(IDR_FILE_PATH).concat(File.separator);
     }
 
+    /**
+     * 提交
+     * @param bean
+     * @param userId
+     */
+    @SuppressWarnings("all")
     @Transactional
     public void submit(BusinessIdrInfo bean, Integer userId) {
         bean.setStatus(Enums.BusinessIdrStatus.APPROVAL_SUBMIT.getCode());
@@ -191,7 +197,6 @@ public class IDRService {
             saveExtendsInfo(bean.getDList(), businessDiffPriceInfoMapper, bean);
         }
         if(bean.getType().equals(Enums.BusinessIdrType.RETURNS.getCode())) {
-            BusinessUtil.assertFlase(null == bean.getCrAmount(),ErrorCodes.BusinessEnum.CRM_AMOUNT_ERROR);
             BusinessUtil.assertFlase(null == bean.getCrAmount(),ErrorCodes.BusinessEnum.CRM_AMOUNT_ERROR);
             saveExtendsInfo(bean.getRList(), businessReturnsInfoMapper, bean);
         }
@@ -245,7 +250,7 @@ public class IDRService {
     @SuppressWarnings("all")
     public void receiveApproval(IDRApprovalRequest request) {
         BusinessIdrApproval histortRecord = businessIdrApprovalMapper.selectByOrderNo(request.getOrderNumber());
-        BusinessUtil.notNull(histortRecord, ErrorCodes.BusinessEnum.BUSINESS_IDR_APPROVAL_ORDERNO_NOT_FOUND);
+        BusinessUtil.notNull(histortRecord, ErrorCodes.BusinessEnum.BUSINESS_IDR_APPROVAL_ORDER_NO_NOT_FOUND);
         saveIdrApprovalRecord(request, histortRecord);
         Integer status = null;
         List<BusinessIdrApproval> records = businessIdrApprovalMapper.selectByIdrInfoId(histortRecord.getIdrInfoId());
@@ -264,7 +269,7 @@ public class IDRService {
 
     private void updateIdrInfoByApproval(String apiUserId, Integer IdrInfoId, Integer status) {
         BusinessIdrInfo idrInfo = businessIdrInfoMapper.selectByPrimaryKey(IdrInfoId);
-        BusinessUtil.notNull(idrInfo, ErrorCodes.BusinessEnum.BUSINESS_IDR_APPROVAL_IDR_INFO_NOT_FOUND_EXCEPTION);
+        BusinessUtil.notNull(idrInfo, ErrorCodes.BusinessEnum.BUSINESS_IDR_APPROVAL_IDR_INFO_NOT_FOUND);
         idrInfo.setUpdateId(Integer.valueOf(apiUserId));
         idrInfo.setUpdateTime(DateUtil.getCurrentTS());
         idrInfo.setStatus(status);

@@ -17,4 +17,6 @@ public interface ForecastLineMapper {
     int updateByPrimaryKey(ForecastLine record);
 
     int updateByForecastId(ForecastLine forecastLine);
+
+    ForecastLine selectByForecastId(@Param(value = "forecastId") Integer forecastId);
 }

@@ -46,7 +46,8 @@ public class HandoverController extends BaseController {
     public BaseResponse getPageList(String dealerName, Integer status,
                                     String uploadStartTime, String uploadEndTime,
                                     Integer pageNum, Integer pageSize) {
-        return super.successResult(handoverService.getPageList(dealerName, status, uploadStartTime, uploadEndTime, pageNum, pageSize));
+        return super.successResult(handoverService.getPageList(dealerName, status, uploadStartTime, uploadEndTime,
+                pageNum, pageSize, getCurrentUser().getId()));
     }
 
     /**
@@ -58,7 +59,7 @@ public class HandoverController extends BaseController {
      */
     @GetMapping(value = "/handover/dealer/reject")
     public BaseResponse getRejectInfo(Integer dealerId, String type, Integer pageNum, Integer pageSize) {
-        return super.successResult(handoverService.getRejectInfo(dealerId, type, pageNum, pageSize));
+        return super.successResult(handoverService.getRejectInfo(dealerId, type, pageNum, pageSize, getCurrentUser().getId()));
     }
 
     @GetMapping(value = "/handover/dealer/detail")
@@ -207,7 +208,7 @@ public class HandoverController extends BaseController {
 
     @GetMapping(value = "/handover/receive/detail/error")
     public BaseResponse getReceiveErrorList(Integer pageNum, Integer pageSize) {
-        return super.successResult(handoverService.getReceiveErrorList(getCurrentUser().getId(), pageNum, pageSize));
+        return super.successResult(handoverService.getReceiveErrorList(getCurrentUser().getId(), pageNum, pageSize, getCurrentUser().getId()));
     }
 
     @GetMapping(value = "/handover/receive/detail/error/download")

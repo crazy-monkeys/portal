@@ -825,4 +825,10 @@
     select corporate_id from t_cust_corporate_relationship where corporate_type = 'Z003' and cust_id=#{custId,jdbcType=INTEGER}
     )
   </select>
+  
+  <select id="selectCustAbbreviationByCustName" resultType="java.lang.String">
+    select cust_abbreviation from t_customer_info
+    where cust_name = #{custName,jdbcType=VARCHAR} and active = 1
+    limit 1
+  </select>
 </mapper>

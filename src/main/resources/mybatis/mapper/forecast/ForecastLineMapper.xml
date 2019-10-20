@@ -713,4 +713,9 @@
       where f_id = #{fId,jdbcType=INTEGER}
   </update>
 
+  <select id="selectByForecastId" resultMap="BaseResultMap" >
+    select * from t_forecast_line where f_id = #{forecastId,jdbcType=INTEGER}
+    limit 1
+  </select>
+
 </mapper>

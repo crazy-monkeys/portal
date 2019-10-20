@@ -2,6 +2,7 @@ package com.crazy.portal.service.handover;
 
 import com.crazy.portal.dao.handover.DeliverReceiveRecordMapper;
 import com.crazy.portal.entity.handover.DeliverReceiveRecord;
+import com.crazy.portal.service.system.UserCustomerMappingService;
 import com.crazy.portal.util.*;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +28,8 @@ public class HandoverService {
     private DeliverReceiveRecordMapper deliverReceiveRecordMapper;
     @Resource(name = "deliver")
     private DeliverService deliverService;
+    @Resource
+    private UserCustomerMappingService userCustomerMappingService;
 
     private String deliver_type = "deliver";
     private String receive_type = "receive";
@@ -43,25 +46,30 @@ public class HandoverService {
      */
     public PageInfo<DeliverReceiveRecord> getPageList(String dealerName, Integer status,
                                                       String uploadStartTime, String uploadEndTime,
-                                                      Integer pageNum, Integer pageSize) {
+                                                      Integer pageNum, Integer pageSize, Integer userId) {
+        List<Integer> userList = userCustomerMappingService.selectUserMapping(userId, Enums.CustomerMappingModel.Forecast.getValue());
+        Integer[] userIds = new Integer[userList.size()];
         PortalUtil.defaultStartPage(pageNum,pageSize);
+
         List<DeliverReceiveRecord> result = deliverReceiveRecordMapper.selectPageInfo(dealerName, status,
-                uploadStartTime, uploadEndTime, null, null);
+                uploadStartTime, uploadEndTime, null, null, Arrays.asList(userIds));
         return new PageInfo<>(result);
     }
 
-    public PageInfo<DeliverReceiveRecord> getRejectInfo(Integer dealerId, String type, Integer pageNum, Integer pageSize) {
+    public PageInfo<DeliverReceiveRecord> getRejectInfo(Integer dealerId, String type,
+                                                        Integer pageNum, Integer pageSize, Integer userId) {
         checkTypeValue(type);
         PortalUtil.defaultStartPage(pageNum,pageSize);
         List<DeliverReceiveRecord> result = deliverReceiveRecordMapper.selectPageInfo(null, 3,
-                null, null, dealerId, deliver_type.equals(type) ? 1 : 2);
+                null, null, dealerId, deliver_type.equals(type) ? 1 : 2, Arrays.asList(userId));
         return new PageInfo<>(result);
     }
 
-    public PageInfo<DeliverReceiveRecord> getReceiveErrorList(Integer dealerId, Integer pageNum, Integer pageSize) {
+    public PageInfo<DeliverReceiveRecord> getReceiveErrorList(Integer dealerId, Integer pageNum,
+                                                              Integer pageSize, Integer userId) {
         PortalUtil.defaultStartPage(pageNum,pageSize);
         List<DeliverReceiveRecord> result = deliverReceiveRecordMapper.selectPageInfo(null, -2,
-                null, null, dealerId, 2);
+                null, null, dealerId, 2, Arrays.asList(userId));
         return new PageInfo<>(result);
     }
 

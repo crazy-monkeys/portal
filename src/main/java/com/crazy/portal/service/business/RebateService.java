@@ -106,18 +106,28 @@ public class RebateService {
         BusinessUtil.notNull(bean.getRebates(), ErrorCodes.BusinessEnum.REBATE_RECORD_NOT_FOUND);
         List<BusinessRebateItem> items = Lists.newArrayList();
         Date noticeDate = DateUtil.getCurrentTS();
-        for (RebateConfirmBean.RebateRecord e : bean.getRebates()) {
-            BusinessRebate info = businessRebateMapper.selectByPrimaryKey(e.getId());
+        String executorInName = customerInfoMapper.selectCustAbbreviationByCustName(bean.getExecutor());
+        for (RebateConfirmBean.RebateRecord record : bean.getRebates()) {
+            BusinessRebate info = businessRebateMapper.selectByPrimaryKey(record.getId());
             BusinessUtil.notNull(info, ErrorCodes.BusinessEnum.REBATE_RECORD_NOT_FOUND);
-            BusinessUtil.assertFlase(e.getReleaseAmount().compareTo(info.getSurplusRebateAmount()) > 0, ErrorCodes.BusinessEnum.REBATE_SURPLUS_AMOUNT_BIG);
-            BusinessRebateItem item = saveRebateItem(bean, e, userId, info, noticeDate);
-            updateRebateMasterInfo(e, userId, info);
+            BusinessUtil.assertFlase(record.getReleaseAmount().compareTo(info.getSurplusRebateAmount()) > 0, ErrorCodes.BusinessEnum.REBATE_SURPLUS_AMOUNT_TOO_LARGE);
+            BusinessRebateItem item = saveRebateItem(bean, record, userId, info, noticeDate, executorInName);
+            updateRebateMasterInfo(record, userId, info);
             items.add(item);
         }
         sendConfirmEmail(items, bean.getExecutor());
     }
 
-    private BusinessRebateItem saveRebateItem(RebateConfirmBean bean, RebateConfirmBean.RebateRecord releaseItem, Integer userId, BusinessRebate info, Date noticeDate) {
+    /**
+     * 保存Rebate释放项
+     * @param bean
+     * @param releaseItem
+     * @param userId
+     * @param info
+     * @param noticeDate
+     * @return
+     */
+    private BusinessRebateItem saveRebateItem(RebateConfirmBean bean, RebateConfirmBean.RebateRecord releaseItem, Integer userId, BusinessRebate info, Date noticeDate, String executorInName) {
         BusinessRebateItem item = new BusinessRebateItem();
         item.setRebateId(releaseItem.getId());
         try {
@@ -139,9 +149,16 @@ public class RebateService {
         businessRebateItemMapper.insertSelective(item);
         item.setSurplusRebateAmount(info.getSurplusRebateAmount());
         item.setMasterRebateAmount(info.getRebateAmount());
+        item.setExecutorInName(StringUtil.isBlank(executorInName) ? bean.getExecutor() : executorInName);
         return item;
     }
 
+    /**
+     * 更新Rebate主项金额
+     * @param releaseItem
+     * @param userId
+     * @param info
+     */
     private void updateRebateMasterInfo(RebateConfirmBean.RebateRecord releaseItem, Integer userId, BusinessRebate info) {
         BigDecimal releaseAmount = info.getReleaseAmount().add(releaseItem.getReleaseAmount());
         BigDecimal surplusRebateAmount = info.getSurplusRebateAmount().subtract(releaseItem.getReleaseAmount());
@@ -169,7 +186,7 @@ public class RebateService {
         toMails.add(SendMailBean.builder().email(amebaHeaderEmail).title("Rebate确认函[阿米巴队长]").data(data).templateName(EmailHelper.MAIL_TEMPLATE.REBATE_ITEM_CONFIRM.getTemplateName()).build());
         toMails.add(SendMailBean.builder().email(csEmail).title("Rebate确认函[CS]").data(data).templateName(EmailHelper.MAIL_TEMPLATE.REBATE_MASTER_CONFIRM.getTemplateName()).build());
         CustomerInfo custInfo = customerInfoMapper.selectEmailByCustName(executor);
-        BusinessUtil.notNull(custInfo, ErrorCodes.BusinessEnum.REBATE_EXECUTOR_EMAIL_NOT_FOUND);
+        BusinessUtil.notNull(custInfo, ErrorCodes.BusinessEnum.REBATE_EXECUTOR_EMAIL_IS_NOT_FOUND);
         String templateName = EmailHelper.MAIL_TEMPLATE.REBATE_ITEM_CONFIRM.getTemplateName();
         if(custInfo.getBusinessType().equals(Enums.CUSTOMER_BUSINESS_TYPE.dealer.getCode())){
             //代理商
@@ -187,21 +204,27 @@ public class RebateService {
      */
     @Transactional
     public FileVO fileUpload(RebateUploadBean bean, Integer userId, Integer dealerId){
-        BusinessUtil.notNull(bean.getFile(), ErrorCodes.BusinessEnum.REBATE_FILE_NOT_FOUND);
+        BusinessUtil.notNull(bean.getFile(), ErrorCodes.BusinessEnum.REBATE_FILE_IS_NOT_FOUND);
         List<BusinessRebateItem> items = businessRebateItemMapper.selectByParam(bean);
         BusinessUtil.assertFlase(ObjectUtils.isEmpty(items), ErrorCodes.BusinessEnum.REBATE_RECORD_NOT_FOUND);
         FileVO fileInfo = FileUtil.upload(bean.getFile(), getFilePath());
+        BusinessUtil.notNull(fileInfo, ErrorCodes.BusinessEnum.REBATE_UPLOAD_FILE_IS_NULL);
         //保存文件信息
         BusinessRebateFile file = saveRebateFile(userId, fileInfo);
         for(BusinessRebateItem item : items) {
             //更新item状态
-            Integer rebateId = updateRebateItemStatus(item.getId(), userId, dealerId, file.getId());
+            Integer rebateId = updateRebateItemStatus(item.getId(), userId, dealerId, file.getId(), bean.getZrExecuteDate());
             //更新主rebate状态
             updateRebateMasterStatus(userId, rebateId);
         }
         return fileInfo;
     }
 
+    /**
+     * 更新Rebate主项状态
+     * @param userId
+     * @param rebateId
+     */
     public void updateRebateMasterStatus(Integer userId, Integer rebateId) {
         List<BusinessRebateItem> items = businessRebateItemMapper.selectByRebateId(rebateId);
         BigDecimal total = items.stream()
@@ -213,30 +236,33 @@ public class RebateService {
         boolean isAllUsedConfirm = items.stream().allMatch(e->Enums.BusinessRebateStatus.USED_CONFIRM.getCode().equals(e.getStatus()));
         BusinessRebate record = businessRebateMapper.selectByPrimaryKey(rebateId);
         BusinessUtil.notNull(record, ErrorCodes.BusinessEnum.REBATE_RECORD_NOT_FOUND);
+        Integer status = null;
         if (total != null && isAllFinished && total.compareTo(record.getRebateAmount()) == 0) {
-            record.setStatus(Enums.BusinessRebateStatus.FINISHED.getCode());
-            record.setUpdateId(userId);
-            record.setUpdateTime(DateUtil.getCurrentTS());
-            businessRebateMapper.updateByPrimaryKeySelective(record);
+            status = Enums.BusinessRebateStatus.FINISHED.getCode();
         } else if (isAllFinished){
-            record.setStatus(Enums.BusinessRebateStatus.IN_APPROVAL.getCode());
-            record.setUpdateId(userId);
-            record.setUpdateTime(DateUtil.getCurrentTS());
-            businessRebateMapper.updateByPrimaryKeySelective(record);
+            status = Enums.BusinessRebateStatus.IN_APPROVAL.getCode();
         } else if (isAnyWaitConfirm){
-            record.setStatus(Enums.BusinessRebateStatus.WAIT_CONFIRM.getCode());
-            record.setUpdateId(userId);
-            record.setUpdateTime(DateUtil.getCurrentTS());
-            businessRebateMapper.updateByPrimaryKeySelective(record);
+            status = Enums.BusinessRebateStatus.WAIT_CONFIRM.getCode();
         } else if (isAllUsedConfirm){
-            record.setStatus(Enums.BusinessRebateStatus.USED_CONFIRM.getCode());
+            status = Enums.BusinessRebateStatus.USED_CONFIRM.getCode();
+        }
+        if(status != null) {
+            record.setStatus(status);
             record.setUpdateId(userId);
             record.setUpdateTime(DateUtil.getCurrentTS());
             businessRebateMapper.updateByPrimaryKeySelective(record);
         }
     }
 
-    private Integer updateRebateItemStatus(Integer rebateItemId, Integer userId, Integer dealerId, Integer fileId) {
+    /**
+     * 更新Rebate释放项状态
+     * @param rebateItemId
+     * @param userId
+     * @param dealerId
+     * @param fileId
+     * @return
+     */
+    private Integer updateRebateItemStatus(Integer rebateItemId, Integer userId, Integer dealerId, Integer fileId, Date zrExecuteDate) {
         BusinessRebateItem item = businessRebateItemMapper.selectByPrimaryKey(rebateItemId);
         BusinessUtil.notNull(item, ErrorCodes.BusinessEnum.REBATE_RECORD_NOT_FOUND);
         BusinessUtil.assertFlase(Enums.BusinessRebateStatus.FINISHED.getCode().equals(item.getStatus()), ErrorCodes.BusinessEnum.REBATE_ITEM_FINISHED_EXCEPTION);
@@ -248,7 +274,8 @@ public class RebateService {
         }else if(item.getStatus().equals(Enums.BusinessRebateStatus.USED_CONFIRM.getCode())){
             BusinessUtil.isNull(dealerId, ErrorCodes.BusinessEnum.REBATE_ITEM_DL_PROHIBIT_UPLOAD_EXCEPTION);
             item.setZrFileId(fileId);
-            item.setZrExecuteDate(DateUtil.getCurrentTS());
+            BusinessUtil.notNull(zrExecuteDate, ErrorCodes.BusinessEnum.REBATE_ZREXECUTEDATE_IS_REQUIRED);
+            item.setZrExecuteDate(zrExecuteDate);
             item.setStatus(Enums.BusinessRebateStatus.FINISHED.getCode());
         }
         item.setUpdateId(userId);
@@ -257,6 +284,12 @@ public class RebateService {
         return item.getRebateId();
     }
 
+    /**
+     * 保存文件
+     * @param userId
+     * @param fileInfo
+     * @return
+     */
     private BusinessRebateFile saveRebateFile(Integer userId, FileVO fileInfo) {
         BusinessRebateFile rebateFile = new BusinessRebateFile();
         rebateFile.setFileName(fileInfo.getFileName());
@@ -274,7 +307,7 @@ public class RebateService {
      */
     public String fileDownload(Integer id){
         BusinessRebateFile file = businessRebateFileMapper.selectByPrimaryKey(id);
-        BusinessUtil.notNull(file, ErrorCodes.BusinessEnum.REBATE_FILE_NOT_FOUND);
+        BusinessUtil.notNull(file, ErrorCodes.BusinessEnum.REBATE_FILE_IS_NOT_FOUND);
         return readerFilePath.concat(File.separator).concat(REBATE_FILE_PATH).concat(File.separator).concat(file.getFileName());
     }
 
@@ -288,6 +321,7 @@ public class RebateService {
      * @param userId
      */
     public void modifyRemark(RebateModifyRemarkBean bean, Integer userId){
+        BusinessUtil.assertFlase(StringUtil.isBlank(bean.getRemark()), ErrorCodes.BusinessEnum.REBATE_MODIFY_REMARK_CONTENT_IS_NULL);
         BusinessRebate record = new BusinessRebate();
         record.setId(bean.getId());
         record.setRemark(bean.getRemark());
@@ -297,7 +331,7 @@ public class RebateService {
     }
 
     /**
-     * rebate数据同步
+     * Rebate数据同步
      */
     @Transactional(rollbackFor = Exception.class)
     public void rebateDataSync(String param) throws Exception {
@@ -339,6 +373,7 @@ public class RebateService {
     }
 
     private void batchUpdateSalesDetail(String currMonth, String preMonth, Date currDate) throws Exception {
+        ImmutableMap<String, String> replaceCompany = ImmutableMap.of("7100", "SPRD", "3000", "SPRD", "3001", "SPRD", "4800", "RDA");
         List<BusinessSalesDetailAO> salesDetailResult = rebateApiService.syncRebatePriceSalesDetails(currMonth, preMonth);
         for (BusinessSalesDetailAO salesDetailAO : salesDetailResult) {
             BusinessSalesDetail salesDetail = new BusinessSalesDetail();
@@ -346,12 +381,7 @@ public class RebateService {
                 continue;
             }
             BeanUtils.copyNotNullFields(salesDetailAO, salesDetail);
-            if("7100".equals(salesDetail.getShipmentCompany()) || "3000".equals(salesDetail.getShipmentCompany()) || "3001".equals(salesDetail.getShipmentCompany())){
-                salesDetail.setShipmentCompany("SPRD");
-            }
-            if("4800".equals(salesDetail.getShipmentCompany())){
-                salesDetail.setShipmentCompany("RDA");
-            }
+            salesDetail.setShipmentCompany(replaceCompany.getOrDefault(salesDetail.getShipmentCompany(), salesDetail.getShipmentCompany()));
             salesDetail.setActive(Constant.ACTIVE);
             int recordCount = businessSalesDetailMapper.selectCountByPrimaryKey(salesDetail.getId());
             if(recordCount == 0){

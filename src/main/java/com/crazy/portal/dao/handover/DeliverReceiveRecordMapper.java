@@ -23,7 +23,8 @@ public interface DeliverReceiveRecordMapper {
                                               @Param(value = "uploadStartTime") String uploadStartTime,
                                               @Param(value = "uploadEndTime") String uploadEndTime,
                                               @Param(value = "dealerId") Integer dealerId,
-                                              @Param(value = "type") Integer type);
+                                              @Param(value = "type") Integer type,
+                                              @Param(value = "userIds") List<Integer> userIds);
 
     int updateStatusById(@Param(value = "ids") List<Integer> ids,
                          @Param(value = "status") Integer status);

@@ -188,6 +188,9 @@
     <if test="type != null" >
       and type = #{type,jdbcType=INTEGER}
     </if>
+    <foreach collection="userIds" item="item" index="index" open=" and dealer_id in (" separator="," close=")" >
+      #{item, jdbcType=INTEGER}
+    </foreach>
     order by create_time desc
   </select>
 

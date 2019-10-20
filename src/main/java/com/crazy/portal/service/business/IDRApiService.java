@@ -17,6 +17,11 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.*;
 
+/**
+ * 保差退接口
+ * @Author Shawn
+ * @Date 2019-08-16
+ */
 @Slf4j
 @Service
 public class IDRApiService {
@@ -60,7 +65,7 @@ public class IDRApiService {
                 BusinessUtil.assertTrue(StringUtil.isNotBlank(responseBody), ErrorCodes.BusinessEnum.BUSINESS_IDR_SUBMIT_RESULT_IS_NULL);
                 IdrApprovalSubmitResultBean resultBean = JSON.toJavaObject(JSON.parseObject(responseBody).getJSONObject("d"), IdrApprovalSubmitResultBean.class);
                 if (resultBean.getResult().equals(Enums.BusinessIdrApprovalSubmitResult.FAILED.getCode())) {
-                    throw new BusinessException(ErrorCodes.BusinessEnum.BUSINESS_IDR_SUBMIT_RESULT_FAIL.getCode(), resultBean.getMessage());
+                    throw new BusinessException(ErrorCodes.BusinessEnum.BUSINESS_IDR_SUBMIT_RESULT_IS_FAIL.getCode(), resultBean.getMessage());
                 }
                 resultMap.put(type, resultBean);
             }
