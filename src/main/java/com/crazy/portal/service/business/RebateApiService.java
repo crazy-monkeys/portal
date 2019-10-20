@@ -11,7 +11,11 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.List;
-
+/**
+ * 客户Rebate接口
+ * @Author Shawn
+ * @Date 2019-08-16
+ */
 @Slf4j
 @Service
 public class RebateApiService {

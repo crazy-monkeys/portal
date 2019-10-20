@@ -32,6 +32,7 @@ table td{
 <body>
 <table>
     <tr>
+        <th>通知日期</th>
         <th>出货公司</th>
         <th>执行代理商/客户</th>
         <th>客户简称</th>
@@ -44,14 +45,18 @@ table td{
         <th>备注</th>
     </tr>
     <tr th:each="item:${list}">
+        <td th:text="${#dates.format(item.noticeDate,'yyyy-MM-dd')}"></td>
         <td th:text="${item.shipmentCompany}"></td>
-        <td th:text="${item.executor}"></td>
+        <td th:text="${item.executorInName}"></td>
         <td th:text="${item.customerShortName}"></td>
         <td th:text="${item.salesName}"></td>
         <td th:text="${item.amebaHeader}"></td>
         <td th:text="${item.amebaDepartment}"></td>
         <td th:text="${item.rebateAmount}"></td>
-        <td th:text="${item.status}"></td>
+        <td th:if="${item.status} == 1">审核中</td>
+        <td th:if="${item.status} == 2">客户待确认</td>
+        <td th:if="${item.status} == 3">客户已确认</td>
+        <td th:if="${item.status} == 4">执行完成</td>
         <td th:text="${item.executeStyle}"></td>
         <td th:text="${item.remark}"></td>
     </tr>

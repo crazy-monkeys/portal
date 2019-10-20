@@ -12,6 +12,7 @@ import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
@@ -52,9 +53,11 @@ public class AgencyRateService {
      */
     @Transactional
     public List<AgencyRate> upload(MultipartFile[] files, Integer userId) {
+        BusinessUtil.assertFlase(files == null || files.length == 0, ErrorCodes.BusinessEnum.AGENCY_RATE_UPLOAD_FILE_IS_NULL_ERROR);
         List<AgencyRate> results = new ArrayList<>();
         for (MultipartFile file : files) {
             List<AgencyRateQueryBean> beans = ExcelUtils.readExcel(file, AgencyRateQueryBean.class);
+            BusinessUtil.assertFlase(ObjectUtils.isEmpty(beans), ErrorCodes.BusinessEnum.AGENCY_RATE_UPLOAD_FILE_CONTENT_IS_NULL_ERROR);
             results.addAll(saveRecord(beans, userId));
         }
         return results;
@@ -89,6 +92,7 @@ public class AgencyRateService {
      */
     @Transactional(rollbackFor = Exception.class)
     public void approveRate(String rateIds, Integer userId){
+        BusinessUtil.assertFlase(StringUtil.isBlank(rateIds), ErrorCodes.BusinessEnum.AGENCY_RATE_APPROVE_RECORD_IS_REQUIRED);
         agencyRateMapper.invalidationAll();
         agencyRateMapper.validationByIds(Stream.of(rateIds.split(Constant.DEFAULT_SEPARATE_CHAR)).map(id->Integer.valueOf(id)).collect(Collectors.toList()), userId);
     }

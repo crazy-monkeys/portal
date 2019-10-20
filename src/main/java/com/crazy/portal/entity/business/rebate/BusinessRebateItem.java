@@ -81,5 +81,8 @@ public class BusinessRebateItem {
      * rebate金额
      */
     private BigDecimal masterRebateAmount;
-
+    /**
+     * 执行方内部客户名（客户简称）
+     */
+    private String executorInName;
 }

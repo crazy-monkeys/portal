@@ -46,7 +46,7 @@ table td{
     <tr th:each="item:${list}">
         <td th:text="${#dates.format(item.noticeDate,'yyyy-MM-dd')}"></td>
         <td th:text="${item.shipmentCompany}"></td>
-        <td th:text="${item.executor}"></td>
+        <td th:text="${item.executorInName}"></td>
         <td th:text="${item.customerShortName}"></td>
         <td th:text="${item.salesName}"></td>
         <td th:text="${item.amebaHeader}"></td>

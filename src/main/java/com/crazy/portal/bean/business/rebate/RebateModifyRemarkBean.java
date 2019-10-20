@@ -11,7 +11,8 @@ import lombok.Data;
 @Data
 public class RebateModifyRemarkBean {
 
+    /** 记录Id **/
     private Integer id;
-
+    /** 备注 **/
     private String remark;
 }

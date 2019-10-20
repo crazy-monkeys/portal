@@ -36,5 +36,8 @@ public class RebateUploadBean {
     @DateTimeFormat(pattern="yyyy-MM-dd")
     private Date noticeDate;
 
+    @DateTimeFormat(pattern="yyyy-MM-dd")
+    private Date zrExecuteDate;
+
     private MultipartFile file;
 }
