@@ -271,48 +271,48 @@
     left join t_product_info pro on batch.id = pro.batch_id
     where batch.batch_status=1
     <if test="product != null and product != ''">
-        and pro.product like concat('%',#{product},'%')
+        and pro.product like concat('%',#{product,jdbcType=VARCHAR},'%')
     </if>
     <if test="bu != null and bu != ''">
-        and pro.bu like concat('%',#{bu},'%')
+        and pro.bu like concat('%',#{bu,jdbcType=VARCHAR},'%')
     </if>
     <if test="pdt != null and pdt != ''">
-        and pro.pdt = #{pdt}
+        and pro.pdt = #{pdt,jdbcType=VARCHAR}
     </if>
     <if test="category != null and category != ''">
-        and pro.category like concat('%',#{category},'%')
+        and pro.category like concat('%',#{category,jdbcType=VARCHAR},'%')
     </if>
     <if test="subCategory != null and subCategory != ''">
-        and pro.sub_category like concat('%',#{subCategory},'%')
+        and pro.sub_category like concat('%',#{subCategory,jdbcType=VARCHAR},'%')
     </if>
     <if test="platform != null and platform != ''">
-        and pro.platform like concat('%',#{platform},'%')
+        and pro.platform like concat('%',#{platform,jdbcType=VARCHAR},'%')
     </if>
     <if test="sapMid != null and sapMid != ''">
-      and pro.sap_mid like concat('%',#{sapMid},'%')
+      and pro.sap_mid like concat('%',#{sapMid,jdbcType=VARCHAR},'%')
     </if>
     order by pro.sn
   </select>
 
   <select id="selectSub" resultType="com.crazy.portal.entity.product.ProductSubDO">
-    select * from t_product_sub where product_id = #{id}
+    select * from t_product_sub where product_id = #{id,jdbcType=INTEGER}
   </select>
 
   <select id="selectBySapMid" resultMap="BaseResultMap">
     select * from t_product_info t
     inner join t_product_batch b on t.batch_id = b.id
-    where b.batch_status = 1 and t.sap_mid=#{sapMid}
+    where b.batch_status = 1 and t.sap_mid = #{sapMid,jdbcType=VARCHAR}
   </select>
 
   <select id="selectBySapMidAndPlatForm" resultMap="BaseResultMap">
     select * from t_product_info t
     inner join t_product_batch b on t.batch_id = b.id
-    where b.batch_status = 1 and t.sap_mid=#{sapMid} and t.platform = #{platForm}
+    where b.batch_status = 1 and t.sap_mid = #{sapMid,jdbcType=VARCHAR} and t.platform = #{platForm,jdbcType=VARCHAR}
   </select>
 
   <select id="selectByProductModelAndPlatForm" resultMap="BaseResultMap">
     select * from t_product_info t
     inner join t_product_batch b on t.batch_id = b.id
-    where b.batch_status = 1 and t.product=#{productModel} and t.platform = #{platForm}
+    where b.batch_status = 1 and t.product = #{productModel,jdbcType=VARCHAR} and t.platform = #{platForm,jdbcType=VARCHAR}
   </select>
 </mapper>

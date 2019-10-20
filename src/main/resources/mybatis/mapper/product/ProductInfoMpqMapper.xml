@@ -116,6 +116,6 @@
   </update>
 
   <select id="selectByProduct" resultMap="BaseResultMap">
-    select * from t_product_info_mpq where product = #{product}
+    select * from t_product_info_mpq where product = #{product,jdbcType=VARCHAR}
   </select>
 </mapper>
