@@ -963,7 +963,7 @@ public class SaleForecastService {
                 throw new BusinessException(FORECAST_BI_RESPONSE_EXCEPTION);
             }
             //去掉返回字符中的引号
-            response = response.replace("\"","");
+            response = response.replace("\"","").replace("\\", "");
             String[] resFileArray = response.split(":")[1].split(",");
             //BI返回的明细数据文件
             String biDetailFileName = resFileArray[0].substring(resFileArray[0].lastIndexOf("/") + 1, resFileArray[0].length());
@@ -1014,7 +1014,7 @@ public class SaleForecastService {
                 throw new BusinessException(FORECAST_BI_RESPONSE_EXCEPTION);
             }
             //去掉返回字符中的引号
-            response = response.replace("\"","");
+            response = response.replace("\"","").replace("\\", "");
             String[] resFileArray = response.split(":")[1].split(",");
             //BI返回的明细数据文件
             String biDetailFileName = resFileArray[0].substring(resFileArray[0].lastIndexOf("/") + 1, resFileArray[0].length());
