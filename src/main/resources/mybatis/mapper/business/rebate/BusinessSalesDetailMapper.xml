@@ -418,7 +418,7 @@
       actual_price,
       class3
     from t_business_sales_detail
-    where shipment_year_month >= #{beginMonth} and shipment_year_month &lt; #{endMonth}
+    where shipment_year_month >= #{beginMonth,jdbcType=VARCHAR} and shipment_year_month &lt; #{endMonth,jdbcType=VARCHAR}
     group by
       agency_short_name,
       customer_short_name,

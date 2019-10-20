@@ -325,7 +325,7 @@
     <include refid="Base_Column_List" />
     from t_business_rebate_item
     where active = 1
-    and date_format(notice_date, '%Y-%m-%d') = date_format(#{noticeDate}, '%Y-%m-%d')
+    and date_format(notice_date, '%Y-%m-%d') = date_format(#{noticeDate,jdbcType=TIMESTAMP}, '%Y-%m-%d')
     <if test="shipmentCompany != null and shipmentCompany != ''">
       and shipment_company = #{shipmentCompany,jdbcType=VARCHAR}
     </if>

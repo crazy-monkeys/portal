@@ -302,22 +302,22 @@
       left join t_customer_info b on a.customer_code = b.out_code
       where a.create_user_id = #{userId,jdbcType=INTEGER} and a.active = 1
       <if test="customerCode != null and customerCode != ''">
-        and a.customer_code like concat('%', #{customerCode}, '%')
+        and a.customer_code like concat('%', #{customerCode,jdbcType=VARCHAR}, '%')
       </if>
       <if test="projectName != null and projectName != ''">
-        and a.project_name like concat('%', #{projectName}, '%')
+        and a.project_name like concat('%', #{projectName,jdbcType=VARCHAR}, '%')
       </if>
       <if test="visitPurpose != null and visitPurpose != ''">
-        and a.visit_purpose like concat('%', #{visitPurpose}, '%')
+        and a.visit_purpose like concat('%', #{visitPurpose,jdbcType=VARCHAR}, '%')
       </if>
       <if test="visitStartDate != null and visitEndDate != null and visitStartDate != '' and visitEndDate != ''">
-        and a.visit_date BETWEEN  str_to_date(#{visitStartDate}, '%m-%d-%Y %h:%i:%s') and str_to_date(#{visitEndDate}, '%m-%d-%Y %h:%i:%s')
+        and a.visit_date BETWEEN  str_to_date(#{visitStartDate,jdbcType=VARCHAR}, '%m-%d-%Y %h:%i:%s') and str_to_date(#{visitEndDate,jdbcType=VARCHAR}, '%m-%d-%Y %h:%i:%s')
       </if>
       order by a.create_time desc
     </select>
 
     <update id="approve">
-      update t_visit_record set active = 1,c4c_id = #{c4cId} where id = #{id,jdbcType=INTEGER}
+      update t_visit_record set active = 1,c4c_id = #{c4cId,jdbcType=VARCHAR} where id = #{id,jdbcType=INTEGER}
     <!--  <foreach collection="ids" item="item" index="index" open="(" separator="," close=")" >
         #{item}
       </foreach>-->
