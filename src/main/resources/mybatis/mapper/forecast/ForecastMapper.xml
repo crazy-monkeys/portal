@@ -713,4 +713,19 @@
     and delay_stock = #{delayStock,jdbcType=VARCHAR}
   </select>
 
+  <update id="rejectDataByIds" >
+    update t_forecast t
+    inner join (
+    select a.create_user_id,a.operation_year_month
+    from t_forecast a
+    where 1 = 1
+    <foreach collection="ids" item="item" index="index" open=" and a.id in (" separator="," close=")" >
+      #{item,jdbcType=INTEGER}
+    </foreach>
+    group by a.create_user_id,a.operation_year_month) d
+    on t.create_user_id = d.create_user_id and t.operation_year_month = d.operation_year_month
+    set t.status = -1,t.operation_remark = #{operationRemark,jdbcType=VARCHAR}
+    where t.status = 1
+  </update>
+
 </mapper>

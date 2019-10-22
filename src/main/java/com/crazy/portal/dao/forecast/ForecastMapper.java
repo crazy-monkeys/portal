@@ -108,4 +108,7 @@ public interface ForecastMapper {
     List<Integer> selectOperationTypeByIds(@Param(value = "ids") Integer[] ids);
 
     int checkRecord(Forecast record);
+
+    int rejectDataByIds(@Param(value = "ids") Integer[] ids,
+                        @Param(value = "operationRemark") String operationRemark);
 }

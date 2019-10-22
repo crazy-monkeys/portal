@@ -555,15 +555,15 @@ public class SaleForecastService {
      * @param rejectMsg
      */
     public void rejectApprovalForecastData(Integer[] forecastIds, String rejectMsg) {
-        //如果选择驳回，则不管数据选择多少，都将未提交BI的数据全部驳回
-
-        for(Integer id : forecastIds) {
+        //如果选择驳回，则不管数据选择多少，都将待提交的数据全部驳回
+        forecastMapper.rejectDataByIds(forecastIds, rejectMsg);
+        /*for(Integer id : forecastIds) {
             Forecast forecast = forecastMapper.selectByPrimaryKey(id);
             if(forecast.getStatus() == 2){
                 throw new BusinessException(FORECAST_ALREADY_COMMIT_NOT_REJECT);
             }
         }
-        forecastMapper.updateStatusByIds(forecastIds, -1, rejectMsg);
+        forecastMapper.updateStatusByIds(forecastIds, -1, rejectMsg);*/
     }
 
     /**
