@@ -62,7 +62,7 @@ public class AmbUpdateTemplate extends BaseRowModel {
     @ExcelProperty(index = 16, value = "产品型号")
     private String productModel;
 
-    @ExcelProperty(index = 17, value = "版本要求")
+    @ExcelProperty(index = 17, value = "版本要求（非必填）")
     private String version;
 
     @ExcelProperty(index = 18, value = "本次销售预测总数量（K）")
@@ -80,10 +80,10 @@ public class AmbUpdateTemplate extends BaseRowModel {
     @ExcelProperty(index = 22, value = "月份1")
     private String forecastMonthOne;
 
-    @ExcelProperty(index = 23, value = "上次填写1")
+    @ExcelProperty(index = 23, value = "上次销售预测1")
     private String lastWriteOne;
 
-    @ExcelProperty(index = 24, value = "本次填写1")
+    @ExcelProperty(index = 24, value = "本次代理填写值1")
     private String currentWriteOne;
 
 //    @ExcelProperty(index = 25, value = "GAP1")
@@ -107,10 +107,10 @@ public class AmbUpdateTemplate extends BaseRowModel {
     @ExcelProperty(index = 30, value = "月份2")
     private String forecastMonthTwo;
 
-    @ExcelProperty(index = 31, value = "上次填写2")
+    @ExcelProperty(index = 31, value = "上次销售预测2")
     private String lastWriteTwo;
 
-    @ExcelProperty(index = 32, value = "本次填写2")
+    @ExcelProperty(index = 32, value = "本次代理填写值2")
     private String currentWriteTwo;
 
 //    @ExcelProperty(index = 34, value = "GAP2")
@@ -134,10 +134,10 @@ public class AmbUpdateTemplate extends BaseRowModel {
     @ExcelProperty(index = 38, value = "月份3")
     private String forecastMonthThree;
 
-    @ExcelProperty(index = 39, value = "上次填写3")
+    @ExcelProperty(index = 39, value = "上次销售预测3")
     private String lastWriteThree;
 
-    @ExcelProperty(index = 40, value = "本次填写3")
+    @ExcelProperty(index = 40, value = "本次代理填写值3")
     private String currentWriteThree;
 
 //    @ExcelProperty(index = 43, value = "GAP3")
@@ -161,10 +161,10 @@ public class AmbUpdateTemplate extends BaseRowModel {
     @ExcelProperty(index = 46, value = "月份4")
     private String forecastMonthFour;
 
-    @ExcelProperty(index = 47, value = "上次填写4")
+    @ExcelProperty(index = 47, value = "上次销售预测4")
     private String lastWriteFour;
 
-    @ExcelProperty(index = 48, value = "本次填写4")
+    @ExcelProperty(index = 48, value = "本次代理填写值4")
     private String currentWriteFour;
 
 //    @ExcelProperty(index = 52, value = "GAP4")
@@ -188,10 +188,10 @@ public class AmbUpdateTemplate extends BaseRowModel {
     @ExcelProperty(index = 54, value = "月份5")
     private String forecastMonthFive;
 
-    @ExcelProperty(index = 55, value = "上次填写5")
+    @ExcelProperty(index = 55, value = "上次销售预测5")
     private String lastWriteFive;
 
-    @ExcelProperty(index = 56, value = "本次填写5")
+    @ExcelProperty(index = 56, value = "本次代理填写值5")
     private String currentWriteFive;
 
 //    @ExcelProperty(index = 61, value = "GAP5")
@@ -215,10 +215,10 @@ public class AmbUpdateTemplate extends BaseRowModel {
     @ExcelProperty(index = 62, value = "月份6")
     private String forecastMonthSix;
 
-    @ExcelProperty(index = 63, value = "上次填写6")
+    @ExcelProperty(index = 63, value = "上次销售预测6")
     private String lastWriteSix;
 
-    @ExcelProperty(index = 64, value = "本次填写6")
+    @ExcelProperty(index = 64, value = "本次代理填写值6")
     private String currentWriteSix;
 
 //    @ExcelProperty(index = 70, value = "GAP6")
