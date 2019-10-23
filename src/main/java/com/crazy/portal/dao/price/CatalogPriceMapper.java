@@ -5,6 +5,8 @@ import com.crazy.portal.entity.price.CatalogPrice;
 import com.github.pagehelper.Page;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 public interface CatalogPriceMapper {
     int deleteByPrimaryKey(Integer id);
 
@@ -12,7 +14,11 @@ public interface CatalogPriceMapper {
 
     CatalogPrice selectBySapCode(String sapCode);
 
-    CatalogPrice selectByProductModelAndCustomerName(@Param("bu") String bu,@Param("productModel") String productModel,@Param("inCustomer") String inCustomer);
+    List<CatalogPrice> findCatalogPrices(@Param("bu") String bu,@Param("productModel") String productModel);
+
+    CatalogPrice findSingleCatalogPrice(@Param("bu") String bu,
+                                        @Param("productModel") String productModel,
+                                        @Param("inCustomer") String inCustomer);
 
     Page<CatalogPrice> selectByParamsWithPage(CatalogPriceVO record);
 

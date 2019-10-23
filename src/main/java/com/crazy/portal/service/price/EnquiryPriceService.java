@@ -8,18 +8,14 @@ import com.crazy.portal.dao.price.EnquiryPriceMapper;
 import com.crazy.portal.entity.cusotmer.CustomerInfo;
 import com.crazy.portal.entity.price.CatalogPrice;
 import com.crazy.portal.entity.price.EnquiryPrice;
-import com.crazy.portal.util.BusinessUtil;
-import com.crazy.portal.util.Enums;
-import com.crazy.portal.util.ErrorCodes;
-import com.crazy.portal.util.PortalUtil;
+import com.crazy.portal.util.*;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * @Desc:
@@ -53,20 +49,31 @@ public class EnquiryPriceService {
         BusinessUtil.assertEmpty(bu,ErrorCodes.PriceEnum.PRICE_EMPTY_BU);
 
         String inCustomer = vo.getInCustomer();
-        CatalogPrice catalogPrice = catalogPriceMapper.selectByProductModelAndCustomerName(bu,productModel,inCustomer);
-        BusinessUtil.notNull(catalogPrice,ErrorCodes.PriceEnum.PRICE_CATALOG_PRICE_NOT_EXISTS);
+
+        List<CatalogPrice> catalogPrices = new ArrayList<>();
+        if(StringUtil.isEmpty(inCustomer)){
+            catalogPrices = catalogPriceMapper.findCatalogPrices(bu, productModel);
+        }else{
+            CatalogPrice catalogPrice = catalogPriceMapper.findSingleCatalogPrice(bu,productModel,inCustomer);
+            if(Objects.nonNull(catalogPrice)){
+                catalogPrices.add(catalogPrice);
+            }
+        }
+        BusinessUtil.assertTrue(!catalogPrices.isEmpty(),ErrorCodes.PriceEnum.PRICE_CATALOG_PRICE_NOT_EXISTS);
 
         Date now = new Date();
-        EnquiryPrice enquiryPrice = new EnquiryPrice();
-        enquiryPrice.setBu(bu);
-        enquiryPrice.setInCustomer(vo.getInCustomer());
-        enquiryPrice.setProductModel(vo.getProductModel());
-        enquiryPrice.setApplyRemark(vo.getApplyRemark());
-        enquiryPrice.setApplyTime(now);
-        enquiryPrice.setProposer(currentUser);
-        enquiryPrice.setApprovalStatus(Enums.APPROVAL_STATUS.pending.toString());
-        int result = enquiryPriceMapper.insertSelective(enquiryPrice);
-        BusinessUtil.assertTrue(result > 0, ErrorCodes.CommonEnum.SYSTEM_EXCEPTION);
+        catalogPrices.forEach(x->{
+            EnquiryPrice enquiryPrice = new EnquiryPrice();
+            enquiryPrice.setBu(bu);
+            enquiryPrice.setInCustomer(vo.getInCustomer());
+            enquiryPrice.setProductModel(vo.getProductModel());
+            enquiryPrice.setApplyRemark(vo.getApplyRemark());
+            enquiryPrice.setApplyTime(now);
+            enquiryPrice.setProposer(currentUser);
+            enquiryPrice.setApprovalStatus(Enums.APPROVAL_STATUS.pending.toString());
+            int result = enquiryPriceMapper.insertSelective(enquiryPrice);
+            BusinessUtil.assertTrue(result > 0, ErrorCodes.CommonEnum.SYSTEM_EXCEPTION);
+        });
     }
 
     /**
@@ -109,7 +116,7 @@ public class EnquiryPriceService {
                 String productModel = enquiryPrice.getProductModel();
                 String inCustomer = enquiryPrice.getInCustomer();
                 String bu = enquiryPrice.getBu();
-                CatalogPrice catalogPrice = catalogPriceMapper.selectByProductModelAndCustomerName(bu,productModel,inCustomer);
+                CatalogPrice catalogPrice = catalogPriceMapper.findSingleCatalogPrice(bu,productModel,inCustomer);
                 BusinessUtil.notNull(catalogPrice, ErrorCodes.PriceEnum.PRICE_CATALOG_NOT_EXISTS);
 
                 enquiryPrice.setBu(catalogPrice.getBu());

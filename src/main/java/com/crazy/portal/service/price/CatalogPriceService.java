@@ -7,11 +7,10 @@ import com.crazy.portal.dao.cusotmer.CustomerInfoMapper;
 import com.crazy.portal.dao.price.CatalogPriceMapper;
 import com.crazy.portal.entity.cusotmer.CustomerInfo;
 import com.crazy.portal.entity.price.CatalogPrice;
-import com.crazy.portal.entity.system.User;
 import com.crazy.portal.util.CallApiUtils;
-import com.crazy.portal.util.Enums;
 import com.crazy.portal.util.HttpClientUtils;
 import com.crazy.portal.util.PortalUtil;
+import com.crazy.portal.util.StringUtil;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
@@ -50,8 +49,12 @@ public class CatalogPriceService {
 
         catalogPrices.getResult().forEach(x->{
             String inCustomer = x.getInCustomer();
-            CustomerInfo customerInfo = customerInfoMapper.selectByOutCode(inCustomer);
-            x.setInCustomer(customerInfo == null ? inCustomer : customerInfo.getCustAbbreviation());
+            if(StringUtil.isEmpty(inCustomer)){
+                x.setInCustomer(null);
+            }else{
+                CustomerInfo customerInfo = customerInfoMapper.selectByOutCode(inCustomer);
+                x.setInCustomer(customerInfo == null ? inCustomer : customerInfo.getCustAbbreviation());
+            }
         });
         return new PageInfo<>(catalogPrices);
     }
@@ -62,8 +65,8 @@ public class CatalogPriceService {
      * @param inCustomer
      * @return
      */
-    public CatalogPrice selectByProductModelAndCustomerName(String productModel,String bu,String inCustomer){
-        return catalogPriceMapper.selectByProductModelAndCustomerName(bu,productModel,inCustomer);
+    public CatalogPrice findCatalogPrice(String productModel, String bu, String inCustomer){
+        return catalogPriceMapper.findSingleCatalogPrice(bu,productModel,inCustomer);
     }
 
     /**
