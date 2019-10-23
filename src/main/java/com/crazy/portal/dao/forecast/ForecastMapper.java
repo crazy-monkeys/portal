@@ -111,4 +111,7 @@ public interface ForecastMapper {
 
     int rejectDataByIds(@Param(value = "ids") Integer[] ids,
                         @Param(value = "operationRemark") String operationRemark);
+
+    int updatePoPriceById(@Param(value = "id") Integer id,
+                          @Param(value = "poPrice") String poPrice);
 }

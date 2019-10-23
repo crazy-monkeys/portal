@@ -172,6 +172,8 @@ public class Forecast {
 
     private String createTimeStr;
 
+    private String poPrice;
+
     public Forecast() {
     }
 

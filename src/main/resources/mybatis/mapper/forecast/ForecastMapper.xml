@@ -37,6 +37,7 @@
     <result column="operation_remark" jdbcType="VARCHAR" property="operationRemark" />
     <result column="create_time_str" jdbcType="VARCHAR" property="createTimeStr" />
     <result column="agency_abbreviation" jdbcType="VARCHAR" property="agencyAbbreviation" />
+    <result column="po_price" jdbcType="VARCHAR" property="poPrice" />
   </resultMap>
 
   <resultMap id="fullFieldMap" type="com.crazy.portal.entity.forecast.Forecast" extends="BaseResultMap" >
@@ -726,6 +727,11 @@
     on t.create_user_id = d.create_user_id and t.operation_year_month = d.operation_year_month
     set t.status = -1,t.operation_remark = #{operationRemark,jdbcType=VARCHAR}
     where t.status = 1
+  </update>
+
+  <update id="updatePoPriceById" >
+    update t_forecast t set po_price = #{poPrice,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
   </update>
 
 </mapper>

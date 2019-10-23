@@ -591,6 +591,7 @@ public class SaleForecastService {
             ForecastLine forecastLine = new ForecastLine();
             copyTemplateFields(ambUpdateTemplate, forecastLine);
             forecastLine.setfId(Integer.parseInt(ambUpdateTemplate.getId()));
+            forecastMapper.updatePoPriceById(Integer.parseInt(ambUpdateTemplate.getId()), ambUpdateTemplate.getPoPrice());
             forecastLineMapper.updateByForecastId(forecastLine);
         }
     }
