@@ -28,8 +28,6 @@ public class CatalogPriceController extends BaseController {
 
     @PostMapping("/query")
     public BaseResponse list(@RequestBody CatalogPriceVO catalogPriceVO){
-        catalogPriceVO.setCreateId(super.getCurrentUserId());
-        catalogPriceVO.setProposer(super.getCurrentUser().getLoginName());
         if(super.getCurrentUser().getUserType().equals(Enums.USER_TYPE.internal.toString())){
             catalogPriceVO.setUserType(Enums.USER_TYPE.internal.toString());
         }
