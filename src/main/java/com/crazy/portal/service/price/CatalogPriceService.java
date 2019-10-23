@@ -49,12 +49,8 @@ public class CatalogPriceService {
 
         catalogPrices.getResult().forEach(x->{
             String inCustomer = x.getInCustomer();
-            if(StringUtil.isEmpty(inCustomer)){
-                x.setInCustomer(null);
-            }else{
-                CustomerInfo customerInfo = customerInfoMapper.selectByOutCode(inCustomer);
-                x.setInCustomer(customerInfo == null ? inCustomer : customerInfo.getCustAbbreviation());
-            }
+            CustomerInfo customerInfo = customerInfoMapper.selectByOutCode(inCustomer);
+            x.setInCustomer(customerInfo == null ? inCustomer : customerInfo.getCustAbbreviation());
         });
         return new PageInfo<>(catalogPrices);
     }
