@@ -65,7 +65,7 @@ public class EnquiryPriceService {
         catalogPrices.forEach(x->{
             EnquiryPrice enquiryPrice = new EnquiryPrice();
             enquiryPrice.setBu(bu);
-            enquiryPrice.setInCustomer(vo.getInCustomer());
+            enquiryPrice.setInCustomer(x.getInCustomer());
             enquiryPrice.setProductModel(vo.getProductModel());
             enquiryPrice.setApplyRemark(vo.getApplyRemark());
             enquiryPrice.setApplyTime(now);
