@@ -472,7 +472,7 @@
       where b.rebate_id = #{rebateId,jdbcType=INTEGER}
       group by b.rebate_id
     ) b on b.rebate_id = a.id
-    set a.rebate_amount = b.rebate_amount, a.surplus_rebate_amount = (b.rebate_amount - a.release_amount)
+    set a.rebate_amount = (b.rebate_amount/1000), a.surplus_rebate_amount = (b.rebate_amount - a.release_amount)
     where a.id = #{rebateId,jdbcType=INTEGER}
   </update>
 
