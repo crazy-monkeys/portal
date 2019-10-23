@@ -7,7 +7,7 @@ import com.crazy.portal.controller.BaseController;
 import com.crazy.portal.entity.webservice.ApiUsers;
 import com.crazy.portal.service.webservice.ApiUsersService;
 import com.crazy.portal.util.AopTargetUtils;
-import com.crazy.portal.util.SHA1;
+import com.crazy.portal.util.SHA256;
 import com.crazy.portal.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
@@ -52,7 +52,7 @@ public class EntranceController extends BaseController{
         list.forEach(x->sb.append(x));
         sb.append(apiSecret);
         log.info("-----加密前字符串--------"+sb.toString());
-        return SHA1.encode(sb.toString());
+        return SHA256.encode(sb.toString());
     }
 
     @RequestMapping(value="/invoke.html",method= RequestMethod.POST)

@@ -162,7 +162,11 @@ public class FTPClientUtil {
      * @return 成功时，返回true，失败返回false   
      */
     public boolean put(String serverFile, String localFile, boolean delFile) throws IOException {
-        FTPClient ftpClient = null;     
+        if(StringUtil.isBlank(serverFile) || StringUtil.isBlank(localFile)){
+            throw new RuntimeException("file path is required.");
+        }
+        boolean putResult = false;
+        FTPClient ftpClient = null;
         InputStream input = null;     
         try {     
             ftpClient = getFTPClient();     
@@ -180,12 +184,12 @@ public class FTPClientUtil {
 
             }
             log.info("serverFile is {}",serverFile);
-            ftpClient.storeFile(serverFile, input);     
+            putResult = ftpClient.storeFile(serverFile, input);
             input.close();
             if (delFile) {     
                 (new File(localFile)).delete();     
             }     
-            return true;
+            return putResult;
         } catch (FileNotFoundException e) {     
             throw new IOException("local file not found.", e);     
         } catch (IOException e) {

@@ -2,7 +2,7 @@ package com.crazy.portal.bean.webservice;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import com.crazy.portal.util.BeanUtils;
-import com.crazy.portal.util.SHA1;
+import com.crazy.portal.util.SHA256;
 import com.crazy.portal.util.StringUtil;
 import lombok.Data;
 import org.slf4j.Logger;
@@ -120,7 +120,7 @@ public abstract class AbstractRequest {
 		}
 		sb.append(apiSecret);
 		LOGGER.info("-----加密前字符串--------"+sb.toString());
-		String valid_signature = SHA1.encode(sb.toString());
+		String valid_signature = SHA256.encode(sb.toString());
 		LOGGER.info("服务端加密后的token---------"+valid_signature);
 		LOGGER.info("客户端加密后的token---------"+signature);
 		return valid_signature.equals(signature);

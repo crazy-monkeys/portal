@@ -92,18 +92,19 @@ public class FileUtil {
             return Collections.emptyList();
         }
         try {
-            checkDirExists(filePath);
-            long  startTime = System.currentTimeMillis();
-            for(MultipartFile multipartFile : files) {
-                if(multipartFile != null) {
-                    String fileName = convertFileName(multipartFile.getOriginalFilename());
-                    String fullPath = String.format("%s%s", filePath, fileName);
-                    multipartFile.transferTo(new File(fullPath));
-                    pushResultInfo(result, fileName, filePath, fullPath);
+            if(checkDirExists(filePath)) {
+                long startTime = System.currentTimeMillis();
+                for (MultipartFile multipartFile : files) {
+                    if (multipartFile != null) {
+                        String fileName = convertFileName(multipartFile.getOriginalFilename());
+                        String fullPath = String.format("%s%s", filePath, fileName);
+                        multipartFile.transferTo(new File(fullPath));
+                        pushResultInfo(result, fileName, filePath, fullPath);
+                    }
                 }
-            }
-            if(log.isDebugEnabled()){
-                log.debug("File upload takes {} ms", System.currentTimeMillis() - startTime);
+                if (log.isDebugEnabled()) {
+                    log.debug("File upload takes {} ms", System.currentTimeMillis() - startTime);
+                }
             }
         }catch (Exception ex) {
             log.error("Exception in file upload", ex);
@@ -123,12 +124,16 @@ public class FileUtil {
      * 检查文件路径是否存在，不存在则进行创建
      * @param filePath
      */
-    private static void checkDirExists(String filePath) {
+    private static boolean checkDirExists(String filePath) {
+        if(StringUtil.isBlank(filePath)){
+            return false;
+        }
         File fileDir = new File(filePath);
         if(!fileDir.exists()){
             log.warn("File path is not exists , create file path : {}", filePath);
-            fileDir.mkdir();
+            return fileDir.mkdir();
         }
+        return true;
     }
 
     private static String convertFileName(String fileName) {
