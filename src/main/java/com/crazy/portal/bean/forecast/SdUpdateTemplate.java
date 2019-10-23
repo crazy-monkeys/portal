@@ -56,10 +56,10 @@ public class SdUpdateTemplate extends BaseRowModel {
     @ExcelProperty(index = 14, value = "月份1")
     private String forecastMonthOne;
 
-    @ExcelProperty(index = 15, value = "上次填写1")
+    @ExcelProperty(index = 15, value = "上次销售预测1")
     private String lastWriteOne;
 
-    @ExcelProperty(index = 16, value = "本次填写1")
+    @ExcelProperty(index = 16, value = "本次代理填写值1")
     private String currentWriteOne;
 
     @ExcelProperty(index = 17, value = "GAP1")
@@ -71,10 +71,10 @@ public class SdUpdateTemplate extends BaseRowModel {
     @ExcelProperty(index = 19, value = "月份2")
     private String forecastMonthTwo;
 
-    @ExcelProperty(index = 20, value = "上次填写2")
+    @ExcelProperty(index = 20, value = "上次销售预测2")
     private String lastWriteTwo;
 
-    @ExcelProperty(index = 21, value = "本次填写2")
+    @ExcelProperty(index = 21, value = "本次代理填写值2")
     private String currentWriteTwo;
 
     @ExcelProperty(index = 22, value = "GAP2")
@@ -86,10 +86,10 @@ public class SdUpdateTemplate extends BaseRowModel {
     @ExcelProperty(index = 24, value = "月份3")
     private String forecastMonthThree;
 
-    @ExcelProperty(index = 25, value = "上次填写3")
+    @ExcelProperty(index = 25, value = "上次销售预测3")
     private String lastWriteThree;
 
-    @ExcelProperty(index = 26, value = "本次填写3")
+    @ExcelProperty(index = 26, value = "本次代理填写值3")
     private String currentWriteThree;
 
     @ExcelProperty(index = 27, value = "GAP3")
@@ -101,10 +101,10 @@ public class SdUpdateTemplate extends BaseRowModel {
     @ExcelProperty(index = 29, value = "月份4")
     private String forecastMonthFour;
 
-    @ExcelProperty(index = 30, value = "上次填写4")
+    @ExcelProperty(index = 30, value = "上次销售预测4")
     private String lastWriteFour;
 
-    @ExcelProperty(index = 31, value = "本次填写4")
+    @ExcelProperty(index = 31, value = "本次代理填写值4")
     private String currentWriteFour;
 
     @ExcelProperty(index = 32, value = "GAP4")
@@ -116,10 +116,10 @@ public class SdUpdateTemplate extends BaseRowModel {
     @ExcelProperty(index = 34, value = "月份5")
     private String forecastMonthFive;
 
-    @ExcelProperty(index = 35, value = "上次填写5")
+    @ExcelProperty(index = 35, value = "上次销售预测5")
     private String lastWriteFive;
 
-    @ExcelProperty(index = 36, value = "本次填写5")
+    @ExcelProperty(index = 36, value = "本次代理填写值5")
     private String currentWriteFive;
 
     @ExcelProperty(index = 37, value = "GAP5")
@@ -131,10 +131,10 @@ public class SdUpdateTemplate extends BaseRowModel {
     @ExcelProperty(index = 39, value = "月份6")
     private String forecastMonthSix;
 
-    @ExcelProperty(index = 40, value = "上次填写6")
+    @ExcelProperty(index = 40, value = "上次销售预测6")
     private String lastWriteSix;
 
-    @ExcelProperty(index = 41, value = "本次填写6")
+    @ExcelProperty(index = 41, value = "本次代理填写值6")
     private String currentWriteSix;
 
     @ExcelProperty(index = 42, value = "GAP6")

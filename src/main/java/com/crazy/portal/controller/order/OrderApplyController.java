@@ -137,7 +137,7 @@ public class OrderApplyController extends BaseController {
     @PostMapping("/submitOrderDelivery")
     @OperationLog
     public BaseResponse submitOrderDelivery(@RequestBody DeliveryOrderVO bean) {
-        orderApplyService.submitApplyDelivery(bean, getCurrentUserId());
+        orderApplyService.submitApplyDelivery(bean, getCurrentUser().getDealerId());
         return successResult();
     }
 

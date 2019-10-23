@@ -73,6 +73,12 @@
       or sap_code in (
       select distinct sap_code from t_enquiry_price where proposer = #{proposer,jdbcType=VARCHAR}
       )
+      )and in_customer in (
+        select cust_abbreviation from t_customer_info
+        where id in (
+          select cust_id from t_cust_corporate_relationship where corporate_type='Z004-1' and corporate_id=
+      (select in_code from t_customer_info where id = #{dealerId,jdbcType=INTEGER})
+      )
       )
     </if>
     <if test="bu != null and bu != ''">

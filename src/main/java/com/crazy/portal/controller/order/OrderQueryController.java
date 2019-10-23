@@ -54,7 +54,7 @@ public class OrderQueryController extends BaseController {
     @PostMapping("/list/delivery")
     public BaseResponse deliveryList(@RequestBody DeliveryOrderQueryVO vo){
         if(super.getCurrentUser().getUserType().equals(Enums.USER_TYPE.agent.toString())){
-            vo.setDealerId(super.getCurrentUser().getDealerId());
+            vo.setDealerId(super.getCurrentUserId());
         }
         return successResult(orderService.deliveryOrderList(vo));
     }

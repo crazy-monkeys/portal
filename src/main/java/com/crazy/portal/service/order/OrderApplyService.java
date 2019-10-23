@@ -71,7 +71,6 @@ public class OrderApplyService {
         return new PageInfo<>(list);
     }
 
-
     /**
      * 模板下载
      */
@@ -109,8 +108,6 @@ public class OrderApplyService {
 
         ZpricessimulateHeaderOut esHeader = response.getEsHeader();
         List<ZpricessimulateItemOut> items = response.getEtItems().getItem();
-
-
 
         for(OrderLineEO orderLineEO : records){
             //设置定价
@@ -228,7 +225,6 @@ public class OrderApplyService {
      */
     @Transactional
     public void modifyOrderApply(Integer orderId,OrderApply orderApply, Integer userId){
-
         Order order = orderMapper.selectByPrimaryKey(orderId);
         BusinessUtil.notNull(order, ErrorCodes.BusinessEnum.ORDER_NOT_FOUND);
         String rSapOrderId = order.getRSapOrderId();
@@ -302,9 +298,7 @@ public class OrderApplyService {
      * 变更交货日期
      */
     public void modifyDeliveryDateApply(Integer orderId, List<DeliveryChangeVO> changeVOS, Integer userId) throws Exception{
-
         BusinessUtil.assertTrue(!changeVOS.isEmpty(),ErrorCodes.BusinessEnum.ORDER_LINES_IS_REQUIRED);
-
         OrderApply orderApply = new OrderApply();
         Order order = orderMapper.selectByPrimaryKey(orderId);
         BusinessUtil.notNull(order, ErrorCodes.BusinessEnum.ORDER_NOT_FOUND);
@@ -526,12 +520,21 @@ public class OrderApplyService {
     public void receiving(DeliveryOrderVO bean, Integer userId){
         List<ReceiveDetail> receiveData = new ArrayList<>();
         List<DeliveryOrderLineVO> orderLineVOS = bean.getOrderLine();
+
         orderLineVOS.forEach(e->{
             DeliverOrderLine deliverOrderLine = deliverOrderLineMapper.selectByPrimaryKey(e.getId());
+            Integer qty = 0;
             if(null == e.getDeliveryQuantity()){
-                BusinessUtil.assertFlase(e.getDeliveryQuantity() < e.getDeliveryQuantity()+deliverOrderLine.getReceiveQuantity(), ErrorCodes.BusinessEnum.QTY_IS_NOT);
+                qty = deliverOrderLine.getDeliveryQuantity() - deliverOrderLine.getReceiveQuantity();
+            }else{
+                qty = e.getDeliveryQuantity();
             }
-            receiveData.add(mappingRecive(deliverOrderLine, e.getDeliveryQuantity(), deliverOrderLine.getDeliverOrderLineId()));
+            BusinessUtil.assertFlase(qty==0 , ErrorCodes.BusinessEnum.QTY_IS_WHOLE);
+            BusinessUtil.assertFlase(deliverOrderLine.getDeliveryQuantity() < qty+deliverOrderLine.getReceiveQuantity() , ErrorCodes.BusinessEnum.QTY_IS_NOT);
+
+            DeliverOrder deliverOrder = deliverOrderMapper.selectByPrimaryKey(deliverOrderLine.getDeliverOrderId());
+            Order order = orderMapper.selectByPrimaryKey(deliverOrder.getSalesOrderId());
+            receiveData.add(mappingRecive(deliverOrderLine, qty, order, deliverOrder));
         });
         boolean flg = receiveService.pushReceiveDataToBi(receiveData, userId);
         if(flg){
@@ -541,20 +544,24 @@ public class OrderApplyService {
         }
     }
 
-    private ReceiveDetail mappingRecive(DeliverOrderLine deliverOrderLine, Integer qty, Integer deliveryOrderId){
+    private ReceiveDetail mappingRecive(DeliverOrderLine deliverOrderLine, Integer qty, Order order, DeliverOrder deliverOrder){
+        OrderLine orderLine = orderLineMapper.selectByPrimaryKey(deliverOrderLine.getSalesOrderLineId());
+        CustomerInfo customerInfo = customerInfoMapper.selectByPrimaryKey(order.getDealerId());
+        ProductInfoDO productInfoDO = productInfoDOMapper.selectBySapMidAndPlatForm(orderLine.getProductId(), orderLine.getPlatform());
+
         ReceiveDetail detail = new ReceiveDetail();
-        detail.setDeliveryOrderId(deliveryOrderId);
-        detail.setDealerName("");
-        detail.setCustomerType("");
+        detail.setDeliveryOrderId(deliverOrderLine.getDeliverOrderLineId());
+        detail.setDealerName(customerInfo.getCustName());
+        detail.setCustomerType(order.getOrderType());
         detail.setDeliveryNum(String.valueOf(qty));
-        detail.setProductModel("");
-        detail.setPlatform("");
-        detail.setInventoryCategory("");
-        detail.setInventoryUnitPrice(new BigDecimal("1"));
-        detail.setSalesOrganization("");
-        detail.setDeliveryTime("2019-10-10");
-        detail.setDeliveryCompany("");
-        detail.setPurchaseNumber("");
+        detail.setProductModel(productInfoDO.getProduct());
+        detail.setPlatform(productInfoDO.getPlatform());
+        detail.setInventoryCategory(order.getOrderType());
+        detail.setInventoryUnitPrice(orderLine.getRPrice());
+        detail.setSalesOrganization("3000");
+        detail.setDeliveryTime(DateUtil.format(new Date(),DateUtil.WEB_FORMAT));
+        detail.setDeliveryCompany(deliverOrder.getShippingPoint());
+        detail.setPurchaseNumber(order.getPurchaseNo());
         return detail;
     }
 }

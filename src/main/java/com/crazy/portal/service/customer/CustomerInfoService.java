@@ -412,8 +412,8 @@ public class CustomerInfoService {
     private void customerInfoSync(CustomerInfo customerInfo, String type){
         CustomerInfoCreate create = syncCustomerInfo(customerInfo, type);
         String c4cId = CallApiUtils.callC4cCustomerInfo(create);
-        CustomerDetailCreate detail = syncCustomerDetail(customerInfo, c4cId);
-        CallApiUtils.callC4cCustomerDetail(detail);
+      //  CustomerDetailCreate detail = syncCustomerDetail(customerInfo, c4cId);
+        //CallApiUtils.callC4cCustomerDetail(detail);
         //查询eccid
         customerInfoMapper.updateC4CId(customerInfo.getId(), c4cId);
     }

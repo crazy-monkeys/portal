@@ -166,7 +166,7 @@
     DATE_FORMAT(approval_time,'%Y-%m-%d %H:%i:%s') approval_time_str
     from t_deliver_receive_record
     where 1 = 1
-    and status != 0
+    and status != 0 and dealer_name is not null
     <if test="uploadStartTime != null and uploadStartTime != '' and uploadEndTime != null and uploadEndTime != ''" >
       and upload_time between #{uploadStartTime,jdbcType=VARCHAR} and #{uploadEndTime,jdbcType=VARCHAR}
     </if>

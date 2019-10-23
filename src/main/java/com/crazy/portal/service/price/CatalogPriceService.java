@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 
@@ -118,6 +119,11 @@ public class CatalogPriceService {
      * @return
      */
     public CatalogPrice getPriceByProduct(String productModel, String platform){
-        return catalogPriceMapper.getPriceByProduct(productModel, platform);
+        CatalogPrice catalogPrice = catalogPriceMapper.getPriceByProduct(productModel, platform);
+        if(null == catalogPrice){
+            catalogPrice = new CatalogPrice();
+            catalogPrice.setCatalogPrice(BigDecimal.ZERO);
+        }
+        return catalogPrice;
     }
 }

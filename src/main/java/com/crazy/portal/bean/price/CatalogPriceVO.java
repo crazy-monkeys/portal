@@ -38,5 +38,6 @@ public class CatalogPriceVO extends PageBean {
     private Integer createId;
     private String userType;
     private String proposer;
+    private Integer dealerId;
 
 }

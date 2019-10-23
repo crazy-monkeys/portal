@@ -217,6 +217,7 @@ public class ErrorCodes {
         PRODUCT_QUERY_ERROR(70501,"产品查询异常",""),
         PRODUCT_SYNC_ERROR(70502,"产品同步异常",""),
         QTY_IS_NOT(70503,"可收货数量不足",""),
+        QTY_IS_WHOLE(70503,"该提货单行已全部提货",""),
 
         //预测管理
         FORECAST_YEAR_MONTH_FORMAT_ERROR(80000, "月份格式不符合要求，请重新输入", ""),

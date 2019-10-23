@@ -280,8 +280,8 @@
     from t_business_rebate_item
     where active = 1
     <if test="dealerId != null">
-      and customer_short_name = (
-        select cust_abbreviation from t_customer_info where id = #{dealerId,jdbcType=INTEGER}
+      and executor = (
+        select cust_name from t_customer_info where id = #{dealerId,jdbcType=INTEGER}
       )
     </if>
     <if test="customerName != null and customerName != ''">
