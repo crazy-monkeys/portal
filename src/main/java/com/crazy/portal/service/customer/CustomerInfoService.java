@@ -109,12 +109,12 @@ public class CustomerInfoService {
      *  报备状态 0-潜在客户 1-已报备 2-可报备 3-报备中
      *  1-客户查询 2-审批查询 3-报备查询
      */
-    public PageInfo<CustomerInfo> queryList(CustomerQueryBean customerQueryBean, User user){
+    public PageInfo<CustomerInfo> queryList(CustomerQueryBean customerQueryBean, User user,InternalUser internalUser){
         PortalUtil.defaultStartPage(customerQueryBean.getPageIndex(), customerQueryBean.getPageSize());
+
         if(customerQueryBean.getQueryType()==3){
             if(user.getUserType().equals(Enums.USER_TYPE.internal.toString())){
-                InternalUser internalUser = internalUserMapper.selectUserByName(user.getLoginName());
-                BusinessUtil.assertFlase(null == user,ErrorCodes.SystemManagerEnum.USER_NOT_EXISTS);
+                BusinessUtil.assertFlase(null == internalUser,ErrorCodes.SystemManagerEnum.USER_NOT_EXISTS);
                 customerQueryBean.setReportSales(internalUser.getUserNo());
             }else{
                 CustomerInfo dealer = customerInfoMapper.selectByPrimaryKey(user.getDealerId());
@@ -135,7 +135,6 @@ public class CustomerInfoService {
         }else{
             if(user.getUserType().equals(Enums.USER_TYPE.internal.toString())){
                 //客户查询 销售查询 客户销售为自己或自己战队人员
-                InternalUser internalUser = internalUserMapper.selectUserByName(user.getLoginName());
                 if(null != internalUser){
                     List<String> sales = internalUserService.getSalesTeam(internalUser);
                     customerQueryBean.setSalesTeam(sales);
@@ -145,7 +144,17 @@ public class CustomerInfoService {
                 customerQueryBean.setReportDealer(dealer.getInCode());
             }
         }
+
         List<CustomerInfo> customerInfos = customerInfoMapper.selectCustomer(customerQueryBean);
+        customerInfos.forEach(e->{
+            CustCorporateRelationship ship = custCorporateRelationshipService.selectZShip(e.getId());
+            e.setReportDealerName(null == ship?"":ship.getCorporateName());
+            CustZrAccountTeam team = custZrAccountTeamService.selectZRByCustId(e.getId());
+            if(null!=team){
+                InternalUser emp = internalUserService.selectByUserNo(team.getEmployeeId());
+                e.setReportSalesName(null == emp?"":emp.getUserName());
+            }
+        });
         return new PageInfo<>(customerInfos);
     }
 
@@ -876,12 +885,16 @@ public class CustomerInfoService {
         Map<String, List<? extends BaseRowModel>> resultMap = new HashMap<>();
         List<CustomerInfo> custList = customerInfoMapper.selectNameAndCodeByUserId(userId);
         List<CustomerCodeEO> custCodeList = new ArrayList<>();
-        custList.forEach(cust -> {
-            CustomerCodeEO eo = new CustomerCodeEO();
-            eo.setCustomerName(cust.getCustName());
-            eo.setCustomerCode(cust.getOutCode());
-            custCodeList.add(eo);
-        });
+        if(custList.isEmpty()){
+            custCodeList.add(new CustomerCodeEO());
+        }else{
+            custList.forEach(cust -> {
+                CustomerCodeEO eo = new CustomerCodeEO();
+                eo.setCustomerName(cust.getCustName());
+                eo.setCustomerCode(cust.getOutCode());
+                custCodeList.add(eo);
+            });
+        }
         List<VisitRecordEO> visitRecordList = new ArrayList<>();
         visitRecordList.add(new VisitRecordEO());
         resultMap.put("模板", visitRecordList);

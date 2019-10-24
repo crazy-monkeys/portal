@@ -47,12 +47,6 @@ public class CatalogPriceService {
     public PageInfo<CatalogPrice> selectWithPage(CatalogPriceVO catalogPriceVO){
         PortalUtil.defaultStartPage(catalogPriceVO.getPageIndex(), catalogPriceVO.getPageSize());
         Page<CatalogPrice> catalogPrices = catalogPriceMapper.selectByParamsWithPage(catalogPriceVO);
-
-        catalogPrices.getResult().forEach(x->{
-            String inCustomer = x.getInCustomer();
-            CustomerInfo customerInfo = customerInfoMapper.selectByOutCode(inCustomer);
-            x.setInCustomer(customerInfo == null ? inCustomer : customerInfo.getCustAbbreviation());
-        });
         return new PageInfo<>(catalogPrices);
     }
 

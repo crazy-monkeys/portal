@@ -102,6 +102,14 @@ public class SaleForecastService {
         for(Forecast forecast : forecastList) {
             AgencyTemplate agencyTemplate = new AgencyTemplate();
             copyDbFields(forecast, agencyTemplate);
+
+            agencyTemplate.setOperationYearMonth("");
+            agencyTemplate.setLastWriteOne(forecast.getLine().getCurrentWriteOne());
+            agencyTemplate.setLastWriteTwo(forecast.getLine().getCurrentWriteTwo());
+            agencyTemplate.setLastWriteThree(forecast.getLine().getCurrentWriteThree());
+            agencyTemplate.setLastWriteFour(forecast.getLine().getCurrentWriteFour());
+            agencyTemplate.setLastWriteFive(forecast.getLine().getCurrentWriteFive());
+            agencyTemplate.setLastWriteSix(forecast.getLine().getCurrentWriteSix());
             templateList.add(agencyTemplate);
         }
         ExcelUtils.writeExcel(response, templateList, AgencyTemplate.class);

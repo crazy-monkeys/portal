@@ -116,7 +116,7 @@ public class SyncBICatalogPricesJob implements Job {
 
         String effectiveDate = x.getEffective_date();
         if(StringUtils.isNotEmpty(effectiveDate)){
-            catalogPrice.setEffectTime(effectiveDate.substring(0,effectiveDate.lastIndexOf("-")+3));
+            catalogPrice.setEffectTime(effectiveDate.substring(0,4)+"-"+effectiveDate.substring(4,6)+"-"+effectiveDate.substring(6));
         }
         catalogPrice.setStatus(x.getActive());
         catalogPrice.setCreateTime(now);

@@ -253,7 +253,7 @@
     where info.active =1
   </update>
   
-  <select id="selectProductInfo" resultMap="ProductResultMap">
+  <select id="selectProductInfo" resultMap="BaseResultMap">
     select
     pro.id,
     pro.sn,

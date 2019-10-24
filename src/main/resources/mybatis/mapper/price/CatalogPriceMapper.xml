@@ -74,13 +74,13 @@
       )
     )
     <!--内部客户为当前登录的代理商-->
-    and in_customer in (
+    and (in_customer in (
       select cust_abbreviation from t_customer_info
       where id in (
-        select cust_id from t_cust_corporate_relationship where corporate_type='Z004-1'
+        select cust_id from t_cust_corporate_relationship where corporate_type='Z004'
         and corporate_id = (select in_code from t_customer_info where id = #{dealerId,jdbcType=INTEGER})
       )
-    )
+    ) or in_customer = '')
     <!--或者当前登录人申请过此物料号-->
     or sap_code in (
       select distinct sap_code from t_enquiry_price where proposer = #{proposer,jdbcType=VARCHAR}

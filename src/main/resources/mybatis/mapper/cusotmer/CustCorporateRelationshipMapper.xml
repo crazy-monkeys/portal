@@ -163,6 +163,10 @@
   ) and active=1
   </select>
   
+  <select id="selectZShip" resultMap="BaseResultMap">
+    select * from t_cust_corporate_relationship where corporate_type = 'Z002' and active=1 and cust_id= #{custId,jdbcType=INTEGER}
+  </select>
+  
   <update id="deleteByCustId">
     update t_cust_corporate_relationship set active = 0 where active =1 and cust_id = #{custId,jdbcType=INTEGER}
   </update>

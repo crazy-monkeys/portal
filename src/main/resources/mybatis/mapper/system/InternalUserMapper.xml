@@ -206,7 +206,7 @@
   </select>
 
   <select id="selectUserByName" resultMap="BaseResultMap">
-      select * From t_internal_user where substring_index(user_mail,'@',1) = #{userName,jdbcType=VARCHAR}
+      select * From t_internal_user where user_mail = CONCAT(#{userName,jdbcType=VARCHAR},'@unisoc.com')
   </select>
   
   <select id="selectUserbyOrg" resultType="java.lang.String">

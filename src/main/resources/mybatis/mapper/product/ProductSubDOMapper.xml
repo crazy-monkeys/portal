@@ -114,4 +114,8 @@
       update_time = #{updateTime,jdbcType=TIMESTAMP}
     where sub_id = #{subId,jdbcType=INTEGER}
   </update>
+
+  <select id="selectBySub" resultMap="BaseResultMap">
+    select * from t_product_sub where product_id = #{subId,jdbcType=INTEGER}
+  </select>
 </mapper>

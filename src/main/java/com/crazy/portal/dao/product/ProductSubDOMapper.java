@@ -2,6 +2,8 @@ package com.crazy.portal.dao.product;
 
 import com.crazy.portal.entity.product.ProductSubDO;
 
+import java.util.List;
+
 public interface ProductSubDOMapper {
     int deleteByPrimaryKey(Integer id);
 
@@ -14,4 +16,6 @@ public interface ProductSubDOMapper {
     int updateByPrimaryKeySelective(ProductSubDO record);
 
     int updateByPrimaryKey(ProductSubDO record);
+
+    List<ProductSubDO> selectBySub(Integer productId);
 }

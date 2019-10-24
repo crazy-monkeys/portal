@@ -38,6 +38,9 @@ public class ProductService {
             ProductInfoDO record = new ProductInfoDO();
             BeanUtils.copyNotNullFields(productVO, record);
             List<ProductInfoDO> results = productInfoDOMapper.selectProductInfo(record);
+            results.forEach(e->{
+                e.setSubProducts(productSubDOMapper.selectBySub(e.getId()));
+            });
             return new PageInfo<>(results);
         }catch (Exception e){
             log.error("产品查询异常！",e);

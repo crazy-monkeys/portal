@@ -350,7 +350,19 @@ public class OrderApplyService {
             itItem.setSequenceno((i+1)+"");
             itItem.setProductid(productId);
             itItem.setOrderquantity(num);
-            itItem.setKondm(productInfoDO.getBu());
+            String bu = productInfoDO.getBu();
+            if(bu.equals("Connectivity Device BU")){
+                bu = "Z3";
+            }else if(bu.equals("Consumer Electronics Bu")){
+                bu = "Z1";
+            }else if(bu.equals("Industrial Electronics BU")){
+                bu="Z2";
+            }else if(bu.equals("LMT")){
+                bu="02";
+            }else{
+                bu="01";
+            }
+            itItem.setKondm(bu);
             //根据物料号获取平台
             itItem.setPlatform(productInfoDO.getPlatform());
             items.add(itItem);

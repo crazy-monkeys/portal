@@ -24,4 +24,6 @@ public interface CustCorporateRelationshipMapper {
     List<CustCorporateRelationship> selectByCustId(Integer custId);
 
     int deleteByCustId(Integer custId);
+
+    CustCorporateRelationship selectZShip(Integer custId);
 }

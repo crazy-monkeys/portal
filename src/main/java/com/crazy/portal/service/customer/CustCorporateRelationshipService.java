@@ -35,6 +35,10 @@ public class CustCorporateRelationshipService {
         return custCorporateRelationshipMapper.selectDealerShipByName(custName);
     }
 
+    public CustCorporateRelationship selectZShip(Integer custId){
+        return custCorporateRelationshipMapper.selectZShip(custId);
+    }
+
     public void saveOrUpdate(List<CustCorporateRelationship> custCorporateRelationships, Integer custId, Integer userId){
         if(null == custCorporateRelationships || custCorporateRelationships.isEmpty()){
             return;

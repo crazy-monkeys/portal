@@ -80,7 +80,7 @@ public class MemberInfoSyncHandler extends AbstractHandler implements IHandler<M
     private void saveOrUpdateCustomer(MemberInfoSyncRequest request){
         boolean dealerCreate = false;
         log.info("request outcode"+request.getOutCode());
-        CustomerInfo customerinfo = customerInfoMapper.selectByOutCode(request.getInCode());
+        CustomerInfo customerinfo = customerInfoMapper.selectByInCode(request.getInCode());
         if(null == customerinfo){
             customerinfo = new CustomerInfo();
             customerinfo.setCustType(Enums.CUSTOMER_TYPE.WAIT_SUBMIT.getCode());
@@ -268,7 +268,11 @@ public class MemberInfoSyncHandler extends AbstractHandler implements IHandler<M
         List<CustCorporateRelationship> results = StringUtil.isEmpty(relationShips)?new ArrayList<>():JSON.parseArray(relationShips, CustCorporateRelationship.class);
         custCorporateRelationshipService.deleteByCustId(custId);
         results.forEach(e->{
+            CustomerInfo customerInfo = customerInfoMapper.selectByInCode(e.getCorporateName());
             e.setCustId(custId);
+            e.setCorporateType(null == e.getCorporateType()?null:e.getCorporateType().substring(0,4));
+            e.setCorporateId(customerInfo.getInCode());
+            e.setCorporateName(customerInfo.getCustName());
             e.setActive(Enums.YES_NO.YES.getCode());
             custCorporateRelationshipService.save(e);
         });

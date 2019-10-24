@@ -72,6 +72,9 @@ public class InternalUserService {
         //OrganizationalStructure userOrg = organizationalStructureMapper.selectByOrgNo(Integer.valueOf(user.getUserDepartmentCode()));
     }
 
+    public InternalUser selectByUserNo(String userNo){
+        return internalUserMapper.selectByUserNo(userNo);
+    }
 
     public CustomerOrgBean getSalesInfo(Integer custId){
         CustomerOrgBean customerOrgBean = new CustomerOrgBean();
