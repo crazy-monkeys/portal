@@ -40,36 +40,43 @@ public class SyncBICatalogPricesJob implements Job {
 
     @Override
     public void execute(JobExecutionContext context){
+        long start = System.currentTimeMillis();
+        log.info("-----truncate catalogPrice");
+        catalogPriceService.deleteAll();
         log.info("-----Start synchronizing bi catalog rPrice data");
         List<BICatalogPrice> biActualPrices = catalogPriceService.getBIActualPrices();
         log.info("-----Synchronize {} pieces of data",biActualPrices.size());
 
         biActualPrices.forEach(x->{
-            final String sapCode = x.getSap_code();
-            //根据sapCode查询唯一记录
-            CatalogPrice catalogPrice = catalogPriceService.selectBySapCode(sapCode);
+            //查询出客户简称
+            CustomerInfo customerInfo = customerInfoMapper.selectByOutCode(x.getCustomer_incode());
+            String inCustomer = customerInfo == null ? x.getCustomer_incode() : customerInfo.getCustAbbreviation();
+
+            //将客户编码重置为简称
+            x.setCustomer_incode(inCustomer);
+
+            String product = x.getProduct();
+            String bu = x.getBU();
+
+            //查询当前记录是否已经存在
+            CatalogPrice catalogPrice = catalogPriceService.findCatalogPrice(product, bu,inCustomer);
+
             final Date now = new Date();
             if(Objects.nonNull(catalogPrice)){
-                String createDate = DateUtil.format(catalogPrice.getCreateTime(),DateUtil.SHORT_FORMAT);
-                String nowDate = DateUtil.format(now,DateUtil.SHORT_FORMAT);
-                //注意: 由于每次都是全量推送数据,如果先全量删除再全量更新会造成同步时间段内 目录价格服务不可用
-                //这里将该风险避免到最低,如果不是当天数据则进行删除,否则进行修改,金额累加
-                if(!nowDate.equals(createDate)){
-                    log.info("Non - day data are deleted - {}", sapCode);
-                    catalogPriceService.delete(catalogPrice.getId());
-                }else{
-                    log.info("Data of the day are modified - {}", sapCode);
-                    JSONArray boms = catalogPrice.getBoms();
-                    CatalogPrice updateCatalogPrice = this.buildCatalogPrice(x, boms, now);
-                    updateCatalogPrice.setId(catalogPrice.getId());
-                    updateCatalogPrice.setModifyTime(now);
-                    catalogPriceService.update(updateCatalogPrice);
-                    return;
-                }
+                Integer id = catalogPrice.getId();
+                log.info("Prepare to modify data - product:{},bu:{},inCustomer:{}", product,bu,inCustomer);
+                JSONArray boms = catalogPrice.getBoms();
+                CatalogPrice updateCatalogPrice = this.buildCatalogPrice(x, boms, now);
+                updateCatalogPrice.setId(id);
+                updateCatalogPrice.setModifyTime(now);
+                catalogPriceService.update(updateCatalogPrice);
+                return;
             }
+            log.info("Prepare to insert data - product:{},bu:{},inCustomer:{}", product,bu,inCustomer);
             catalogPriceService.insertCatalogPrice(this.buildCatalogPrice(x, new JSONArray(), now));
         });
-        log.info("-----End synchronizing bi catalog rPrice data");
+        long end = System.currentTimeMillis();
+        log.info("-----End synchronizing bi catalog rPrice data ,time :{}",(end-start)/1000);
     }
 
     /**
@@ -94,52 +101,89 @@ public class SyncBICatalogPricesJob implements Job {
 
     /**
      * 构建目录价格对象
-     * @param x
+     * @param price
      * @param boms
      * @param now
      * @return
      */
-    private CatalogPrice buildCatalogPrice(BICatalogPrice x, JSONArray boms, Date now) {
+    private CatalogPrice buildCatalogPrice(BICatalogPrice price, JSONArray boms, Date now) {
         CatalogPrice catalogPrice = new CatalogPrice();
-        catalogPrice.setBu(x.getBU());
-        catalogPrice.setPdt(x.getPDT());
-        catalogPrice.setSapCode(x.getSap_code());
+        catalogPrice.setBu(price.getBU());
+        catalogPrice.setPdt(price.getPDT());
+        catalogPrice.setSapCode(price.getSap_code());
 
-        CustomerInfo customerInfo = customerInfoMapper.selectByOutCode(x.getCustomer_incode());
-        String inCustomer = null == customerInfo?x.getCustomer_incode():customerInfo.getCustAbbreviation();
-        catalogPrice.setInCustomer(inCustomer);
-        catalogPrice.setProductModel(x.getProduct());
-        catalogPrice.setPriceType(x.getPrice_type());
-        catalogPrice.setProductType(x.getClass2());
-        catalogPrice.setRemark(x.getComments());
-        catalogPrice.setPlatform(x.getClass3());
+        //price.getCustomer_incode() 已经被重置为客户简称
+        catalogPrice.setInCustomer(price.getCustomer_incode());
+        catalogPrice.setProductModel(price.getProduct());
+        catalogPrice.setPriceType(price.getPrice_type());
+        catalogPrice.setProductType(price.getClass2());
+        catalogPrice.setRemark(price.getComments());
+        catalogPrice.setPlatform(price.getClass3());
 
-        String effectiveDate = x.getEffective_date();
+        String effectiveDate = price.getEffective_date();
         if(StringUtils.isNotEmpty(effectiveDate)){
             catalogPrice.setEffectTime(effectiveDate.substring(0,4)+"-"+effectiveDate.substring(4,6)+"-"+effectiveDate.substring(6));
         }
-        catalogPrice.setStatus(x.getActive());
+        catalogPrice.setStatus(price.getActive());
         catalogPrice.setCreateTime(now);
 
-        //如果是叠加操作,判断实体料号是否已经存在(即任务当天多次触发),如果存在则直接覆盖
-        if(!boms.isEmpty()){
-            String jsonStr = JSON.toJSONString(boms);
-            List<CatalogBomsPrice> bomsPrices = JSON.parseArray(jsonStr,CatalogBomsPrice.class);
-            bomsPrices = bomsPrices.stream().filter(bom->x.getBom_id().equals(bom.getBomId())).collect(Collectors.toList());
-            if(!bomsPrices.isEmpty()){
-                boms = new JSONArray();
-            }
+        //构建Bom数据
+        CatalogBomsPrice currentBom = this.buildBom(price);
+
+        if(boms.isEmpty()){
+            boms.add(currentBom);
+        }else{
+            //如果boms不为空,说明可能需要更新数据
+            String bomsStr = JSON.toJSONString(boms);
+            boms = this.buildNewBoms(bomsStr, currentBom);
         }
-        CatalogBomsPrice bom = new CatalogBomsPrice();
-        bom.setBomId(x.getBom_id());
-        bom.setBomName(x.getBom_name());
-        bom.setInCustomer(inCustomer);
-        bom.setPrice(new BigDecimal(x.getPrice()));
-        bom.setQty(Integer.parseInt(x.getQty()));
-        boms.add(bom);
         catalogPrice.setBoms(boms);
         //计算boms总价
         catalogPrice.setCatalogPrice(this.calculateCatalogPrice(boms));
         return catalogPrice;
+    }
+
+    /**
+     * 组装Boms
+     * 检查当前Bom是否已经在库中存在，如果存在，需要更新该bom的价格，否则进行追加
+     * @param bomsStr
+     * @param currentBom
+     * @return
+     */
+    private JSONArray buildNewBoms(String bomsStr, CatalogBomsPrice currentBom) {
+        List<CatalogBomsPrice> bomsPrices = JSON.parseArray(bomsStr,CatalogBomsPrice.class);
+
+        boolean isExists = !(bomsPrices.stream()
+                .filter(x -> x.getBomId().equals(currentBom.getBomId()))
+                .collect(Collectors.toList()).isEmpty());
+
+        if(isExists){
+            //更新价格
+            bomsPrices.stream().forEach(x->{
+                if(x.getBomId().equals(currentBom.getBomId())){
+                    x.setPrice(x.getPrice().add(currentBom.getPrice()));
+                    x.setQty(x.getQty() + currentBom.getQty());
+                }
+            });
+        }
+        else{
+            bomsPrices.add(currentBom);
+        }
+        return JSONArray.parseArray(JSON.toJSONString(bomsPrices));
+    }
+
+    /**
+     * 构建bom对象
+     * @param x
+     * @return
+     */
+    private CatalogBomsPrice buildBom(BICatalogPrice x) {
+        CatalogBomsPrice bom = new CatalogBomsPrice();
+        bom.setBomId(x.getBom_id());
+        bom.setBomName(x.getBom_name());
+        bom.setInCustomer(x.getCustomer_incode());
+        bom.setPrice(new BigDecimal(x.getPrice()));
+        bom.setQty(Integer.parseInt(x.getQty()));
+        return bom;
     }
 }

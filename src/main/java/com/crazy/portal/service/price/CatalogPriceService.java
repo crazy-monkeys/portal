@@ -3,14 +3,11 @@ package com.crazy.portal.service.price;
 import com.alibaba.fastjson.JSON;
 import com.crazy.portal.bean.price.BICatalogPrice;
 import com.crazy.portal.bean.price.CatalogPriceVO;
-import com.crazy.portal.dao.cusotmer.CustomerInfoMapper;
 import com.crazy.portal.dao.price.CatalogPriceMapper;
-import com.crazy.portal.entity.cusotmer.CustomerInfo;
 import com.crazy.portal.entity.price.CatalogPrice;
 import com.crazy.portal.util.CallApiUtils;
 import com.crazy.portal.util.HttpClientUtils;
 import com.crazy.portal.util.PortalUtil;
-import com.crazy.portal.util.StringUtil;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
@@ -36,8 +33,6 @@ public class CatalogPriceService {
 
     @Resource
     private CatalogPriceMapper catalogPriceMapper;
-    @Resource
-    private CustomerInfoMapper customerInfoMapper;
 
     /**
      * 分页查询目录价
@@ -70,8 +65,8 @@ public class CatalogPriceService {
     }
 
     @Transactional
-    public int delete(Integer id){
-        return catalogPriceMapper.deleteByPrimaryKey(id);
+    public int deleteAll(){
+        return catalogPriceMapper.deleteAll();
     }
 
 
