@@ -12,8 +12,10 @@ import com.crazy.portal.entity.cusotmer.CustomerInfo;
 import com.crazy.portal.entity.handover.ReceiveDetail;
 import com.crazy.portal.entity.order.*;
 import com.crazy.portal.entity.product.ProductInfoDO;
+import com.crazy.portal.entity.system.SysParameter;
 import com.crazy.portal.service.customer.CustomerInfoService;
 import com.crazy.portal.service.handover.ReceiveService;
+import com.crazy.portal.service.system.SysParamService;
 import com.crazy.portal.util.*;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -59,6 +61,8 @@ public class OrderApplyService {
     private CustomerInfoService customerInfoService;
     @Resource
     private ReceiveService receiveService;
+    @Resource
+    private SysParamService sysParamService;
 
     /**
      * 分页查询
@@ -351,18 +355,8 @@ public class OrderApplyService {
             itItem.setProductid(productId);
             itItem.setOrderquantity(num);
             String bu = productInfoDO.getBu();
-            if(bu.equals("Connectivity Device BU")){
-                bu = "Z3";
-            }else if(bu.equals("Consumer Electronics Bu")){
-                bu = "Z1";
-            }else if(bu.equals("Industrial Electronics BU")){
-                bu="Z2";
-            }else if(bu.equals("LMT")){
-                bu="02";
-            }else{
-                bu="01";
-            }
-            itItem.setKondm(bu);
+            SysParameter sysParameter = sysParamService.selectParam("4","1",productInfoDO.getBu());
+            itItem.setKondm(sysParameter.getZhName());
             //根据物料号获取平台
             itItem.setPlatform(productInfoDO.getPlatform());
             items.add(itItem);

@@ -40,7 +40,7 @@ public class SaleForecastController extends BaseController {
      */
     @PostMapping(value = "/forecast/agency/template/upload")
     public BaseResponse uploadAgencyTemplate(MultipartFile excel) {
-        return super.successResult(saleForecastService.uploadAgencyTemplate(excel, getCurrentUser().getId()));
+        return super.successResult(saleForecastService.uploadAgencyTemplate(excel, getCurrentUser()));
     }
 
     /**

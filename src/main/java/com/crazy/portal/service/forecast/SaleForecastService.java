@@ -13,6 +13,7 @@ import com.crazy.portal.entity.forecast.ForecastLine;
 import com.crazy.portal.entity.forecast.ForecastSd;
 import com.crazy.portal.entity.price.CatalogPrice;
 import com.crazy.portal.entity.product.ProductInfoDO;
+import com.crazy.portal.entity.system.User;
 import com.crazy.portal.service.customer.CustomerInfoService;
 import com.crazy.portal.service.price.CatalogPriceService;
 import com.crazy.portal.service.product.ProductService;
@@ -122,11 +123,10 @@ public class SaleForecastService {
      * 3：进行入库动作
      * 4：传输给到BI进行数据check
      * @param excel
-     * @param userId
      * @return
      */
     @Transactional
-    public ForecastResult uploadAgencyTemplate(MultipartFile excel, Integer userId) {
+    public ForecastResult uploadAgencyTemplate(MultipartFile excel, User user) {
         BusinessUtil.notNull(excel, FORECAST_EXCEL_CHECK_ERROR);
         List<AgencyTemplate> agencyForecastList = ExcelUtils.readExcel(excel, AgencyTemplate.class);
         if(null == agencyForecastList || agencyForecastList.isEmpty()){
@@ -134,18 +134,31 @@ public class SaleForecastService {
             throw new BusinessException(FORECAST_DATA_NOT_EMPTY);
         }
         //获取代理商信息
-        CustomerInfo customerInfo = getCustomerInfo(userId);
-        String agencyAbbreviation = customerInfo.getCustAbbreviation();
+        CustomerInfo customerInfo = new CustomerInfo();
+        String agencyAbbreviation = new String();
+        if(user.getUserType().equals(Enums.USER_TYPE.agent.toString())){
+            customerInfo = getCustomerInfo(user.getId());
+            agencyAbbreviation = customerInfo.getCustAbbreviation();
+        }
+
         String batchNo = generateBathNo();
         for(AgencyTemplate template : agencyForecastList){
             boolean isDate = BusinessUtil.isDateTime(template.getCloseDate());
             BusinessUtil.assertTrue(isDate, FORECAST_DATE_FORMAT_ERROR);
+
+            //如果 当前人不是代理商  代理商取模版中的客户信息
+            if(!user.getUserType().equals(Enums.USER_TYPE.agent.toString())){
+                customerInfo = customerInfoService.selectCustomerByAbbreviation(template.getCustomerAbbreviation());
+                BusinessUtil.assertFlase(null == customerInfo,ErrorCodes.BusinessEnum.CUSTOMER_IS_EMPYT);
+
+                agencyAbbreviation = customerInfo.getCustAbbreviation();
+            }
             template.setAgencyAbbreviation(agencyAbbreviation);
             template.setChannel("A04".equals(customerInfo.getBusinessType()) ? "代理" : "直供");
             //获取代理商上级客户信息
             CustomerOrgBean customerOrgBean = getCustomerOrgInfo(template.getCustomerAbbreviation());
             ProductInfoDO productInfo = getProductInfo(template.getProductModel(), template.getPlatform());
-            Forecast forecast = new Forecast(userId);
+            Forecast forecast = new Forecast(user.getId());
             copyTemplateFields(template, forecast);
             forecast.setAgencyAbbreviation(agencyAbbreviation);
             //设置产品字段
@@ -165,14 +178,14 @@ public class SaleForecastService {
             BusinessUtil.assertTrue((cnt == 0), FORECAST_DATA_REPEAT_ERROR);
             forecastMapper.insertSelective(forecast);
             if(log.isDebugEnabled()){
-                log.debug("[upload data] Save forecast head data , userId:{} , data:{}", userId, JSONObject.toJSON(forecast));
+                log.debug("[upload data] Save forecast head data , userId:{} , data:{}", user.getId(), JSONObject.toJSON(forecast));
             }
             ForecastLine line = new ForecastLine();
             copyTemplateFields(template, line);
             line.setfId(forecast.getId());
             forecastLineMapper.insertSelective(line);
             if(log.isDebugEnabled()){
-                log.debug("[upload data] Save forecast line data , userId:{} , data:{}", userId, JSONObject.toJSON(line));
+                log.debug("[upload data] Save forecast line data , userId:{} , data:{}", user.getId(), JSONObject.toJSON(line));
             }
 //            template.setId(String.valueOf(forecast.getId()));
         }

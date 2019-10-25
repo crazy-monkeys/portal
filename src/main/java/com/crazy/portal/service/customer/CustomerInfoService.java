@@ -1025,6 +1025,10 @@ public class CustomerInfoService {
         return customerOrgBean;
     }
 
+    public CustomerInfo selectCustomerByAbbreviation(String custAbbreviation){
+        return customerInfoMapper.selectByCustAbbreviation(custAbbreviation);
+    }
+
     public List<CustomerInfo> selectCustShip(Integer custId){
         return customerInfoMapper.selectCustShip(custId);
     }
