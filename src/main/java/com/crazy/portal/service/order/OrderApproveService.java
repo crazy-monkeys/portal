@@ -127,6 +127,7 @@ public class OrderApproveService {
         ZsalesordercreateOutHeader esHeader = response.getEsHeader();
         Order order = new Order();
         BeanUtils.copyNotNullFields(orderApply,order);
+        order.setId(null);
         order.setCreateTime(DateUtil.getCurrentTS());
         order.setCreateId(userId);
         order.setRGrossValue(esHeader.getGrossvalue());
