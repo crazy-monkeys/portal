@@ -89,7 +89,6 @@ public class SaleForecastService {
         String lastYearMonth;
         try {
             Date lastYearMonthDate = DateUtil.parseDate(yearMonth, DateUtil.MONTH_FORMAT);
-            lastYearMonthDate = DateUtil.computeWithMonth(lastYearMonthDate, -1);
             lastYearMonth = DateUtil.format(lastYearMonthDate, DateUtil.MONTH_FORMAT);
         }catch (Exception ex) {
             log.error(FORECAST_YEAR_MONTH_FORMAT_ERROR.getZhMsg() + "yearMonth:" + yearMonth, ex);
@@ -105,12 +104,27 @@ public class SaleForecastService {
             copyDbFields(forecast, agencyTemplate);
 
             agencyTemplate.setOperationYearMonth("");
-            agencyTemplate.setLastWriteOne(forecast.getLine().getCurrentWriteOne());
-            agencyTemplate.setLastWriteTwo(forecast.getLine().getCurrentWriteTwo());
-            agencyTemplate.setLastWriteThree(forecast.getLine().getCurrentWriteThree());
-            agencyTemplate.setLastWriteFour(forecast.getLine().getCurrentWriteFour());
-            agencyTemplate.setLastWriteFive(forecast.getLine().getCurrentWriteFive());
-            agencyTemplate.setLastWriteSix(forecast.getLine().getCurrentWriteSix());
+            agencyTemplate.setCloseDate("");
+            agencyTemplate.setDelayStock("");
+
+            agencyTemplate.setLastWriteOne(forecast.getLine().getCurrentWriteTwo());
+            agencyTemplate.setCurrentWriteOne("");
+
+            agencyTemplate.setLastWriteTwo(forecast.getLine().getCurrentWriteThree());
+            agencyTemplate.setCurrentWriteTwo("");
+
+            agencyTemplate.setLastWriteThree(forecast.getLine().getCurrentWriteFour());
+            agencyTemplate.setCurrentWriteThree("");
+
+            agencyTemplate.setLastWriteFour(forecast.getLine().getCurrentWriteFive());
+            agencyTemplate.setCurrentWriteFour("");
+
+            agencyTemplate.setLastWriteFive(forecast.getLine().getCurrentWriteSix());
+            agencyTemplate.setCurrentWriteFive("");
+
+            agencyTemplate.setLastWriteSix("");
+            agencyTemplate.setCurrentWriteSix("");
+
             templateList.add(agencyTemplate);
         }
         ExcelUtils.writeExcel(response, templateList, AgencyTemplate.class);

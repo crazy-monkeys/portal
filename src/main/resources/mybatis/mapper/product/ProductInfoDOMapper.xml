@@ -269,7 +269,7 @@
     pro.mpq
     from t_product_batch batch
     left join t_product_info pro on batch.id = pro.batch_id
-    where batch.batch_status=1
+    where batch.batch_status=1 and pro.life_cycle = 1
     <if test="product != null and product != ''">
         and pro.product like concat('%',#{product,jdbcType=VARCHAR},'%')
     </if>

@@ -18,5 +18,7 @@ public class ProductBean {
     private String Category;
     private Integer SN;
     private String Manager;
+    //1-有  0-没有
+    private String PriceFlag;
     private String[] BOMCode;
 }

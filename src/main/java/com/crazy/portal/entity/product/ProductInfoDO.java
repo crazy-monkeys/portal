@@ -22,6 +22,7 @@ public class ProductInfoDO {
 
     private String category;
 
+    //是否有价格产品  1-有 可查看  0-无 可下预测
     private String lifeCycle;
 
     private String subCategory;

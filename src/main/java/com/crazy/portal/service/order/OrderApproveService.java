@@ -17,7 +17,9 @@ import com.crazy.portal.entity.order.Order;
 import com.crazy.portal.entity.order.OrderApply;
 import com.crazy.portal.entity.order.OrderLine;
 import com.crazy.portal.entity.product.ProductInfoDO;
+import com.crazy.portal.entity.system.SysParameter;
 import com.crazy.portal.entity.system.User;
+import com.crazy.portal.service.system.SysParamService;
 import com.crazy.portal.util.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -58,6 +60,8 @@ public class OrderApproveService {
     private ProductInfoDOMapper productInfoDOMapper;
     @Resource
     private CustomerInfoMapper customerInfoMapper;
+    @Resource
+    private SysParamService sysParamService;
 
     /**
      * 订单审批
@@ -412,7 +416,8 @@ public class OrderApproveService {
             String requestDate = StringUtil.isNotEmpty(expectedDeliveryDate)?expectedDeliveryDate:line.getExpectedDeliveryDate();
             item.setRequestdate(requestDate);
             ProductInfoDO productInfoDO = productInfoDOMapper.selectBySapMidAndPlatForm(productId, platform);
-            item.setKondm(productInfoDO.getBu());
+            SysParameter sysParameter = sysParamService.selectParam("4","1",productInfoDO.getBu());
+            item.setKondm(sysParameter.getZhName());
             items.add(item);
             line_no ++;
         }

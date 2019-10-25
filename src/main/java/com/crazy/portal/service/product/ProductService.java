@@ -90,6 +90,7 @@ public class ProductService {
                 ProductInfoDO infoDO = new ProductInfoDO();
                 mappingVO(infoDO,vo);
                 infoDO.setBatchId(batchDO.getId());
+                infoDO.setLifeCycle(vo.getPriceFlag());
                 productInfoDOMapper.insertSelective(infoDO);
                 saveProductSub(infoDO, vo);
             }

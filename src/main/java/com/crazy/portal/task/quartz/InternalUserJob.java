@@ -75,7 +75,6 @@ public class InternalUserJob implements Job{
                         internalUserMapper.insertSelective(internalUser);
                     }
                 });
-
             }
         }catch (Exception e){
             log.error("人员数据同步异常", e);

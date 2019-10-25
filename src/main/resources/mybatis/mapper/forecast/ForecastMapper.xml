@@ -709,9 +709,6 @@
     and forecast_type = #{forecastType,jdbcType=VARCHAR}
     and platform = #{platform,jdbcType=VARCHAR}
     and product_model = #{productModel,jdbcType=VARCHAR}
-    and version = #{version,jdbcType=VARCHAR}
-    and close_date = #{closeDate,jdbcType=VARCHAR}
-    and delay_stock = #{delayStock,jdbcType=VARCHAR}
   </select>
 
   <update id="rejectDataByIds" >

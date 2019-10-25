@@ -354,7 +354,6 @@ public class OrderApplyService {
             itItem.setSequenceno((i+1)+"");
             itItem.setProductid(productId);
             itItem.setOrderquantity(num);
-            String bu = productInfoDO.getBu();
             SysParameter sysParameter = sysParamService.selectParam("4","1",productInfoDO.getBu());
             itItem.setKondm(sysParameter.getZhName());
             //根据物料号获取平台
