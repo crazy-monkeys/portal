@@ -448,11 +448,10 @@ public class SaleForecastService {
                                                         String customerAbbreviation, String salePeople,
                                                         String uploadStartTime, String uploadEndTime,
                                                         String agencyAbbreviation, String channel) {
-        List<Integer> userList;
-        PortalUtil.defaultStartPage(pageNum,pageSize);
         try {
-            userList = userCustomerMappingService.selectUserMapping(userId, Enums.CustomerMappingModel.Forecast.getValue());
+            List<Integer> userList = userCustomerMappingService.selectUserMapping(userId, Enums.CustomerMappingModel.Forecast.getValue());
             Integer[] userIds = new Integer[userList.size()];
+            PortalUtil.defaultStartPage(pageNum,pageSize);
             List<Forecast> result = forecastMapper.selectBiDataByLeader(userList.toArray(userIds), customerAbbreviation,
                     salePeople, uploadStartTime, uploadEndTime, agencyAbbreviation, channel);
             return new PageInfo<>(result);
