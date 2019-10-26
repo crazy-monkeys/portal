@@ -38,6 +38,7 @@
     <result column="create_time_str" jdbcType="VARCHAR" property="createTimeStr" />
     <result column="agency_abbreviation" jdbcType="VARCHAR" property="agencyAbbreviation" />
     <result column="po_price" jdbcType="VARCHAR" property="poPrice" />
+    <result column="representative" jdbcType="VARCHAR" property="representative" />
   </resultMap>
 
   <resultMap id="fullFieldMap" type="com.crazy.portal.entity.forecast.Forecast" extends="BaseResultMap" >
@@ -185,6 +186,9 @@
       <if test="operationRemark != null" >
         operation_remark,
       </if>
+      <if test="representative != null" >
+        representative,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -285,6 +289,9 @@
       </if>
       <if test="operationRemark != null" >
         #{operationRemark},
+      </if>
+      <if test="representative != null" >
+        #{representative},
       </if>
     </trim>
   </insert>
