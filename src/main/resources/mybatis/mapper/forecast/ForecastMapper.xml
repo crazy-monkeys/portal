@@ -717,7 +717,7 @@
     and platform = #{platform,jdbcType=VARCHAR}
     and product_model = #{productModel,jdbcType=VARCHAR}
     and status in (1,2,3,4)
-    and operationYear_month = #{operationYearMonth}
+    and operation_year_month = #{operationYearMonth,jdbcType=VARCHAR}
   </select>
 
   <update id="rejectDataByIds" >
