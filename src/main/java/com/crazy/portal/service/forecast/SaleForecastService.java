@@ -123,7 +123,7 @@ public class SaleForecastService {
             agencyTemplate.setLastWriteFour(forecast.getLine().getCurrentWriteFive());
             agencyTemplate.setCurrentWriteFour("");
 
-            agencyTemplate.setForecastMonthFive(forecast.getLine().getForecastMonthFive());
+            agencyTemplate.setForecastMonthFive(forecast.getLine().getForecastMonthSix());
             agencyTemplate.setLastWriteFive(forecast.getLine().getCurrentWriteSix());
             agencyTemplate.setCurrentWriteFive("");
 
