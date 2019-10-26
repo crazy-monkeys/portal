@@ -1,10 +1,15 @@
 package com.crazy.portal.entity.forecast;
 
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+
 /**
  * 
  * @author lee
  * @date   2019-09-03 21:16::32
  */
+
+@Slf4j
 public class ForecastLine {
     /**
      * 
@@ -327,7 +332,7 @@ public class ForecastLine {
     }
 
     public String getGapOne() {
-        return gapOne;
+        return calculateGap(lastWriteOne, currentWriteOne, gapOne);
     }
 
     public void setGapOne(String gapOne) {
@@ -399,7 +404,7 @@ public class ForecastLine {
     }
 
     public String getGapTwo() {
-        return gapTwo;
+        return calculateGap(lastWriteTwo, currentWriteTwo, gapTwo);
     }
 
     public void setGapTwo(String gapTwo) {
@@ -471,7 +476,7 @@ public class ForecastLine {
     }
 
     public String getGapThree() {
-        return gapThree;
+        return calculateGap(lastWriteThree, currentWriteThree, gapThree);
     }
 
     public void setGapThree(String gapThree) {
@@ -543,7 +548,7 @@ public class ForecastLine {
     }
 
     public String getGapFour() {
-        return gapFour;
+        return calculateGap(lastWriteFour, currentWriteFour, gapFour);
     }
 
     public void setGapFour(String gapFour) {
@@ -615,7 +620,7 @@ public class ForecastLine {
     }
 
     public String getGapFive() {
-        return gapFive;
+        return calculateGap(lastWriteFive, currentWriteFive, gapFive);
     }
 
     public void setGapFive(String gapFive) {
@@ -687,7 +692,7 @@ public class ForecastLine {
     }
 
     public String getGapSix() {
-        return gapSix;
+        return calculateGap(lastWriteSix, currentWriteSix, gapSix);
     }
 
     public void setGapSix(String gapSix) {
@@ -732,5 +737,27 @@ public class ForecastLine {
 
     public void setSdRemarkSix(String sdRemarkSix) {
         this.sdRemarkSix = sdRemarkSix == null ? null : sdRemarkSix.trim();
+    }
+
+    private String calculateGap(String lastWriteValue, String currentWriteValue, String gapValue) {
+        try {
+            //上次填写值
+            int a = StringUtils.isEmpty(lastWriteValue) ? 0 : Integer.parseInt(lastWriteValue);
+            //本次填写值
+            int b = StringUtils.isEmpty(currentWriteValue) ? 0 : Integer.parseInt(currentWriteValue);
+            if(a == 0 && b > 0){
+                return "100%";
+            }
+            if(a == 0 && b == 0){
+                return "0%";
+            }
+            if(a > 0){
+                return String.format("%s%s", (b - a)/a, "%");
+            }
+        }catch (Exception ex) {
+            log.error("【销售预测】计算Gap值异常，lastWriteOne : {}, currentWriteOne : {}", lastWriteOne, currentWriteOne);
+            return gapValue;
+        }
+        return gapValue;
     }
 }
