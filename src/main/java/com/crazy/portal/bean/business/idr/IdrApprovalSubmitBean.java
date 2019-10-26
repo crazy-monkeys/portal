@@ -29,8 +29,6 @@ public class IdrApprovalSubmitBean {
 
     List<RefundPrice> RefundPriceItem;
 
-    List<ExchangeGood> ExchangeGoods;
-
     List<ReturnGood> ReturnGoods;
 
     @Data
@@ -86,12 +84,6 @@ public class IdrApprovalSubmitBean {
         private Float  returnPrice;
         private Float  agenceRate;
         private Float  returnAmount;
-        private String returnRemark;
-
-    }
-
-    @Data
-    public static class ExchangeGood{
 
         private String exchangeBU;
         private String exchangePDT;
@@ -99,10 +91,8 @@ public class IdrApprovalSubmitBean {
         private String exchangeProModel;
         private Integer exchangeQuantity;
         private Float  exchangePrice;
-        private Float  agenceRate;
         private Float  exchangeAmount;
         private String exchangeRemark;
-
     }
 
 
