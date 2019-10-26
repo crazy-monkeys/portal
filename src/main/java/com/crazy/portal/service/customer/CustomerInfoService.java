@@ -1015,7 +1015,7 @@ public class CustomerInfoService {
      * TODO 校验客户是否可以支持销售预测
      */
     public CustomerOrgBean selectByAbbreviation(String custAbbreviation){
-        CustomerInfo customerinfo = customerInfoMapper.selectByCustAbbreviation(custAbbreviation);
+        CustomerInfo customerinfo = customerInfoMapper.selectInCustAbbreviation(custAbbreviation);
         BusinessUtil.assertFlase(null == customerinfo, ErrorCodes.BusinessEnum.CUSTOMER_IS_EMPYT);
         CustomerOrgBean customerOrgBean = internalUserService.getSalesInfo(customerinfo.getId());
 

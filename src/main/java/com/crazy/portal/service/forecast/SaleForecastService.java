@@ -107,21 +107,27 @@ public class SaleForecastService {
             agencyTemplate.setCloseDate("");
             agencyTemplate.setDelayStock("");
 
+            agencyTemplate.setForecastMonthOne(forecast.getLine().getForecastMonthTwo());
             agencyTemplate.setLastWriteOne(forecast.getLine().getCurrentWriteTwo());
             agencyTemplate.setCurrentWriteOne("");
 
+            agencyTemplate.setForecastMonthTwo(forecast.getLine().getForecastMonthThree());
             agencyTemplate.setLastWriteTwo(forecast.getLine().getCurrentWriteThree());
             agencyTemplate.setCurrentWriteTwo("");
 
+            agencyTemplate.setForecastMonthThree(forecast.getLine().getForecastMonthFour());
             agencyTemplate.setLastWriteThree(forecast.getLine().getCurrentWriteFour());
             agencyTemplate.setCurrentWriteThree("");
 
+            agencyTemplate.setForecastMonthFour(forecast.getLine().getForecastMonthFive());
             agencyTemplate.setLastWriteFour(forecast.getLine().getCurrentWriteFive());
             agencyTemplate.setCurrentWriteFour("");
 
+            agencyTemplate.setForecastMonthFive(forecast.getLine().getForecastMonthFive());
             agencyTemplate.setLastWriteFive(forecast.getLine().getCurrentWriteSix());
             agencyTemplate.setCurrentWriteFive("");
 
+            agencyTemplate.setForecastMonthSix("");
             agencyTemplate.setLastWriteSix("");
             agencyTemplate.setCurrentWriteSix("");
 
@@ -162,10 +168,7 @@ public class SaleForecastService {
 
             //如果 当前人不是代理商  代理商取模版中的客户信息
             if(!user.getUserType().equals(Enums.USER_TYPE.agent.toString())){
-                customerInfo = customerInfoService.selectCustomerByAbbreviation(template.getCustomerAbbreviation());
-                BusinessUtil.assertFlase(null == customerInfo,ErrorCodes.BusinessEnum.CUSTOMER_IS_EMPYT);
-
-                agencyAbbreviation = customerInfo.getCustAbbreviation();
+                agencyAbbreviation = template.getCustomerAbbreviation();
             }
             template.setAgencyAbbreviation(agencyAbbreviation);
             template.setChannel("A04".equals(customerInfo.getBusinessType()) ? "代理" : "直供");
@@ -178,7 +181,7 @@ public class SaleForecastService {
             //设置产品字段
             forecast.setBu(productInfo.getBu());
             forecast.setPdt(productInfo.getPdt());
-            forecast.setProductType(productInfo.getType());
+            forecast.setProductType(productInfo.getSubCategory());
             forecast.setVmNumber(productInfo.getSapMid());
             //设置客户字段
             forecast.setCustomerType(customerOrgBean.getCustType());

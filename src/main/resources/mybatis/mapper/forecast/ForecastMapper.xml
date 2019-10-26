@@ -709,6 +709,7 @@
     and forecast_type = #{forecastType,jdbcType=VARCHAR}
     and platform = #{platform,jdbcType=VARCHAR}
     and product_model = #{productModel,jdbcType=VARCHAR}
+    and status =1
   </select>
 
   <update id="rejectDataByIds" >
