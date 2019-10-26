@@ -6,6 +6,7 @@ import com.crazy.portal.util.ErrorCodes.CommonEnum;
 import com.crazy.portal.util.ErrorCodes.SystemManagerEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.authentication.LockedException;
@@ -38,7 +39,7 @@ public class AuthenticationFailHandler implements AuthenticationFailureHandler{
 
         try(ServletOutputStream os = response.getOutputStream()){
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
-            response.setContentType("application/json;charset=utf-8");
+            response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
             BaseResponse baseResponse = getBaseResponse(e);
             os.write(JSON.toJSONString(baseResponse).getBytes());
         }

@@ -11,6 +11,7 @@ import com.crazy.portal.entity.system.User;
 import com.crazy.portal.service.system.PermissionService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -84,7 +85,7 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
         String token = jwtUserService.generateToken(userDetails);
         log.info("用户 {} 成功登陆到系统",userDetails.getUsername());
         response.setHeader(Constant.Authorization, token);
-        response.setContentType("application/json;charset=utf-8");
+        response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
         BaseResponse baseResponse = new BaseResponse();
         baseResponse.success(userPermissions);
         //获取权限资源
