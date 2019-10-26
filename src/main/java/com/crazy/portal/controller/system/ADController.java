@@ -43,7 +43,7 @@ public class ADController extends BaseController {
         //用户kerberos认证成功之后，再次点击，应该返回用户当前权限
         Map<String,?> userPermissions = loginSuccessHandler.getUserPermissions();
         UserDetails userDetails = (UserDetails)authentication.getPrincipal();
-        response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
+        response.setContentType("application/json;charset=utf-8");
         response.setHeader(Constant.Authorization, jwtUserService.generateToken(userDetails));
         return super.successResult(userPermissions);
     }
@@ -51,7 +51,7 @@ public class ADController extends BaseController {
     @GetMapping("/forward")
     public void forward(HttpServletResponse response){
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
-        response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
+        response.setContentType("application/json;charset=utf-8");
         BusinessUtil.assertTrue(false, ErrorCodes.SystemManagerEnum.ACCOUNT_ERROR);
     }
 }
