@@ -106,10 +106,10 @@
 
     <!-- 日志输出级别 -->
     <root level="debug">
-<!--        <appender-ref ref="CONSOLE" />-->
-        <appender-ref ref="INFO"/>
-        <appender-ref ref="DEBUG"/>
-        <appender-ref ref="WARN"/>
-        <appender-ref ref="ERROR"/>
+        <appender-ref ref="ALL"/>
+        <!-- <appender-ref ref="INFO"/>
+         <appender-ref ref="DEBUG"/>
+         <appender-ref ref="WARN"/>
+         <appender-ref ref="ERROR"/>-->
     </root>
 </configuration>
