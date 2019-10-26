@@ -120,9 +120,12 @@ public class OrderApplyService {
             BigDecimal netprice = BigDecimal.ZERO;
 
             for(ZpricessimulateItemOut item : items){
-                //对方返回默认追加7个0,此处兼容
-                if(item.getRefitemproductid().substring(7).equals(orderLineEO.getProductId()) &&
-                        !item.getProductid().substring(7).equals(orderLineEO.getProductId())){
+                String refitemProductID = item.getRefitemproductid().replaceAll("^(0+)", "");
+                String productId = item.getProductid().replaceAll("^(0+)", "");
+
+                if(refitemProductID.equals(orderLineEO.getProductId()) &&
+                        !productId.equals(orderLineEO.getProductId())){
+
                     price = price.add(item.getPrice());
                     netprice = netprice.add(item.getNetprice());
                 }
