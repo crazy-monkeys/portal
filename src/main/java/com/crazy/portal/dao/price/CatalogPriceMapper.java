@@ -8,7 +8,7 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
 public interface CatalogPriceMapper {
-    int deleteByPrimaryKey(Integer id);
+    int deleteAll();
 
     int insertSelective(CatalogPrice record);
 

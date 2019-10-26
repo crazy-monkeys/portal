@@ -115,9 +115,8 @@
     </if>
   </select>
 
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from t_catalog_price
-    where id = #{id,jdbcType=INTEGER}
+  <delete id="deleteAll">
+    truncate table t_catalog_price
   </delete>
 
   <insert id="insertSelective" parameterType="com.crazy.portal.entity.price.CatalogPrice">
