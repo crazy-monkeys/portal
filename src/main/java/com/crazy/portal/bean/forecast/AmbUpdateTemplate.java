@@ -24,7 +24,7 @@ public class AmbUpdateTemplate extends BaseRowModel {
     private String channel;
 
     @ExcelProperty(index = 4, value = "代理简称")
-    private String AgencyAbbreviation;
+    private String agencyAbbreviation;
 
     @ExcelProperty(index = 5, value = "客户简称")
     private String customerAbbreviation;
