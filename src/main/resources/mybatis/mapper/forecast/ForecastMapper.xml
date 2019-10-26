@@ -716,7 +716,8 @@
     and forecast_type = #{forecastType,jdbcType=VARCHAR}
     and platform = #{platform,jdbcType=VARCHAR}
     and product_model = #{productModel,jdbcType=VARCHAR}
-    and status =1
+    and status in (1,2,3,4)
+    and operationYear_month = #{operationYearMonth}
   </select>
 
   <update id="rejectDataByIds" >
