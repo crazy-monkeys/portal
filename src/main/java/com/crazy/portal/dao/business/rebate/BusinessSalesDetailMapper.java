@@ -8,11 +8,11 @@ import java.util.List;
 import java.util.Map;
 
 public interface BusinessSalesDetailMapper {
-    int deleteByPrimaryKey(Integer id);
+    int deleteByPrimaryKey(String id);
 
     int insertSelective(BusinessSalesDetail record);
 
-    BusinessSalesDetail selectByPrimaryKey(Integer id);
+    BusinessSalesDetail selectByPrimaryKey(String id);
 
     int selectCountByPrimaryKey(String id);
 
