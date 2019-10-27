@@ -138,17 +138,17 @@ public class OrderApproveService {
         order.setPriceDate(expectedDeliveryDate);
         order.setUpdateTime(null);
         order.setUpdateId(null);
-        orderMapper.insertSelective(order);
 
         List<OrderLine> lines = orderApply.lineJsonToObj(orderApply.getJsonLines());
         //默认取出第一个订单行的期望交货月份
         String expectedDeliveryMonth = lines.get(0).getExpectedDeliveryMonth();
         if(StringUtil.isEmpty(order.getPriceDate())){
             //设置月份的最后一天
-            Date month = DateUtil.parseDate(expectedDeliveryMonth,DateUtil.MONTH_FORMAT);
+            Date month = DateUtil.parseDate(expectedDeliveryMonth,DateUtil.MONTH_FORMAT_HLINE);
             order.setPriceDate(DateUtil.getLastDayOfMonth(DateUtil.getYear(month),DateUtil.getMonth(month)));
         }
 
+        orderMapper.insertSelective(order);
         List<ZsalesordercreateOutItem> outItems = response.getEtItems().getItem();
         outItems.forEach(eccLine->
             lines.forEach(line->{
