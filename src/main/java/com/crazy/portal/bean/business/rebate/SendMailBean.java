@@ -4,6 +4,9 @@ import lombok.*;
 
 import java.util.Map;
 
+/**
+ * 发送确认函邮件
+ */
 @Data
 @Builder
 @AllArgsConstructor(access = AccessLevel.PACKAGE)

@@ -3,7 +3,7 @@ package com.crazy.portal.bean.business.rebate;
 import lombok.Data;
 
 /**
- * @Description: TODO
+ * @Description: 修改备注
  * @Author Shawn
  * @Date 2019-10-17 10:26
  * @Modify by

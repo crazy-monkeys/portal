@@ -212,37 +212,38 @@
         select b.idr_info_id, b.reviewed_people, b.current_reviewer from t_business_idr_approval b
         where b.id = (select max(c.id) from t_business_idr_approval c where c.idr_info_id = b.idr_info_id group by c.idr_info_id)
     ) b on b.idr_info_id = a.id
-    where 1=1
-    <if test=" dealerId != null and dealerId !=''">
-      and create_id = #{dealerId,jdbcType=INTEGER}
-    </if>
-    <if test="type != null">
-      and type = #{type,jdbcType=INTEGER}
-    </if>
-    <if test="shipperCode != null and shipperCode != ''">
-      and shipper_code like concat('%',#{shipperCode,jdbcType=VARCHAR},'%')
-    </if>
-    <if test="company != null and company != ''">
-      and company like concat('%',#{company,jdbcType=VARCHAR},'%')
-    </if>
-    <if test="crAmount != null">
-      and cr_amount = #{crAmount,jdbcType=DECIMAL}
-    </if>
-    <if test="applyStartTime != null and  applyStartTime != ''">
-      and apply_time >= str_to_date(#{applyStartTime,jdbcType=VARCHAR}, '%Y-%m-%d')
-    </if>
-    <if test="applyEndTime != null and applyEndTime != ''">
-      and apply_time &lt;= str_to_date(#{applyEndTime,jdbcType=VARCHAR}, '%Y-%m-%d')
-    </if>
-    <if test="currency != null and currency != ''">
-      and currency = #{currency,jdbcType=VARCHAR}
-    </if>
-    <if test="inCustomerName != null and inCustomerName != ''">
-      and in_customer_name like concat('%',#{inCustomerName,jdbcType=VARCHAR},'%')
-    </if>
-    <if test="outCustomerName != null and outCustomerName != ''">
-      and out_customer_name like concat('%',#{outCustomerName,jdbcType=VARCHAR},'%')
-    </if>
+    <where>
+      <if test="dealerId != null and dealerId !=''">
+        and create_id = #{dealerId,jdbcType=INTEGER}
+      </if>
+      <if test="type != null">
+        and type = #{type,jdbcType=INTEGER}
+      </if>
+      <if test="shipperCode != null and shipperCode != ''">
+        and shipper_code like concat('%',#{shipperCode,jdbcType=VARCHAR},'%')
+      </if>
+      <if test="company != null and company != ''">
+        and company like concat('%',#{company,jdbcType=VARCHAR},'%')
+      </if>
+      <if test="crAmount != null">
+        and cr_amount = #{crAmount,jdbcType=DECIMAL}
+      </if>
+      <if test="applyStartTime != null and  applyStartTime != ''">
+        and apply_time >= str_to_date(#{applyStartTime,jdbcType=VARCHAR}, '%Y-%m-%d')
+      </if>
+      <if test="applyEndTime != null and applyEndTime != ''">
+        and apply_time &lt;= str_to_date(#{applyEndTime,jdbcType=VARCHAR}, '%Y-%m-%d')
+      </if>
+      <if test="currency != null and currency != ''">
+        and currency = #{currency,jdbcType=VARCHAR}
+      </if>
+      <if test="inCustomerName != null and inCustomerName != ''">
+        and in_customer_name like concat('%',#{inCustomerName,jdbcType=VARCHAR},'%')
+      </if>
+      <if test="outCustomerName != null and outCustomerName != ''">
+        and out_customer_name like concat('%',#{outCustomerName,jdbcType=VARCHAR},'%')
+      </if>
+    </where>
     order by create_time desc
   </select>
 </mapper>

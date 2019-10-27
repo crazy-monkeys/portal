@@ -7,6 +7,9 @@ import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.List;
 
+/**
+ * 发送确认函
+ */
 @Data
 public class RebateConfirmBean {
 

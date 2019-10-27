@@ -3,6 +3,9 @@ package com.crazy.portal.bean.business.rebate;
 import com.crazy.portal.bean.common.PageBean;
 import lombok.Data;
 
+/**
+ * 列表查询筛选
+ */
 @Data
 public class RebateQueryBean extends PageBean {
 
