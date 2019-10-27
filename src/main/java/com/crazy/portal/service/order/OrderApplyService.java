@@ -150,10 +150,17 @@ public class OrderApplyService {
 
         //判断当前物料是否在申请人的能看到的价格列表中,不在的话抛出异常，在的话提取外部客户编码进行价格模拟计算
         records.stream().forEach(x -> {
+            //检查客户简称是否为空
             String custAbbreviation = x.getCustAbbreviation();
             BusinessUtil.assertEmpty(custAbbreviation, ErrorCodes.BusinessEnum.ORDER_EMPTY_CUSTABBREVIATION);
 
+            //检查客户简称是否存在
+            CustomerInfo customerInfo = customerInfoMapper.selectInCustomerByAbb(custAbbreviation);
+            BusinessUtil.notNull(customerInfo,ErrorCodes.BusinessEnum.ORDER_INVALID_CUSTABBREVIATION);
+
             boolean isExists = this.isExistsCatalogPrice(currentCatalogPrices, x);
+
+            //如果不存在,提示错误
             if(!isExists){
                 String hint = String.format(ErrorCodes.BusinessEnum.ORDER_NO_MAPPING_CUST.getZhMsg()
                         ,x.getProductId(),x.getCustAbbreviation());
