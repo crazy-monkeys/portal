@@ -58,8 +58,11 @@ public class SyncBICatalogPricesJob implements Job {
             String product = x.getProduct();
             String bu = x.getBU();
 
+            if(x.getProduct().equals("RTM7916-31+RPM6743-12")){
+                System.out.println(1);
+            }
             //查询当前记录是否已经存在
-            CatalogPrice catalogPrice = catalogPriceService.findCatalogPrice(product, bu,inCustomer);
+            CatalogPrice catalogPrice = catalogPriceService.findCatalogPrice(product, bu,inCustomer,x.getPDT());
 
             final Date now = new Date();
             if(Objects.nonNull(catalogPrice)){

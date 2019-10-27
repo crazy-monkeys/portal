@@ -37,7 +37,7 @@ public class CatalogPriceController extends BaseController {
         String inCustomer = catalogPriceVO.getInCustomer();
         String bu = catalogPriceVO.getBu();
 
-        CatalogPrice catalogPrice = catalogPriceService.findCatalogPrice(productModel,bu,inCustomer);
+        CatalogPrice catalogPrice = catalogPriceService.findCatalogPrice(productModel,bu,inCustomer,catalogPriceVO.getPdt());
         return super.successResult(catalogPrice);
     }
 }

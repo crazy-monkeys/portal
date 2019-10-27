@@ -38,6 +38,7 @@
     from t_catalog_price
     where product_model = #{productModel,jdbcType=VARCHAR}
     and bu = #{bu,jdbcType=VARCHAR}
+    and in_customer = #{inCustomer,jdbcType=VARCHAR}
   </select>
 
   <select id="findSingleCatalogPrice" resultMap="BaseResultMap">
@@ -47,6 +48,7 @@
     where product_model = #{productModel,jdbcType=VARCHAR}
     and bu = #{bu,jdbcType=VARCHAR}
     and in_customer = #{inCustomer,jdbcType=VARCHAR}
+    and pdt = #{pdt,jdbcType=VARCHAR}
   </select>
 
   <select id="getPriceByProduct" resultMap="BaseResultMap">

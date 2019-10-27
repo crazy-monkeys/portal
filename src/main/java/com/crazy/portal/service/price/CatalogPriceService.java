@@ -60,8 +60,8 @@ public class CatalogPriceService {
      * @param inCustomer
      * @return
      */
-    public CatalogPrice findCatalogPrice(String productModel, String bu, String inCustomer){
-        return catalogPriceMapper.findSingleCatalogPrice(bu,productModel,inCustomer);
+    public CatalogPrice findCatalogPrice(String productModel, String bu, String inCustomer,String pdt){
+        return catalogPriceMapper.findSingleCatalogPrice(bu,productModel,inCustomer,pdt);
     }
 
     /**

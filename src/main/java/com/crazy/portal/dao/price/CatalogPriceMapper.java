@@ -14,11 +14,12 @@ public interface CatalogPriceMapper {
 
     CatalogPrice selectBySapCode(String sapCode);
 
-    List<CatalogPrice> findCatalogPrices(@Param("bu") String bu,@Param("productModel") String productModel);
+    List<CatalogPrice> findCatalogPrices(@Param("bu") String bu,@Param("productModel") String productModel,@Param("inCustomer") String inCustomer);
 
     CatalogPrice findSingleCatalogPrice(@Param("bu") String bu,
                                         @Param("productModel") String productModel,
-                                        @Param("inCustomer") String inCustomer);
+                                        @Param("inCustomer") String inCustomer,
+                                        @Param("pdt") String pdt);
 
     Page<CatalogPrice> selectByParamsWithPage(CatalogPriceVO record);
 

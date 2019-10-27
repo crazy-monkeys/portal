@@ -47,24 +47,16 @@ public class EnquiryPriceService {
 
         String bu = vo.getBu();
         BusinessUtil.assertEmpty(bu,ErrorCodes.PriceEnum.PRICE_EMPTY_BU);
-
         String inCustomer = vo.getInCustomer();
 
-        List<CatalogPrice> catalogPrices = new ArrayList<>();
-        if(StringUtil.isEmpty(inCustomer)){
-            catalogPrices = catalogPriceMapper.findCatalogPrices(bu, productModel);
-        }else{
-            CatalogPrice catalogPrice = catalogPriceMapper.findSingleCatalogPrice(bu,productModel,inCustomer);
-            if(Objects.nonNull(catalogPrice)){
-                catalogPrices.add(catalogPrice);
-            }
-        }
+        List<CatalogPrice> catalogPrices = catalogPriceMapper.findCatalogPrices(bu, productModel,inCustomer);
         BusinessUtil.assertTrue(!catalogPrices.isEmpty(),ErrorCodes.PriceEnum.PRICE_CATALOG_PRICE_NOT_EXISTS);
 
         Date now = new Date();
         catalogPrices.forEach(x->{
             EnquiryPrice enquiryPrice = new EnquiryPrice();
             enquiryPrice.setBu(bu);
+            enquiryPrice.setPdt(x.getPdt());
             enquiryPrice.setInCustomer(x.getInCustomer());
             enquiryPrice.setProductModel(vo.getProductModel());
             enquiryPrice.setApplyRemark(vo.getApplyRemark());
@@ -116,7 +108,7 @@ public class EnquiryPriceService {
                 String productModel = enquiryPrice.getProductModel();
                 String inCustomer = enquiryPrice.getInCustomer();
                 String bu = enquiryPrice.getBu();
-                CatalogPrice catalogPrice = catalogPriceMapper.findSingleCatalogPrice(bu,productModel,inCustomer);
+                CatalogPrice catalogPrice = catalogPriceMapper.findSingleCatalogPrice(bu,productModel,inCustomer,enquiryPrice.getPdt());
                 BusinessUtil.notNull(catalogPrice, ErrorCodes.PriceEnum.PRICE_CATALOG_NOT_EXISTS);
 
                 enquiryPrice.setBu(catalogPrice.getBu());
