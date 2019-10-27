@@ -36,8 +36,10 @@ public class RebateUploadBean {
     @DateTimeFormat(pattern="yyyy-MM-dd")
     private Date noticeDate;
 
+    /** 展锐执行日期 **/
     @DateTimeFormat(pattern="yyyy-MM-dd")
     private Date zrExecuteDate;
 
+    /** 文件 **/
     private MultipartFile file;
 }
