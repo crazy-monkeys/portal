@@ -192,7 +192,7 @@ public class OrderApproveService {
         line.setRItemCategory(etItem.getItemcategory());
         line.setRRefItemNo(etItem.getRefitemno().replaceAll("^(0+)", ""));
         line.setRRefItemProductId(etItem.getRefitemproductid().replaceAll("^(0+)", ""));
-        line.setProductId(etItem.getProductid());
+//        line.setProductId(etItem.getProductid());
         line.setRItemNo(etItem.getItemno());
         line.setCreateId(userId);
         line.setCreateTime(DateUtil.getCurrentTS());
