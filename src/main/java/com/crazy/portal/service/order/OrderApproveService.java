@@ -149,7 +149,8 @@ public class OrderApproveService {
 
                     //过滤出主物料对应的组合物料信息
                     List<ZsalesordercreateOutItem> currProductItems = outItems.stream()
-                            .filter(f -> f.getRefitemproductid().equals(portalProductId) || f.getProductid().equals(portalProductId))
+                            .filter(f -> f.getRefitemproductid().replaceAll("^(0+)", "").equals(portalProductId)
+                                    || f.getProductid().replaceAll("^(0+)", "").equals(portalProductId))
                             .collect(Collectors.toList());
 
                     //主物料计算总价
