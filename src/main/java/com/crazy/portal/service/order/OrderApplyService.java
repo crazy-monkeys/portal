@@ -154,8 +154,9 @@ public class OrderApplyService {
             BusinessUtil.assertEmpty(custAbbreviation, ErrorCodes.BusinessEnum.ORDER_EMPTY_CUSTABBREVIATION);
 
             boolean isExists = this.isExistsCatalogPrice(currentCatalogPrices, x);
-            String hint = String.format(ErrorCodes.BusinessEnum.ORDER_NO_MAPPING_CUST.getZhMsg(),x.getProductId(),x.getCustAbbreviation());
             if(!isExists){
+                String hint = String.format(ErrorCodes.BusinessEnum.ORDER_NO_MAPPING_CUST.getZhMsg()
+                        ,x.getProductId(),x.getCustAbbreviation());
                 throw new BusinessException(ErrorCodes.BusinessEnum.ORDER_NO_MAPPING_CUST.getCode(),hint);
             }
         });
