@@ -55,7 +55,11 @@ public class GlobalExceptionHandler extends BaseController {
 
     public BaseResponse getMessageNotReadableErrorMessage(Exception exception){
         String errorMessage = exception.getMessage().indexOf(":") != -1 ? exception.getMessage().substring(exception.getMessage().lastIndexOf(":") + 2, exception.getMessage().length()) : exception.getMessage();
-        errorMessage = errorMessage.concat("格式错误");
+        if("crAmount".equals(errorMessage)){
+            errorMessage = "CR金额请输入有效的数字";
+        }else {
+            errorMessage = errorMessage.concat("格式错误");
+        }
         return new BaseResponse(CommonEnum.REQ_PARAM_FORMAT_ERROR.getCode(), errorMessage);
     }
 }

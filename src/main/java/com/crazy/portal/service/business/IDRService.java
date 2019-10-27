@@ -1,5 +1,6 @@
 package com.crazy.portal.service.business;
 
+import com.alibaba.druid.wall.violation.ErrorCode;
 import com.alibaba.excel.metadata.BaseRowModel;
 import com.alibaba.excel.support.ExcelTypeEnum;
 import com.crazy.portal.bean.business.idr.*;
@@ -20,6 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
@@ -215,13 +217,16 @@ public class IDRService {
         businessIdrInfoMapper.insertSelective(bean);
         if(bean.getType().equals(Enums.BusinessIdrType.INSURANCE.getCode())) {
             BusinessUtil.assertFlase(null == bean.getCrAmount(),ErrorCodes.BusinessEnum.CRM_AMOUNT_ERROR);
+            BusinessUtil.assertFlase(CollectionUtils.isEmpty(bean.getIList()), ErrorCodes.BusinessEnum.BUSINESS_IDR_SUBMIT_ILIST_IS_NULL);
             saveExtendsInfo(bean.getIList(), businessInsuranceInfoMapper, bean);
         }
         if(bean.getType().equals(Enums.BusinessIdrType.DIFF_PRICE.getCode())) {
+            BusinessUtil.assertFlase(CollectionUtils.isEmpty(bean.getDList()), ErrorCodes.BusinessEnum.BUSINESS_IDR_SUBMIT_DLIST_IS_NULL);
             saveExtendsInfo(bean.getDList(), businessDiffPriceInfoMapper, bean);
         }
         if(bean.getType().equals(Enums.BusinessIdrType.RETURNS.getCode())) {
             BusinessUtil.assertFlase(null == bean.getCrAmount(),ErrorCodes.BusinessEnum.CRM_AMOUNT_ERROR);
+            BusinessUtil.assertFlase(CollectionUtils.isEmpty(bean.getRList()), ErrorCodes.BusinessEnum.BUSINESS_IDR_SUBMIT_RLIST_IS_NULL);
             saveExtendsInfo(bean.getRList(), businessReturnsInfoMapper, bean);
         }
         saveExtendsInfo(bean.getFiles(), businessFileMapper, bean);
