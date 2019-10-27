@@ -443,24 +443,24 @@
   <update id="updateRebateId">
     update t_business_sales_detail a
     inner join t_business_rebate b on
-          b.agency_short_name = a.agency_short_name
-      and b.customer_short_name = a.customer_short_name
-      and b.customer_type = a.customer_type
+          ifnull(b.agency_short_name,'') = ifnull(a.agency_short_name,'')
+      and ifnull(b.customer_short_name,'') = ifnull(a.customer_short_name,'')
+      and ifnull(b.customer_type,'') = ifnull(a.customer_type,'')
       and ifnull(b.sales_name,'') = ifnull(a.sales_name,'')
-      and b.ameba_header = a.ameba_header
-      and b.ameba_department = a.ameba_department
-      and b.shipment_company = a.shipment_company
+      and ifnull(b.ameba_header,'') = ifnull(a.ameba_header,'')
+      and ifnull(b.ameba_department,'') = ifnull(a.ameba_department,'')
+      and ifnull(b.shipment_company,'') = ifnull(a.shipment_company,'')
       and ifnull(b.account_year_month,'') = ifnull(a.account_year_month,'')
-      and b.order_month = a.order_month
-      and b.shipment_year_month = a.shipment_year_month
+      and ifnull(b.order_month,'') = ifnull(a.order_month,'')
+      and ifnull(b.shipment_year_month,'') = ifnull(a.shipment_year_month,'')
       and ifnull(b.bu,'') = ifnull(a.bu,'')
       and ifnull(b.pdt,'') = ifnull(a.pdt,'')
-      and b.product = a.product
+      and ifnull(b.product,'') = ifnull(a.product,'')
       and b.qty = a.qty
       and b.sales_price = a.sales_price
       and b.po_price = a.po_price
       and b.actual_price = a.actual_price
-      and b.platform = a.class3
+      and ifnull(b.platform,'') = ifnull(a.class3,'')
       set a.rebate_id = b.id
     where a.rebate_id is null
   </update>
