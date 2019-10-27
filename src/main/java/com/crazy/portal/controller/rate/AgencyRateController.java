@@ -23,17 +23,32 @@ public class AgencyRateController extends BaseController {
     @Resource
     private AgencyRateService agencyRateService;
 
+    /**
+     * 列表
+     * @param bean
+     * @return
+     */
     @GetMapping("/list")
     public BaseResponse list(AgencyRateQueryBean bean){
         return successResult(agencyRateService.selectByPage(bean));
     }
 
+    /**
+     * 上传
+     * @param files
+     * @return
+     */
     @OperationLog
     @PostMapping("/upload")
     public BaseResponse upload(MultipartFile[] files){
         return successResult(agencyRateService.upload(files, this.getCurrentUserId()));
     }
 
+    /**
+     * 审批
+     * @param ids
+     * @return
+     */
     @OperationLog
     @GetMapping("/approve/{ids}")
     public BaseResponse approve(@PathVariable String ids){
@@ -41,6 +56,10 @@ public class AgencyRateController extends BaseController {
         return successResult();
     }
 
+    /**
+     * 下载模板
+     * @param response
+     */
     @GetMapping("/download")
     public void download(HttpServletResponse response) {
         agencyRateService.templateDownload(response);
