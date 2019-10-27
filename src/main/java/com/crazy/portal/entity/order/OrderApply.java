@@ -8,6 +8,7 @@ import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.multipart.MultipartFile;
 import javax.validation.constraints.NotEmpty;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -145,6 +146,16 @@ public class OrderApply {
      * 指定发票配送地址
      */
     private String invoiceDeliveryAddress;
+
+    /**
+     * 含税总金额
+     */
+    private BigDecimal grossValue;
+
+    /**
+     * 不含税总金额
+     */
+    private BigDecimal netValue;
 
     /**
      * 是否同意条款
