@@ -201,6 +201,9 @@ public class ExcelUtils {
     }
 
     public static String getIndexMessage(String message){
+        if(StringUtil.isBlank(message) || message.indexOf("\"") == -1){
+            return "未知列";
+        }
         return message.substring(message.indexOf("\"") + 1, message.lastIndexOf("\""));
     }
     /**

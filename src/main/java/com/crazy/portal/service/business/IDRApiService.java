@@ -54,7 +54,7 @@ public class IDRApiService {
             String responseBody = portalSubmitApprovalToBPM(requestBody);
             BusinessUtil.assertTrue(StringUtil.isNotBlank(responseBody), ErrorCodes.BusinessEnum.BUSINESS_IDR_SUBMIT_RESULT_IS_NULL);
             resultBean = JSON.toJavaObject(JSON.parseObject(responseBody).getJSONObject("d"), IdrApprovalSubmitResultBean.class);
-            if (resultBean.getResult().equals(Enums.BusinessIdrApprovalSubmitResult.FAILED.getCode())) {
+            if (resultBean.getResult().equals(Enums.BusinessIdrApprovalSubmitResult.FAILED.getCode().toString())) {
                 throw new BusinessException(ErrorCodes.BusinessEnum.BUSINESS_IDR_SUBMIT_RESULT_IS_FAIL.getCode(), resultBean.getMessage());
             }
             resultBean.setType(submitBean.getType());

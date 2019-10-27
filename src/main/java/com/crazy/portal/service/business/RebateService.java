@@ -322,7 +322,8 @@ public class RebateService {
      */
     public void modifyRemark(RebateModifyRemarkBean bean, Integer userId){
         BusinessUtil.assertFlase(StringUtil.isBlank(bean.getRemark()), ErrorCodes.BusinessEnum.REBATE_MODIFY_REMARK_CONTENT_IS_NULL);
-        BusinessRebate record = new BusinessRebate();
+        BusinessRebate record = businessRebateMapper.selectByPrimaryKey(bean.getId());
+        BusinessUtil.notNull(record, ErrorCodes.BusinessEnum.REBATE_RECORD_NOT_FOUND);
         record.setId(bean.getId());
         record.setRemark(bean.getRemark());
         record.setUpdateId(userId);
