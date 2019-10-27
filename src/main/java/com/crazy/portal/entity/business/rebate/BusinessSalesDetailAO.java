@@ -12,12 +12,12 @@ import java.math.BigDecimal;
  */
 @Data
 public class BusinessSalesDetailAO {
+
     /**
      * ID
      */
-    @JsonProperty(value = "sales_report_id")
-//    @JsonProperty(value = "related_id")
-    private Integer id;
+    @JsonProperty(value = "portal_id")
+    private String portalId;
 
     /**
      * 代理简称

@@ -14,7 +14,7 @@ public interface BusinessSalesDetailMapper {
 
     BusinessSalesDetail selectByPrimaryKey(Integer id);
 
-    int selectCountByPrimaryKey(Integer id);
+    int selectCountByPrimaryKey(String id);
 
     int updateByPrimaryKeySelective(BusinessSalesDetail record);
 

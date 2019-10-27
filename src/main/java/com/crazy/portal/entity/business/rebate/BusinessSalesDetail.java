@@ -17,7 +17,7 @@ public class BusinessSalesDetail {
     /**
      * 
      */
-    private Integer id;
+    private String id;
 
     /**
      * 

@@ -397,9 +397,10 @@ public class RebateService {
         log.info("rebate salesDetailResult："+salesDetailResult.size());
         for (BusinessSalesDetailAO salesDetailAO : salesDetailResult) {
             BusinessSalesDetail salesDetail = new BusinessSalesDetail();
-            if(salesDetailAO.getId() == null){
+            if(salesDetailAO.getPortalId() == null){
                 continue;
             }
+            salesDetail.setId(salesDetailAO.getPortalId());
             BeanUtils.copyNotNullFields(salesDetailAO, salesDetail);
             salesDetail.setShipmentCompany(replaceCompany.getOrDefault(salesDetail.getShipmentCompany(), salesDetail.getShipmentCompany()));
             salesDetail.setActive(Constant.ACTIVE);

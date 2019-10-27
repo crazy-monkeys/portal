@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.crazy.portal.dao.business.rebate.BusinessSalesDetailMapper">
   <resultMap id="BaseResultMap" type="com.crazy.portal.entity.business.rebate.BusinessSalesDetail">
-    <id column="id" jdbcType="INTEGER" property="id" />
+    <id column="id" jdbcType="VARCHAR" property="id" />
     <result column="rebate_id" jdbcType="INTEGER" property="rebateId" />
     <result column="agency_short_name" jdbcType="VARCHAR" property="agencyShortName" />
     <result column="agency_name" jdbcType="VARCHAR" property="agencyName" />
@@ -63,21 +63,21 @@
     order_month, price_role_id, price_strategy_number, shipment_company,
     rebate_type, class3, sales_name, active, create_id, create_time, update_id, update_time
   </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from t_business_sales_detail
-    where id = #{id,jdbcType=INTEGER}
+    where id = #{id,jdbcType=VARCHAR}
   </select>
 
-  <select id="selectCountByPrimaryKey" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+  <select id="selectCountByPrimaryKey" parameterType="java.lang.String" resultType="java.lang.Integer">
     select count(1) from t_business_sales_detail
-    where id = #{id,jdbcType=INTEGER} and active = 1
+    where id = #{id,jdbcType=VARCHAR} and active = 1
   </select>
 
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from t_business_sales_detail
-    where id = #{id,jdbcType=INTEGER}
+    where id = #{id,jdbcType=VARCHAR}
   </delete>
 
   <insert id="insertSelective" parameterType="com.crazy.portal.entity.business.rebate.BusinessSalesDetail">
@@ -185,7 +185,7 @@
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
-        #{id,jdbcType=INTEGER},
+        #{id,jdbcType=VARCHAR},
       </if>
       <if test="rebateId != null">
         #{rebateId,jdbcType=INTEGER},
@@ -385,7 +385,7 @@
         update_time = #{updateTime,jdbcType=TIMESTAMP},
       </if>
     </set>
-    where id = #{id,jdbcType=INTEGER}
+    where id = #{id,jdbcType=VARCHAR}
   </update>
 
 
