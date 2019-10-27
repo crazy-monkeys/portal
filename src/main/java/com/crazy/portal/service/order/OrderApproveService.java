@@ -126,8 +126,8 @@ public class OrderApproveService {
         //第三方接口调用成功,将审批信息同步到结果表
         ZsalesordercreateOutHeader esHeader = response.getEsHeader();
         Order order = new Order();
-        orderApply.setId(null);
         BeanUtils.copyNotNullFields(orderApply,order);
+        order.setId(null);
         order.setCreateTime(DateUtil.getCurrentTS());
         order.setCreateId(userId);
         order.setRGrossValue(esHeader.getGrossvalue());
