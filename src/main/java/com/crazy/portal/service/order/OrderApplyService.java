@@ -91,7 +91,7 @@ public class OrderApplyService {
         List<OrderLineEO> records = ExcelUtils.readExcel(order.getLineFile(), OrderLineEO.class);
 
         //检查订单行中数据是否有与之匹配的价格
-//        this.checkPriceMapping(user, records);
+        this.checkPriceMapping(user, records);
 
         //逻辑只允许出现同一个月份
         String expectedDeliveryMonthStr = records.get(0).getExpectedDeliveryMonth();
