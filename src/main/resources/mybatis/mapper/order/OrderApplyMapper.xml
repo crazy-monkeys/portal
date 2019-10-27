@@ -38,13 +38,15 @@
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_id" jdbcType="INTEGER" property="updateId" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="gross_value" jdbcType="DECIMAL" property="grossValue" />
+    <result column="net_value" jdbcType="DECIMAL" property="netValue" />
   </resultMap>
   <sql id="Base_Column_List">
     id, order_type, under_order_type, sales_org, channel, division, sales_office, sales_group, 
     sold_to, send_to, purchase_no, purchase_date, incoterms1, incoterms2, price_date, 
     payment_terms, customer_attr, ref_sap_order_id, order_reason, invoice_type, invoice_delivery_type, 
     invoice_delivery_address, is_agreed, dealer_id,appaly_type,r_sap_order_id,json_lines, approval_status, approver, approval_opinions,
-    approval_time, active, create_id, create_time, update_id, update_time
+    approval_time, active, create_id, create_time, update_id, update_time,gross_value,net_value
   </sql>
 
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
@@ -223,6 +225,12 @@
       <if test="updateTime != null">
         update_time,
       </if>
+      <if test="grossValue != null">
+        gross_value,
+      </if>
+      <if test="netValue != null">
+        net_value,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -333,6 +341,12 @@
       <if test="updateTime != null">
         #{updateTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="grossValue != null">
+        #{grossValue,jdbcType=TIMESTAMP},
+      </if>
+      <if test="netValue != null">
+        #{netValue,jdbcType=TIMESTAMP},
+      </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.crazy.portal.entity.order.OrderApply">
@@ -442,6 +456,12 @@
       </if>
       <if test="updateTime != null">
         update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        gross_value = #{grossValue,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        net_value = #{netValue,jdbcType=TIMESTAMP},
       </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
