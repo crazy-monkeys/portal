@@ -150,6 +150,14 @@ public class OrderApplyService {
         BusinessUtil.notNull(order, ErrorCodes.BusinessEnum.ORDER_INFO_IS_REQUIRED);
         BusinessUtil.notNull(order.getOrderLines(), ErrorCodes.BusinessEnum.ORDER_LINES_IS_REQUIRED);
 
+        order.getOrderLines().stream().forEach(x->{
+            boolean priceCheck = x.getRPrice().equals(BigDecimal.ZERO) || x.getRNetPrice().equals(BigDecimal.ZERO);
+            if(priceCheck){
+                throw new BusinessException(ErrorCodes.BusinessEnum.ORDER_INVALID_PRODUCT.getCode(),
+                        String.format(ErrorCodes.BusinessEnum.ORDER_INVALID_PRODUCT.getZhMsg(),x.getProductId()));
+            }
+        });
+
         CustomerInfo dealerByUser = customerInfoService.getDealerByUser(userId);
         BusinessUtil.notNull(dealerByUser, ErrorCodes.BusinessEnum.CUSTOMER_IS_EMPYT);
         order.setDealerId(dealerByUser.getId());

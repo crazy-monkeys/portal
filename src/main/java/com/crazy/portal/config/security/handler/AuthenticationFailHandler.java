@@ -39,7 +39,7 @@ public class AuthenticationFailHandler implements AuthenticationFailureHandler{
 
         try(ServletOutputStream os = response.getOutputStream()){
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
-            response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
+            response.setContentType("application/json;charset=utf-8");
             BaseResponse baseResponse = getBaseResponse(e);
             os.write(JSON.toJSONString(baseResponse).getBytes());
         }

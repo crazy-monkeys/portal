@@ -85,7 +85,7 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
         String token = jwtUserService.generateToken(userDetails);
         log.info("用户 {} 成功登陆到系统",userDetails.getUsername());
         response.setHeader(Constant.Authorization, token);
-        response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
+        response.setContentType("application/json;charset=utf-8");
         BaseResponse baseResponse = new BaseResponse();
         baseResponse.success(userPermissions);
         //获取权限资源
