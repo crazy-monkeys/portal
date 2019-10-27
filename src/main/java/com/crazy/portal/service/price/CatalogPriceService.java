@@ -5,7 +5,9 @@ import com.crazy.portal.bean.price.BICatalogPrice;
 import com.crazy.portal.bean.price.CatalogPriceVO;
 import com.crazy.portal.dao.price.CatalogPriceMapper;
 import com.crazy.portal.entity.price.CatalogPrice;
+import com.crazy.portal.entity.system.User;
 import com.crazy.portal.util.CallApiUtils;
+import com.crazy.portal.util.Enums;
 import com.crazy.portal.util.HttpClientUtils;
 import com.crazy.portal.util.PortalUtil;
 import com.github.pagehelper.Page;
@@ -39,8 +41,15 @@ public class CatalogPriceService {
      * @param catalogPriceVO
      * @return
      */
-    public PageInfo<CatalogPrice> selectWithPage(CatalogPriceVO catalogPriceVO){
+    public PageInfo<CatalogPrice> findCatalogPricesWithPage(CatalogPriceVO catalogPriceVO, User user){
         PortalUtil.defaultStartPage(catalogPriceVO.getPageIndex(), catalogPriceVO.getPageSize());
+        catalogPriceVO.setCreateId(user.getId());
+        catalogPriceVO.setProposer(user.getLoginName());
+        if(user.getUserType().equals(Enums.USER_TYPE.internal.toString())){
+            catalogPriceVO.setUserType(Enums.USER_TYPE.internal.toString());
+        }else{
+            catalogPriceVO.setDealerId(user.getDealerId());
+        }
         Page<CatalogPrice> catalogPrices = catalogPriceMapper.selectByParamsWithPage(catalogPriceVO);
         return new PageInfo<>(catalogPrices);
     }

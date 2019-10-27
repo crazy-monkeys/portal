@@ -1,9 +1,8 @@
 package com.crazy.portal.service.order;
 
-import com.alibaba.excel.metadata.BaseRowModel;
-import com.alibaba.excel.support.ExcelTypeEnum;
 import com.crazy.portal.bean.order.*;
 import com.crazy.portal.bean.order.wsdl.price.*;
+import com.crazy.portal.bean.price.CatalogPriceVO;
 import com.crazy.portal.config.exception.BusinessException;
 import com.crazy.portal.dao.cusotmer.CustomerInfoMapper;
 import com.crazy.portal.dao.order.*;
@@ -11,20 +10,21 @@ import com.crazy.portal.dao.product.ProductInfoDOMapper;
 import com.crazy.portal.entity.cusotmer.CustomerInfo;
 import com.crazy.portal.entity.handover.ReceiveDetail;
 import com.crazy.portal.entity.order.*;
+import com.crazy.portal.entity.price.CatalogPrice;
 import com.crazy.portal.entity.product.ProductInfoDO;
 import com.crazy.portal.entity.system.SysParameter;
+import com.crazy.portal.entity.system.User;
 import com.crazy.portal.service.customer.CustomerInfoService;
 import com.crazy.portal.service.handover.ReceiveService;
+import com.crazy.portal.service.price.CatalogPriceService;
 import com.crazy.portal.service.system.SysParamService;
 import com.crazy.portal.util.*;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.util.*;
@@ -64,6 +64,8 @@ public class OrderApplyService {
     private ReceiveService receiveService;
     @Resource
     private SysParamService sysParamService;
+    @Resource
+    private CatalogPriceService catalogPriceService;
 
     /**
      * 分页查询
@@ -77,25 +79,20 @@ public class OrderApplyService {
     }
 
     /**
-     * 模板下载
-     */
-    @Deprecated
-    public void downloadLineTmpl(HttpServletResponse response) throws Exception{
-        Map<String, List<? extends BaseRowModel>> resultMap = new HashMap<>();
-        resultMap.put("sheet1", Collections.singletonList(new OrderLineEO()));
-        ExcelUtils.createExcelStreamMutilByEaysExcel(response, resultMap, "订单行模板", ExcelTypeEnum.XLSX);
-    }
-
-    /**
      * 解析附件并作调价试算
      * @return
      */
-    public Map<String,Object> parsingLineTmplFile(OrderApply order) throws Exception{
+    public Map<String,Object> parsingLineTmplFile(OrderApply order, User user) throws Exception{
         Map<String,Object> map = new HashMap<>();
         if(order.getSalesOrg().equals("3000")){
             order.setPaymentTerms("9994");
         }
+        //解析excel
         List<OrderLineEO> records = ExcelUtils.readExcel(order.getLineFile(), OrderLineEO.class);
+
+        //检查订单行中数据是否有与之匹配的价格
+//        this.checkPriceMapping(user, records);
+
         //逻辑只允许出现同一个月份
         String expectedDeliveryMonthStr = records.get(0).getExpectedDeliveryMonth();
         BusinessUtil.notNull(expectedDeliveryMonthStr,ErrorCodes.BusinessEnum.ORDER_EMPTY_EXPECTEDDELIVERYMONTH);
@@ -115,8 +112,6 @@ public class OrderApplyService {
         List<ZpricessimulateItemOut> items = response.getEtItems().getItem();
 
         for(OrderLineEO orderLineEO : records){
-            //设置定价
-            orderLineEO.setPriceDate(priceDate);
             BigDecimal price = BigDecimal.ZERO;
             BigDecimal netprice = BigDecimal.ZERO;
 
@@ -133,12 +128,67 @@ public class OrderApplyService {
             }
             orderLineEO.setRPrice(price == null ? BigDecimal.ZERO : price);
             orderLineEO.setRNetPrice(netprice == null ? BigDecimal.ZERO : netprice);
+            //设置定价
+            orderLineEO.setPriceDate(priceDate);
         }
 
         map.put("lines",records);
         map.put("grossValue",esHeader.getGrossvalue());
         map.put("netValue",esHeader.getNetvalue());
         return map;
+    }
+
+
+    /**
+     * 检查订单行中数据是否有与之匹配的价格
+     * @param user
+     * @param records
+     */
+    private void checkPriceMapping(User user, List<OrderLineEO> records) {
+        //获取当前登录人价格列表
+        List<CatalogPrice> currentCatalogPrices = this.getCurrentCatalogPrice(user);
+
+        //判断当前物料是否在申请人的能看到的价格列表中,不在的话抛出异常，在的话提取外部客户编码进行价格模拟计算
+        records.stream().forEach(x -> {
+            String custAbbreviation = x.getCustAbbreviation();
+            BusinessUtil.assertEmpty(custAbbreviation, ErrorCodes.BusinessEnum.ORDER_EMPTY_CUSTABBREVIATION);
+
+            boolean isExists = this.isExistsCatalogPrice(currentCatalogPrices, x);
+            String hint = String.format(ErrorCodes.BusinessEnum.ORDER_NO_MAPPING_CUST.getZhMsg(),x.getProductId(),x.getCustAbbreviation());
+            if(!isExists){
+                throw new BusinessException(ErrorCodes.BusinessEnum.ORDER_NO_MAPPING_CUST.getCode(),hint);
+            }
+        });
+    }
+
+    /**
+     * 校验当前物料是否存在于价格列表中
+     * @param currentCatalogPrices
+     * @param x
+     * @return
+     */
+    private boolean isExistsCatalogPrice(List<CatalogPrice> currentCatalogPrices, OrderLineEO x) {
+        for(CatalogPrice catalogPrice : currentCatalogPrices){
+            if(catalogPrice.getSapCode().equals(x.getProductId())
+                    && catalogPrice.getPlatform().equals(x.getPlatform())
+                    && catalogPrice.getInCustomer().equals(x.getCustAbbreviation())){
+
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 查询当前登录人能看到的所有目录价格
+     * @param user
+     * @return
+     */
+    private List<CatalogPrice> getCurrentCatalogPrice(User user) {
+        CatalogPriceVO catalogPriceVO = new CatalogPriceVO();
+        catalogPriceVO.setPageSize(Integer.MAX_VALUE);
+        PageInfo<CatalogPrice> catalogPricesWithPage = catalogPriceService.findCatalogPricesWithPage(catalogPriceVO, user);
+        return catalogPricesWithPage.getList();
     }
 
     /**

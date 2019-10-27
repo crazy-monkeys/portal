@@ -111,22 +111,12 @@ public class OrderApplyController extends BaseController {
     }
 
     /**
-     * 模板下载
-     * @param response
-     * @throws Exception
-     */
-//    @GetMapping("/lineTmpl")
-    public void lineTmpl(HttpServletResponse response) throws Exception{
-        orderApplyService.downloadLineTmpl(response);
-    }
-
-    /**
      * 上传订单行模板,做调价试算
      * @return
      */
     @PostMapping("/upload")
     public BaseResponse upload(@Valid OrderApply orderApply) throws Exception{
-        return successResult(orderApplyService.parsingLineTmplFile(orderApply));
+        return successResult(orderApplyService.parsingLineTmplFile(orderApply,super.getCurrentUser()));
     }
 
     /**

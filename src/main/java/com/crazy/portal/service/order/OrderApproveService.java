@@ -124,34 +124,21 @@ public class OrderApproveService {
 
         ZrfcsdsalesordercreateResponse response = this.invokeEccCreateOrder(expectedDeliveryDate,orderApply);
         //第三方接口调用成功,将审批信息同步到结果表
-        ZsalesordercreateOutHeader esHeader = response.getEsHeader();
-        Order order = new Order();
-        BeanUtils.copyNotNullFields(orderApply,order);
-        order.setId(null);
-        order.setCreateTime(DateUtil.getCurrentTS());
-        order.setCreateId(userId);
-        order.setRGrossValue(esHeader.getGrossvalue());
-        order.setRNetValue(esHeader.getNetvalue());
-        order.setRSapOrderId(esHeader.getSaporderid());
-        order.setPaymentTerms(esHeader.getPaymentterms());
-
-        order.setPriceDate(expectedDeliveryDate);
-        order.setUpdateTime(null);
-        order.setUpdateId(null);
-
+        Order order = this.buildOrder(expectedDeliveryDate, orderApply, userId, response);
+        //获取申请单行对象
         List<OrderLine> lines = orderApply.lineJsonToObj(orderApply.getJsonLines());
-        //默认取出第一个订单行的期望交货月份
-        String expectedDeliveryMonth = lines.get(0).getExpectedDeliveryMonth();
-        if(StringUtil.isEmpty(order.getPriceDate())){
-            //设置月份的最后一天
-            Date month = DateUtil.parseDate(expectedDeliveryMonth,DateUtil.MONTH_FORMAT_HLINE);
-            order.setPriceDate(DateUtil.getLastDayOfMonth(DateUtil.getYear(month),DateUtil.getMonth(month)));
-        }
+
+        //计算定价日期
+        this.calculatePriceDate(order, lines);
 
         orderMapper.insertSelective(order);
+
         List<ZsalesordercreateOutItem> outItems = response.getEtItems().getItem();
-        outItems.forEach(eccLine->
-            lines.forEach(line->{
+
+        //返回的实体+虚拟的行
+        a:for(ZsalesordercreateOutItem eccLine : outItems){
+
+            b:for(OrderLine line : lines){
                 //ecc物料号如果前面有0 直接替换成空字符
                 eccLine.setProductid(eccLine.getProductid().replaceAll("^(0+)", ""));
                 //主物料信息保存
@@ -173,13 +160,57 @@ public class OrderApproveService {
                     line.setRPrice(currProductItems.stream()
                             .map(ZsalesordercreateOutItem::getPrice)
                             .reduce(BigDecimal.ZERO,BigDecimal::add));
-                }else {
-                    line.setRNetPrice(eccLine.getNetprice());
-                    line.setRPrice(eccLine.getPrice());
+
+                    this.insertOrderLine(userId,order,line,eccLine);
+                    //虚拟物料计算价格并成功保存,跳出当次循环
+                    continue a;
                 }
-                this.insertOrderLine(userId,order,line,eccLine);
-            })
-        );
+            }
+            //保存其余物料,需要构建新订单行
+            OrderLine orderLine = new OrderLine();
+            orderLine.setRPrice(eccLine.getPrice());
+            orderLine.setRNetPrice(eccLine.getNetprice());
+            this.insertOrderLine(userId,order,orderLine,eccLine);
+        }
+    }
+
+    private void calculatePriceDate(Order order, List<OrderLine> lines) throws ParseException {
+        //默认取出第一个订单行的期望交货月份
+        String expectedDeliveryMonth = lines.get(0).getExpectedDeliveryMonth();
+        if(StringUtil.isEmpty(order.getPriceDate())){
+            //设置月份的最后一天
+            Date month = DateUtil.parseDate(expectedDeliveryMonth,DateUtil.MONTH_FORMAT_HLINE);
+            order.setPriceDate(DateUtil.getLastDayOfMonth(DateUtil.getYear(month),DateUtil.getMonth(month)));
+        }
+    }
+
+    /**
+     * 调用创单接口成功,构建申请单头对象
+     * @param expectedDeliveryDate
+     * @param orderApply
+     * @param userId
+     * @param response
+     * @return
+     * @throws IntrospectionException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     */
+    private Order buildOrder(String expectedDeliveryDate, OrderApply orderApply, Integer userId, ZrfcsdsalesordercreateResponse response) throws IntrospectionException, IllegalAccessException, InvocationTargetException {
+        ZsalesordercreateOutHeader esHeader = response.getEsHeader();
+        Order order = new Order();
+        BeanUtils.copyNotNullFields(orderApply,order);
+        order.setId(null);
+        order.setCreateTime(DateUtil.getCurrentTS());
+        order.setCreateId(userId);
+        order.setRGrossValue(esHeader.getGrossvalue());
+        order.setRNetValue(esHeader.getNetvalue());
+        order.setRSapOrderId(esHeader.getSaporderid());
+        order.setPaymentTerms(esHeader.getPaymentterms());
+
+        order.setPriceDate(expectedDeliveryDate);
+        order.setUpdateTime(null);
+        order.setUpdateId(null);
+        return order;
     }
 
     private void insertOrderLine(Integer userId, Order order, OrderLine line, ZsalesordercreateOutItem etItem) {
@@ -194,6 +225,8 @@ public class OrderApproveService {
         line.setRRefItemProductId(etItem.getRefitemproductid().replaceAll("^(0+)", ""));
         line.setProductId(etItem.getProductid());
         line.setRItemNo(etItem.getItemno());
+        line.setRSapQty(etItem.getSapquantity().intValue());
+        line.setNum(etItem.getSapquantity().intValue());
         line.setCreateId(userId);
         line.setCreateTime(DateUtil.getCurrentTS());
         line.setActice(1);
