@@ -126,6 +126,7 @@ public class IDRService {
             result.setIdrList(records);
         }
         if(bean.getFileType().equals(Enums.BusinessFileType.FINANCIAL_CLOSURE.getCode())){
+            //上传财务完结文件
             financialClosure(bean, userId, fileVo);
         }
         result.setFileName(fileVo.getFileName());
@@ -135,6 +136,10 @@ public class IDRService {
         return result;
     }
 
+    /**
+     * 校验上传参数
+     * @param bean
+     */
     private void checkFileUploadParam(IdrUploadBean bean) {
         BusinessUtil.notNull(bean.getFileType(), ErrorCodes.BusinessEnum.BUSINESS_IDR_FILE_TYPE_IS_REQUIRED);
         BusinessUtil.notNull(bean.getFile(), ErrorCodes.BusinessEnum.BUSINESS_IDR_FILE_IS_REQUIRED);
@@ -146,11 +151,23 @@ public class IDRService {
         }
     }
 
+    /**
+     * 上传财务完结文件
+     * @param bean
+     * @param userId
+     * @param fileVo
+     */
     private void financialClosure(IdrUploadBean bean, Integer userId, FileVO fileVo) {
         saveBusinessFile(bean.getId(), bean.getFileType(), userId, fileVo);
         updateIdrInfoStatus(bean.getId(), bean.getCrAmount(), userId);
     }
 
+    /**
+     * 更新保差退记录状态
+     * @param id
+     * @param crAmount
+     * @param userId
+     */
     private void updateIdrInfoStatus(Integer id, BigDecimal crAmount, Integer userId) {
         BusinessIdrInfo info = businessIdrInfoMapper.selectByPrimaryKey(id);
         BusinessUtil.assertTrue(info.getStatus().equals(Enums.BusinessIdrStatus.AGREE.getCode()), ErrorCodes.BusinessEnum.BUSINESS_IDR_STATUS_NOT_APPROVAL);
@@ -162,6 +179,13 @@ public class IDRService {
         businessIdrInfoMapper.updateByPrimaryKeySelective(info);
     }
 
+    /**
+     * 保存文件记录
+     * @param id
+     * @param fileType
+     * @param userId
+     * @param fileVo
+     */
     private void saveBusinessFile(Integer id, Integer fileType, Integer userId, FileVO fileVo) {
         BusinessFile businessFile = new BusinessFile();
         businessFile.setIdrInfoId(id);
@@ -201,11 +225,16 @@ public class IDRService {
             saveExtendsInfo(bean.getRList(), businessReturnsInfoMapper, bean);
         }
         saveExtendsInfo(bean.getFiles(), businessFileMapper, bean);
-        Map<String, IdrApprovalSubmitResultBean> resultMap = idrApiService.submitApprovalToBPM(bean);
-        saveApprovalRecord(bean, resultMap);
+        saveApprovalRecord(bean, idrApiService.submitApprovalToBPM(bean));
         clearDiscardFile(bean.getFiles(), userId);
     }
 
+    /**
+     * 保存扩展信息
+     * @param list
+     * @param mapper
+     * @param bean
+     */
     public void saveExtendsInfo(List<? extends IdrBaseEntity> list, IdrBaseMapper mapper, BusinessIdrInfo bean){
         if(list == null){
             return;
@@ -218,6 +247,11 @@ public class IDRService {
         });
     }
 
+    /**
+     * 清理上传的无用文件
+     * @param files
+     * @param userId
+     */
     public void clearDiscardFile(List<BusinessFile> files, Integer userId){
         if(files == null){
             return;
@@ -227,17 +261,20 @@ public class IDRService {
         caches.stream().filter(e->!filePaths.contains(e)).forEach(e->new File(e).delete());
     }
 
-    private void saveApprovalRecord(BusinessIdrInfo bean, Map<String, IdrApprovalSubmitResultBean> resultMap) {
-        for(Map.Entry<String, IdrApprovalSubmitResultBean> entry : resultMap.entrySet()){
-            BusinessIdrApproval approvalRecord = new BusinessIdrApproval();
-            approvalRecord.setIdrInfoId(bean.getId());
-            approvalRecord.setOrderType(entry.getKey());
-            approvalRecord.setOrderNo(entry.getValue().getOrderNO());
-            approvalRecord.setCurrentReviewer(entry.getValue().getReviewer());
-            approvalRecord.setMessage(entry.getValue().getMessage());
-            approvalRecord.setCreateTime(DateUtil.getCurrentTS());
-            businessIdrApprovalMapper.insertSelective(approvalRecord);
-        }
+    /**
+     * 保存申请记录
+     * @param bean
+     * @param resultBean
+     */
+    private void saveApprovalRecord(BusinessIdrInfo bean, IdrApprovalSubmitResultBean resultBean) {
+        BusinessIdrApproval approvalRecord = new BusinessIdrApproval();
+        approvalRecord.setIdrInfoId(bean.getId());
+        approvalRecord.setOrderType(resultBean.getType());
+        approvalRecord.setOrderNo(resultBean.getOrderNO());
+        approvalRecord.setCurrentReviewer(resultBean.getReviewer());
+        approvalRecord.setMessage(resultBean.getMessage());
+        approvalRecord.setCreateTime(DateUtil.getCurrentTS());
+        businessIdrApprovalMapper.insertSelective(approvalRecord);
     }
 
     /**
@@ -255,18 +292,27 @@ public class IDRService {
         Integer status = null;
         List<BusinessIdrApproval> records = businessIdrApprovalMapper.selectByIdrInfoId(histortRecord.getIdrInfoId());
         if(records.stream().anyMatch(e-> Enums.BusinessIdrApprovalStatus.REJECT.getCode().equalsIgnoreCase(e.getReviewStatus()))){
+            //审批驳回
             status = Enums.BusinessIdrStatus.REJECT.getCode();
         }
         Set<String> orderNos = records.stream().map(BusinessIdrApproval::getOrderNo).collect(Collectors.toSet());
         Set<String> agreeSet = records.stream().filter(e-> Enums.BusinessIdrApprovalStatus.AGREE.getCode().equalsIgnoreCase(e.getReviewStatus()) && StringUtil.isBlank(e.getCurrentReviewer())).map(BusinessIdrApproval::getOrderNo).collect(Collectors.toSet());
         if(orderNos.size() == agreeSet.size()){
+            //审批通过
             status = Enums.BusinessIdrStatus.AGREE.getCode();
         }
         if(status != null){
+            //更新审批结果
             updateIdrInfoByApproval(request.getApiUserId(), histortRecord.getIdrInfoId(), status);
         }
     }
 
+    /**
+     * 更新审批结果
+     * @param apiUserId
+     * @param IdrInfoId
+     * @param status
+     */
     private void updateIdrInfoByApproval(String apiUserId, Integer IdrInfoId, Integer status) {
         BusinessIdrInfo idrInfo = businessIdrInfoMapper.selectByPrimaryKey(IdrInfoId);
         BusinessUtil.notNull(idrInfo, ErrorCodes.BusinessEnum.BUSINESS_IDR_APPROVAL_IDR_INFO_NOT_FOUND);
@@ -276,6 +322,11 @@ public class IDRService {
         businessIdrInfoMapper.updateByPrimaryKeySelective(idrInfo);
     }
 
+    /**
+     * 保存审批记录
+     * @param request
+     * @param histortRecord
+     */
     private void saveIdrApprovalRecord(IDRApprovalRequest request, BusinessIdrApproval histortRecord) {
         BusinessIdrApproval record = new BusinessIdrApproval();
         record.setIdrInfoId(histortRecord.getIdrInfoId());

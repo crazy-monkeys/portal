@@ -25,7 +25,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import javax.imageio.ImageIO;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.awt.image.RenderedImage;
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -373,5 +378,29 @@ public class UserService {
         return true;
     }
 
-
+    /**
+     * 获取验证码
+     * @param req
+     * @param resp
+     */
+    public void getVerifyCode(HttpServletRequest req, HttpServletResponse resp){
+        // 调用工具类生成的验证码和验证码图片
+        Map<String, Object> codeMap = VerifyCodeUtil.generateCodeAndPic();
+        // 将四位数字的验证码保存到Session中。
+        req.getSession().setAttribute("verifyCode", codeMap.get("code").toString());
+        // 禁止图像缓存。
+        resp.setHeader("Pragma", "no-cache");
+        resp.setHeader("Cache-Control", "no-cache");
+        resp.setDateHeader("Expires", -1);
+        resp.setContentType("image/jpeg");
+        ServletOutputStream sos;
+        try {
+            sos = resp.getOutputStream();
+            ImageIO.write((RenderedImage) codeMap.get("codePic"), "jpeg", sos);
+            sos.close();
+        } catch (IOException e) {
+            log.error("获取验证码异常", e);
+            throw new BusinessException(ErrorCodes.SystemManagerEnum.VERIFY_CODE_ERROR);
+        }
+    }
 }

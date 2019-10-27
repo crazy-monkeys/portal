@@ -29,22 +29,6 @@ public class VerifyCodeController {
 
     @GetMapping("/verifyCode")
     public void getCode(HttpServletRequest req, HttpServletResponse resp){
-        // 调用工具类生成的验证码和验证码图片
-        Map<String, Object> codeMap = VerifyCodeUtil.generateCodeAndPic();
-        // 将四位数字的验证码保存到Session中。
-        req.getSession().setAttribute("verifyCode", codeMap.get("code").toString());
-        // 禁止图像缓存。
-        resp.setHeader("Pragma", "no-cache");
-        resp.setHeader("Cache-Control", "no-cache");
-        resp.setDateHeader("Expires", -1);
-        resp.setContentType("image/jpeg");
-        ServletOutputStream sos;
-        try {
-            sos = resp.getOutputStream();
-            ImageIO.write((RenderedImage) codeMap.get("codePic"), "jpeg", sos);
-            sos.close();
-        } catch (IOException e) {
-            log.error("获取验证码异常", e);
-        }
+        userService.getVerifyCode(req, resp);
     }
 }

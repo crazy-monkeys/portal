@@ -27,21 +27,14 @@ import java.util.*;
 public class IDRApiService {
 
     private static final String BPM_IDR_APPROVAL_URL = "/http/PORTAL/BPM/PROJECT_WEB_SUBMIT";
+
     /**
      * 提交保差退审批到BPM
-     * @param requestBody
+     * @param bean
      * @return
      */
-    public String portalSubmitApprovalToBPM(String requestBody) throws IOException {
-        log.info("idr submit approval to bpm");
-        log.info("requestBody:" + requestBody);
-        String responseBody = HttpClientUtils.post(CallApiUtils.ECC_API_URL.concat(BPM_IDR_APPROVAL_URL), requestBody);
-        log.info("responseBody:" + responseBody);
-        return responseBody;
-    }
-
-    public Map<String, IdrApprovalSubmitResultBean> submitApprovalToBPM(BusinessIdrInfo bean) {
-        Map<String, IdrApprovalSubmitResultBean> resultMap = new HashMap<>();
+    public IdrApprovalSubmitResultBean submitApprovalToBPM(BusinessIdrInfo bean) {
+        IdrApprovalSubmitResultBean resultBean = new IdrApprovalSubmitResultBean();
         try {
             IdrApprovalSubmitBean submitBean = new IdrApprovalSubmitBean();
             submitBean.setType(getApprovalSubmitType(bean));
@@ -52,19 +45,19 @@ public class IDRApiService {
             submitBean.setExternalCustomer(bean.getOutCustomerName());
             submitBean.setReason(bean.getReson());
             submitBean.setSumRemark(bean.getRemark());
-            submitBean.setInsuredPriceItem(getInsuredProceItem(bean));
-            submitBean.setRefundPriceItem(getRefundPriceItem(bean));
-            submitBean.setReturnGoods(getReturnGoods(bean));
+            submitBean.setInsuredPriceItem(getInsuredProceItem(bean.getIList()));
+            submitBean.setRefundPriceItem(getRefundPriceItem(bean.getDList()));
+            submitBean.setReturnGoods(getReturnGoods(bean.getRList()));
             JSONObject requestBodyJson = new JSONObject();
             requestBodyJson.put("data", submitBean);
             String requestBody = JSON.toJSONString(requestBodyJson);
             String responseBody = portalSubmitApprovalToBPM(requestBody);
             BusinessUtil.assertTrue(StringUtil.isNotBlank(responseBody), ErrorCodes.BusinessEnum.BUSINESS_IDR_SUBMIT_RESULT_IS_NULL);
-            IdrApprovalSubmitResultBean resultBean = JSON.toJavaObject(JSON.parseObject(responseBody).getJSONObject("d"), IdrApprovalSubmitResultBean.class);
+            resultBean = JSON.toJavaObject(JSON.parseObject(responseBody).getJSONObject("d"), IdrApprovalSubmitResultBean.class);
             if (resultBean.getResult().equals(Enums.BusinessIdrApprovalSubmitResult.FAILED.getCode())) {
                 throw new BusinessException(ErrorCodes.BusinessEnum.BUSINESS_IDR_SUBMIT_RESULT_IS_FAIL.getCode(), resultBean.getMessage());
             }
-            resultMap.put(submitBean.getType(), resultBean);
+            resultBean.setType(submitBean.getType());
         }catch (ParseException ex){
             log.error(ErrorCodes.BusinessEnum.BUSINESS_IDR_APPROVAL_DATE_PARSE_EXCEPTION.getZhMsg(), ex);
             throw new BusinessException(ErrorCodes.BusinessEnum.BUSINESS_IDR_APPROVAL_DATE_PARSE_EXCEPTION);
@@ -72,9 +65,22 @@ public class IDRApiService {
             log.error(ErrorCodes.BusinessEnum.BUSINESS_IDR_APPROVAL_API_EXCEPTION.getZhMsg(), ex);
             throw new BusinessException(ErrorCodes.BusinessEnum.BUSINESS_IDR_APPROVAL_API_EXCEPTION);
         }
-        return resultMap;
+        return resultBean;
     }
 
+    public String portalSubmitApprovalToBPM(String requestBody) throws IOException {
+        log.info("idr submit approval to bpm");
+        log.info("requestBody： {}", requestBody);
+        String responseBody = HttpClientUtils.post(CallApiUtils.ECC_API_URL.concat(BPM_IDR_APPROVAL_URL), requestBody);
+        log.info("responseBody：{}", responseBody);
+        return responseBody;
+    }
+
+    /**
+     * 获取提交审批类型
+     * @param bean
+     * @return
+     */
     public String getApprovalSubmitType(BusinessIdrInfo bean){
         if (bean.getType().equals(Enums.BusinessIdrType.INSURANCE.getCode())) {
             return Enums.BusinessIdrApprovalSubmitType.KP.toString();
@@ -85,82 +91,93 @@ public class IDRApiService {
         if(bean.getType().equals(Enums.BusinessIdrType.RETURNS.getCode())){
             return Enums.BusinessIdrApprovalSubmitType.TH.toString();
         }
-        return "";
+        return StringUtil.EMPTY_STRING;
     }
 
-    private List<IdrApprovalSubmitBean.ReturnGood> getReturnGoods(BusinessIdrInfo bean) {
+    /**
+     * 获取退货/换货数据
+     * @param list
+     * @return
+     */
+    private List<IdrApprovalSubmitBean.ReturnGood> getReturnGoods(List<BusinessReturnsInfo> list) {
         List<IdrApprovalSubmitBean.ReturnGood> returnGoods = new ArrayList<>();
-        if(bean.getType().equals(Enums.BusinessIdrType.RETURNS.getCode())){
-            for(BusinessReturnsInfo e : bean.getRList()){
-                IdrApprovalSubmitBean.ReturnGood returnGood = new IdrApprovalSubmitBean.ReturnGood();
-                returnGood.setReturnBU(e.getReturnBu());
-                returnGood.setReturnPDT(e.getReturnPdt());
-                returnGood.setReturnPlatform(e.getReturnPlatform());
-                returnGood.setReturnProModel(e.getReturnProductModel());
-                returnGood.setReturnQuantity(e.getReturnNum());
-                returnGood.setReturnPrice(e.getReturnPrice() != null ? e.getReturnPrice().floatValue() : null);
-                returnGood.setAgenceRate(Float.valueOf(e.getReturnAgencyRate()));
-                returnGood.setReturnAmount(e.getReturnAmount() != null ? e.getReturnAmount().floatValue() : null);
+        for(BusinessReturnsInfo e : list){
+            IdrApprovalSubmitBean.ReturnGood returnGood = new IdrApprovalSubmitBean.ReturnGood();
+            returnGood.setReturnBU(e.getReturnBu());
+            returnGood.setReturnPDT(e.getReturnPdt());
+            returnGood.setReturnPlatform(e.getReturnPlatform());
+            returnGood.setReturnProModel(e.getReturnProductModel());
+            returnGood.setReturnQuantity(e.getReturnNum());
+            returnGood.setReturnPrice(e.getReturnPrice() != null ? e.getReturnPrice().floatValue() : null);
+            returnGood.setAgenceRate(Float.valueOf(e.getReturnAgencyRate()));
+            returnGood.setReturnAmount(e.getReturnAmount() != null ? e.getReturnAmount().floatValue() : null);
 
-                returnGood.setExchangeBU(e.getExchangeBu());
-                returnGood.setExchangePDT(e.getExchangePdt());
-                returnGood.setExchangePlatform(e.getExchangePlatform());
-                returnGood.setExchangeProModel(e.getExchangeProductModel());
-                returnGood.setExchangeQuantity(e.getExchangeNum());
-                returnGood.setExchangePrice(e.getExchangePrice() != null ? e.getExchangePrice().floatValue() : null);
-                returnGood.setExchangeAmount(e.getExchangeAmount() != null ? e.getExchangeAmount().floatValue() : null);
-                returnGood.setExchangeRemark(e.getRemark());
-                returnGoods.add(returnGood);
-            }
+            returnGood.setExchangeBU(e.getExchangeBu());
+            returnGood.setExchangePDT(e.getExchangePdt());
+            returnGood.setExchangePlatform(e.getExchangePlatform());
+            returnGood.setExchangeProModel(e.getExchangeProductModel());
+            returnGood.setExchangeQuantity(e.getExchangeNum());
+            returnGood.setExchangePrice(e.getExchangePrice() != null ? e.getExchangePrice().floatValue() : null);
+            returnGood.setExchangeAmount(e.getExchangeAmount() != null ? e.getExchangeAmount().floatValue() : null);
+            returnGood.setExchangeRemark(e.getRemark());
+            returnGoods.add(returnGood);
         }
         return returnGoods;
     }
 
-    private List<IdrApprovalSubmitBean.RefundPrice> getRefundPriceItem(BusinessIdrInfo bean) throws ParseException {
+    /**
+     * 获取差价数据
+     * @param list
+     * @return
+     * @throws ParseException
+     */
+    private List<IdrApprovalSubmitBean.RefundPrice> getRefundPriceItem(List<BusinessDiffPriceInfo> list) throws ParseException {
         List<IdrApprovalSubmitBean.RefundPrice> refundPriceItem = new ArrayList<>();
-        if(bean.getType().equals(Enums.BusinessIdrType.DIFF_PRICE.getCode())){
-            for(BusinessDiffPriceInfo e : bean.getDList()){
-                IdrApprovalSubmitBean.RefundPrice refundPrice = new IdrApprovalSubmitBean.RefundPrice();
-                refundPrice.setCustomer(e.getCustomerName());
-                refundPrice.setBU(e.getBu());
-                refundPrice.setPDT(e.getPdt());
-                refundPrice.setProductType(e.getProductType());
-                refundPrice.setPlatform(e.getPlatfom());
-                refundPrice.setProductModel(e.getProductModel());
-                refundPrice.setShipmentTime(e.getShipmentDate() != null ? DateUtil.parseDate(e.getShipmentDate(), DateUtil.WEB_FORMAT) : null);
-                refundPrice.setQuantity(e.getNum());
-                refundPrice.setCusPickPrice(e.getCustomerPrice() != null ? e.getCustomerPrice().floatValue() : null);
-                refundPrice.setAgentPickPrice(e.getAgentPrice() != null ? e.getAgentPrice().floatValue() : null);
-                refundPrice.setAgenceRate(Float.valueOf(e.getAgencyRate()));
-                refundPrice.setDifferencePrice(e.getDifferenceAmount().floatValue());
-                refundPrice.setRefundRemark(e.getRemark());
-                refundPriceItem.add(refundPrice);
-            }
+        for(BusinessDiffPriceInfo e : list){
+            IdrApprovalSubmitBean.RefundPrice refundPrice = new IdrApprovalSubmitBean.RefundPrice();
+            refundPrice.setCustomer(e.getCustomerName());
+            refundPrice.setBU(e.getBu());
+            refundPrice.setPDT(e.getPdt());
+            refundPrice.setProductType(e.getProductType());
+            refundPrice.setPlatform(e.getPlatfom());
+            refundPrice.setProductModel(e.getProductModel());
+            refundPrice.setShipmentTime(e.getShipmentDate() != null ? DateUtil.parseDate(e.getShipmentDate(), DateUtil.WEB_FORMAT) : null);
+            refundPrice.setQuantity(e.getNum());
+            refundPrice.setCusPickPrice(e.getCustomerPrice() != null ? e.getCustomerPrice().floatValue() : null);
+            refundPrice.setAgentPickPrice(e.getAgentPrice() != null ? e.getAgentPrice().floatValue() : null);
+            refundPrice.setAgenceRate(Float.valueOf(e.getAgencyRate()));
+            refundPrice.setDifferencePrice(e.getDifferenceAmount().floatValue());
+            refundPrice.setRefundRemark(e.getRemark());
+            refundPriceItem.add(refundPrice);
         }
         return refundPriceItem;
     }
 
-    private List<IdrApprovalSubmitBean.InsuredPrice> getInsuredProceItem(BusinessIdrInfo bean) throws ParseException {
+    /**
+     * 获取保价数据
+     * @param list
+     * @return
+     * @throws ParseException
+     */
+    private List<IdrApprovalSubmitBean.InsuredPrice> getInsuredProceItem(List<BusinessInsuranceInfo> list) throws ParseException {
         List<IdrApprovalSubmitBean.InsuredPrice> insuredPriceItem = new ArrayList<>();
-        if(bean.getType().equals(Enums.BusinessIdrType.INSURANCE.getCode())){
-            for(BusinessInsuranceInfo e : bean.getIList()){
-                IdrApprovalSubmitBean.InsuredPrice insuredPrice = new IdrApprovalSubmitBean.InsuredPrice();
-                insuredPrice.setDeliveryTime(e.getReceiveGoodsDate() != null ? DateUtil.parseDate(e.getReceiveGoodsDate(), DateUtil.WEB_FORMAT) : null);
-                insuredPrice.setAdjustPriceTime(e.getAdjustDate() != null ? DateUtil.parseDate(e.getAdjustDate(), DateUtil.WEB_FORMAT) : null);
-                insuredPrice.setBU(e.getBu());
-                insuredPrice.setPDT(e.getPdt());
-                insuredPrice.setProductType(e.getProductType());
-                insuredPrice.setPlatform(e.getPlatform());
-                insuredPrice.setProductModel(e.getProductModel());
-                insuredPrice.setInventoryQuantity(e.getNum() != null ? Integer.valueOf(e.getNum()) : null);
-                insuredPrice.setCurrency(e.getCurrency());
-                insuredPrice.setInventoryPrice(e.getPrice() != null ? Float.valueOf(e.getPrice()) : null);
-                insuredPrice.setNewPrice(e.getNewPrice() != null ? Float.valueOf(e.getNewPrice()) : null);
-                insuredPrice.setInsured(e.getInsuranceAmount() != null ? Float.valueOf(e.getInsuranceAmount()) : null);
-                insuredPrice.setAdjustTime(e.getModifyDate() != null ? DateUtil.parseDate(e.getModifyDate(), DateUtil.WEB_FORMAT) : null);
-                insuredPrice.setInsuredRemark(e.getRemark());
-                insuredPriceItem.add(insuredPrice);
-            }
+        for(BusinessInsuranceInfo e : list){
+            IdrApprovalSubmitBean.InsuredPrice insuredPrice = new IdrApprovalSubmitBean.InsuredPrice();
+            insuredPrice.setDeliveryTime(e.getReceiveGoodsDate() != null ? DateUtil.parseDate(e.getReceiveGoodsDate(), DateUtil.WEB_FORMAT) : null);
+            insuredPrice.setAdjustPriceTime(e.getAdjustDate() != null ? DateUtil.parseDate(e.getAdjustDate(), DateUtil.WEB_FORMAT) : null);
+            insuredPrice.setBU(e.getBu());
+            insuredPrice.setPDT(e.getPdt());
+            insuredPrice.setProductType(e.getProductType());
+            insuredPrice.setPlatform(e.getPlatform());
+            insuredPrice.setProductModel(e.getProductModel());
+            insuredPrice.setInventoryQuantity(e.getNum() != null ? Integer.valueOf(e.getNum()) : null);
+            insuredPrice.setCurrency(e.getCurrency());
+            insuredPrice.setInventoryPrice(e.getPrice() != null ? Float.valueOf(e.getPrice()) : null);
+            insuredPrice.setNewPrice(e.getNewPrice() != null ? Float.valueOf(e.getNewPrice()) : null);
+            insuredPrice.setInsured(e.getInsuranceAmount() != null ? Float.valueOf(e.getInsuranceAmount()) : null);
+            insuredPrice.setAdjustTime(e.getModifyDate() != null ? DateUtil.parseDate(e.getModifyDate(), DateUtil.WEB_FORMAT) : null);
+            insuredPrice.setInsuredRemark(e.getRemark());
+            insuredPriceItem.add(insuredPrice);
         }
         return insuredPriceItem;
     }
