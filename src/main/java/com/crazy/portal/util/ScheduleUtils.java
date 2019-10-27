@@ -3,9 +3,11 @@
  */
 package com.crazy.portal.util;
 
+import com.crazy.portal.config.quartz.MonitorJobListener;
 import com.crazy.portal.entity.task.ScheduleJob;
 import com.crazy.portal.entity.task.ScheduleMonitor;
 import org.quartz.*;
+import org.quartz.impl.matchers.KeyMatcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -98,6 +100,8 @@ public class ScheduleUtils {
 			// 按新的cronExpression表达式构建一个新的trigger
 			CronTrigger trigger = TriggerBuilder.newTrigger().withIdentity(jobName, jobGroup)
 					.withSchedule(scheduleBuilder).build();
+
+			scheduler.getListenerManager().addJobListener(new MonitorJobListener());
 
 			scheduler.scheduleJob(jobDetail, trigger);
 
