@@ -93,7 +93,7 @@ public class OrderApplyService {
         //检查订单行中数据是否有与之匹配的价格
         this.checkPriceMapping(user, records);
 
-        //逻辑只允许出现同一个月份
+        //逻辑只允许出现同一个月份,直接用第一个元素为标准
         String expectedDeliveryMonthStr = records.get(0).getExpectedDeliveryMonth();
         BusinessUtil.notNull(expectedDeliveryMonthStr,ErrorCodes.BusinessEnum.ORDER_EMPTY_EXPECTEDDELIVERYMONTH);
 
