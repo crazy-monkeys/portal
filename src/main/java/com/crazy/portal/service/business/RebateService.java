@@ -339,19 +339,28 @@ public class RebateService {
         String preMonth = DateUtil.getPerMonth(currMonth);
 
         Date currDate = DateUtil.getCurrentTS();
-
+        //批量更新销售明细数据
         batchUpdateSalesDetail(currMonth, preMonth, currDate);
-
+        //批量更新rebate信息
         batchUpdateRebate(currMonth, preMonth, currDate);
-
+        //批量更新价格数据
         batchUpdatePriceRole(currMonth, preMonth, currDate);
 
     }
 
+    /**
+     * 批量更新rebate信息
+     * @param currMonth
+     * @param preMonth
+     * @param currDate
+     * @throws Exception
+     */
     private void batchUpdateRebate(String currMonth, String preMonth, Date currDate) throws Exception{
+        //按照分组条件，查询出所有Rebate分组结果
         List<RebateGroupParam> groupParams = businessSalesDetailMapper.selectGroupParamList(currMonth, preMonth);
         List<Integer> rebateIds = new ArrayList<>();
         for (RebateGroupParam e : groupParams) {
+            //查询该Rebate分组是否存在，不存在则新增
             Integer rebateId = businessRebateMapper.selectRebateIdByGroupParam(e);
             if(rebateId == null){
                 BusinessRebate rebateRecord = new BusinessRebate();
@@ -368,10 +377,19 @@ public class RebateService {
             }
             rebateIds.add(rebateId);
         }
+        //批量填充销售数据的RebateId字段
         businessSalesDetailMapper.updateRebateId();
+        //批量更新Rebate总金额
         rebateIds.forEach(e-> businessSalesDetailMapper.updateRebateAmountByRebateId(e));
     }
 
+    /**
+     * 批量更新销售明细数据
+     * @param currMonth
+     * @param preMonth
+     * @param currDate
+     * @throws Exception
+     */
     private void batchUpdateSalesDetail(String currMonth, String preMonth, Date currDate) throws Exception {
         ImmutableMap<String, String> replaceCompany = ImmutableMap.of("7100", "SPRD", "3000", "SPRD", "3001", "SPRD", "4800", "RDA");
         List<BusinessSalesDetailAO> salesDetailResult = rebateApiService.syncRebatePriceSalesDetails(currMonth, preMonth);
@@ -396,6 +414,13 @@ public class RebateService {
         }
     }
 
+    /**
+     * 批量更新价格数据
+     * @param currMonth
+     * @param preMonth
+     * @param currDate
+     * @throws Exception
+     */
     private void batchUpdatePriceRole(String currMonth, String preMonth, Date currDate) throws Exception {
         List<BusinessPriceRoleAO> priceRoleResult  = rebateApiService.syncRebatePriceRoleData(currMonth, preMonth);
         for (BusinessPriceRoleAO priceRoleAO : priceRoleResult) {
