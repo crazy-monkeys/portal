@@ -1,5 +1,6 @@
 package com.crazy.portal.service.order;
 
+import com.alibaba.fastjson.JSON;
 import com.crazy.portal.bean.order.*;
 import com.crazy.portal.bean.order.wsdl.price.*;
 import com.crazy.portal.bean.price.CatalogPriceVO;
@@ -84,9 +85,9 @@ public class OrderApplyService {
      */
     public Map<String,Object> parsingLineTmplFile(OrderApply order, User user) throws Exception{
         Map<String,Object> map = new HashMap<>();
-        if(order.getSalesOrg().equals("3000")){
+       /* if(order.getSalesOrg().equals("3000")){
             order.setPaymentTerms("9994");
-        }
+        }*/
         //解析excel
         List<OrderLineEO> records = ExcelUtils.readExcel(order.getLineFile(), OrderLineEO.class);
 
@@ -94,6 +95,8 @@ public class OrderApplyService {
         this.checkPriceMapping(user, records);
 
         //逻辑只允许出现同一个月份,直接用第一个元素为标准
+        //逻辑只允许出现同一个月份
+        log.info("moth"+ JSON.toJSONString(records));
         String expectedDeliveryMonthStr = records.get(0).getExpectedDeliveryMonth();
         BusinessUtil.notNull(expectedDeliveryMonthStr,ErrorCodes.BusinessEnum.ORDER_EMPTY_EXPECTEDDELIVERYMONTH);
 
@@ -218,9 +221,9 @@ public class OrderApplyService {
         order.setCreateTime(DateUtil.getCurrentTS());
         order.setActive(1);
         order.setAppalyType(1);
-        if(order.getSalesOrg().equals("3000")){
+        /*if(order.getSalesOrg().equals("3000")){
             order.setPaymentTerms("9994");
-        }
+        }*/
 
         List<OrderLine> orderLines = order.getOrderLines();
         Date priceDate = this.getPriceDate(orderLines.get(0).getExpectedDeliveryMonth());
@@ -618,7 +621,8 @@ public class OrderApplyService {
 
             DeliverOrder deliverOrder = deliverOrderMapper.selectByPrimaryKey(deliverOrderLine.getDeliverOrderId());
             Order order = orderMapper.selectByPrimaryKey(deliverOrder.getSalesOrderId());
-            receiveData.add(mappingRecive(deliverOrderLine, qty, order, deliverOrder));
+            CustomerInfo customerInfo = customerInfoMapper.selectByPrimaryKey(order.getDealerId());
+            receiveData.add(mappingRecive(deliverOrderLine, qty, order, deliverOrder,customerInfo));
         });
         boolean flg = receiveService.pushReceiveDataToBi(receiveData, userId);
         if(flg){
@@ -628,19 +632,31 @@ public class OrderApplyService {
         }
     }
 
-    private ReceiveDetail mappingRecive(DeliverOrderLine deliverOrderLine, Integer qty, Order order, DeliverOrder deliverOrder){
+    private ReceiveDetail mappingRecive(DeliverOrderLine deliverOrderLine, Integer qty, Order order, DeliverOrder deliverOrder, CustomerInfo customerInfo){
         OrderLine orderLine = orderLineMapper.selectByPrimaryKey(deliverOrderLine.getSalesOrderLineId());
-        CustomerInfo customerInfo = customerInfoMapper.selectByPrimaryKey(order.getDealerId());
         ProductInfoDO productInfoDO = productInfoDOMapper.selectBySapMidAndPlatForm(orderLine.getProductId(), orderLine.getPlatform());
-
         ReceiveDetail detail = new ReceiveDetail();
         detail.setDeliveryOrderId(deliverOrderLine.getDeliverOrderLineId());
         detail.setDealerName(customerInfo.getCustName());
-        detail.setCustomerType(order.getOrderType());
+        detail.setCustomerType(order.getCustomerAttr().equals("B2")?"Mass Market":"Account Market");
         detail.setDeliveryNum(String.valueOf(qty));
         detail.setProductModel(productInfoDO.getProduct());
         detail.setPlatform(productInfoDO.getPlatform());
-        detail.setInventoryCategory(order.getOrderType());
+        String category = "";
+        if(order.getOrderType().equals("A01")){
+            category = "客户专货";
+        }else if (order.getOrderType().equals("A02")){
+            category = "Buffer";
+        }else if (order.getOrderType().equals("A03")){
+            category = "新产品";
+        }else if (order.getOrderType().equals("A04")){
+            category = "样品";
+        }else if (order.getOrderType().equals("A05")){
+            category = "Last Buy";
+        }else if (order.getOrderType().equals("A06")){
+            category = "分销商专货";
+        }
+        detail.setInventoryCategory(category);
         detail.setInventoryUnitPrice(orderLine.getRPrice());
         detail.setSalesOrganization("3000");
         detail.setDeliveryTime(DateUtil.format(new Date(),DateUtil.WEB_FORMAT));

@@ -54,7 +54,7 @@ public class OrderQueryController extends BaseController {
     @PostMapping("/list/delivery")
     public BaseResponse deliveryList(@RequestBody DeliveryOrderQueryVO vo){
         if(super.getCurrentUser().getUserType().equals(Enums.USER_TYPE.agent.toString())){
-            vo.setDealerId(super.getCurrentUserId());
+            vo.setDealerId(super.getCurrentUser().getDealerId());
         }
         return successResult(orderService.deliveryOrderList(vo));
     }
@@ -66,9 +66,6 @@ public class OrderQueryController extends BaseController {
      */
     @PostMapping("/list/delivery/approval")
     public BaseResponse deliveryApprovalList(@RequestBody DeliveryOrderQueryVO vo){
-        if(super.getCurrentUser().getUserType().equals(Enums.USER_TYPE.agent.toString())){
-            vo.setDealerId(super.getCurrentUser().getDealerId());
-        }
         return successResult(orderService.deliveryOrderApprovalList(vo,getCurrentUserId()));
     }
 

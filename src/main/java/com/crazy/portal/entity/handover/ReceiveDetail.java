@@ -43,7 +43,7 @@ public class ReceiveDetail extends BaseRowModel {
     private String warehouse;
 
     /** 提货时间 */
-    @ExcelProperty(index = 7, value = "提货时间")
+    @ExcelProperty(index = 7, value = "代理提货时间")
     private String deliveryTime;
 
     /** 提货发票号 */
@@ -51,7 +51,7 @@ public class ReceiveDetail extends BaseRowModel {
     private String invoiceNumber;
 
     /** 提货数量 */
-    @ExcelProperty(index = 8, value = "提货数量")
+    @ExcelProperty(index = 8, value = "代理提货数量")
     private String deliveryNum;
 
     /** 发货公司 */

@@ -68,7 +68,10 @@ public class BiTotalUpdateTemplate extends BaseRowModel {
     @ExcelProperty(index = 18, value = "首代备注6")
     private String sdRemarkSix;
 
-    @ExcelProperty(index = 19, value = "错误信息")
+    @ExcelProperty(index = 19, value = "Portal ID")
+    private String portalId;
+
+    @ExcelProperty(index = 20, value = "错误信息")
     private String errorMsg;
 
 }

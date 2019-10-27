@@ -107,13 +107,16 @@ public class BiAgencyUpdateTemplate extends BaseRowModel {
     @ExcelProperty(index = 31, value = "阿米巴队长填写值6")
     private String ambAdjustmentSix;
 
-    @ExcelProperty(index = 32, value = "阿米巴队长备注6")
+    @ExcelProperty(index = 32, value = "代理商备注6")
     private String remarkSix;
 
     @ExcelProperty(index = 33, value = "阿米巴队长备注6")
     private String ambRemarkSix;
 
-    @ExcelProperty(index = 34, value = "错误信息")
+    @ExcelProperty(index = 34, value = "Portal ID")
+    private String portalId;
+
+    @ExcelProperty(index = 35, value = "错误信息")
     private String errorMsg;
 
 }

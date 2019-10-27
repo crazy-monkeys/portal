@@ -54,13 +54,6 @@ public class ReceiveService extends AbstractHandover implements IHandover<Receiv
     private String ftpPullPath;
 
     public boolean pushReceiveDataToBi(List<ReceiveDetail> receiveData, Integer userId) {
-       /* DeliverReceiveRecord record = handoverService.genRecord(customerInfoService.getDealerByUser(userId).getCustName(), userId, 2);
-        for(ReceiveDetail detail : receiveData){
-            detail.setRecordId(record.getId());
-            receiveDetailMapper.insertSelective(detail);
-        }
-        handoverService.updateStatus(record.getId(), 2);
-        return true;*/
         String thirdFileName = ExcelUtils.writeExcel(receivePushPath, receiveData, ReceiveDetail.class);
         BiCheckResult checkResult = callBiServerByFtp(CHECK_INVENTORY_IMPORT_FILE, receivePushPath, thirdFileName, receivePullPath);
         List<ReceiveDetail> responseData = ExcelUtils.readExcel(checkResult.getFilePath(), ReceiveDetail.class);
@@ -71,9 +64,10 @@ public class ReceiveService extends AbstractHandover implements IHandover<Receiv
             receiveDetailMapper.insertSelective(detail);
         }
         if(checkResult.isSuccess()){
-            List<ReceiveDetail> importData = receiveDetailMapper.selectByRecordId(record.getId());
+            //TODO
+            List<ReceiveDetail> importData = receiveData;//receiveDetailMapper.selectByRecordId(record.getId());
             String importFile = ExcelUtils.writeExcel(receivePushPath, importData, ReceiveDetail.class);
-            BiCheckResult importResult = callBiServerByFtp(CHECK_INVENTORY_IMPORT_FILE, receivePushPath, importFile, receivePullPath);
+            BiCheckResult importResult = callBiServerByFtp(SAVE_INVENTORY_IMPORT_FILE, receivePushPath, importFile, receivePullPath);
             List<ReceiveDetail> importResData = ExcelUtils.readExcel(importResult.getFilePath(), ReceiveDetail.class);
             if(importResult.isSuccess()){
                 handoverService.updateStatus(record.getId(), 2);

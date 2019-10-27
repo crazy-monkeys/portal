@@ -107,7 +107,10 @@ public class CallApiUtils {
         if (StringUtils.isEmpty(param)) {
             return HttpClientUtils.get(getBiUrl(function_code, baseMapping));
         }
-        return HttpClientUtils.get(String.format("%s?%s", getBiUrl(function_code, baseMapping), param));
+        log.info("call bi url:=======================" + String.format("%s?%s", getBiUrl(function_code, baseMapping), param));
+        String response = HttpClientUtils.get(String.format("%s?%s", getBiUrl(function_code, baseMapping), param));
+        log.info("bi response:======================" + response);
+        return response;
     }
 
     public static String callBiPostApi(Enums.BI_FUNCTION_CODE function_code, String baseMapping, String body) throws IOException {

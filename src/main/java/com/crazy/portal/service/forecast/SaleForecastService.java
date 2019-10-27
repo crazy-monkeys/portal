@@ -809,6 +809,7 @@ public class SaleForecastService {
             if(forecast.getStatus() == 4 && forecast.getAgencyStatusType() == 2){
                 BiAgencyUpdateTemplate updateTemplate = new BiAgencyUpdateTemplate();
                 copyDbFields(forecast, updateTemplate);
+                updateTemplate.setPortalId(String.valueOf(forecast.getId()));
                 updateData.add(updateTemplate);
             }
         }
