@@ -5,6 +5,9 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 
+/**
+ * Rebate分组参数
+ */
 @Getter
 @Setter
 public class RebateGroupParam {

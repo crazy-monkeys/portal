@@ -7,6 +7,10 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
 import java.math.BigDecimal;
+
+/**
+ * 退货模板
+ */
 @Slf4j
 @Data
 public class ReturnsEO extends BaseRowModel {

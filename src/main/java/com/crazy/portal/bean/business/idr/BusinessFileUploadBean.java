@@ -16,6 +16,6 @@ public class BusinessFileUploadBean {
     private String filePath;
     /** 文件类型 **/
     private Integer fileType;
-
+    /** 保差退数据集合**/
     private List<BaseRowModel> idrList;
 }

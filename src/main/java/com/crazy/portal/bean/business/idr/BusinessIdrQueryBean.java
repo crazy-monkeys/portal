@@ -6,6 +6,9 @@ import lombok.Data;
 import java.math.BigDecimal;
 import java.util.Date;
 
+/**
+ * 列表查询筛选
+ */
 @Data
 public class BusinessIdrQueryBean extends PageBean {
 

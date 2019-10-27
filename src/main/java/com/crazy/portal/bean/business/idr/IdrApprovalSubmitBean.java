@@ -5,6 +5,10 @@ import lombok.Data;
 
 import java.util.Date;
 import java.util.List;
+
+/**
+ * 提交申请
+ */
 @Data
 public class IdrApprovalSubmitBean {
 
