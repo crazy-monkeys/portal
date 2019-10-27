@@ -279,7 +279,8 @@ public class ErrorCodes {
         ORDER_IS_INACTIVE(900021,"不允许的操作,订单状态不满足",""),
         ORDER_QTY_IS_ENOUGH(900022,"订单可提数量不足",""),
         ORDER_PRICE_ERROR(900023,"定价失败",""),
-        ORDER_INVALID_PRODUCT(900024,"%s 物料号无效",""),
+        ORDER_INVALID_PRODUCT(900024,"物料号[%s]无效",""),
+        ORDER_EMPTY_PRODUCT(900025,"物料号不能为空",""),
 
         //文档管理
         ARCHIVE_FILE_NOT_EMPTY(100001, "请选择需要上传的文件", ""),
