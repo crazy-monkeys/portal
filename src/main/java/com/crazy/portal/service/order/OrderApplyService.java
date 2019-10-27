@@ -182,6 +182,7 @@ public class OrderApplyService {
     private void checkParameter(OrderApply order) {
         BusinessUtil.notNull(order, ErrorCodes.BusinessEnum.ORDER_INFO_IS_REQUIRED);
         BusinessUtil.notNull(order.getOrderLines(), ErrorCodes.BusinessEnum.ORDER_LINES_IS_REQUIRED);
+        BusinessUtil.assertFlase(order.getOrderLines().isEmpty(), ErrorCodes.BusinessEnum.ORDER_LINES_IS_REQUIRED);
 
         order.getOrderLines().stream().forEach(x->{
             BusinessUtil.assertEmpty(x.getProductId(),ErrorCodes.BusinessEnum.ORDER_EMPTY_PRODUCT);
