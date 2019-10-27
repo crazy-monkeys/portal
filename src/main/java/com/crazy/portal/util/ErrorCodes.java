@@ -205,6 +205,7 @@ public class ErrorCodes {
         BUSINESS_IDR_SUBMIT_ILIST_IS_NULL(70015, "保价数据为空，请上传文件后再提交", ""),
         BUSINESS_IDR_SUBMIT_DLIST_IS_NULL(70016, "差价数据为空，请上传文件后再提交", ""),
         BUSINESS_IDR_SUBMIT_RLIST_IS_NULL(70017, "退换货数据为空，请上传文件后再提交", ""),
+        BUSINESS_IDR_APPROVAL_RECORDS_IS_NULL(70018, "审批结果同步，审批记录为空", ""),
         //商务管理-客户rebate
         REBATE_RECORD_NOT_FOUND(70101, "该记录不存在，请核对后重新提交", ""),
         REBATE_SURPLUS_AMOUNT_TOO_LARGE(70103, "释放金额不能大于rebate金额，请重新填写", ""),

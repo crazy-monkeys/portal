@@ -1,6 +1,5 @@
 package com.crazy.portal.service.business;
 
-import com.alibaba.druid.wall.violation.ErrorCode;
 import com.alibaba.excel.metadata.BaseRowModel;
 import com.alibaba.excel.support.ExcelTypeEnum;
 import com.crazy.portal.bean.business.idr.*;
@@ -241,7 +240,7 @@ public class IDRService {
      * @param bean
      */
     public void saveExtendsInfo(List<? extends IdrBaseEntity> list, IdrBaseMapper mapper, BusinessIdrInfo bean){
-        if(list == null){
+        if(CollectionUtils.isEmpty(list)){
             return;
         }
         list.forEach(e->{
@@ -258,7 +257,7 @@ public class IDRService {
      * @param userId
      */
     public void clearDiscardFile(List<BusinessFile> files, Integer userId){
-        if(files == null){
+        if(CollectionUtils.isEmpty(files)){
             return;
         }
         List<String> filePaths = files.stream().map(BusinessFile::getFilePath).collect(Collectors.toList());
@@ -296,6 +295,7 @@ public class IDRService {
         saveIdrApprovalRecord(request, histortRecord);
         Integer status = null;
         List<BusinessIdrApproval> records = businessIdrApprovalMapper.selectByIdrInfoId(histortRecord.getIdrInfoId());
+        BusinessUtil.assertFlase(CollectionUtils.isEmpty(records), ErrorCodes.BusinessEnum.BUSINESS_IDR_APPROVAL_RECORDS_IS_NULL);
         if(records.stream().anyMatch(e-> Enums.BusinessIdrApprovalStatus.REJECT.getCode().equalsIgnoreCase(e.getReviewStatus()))){
             //审批驳回
             status = Enums.BusinessIdrStatus.REJECT.getCode();

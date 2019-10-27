@@ -394,6 +394,7 @@ public class RebateService {
     private void batchUpdateSalesDetail(String currMonth, String preMonth, Date currDate) throws Exception {
         ImmutableMap<String, String> replaceCompany = ImmutableMap.of("7100", "SPRD", "3000", "SPRD", "3001", "SPRD", "4800", "RDA");
         List<BusinessSalesDetailAO> salesDetailResult = rebateApiService.syncRebatePriceSalesDetails(currMonth, preMonth);
+        log.info("rebate salesDetailResult："+salesDetailResult.size());
         for (BusinessSalesDetailAO salesDetailAO : salesDetailResult) {
             BusinessSalesDetail salesDetail = new BusinessSalesDetail();
             if(salesDetailAO.getId() == null){
@@ -424,6 +425,7 @@ public class RebateService {
      */
     private void batchUpdatePriceRole(String currMonth, String preMonth, Date currDate) throws Exception {
         List<BusinessPriceRoleAO> priceRoleResult  = rebateApiService.syncRebatePriceRoleData(currMonth, preMonth);
+        log.info("rebate priceRoleResult："+priceRoleResult.size());
         for (BusinessPriceRoleAO priceRoleAO : priceRoleResult) {
             BusinessPriceRole priceRole = new BusinessPriceRole();
             if(priceRoleAO.getId() == null){

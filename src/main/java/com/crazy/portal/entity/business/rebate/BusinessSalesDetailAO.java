@@ -16,6 +16,7 @@ public class BusinessSalesDetailAO {
      * ID
      */
     @JsonProperty(value = "sales_report_id")
+//    @JsonProperty(value = "related_id")
     private Integer id;
 
     /**
