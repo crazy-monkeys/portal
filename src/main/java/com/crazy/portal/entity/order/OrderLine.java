@@ -26,10 +26,15 @@ public class OrderLine {
     private Integer orderId;
 
     /**
+     * 虚拟物料号
+     */
+    @NotEmpty(message = "虚拟物料号不能为空")
+    private String productId;
+
+    /**
      * 物料号
      */
-    @NotEmpty(message = "物料号不能为空")
-    private String productId;
+    private String product;
 
     /**
      * 单位

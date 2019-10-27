@@ -131,7 +131,8 @@ public class OrderApproveService {
         //计算定价日期
         this.calculatePriceDate(order, lines);
 
-        orderMapper.insertSelective(order);
+        //保存订单头
+        this.orderMapper.insertSelective(order);
 
         List<ZsalesordercreateOutItem> outItems = response.getEtItems().getItem();
 
@@ -140,30 +141,19 @@ public class OrderApproveService {
 
             b:for(OrderLine line : lines){
                 //ecc物料号如果前面有0 直接替换成空字符
-                eccLine.setProductid(eccLine.getProductid().replaceAll("^(0+)", ""));
+                String eccProductID = eccLine.getProductid().replaceAll("^(0+)", "");
                 //主物料信息保存
                 String portalProductId = line.getProductId();
-                if(eccLine.getProductid().equals(portalProductId)){
+                if(eccProductID.equals(portalProductId)){
                     //设置剩余数量
                     line.setRemainingNum(line.getNum());
-
-                    //过滤出主物料对应的组合物料信息
-                    List<ZsalesordercreateOutItem> currProductItems = outItems.stream()
-                            .filter(f -> f.getRefitemproductid().replaceAll("^(0+)", "").equals(portalProductId)
-                                    || f.getProductid().replaceAll("^(0+)", "").equals(portalProductId))
-                            .collect(Collectors.toList());
-
-                    //主物料计算总价
-                    line.setRNetPrice(currProductItems.stream()
-                            .map(ZsalesordercreateOutItem::getNetprice)
-                            .reduce(BigDecimal.ZERO,BigDecimal::add));
-
-                    line.setRPrice(currProductItems.stream()
-                            .map(ZsalesordercreateOutItem::getPrice)
-                            .reduce(BigDecimal.ZERO,BigDecimal::add));
-
+                    //计算组合物料价格
+                    this.calculatePrice(outItems, line, portalProductId);
+                    //设置product
+                    this.setProduct(line, portalProductId);
+                    //保存虚拟订单行
                     this.insertOrderLine(userId,order,line,eccLine);
-                    //虚拟物料计算价格并成功保存,跳出当次循环
+                    //虚拟物料计算价格并成功保存,跳至外层循环处理其他组合物料
                     continue a;
                 }
             }
@@ -171,10 +161,52 @@ public class OrderApproveService {
             OrderLine orderLine = new OrderLine();
             orderLine.setRPrice(eccLine.getPrice());
             orderLine.setRNetPrice(eccLine.getNetprice());
+            this.setProduct(orderLine, eccLine.getProductid());
             this.insertOrderLine(userId,order,orderLine,eccLine);
         }
     }
 
+    /**
+     * 计算组合物料价格
+     * @param outItems
+     * @param line
+     * @param portalProductId
+     */
+    private void calculatePrice(List<ZsalesordercreateOutItem> outItems, OrderLine line, String portalProductId) {
+        //过滤出主物料对应的组合物料信息
+        List<ZsalesordercreateOutItem> currProductItems = outItems.stream()
+                .filter(f -> f.getRefitemproductid().replaceAll("^(0+)", "").equals(portalProductId)
+                        || f.getProductid().replaceAll("^(0+)", "").equals(portalProductId))
+                .collect(Collectors.toList());
+
+        //主物料计算总价
+        line.setRNetPrice(currProductItems.stream()
+                .map(ZsalesordercreateOutItem::getNetprice)
+                .reduce(BigDecimal.ZERO,BigDecimal::add));
+
+        line.setRPrice(currProductItems.stream()
+                .map(ZsalesordercreateOutItem::getPrice)
+                .reduce(BigDecimal.ZERO,BigDecimal::add));
+    }
+
+    /**
+     * 设置物料
+     * @param line
+     * @param portalProductId
+     */
+    private void setProduct(OrderLine line, String portalProductId) {
+        ProductInfoDO productInfoDO = productInfoDOMapper.selectBySapMid(portalProductId);
+        BusinessUtil.notNull(productInfoDO, ErrorCodes.BusinessEnum.ORDER_NOT_EXISTS_PRODUCT_ID);
+
+        line.setProduct(productInfoDO.getProduct());
+    }
+
+    /**
+     * 计算定价日期
+     * @param order
+     * @param lines
+     * @throws ParseException
+     */
     private void calculatePriceDate(Order order, List<OrderLine> lines) throws ParseException {
         //默认取出第一个订单行的期望交货月份
         String expectedDeliveryMonth = lines.get(0).getExpectedDeliveryMonth();
@@ -214,18 +246,25 @@ public class OrderApproveService {
         return order;
     }
 
+    /**
+     * 保存订单行
+     * @param userId
+     * @param order
+     * @param line
+     * @param etItem
+     */
     private void insertOrderLine(Integer userId, Order order, OrderLine line, ZsalesordercreateOutItem etItem) {
         line.setOrderId(order.getId());
         line.setExpectedDeliveryDate(order.getPriceDate());
         line.setRPrice(line.getRPrice());
         line.setRNetPrice(line.getRNetPrice());
         line.setRCurrency(etItem.getCurrency());
-        line.setRProductId(etItem.getProductid());
+        line.setRProductId(etItem.getProductid().replaceAll("^(0+)", ""));
         line.setRItemCategory(etItem.getItemcategory());
         line.setRRefItemNo(etItem.getRefitemno().replaceAll("^(0+)", ""));
         line.setRRefItemProductId(etItem.getRefitemproductid().replaceAll("^(0+)", ""));
-        line.setProductId(etItem.getProductid());
-        line.setRItemNo(etItem.getItemno());
+        line.setProductId(etItem.getProductid().replaceAll("^(0+)", ""));
+        line.setRItemNo(etItem.getItemno().replaceAll("^(0+)", ""));
         line.setRSapQty(etItem.getSapquantity().intValue());
         line.setNum(etItem.getSapquantity().intValue());
         line.setCreateId(userId);
