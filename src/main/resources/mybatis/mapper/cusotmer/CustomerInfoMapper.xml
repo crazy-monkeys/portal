@@ -677,11 +677,25 @@
     when 'Z003' then '北美客户(North American Account)'
     when 'Z010' then '内部客户(Customer)'
     else '未知' end cust_role,
+    team.user_name report_sales_name,
+    team.employee_id,
+    ship.report_dealer_name,
+    ship.corporate_id,
     cust.approve_user,
     cust.approve_remark,
     cust.approve_time,
     cust.create_time
     from t_customer_info cust
+    left join
+    (select team.id,team.cust_id,ins.user_name,team.employee_id from cust_zr_account_team team
+    left join t_internal_user ins on ins.user_no = team.employee_id
+    where   team.active=1 and team.role_type = '142'
+    ) team on team.cust_id = cust.id
+    left join
+    (select s.cust_id,c.cust_name report_dealer_name,s.corporate_id from t_cust_corporate_relationship s
+    inner JOIN t_customer_info c on s.corporate_id = c.in_code
+    where s.active=1 and s.corporate_type = 'Z004'
+    ) ship on ship.cust_id = cust.id
     where cust.business_type!='A04'
     and cust.active = 1
     <if test="customerName != null and customerName != ''">
@@ -722,14 +736,10 @@
     </if>
     <if test="queryType == 3 ">
       <if test="reportDealer!=null">
-        and cust.id in (
-          select cust_id from t_cust_corporate_relationship where corporate_type = 'Z004' and active=1 and corporate_id = #{reportDealer,jdbcType=INTEGER}
-        )
+        and ship.corporate_id = #{reportDealer,jdbcType=INTEGER}
       </if>
       <if test="reportSales != null">
-        and cust.id in (
-          select cust_id from cust_zr_account_team team where active=1 and role_type = '142' and employee_id = #{reportSales,jdbcType=INTEGER}
-        )
+        and team.employee_id = #{reportSales,jdbcType=INTEGER}
       </if>
       <if test="customerStatus != '' and customerStatus != null">
         and cust.approve_status = #{customerStatus,jdbcType=INTEGER}
@@ -746,17 +756,12 @@
         and cust.cust_type = #{custType,jdbcType=INTEGER}
       </if>
       <if test="salesTeam != null">
-        and cust.id in (
-          select cust_id from cust_zr_account_team team where active=1 and role_type = '142'
-        <foreach collection="salesTeam" item="item" index="index" open="and employee_id in (" separator="," close=")" >
+        <foreach collection="salesTeam" item="item" index="index" open="and team.employee_id in (" separator="," close=")" >
           #{item}
         </foreach>
-        )
       </if>
       <if test="reportDealer!=null">
-        and cust.id in (
-        select cust_id from t_cust_corporate_relationship where active=1 and corporate_id = #{reportDealer,jdbcType=INTEGER}
-        )
+        and ship.corporate_id = #{reportDealer,jdbcType=INTEGER}
       </if>
     </if>
     order by cust.id
@@ -831,5 +836,9 @@
   where in_code  = (select corporate_name from t_cust_corporate_relationship where corporate_type='Z002')
   and cust_name = #{custName,jdbcType=VARCHAR} and active = 1
   limit 1
+  </select>
+  
+  <select id="selectInCustomerByAbb" resultMap="BaseResultMap">
+    select * from t_customer_info where active =1 and cust_role = 'Z010' and cust_name =#{custAbbreviation,jdbcType=VARCHAR} limit 1
   </select>
 </mapper>

@@ -613,7 +613,7 @@ public class SaleForecastService {
         List<AmbUpdateTemplate> templateList = new ArrayList<>();
         for(Forecast forecast : forecastList) {
             AmbUpdateTemplate agencyTemplate = new AmbUpdateTemplate();
-            agencyTemplate.setPoPrice(getPriceByProduct(forecast.getProductModel(), forecast.getPlatform()));
+            agencyTemplate.setPoPrice(getPriceByProduct(forecast.getProductModel(), forecast.getPlatform(), forecast.getCompany()));
             copyDbFields(forecast, agencyTemplate);
             agencyTemplate.setId(String.valueOf(forecast.getId()));
             agencyTemplate.setTotalForecastSalesVolume(sumValue(agencyTemplate));
@@ -1138,13 +1138,14 @@ public class SaleForecastService {
         }
     }
 
-    private String getPriceByProduct(String productModel, String platform) {
+    private String getPriceByProduct(String productModel, String platform, String priceType) {
         try {
-            CatalogPrice catalogPrice = catalogPriceService.getPriceByProduct(productModel, platform);
-            BusinessUtil.notNull(catalogPrice, FORECAST_PO_PRICE_GET_ERROR);
-            BusinessUtil.notNull(catalogPrice.getCatalogPrice(), FORECAST_PO_PRICE_GET_ERROR);
-            return String.valueOf(catalogPrice.getCatalogPrice());
+            CatalogPrice catalogPrice = catalogPriceService.getPriceByProduct(productModel, platform,priceType);
+            /*BusinessUtil.notNull(catalogPrice, FORECAST_PO_PRICE_GET_ERROR);
+            BusinessUtil.notNull(catalogPrice.getCatalogPrice(), FORECAST_PO_PRICE_GET_ERROR);*/
+            return String.valueOf(null==catalogPrice?0:catalogPrice.getCatalogPrice());
         }catch (Exception ex) {
+            log.error("获取产品价格异常"+ex);
             throw new BusinessException(FORECAST_PO_PRICE_GET_ERROR);
         }
     }
@@ -1174,6 +1175,7 @@ public class SaleForecastService {
      */
     private CustomerOrgBean getCustomerOrgInfo(String customerAbbreviation) {
         try {
+            log.info("=================user"+customerAbbreviation);
             CustomerOrgBean customerOrgBean = customerInfoService.selectByAbbreviation(customerAbbreviation);
             BusinessUtil.notNull(customerOrgBean, FORECAST_NOT_FOUND_CUSTOMER_INFO);
             BusinessUtil.assertEmpty(customerOrgBean.getCustType(), FORECAST_NOT_FOUND_CUSTOMER_INFO);
@@ -1195,6 +1197,7 @@ public class SaleForecastService {
     private ProductInfoDO getProductInfo(String productModel, String platForm) {
         try {
             ProductInfoDO productInfoDO = productService.selectByProductModelAndPlatForm(productModel, platForm);
+            log.error("prodct:"+productModel+";"+platForm);
             BusinessUtil.notNull(productInfoDO, FORECAST_PRODUCT_INFO_GET_ERROR);
             BusinessUtil.assertEmpty(productInfoDO.getBu(), FORECAST_PRODUCT_INFO_GET_ERROR);
             BusinessUtil.assertEmpty(productInfoDO.getPdt(), FORECAST_PRODUCT_INFO_GET_ERROR);

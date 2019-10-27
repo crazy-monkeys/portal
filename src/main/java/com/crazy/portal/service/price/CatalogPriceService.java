@@ -107,8 +107,8 @@ public class CatalogPriceService {
      * @param platform
      * @return
      */
-    public CatalogPrice getPriceByProduct(String productModel, String platform){
-        CatalogPrice catalogPrice = catalogPriceMapper.getPriceByProduct(productModel, platform);
+    public CatalogPrice getPriceByProduct(String productModel, String platform, String priceType){
+        CatalogPrice catalogPrice = catalogPriceMapper.getPriceByProduct(productModel, platform, priceType);
         if(null == catalogPrice){
             catalogPrice = new CatalogPrice();
             catalogPrice.setCatalogPrice(BigDecimal.ZERO);

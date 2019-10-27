@@ -39,6 +39,23 @@ public class CustCorporateRelationshipService {
         return custCorporateRelationshipMapper.selectZShip(custId);
     }
 
+    /**
+     * 获取客户的内部客户
+     * @param custId
+     * @return
+     */
+    public CustCorporateRelationship selectInCustomer(Integer custId){
+        return custCorporateRelationshipMapper.selectInCustomer(custId);
+    }
+
+    /**
+     * 获取内部客户的外部客户
+     * @param inCode
+     */
+    public List<CustCorporateRelationship> selectOutCustomer(String inCode){
+        return custCorporateRelationshipMapper.selectOutCustomer(inCode);
+    }
+
     public void saveOrUpdate(List<CustCorporateRelationship> custCorporateRelationships, Integer custId, Integer userId){
         if(null == custCorporateRelationships || custCorporateRelationships.isEmpty()){
             return;

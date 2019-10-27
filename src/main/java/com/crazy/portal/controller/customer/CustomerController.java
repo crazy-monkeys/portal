@@ -94,8 +94,7 @@ public class CustomerController extends BaseController{
     //查询所有客户
     @GetMapping("/list")
     public BaseResponse list(CustomerQueryBean customerQueryBean){
-        InternalUser internalUser = internalUserMapper.selectUserByName(super.getCurrentUser().getLoginName());
-        return successResult(customerInfoService.queryList(customerQueryBean, getCurrentUser(),internalUser));
+        return successResult(customerInfoService.queryList(customerQueryBean, getCurrentUser()));
     }
 
     //查询客户明细

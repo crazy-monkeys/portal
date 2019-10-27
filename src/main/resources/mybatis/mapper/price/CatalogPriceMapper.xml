@@ -54,7 +54,7 @@
     <include refid="Base_Column_List" />
     from t_catalog_price
     where product_model = #{productModel,jdbcType=VARCHAR}
-    and platform = #{platform,jdbcType=VARCHAR}
+    and platform = #{platform,jdbcType=VARCHAR} and platform !='' and price_type = #{priceType, jdbcType=VARCHAR}
   </select>
 
   <select id="selectByParamsWithPage" parameterType="com.crazy.portal.bean.price.CatalogPriceVO" resultMap="BaseResultMap">

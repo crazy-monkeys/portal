@@ -1,7 +1,10 @@
 package com.crazy.portal.entity.forecast;
 
+import com.crazy.portal.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+
+import java.math.BigDecimal;
 
 /**
  * 
@@ -739,23 +742,32 @@ public class ForecastLine {
         this.sdRemarkSix = sdRemarkSix == null ? null : sdRemarkSix.trim();
     }
 
+    /**
+     * Gap 计算
+     * @param lastWriteValue
+     * @param currentWriteValue
+     * @param gapValue
+     * @return
+     */
     private String calculateGap(String lastWriteValue, String currentWriteValue, String gapValue) {
+        //上次填写值
+        BigDecimal a = StringUtils.isEmpty(lastWriteValue) ? BigDecimal.ZERO : new BigDecimal(lastWriteValue);
+        //本次填写值
+        BigDecimal b = StringUtils.isEmpty(currentWriteValue) ? BigDecimal.ZERO : new BigDecimal(currentWriteValue);
         try {
-            //上次填写值
-            int a = StringUtils.isEmpty(lastWriteValue) ? 0 : Integer.parseInt(lastWriteValue);
-            //本次填写值
-            int b = StringUtils.isEmpty(currentWriteValue) ? 0 : Integer.parseInt(currentWriteValue);
-            if(a == 0 && b > 0){
-                return "100%";
-            }
-            if(a == 0 && b == 0){
+            if(a.equals(BigDecimal.ZERO) && b.equals(BigDecimal.ZERO)){
                 return "0%";
             }
-            if(a > 0){
-                return String.format("%s%s", (b - a)/a, "%");
+            if(a.equals(BigDecimal.ZERO)){
+                return "100%";
+            }
+            if(a.compareTo(BigDecimal.ZERO)==1){
+
+                BigDecimal percent = (b.subtract(a)).divide(a).multiply(new BigDecimal(100));
+                return String.format("%s%s", percent.setScale(0,BigDecimal.ROUND_UP),"%");
             }
         }catch (Exception ex) {
-            log.error("【销售预测】计算Gap值异常，lastWriteOne : {}, currentWriteOne : {}", lastWriteOne, currentWriteOne);
+            log.error("【销售预测】计算Gap值异常，lastWriteOne : {}, currentWriteOne : {}{}", a, b,ex);
             return gapValue;
         }
         return gapValue;

@@ -218,4 +218,8 @@
       select seq from t_organizational_structure where parent_org =#{org,jdbcType=VARCHAR}
       )
   </select>
+  
+  <select id="selectSD" resultMap="BaseResultMap">
+    select * from t_internal_user where active =1 and user_department_code = #{department,jdbcType=VARCHAR} limit 1
+  </select>
 </mapper>

@@ -178,6 +178,8 @@ public class ErrorCodes {
         CUSTOMER_EMAIL_IS_INACTIVE(50011,"邮箱格式不正确",""),
         CUSTOMER_WEB_IS_INACTIVE(50013,"网站格式不正确",""),
         CUSTOMER_FILE_TYPE_IS_NOT_NULL(50012,"附件类型不能为空",""),
+        IN_CUSTOMER_IS_NULL(50014,"该客户没有维护内部客户，请先维护内部客户",""),
+        OUT_CUSTOMER_IS_NULL(50015,"该客户没有维护外部客户，请先维护外部客户",""),
 
         RATE_BATCH_IS_NOT_NULL(60001,"批次号已存在",""),
         //代理费率

@@ -109,12 +109,11 @@ public class CustomerInfoService {
      *  报备状态 0-潜在客户 1-已报备 2-可报备 3-报备中
      *  1-客户查询 2-审批查询 3-报备查询
      */
-    public PageInfo<CustomerInfo> queryList(CustomerQueryBean customerQueryBean, User user,InternalUser internalUser){
-        PortalUtil.defaultStartPage(customerQueryBean.getPageIndex(), customerQueryBean.getPageSize());
-
+    public PageInfo<CustomerInfo> queryList(CustomerQueryBean customerQueryBean, User user){
         if(customerQueryBean.getQueryType()==3){
             if(user.getUserType().equals(Enums.USER_TYPE.internal.toString())){
-                BusinessUtil.assertFlase(null == internalUser,ErrorCodes.SystemManagerEnum.USER_NOT_EXISTS);
+                InternalUser internalUser = internalUserMapper.selectUserByName(user.getLoginName());
+                BusinessUtil.assertFlase(null == user,ErrorCodes.SystemManagerEnum.USER_NOT_EXISTS);
                 customerQueryBean.setReportSales(internalUser.getUserNo());
             }else{
                 CustomerInfo dealer = customerInfoMapper.selectByPrimaryKey(user.getDealerId());
@@ -135,6 +134,7 @@ public class CustomerInfoService {
         }else{
             if(user.getUserType().equals(Enums.USER_TYPE.internal.toString())){
                 //客户查询 销售查询 客户销售为自己或自己战队人员
+                InternalUser internalUser = internalUserMapper.selectUserByName(user.getLoginName());
                 if(null != internalUser){
                     List<String> sales = internalUserService.getSalesTeam(internalUser);
                     customerQueryBean.setSalesTeam(sales);
@@ -145,16 +145,8 @@ public class CustomerInfoService {
             }
         }
 
+        PortalUtil.defaultStartPage(customerQueryBean.getPageIndex(), customerQueryBean.getPageSize());
         List<CustomerInfo> customerInfos = customerInfoMapper.selectCustomer(customerQueryBean);
-        customerInfos.forEach(e->{
-            CustCorporateRelationship ship = custCorporateRelationshipService.selectZShip(e.getId());
-            e.setReportDealerName(null == ship?"":ship.getCorporateName());
-            CustZrAccountTeam team = custZrAccountTeamService.selectZRByCustId(e.getId());
-            if(null!=team){
-                InternalUser emp = internalUserService.selectByUserNo(team.getEmployeeId());
-                e.setReportSalesName(null == emp?"":emp.getUserName());
-            }
-        });
         return new PageInfo<>(customerInfos);
     }
 
@@ -724,17 +716,14 @@ public class CustomerInfoService {
      * @return
      */
     public CustomerShipBean selectDealerShip(Integer dealerId){
-        List<CustCorporateRelationship> relationships = custCorporateRelationshipService.selectByCustId(dealerId);
+        CustCorporateRelationship inCustomerShipping = custCorporateRelationshipService.selectInCustomer(dealerId);
+        BusinessUtil.assertFlase(null == inCustomerShipping,ErrorCodes.BusinessEnum.IN_CUSTOMER_IS_NULL);
+        List<CustCorporateRelationship> outCustomerShippings = custCorporateRelationshipService.selectOutCustomer(inCustomerShipping.getCorporateId());
+        BusinessUtil.assertFlase(outCustomerShippings.isEmpty(),ErrorCodes.BusinessEnum.OUT_CUSTOMER_IS_NULL);
+
         CustomerShipBean shipBean = new CustomerShipBean();
-        List<CustCorporateRelationship> resultShips = new ArrayList<>();
-        relationships.forEach(e->{
-            if(e.getCorporateType().equals(Enums.CUSTOMER_SHIP_TYPE.in_customer.getCode())){
-                shipBean.setInShip(e);
-            }else{
-                resultShips.add(e);
-            }
-        });
-        shipBean.setOutShips(resultShips);
+        shipBean.setInShip(inCustomerShipping);
+        shipBean.setOutShips(outCustomerShippings);
         return shipBean;
     }
 
@@ -1011,17 +1000,16 @@ public class CustomerInfoService {
     }
 
     /**
-     * 通过客户简称获取客户销售的组织信息
+     * 通过客户简称 获取内部客户
+     * 获取内部的销售组织
      * TODO 校验客户是否可以支持销售预测
      */
     public CustomerOrgBean selectByAbbreviation(String custAbbreviation){
-        CustomerInfo customerinfo = customerInfoMapper.selectInCustAbbreviation(custAbbreviation);
-        BusinessUtil.assertFlase(null == customerinfo, ErrorCodes.BusinessEnum.CUSTOMER_IS_EMPYT);
-        CustomerOrgBean customerOrgBean = internalUserService.getSalesInfo(customerinfo.getId());
-
-        SysParameter sysParameter = sysParamService.selectParam("2","1",customerinfo.getBusinessType());
+        CustomerInfo inCustomer = customerInfoMapper.selectInCustomerByAbb(custAbbreviation);
+        BusinessUtil.assertFlase(null == inCustomer, ErrorCodes.BusinessEnum.IN_CUSTOMER_IS_NULL);
+        CustomerOrgBean customerOrgBean = internalUserService.getSalesInfo(inCustomer.getId());
+        SysParameter sysParameter = sysParamService.selectParam("2","1",inCustomer.getBusinessType());
         customerOrgBean.setCustType(sysParameter.getZhName());
-
         return customerOrgBean;
     }
 
@@ -1042,10 +1030,10 @@ public class CustomerInfoService {
             String mailRegex = "^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+(\\.[a-zA-Z0-9-]+)*\\.[a-zA-Z0-9]{2,6}$";
             BusinessUtil.assertTrue(customerInfo.getCustEmail().matches(mailRegex), ErrorCodes.BusinessEnum.CUSTOMER_EMAIL_IS_INACTIVE);
         }
-        if (StringUtil.isNotEmpty(customerInfo.getCustWeb())) {
+        /*if (StringUtil.isNotEmpty(customerInfo.getCustWeb())) {
             String webRegex = "^([hH][tT]{2}[pP]://|[hH][tT]{2}[pP][sS]://)(([A-Za-z0-9-~]+).)+([A-Za-z0-9-~\\/])+$";
             BusinessUtil.assertTrue(customerInfo.getCustWeb().matches(webRegex), ErrorCodes.BusinessEnum.CUSTOMER_WEB_IS_INACTIVE);
-        }
+        }*/
     }
     /**
      *

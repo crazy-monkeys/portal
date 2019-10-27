@@ -76,6 +76,33 @@ public class InternalUserService {
         return internalUserMapper.selectByUserNo(userNo);
     }
 
+    /*public CustomerOrgBean getSalesInfo(Integer custId){
+        CustomerOrgBean customerOrgBean = new CustomerOrgBean();
+
+        CustZrAccountTeam custZrAccountTeam = custZrAccountTeamService.selectZRByCustId(custId);
+        InternalUser sales = internalUserMapper.selectByUserNo(custZrAccountTeam.getEmployeeId());
+        customerOrgBean.setSales(sales.getUserName());
+        customerOrgBean.setOffice(sales.getUserDepartmentName());
+
+        OrganizationalStructure ambOrg = organizationalStructureMapper.selectByOrgNo(Integer.valueOf(sales.getUserDepartmentCode()));
+        if(ambOrg.getSeq().equals("1001013") || ambOrg.getSeq().equals("1001014")){
+            customerOrgBean.setAmb(sales.getUserName());
+            customerOrgBean.setPm(sales.getUserName());
+        }else{
+            InternalUser amb =  internalUserMapper.selectByUserNo(ambOrg.getPm());
+            customerOrgBean.setAmb(amb.getUserName());
+
+            InternalUser pm =  new InternalUser();
+            if(ambOrg.getParentOrg().equals("1001013")){
+                 pm = internalUserMapper.selectSD("1001013");
+            }else if(ambOrg.getParentOrg().equals("1001013")){
+                 pm= internalUserMapper.selectSD("1001013");
+            }
+            customerOrgBean.setPm(pm.getUserName());
+        }
+        return customerOrgBean;
+    }*/
+
     public CustomerOrgBean getSalesInfo(Integer custId){
         CustomerOrgBean customerOrgBean = new CustomerOrgBean();
 
@@ -83,12 +110,14 @@ public class InternalUserService {
         InternalUser sales = internalUserMapper.selectByUserNo(custZrAccountTeam.getEmployeeId());
         customerOrgBean.setSales(sales.getUserName());
 
+
+
         OrganizationalStructure ambOrg = organizationalStructureMapper.selectByOrgNo(Integer.valueOf(sales.getUserDepartmentCode()));
         InternalUser amb =  internalUserMapper.selectByUserNo(ambOrg.getPm());
         customerOrgBean.setAmb(amb.getUserName());
 
         OrganizationalStructure office = organizationalStructureMapper.selectByOrgNo(ambOrg.getParentOrg());
-        customerOrgBean.setOffice(office.getOrgName());
+        customerOrgBean.setOffice(sales.getUserDepartmentName());
 
         InternalUser pm =  internalUserMapper.selectByUserNo(office.getPm());
         customerOrgBean.setPm(pm.getUserName());

@@ -33,4 +33,6 @@ public interface InternalUserMapper {
 
     List<String> selectUserbyParenOrg(String selectUserbyOrg);
 
+    InternalUser selectSD(String department);
+
 }
