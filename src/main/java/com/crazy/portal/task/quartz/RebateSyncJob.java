@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
+import org.springframework.util.StopWatch;
 
 import javax.annotation.Resource;
 
@@ -30,12 +31,16 @@ public class RebateSyncJob implements Job{
     @Override
     public void execute(JobExecutionContext context) {
         try {
+            StopWatch clock = new StopWatch();
+            clock.start("Rebate数据同步");
             log.info("rebate数据同步Begin");
             ScheduleJob scheduleJob = scheduleJobService.selectByJobCode("rebate_sync");
             rebateService.rebateDataSync(scheduleJob.getJobConfigParams());
             log.info("rebate数据同步End");
+            clock.stop();
+            log.info(clock.prettyPrint());
         }catch (Exception e){
-            log.error("rebate同步异常", e);
+            log.error("Rebate数据同步异常", e);
         }
     }
 }
