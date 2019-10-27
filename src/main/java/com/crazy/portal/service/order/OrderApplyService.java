@@ -148,18 +148,9 @@ public class OrderApplyService {
      */
     @Transactional
     public void createOrderApply(OrderApply order, Integer userId){
-        BusinessUtil.notNull(order, ErrorCodes.BusinessEnum.ORDER_INFO_IS_REQUIRED);
-        BusinessUtil.notNull(order.getOrderLines(), ErrorCodes.BusinessEnum.ORDER_LINES_IS_REQUIRED);
 
-        order.getOrderLines().stream().forEach(x->{
-            BusinessUtil.assertEmpty(x.getProductId(),ErrorCodes.BusinessEnum.ORDER_EMPTY_PRODUCT);
-            boolean priceCheck = Objects.isNull(x.getRPrice()) || BigDecimal.ZERO.equals(x.getRPrice()) ||
-                                 Objects.isNull(x.getRNetPrice()) || BigDecimal.ZERO.equals(x.getRNetPrice());
-            if(priceCheck){
-                throw new BusinessException(ErrorCodes.BusinessEnum.ORDER_INVALID_PRODUCT.getCode(),
-                        String.format(ErrorCodes.BusinessEnum.ORDER_INVALID_PRODUCT.getZhMsg(),x.getProductId()));
-            }
-        });
+        //参数校验
+        this.checkParameter(order);
 
         CustomerInfo dealerByUser = customerInfoService.getDealerByUser(userId);
         BusinessUtil.notNull(dealerByUser, ErrorCodes.BusinessEnum.CUSTOMER_IS_EMPYT);
@@ -186,6 +177,21 @@ public class OrderApplyService {
         });
         order.setJsonLines(order.objToLineJson(orderLines));
         orderApplyMapper.insertSelective(order);
+    }
+
+    private void checkParameter(OrderApply order) {
+        BusinessUtil.notNull(order, ErrorCodes.BusinessEnum.ORDER_INFO_IS_REQUIRED);
+        BusinessUtil.notNull(order.getOrderLines(), ErrorCodes.BusinessEnum.ORDER_LINES_IS_REQUIRED);
+
+        order.getOrderLines().stream().forEach(x->{
+            BusinessUtil.assertEmpty(x.getProductId(),ErrorCodes.BusinessEnum.ORDER_EMPTY_PRODUCT);
+            boolean priceCheck = Objects.isNull(x.getRPrice()) || BigDecimal.ZERO.equals(x.getRPrice()) ||
+                                 Objects.isNull(x.getRNetPrice()) || BigDecimal.ZERO.equals(x.getRNetPrice());
+            if(priceCheck){
+                throw new BusinessException(ErrorCodes.BusinessEnum.ORDER_INVALID_PRODUCT.getCode(),
+                        String.format(ErrorCodes.BusinessEnum.ORDER_INVALID_PRODUCT.getZhMsg(),x.getProductId()));
+            }
+        });
     }
 
     /**
