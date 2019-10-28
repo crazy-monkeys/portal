@@ -33,6 +33,7 @@ public class GlobalExceptionHandler extends BaseController {
     @ExceptionHandler(value = Exception.class)
     public BaseResponse parameterExceptionHandler(Exception exception) {
 
+        log.error("",exception);
         if(exception instanceof MethodArgumentNotValidException){
             List<ObjectError> allErrors = ((MethodArgumentNotValidException) exception).getBindingResult().getAllErrors();
             String msg = super.getValidExceptionMsg(allErrors);
