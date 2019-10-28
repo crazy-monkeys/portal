@@ -767,7 +767,7 @@ public class ForecastLine {
                 return String.format("%s%s", percent.setScale(0,BigDecimal.ROUND_UP),"%");
             }
         }catch (Exception ex) {
-            log.error("【销售预测】计算Gap值异常，lastWriteOne : {}, currentWriteOne : {}{}", a, b,ex);
+            log.error("【销售预测】计算Gap值异常，lastWriteOne : " + a + ", currentWriteOne : " + b, ex);
             return gapValue;
         }
         return gapValue;

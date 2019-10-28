@@ -114,4 +114,6 @@ public interface ForecastMapper {
 
     int updatePoPriceById(@Param(value = "id") Integer id,
                           @Param(value = "poPrice") String poPrice);
+
+    Forecast selectLastValue(Forecast record);
 }
