@@ -26,5 +26,7 @@ public class ItItem {
     private String platform = "";
     @XmlElement(name = "Kondm")
     private String kondm = "";
+    @XmlElement(name = "Customercode")
+    private String customercode = "";
 
 }
