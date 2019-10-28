@@ -32,4 +32,6 @@ public class ItItem {
     private String requestdate = "";
     @XmlElement(name = "Rejectreason")
     private String rejectreason = "";
+    @XmlElement(name = "Customercode")
+    private String customercode = "";
 }

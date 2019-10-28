@@ -156,8 +156,14 @@ public class OrderLine {
     private Integer updateId;
 
     /**
-     * 
+     * 更新时间
      */
     @JSONField(serialize = false)
     private Date updateTime;
+
+
+    /**
+     * 客户简称
+     */
+    private String custAbbreviation;
 }

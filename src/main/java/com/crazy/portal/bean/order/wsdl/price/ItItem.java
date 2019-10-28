@@ -27,6 +27,6 @@ public class ItItem {
     @XmlElement(name = "Kondm")
     private String kondm = "";
     @XmlElement(name = "Customercode")
-    private String Customercode = "";
+    private String customercode = "";
 
 }

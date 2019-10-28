@@ -57,6 +57,8 @@ public class OrderApproveService {
     @Resource
     private OrderApplyMapper orderApplyMapper;
     @Resource
+    private OrderApplyService orderApplyService;
+    @Resource
     private ProductInfoDOMapper productInfoDOMapper;
     @Resource
     private CustomerInfoMapper customerInfoMapper;
@@ -468,6 +470,7 @@ public class OrderApproveService {
             item.setOperationtype(operationType);
             item.setSequenceno(String.valueOf(line_no));
             item.setItemno(line.getRItemNo());
+            item.setCustomercode(orderApplyService.getInCodeByAbbreviation(line.getCustAbbreviation()));
             line_no ++;
         }
         com.crazy.portal.bean.order.wsdl.change.ItItems itItems = new com.crazy.portal.bean.order.wsdl.change.ItItems();
@@ -492,6 +495,7 @@ public class OrderApproveService {
             ProductInfoDO productInfoDO = productInfoDOMapper.selectBySapMidAndPlatForm(productId, platform);
             SysParameter sysParameter = sysParamService.selectParam("4","1",productInfoDO.getBu());
             item.setKondm(sysParameter.getZhName());
+            item.setCustomercode(orderApplyService.getInCodeByAbbreviation(line.getCustAbbreviation()));
             items.add(item);
             line_no ++;
         }

@@ -30,4 +30,6 @@ public class ItItem {
     private String refsaporderitemno = "";
     @XmlElement(name = "Kondm")
     private String kondm = "";
+    @XmlElement(name = "Customercode")
+    private String customercode = "";
 }
