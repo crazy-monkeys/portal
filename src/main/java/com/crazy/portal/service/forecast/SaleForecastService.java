@@ -148,11 +148,6 @@ public class SaleForecastService {
     @Transactional
     public ForecastResult uploadAgencyTemplate(MultipartFile excel, User user) {
         BusinessUtil.notNull(excel, FORECAST_EXCEL_CHECK_ERROR);
-        List<AgencyTemplate> agencyForecastList = ExcelUtils.readExcel(excel, AgencyTemplate.class);
-        if(null == agencyForecastList || agencyForecastList.isEmpty()){
-            log.warn(FORECAST_DATA_NOT_EMPTY.getZhMsg());
-            throw new BusinessException(FORECAST_DATA_NOT_EMPTY);
-        }
         //获取代理商信息
         CustomerInfo customerInfo = new CustomerInfo();
         String agencyAbbreviation = new String();
@@ -160,7 +155,11 @@ public class SaleForecastService {
             customerInfo = getCustomerInfo(user.getId());
             agencyAbbreviation = customerInfo.getCustAbbreviation();
         }
-
+        List<AgencyTemplate> agencyForecastList = ExcelUtils.readExcel(excel, AgencyTemplate.class);
+        if(null == agencyForecastList || agencyForecastList.isEmpty()){
+            log.warn(FORECAST_DATA_NOT_EMPTY.getZhMsg());
+            throw new BusinessException(FORECAST_DATA_NOT_EMPTY);
+        }
         String batchNo = generateBathNo();
         for(AgencyTemplate template : agencyForecastList){
             boolean isDate = BusinessUtil.isDateTime(template.getCloseDate());
@@ -173,22 +172,22 @@ public class SaleForecastService {
             template.setAgencyAbbreviation(agencyAbbreviation);
             template.setChannel("A04".equals(customerInfo.getBusinessType()) ? "代理" : "直供");
             //获取代理商上级客户信息
-            CustomerOrgBean customerOrgBean = getCustomerOrgInfo(template.getCustomerAbbreviation());
-            ProductInfoDO productInfo = getProductInfo(template.getProductModel(), template.getPlatform());
+//            CustomerOrgBean customerOrgBean = getCustomerOrgInfo(template.getCustomerAbbreviation());
+//            ProductInfoDO productInfo = getProductInfo(template.getProductModel(), template.getPlatform());
             Forecast forecast = new Forecast(user.getId());
             copyTemplateFields(template, forecast);
             forecast.setAgencyAbbreviation(agencyAbbreviation);
             //设置产品字段
-            forecast.setBu(productInfo.getBu());
-            forecast.setPdt(productInfo.getPdt());
-            forecast.setProductType(productInfo.getSubCategory());
-            forecast.setVmNumber(productInfo.getSapMid());
+//            forecast.setBu(productInfo.getBu());
+//            forecast.setPdt(productInfo.getPdt());
+//            forecast.setProductType(productInfo.getSubCategory());
+//            forecast.setVmNumber(productInfo.getSapMid());
             //设置客户字段
-            forecast.setCustomerType(customerOrgBean.getCustType());
-            forecast.setSalePeople(customerOrgBean.getSales());
-            forecast.setAmbLeader(customerOrgBean.getAmb());
-            forecast.setSdPeople(customerOrgBean.getPm());
-            forecast.setRepresentative(customerOrgBean.getOffice());
+//            forecast.setCustomerType(customerOrgBean.getCustType());
+//            forecast.setSalePeople(customerOrgBean.getSales());
+//            forecast.setAmbLeader(customerOrgBean.getAmb());
+//            forecast.setSdPeople(customerOrgBean.getPm());
+//            forecast.setRepresentative(customerOrgBean.getOffice());
             //当前操作批次
             forecast.setBatchNo(batchNo);
             int cnt = forecastMapper.checkRecord(forecast);
@@ -200,6 +199,8 @@ public class SaleForecastService {
             ForecastLine line = new ForecastLine();
             copyTemplateFields(template, line);
             line.setfId(forecast.getId());
+            //重新获取上一次的填写值
+            setLastValue(forecast, line);
             forecastLineMapper.insertSelective(line);
             if(log.isDebugEnabled()){
                 log.debug("[upload data] Save forecast line data , userId:{} , data:{}", user.getId(), JSONObject.toJSON(line));
@@ -1207,6 +1208,30 @@ public class SaleForecastService {
         }catch (Exception ex) {
             log.error(FORECAST_PRODUCT_INFO_GET_ERROR.getZhMsg(), ex);
             throw new BusinessException(FORECAST_PRODUCT_INFO_GET_ERROR);
+        }
+    }
+
+    private void setLastValue(Forecast forecast, ForecastLine line) {
+        try {
+            Date currentDate = DateUtil.parseDate(forecast.getOperationYearMonth(), DateUtil.MONTH_FORMAT);
+            Date lastDate = DateUtil.computeWithMonth(currentDate, -1);
+            forecast.setLastMonth(DateUtil.format(lastDate, DateUtil.MONTH_FORMAT));
+            Forecast lastValue =  forecastMapper.selectLastValue(forecast);
+            if(null == lastValue){
+                return;
+            }
+            ForecastLine lastLineValue = lastValue.getLine();
+            if(null == lastLineValue){
+                return;
+            }
+            line.setForecastMonthOne(lastLineValue.getCurrentWriteTwo());
+            line.setForecastMonthTwo(lastLineValue.getCurrentWriteThree());
+            line.setForecastMonthThree(lastLineValue.getCurrentWriteFour());
+            line.setForecastMonthFour(lastLineValue.getCurrentWriteFive());
+            line.setForecastMonthFive(lastLineValue.getCurrentWriteSix());
+            line.setLastWriteSix(null);
+        }catch (Exception ex) {
+            throw new BusinessException(FORECAST_GET_LAST_VALUE_ERROR);
         }
     }
 

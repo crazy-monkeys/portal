@@ -174,6 +174,8 @@ public class Forecast {
 
     private String poPrice;
 
+    private String lastMonth;
+
     public Forecast() {
     }
 
