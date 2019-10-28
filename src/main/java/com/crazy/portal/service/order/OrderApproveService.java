@@ -322,38 +322,33 @@ public class OrderApproveService {
         String sapOrderId = orderApply.getRSapOrderId();
         Order order = this.getOrderBySapOrderId(sapOrderId);
 
-        ZrfcsdsalesorderchangeResponse response = this.invokeEccModifyOrder(order,"I");
+        //里面会校验是否调用成功
+        this.invokeEccModifyOrder(order,"I");
         List<OrderLine> orderLines = orderLineMapper.selectByOrderId(order.getId());
         List<OrderLine> applyLines = orderApply.lineJsonToObj(orderApply.getJsonLines());
 
+        //封装申请的物料号对应的物料信息,方便下面使用
         Map<String,OrderLine> applyLineMap = applyLines.stream().collect(
                 Collectors.toMap(OrderLine::getProductId, Function.identity()));
 
         //修改订单头
         order.setSendTo(orderApply.getSendTo());
+        order.setSalesOrg(orderApply.getSalesOrg());
         order.setPurchaseNo(orderApply.getPurchaseNo());
         order.setPurchaseDate(orderApply.getPurchaseDate());
-        order.setIncoterms1(orderApply.getIncoterms1());
-        order.setIncoterms2(orderApply.getIncoterms2());
-        order.setOrderType(orderApply.getOrderType());
         order.setCustomerAttr(orderApply.getCustomerAttr());
         order.setUpdateId(userId);
         order.setUpdateTime(DateUtil.getCurrentTS());
         orderMapper.updateByPrimaryKeySelective(order);
-        //修改订单行
-        List<ZsalesorderchangeOutItem> items = response.getEtItems().getItem();
-        items.forEach(sapLine->
-            orderLines.forEach(line->{
-                String productId = line.getProductId();
-                if(line.getRProductId().equals(sapLine.getProductid())){
-                    //目前订单行只能修改数量
-                    line.setNum(applyLineMap.get(productId).getNum());
-                    line.setUpdateId(userId);
-                    line.setUpdateTime(DateUtil.getCurrentTS());
-                    orderLineMapper.updateByPrimaryKeySelective(line);
-                }
-            })
-        );
+        //如果ecc无异常,直接修改订单行
+        orderLines.forEach(line->{
+            String productId = line.getProductId();
+            //目前订单行只能修改数量
+            line.setNum(applyLineMap.get(productId).getNum());
+            line.setUpdateId(userId);
+            line.setUpdateTime(DateUtil.getCurrentTS());
+            orderLineMapper.updateByPrimaryKeySelective(line);
+        });
     }
 
     /**
