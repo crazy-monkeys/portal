@@ -36,7 +36,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * @Desc:
@@ -284,7 +283,8 @@ public class OrderApproveService {
 
         Order order = this.getOrderBySapOrderId(sapOrderId);
         List<OrderLine> orderLines = orderLineMapper.selectByOrderId(order.getId());
-        ZrfcsdsalesorderchangeResponse response = this.invokeEccModifyOrder(order,"D");
+        //取消接口无需传递申请信息
+        ZrfcsdsalesorderchangeResponse response = this.invokeEccModifyOrder(order,null,null,"D");
         TableOfZsalesorderchangeOutItem etItems = response.getEtItems();
         if(null != etItems) {
             List<ZsalesorderchangeOutItem> items = etItems.getItem();
@@ -322,14 +322,16 @@ public class OrderApproveService {
         String sapOrderId = orderApply.getRSapOrderId();
         Order order = this.getOrderBySapOrderId(sapOrderId);
 
-        //里面会校验是否调用成功
-        this.invokeEccModifyOrder(order,"I");
-        List<OrderLine> orderLines = orderLineMapper.selectByOrderId(order.getId());
+        //获取申请的行信息
         List<OrderLine> applyLines = orderApply.lineJsonToObj(orderApply.getJsonLines());
 
         //封装申请的物料号对应的物料信息,方便下面使用
         Map<String,OrderLine> applyLineMap = applyLines.stream().collect(
                 Collectors.toMap(OrderLine::getProductId, Function.identity()));
+
+        //里面会校验是否调用成功
+        this.invokeEccModifyOrder(order,orderApply,applyLineMap,"I");
+        List<OrderLine> orderLines = orderLineMapper.selectByOrderId(order.getId());
 
         //修改订单头
         order.setSendTo(orderApply.getSendTo());
@@ -394,12 +396,12 @@ public class OrderApproveService {
      * @return
      */
     private ZrfcsdsalesorderchangeResponse invokeEccModifyOrder (
-            Order order,String operationType) throws Exception{
+            Order order,OrderApply orderApply,Map<String,OrderLine> applyLineMap,String operationType) throws Exception{
 
-        com.crazy.portal.bean.order.wsdl.change.IsHeader isHeader = this.buildChangeIsHeader(order);
+        com.crazy.portal.bean.order.wsdl.change.IsHeader isHeader = this.buildChangeIsHeader(order,orderApply);
 
         List<OrderLine> orderLines = orderLineMapper.selectByOrderId(order.getId());
-        com.crazy.portal.bean.order.wsdl.change.ItItems itItems = this.buildChangeItItems(orderLines,operationType);
+        com.crazy.portal.bean.order.wsdl.change.ItItems itItems = this.buildChangeItItems(orderLines,applyLineMap,operationType);
 
         ZrfcsdsalesorderchangeContent content = new ZrfcsdsalesorderchangeContent(new com.crazy.portal.bean.order.wsdl.change.EtItems(),isHeader,itItems);
         ZrfcsdsalesorderchangeBody zrfcsdsalesordercreateBody = new ZrfcsdsalesorderchangeBody(content);
@@ -434,20 +436,23 @@ public class OrderApproveService {
      * @param order
      * @return
      */
-    private com.crazy.portal.bean.order.wsdl.change.IsHeader buildChangeIsHeader(Order order){
+    private com.crazy.portal.bean.order.wsdl.change.IsHeader buildChangeIsHeader(Order order,OrderApply orderApply){
 
         com.crazy.portal.bean.order.wsdl.change.IsHeader isHeader = new com.crazy.portal.bean.order.wsdl.change.IsHeader();
         isHeader.setSaporderid(order.getRSapOrderId());
         isHeader.setSalesoffice(order.getSalesOffice());
-        isHeader.setSalesgroup(order.getSalesGroup());
-        isHeader.setSendto(order.getSendTo());
-        isHeader.setPurchaseno(order.getPurchaseNo());
         isHeader.setPurchasedate(order.getPriceDate());
-        isHeader.setPaymentterms(order.getPaymentTerms());
+//        isHeader.setPaymentterms(order.getPaymentTerms());
         isHeader.setIncoterms1(order.getIncoterms1());
         isHeader.setIncoterms2(order.getIncoterms2());
-        isHeader.setCustomergroup1(order.getOrderType());
-        isHeader.setCustomergroup2(order.getCustomerAttr());
+        isHeader.setPricedate(order.getPriceDate());
+
+        //修改订单传递用户申请的信息,取消订单传递原订单信息
+        isHeader.setSalesgroup(orderApply == null?order.getSalesOrg():orderApply.getSalesGroup());
+        isHeader.setSendto(orderApply == null?order.getSendTo():orderApply.getSendTo());
+        isHeader.setPurchaseno(orderApply == null?order.getPurchaseNo():orderApply.getPurchaseNo());
+        isHeader.setCustomergroup1(orderApply == null?order.getOrderType():orderApply.getOrderType());
+        isHeader.setCustomergroup2(orderApply == null?order.getCustomerAttr():orderApply.getCustomerAttr());
         return isHeader;
     }
 
@@ -457,7 +462,9 @@ public class OrderApproveService {
      * @param operationType 操作类型 I:更新 D:删除 R:拒绝
      * @return
      */
-    private com.crazy.portal.bean.order.wsdl.change.ItItems buildChangeItItems(List<OrderLine> orderLines, String operationType){
+    private com.crazy.portal.bean.order.wsdl.change.ItItems buildChangeItItems(
+            List<OrderLine> orderLines,Map<String,OrderLine> applyLineMap, String operationType){
+
         Integer line_no = 1;
         List<com.crazy.portal.bean.order.wsdl.change.ItItem> items = new ArrayList<>();
         for (OrderLine line : orderLines) {
@@ -465,7 +472,18 @@ public class OrderApproveService {
             item.setOperationtype(operationType);
             item.setSequenceno(String.valueOf(line_no));
             item.setItemno(line.getRItemNo());
+            item.setProductid(line.getProductId());
+            item.setPlatform(line.getPlatform());
+            item.setRequestdate(line.getExpectedDeliveryDate());
+
+            //如果订单申请信息为空,传递原订单数量，否则传递申请信息中的数量
+            if(applyLineMap == null){
+                item.setOrderquantity(line.getNum().toString());
+            }else{
+                item.setOrderquantity(applyLineMap.get(line.getProductId()).getNum().toString());
+            }
             item.setCustomercode(orderApplyService.getInCodeByAbbreviation(line.getCustAbbreviation()));
+            items.add(item);
             line_no ++;
         }
         com.crazy.portal.bean.order.wsdl.change.ItItems itItems = new com.crazy.portal.bean.order.wsdl.change.ItItems();
