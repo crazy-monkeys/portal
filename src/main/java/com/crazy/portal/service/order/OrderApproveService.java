@@ -331,6 +331,7 @@ public class OrderApproveService {
 
         //里面会校验是否调用成功
         this.invokeEccModifyOrder(order,orderApply,applyLineMap,"I");
+
         List<OrderLine> orderLines = orderLineMapper.selectByOrderId(order.getId());
 
         //修改订单头
@@ -448,7 +449,7 @@ public class OrderApproveService {
         isHeader.setPricedate(order.getPriceDate());
 
         //修改订单传递用户申请的信息,取消订单传递原订单信息
-        isHeader.setSalesgroup(orderApply == null?order.getSalesOrg():orderApply.getSalesGroup());
+        isHeader.setSalesgroup(orderApply == null?order.getSalesGroup():orderApply.getSalesGroup());
         isHeader.setSendto(orderApply == null?order.getSendTo():orderApply.getSendTo());
         isHeader.setPurchaseno(orderApply == null?order.getPurchaseNo():orderApply.getPurchaseNo());
         isHeader.setCustomergroup1(orderApply == null?order.getOrderType():orderApply.getOrderType());
