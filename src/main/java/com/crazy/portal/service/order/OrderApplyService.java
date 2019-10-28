@@ -508,6 +508,9 @@ public class OrderApplyService {
         if(null == order || order.getActive() == 0){
             throw new BusinessException(ErrorCodes.BusinessEnum.ORDER_NOT_FOUND);
         }
+        boolean result = this.hasApprovalPendingOrder(order.getRSapOrderId());
+        BusinessUtil.assertFlase(result, ErrorCodes.BusinessEnum.ORDER_PENDING_ORDER);
+
         saveDeliverOrderApproval(bean, order, userId);
     }
 
@@ -538,6 +541,7 @@ public class OrderApplyService {
                     deliverOrderLine.setSapSalesOrderLineNo(order.getRSapOrderId());
                     deliverOrderLine.setSalesOrderLineId(o.getId());
                     deliverOrderLine.setSapSalesOrderLineNo(o.getRItemNo());
+                    deliverOrderLine.setSapDeliverOrderLineNo(o.getRItemNo());
                     deliverOrderLine.setProductId(o.getProductId());
                     deliverOrderLine.setDeliveryQuantity(e.getDeliveryQuantity());
                     deliverOrderLine.setActive(1);
