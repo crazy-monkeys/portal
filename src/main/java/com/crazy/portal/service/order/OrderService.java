@@ -260,7 +260,7 @@ public class OrderService {
                 item.setDeliveryQuantity(String.valueOf(e.getDeliveryQuantity()));
                 item.setDeliveryItemNo("");
                 item.setItemNo(o.getRItemNo().replaceAll("^(0+)", ""));
-                item.setProductId(e.getProductId());
+                item.setProductId(o.getProductId());
                 items.add(item);
             });
         });

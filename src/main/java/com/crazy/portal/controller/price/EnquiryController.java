@@ -31,7 +31,7 @@ public class EnquiryController extends BaseController {
     @PostMapping("/apply")
     @OperationLog
     public BaseResponse apply(@RequestBody EnquiryPriceVO enquiryPriceVO){
-        enquiryPriceService.apply(enquiryPriceVO,super.getCurrentUser().getLoginName());
+        enquiryPriceService.apply(enquiryPriceVO,super.getCurrentUser());
         return super.successResult();
     }
 

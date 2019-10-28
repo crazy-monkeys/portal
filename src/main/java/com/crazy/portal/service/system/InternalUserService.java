@@ -76,34 +76,34 @@ public class InternalUserService {
         return internalUserMapper.selectByUserNo(userNo);
     }
 
-    /*public CustomerOrgBean getSalesInfo(Integer custId){
+    public CustomerOrgBean getSalesInfo(Integer custId){
         CustomerOrgBean customerOrgBean = new CustomerOrgBean();
 
+        //获取销售
         CustZrAccountTeam custZrAccountTeam = custZrAccountTeamService.selectZRByCustId(custId);
         InternalUser sales = internalUserMapper.selectByUserNo(custZrAccountTeam.getEmployeeId());
+
         customerOrgBean.setSales(sales.getUserName());
         customerOrgBean.setOffice(sales.getUserDepartmentName());
 
-        OrganizationalStructure ambOrg = organizationalStructureMapper.selectByOrgNo(Integer.valueOf(sales.getUserDepartmentCode()));
-        if(ambOrg.getSeq().equals("1001013") || ambOrg.getSeq().equals("1001014")){
+        OrganizationalStructure org = organizationalStructureMapper.selectByOrgNo(Integer.valueOf(sales.getUserDepartmentCode()));
+        if(org.getSeq().equals(1001013) || org.getSeq().equals(1001014)){
             customerOrgBean.setAmb(sales.getUserName());
             customerOrgBean.setPm(sales.getUserName());
         }else{
-            InternalUser amb =  internalUserMapper.selectByUserNo(ambOrg.getPm());
+            InternalUser amb =  internalUserMapper.selectByUserNo(org.getPm());
             customerOrgBean.setAmb(amb.getUserName());
+            customerOrgBean.setOffice(org.getParentOrgName());
 
-            InternalUser pm =  new InternalUser();
-            if(ambOrg.getParentOrg().equals("1001013")){
-                 pm = internalUserMapper.selectSD("1001013");
-            }else if(ambOrg.getParentOrg().equals("1001013")){
-                 pm= internalUserMapper.selectSD("1001013");
-            }
+            OrganizationalStructure office = organizationalStructureMapper.selectByOrgNo(org.getParentOrg());
+            InternalUser pm =  internalUserMapper.selectByUserNo(office.getPm());
             customerOrgBean.setPm(pm.getUserName());
         }
-        return customerOrgBean;
-    }*/
 
-    public CustomerOrgBean getSalesInfo(Integer custId){
+        return customerOrgBean;
+    }
+
+    /*public CustomerOrgBean getSalesInfo(Integer custId){
         CustomerOrgBean customerOrgBean = new CustomerOrgBean();
 
         CustZrAccountTeam custZrAccountTeam = custZrAccountTeamService.selectZRByCustId(custId);
@@ -123,5 +123,5 @@ public class InternalUserService {
         customerOrgBean.setPm(pm.getUserName());
 
         return customerOrgBean;
-    }
+    }*/
 }

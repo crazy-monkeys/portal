@@ -1,5 +1,6 @@
 package com.crazy.portal.service.product;
 
+import com.alibaba.fastjson.JSON;
 import com.crazy.portal.bean.product.BaseProResponseVO;
 import com.crazy.portal.bean.product.ProductBean;
 import com.crazy.portal.bean.product.ProductVO;
@@ -87,6 +88,7 @@ public class ProductService {
             List<ProductBean> productVOS = responseVO.getContents();
             ProductBatchDO batchDO = saveBatch();
             for(ProductBean vo : productVOS){
+                log.info("product:"+ JSON.toJSONString(vo));
                 ProductInfoDO infoDO = new ProductInfoDO();
                 mappingVO(infoDO,vo);
                 infoDO.setBatchId(batchDO.getId());

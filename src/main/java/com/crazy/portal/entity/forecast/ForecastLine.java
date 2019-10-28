@@ -763,7 +763,7 @@ public class ForecastLine {
             }
             if(a.compareTo(BigDecimal.ZERO)==1){
 
-                BigDecimal percent = (b.subtract(a)).divide(a).multiply(new BigDecimal(100));
+                BigDecimal percent = (b.subtract(a)).divide(a, BigDecimal.ROUND_DOWN).multiply(new BigDecimal(100));
                 return String.format("%s%s", percent.setScale(0,BigDecimal.ROUND_UP),"%");
             }
         }catch (Exception ex) {

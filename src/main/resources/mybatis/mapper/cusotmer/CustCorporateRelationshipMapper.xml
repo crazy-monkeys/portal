@@ -180,4 +180,12 @@
       select id from t_customer_info where in_code = {inCode,jdbcType=VARCHAR}
     )
   </select>
+  
+  <select id="selectDealerCustomer" resultMap="BaseResultMap">
+    select * from t_customer_info where
+    in_code in (
+    select corporate_id from t_cust_corporate_relationship
+    where cust_id=#{dealerId,jdbcType=INTEGER} and corporate_type='Z004'
+    ) and cust_abbreviation=#{custAbb,jdbcType=VARCHAR}
+  </select>
 </mapper>

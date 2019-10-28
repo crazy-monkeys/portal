@@ -1,6 +1,8 @@
 package com.crazy.portal.dao.cusotmer;
 
 import com.crazy.portal.entity.cusotmer.CustCorporateRelationship;
+import com.crazy.portal.entity.system.InternalUser;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -30,4 +32,6 @@ public interface CustCorporateRelationshipMapper {
     CustCorporateRelationship selectInCustomer(Integer custId);
 
     List<CustCorporateRelationship> selectOutCustomer(String inCode);
+
+    List<CustCorporateRelationship> selectDealerCustomer(@Param("dealerId")Integer dealerId, @Param("custAbb")String custAbb);
 }

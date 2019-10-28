@@ -180,11 +180,14 @@ public class OrderApplyService {
      */
     private boolean isExistsCatalogPrice(List<CatalogPrice> currentCatalogPrices, OrderLineEO x) {
         for(CatalogPrice catalogPrice : currentCatalogPrices){
+            log.info("productId"+x.getProductId()+"=======platform"+x.getPlatform()+"========="+x.getCustAbbreviation());
+            ProductInfoDO productInfoDO = productInfoDOMapper.selectBySapMidAndPlatForm(x.getProductId(),x.getPlatform());
+            log.info("product"+JSON.toJSONString(productInfoDO));
             if(catalogPrice.getSapCode().equals(x.getProductId())
-                    && catalogPrice.getPlatform().equals(x.getPlatform())
-                    && catalogPrice.getInCustomer().equals(x.getCustAbbreviation())){
-
-                return true;
+                    && catalogPrice.getBu().equals(productInfoDO.getBu())){
+                if(StringUtil.isEmpty(catalogPrice.getInCustomer())||catalogPrice.getInCustomer().equals(x.getCustAbbreviation())){
+                    return true;
+                }
             }
         }
         return false;
@@ -543,13 +546,18 @@ public class OrderApplyService {
 
     @Transactional
     public void cancelDeliveryOrder(DeliveryOrderCancelVO vo, Integer userId){
+        //获取对应的提货单
         DeliverOrder deliverOrder = deliverOrderMapper.selectByPrimaryKey(vo.getDeliveryOrderId());
         BusinessUtil.assertFlase(null == deliverOrder,ErrorCodes.BusinessEnum.ORDER_NOT_FOUND);
+
+        //校验是否有审批中的提货单
         List<DeliverOrderApproval> approval = deliverOrderApprovalMapper.checkApproval(deliverOrder.getSapOrderNo());
         BusinessUtil.assertFlase(null != approval && !approval.isEmpty(), ErrorCodes.BusinessEnum.ORDER_IS_INACTIVE);
 
+        //获取提货的明细行
         List<DeliverOrderLine> orderLines = deliverOrderLineMapper.selectByDeliveryOrderId(deliverOrder.getDeliverOrderId());
         deliverOrder.setDeliverOrderLineList(orderLines);
+
         saveDeliverOrderCancelApproval(deliverOrder, vo.getDeliveryOrderLineIds(), userId);
     }
 
@@ -564,6 +572,12 @@ public class OrderApplyService {
         deliverOrderApprovalMapper.insertSelective(approval);
     }
 
+    /**
+     * 提货取消
+     * @param deliverOrder  对应的提货单
+     * @param cancelDeliverOrderLineIds  取消的提货单行
+     * @param userId
+     */
     private void saveDeliverOrderCancelApproval(DeliverOrder deliverOrder, List<Integer> cancelDeliverOrderLineIds, Integer userId){
         DeliverOrderApproval approval = getDeliverOrderApproval(deliverOrder, Enums.OrderApprovalType.CANCEL.getValue(), userId);
 

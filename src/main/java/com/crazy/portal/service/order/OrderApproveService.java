@@ -161,7 +161,7 @@ public class OrderApproveService {
             OrderLine orderLine = new OrderLine();
             orderLine.setRPrice(eccLine.getPrice());
             orderLine.setRNetPrice(eccLine.getNetprice());
-            this.setProduct(orderLine, eccLine.getProductid());
+            orderLine.setProduct(eccLine.getProductid());
             this.insertOrderLine(userId,order,orderLine,eccLine);
         }
     }
@@ -195,7 +195,7 @@ public class OrderApproveService {
      * @param portalProductId
      */
     private void setProduct(OrderLine line, String portalProductId) {
-        ProductInfoDO productInfoDO = productInfoDOMapper.selectBySapMid(portalProductId);
+        ProductInfoDO productInfoDO = productInfoDOMapper.selectBySapMidAndPlatForm(portalProductId,line.getPlatform());
         BusinessUtil.notNull(productInfoDO, ErrorCodes.BusinessEnum.ORDER_NOT_EXISTS_PRODUCT_ID);
 
         line.setProduct(productInfoDO.getProduct());
