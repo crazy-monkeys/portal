@@ -190,25 +190,25 @@ public class Order {
     /**
      * 创建人
      */
-    @JSONField(serialize = false)
+    @JSONField(serialize = false,deserialize = false)
     private Integer createId;
 
     /**
      * 创建时间
      */
-    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JSONField(format="yyyy-MM-dd HH:mm:ss",deserialize = false)
     private Date createTime;
 
     /**
      * 修改人
      */
-    @JSONField(serialize = false)
+    @JSONField(serialize = false,deserialize = false)
     private Integer updateId;
 
     /**
      * 修改时间
      */
-    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JSONField(format="yyyy-MM-dd HH:mm:ss",deserialize = false)
     private Date updateTime;
 
     /**
