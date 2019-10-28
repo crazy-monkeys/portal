@@ -165,6 +165,7 @@ public class OrderService {
                         DeliverOrderLine deliverOrderLine = new DeliverOrderLine();
                         BeanUtils.copyNotNullFields(line, deliverOrderLine);
                         deliverOrderLine.setDeliverOrderId(deliverOrder.getDeliverOrderId());
+                        deliverOrderLine.setSapDeliverOrderLineNo(orderLine.getRRefItemNo());
                         deliverOrderLineMapper.insertSelective(deliverOrderLine);
                     }
                 }else{
@@ -284,7 +285,7 @@ public class OrderService {
         deliverOrderLineList.forEach(e->{
             Item item = new Item();
             item.setOperationType("U");
-            item.setDeliveryItemNo(e.getSapDeliverOrderLineNo());
+            item.setDeliveryItemNo(StringUtil.isEmpty(e.getSapDeliverOrderLineNo())?e.getSapSalesOrderLineNo():"");
             item.setDeliveryQuantity(String.valueOf(e.getDeliveryQuantity()));
             items.add(item);
         });
