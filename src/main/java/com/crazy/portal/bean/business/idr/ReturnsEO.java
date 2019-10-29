@@ -1,7 +1,6 @@
 package com.crazy.portal.bean.business.idr;
 
 import com.alibaba.excel.annotation.ExcelProperty;
-import com.alibaba.excel.metadata.BaseRowModel;
 import com.crazy.portal.util.DateUtil;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -13,7 +12,7 @@ import java.math.BigDecimal;
  */
 @Slf4j
 @Data
-public class ReturnsEO extends BaseRowModel {
+public class ReturnsEO {
 
     @ExcelProperty(value = "发货公司", index = 0)
     private String shipmentCompany;

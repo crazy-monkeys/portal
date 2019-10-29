@@ -1,16 +1,14 @@
 package com.crazy.portal.bean.rate;
 
+import com.alibaba.excel.annotation.ExcelIgnore;
 import com.alibaba.excel.annotation.ExcelProperty;
-import com.alibaba.excel.metadata.BaseRowModel;
-import com.crazy.portal.config.exception.BusinessException;
 import com.crazy.portal.util.DateUtil;
-import com.crazy.portal.util.StringUtil;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Data
-public class AgencyRateQueryBean extends BaseRowModel {
+public class AgencyRateQueryBean {
 
     @ExcelProperty(value = "客户类型", index = 0)
     private String customerType;
@@ -30,13 +28,13 @@ public class AgencyRateQueryBean extends BaseRowModel {
     private Float floatAgencyRate;
     @ExcelProperty(value = "有效开始时间", index = 8)
     private String validStartDate;
-
+    @ExcelIgnore
     private Integer pageIndex;
-
+    @ExcelIgnore
     private Integer pageSize;
-
+    @ExcelIgnore
     private String startTime;
-
+    @ExcelIgnore
     private String endTime;
 
 

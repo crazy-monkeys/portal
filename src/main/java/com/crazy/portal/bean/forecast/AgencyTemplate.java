@@ -1,7 +1,7 @@
 package com.crazy.portal.bean.forecast;
 
+import com.alibaba.excel.annotation.ExcelIgnore;
 import com.alibaba.excel.annotation.ExcelProperty;
-import com.alibaba.excel.metadata.BaseRowModel;
 import lombok.Data;
 
 /**
@@ -9,7 +9,7 @@ import lombok.Data;
  */
 
 @Data
-public class AgencyTemplate extends BaseRowModel {
+public class AgencyTemplate {
 
     @ExcelProperty(index = 0, value = "年月")
     private String operationYearMonth;
@@ -18,6 +18,7 @@ public class AgencyTemplate extends BaseRowModel {
     private String company;
 
 //    @ExcelProperty(index = 2, value = "渠道")
+    @ExcelIgnore
     private String channel;
 
     @ExcelProperty(index = 2, value = "客户简称")
@@ -33,6 +34,7 @@ public class AgencyTemplate extends BaseRowModel {
     private String productModel;
 
 //    @ExcelProperty(index = 7, value = "虚拟料号")
+    @ExcelIgnore
     private String vmNumber;
 
     @ExcelProperty(index = 6, value = "版本要求")
@@ -54,6 +56,7 @@ public class AgencyTemplate extends BaseRowModel {
     private String currentWriteOne;
 
 //    @ExcelProperty(index = 14, value = "GAP1")
+    @ExcelIgnore
     private String gapOne;
 
     @ExcelProperty(index = 12, value = "备注1")
@@ -69,6 +72,7 @@ public class AgencyTemplate extends BaseRowModel {
     private String currentWriteTwo;
 
 //    @ExcelProperty(index = 19, value = "GAP2")
+    @ExcelIgnore
     private String gapTwo;
 
     @ExcelProperty(index = 16, value = "备注2")
@@ -84,6 +88,7 @@ public class AgencyTemplate extends BaseRowModel {
     private String currentWriteThree;
 
 //    @ExcelProperty(index = 24, value = "GAP3")
+    @ExcelIgnore
     private String gapThree;
 
     @ExcelProperty(index = 20, value = "备注3")
@@ -99,6 +104,7 @@ public class AgencyTemplate extends BaseRowModel {
     private String currentWriteFour;
 
 //    @ExcelProperty(index = 29, value = "GAP4")
+    @ExcelIgnore
     private String gapFour;
 
     @ExcelProperty(index = 24, value = "备注4")
@@ -114,6 +120,7 @@ public class AgencyTemplate extends BaseRowModel {
     private String currentWriteFive;
 
 //    @ExcelProperty(index = 34, value = "GAP5")
+    @ExcelIgnore
     private String gapFive;
 
     @ExcelProperty(index = 28, value = "备注5")
@@ -129,13 +136,15 @@ public class AgencyTemplate extends BaseRowModel {
     private String currentWriteSix;
 
 //    @ExcelProperty(index = 39, value = "GAP6")
+    @ExcelIgnore
     private String gapSix;
 
     @ExcelProperty(index = 32, value = "备注6")
     private String remarkSix;
 
+    @ExcelIgnore
     private String agencyAbbreviation;
-
+    @ExcelIgnore
     private String id;
 
 }

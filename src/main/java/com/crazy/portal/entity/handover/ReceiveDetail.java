@@ -1,17 +1,16 @@
 package com.crazy.portal.entity.handover;
 
+import com.alibaba.excel.annotation.ExcelIgnore;
 import com.alibaba.excel.annotation.ExcelProperty;
-import com.alibaba.excel.metadata.BaseRowModel;
 import lombok.Data;
 
 import java.math.BigDecimal;
-import java.util.Date;
 
 @Data
-public class ReceiveDetail extends BaseRowModel {
-
+public class ReceiveDetail {
+    @ExcelIgnore
     private Integer id;
-
+    @ExcelIgnore
     private Integer deliveryOrderId;
 
     @ExcelProperty(index = 0, value = "代理全称")
@@ -40,6 +39,7 @@ public class ReceiveDetail extends BaseRowModel {
 
     /** 仓储地 */
 //    @ExcelProperty(index = 4, value = "仓储地")
+    @ExcelIgnore
     private String warehouse;
 
     /** 提货时间 */
@@ -48,6 +48,7 @@ public class ReceiveDetail extends BaseRowModel {
 
     /** 提货发票号 */
 //    @ExcelProperty(index = 6, value = "提货发票号")
+    @ExcelIgnore
     private String invoiceNumber;
 
     /** 提货数量 */
@@ -72,6 +73,7 @@ public class ReceiveDetail extends BaseRowModel {
     @ExcelProperty(index = 13, value = "ID")
     private Integer thirdId;
 
+    @ExcelIgnore
     private Integer recordId;
 
 

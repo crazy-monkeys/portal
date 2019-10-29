@@ -1,7 +1,6 @@
 package com.crazy.portal.bean.forecast;
 
 import com.alibaba.excel.annotation.ExcelProperty;
-import com.alibaba.excel.metadata.BaseRowModel;
 import lombok.Data;
 
 /**
@@ -9,7 +8,7 @@ import lombok.Data;
  */
 
 @Data
-public class BiAgencyUpdateTemplate extends BaseRowModel {
+public class BiAgencyUpdateTemplate {
 
     @ExcelProperty(index = 0, value = "ID")
     private String biId;

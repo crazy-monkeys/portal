@@ -1,6 +1,5 @@
 package com.crazy.portal.bean.business.idr;
 
-import com.alibaba.excel.metadata.BaseRowModel;
 import lombok.Data;
 
 import java.util.List;
@@ -17,5 +16,5 @@ public class BusinessFileUploadBean {
     /** 文件类型 **/
     private Integer fileType;
     /** 保差退数据集合**/
-    private List<BaseRowModel> idrList;
+    private List idrList;
 }

@@ -1,7 +1,6 @@
 package com.crazy.portal.bean.forecast;
 
 import com.alibaba.excel.annotation.ExcelProperty;
-import com.alibaba.excel.metadata.BaseRowModel;
 import lombok.Data;
 
 /**
@@ -9,7 +8,7 @@ import lombok.Data;
  */
 
 @Data
-public class AgencyRejectTemplate extends BaseRowModel {
+public class AgencyRejectTemplate {
 
     @ExcelProperty(index = 0, value = "年月")
     private String operationYearMonth;

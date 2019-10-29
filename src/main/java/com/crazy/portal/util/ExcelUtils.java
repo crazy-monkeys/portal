@@ -1,22 +1,22 @@
 package com.crazy.portal.util;
 
+import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.ExcelReader;
 import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.exception.ExcelAnalysisException;
 import com.alibaba.excel.exception.ExcelGenerateException;
-import com.alibaba.excel.metadata.BaseRowModel;
-import com.alibaba.excel.metadata.Sheet;
+import com.alibaba.excel.read.metadata.ReadSheet;
 import com.alibaba.excel.support.ExcelTypeEnum;
+import com.alibaba.excel.write.metadata.WriteSheet;
 import com.crazy.portal.config.exception.BusinessException;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.poi.util.IOUtils;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -34,6 +34,11 @@ import static com.crazy.portal.util.ErrorCodes.BusinessEnum.EXCEL_WRITE_ERROR;
 @Slf4j
 public class ExcelUtils {
 
+    private static int DEFAULT_SHEET_NO = 0;
+
+    private static int DEFAULT_READ_LINE_NUM = 1;
+
+    public static final String DEFAULT_SHEET_NAME = "Sheet1";
 
     /**
      * 导出excel 支持一张表导出多个sheet
@@ -41,7 +46,7 @@ public class ExcelUtils {
      * Map<String, List>  sheetName和每个sheet的数据
      * ExcelTypeEnum 要导出的excel的类型 有ExcelTypeEnum.xls 和有ExcelTypeEnum.xlsx
      */
-    public static void createExcelStreamMutilByEaysExcel(HttpServletResponse response, Map<String, List<? extends BaseRowModel>> SheetNameAndDateList, String fileName, ExcelTypeEnum type) throws UnsupportedEncodingException {
+    public static void createExcelStreamMutilByEaysExcel(HttpServletResponse response, Map<String, List> SheetNameAndDateList, String fileName, ExcelTypeEnum type) {
         if (checkParam(SheetNameAndDateList, type)){
             return;
         }
@@ -50,57 +55,47 @@ public class ExcelUtils {
             response.setContentType("multipart/form-data");
             response.setCharacterEncoding("utf-8");
             response.setHeader("Content-disposition", "attachment;fileName=\"".concat(fileName).concat("\"; filename*=\"utf-8''").concat(fileName).concat("\""+";filename*=utf-8''").concat(fileName));
-            ServletOutputStream out = response.getOutputStream();
-            ExcelWriter writer = new ExcelWriter(out, type, true);
-            setSheet(SheetNameAndDateList, writer);
+            ExcelWriter writer = EasyExcel.write(response.getOutputStream()).build();
+            int i = 0;
+            for (Map.Entry<String, List> stringListEntry : SheetNameAndDateList.entrySet()) {
+                WriteSheet writeSheet = EasyExcel.writerSheet(i, stringListEntry.getKey()).head(stringListEntry.getValue().get(0).getClass()).build();
+                writer.write(stringListEntry.getValue(), writeSheet);
+                i++;
+            }
             writer.finish();
-            out.flush();
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error(EXCEL_WRITE_ERROR.getZhMsg(), e);
+            throw new BusinessException(EXCEL_WRITE_ERROR);
         }
     }
 
-    public static void writeExcel(HttpServletResponse response, List<? extends BaseRowModel> data, Class clazz) {
-        OutputStream out = null;
-        String fileName = String.format("%s.%s", System.currentTimeMillis(), ExcelTypeEnum.XLSX);
+    public static void writeExcel(HttpServletResponse response, List data, Class clazz) {
         try {
+            if(data == null){
+                data = new ArrayList();
+            }
+            String fileName = String.format("%s.%s", System.currentTimeMillis(), ExcelTypeEnum.XLSX);
             response.setContentType("application/vnd.ms-excel");
             response.setHeader("Content-disposition", "attachment;filename=" + fileName);
             response.setCharacterEncoding("UTF-8");
-            Sheet sheet1 = new Sheet(1, 0, clazz);
-            sheet1.setSheetName("Sheet1");
-
-            out = response.getOutputStream();
-            ExcelWriter writer = new ExcelWriter(out, ExcelTypeEnum.XLSX, true);
-            writer.write(data, sheet1);
-            writer.finish();
+            EasyExcel.write(response.getOutputStream(), clazz).sheet(DEFAULT_SHEET_NAME).doWrite(data);
         }catch (Exception ex) {
             log.error(EXCEL_WRITE_ERROR.getZhMsg(), ex);
             throw new BusinessException(EXCEL_WRITE_ERROR);
-        }finally {
-            IOUtils.closeQuietly(out);
         }
     }
 
-    public static String writeExcel(String filePath, List<? extends BaseRowModel> data, Class clazz) {
-        FileOutputStream out = null;
+    public static String writeExcel(String filePath, List data, Class clazz) {
         try {
             //暂时根据时间戳定义文件，防止名称一样
             String fileName = String.format("%s%s", System.currentTimeMillis(), ExcelTypeEnum.XLSX.getValue());
             File file = new File(String.format("%s%s", filePath, fileName));
             file.createNewFile();
-            out = new FileOutputStream(file);
-            Sheet sheet1 = new Sheet(1, 0, clazz);
-            sheet1.setSheetName("Sheet1");
-            ExcelWriter writer = new ExcelWriter(out, ExcelTypeEnum.XLSX);
-            writer.write(data, sheet1);
-            writer.finish();
+            EasyExcel.write(file, clazz).sheet(DEFAULT_SHEET_NAME).doWrite(data);
             return fileName;
         }catch (Exception ex) {
             log.error(EXCEL_WRITE_ERROR.getZhMsg()+filePath, ex);
             throw new BusinessException(EXCEL_WRITE_ERROR);
-        }finally {
-            IOUtils.closeQuietly(out);
         }
     }
 
@@ -113,7 +108,7 @@ public class ExcelUtils {
      * @return
      */
     public static<T> List<T> readExcel(String filePath, String fileName, Class clazz) {
-        return readExcel(filePath, fileName, clazz, 1);
+        return readExcel(filePath, fileName, clazz, DEFAULT_SHEET_NO);
     }
 
     /**
@@ -126,7 +121,7 @@ public class ExcelUtils {
      * @return
      */
     public static<T> List<T> readExcel(String filePath, String fileName, Class clazz, int sheetNo) {
-        return readExcel(filePath, fileName, clazz, sheetNo, 1);
+        return readExcel(filePath, fileName, clazz, sheetNo, DEFAULT_READ_LINE_NUM);
     }
 
     /**
@@ -156,11 +151,11 @@ public class ExcelUtils {
     }
 
     public static<T> List<T> readExcel(String fullFilePath, Class clazz) {
-        return readExcel(fullFilePath, clazz, 1);
+        return readExcel(fullFilePath, clazz, DEFAULT_SHEET_NO);
     }
 
     public static<T> List<T> readExcel(String fullFilePath, Class clazz, int sheetNo) {
-        return readExcel(fullFilePath, clazz, sheetNo, 1);
+        return readExcel(fullFilePath, clazz, sheetNo, DEFAULT_READ_LINE_NUM);
     }
 
     public static<T> List<T> readExcel(String fullFilePath, Class clazz, int sheetNo, int headLineNum){
@@ -215,7 +210,7 @@ public class ExcelUtils {
      * @return
      */
     public static<T> List<T> readExcel(MultipartFile excel, Class clazz) {
-        return readExcel(excel, clazz, 1);
+        return readExcel(excel, clazz, DEFAULT_SHEET_NO);
     }
 
     /**
@@ -227,7 +222,7 @@ public class ExcelUtils {
      * @return
      */
     public static<T> List<T> readExcel(MultipartFile excel, Class clazz, int sheetNo) {
-        return readExcel(excel, clazz, sheetNo, 1);
+        return readExcel(excel, clazz, sheetNo, DEFAULT_READ_LINE_NUM);
     }
 
     /**
@@ -256,20 +251,16 @@ public class ExcelUtils {
         }
     }
 
-    private static<T> List<T> readExcel(InputStream in, Class clazz, String fileName, int sheetNo, int headLineNum) throws IOException {
+    private static<T> List<T> readExcel(InputStream in, Class clazz, String fileName, int sheetNo, int headLineNum) {
         checkExcelType(fileName);
         ExcelListener excelListener = new ExcelListener();
-        ExcelReader reader = getReader(in, excelListener);
-        Sheet sheet = new Sheet(sheetNo, headLineNum, clazz);
-        reader.read(sheet);
+        ExcelReader reader = EasyExcel.read(in).autoTrim(false).build();
+        ReadSheet readSheet1 = EasyExcel.readSheet(sheetNo).headRowNumber(headLineNum).head(clazz).registerReadListener(excelListener).build();
+        reader.read(readSheet1);
         List<T> data = excelListener.getData();
+        reader.finish();
         BusinessUtil.assertTrue((data != null && data.size() > 0), ErrorCodes.BusinessEnum.BUSINESS_IDR_FILE_IS_REQUIRED);
         return data;
-    }
-
-    private static ExcelReader getReader(InputStream in, ExcelListener excelListener) throws IOException {
-        InputStream inputStream = new BufferedInputStream(in);
-        return new ExcelReader(inputStream, null, excelListener, false);
     }
 
     /**
@@ -285,23 +276,9 @@ public class ExcelUtils {
     }
 
     /**
-     * setSheet数据
-     */
-    private static void setSheet(Map<String, List<? extends BaseRowModel>> SheetNameAndDateList, ExcelWriter writer) {
-        int sheetNum = 1;
-        for (Map.Entry<String, List<? extends BaseRowModel>> stringListEntry : SheetNameAndDateList.entrySet()) {
-            Sheet sheet = new Sheet(sheetNum, 0, stringListEntry.getValue().get(0).getClass());
-            sheet.setSheetName(stringListEntry.getKey());
-            writer.write(stringListEntry.getValue(), sheet);
-            sheetNum++;
-
-        }
-    }
-
-    /**
      * 校验参数
      */
-    private static boolean checkParam(Map<String, List<? extends BaseRowModel>> SheetNameAndDateList, ExcelTypeEnum type) {
+    private static boolean checkParam(Map<String, List> SheetNameAndDateList, ExcelTypeEnum type) {
         if (CollectionUtils.isEmpty(SheetNameAndDateList)) {
             log.error("SheetNameAndDateList不能为空");
             return true;

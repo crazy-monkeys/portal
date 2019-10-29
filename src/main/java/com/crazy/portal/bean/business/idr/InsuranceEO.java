@@ -1,7 +1,6 @@
 package com.crazy.portal.bean.business.idr;
 
 import com.alibaba.excel.annotation.ExcelProperty;
-import com.alibaba.excel.metadata.BaseRowModel;
 import com.crazy.portal.util.DateUtil;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -11,7 +10,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @Data
-public class InsuranceEO extends BaseRowModel {
+public class InsuranceEO {
 
     @ExcelProperty(value = "发货公司", index = 0)
     private String shipmentCompany;

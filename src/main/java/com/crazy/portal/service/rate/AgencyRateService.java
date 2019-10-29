@@ -1,6 +1,5 @@
 package com.crazy.portal.service.rate;
 
-import com.alibaba.excel.metadata.BaseRowModel;
 import com.alibaba.excel.support.ExcelTypeEnum;
 import com.crazy.portal.bean.common.Constant;
 import com.crazy.portal.bean.rate.AgencyRateQueryBean;
@@ -103,8 +102,8 @@ public class AgencyRateService {
      */
     public void templateDownload(HttpServletResponse response) {
         try {
-            Map<String, List<? extends BaseRowModel>> resultMap = new HashMap<>();
-            resultMap.put(Constant.DEFAULT_SHEET_NAME, Collections.singletonList(new AgencyRateQueryBean()));
+            Map<String, List> resultMap = new HashMap<>();
+            resultMap.put(ExcelUtils.DEFAULT_SHEET_NAME, Collections.singletonList(new AgencyRateQueryBean()));
             ExcelUtils.createExcelStreamMutilByEaysExcel(response, resultMap, FILE_NAME, ExcelTypeEnum.XLSX);
         }catch (Exception ex){
             log.error(ErrorCodes.BusinessEnum.EXCEL_TEMPLATE_DOWNLOAD_FAIL.getZhMsg(), ex);

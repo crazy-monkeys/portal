@@ -1,6 +1,5 @@
 package com.crazy.portal.controller.customer;
 
-import com.alibaba.excel.metadata.BaseRowModel;
 import com.alibaba.excel.support.ExcelTypeEnum;
 import com.crazy.portal.bean.BaseResponse;
 import com.crazy.portal.bean.customer.CustomerQueryBean;
@@ -10,7 +9,6 @@ import com.crazy.portal.bean.customer.visitRecord.VisitRecordQueryBean;
 import com.crazy.portal.controller.BaseController;
 import com.crazy.portal.dao.system.InternalUserMapper;
 import com.crazy.portal.entity.cusotmer.CustomerInfo;
-import com.crazy.portal.entity.system.InternalUser;
 import com.crazy.portal.service.customer.CustomerInfoService;
 import com.crazy.portal.util.ExcelUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -125,7 +123,7 @@ public class CustomerController extends BaseController{
     @GetMapping("/visitRecord/download")
     public void visitRecordDownload(HttpServletResponse response){
         try {
-            Map<String, List<? extends BaseRowModel>> resultMap = customerInfoService.downloadTemplate(this.getCurrentUser().getId());
+            Map<String, List> resultMap = customerInfoService.downloadTemplate(this.getCurrentUser().getId());
             ExcelUtils.createExcelStreamMutilByEaysExcel(response, resultMap, "拜访记录", ExcelTypeEnum.XLSX);
         }catch (Exception ex){
             log.error("下载模板异常", ex);

@@ -1,7 +1,6 @@
 package com.crazy.portal.bean.customer.visitRecord;
 
 import com.alibaba.excel.annotation.ExcelProperty;
-import com.alibaba.excel.metadata.BaseRowModel;
 import lombok.Data;
 import lombok.ToString;
 
@@ -13,7 +12,7 @@ import lombok.ToString;
  */
 @Data
 @ToString
-public class CustomerCodeEO extends BaseRowModel {
+public class CustomerCodeEO {
 
     @ExcelProperty(value = "客户编号", index = 0)
     private String customerCode;
