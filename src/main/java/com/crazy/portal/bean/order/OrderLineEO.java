@@ -1,5 +1,6 @@
 package com.crazy.portal.bean.order;
 
+import com.alibaba.excel.annotation.ExcelIgnore;
 import com.alibaba.excel.annotation.ExcelProperty;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -40,15 +41,18 @@ public class OrderLineEO {
     /**
      * 定价日期
      */
+    @ExcelIgnore
     private String priceDate;
 
     /**
      * 含税价格
      */
+    @ExcelIgnore
     private BigDecimal rPrice = BigDecimal.ZERO;
 
     /**
      * 不含税价格
      */
+    @ExcelIgnore
     private BigDecimal rNetPrice = BigDecimal.ZERO;
 }

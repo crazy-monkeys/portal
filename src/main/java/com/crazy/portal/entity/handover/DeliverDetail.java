@@ -1,7 +1,7 @@
 package com.crazy.portal.entity.handover;
 
+import com.alibaba.excel.annotation.ExcelIgnore;
 import com.alibaba.excel.annotation.ExcelProperty;
-import com.alibaba.excel.metadata.BaseRowModel;
 import lombok.Data;
 import java.math.BigDecimal;
 
@@ -12,10 +12,10 @@ import java.math.BigDecimal;
  */
 
 @Data
-public class DeliverDetail extends BaseRowModel {
-
+public class DeliverDetail {
+    @ExcelIgnore
     private String idStr;
-
+    @ExcelIgnore
     private Integer id;
 
     @ExcelProperty(index = 0, value = "代理全称")
@@ -35,6 +35,7 @@ public class DeliverDetail extends BaseRowModel {
 
     /** 类别一(类型) */
 //    @ExcelProperty(index = 4, value = "类别一(类型)")
+    @ExcelIgnore
     private String categoryOne;
 
     /** 类别二(子类) */
@@ -71,6 +72,7 @@ public class DeliverDetail extends BaseRowModel {
 
     /** 币种 */
 //    @ExcelProperty(index = 13, value = "币别")
+    @ExcelIgnore
     private String currency;
 
     @ExcelProperty(index = 12, value = "销售组织")
@@ -101,13 +103,15 @@ public class DeliverDetail extends BaseRowModel {
 
     @ExcelProperty(index = 19, value = "ID")
     private String thirdId;
-
+    @ExcelIgnore
     private Integer recordId;
 
     //确认备注
+    @ExcelIgnore
     private String confirmMsg;
 
     //NULL：未确认 1：已确认 -1：拒绝
+    @ExcelIgnore
     private Integer confirmStatus;
 
 }

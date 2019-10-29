@@ -96,7 +96,7 @@ public class SaleForecastService {
         }
         List<Forecast> forecastList = forecastMapper.selectByYearMonth(lastYearMonth, userId);
         if(null == forecastList || forecastList.isEmpty()){
-            ExcelUtils.writeExcel(response, null, AgencyTemplate.class);
+            ExcelUtils.writeExcel(response, Collections.singletonList(new AgencyTemplate()), AgencyTemplate.class);
         }
         List<AgencyTemplate> templateList = new ArrayList<>();
         for(Forecast forecast : forecastList) {
@@ -225,7 +225,7 @@ public class SaleForecastService {
         List<Forecast> errorTemplateList = forecastMapper.selectErrorDataByBatch(batchNo, userId);
         if(null == errorTemplateList || errorTemplateList.isEmpty()){
             log.warn("[Download error file] error data is empty, return empty file.");
-            ExcelUtils.writeExcel(response, null, AgencyErrorTemplate.class);
+            ExcelUtils.writeExcel(response, Collections.singletonList(new AgencyErrorTemplate()), AgencyErrorTemplate.class);
             return;
         }
         List<AgencyErrorTemplate> errorList = new ArrayList<>();

@@ -1,7 +1,7 @@
 package com.crazy.portal.bean.forecast;
 
+import com.alibaba.excel.annotation.ExcelIgnore;
 import com.alibaba.excel.annotation.ExcelProperty;
-import com.alibaba.excel.metadata.BaseRowModel;
 import lombok.Data;
 
 /**
@@ -9,7 +9,7 @@ import lombok.Data;
  */
 
 @Data
-public class AmbUpdateTemplate extends BaseRowModel {
+public class AmbUpdateTemplate {
 
     @ExcelProperty(index = 0, value = "ID")
     private String id;
@@ -87,6 +87,7 @@ public class AmbUpdateTemplate extends BaseRowModel {
     private String currentWriteOne;
 
 //    @ExcelProperty(index = 25, value = "GAP1")
+    @ExcelIgnore
     private String gapOne;
 
     @ExcelProperty(index = 25, value = "备注1")
@@ -114,6 +115,7 @@ public class AmbUpdateTemplate extends BaseRowModel {
     private String currentWriteTwo;
 
 //    @ExcelProperty(index = 34, value = "GAP2")
+    @ExcelIgnore
     private String gapTwo;
 
     @ExcelProperty(index = 33, value = "备注2")
@@ -141,6 +143,7 @@ public class AmbUpdateTemplate extends BaseRowModel {
     private String currentWriteThree;
 
 //    @ExcelProperty(index = 43, value = "GAP3")
+    @ExcelIgnore
     private String gapThree;
 
     @ExcelProperty(index = 41, value = "备注3")
@@ -168,6 +171,7 @@ public class AmbUpdateTemplate extends BaseRowModel {
     private String currentWriteFour;
 
 //    @ExcelProperty(index = 52, value = "GAP4")
+    @ExcelIgnore
     private String gapFour;
 
     @ExcelProperty(index = 49, value = "备注4")
@@ -195,6 +199,7 @@ public class AmbUpdateTemplate extends BaseRowModel {
     private String currentWriteFive;
 
 //    @ExcelProperty(index = 61, value = "GAP5")
+    @ExcelIgnore
     private String gapFive;
 
     @ExcelProperty(index = 57, value = "备注5")
@@ -222,6 +227,7 @@ public class AmbUpdateTemplate extends BaseRowModel {
     private String currentWriteSix;
 
 //    @ExcelProperty(index = 70, value = "GAP6")
+    @ExcelIgnore
     private String gapSix;
 
     @ExcelProperty(index = 65, value = "备注6")
@@ -239,7 +245,7 @@ public class AmbUpdateTemplate extends BaseRowModel {
     @ExcelProperty(index = 69, value = "队长备注6")
     private String ambRemarkSix;
 
-    @ExcelProperty(index = 69, value = "PO价格")
+    @ExcelProperty(index = 70, value = "PO价格")
     private String poPrice;
 
 }

@@ -1,18 +1,16 @@
 package com.crazy.portal.bean.handover;
 
 import com.alibaba.excel.annotation.ExcelProperty;
-import com.alibaba.excel.metadata.BaseRowModel;
 import lombok.Data;
 
 import java.math.BigDecimal;
-import java.util.Date;
 
 /**
  * Created by lee on 2019/8/3.
  */
 
 @Data
-public class ReceiveTemplateBean extends BaseRowModel {
+public class ReceiveTemplateBean {
 
     private String dealerName;
 

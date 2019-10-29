@@ -1,6 +1,5 @@
 package com.crazy.portal.util;
 
-import com.alibaba.excel.metadata.BaseRowModel;
 import com.crazy.portal.bean.business.idr.DiffPriceEO;
 import com.crazy.portal.bean.business.idr.InsuranceEO;
 import com.crazy.portal.bean.business.idr.ReturnsEO;
@@ -271,9 +270,9 @@ public class Enums {
 
         private Integer code;
         private String desc;
-        private BaseRowModel type;
+        private Object type;
 
-        BusinessIdrType(Integer code, String desc, BaseRowModel type){
+        BusinessIdrType(Integer code, String desc, Object type){
             this.code = code;
             this.desc = desc;
             this.type = type;
@@ -284,7 +283,7 @@ public class Enums {
         public String getDesc(){
             return desc;
         }
-        public BaseRowModel getType(){return type;}
+        public Object getType(){return type;}
         public static BusinessIdrType getDescByCode(Integer code){
             for(BusinessIdrType e : BusinessIdrType.values()){
                 if(code.equals(e.getCode())){

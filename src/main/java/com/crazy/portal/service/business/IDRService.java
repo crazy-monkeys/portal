@@ -1,6 +1,5 @@
 package com.crazy.portal.service.business;
 
-import com.alibaba.excel.metadata.BaseRowModel;
 import com.alibaba.excel.support.ExcelTypeEnum;
 import com.crazy.portal.bean.business.idr.*;
 import com.crazy.portal.bean.common.Constant;
@@ -101,9 +100,9 @@ public class IDRService {
     public void templateDownload(Integer idrType, HttpServletResponse response) {
         try {
             BusinessUtil.notNull(idrType, ErrorCodes.BusinessEnum.BUSINESS_IDR_TYPE_IS_REQUIRED);
-            Map<String, List<? extends BaseRowModel>> resultMap = new HashMap<>();
+            Map<String, List> resultMap = new HashMap<>();
             Enums.BusinessIdrType enumType = Enums.BusinessIdrType.getDescByCode(idrType);
-            resultMap.put(Constant.DEFAULT_SHEET_NAME, Collections.singletonList(enumType.getType()));
+            resultMap.put(ExcelUtils.DEFAULT_SHEET_NAME, Collections.singletonList(enumType.getType()));
             ExcelUtils.createExcelStreamMutilByEaysExcel(response, resultMap, enumType.getDesc(), ExcelTypeEnum.XLSX);
         }catch (Exception ex){
             log.error(ErrorCodes.BusinessEnum.EXCEL_TEMPLATE_DOWNLOAD_FAIL.getZhMsg(), ex);
@@ -123,7 +122,7 @@ public class IDRService {
         BusinessUtil.notNull(fileVo, ErrorCodes.BusinessEnum.BUSINESS_IDR_UPLOAD_FILE_IS_NULL);
         if(bean.getFileType().equals(Enums.BusinessFileType.IDR.getCode())){
             Enums.BusinessIdrType idrType = Enums.BusinessIdrType.getDescByCode(bean.getIdrType());
-            List<BaseRowModel> records = ExcelUtils.readExcel(fileVo.getFullPath(), idrType.getType().getClass());
+            List records = ExcelUtils.readExcel(fileVo.getFullPath(), idrType.getType().getClass());
             result.setIdrList(records);
         }
         if(bean.getFileType().equals(Enums.BusinessFileType.FINANCIAL_CLOSURE.getCode())){

@@ -1,8 +1,5 @@
 package com.crazy.portal.service.customer;
 
-import com.alibaba.excel.EasyExcelFactory;
-import com.alibaba.excel.metadata.BaseRowModel;
-import com.alibaba.excel.metadata.Sheet;
 import com.alibaba.fastjson.JSON;
 import com.crazy.portal.annotation.OperationLog;
 import com.crazy.portal.bean.common.Constant;
@@ -870,8 +867,8 @@ public class CustomerInfoService {
      * @param userId
      * @return
      */
-    public Map<String, List<? extends BaseRowModel>> downloadTemplate(Integer userId){
-        Map<String, List<? extends BaseRowModel>> resultMap = new HashMap<>();
+    public Map<String, List> downloadTemplate(Integer userId){
+        Map<String, List> resultMap = new HashMap<>();
         List<CustomerInfo> custList = customerInfoMapper.selectNameAndCodeByUserId(userId);
         List<CustomerCodeEO> custCodeList = new ArrayList<>();
         if(custList.isEmpty()){
@@ -912,7 +909,7 @@ public class CustomerInfoService {
     public List<VisitRecord> uploadVisitRecord(MultipartFile[] files, Integer userId) throws Exception{
         List<VisitRecord> results = new ArrayList<>();
         for (MultipartFile file : files) {
-            List<Object> records = EasyExcelFactory.read(file.getInputStream(), new Sheet(1, 1,VisitRecordEO.class));
+            List<Object> records = ExcelUtils.readExcel(file, VisitRecordEO.class);
             for(Object e : records){
                 try {
                     VisitRecord record = new VisitRecord();
