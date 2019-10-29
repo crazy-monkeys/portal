@@ -443,7 +443,8 @@ public class OrderApplyService {
             itItem.setKondm(sysParameter.getZhName());
             //根据物料号获取平台
             itItem.setPlatform(productInfoDO.getPlatform());
-            itItem.setCustomercode(this.getInCodeByAbbreviation(orderLineEO.getCustAbbreviation()));
+            String customerCode = this.getInCodeByAbbreviation(orderLineEO.getCustAbbreviation());
+            itItem.setCustomercode(String.format("%0" + 10 + "d", Integer.parseInt(customerCode)));
             items.add(itItem);
         }
         return items;
@@ -459,7 +460,7 @@ public class OrderApplyService {
             CustomerInfo customerInfo = customerInfoMapper.selectInCustomerByAbb(custAbbreviation);
             if(customerInfo != null){
                 //如果客户不为空传递内部编码,默认传空字符
-                return customerInfo.getInCode();
+                return customerInfo.getOutCode();
             }
         }
         return "";

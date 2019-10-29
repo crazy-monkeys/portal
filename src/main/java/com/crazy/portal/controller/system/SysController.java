@@ -66,6 +66,11 @@ public class SysController extends BaseController {
         return successResult(internalUserMapper.selectDS());
     }
 
+    @GetMapping("/all")
+    public BaseResponse queryAllCustomer(){
+        return successResult(customerInfoService.selecAllCustomer());
+    }
+
     /**
      * 获取代理商
      * @return

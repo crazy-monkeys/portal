@@ -182,12 +182,12 @@ public class OrderService {
     private void approvalUpdate(DeliveryApproveVO vo, DeliverOrderApproval approval){
         //如果是通过，调用ECC修改接口
         if(vo.getApprovalStatus().equals(Enums.OrderApprovalStatus.ADOPT.getValue())){
-            DeliverOrder deliverOrder = deliverOrderMapper.selectBySapDeliveryNo(vo.getSapDeliveryOrderNo());
+            DeliverOrder deliverOrder = deliverOrderMapper.selectByPrimaryKey(approval.getSerializelDeliveryOrderLine().get(0).getDeliverOrderId());
             BusinessUtil.assertFlase(null == deliverOrder,ErrorCodes.BusinessEnum.ORDER_NOT_FOUND);
             deliverOrder.setDeliverDate(approval.getDeliverDate());
             deliverOrder.setShippingPoint(approval.getShippingPoint());
 
-            ZrfcsddeliverychangeResponse response = eccDeliveryUpdate(deliverOrder, approval.getSerializelDeliveryOrderLine());
+            ZrfcsddeliverychangeResponse response = eccDeliveryUpdate(deliverOrder, approval.getSerializelDeliveryOrderLine(),"U");
             if(response.getResulttype().equals("0")){
                 deliverOrder.setActualDeliveryDate("");
                 deliverOrderMapper.updateByPrimaryKeySelective(deliverOrder);
@@ -217,10 +217,10 @@ public class OrderService {
     private void approvalCancel(DeliveryApproveVO vo, DeliverOrderApproval approval){
         //如果是通过，调用ECC修改接口
         if(vo.getApprovalStatus().equals(Enums.OrderApprovalStatus.ADOPT.getValue())){
-            DeliverOrder deliverOrder = deliverOrderMapper.selectBySapDeliveryNo(vo.getSapDeliveryOrderNo());
+            DeliverOrder deliverOrder = deliverOrderMapper.selectByPrimaryKey(approval.getSerializelDeliveryOrderLine().get(0).getDeliverOrderId());
             BusinessUtil.assertFlase(null == deliverOrder,ErrorCodes.BusinessEnum.ORDER_NOT_FOUND);
 
-            ZrfcsddeliverychangeResponse response = eccDeliveryUpdate(deliverOrder, approval.getSerializelDeliveryOrderLine());
+            ZrfcsddeliverychangeResponse response = eccDeliveryUpdate(deliverOrder, approval.getSerializelDeliveryOrderLine(),"D");
             if(response.getResulttype().equals("0")){
                 List<DeliverOrderLine> deliverOrderLines = deliverOrderLineMapper.selectByDeliveryOrderId(deliverOrder.getDeliverOrderId());
                 if(approval.getDeliveryOrderLine().size() == deliverOrderLines.size()){
@@ -269,23 +269,24 @@ public class OrderService {
         return tItem;
     }
 
-    private ZrfcsddeliverychangeResponse eccDeliveryUpdate(DeliverOrder order, List<DeliverOrderLine> deliverOrderLineList){
+    public ZrfcsddeliverychangeResponse eccDeliveryUpdate(DeliverOrder order, List<DeliverOrderLine> deliverOrderLineList,String type){
         ZrfcsdDeliveryUpdateContent content = new ZrfcsdDeliveryUpdateContent();
-        content.setDeliverydate(DateUtil.format(order.getDeliverDate(),DateUtil.SHORT_FORMAT));
+        content.setDeliverydate(DateUtil.format(order.getDeliverDate(),DateUtil.WEB_FORMAT));
         content.setSapDeliveryId(order.getSapDeliverOrderNo());
-        content.setTItem(gettItem(deliverOrderLineList));
+        content.setIType(type);
+        content.setTItem(gettItem(deliverOrderLineList,type));
         ZrfcsdDeliveryUpdateBody body = new ZrfcsdDeliveryUpdateBody(content);
         ZrfcsdDeliveryUpdate update = new ZrfcsdDeliveryUpdate(body);
         return orderApiService.deliveryUpdate(update);
     }
 
-    private TItem gettItem(List<DeliverOrderLine> deliverOrderLineList){
+    private TItem gettItem(List<DeliverOrderLine> deliverOrderLineList,String type){
         TItem tItem = new TItem();
         List<Item> items = new ArrayList<>();
         deliverOrderLineList.forEach(e->{
             Item item = new Item();
-            item.setOperationType("U");
-            item.setDeliveryItemNo(StringUtil.isEmpty(e.getSapDeliverOrderLineNo())?e.getSapSalesOrderLineNo():"");
+            item.setOperationType(type);
+            item.setDeliveryItemNo(e.getSapSalesOrderLineNo());
             item.setDeliveryQuantity(String.valueOf(e.getDeliveryQuantity()));
             items.add(item);
         });

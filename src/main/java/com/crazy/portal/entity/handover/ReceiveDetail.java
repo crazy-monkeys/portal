@@ -42,7 +42,7 @@ public class ReceiveDetail extends BaseRowModel {
 //    @ExcelProperty(index = 4, value = "仓储地")
     private String warehouse;
 
-    /** 提货时间 */
+    /** 提货时间  == 代理商点击收货时间 */
     @ExcelProperty(index = 7, value = "代理提货时间")
     private String deliveryTime;
 

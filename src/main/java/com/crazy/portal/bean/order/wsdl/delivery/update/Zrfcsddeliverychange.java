@@ -18,8 +18,9 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;complexContent&gt;
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
  *       &lt;sequence&gt;
- *         &lt;element name="Resultmessage" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
- *         &lt;element name="Resulttype" type="{urn:sap-com:document:sap:rfc:functions}char1"/&gt;
+ *         &lt;element name="Deliverydate" type="{urn:sap-com:document:sap:rfc:functions}date"/&gt;
+ *         &lt;element name="Itype" type="{urn:sap-com:document:sap:rfc:functions}char1"/&gt;
+ *         &lt;element name="Sapdeliveryid" type="{urn:sap-com:document:sap:rfc:functions}char10"/&gt;
  *         &lt;element name="Titem" type="{urn:sap-com:document:sap:soap:functions:mc-style}TableOfZsdptdnitemchange"/&gt;
  *       &lt;/sequence&gt;
  *     &lt;/restriction&gt;
@@ -31,66 +32,93 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "resultmessage",
-    "resulttype",
+    "deliverydate",
+    "itype",
+    "sapdeliveryid",
     "titem"
 })
-@XmlRootElement(name = "ZrfcsddeliverychangeResponse",namespace = "urn:sap-com:document:sap:soap:functions:mc-style")
-public class ZrfcsddeliverychangeResponse {
+@XmlRootElement(name = "Zrfcsddeliverychange")
+public class Zrfcsddeliverychange {
 
-    @XmlElement(name = "Resultmessage", required = true)
-    protected String resultmessage;
-    @XmlElement(name = "Resulttype", required = true)
-    protected String resulttype;
+    @XmlElement(name = "Deliverydate", required = true)
+    protected String deliverydate;
+    @XmlElement(name = "Itype", required = true)
+    protected String itype;
+    @XmlElement(name = "Sapdeliveryid", required = true)
+    protected String sapdeliveryid;
     @XmlElement(name = "Titem", required = true)
     protected TableOfZsdptdnitemchange titem;
 
     /**
-     * 获取resultmessage属性的值。
+     * 获取deliverydate属性的值。
      * 
      * @return
      *     possible object is
      *     {@link String }
      *     
      */
-    public String getResultmessage() {
-        return resultmessage;
+    public String getDeliverydate() {
+        return deliverydate;
     }
 
     /**
-     * 设置resultmessage属性的值。
+     * 设置deliverydate属性的值。
      * 
      * @param value
      *     allowed object is
      *     {@link String }
      *     
      */
-    public void setResultmessage(String value) {
-        this.resultmessage = value;
+    public void setDeliverydate(String value) {
+        this.deliverydate = value;
     }
 
     /**
-     * 获取resulttype属性的值。
+     * 获取itype属性的值。
      * 
      * @return
      *     possible object is
      *     {@link String }
      *     
      */
-    public String getResulttype() {
-        return resulttype;
+    public String getItype() {
+        return itype;
     }
 
     /**
-     * 设置resulttype属性的值。
+     * 设置itype属性的值。
      * 
      * @param value
      *     allowed object is
      *     {@link String }
      *     
      */
-    public void setResulttype(String value) {
-        this.resulttype = value;
+    public void setItype(String value) {
+        this.itype = value;
+    }
+
+    /**
+     * 获取sapdeliveryid属性的值。
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getSapdeliveryid() {
+        return sapdeliveryid;
+    }
+
+    /**
+     * 设置sapdeliveryid属性的值。
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setSapdeliveryid(String value) {
+        this.sapdeliveryid = value;
     }
 
     /**

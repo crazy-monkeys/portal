@@ -142,7 +142,7 @@ public class OrderApiService {
     public ZrfcsdpricesimulateResponse priceSimulate(Zrfcsdpricesimulate priceSimulate) throws Exception{
         String url = String.format("%s%s",ECC_API_URL,"/cxf/ECC/PORTAL/GETPRICESIMULATION");
         String requestXml = JaxbXmlUtil.convertToXml(priceSimulate);
-        log.info("request - >" + requestXml);
+        log.info("url->"+url+"request - >" + requestXml);
         String response = HttpClientUtils.post(url,requestXml);
         log.info("response - >" + response);
         ZrfcsdpricesimulateResponse zrfcsdpricesimulateResponse =
