@@ -24,7 +24,6 @@ import com.crazy.portal.util.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import javax.annotation.Resource;
 import java.beans.IntrospectionException;
 import java.lang.reflect.InvocationTargetException;
@@ -450,11 +449,21 @@ public class OrderApproveService {
 
         //修改订单传递用户申请的信息,取消订单传递原订单信息
         isHeader.setSalesgroup(orderApply == null?order.getSalesGroup():orderApply.getSalesGroup());
-        isHeader.setSendto(orderApply == null?order.getSendTo():orderApply.getSendTo());
+        if(orderApply != null){
+            CustomerInfo customer = this.getCustomerInfo(orderApply.getSendTo());
+            isHeader.setSendto(customer.getOutCode());
+        }else{
+            CustomerInfo customer = this.getCustomerInfo(order.getSendTo());
+            isHeader.setSendto(customer.getOutCode());
+        }
         isHeader.setPurchaseno(orderApply == null?order.getPurchaseNo():orderApply.getPurchaseNo());
         isHeader.setCustomergroup1(orderApply == null?order.getOrderType():orderApply.getOrderType());
         isHeader.setCustomergroup2(orderApply == null?order.getCustomerAttr():orderApply.getCustomerAttr());
         return isHeader;
+    }
+
+    private CustomerInfo getCustomerInfo(String customerID) {
+        return customerInfoMapper.selectByPrimaryKey(Integer.parseInt(customerID));
     }
 
     /**
