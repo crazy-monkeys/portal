@@ -329,7 +329,7 @@ public class OrderApproveService {
                 Collectors.toMap(OrderLine::getProductId, Function.identity()));
 
         //里面会校验是否调用成功
-        this.invokeEccModifyOrder(order,orderApply,applyLineMap,"I");
+        ZrfcsdsalesorderchangeResponse response = this.invokeEccModifyOrder(order,orderApply,applyLineMap,"I");
 
         List<OrderLine> orderLines = orderLineMapper.selectByOrderId(order.getId());
 
@@ -337,6 +337,8 @@ public class OrderApproveService {
         order.setSendTo(orderApply.getSendTo());
         order.setSalesOrg(orderApply.getSalesOrg());
         order.setPurchaseNo(orderApply.getPurchaseNo());
+        order.setRGrossValue(response.getEsHeader().getGrossvalue());
+        order.setRNetValue(response.getEsHeader().getNetvalue());
         order.setPurchaseDate(orderApply.getPurchaseDate());
         order.setCustomerAttr(orderApply.getCustomerAttr());
         order.setUpdateId(userId);
