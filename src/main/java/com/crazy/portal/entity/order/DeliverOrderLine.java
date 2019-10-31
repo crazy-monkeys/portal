@@ -93,4 +93,8 @@ public class DeliverOrderLine {
      * 
      */
     private Date updateDate;
+
+    private String bu;
+    private String pdt;
+    private String platform;
 }

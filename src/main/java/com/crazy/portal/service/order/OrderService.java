@@ -1,5 +1,6 @@
 package com.crazy.portal.service.order;
 
+import com.crazy.portal.bean.customer.wsdl.customer.detail.ProductInfo;
 import com.crazy.portal.bean.order.DeliveryApproveVO;
 import com.crazy.portal.bean.order.DeliveryOrderQueryVO;
 import com.crazy.portal.bean.order.OrderLineEO;
@@ -12,8 +13,10 @@ import com.crazy.portal.bean.order.wsdl.delivery.update.*;
 import com.crazy.portal.config.exception.BusinessException;
 import com.crazy.portal.dao.order.*;
 import com.crazy.portal.dao.order.DeliverOrderApprovalMapper;
+import com.crazy.portal.dao.product.ProductInfoDOMapper;
 import com.crazy.portal.entity.order.*;
 import com.crazy.portal.entity.order.DeliverOrderApproval;
+import com.crazy.portal.entity.product.ProductInfoDO;
 import com.crazy.portal.util.*;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -47,6 +50,8 @@ public class OrderService {
     private OrderInvoiceMapper orderInvoiceMapper;
     @Resource
     private OrderApiService orderApiService;
+    @Resource
+    private ProductInfoDOMapper productInfoDOMapper;
 
     /**
      * 订单列表查询
@@ -118,6 +123,21 @@ public class OrderService {
     public DeliverOrder deliveryDetail(Integer deliveryOrderId){
         DeliverOrder deliverOrder = deliverOrderMapper.selectByPrimaryKey(deliveryOrderId);
         List<DeliverOrderLine> deliverOrderLines = deliverOrderLineMapper.selectByDeliveryOrderId(deliveryOrderId);
+        deliverOrderLines.forEach(e->{
+            OrderLine orderLine = orderLineMapper.selectByPrimaryKey(e.getSalesOrderLineId());
+            if(null == orderLine){
+                return;
+            }
+            ProductInfoDO productInfo = productInfoDOMapper.selectBySapMidAndPlatForm(orderLine.getProductId(), orderLine.getPlatform());
+            if(null == productInfo){
+                return;
+            }
+            e.setProduct(productInfo.getProduct());
+            e.setBu(productInfo.getBu());
+            e.setPlatform(productInfo.getPlatform());
+            e.setPdt(productInfo.getPdt());
+        });
+
         deliverOrder.setDeliverOrderLineList(deliverOrderLines);
         List<OrderInvoice> orderInvoiceList = orderInvoiceMapper.selectByDeliveryOrderId(deliverOrder.getSapDeliverOrderNo());
         deliverOrder.setOrderInvoiceList(orderInvoiceList);

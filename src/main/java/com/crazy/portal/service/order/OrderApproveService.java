@@ -451,13 +451,9 @@ public class OrderApproveService {
 
         //修改订单传递用户申请的信息,取消订单传递原订单信息
         isHeader.setSalesgroup(orderApply == null?order.getSalesGroup():orderApply.getSalesGroup());
-        if(orderApply != null){
-            CustomerInfo customer = this.getCustomerInfo(orderApply.getSendTo());
-            isHeader.setSendto(customer.getOutCode());
-        }else{
-            CustomerInfo customer = this.getCustomerInfo(order.getSendTo());
-            isHeader.setSendto(customer.getOutCode());
-        }
+        String sendTo = null == orderApply?order.getSendTo():orderApply.getSendTo();
+        CustomerInfo customer = this.getCustomerInfo(sendTo);
+        isHeader.setSendto(customer.getOutCode());
         isHeader.setPurchaseno(orderApply == null?order.getPurchaseNo():orderApply.getPurchaseNo());
         isHeader.setCustomergroup1(orderApply == null?order.getOrderType():orderApply.getOrderType());
         isHeader.setCustomergroup2(orderApply == null?order.getCustomerAttr():orderApply.getCustomerAttr());
@@ -520,7 +516,11 @@ public class OrderApproveService {
             ProductInfoDO productInfoDO = productInfoDOMapper.selectBySapMidAndPlatForm(productId, platform);
             SysParameter sysParameter = sysParamService.selectParam("4","1",productInfoDO.getBu());
             item.setKondm(sysParameter.getZhName());
-            item.setCustomercode(orderApplyService.getInCodeByAbbreviation(line.getCustAbbreviation()));
+            String customerCode = orderApplyService.getInCodeByAbbreviation(line.getCustAbbreviation());
+            if(StringUtil.isNotEmpty(customerCode)){
+                customerCode=String.format("%0" + 10 + "d", Integer.parseInt(customerCode));
+            }
+            item.setCustomercode(customerCode);
             items.add(item);
             line_no ++;
         }
