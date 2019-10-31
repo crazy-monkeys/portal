@@ -19,11 +19,7 @@ import java.util.List;
 import java.util.Set;
 
 
-/**
- * 订单申请
- * @uthor Shawn
- * @Date 2019-09-14
- */
+
 @RestController
 @RequestMapping("/order/apply")
 public class OrderApplyController extends BaseController {

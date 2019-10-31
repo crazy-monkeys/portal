@@ -56,9 +56,15 @@ public class OrderLineEO {
     @ExcelIgnore
     private BigDecimal rNetPrice = BigDecimal.ZERO;
 
+
+    @ExcelIgnore
+    private String product;
+
     @ExcelIgnore
     private String pu;
 
     @ExcelIgnore
     private String pdt;
+
+
 }

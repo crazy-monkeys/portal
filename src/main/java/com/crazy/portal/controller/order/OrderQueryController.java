@@ -12,11 +12,6 @@ import com.crazy.portal.util.StringUtil;
 import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 
-/**
- * 订单查询
- * @uthor Shawn
- * @Date 2019-09-14
- */
 @RestController
 @RequestMapping("/order/query")
 public class OrderQueryController extends BaseController {

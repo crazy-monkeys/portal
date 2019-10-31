@@ -1,7 +1,6 @@
 package com.crazy.portal.service.order;
 
 import com.alibaba.fastjson.JSON;
-import com.crazy.portal.bean.customer.wsdl.customer.detail.ProductInfo;
 import com.crazy.portal.bean.order.*;
 import com.crazy.portal.bean.order.wsdl.price.*;
 import com.crazy.portal.bean.price.CatalogPriceVO;
@@ -27,6 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.text.ParseException;
@@ -142,9 +142,9 @@ public class OrderApplyService extends CommonOrderService{
 
             ProductInfoDO productInfo = super.getProductInfo(orderLineEO.getProductId(), orderLineEO.getPlatform());
             if(productInfo != null){
-                productInfo.setProduct(productInfo.getProduct());
+                orderLineEO.setProduct(productInfo.getProduct());
                 orderLineEO.setPu(productInfo.getBu());
-                productInfo.setPdt(productInfo.getPdt());
+                orderLineEO.setPdt(productInfo.getPdt());
             }
         }
 

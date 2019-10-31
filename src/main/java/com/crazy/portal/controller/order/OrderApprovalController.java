@@ -13,11 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.validation.Valid;
 
-/**
- * 订单审批
- * @uthor Shawn
- * @Date 2019-09-14
- */
+
 @RestController
 @RequestMapping("/order/approval")
 public class OrderApprovalController extends BaseController {
