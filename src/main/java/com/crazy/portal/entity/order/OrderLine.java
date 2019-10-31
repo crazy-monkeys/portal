@@ -32,11 +32,6 @@ public class OrderLine {
     private String productId;
 
     /**
-     * 物料号
-     */
-    private String product;
-
-    /**
      * 单位
      */
     private String unit;
@@ -166,4 +161,12 @@ public class OrderLine {
      * 客户简称
      */
     private String custAbbreviation;
+
+
+    /**
+     * 扩展字段 供显示用
+     */
+    private String product;
+    private String bu;
+    private String pdt;
 }

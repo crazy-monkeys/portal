@@ -5,7 +5,6 @@
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="order_id" jdbcType="VARCHAR" property="orderId" />
     <result column="product_id" jdbcType="VARCHAR" property="productId" />
-    <result column="product" jdbcType="VARCHAR" property="product" />
     <result column="unit" jdbcType="VARCHAR" property="unit" />
     <result column="num" jdbcType="INTEGER" property="num" />
     <result column="remaining_num" jdbcType="INTEGER" property="remainingNum" />
@@ -33,7 +32,7 @@
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, order_id, product_id,product, unit, num,remaining_num, platform, expected_delivery_month, expected_delivery_date,
+    id, order_id, product_id, unit, num,remaining_num, platform, expected_delivery_month, expected_delivery_date,
     r_sap_order_id, r_sequence_no, r_item_no, r_product_id, r_price, r_net_price, r_sap_qty, 
     r_cond_unit, r_currency,r_item_category, r_ref_item_no, r_ref_item_product_id, r_platform, cust_abbreviation,actice,
     create_id, create_time, update_id, update_time
@@ -70,9 +69,6 @@
       </if>
       <if test="productId != null">
         product_id,
-      </if>
-      <if test="product != null">
-        product,
       </if>
       <if test="unit != null">
         unit,
@@ -160,9 +156,6 @@
       <if test="productId != null">
         #{productId,jdbcType=VARCHAR},
       </if>
-      <if test="product != null">
-        #{product,jdbcType=VARCHAR},
-      </if>
       <if test="unit != null">
         #{unit,jdbcType=VARCHAR},
       </if>
@@ -248,9 +241,6 @@
       </if>
       <if test="productId != null">
         product_id = #{productId,jdbcType=VARCHAR},
-      </if>
-      <if test="product != null">
-        product = #{product,jdbcType=VARCHAR},
       </if>
       <if test="unit != null">
         unit = #{unit,jdbcType=VARCHAR},

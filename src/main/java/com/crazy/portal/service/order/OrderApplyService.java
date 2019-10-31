@@ -23,6 +23,7 @@ import com.crazy.portal.util.*;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
@@ -39,7 +40,7 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @Service
-public class OrderApplyService {
+public class OrderApplyService extends CommonOrderService{
 
     @Resource
     private OrderMapper orderMapper;
@@ -76,6 +77,10 @@ public class OrderApplyService {
     public PageInfo<OrderApply> list(OrderQueryBean bean){
         PageHelper.startPage(bean.getPageIndex(), bean.getPageSize());
         List<OrderApply> list = orderApplyMapper.selectByPage(bean);
+        list.stream().forEach(x->{
+            List<OrderLine> lines = x.lineJsonToObj(x.getJsonLines());
+            super.resetLines(lines);
+        });
         return new PageInfo<>(list);
     }
 
@@ -133,6 +138,13 @@ public class OrderApplyService {
             orderLineEO.setRNetPrice(netprice == null ? BigDecimal.ZERO : netprice);
             //设置定价
             orderLineEO.setPriceDate(priceDate);
+
+            ProductInfoDO productInfo = super.getProductInfo(orderLineEO.getProductId(), orderLineEO.getPlatform());
+            if(productInfo != null){
+                productInfo.setProduct(productInfo.getProduct());
+                orderLineEO.setPu(productInfo.getBu());
+                productInfo.setPdt(productInfo.getPdt());
+            }
         }
 
         map.put("lines",records);
@@ -224,15 +236,18 @@ public class OrderApplyService {
         order.setCreateTime(DateUtil.getCurrentTS());
         order.setActive(1);
         order.setAppalyType(1);
-        /*if(order.getSalesOrg().equals("3000")){
-            order.setPaymentTerms("9994");
-        }*/
 
         List<OrderLine> orderLines = order.getOrderLines();
         Date priceDate = this.getPriceDate(orderLines.get(0).getExpectedDeliveryMonth());
         order.setPriceDate(DateUtil.getLastDayOfMonth(DateUtil.getYear(priceDate),DateUtil.getMonth(priceDate)));
 
         orderLines.forEach(x->{
+            ProductInfoDO productInfoDO = productInfoDOMapper.selectBySapMidAndPlatForm(x.getProductId(),x.getPlatform());
+            if(productInfoDO != null){
+                x.setProduct(productInfoDO.getProduct());
+                x.setBu(productInfoDO.getBu());
+                x.setPdt(productInfoDO.getPdt());
+            }
             x.setCreateId(userId);
             x.setCreateTime(DateUtil.getCurrentTS());
             x.setActice(1);
@@ -444,26 +459,12 @@ public class OrderApplyService {
             //根据物料号获取平台
             itItem.setPlatform(productInfoDO.getPlatform());
             String customerCode = this.getInCodeByAbbreviation(orderLineEO.getCustAbbreviation());
-            itItem.setCustomercode(String.format("%0" + 10 + "d", Integer.parseInt(customerCode)));
+            if(StringUtils.isNotEmpty(customerCode)){
+                itItem.setCustomercode(String.format("%0" + 10 + "d", Integer.parseInt(customerCode)));
+            }
             items.add(itItem);
         }
         return items;
-    }
-
-    /**
-     * 根据客户简称获取内部编码,默然为空
-     * @param custAbbreviation
-     * @return
-     */
-    public String getInCodeByAbbreviation(String custAbbreviation) {
-        if(StringUtil.isNotEmpty(custAbbreviation)){
-            CustomerInfo customerInfo = customerInfoMapper.selectInCustomerByAbb(custAbbreviation);
-            if(customerInfo != null){
-                //如果客户不为空传递内部编码,默认传空字符
-                return customerInfo.getOutCode();
-            }
-        }
-        return "";
     }
 
     /**

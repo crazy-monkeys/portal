@@ -2,7 +2,6 @@ package com.crazy.portal.service.order;
 
 import com.crazy.portal.bean.order.DeliveryApproveVO;
 import com.crazy.portal.bean.order.DeliveryOrderQueryVO;
-import com.crazy.portal.bean.order.OrderLineEO;
 import com.crazy.portal.bean.order.OrderQueryBean;
 import com.crazy.portal.bean.order.wsdl.delivery.create.ZrfcsdDeliveryCreate;
 import com.crazy.portal.bean.order.wsdl.delivery.create.ZrfcsdDeliveryCreateBody;
@@ -11,16 +10,14 @@ import com.crazy.portal.bean.order.wsdl.delivery.create.ZrfcsddeliverycreateResp
 import com.crazy.portal.bean.order.wsdl.delivery.update.*;
 import com.crazy.portal.config.exception.BusinessException;
 import com.crazy.portal.dao.order.*;
-import com.crazy.portal.dao.order.DeliverOrderApprovalMapper;
 import com.crazy.portal.entity.order.*;
-import com.crazy.portal.entity.order.DeliverOrderApproval;
 import com.crazy.portal.util.*;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.cxf.Bus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Date;
@@ -31,7 +28,7 @@ import java.util.List;
  */
 @Slf4j
 @Service
-public class OrderService {
+public class OrderService extends CommonOrderService {
 
     @Resource
     private OrderMapper orderMapper;
@@ -97,9 +94,13 @@ public class OrderService {
         BusinessUtil.notNull(id, ErrorCodes.BusinessEnum.ORDER_ID_IS_REQUIRED);
         Order order = orderMapper.selectByPrimaryKey(id);
         BusinessUtil.notNull(order, ErrorCodes.BusinessEnum.ORDER_NOT_FOUND);
-        order.setLines(orderLineMapper.selectByOrderId(id));
+
+        List<OrderLine> lines = orderLineMapper.selectByOrderId(id);
+        super.resetLines(lines);
+        order.setLines(lines);
         return order;
     }
+
 
     /**
      * 订单明细
