@@ -6,6 +6,7 @@ import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.MappedJdbcTypes;
 import org.apache.ibatis.type.MappedTypes;
 
+import java.io.UnsupportedEncodingException;
 import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -29,9 +30,13 @@ public class ArrayJsonHandler extends BaseTypeHandler<JSONArray> {
     //根据列名，获取可以为空的结果
     @Override
     public JSONArray getNullableResult(ResultSet rs, String columnName) throws SQLException {
-        String sqlJson = rs.getString(columnName);
-        if (null != sqlJson){
-            return JSONArray.parseArray(sqlJson);
+        try {
+            String sqlJson = new String(rs.getBytes(columnName),"UTF-8");
+            if (null != sqlJson){
+                return JSONArray.parseArray(sqlJson);
+            }
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
         }
         return null;
     }
