@@ -677,27 +677,20 @@
     when 'Z003' then '北美客户(North American Account)'
     when 'Z010' then '内部客户(Customer)'
     else '未知' end cust_role,
-    team.user_name report_sales_name,
+    ins.user_name report_sales_name,
     team.employee_id,
-    ship.report_dealer_name,
+    ship.corporate_name report_dealer_name,
     ship.corporate_id,
     cust.approve_user,
     cust.approve_remark,
     cust.approve_time,
     cust.create_time
     from t_customer_info cust
-    left join
-    (select team.id,team.cust_id,ins.user_name,team.employee_id from cust_zr_account_team team
-    left join t_internal_user ins on ins.user_no = team.employee_id
-    where   team.active=1 and team.role_type = '142'
-    ) team on team.cust_id = cust.id
-    left join
-    (select s.cust_id,c.cust_name report_dealer_name,s.corporate_id from t_cust_corporate_relationship s
-    inner JOIN t_customer_info c on s.corporate_id = c.in_code
-    where s.active=1 and s.corporate_type = 'Z004'
-    ) ship on ship.cust_id = cust.id
-    where cust.business_type!='A04'
-    and cust.active = 1
+    left join cust_zr_account_team team on team.cust_id = cust.id and team.active=1
+    left join t_internal_user ins on ins.user_no = team.employee_id and team.active=1 and team.role_type = '142'
+    left join t_cust_corporate_relationship ship on ship.cust_id = cust.id and ship.active=1 and ship.corporate_type = 'Z004'
+    where cust.business_type != 'A04'
+    and cust.active =1
     <if test="customerName != null and customerName != ''">
       and cust.cust_name like concat('%',#{customerName,jdbcType=VARCHAR},'%')
     </if>
