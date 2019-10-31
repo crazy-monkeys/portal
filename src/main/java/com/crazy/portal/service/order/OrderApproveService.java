@@ -282,7 +282,7 @@ public class OrderApproveService extends CommonOrderService{
     private void cancelOrder(String sapOrderId,Integer userId) throws Exception{
 
         Order order = this.getOrderBySapOrderId(sapOrderId);
-        List<OrderLine> orderLines = orderLineMapper.selectByOrderId(order.getId());
+        List<OrderLine> orderLines = orderLineMapper.selectByOrderIdForVirtual(order.getId());
         //取消接口无需传递申请信息
         ZrfcsdsalesorderchangeResponse response = this.invokeEccModifyOrder(order,null,null,"D");
         TableOfZsalesorderchangeOutItem etItems = response.getEtItems();
@@ -345,14 +345,37 @@ public class OrderApproveService extends CommonOrderService{
         order.setUpdateId(userId);
         order.setUpdateTime(DateUtil.getCurrentTS());
         orderMapper.updateByPrimaryKeySelective(order);
-        //如果ecc无异常,直接修改订单行
-        orderLines.forEach(line->{
-            String productId = line.getProductId();
-            //目前订单行只能修改数量
-            line.setNum(applyLineMap.get(productId).getNum());
-            line.setUpdateId(userId);
-            line.setUpdateTime(DateUtil.getCurrentTS());
-            orderLineMapper.updateByPrimaryKeySelective(line);
+        //修改订单行
+        List<ZsalesorderchangeOutItem> items = response.getEtItems().getItem();
+
+        items.forEach(eccLine->{
+            String eccProduct = eccLine.getProductid().replaceAll("^(0+)", "");
+            //遍历portal 订单行
+            orderLines.forEach(line->{
+                String productId = line.getProductId();
+                //目前订单行只能修改数量
+                OrderLine orderLine = applyLineMap.get(productId);
+                line.setNum(orderLine==null?eccLine.getSapquantity().intValue():orderLine.getNum());
+                line.setUpdateId(userId);
+                line.setUpdateTime(DateUtil.getCurrentTS());
+
+                if(productId.equals(eccProduct)){
+                    //虚拟物料需要统计价格
+                    if(StringUtils.isEmpty(line.getRRefItemProductId())){
+                        line.setRPrice(items.stream()
+                                .map(ZsalesorderchangeOutItem::getPrice)
+                                .reduce(BigDecimal.ZERO,BigDecimal::add));
+
+                        line.setRNetPrice(items.stream()
+                                .map(ZsalesorderchangeOutItem::getNetprice)
+                                .reduce(BigDecimal.ZERO,BigDecimal::add));
+                    }else{
+                        line.setRPrice(eccLine.getPrice());
+                        line.setRNetPrice(eccLine.getNetprice());
+                    }
+                    orderLineMapper.updateByPrimaryKeySelective(line);
+                }
+            });
         });
     }
 
@@ -378,7 +401,7 @@ public class OrderApproveService extends CommonOrderService{
         List<OrderLine> applyLines = orderApply.lineJsonToObj(orderApply.getJsonLines());
 
         Order order = orderMapper.selectBySapOrderId(orderApply.getRSapOrderId());
-        List<OrderLine> lines = orderLineMapper.selectByOrderId(order.getId());
+        List<OrderLine> lines = orderLineMapper.selectByOrderIdForVirtual(order.getId());
 
         lines.forEach(x->
             applyLines.forEach(applyLine->{
@@ -403,7 +426,7 @@ public class OrderApproveService extends CommonOrderService{
 
         com.crazy.portal.bean.order.wsdl.change.IsHeader isHeader = this.buildChangeIsHeader(order,orderApply);
 
-        List<OrderLine> orderLines = orderLineMapper.selectByOrderId(order.getId());
+        List<OrderLine> orderLines = orderLineMapper.selectByOrderIdForVirtual(order.getId());
         com.crazy.portal.bean.order.wsdl.change.ItItems itItems = this.buildChangeItItems(orderLines,applyLineMap,operationType);
 
         ZrfcsdsalesorderchangeContent content = new ZrfcsdsalesorderchangeContent(new com.crazy.portal.bean.order.wsdl.change.EtItems(),isHeader,itItems);

@@ -230,7 +230,6 @@ public class OrderApplyService extends CommonOrderService{
      */
     @Transactional
     public void createOrderApply(OrderApply order, Integer userId){
-
         //参数校验
         this.checkParameter(order);
 
@@ -260,6 +259,7 @@ public class OrderApplyService extends CommonOrderService{
             Date expectedDeliveryMonth = this.getPriceDate(x.getExpectedDeliveryMonth());
             x.setExpectedDeliveryDate(DateUtil.getLastDayOfMonth(DateUtil.getYear(expectedDeliveryMonth),DateUtil.getMonth(expectedDeliveryMonth)));
         });
+
         order.setJsonLines(order.objToLineJson(orderLines));
         orderApplyMapper.insertSelective(order);
     }
@@ -348,7 +348,8 @@ public class OrderApplyService extends CommonOrderService{
         orderApply.setAppalyType(2);
         orderApply.setApprovalStatus(Enums.OrderApprovalStatus.WAIT_APPROVAL.getValue());
         orderApply.setJsonLines(orderApply.objToLineJson(orderApply.getOrderLines()));
-
+        orderApply.setGrossValue(order.getRGrossValue());
+        orderApply.setNetValue(order.getRNetValue());
         orderApply.setRSapOrderId(rSapOrderId);
         orderApplyMapper.insertSelective(orderApply);
     }
@@ -535,7 +536,7 @@ public class OrderApplyService extends CommonOrderService{
         approval.setActive(1);
         approval.setCreateUserId(userId);
 
-        List<OrderLine> orderLine = orderLineMapper.selectByOrderId(order.getId());
+        List<OrderLine> orderLine = orderLineMapper.selectByOrderIdForVirtual(order.getId());
         if(bean.getOrderLine().isEmpty()){
             throw new BusinessException("请选择需要提货的订单");
         }

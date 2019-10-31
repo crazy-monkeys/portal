@@ -15,6 +15,8 @@ public interface OrderLineMapper {
 
     int updateByPrimaryKeySelective(OrderLine record);
 
+    List<OrderLine> selectByOrderIdForVirtual(Integer orderId);
+
     List<OrderLine> selectByOrderId(Integer orderId);
 
     List<OrderLine> selectByProduct(@Param("orderId") Integer orderId, @Param("product") String product);
