@@ -28,7 +28,7 @@ public class CommonOrderService {
 
     public void resetLines(List<OrderLine> lines) {
         lines.stream().forEach(x->{
-            ProductInfoDO productInfoDO = productInfoDOMapper.selectBySapMidAndPlatForm(x.getProductId(),x.getPlatform());
+            ProductInfoDO productInfoDO = this.getProductInfo(x.getProductId(),x.getPlatform());
             if(productInfoDO != null){
                 x.setProduct(productInfoDO.getProduct());
                 x.setBu(productInfoDO.getBu());
