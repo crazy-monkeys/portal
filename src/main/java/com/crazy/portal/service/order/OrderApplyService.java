@@ -82,11 +82,12 @@ public class OrderApplyService extends CommonOrderService{
         return new PageInfo<>(list);
     }
 
-    public List<OrderLine> detail(Integer id){
+    public OrderApply detail(Integer id){
         OrderApply orderApply = orderApplyMapper.selectByPrimaryKey(id);
         List<OrderLine> lines = orderApply.lineJsonToObj(orderApply.getJsonLines());
         super.resetLines(lines);
-        return lines;
+        orderApply.setJsonLines(JSONArray.parseArray(JSON.toJSONString(lines)));
+        return orderApply;
     }
 
     /**
