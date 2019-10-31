@@ -61,7 +61,7 @@ public class OrderLineEO {
     private String product;
 
     @ExcelIgnore
-    private String pu;
+    private String bu;
 
     @ExcelIgnore
     private String pdt;

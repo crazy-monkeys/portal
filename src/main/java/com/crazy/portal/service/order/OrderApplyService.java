@@ -143,7 +143,7 @@ public class OrderApplyService extends CommonOrderService{
             ProductInfoDO productInfo = super.getProductInfo(orderLineEO.getProductId(), orderLineEO.getPlatform());
             if(productInfo != null){
                 orderLineEO.setProduct(productInfo.getProduct());
-                orderLineEO.setPu(productInfo.getBu());
+                orderLineEO.setBu(productInfo.getBu());
                 orderLineEO.setPdt(productInfo.getPdt());
             }
         }
