@@ -3,9 +3,6 @@ package com.crazy.portal.entity.order;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.annotation.JSONField;
-import com.crazy.portal.bean.order.DeliveryOrderLineVO;
-import com.crazy.portal.entity.order.DeliverOrderLine;
-import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
@@ -264,4 +261,5 @@ public class DeliverOrderApproval {
     public List<DeliverOrderLine> getSerializelDeliveryOrderLine() {
         return JSON.parseArray(JSON.toJSONString(deliveryOrderLine),DeliverOrderLine.class);
     }
+
 }

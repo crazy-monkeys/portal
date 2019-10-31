@@ -1,6 +1,7 @@
 package com.crazy.portal.service.order;
 
 import com.alibaba.fastjson.JSON;
+import com.crazy.portal.bean.customer.wsdl.customer.detail.ProductInfo;
 import com.crazy.portal.bean.order.*;
 import com.crazy.portal.bean.order.wsdl.price.*;
 import com.crazy.portal.bean.price.CatalogPriceVO;
@@ -548,6 +549,13 @@ public class OrderApplyService extends CommonOrderService{
                     deliverOrderLine.setDeliveryQuantity(e.getDeliveryQuantity());
                     deliverOrderLine.setActive(1);
                     deliverOrderLine.setCreateUserId(userId);
+
+                    ProductInfoDO productInfo = productInfoDOMapper.selectBySapMidAndPlatForm(o.getProductId(),o.getPlatform());
+                    if(null != productInfo){
+                        deliverOrderLine.setBu(productInfo.getBu());
+                        deliverOrderLine.setPdt(productInfo.getPdt());
+                        deliverOrderLine.setPlatform(productInfo.getPlatform());
+                    }
                     lines.add(deliverOrderLine);
                 }
             });

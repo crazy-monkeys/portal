@@ -22,7 +22,6 @@ import com.crazy.portal.entity.system.User;
 import com.crazy.portal.service.system.SysParamService;
 import com.crazy.portal.util.*;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
@@ -45,7 +44,7 @@ import java.util.stream.Collectors;
  */
 @Service
 @Slf4j
-public class OrderApproveService extends CommonOrderService{
+public class OrderApproveService {
 
     @Resource
     private OrderApiService orderApiService;
@@ -55,6 +54,8 @@ public class OrderApproveService extends CommonOrderService{
     private OrderLineMapper orderLineMapper;
     @Resource
     private OrderApplyMapper orderApplyMapper;
+    @Resource
+    private OrderApplyService orderApplyService;
     @Resource
     private ProductInfoDOMapper productInfoDOMapper;
     @Resource
@@ -148,6 +149,8 @@ public class OrderApproveService extends CommonOrderService{
                     line.setRemainingNum(line.getNum());
                     //计算组合物料价格
                     this.calculatePrice(outItems, line, portalProductId);
+                    //设置product
+                    this.setProduct(line, portalProductId);
                     //保存虚拟订单行
                     this.insertOrderLine(userId,order,line,eccLine);
                     //虚拟物料计算价格并成功保存,跳至外层循环处理其他组合物料
@@ -158,6 +161,7 @@ public class OrderApproveService extends CommonOrderService{
             OrderLine orderLine = new OrderLine();
             orderLine.setRPrice(eccLine.getPrice());
             orderLine.setRNetPrice(eccLine.getNetprice());
+            orderLine.setProduct(eccLine.getProductid());
             this.insertOrderLine(userId,order,orderLine,eccLine);
         }
     }
@@ -183,6 +187,18 @@ public class OrderApproveService extends CommonOrderService{
         line.setRPrice(currProductItems.stream()
                 .map(ZsalesordercreateOutItem::getPrice)
                 .reduce(BigDecimal.ZERO,BigDecimal::add));
+    }
+
+    /**
+     * 设置物料
+     * @param line
+     * @param portalProductId
+     */
+    private void setProduct(OrderLine line, String portalProductId) {
+        ProductInfoDO productInfoDO = productInfoDOMapper.selectBySapMidAndPlatForm(portalProductId,line.getPlatform());
+        BusinessUtil.notNull(productInfoDO, ErrorCodes.BusinessEnum.ORDER_NOT_EXISTS_PRODUCT_ID);
+
+        line.setProduct(productInfoDO.getProduct());
     }
 
     /**
@@ -478,10 +494,7 @@ public class OrderApproveService extends CommonOrderService{
             }else{
                 item.setOrderquantity(applyLineMap.get(line.getProductId()).getNum().toString());
             }
-            String customerCode = super.getInCodeByAbbreviation(line.getCustAbbreviation());
-            if(StringUtils.isNotEmpty(customerCode)){
-                item.setCustomercode(String.format("%0" + 10 + "d", Integer.parseInt(customerCode)));
-            }
+            item.setCustomercode(orderApplyService.getInCodeByAbbreviation(line.getCustAbbreviation()));
             items.add(item);
             line_no ++;
         }

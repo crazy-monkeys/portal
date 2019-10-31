@@ -177,7 +177,7 @@
 
   <select id="selectOutCustomer" resultMap="BaseResultMap">
     select * from t_cust_corporate_relationship where active=1 and corporate_type = 'Z002' and cust_id = (
-      select id from t_customer_info where in_code = {inCode,jdbcType=VARCHAR}
+      select id from t_customer_info where in_code = #{inCode,jdbcType=VARCHAR}
     )
   </select>
   
