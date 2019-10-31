@@ -495,7 +495,10 @@ public class OrderApproveService extends CommonOrderService{
             }else{
                 item.setOrderquantity(applyLineMap.get(line.getProductId()).getNum().toString());
             }
-            item.setCustomercode(orderApplyService.getInCodeByAbbreviation(line.getCustAbbreviation()));
+            String customerCode = super.getInCodeByAbbreviation(line.getCustAbbreviation());
+            if(StringUtils.isNotEmpty(customerCode)){
+                item.setCustomercode(String.format("%0" + 10 + "d", Integer.parseInt(customerCode)));
+            }
             items.add(item);
             line_no ++;
         }
