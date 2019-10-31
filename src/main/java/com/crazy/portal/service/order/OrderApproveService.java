@@ -22,6 +22,7 @@ import com.crazy.portal.entity.system.User;
 import com.crazy.portal.service.system.SysParamService;
 import com.crazy.portal.util.*;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
@@ -44,7 +45,7 @@ import java.util.stream.Collectors;
  */
 @Service
 @Slf4j
-public class OrderApproveService {
+public class OrderApproveService extends CommonOrderService{
 
     @Resource
     private OrderApiService orderApiService;
