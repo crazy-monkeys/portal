@@ -243,7 +243,7 @@ public class OrderApplyService extends CommonOrderService{
         order.setPriceDate(DateUtil.getLastDayOfMonth(DateUtil.getYear(priceDate),DateUtil.getMonth(priceDate)));
 
         orderLines.forEach(x->{
-            ProductInfoDO productInfoDO = productInfoDOMapper.selectBySapMidAndPlatForm(x.getProductId(),x.getPlatform());
+            ProductInfoDO productInfoDO = super.getProductInfo(x.getProductId(),x.getPlatform())
             if(productInfoDO != null){
                 x.setProduct(productInfoDO.getProduct());
                 x.setBu(productInfoDO.getBu());
