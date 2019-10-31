@@ -35,6 +35,11 @@ public class OrderApplyController extends BaseController {
         return successResult(orderApplyService.list(orderQueryBean));
     }
 
+    @GetMapping("/detail/{id}")
+    public BaseResponse detail(@PathVariable Integer id){
+        return successResult(orderApplyService.detail(id));
+    }
+
     /**
      * 订单创建申请
      * @param orderApply

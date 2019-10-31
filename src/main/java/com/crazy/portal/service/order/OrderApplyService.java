@@ -1,6 +1,7 @@
 package com.crazy.portal.service.order;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.crazy.portal.bean.order.*;
 import com.crazy.portal.bean.order.wsdl.price.*;
 import com.crazy.portal.bean.price.CatalogPriceVO;
@@ -78,11 +79,14 @@ public class OrderApplyService extends CommonOrderService{
     public PageInfo<OrderApply> list(OrderQueryBean bean){
         PageHelper.startPage(bean.getPageIndex(), bean.getPageSize());
         List<OrderApply> list = orderApplyMapper.selectByPage(bean);
-        list.stream().forEach(x->{
-            List<OrderLine> lines = x.lineJsonToObj(x.getJsonLines());
-            super.resetLines(lines);
-        });
         return new PageInfo<>(list);
+    }
+
+    public List<OrderLine> detail(Integer id){
+        OrderApply orderApply = orderApplyMapper.selectByPrimaryKey(id);
+        List<OrderLine> lines = orderApply.lineJsonToObj(orderApply.getJsonLines());
+        super.resetLines(lines);
+        return lines;
     }
 
     /**
