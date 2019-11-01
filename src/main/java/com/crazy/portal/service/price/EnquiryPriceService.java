@@ -60,6 +60,7 @@ public class EnquiryPriceService {
         catalogPrices.forEach(x->{
             if(StringUtil.isNotEmpty(x.getInCustomer())){
                 List<CustCorporateRelationship> dealerCustomers = custCorporateRelationshipMapper.selectDealerCustomer(currentUser.getDealerId(), x.getInCustomer());
+                BusinessUtil.assertFlase(dealerCustomers.size()<0,ErrorCodes.BusinessEnum.CUSTOMER_IS_NOT_BB);
                 if(dealerCustomers.size()>0){
                     save(bu,x,vo,currentUser.getLoginName());
                 }
