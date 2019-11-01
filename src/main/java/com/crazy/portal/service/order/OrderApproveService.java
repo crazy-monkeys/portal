@@ -582,6 +582,9 @@ public class OrderApproveService extends CommonOrderService{
         isHeader.setPricedate(orderApply.getPriceDate());
         isHeader.setInco1(orderApply.getIncoterms1());
         isHeader.setInco2(orderApply.getIncoterms2());
+        if(orderApply.getUnderOrderType().equals("ZFD")){
+            orderApply.setOrderReason("10");
+        }
         return isHeader;
     }
 
