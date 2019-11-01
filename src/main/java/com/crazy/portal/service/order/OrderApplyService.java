@@ -416,6 +416,9 @@ public class OrderApplyService extends CommonOrderService{
         Order order = orderMapper.selectByPrimaryKey(orderId);
         BusinessUtil.notNull(order, ErrorCodes.BusinessEnum.ORDER_NOT_FOUND);
 
+        boolean result = this.hasApprovalPendingOrder(order.getRSapOrderId());
+        BusinessUtil.assertFlase(result, ErrorCodes.BusinessEnum.ORDER_PENDING_ORDER);
+
         List<OrderLine> lines = new ArrayList<>();
         changeVOS.forEach(x->{
             OrderLine orderLine = orderLineMapper.selectByPrimaryKey(x.getItemId());
