@@ -200,6 +200,9 @@ public class OrderApplyService extends CommonOrderService{
         for(CatalogPrice catalogPrice : currentCatalogPrices){
             log.info("productId"+x.getProductId()+"=======platform"+x.getPlatform()+"========="+x.getCustAbbreviation());
             ProductInfoDO productInfoDO = productInfoDOMapper.selectBySapMidAndPlatForm(x.getProductId(),x.getPlatform());
+            if(null == productInfoDO){
+                return false;
+            }
             log.info("product"+JSON.toJSONString(productInfoDO));
             if(catalogPrice.getSapCode().equals(x.getProductId())
                     && catalogPrice.getBu().equals(productInfoDO.getBu())){
@@ -563,6 +566,7 @@ public class OrderApplyService extends CommonOrderService{
 
                     ProductInfoDO productInfo = productInfoDOMapper.selectBySapMidAndPlatForm(o.getProductId(),o.getPlatform());
                     if(null != productInfo){
+                        deliverOrderLine.setProduct(productInfo.getProduct());
                         deliverOrderLine.setBu(productInfo.getBu());
                         deliverOrderLine.setPdt(productInfo.getPdt());
                         deliverOrderLine.setPlatform(productInfo.getPlatform());
