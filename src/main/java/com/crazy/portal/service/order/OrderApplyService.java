@@ -399,6 +399,8 @@ public class OrderApplyService extends CommonOrderService{
         orderApply.setActive(1);
         orderApply.setCreateId(userId);
         orderApply.setCreateTime(DateUtil.getCurrentTS());
+        orderApply.setGrossValue(order.getRGrossValue());
+        orderApply.setNetValue(order.getRNetValue());
         orderApply.setAppalyType(3);
         orderApply.setApprovalStatus(Enums.OrderApprovalStatus.WAIT_APPROVAL.getValue());
         orderApply.setJsonLines(orderApply.objToLineJson(lines));
