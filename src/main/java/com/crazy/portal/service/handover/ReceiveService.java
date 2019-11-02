@@ -5,12 +5,15 @@ import com.crazy.portal.bean.handover.HandoverUploadVO;
 import com.crazy.portal.bean.handover.ReceiveTemplateBean;
 import com.crazy.portal.config.exception.BusinessException;
 import com.crazy.portal.dao.handover.ReceiveDetailMapper;
+import com.crazy.portal.entity.cusotmer.CustomerInfo;
 import com.crazy.portal.entity.handover.DeliverReceiveRecord;
 import com.crazy.portal.entity.handover.ReceiveDetail;
 import com.crazy.portal.service.customer.CustomerInfoService;
 import com.crazy.portal.util.*;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.cxf.BusException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -58,6 +61,11 @@ public class ReceiveService extends AbstractHandover implements IHandover<Receiv
         BiCheckResult checkResult = callBiServerByFtp(CHECK_INVENTORY_IMPORT_FILE, receivePushPath, thirdFileName, receivePullPath);
         List<ReceiveDetail> responseData = ExcelUtils.readExcel(checkResult.getFilePath(), ReceiveDetail.class);
         //批次记录表
+        CustomerInfo customerInfo = customerInfoService.getDealerByUser(userId);
+        if(null == customerInfo || StringUtils.isEmpty(customerInfo.getCustName())){
+            log.error("【出货异常】获取用户数据失败，userId：{}", userId);
+            throw new BusinessException(HANDOVER_USER_INFO_EMPTY);
+        }
         DeliverReceiveRecord record = handoverService.genRecord(customerInfoService.getDealerByUser(userId).getCustName(), userId, 2);
         for(ReceiveDetail detail : responseData){
             detail.setRecordId(record.getId());
