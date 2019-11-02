@@ -293,6 +293,7 @@ public class ErrorCodes {
         ORDER_EMPTY_CUSTABBREVIATION(900026,"附件行: 客户简称不能为空",""),
         ORDER_INVALID_CUSTABBREVIATION(900027,"附件行: 客户不存在",""),
         ORDER_NO_MAPPING_CUST(900028,"附件行: 物料[%s]、客户[%s]未匹配出价格信息",""),
+        DELIVERY_ORDER_IS_RECEVE(900029,"已收货的提货单不允许做变更",""),
 
         //文档管理
         ARCHIVE_FILE_NOT_EMPTY(100001, "请选择需要上传的文件", ""),

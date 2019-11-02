@@ -25,6 +25,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.cxf.Bus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -586,6 +587,10 @@ public class OrderApplyService extends CommonOrderService{
         BusinessUtil.assertFlase(null == deliverOrder, ErrorCodes.BusinessEnum.ORDER_NOT_FOUND);
         List<DeliverOrderApproval> approval = deliverOrderApprovalMapper.checkApproval(deliverOrder.getSapOrderNo());
         BusinessUtil.assertFlase(null != approval && !approval.isEmpty(), ErrorCodes.BusinessEnum.ORDER_IS_INACTIVE);
+        List<DeliverOrderLine> deliverOrderLines = deliverOrderLineMapper.selectByDeliveryOrderId(order.getDeliverOrderId());
+        deliverOrderLines.forEach(e->{
+            BusinessUtil.assertFlase(e.getReceiveQuantity()>0,ErrorCodes.BusinessEnum.DELIVERY_ORDER_IS_RECEVE);
+        });
         //生成修改审批单
         saveDeliverOrderUpdateApproval(order, deliverOrder, Enums.OrderApprovalType.UPDATE.getValue(), userId);
     }
@@ -602,6 +607,9 @@ public class OrderApplyService extends CommonOrderService{
 
         //获取提货的明细行
         List<DeliverOrderLine> orderLines = deliverOrderLineMapper.selectByDeliveryOrderId(deliverOrder.getDeliverOrderId());
+        orderLines.forEach(e->{
+            BusinessUtil.assertFlase(e.getReceiveQuantity()>0,ErrorCodes.BusinessEnum.DELIVERY_ORDER_IS_RECEVE);
+        });
         deliverOrder.setDeliverOrderLineList(orderLines);
 
         saveDeliverOrderCancelApproval(deliverOrder, vo.getDeliveryOrderLineIds(), userId);

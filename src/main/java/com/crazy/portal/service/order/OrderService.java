@@ -184,6 +184,7 @@ public class OrderService extends CommonOrderService {
                         BeanUtils.copyNotNullFields(line, deliverOrderLine);
                         deliverOrderLine.setDeliverOrderId(deliverOrder.getDeliverOrderId());
                         deliverOrderLine.setSapDeliverOrderLineNo(orderLine.getRRefItemNo());
+                        deliverOrderLine.setReceiveQuantity(0);
                         deliverOrderLineMapper.insertSelective(deliverOrderLine);
                     }
                 }else{
