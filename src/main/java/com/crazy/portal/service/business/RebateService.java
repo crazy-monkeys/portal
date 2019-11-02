@@ -281,7 +281,7 @@ public class RebateService {
         }else if(item.getStatus().equals(Enums.BusinessRebateStatus.USED_CONFIRM.getCode())){
             BusinessUtil.isNull(dealerId, ErrorCodes.BusinessEnum.REBATE_ITEM_DL_PROHIBIT_UPLOAD_EXCEPTION);
             item.setZrFileId(fileId);
-            BusinessUtil.notNull(zrExecuteDate, ErrorCodes.BusinessEnum.REBATE_ZREXECUTEDATE_IS_REQUIRED);
+//            BusinessUtil.notNull(zrExecuteDate, ErrorCodes.BusinessEnum.REBATE_ZREXECUTEDATE_IS_REQUIRED);
             item.setZrExecuteDate(zrExecuteDate);
             item.setStatus(Enums.BusinessRebateStatus.FINISHED.getCode());
         }
