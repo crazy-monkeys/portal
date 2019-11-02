@@ -957,12 +957,6 @@ public class SaleForecastService {
         }
     }
 
-    public static void main(String[] args) {
-        List<String> biIds = new ArrayList<>();
-        biIds.add(null);
-        System.out.println(StringUtils.join(biIds, ","));
-    }
-
     /**
      * 预测数据Delete服务
      * @param biIds
