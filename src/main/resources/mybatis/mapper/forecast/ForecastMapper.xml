@@ -593,10 +593,18 @@
 
   <delete id="deleteByBiIds" >
     delete from t_forecast
-    where 1 = 1
-    <foreach collection="ids" item="item" index="index" open="and bi_id in (" separator="," close=")" >
-      #{item,jdbcType=INTEGER}
-    </foreach>
+    where bi_id is not null
+    <choose>
+      <when test="ids != null">
+        <foreach collection="ids" item="item" index="index" open=" and bi_id in (" separator="," close=")" >
+          #{item,jdbcType=INTEGER}
+        </foreach>
+      </when>
+      <otherwise>
+        and 1 = 2
+      </otherwise>
+    </choose>
+
   </delete>
 
   <update id="updateErrorMsgById" >

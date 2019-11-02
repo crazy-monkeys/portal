@@ -751,7 +751,7 @@ public class SaleForecastService {
         List<String> biIds = new ArrayList<>();
         for(Forecast forecast : operationData) {
             //数据已经提交，代理商请求删除
-            if (forecast.getStatus() == 2 && forecast.getAgencyStatusType() == -1) {
+            if (forecast.getStatus() == 2 && forecast.getAgencyStatusType() == -1 && StringUtils.isNotEmpty(forecast.getBiId())) {
                 biIds.add(forecast.getBiId());
             }
         }
@@ -957,12 +957,21 @@ public class SaleForecastService {
         }
     }
 
+    public static void main(String[] args) {
+        List<String> biIds = new ArrayList<>();
+        biIds.add(null);
+        System.out.println(StringUtils.join(biIds, ","));
+    }
+
     /**
      * 预测数据Delete服务
      * @param biIds
      */
     private void requestBiDeleteServer(List<String> biIds) {
         try {
+            if(null == biIds || biIds.isEmpty()){
+                throw new BusinessException(FORECAST_BI_ID_EMPTY);
+            }
             String ids = StringUtils.join(biIds, ",");
             String response = CallApiUtils.callBiGetApi(DELETEFORECAST, "PORTAL/BI/", String.format("sIDList=%s&sSummaryIDList=%s", ids, ids));
             response = response.replace("\"", "").replace("\\","");

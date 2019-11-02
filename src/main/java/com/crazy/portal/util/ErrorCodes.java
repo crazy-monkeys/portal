@@ -260,6 +260,7 @@ public class ErrorCodes {
         FORECAST_PO_PRICE_GET_ERROR(80029, "获取产品价格信息失败，请联系管理员", ""),
         FORECAST_DATE_FORMAT_ERROR(80030, "时间格式不符合要求，请重新输入", ""),
         FORECAST_GET_LAST_VALUE_ERROR(80031, "获取上次填写值失败，请联系管理员", ""),
+        FORECAST_BI_ID_EMPTY(80032, "检测BI_ID为空，请检查数据", ""),
 
         //订单管理
         ORDER_NOT_FOUND(90001, "订单信息不存在", ""),
