@@ -343,10 +343,10 @@ public class SaleForecastService {
     public void deleteAgencyForecastData(Integer[] forecastIds) {
         for(Integer id : forecastIds){
             Forecast forecast = forecastMapper.selectByPrimaryKey(id);
+            BusinessUtil.notNull(forecast, FORECAST_DB_DATA_MISMATCH);
             if(forecast.getStatus() == 3){
                 throw new BusinessException(FORECAST_OPERATION_DELETE_REPEAT);
             }
-            BusinessUtil.notNull(forecast, FORECAST_DB_DATA_MISMATCH);
             //数据已驳回，无法删除
             if(forecast.getStatus() == -1){
                 throw new BusinessException(FORECAST_REJECT_DATA_NOT_DELETE);
