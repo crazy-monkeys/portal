@@ -749,7 +749,7 @@ public class ForecastLine {
      * @param gapValue
      * @return
      */
-    private String calculateGap(String lastWriteValue, String currentWriteValue, String gapValue) {
+    private static String calculateGap(String lastWriteValue, String currentWriteValue, String gapValue) {
         //上次填写值
         BigDecimal a = StringUtils.isEmpty(lastWriteValue) ? BigDecimal.ZERO : new BigDecimal(lastWriteValue);
         //本次填写值
@@ -763,7 +763,7 @@ public class ForecastLine {
             }
             if(a.compareTo(BigDecimal.ZERO)==1){
 
-                BigDecimal percent = (b.subtract(a)).divide(a, BigDecimal.ROUND_DOWN).multiply(new BigDecimal(100));
+                BigDecimal percent = (b.subtract(a)).divide(a, 4, BigDecimal.ROUND_DOWN).multiply(new BigDecimal(100));
                 return String.format("%s%s", percent.setScale(0,BigDecimal.ROUND_UP),"%");
             }
         }catch (Exception ex) {
