@@ -773,7 +773,7 @@
   </select>
 
   <select id="selectAllCustomer" resultMap="BaseResultMap">
-      select * from t_customer_info where active = 1
+      select * from t_customer_info where active = 1 and cust_role != 'Z010'
       order by business_type desc
   </select>
 
@@ -788,7 +788,7 @@
 
   <select id="selectEmailByCustName" parameterType="java.lang.String" resultMap="BaseResultMap">
     select a.business_type,b.email cust_email from t_customer_info a
-    inner join t_customer_contact b on b.cust_id = a.id and b.type = 'C01'
+    inner join t_customer_contact b on b.cust_id = a.id and b.type = 'C2'
     where a.cust_name = #{custName,jdbcType=VARCHAR} and a.active = 1 and b.email is not null
   </select>
 
@@ -802,7 +802,7 @@
   </select>
 
   <select id="selectDealerList" resultMap="BaseResultMap">
-    select * from t_customer_info where active =1 and business_type = 'A04'
+    select * from t_customer_info where active =1 and business_type = 'A04' and cust_role != 'Z010'
   </select>
 
   <select id="selectByCustAbbreviation" resultMap="BaseResultMap">
@@ -826,8 +826,7 @@
   
   <select id="selectCustAbbreviationByCustName" resultType="java.lang.String">
   select * from t_customer_info
-  where in_code  = (select corporate_name from t_cust_corporate_relationship where corporate_type='Z002')
-  and cust_name = #{custName,jdbcType=VARCHAR} and active = 1
+  where cust_name = #{custName,jdbcType=VARCHAR} and active = 1
   limit 1
   </select>
   

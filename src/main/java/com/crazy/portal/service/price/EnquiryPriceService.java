@@ -1,5 +1,6 @@
 package com.crazy.portal.service.price;
 
+import com.alibaba.fastjson.JSONArray;
 import com.crazy.portal.bean.price.EnquiryApprovalBean;
 import com.crazy.portal.bean.price.EnquiryPriceVO;
 import com.crazy.portal.dao.cusotmer.CustCorporateRelationshipMapper;
@@ -72,6 +73,7 @@ public class EnquiryPriceService {
 
     private void save(String bu, CatalogPrice x, EnquiryPriceVO vo, String loginName){
         EnquiryPrice enquiryPrice = new EnquiryPrice();
+        enquiryPrice.setBoms(new JSONArray());
         enquiryPrice.setBu(bu);
         enquiryPrice.setPdt(x.getPdt());
         enquiryPrice.setInCustomer(x.getInCustomer());

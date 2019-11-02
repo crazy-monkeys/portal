@@ -9,12 +9,15 @@ import com.crazy.portal.config.exception.BusinessException;
 import com.crazy.portal.dao.business.rebate.*;
 import com.crazy.portal.dao.cusotmer.CustomerInfoMapper;
 import com.crazy.portal.entity.business.rebate.*;
+import com.crazy.portal.entity.cusotmer.CustomerContact;
 import com.crazy.portal.entity.cusotmer.CustomerInfo;
+import com.crazy.portal.service.customer.CustomerContactService;
 import com.crazy.portal.util.*;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +30,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
+import static com.crazy.portal.util.ErrorCodes.BusinessEnum.HANDOVER_DATA_EMAIL_ERROR;
 
 /**
  * 客户Rebate
@@ -53,6 +58,8 @@ public class RebateService {
     private CustomerInfoMapper customerInfoMapper;
     @Resource
     private RebateApiService rebateApiService;
+    @Resource
+    private CustomerContactService customerContactService;
     @Value("${file.path.root}")
     private String filePath;
     private static final String REBATE_FILE_PATH = "rebate";
