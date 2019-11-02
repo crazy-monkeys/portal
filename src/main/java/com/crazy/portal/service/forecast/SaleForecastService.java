@@ -962,16 +962,17 @@ public class SaleForecastService {
      * @param biIds
      */
     private void requestBiDeleteServer(List<String> biIds) {
+        if(null == biIds || biIds.isEmpty()){
+            throw new BusinessException(FORECAST_BI_ID_EMPTY);
+        }
+        String ids = StringUtils.join(biIds, ",");
         try {
-            if(null == biIds || biIds.isEmpty()){
-                throw new BusinessException(FORECAST_BI_ID_EMPTY);
-            }
-            String ids = StringUtils.join(biIds, ",");
             String response = CallApiUtils.callBiGetApi(DELETEFORECAST, "PORTAL/BI/", String.format("sIDList=%s&sSummaryIDList=%s", ids, ids));
             response = response.replace("\"", "").replace("\\","");
             if(StringUtils.isNotEmpty(response) && response.contains("删除成功")){
                 forecastMapper.deleteByBiIds(biIds);
             }else{
+                log.error("【预测数据删除】未成功删除，BI返回结果为：{}", response);
                 throw new BusinessException(FORECAST_BI_DELETE_FAIL);
             }
         }catch (Exception ex) {
