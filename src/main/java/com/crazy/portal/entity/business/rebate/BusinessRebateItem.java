@@ -51,7 +51,7 @@ public class BusinessRebateItem {
     //代理上传文件ID
     private Integer dlFileId;
     //通知日期
-    @JSONField(format="yyyy-MM-dd")
+    @JSONField(format="yyyy-MM-dd HH:mm:ss")
     private Date noticeDate;
     //备注
     private String remark;
