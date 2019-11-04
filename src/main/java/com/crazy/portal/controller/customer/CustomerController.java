@@ -7,7 +7,6 @@ import com.crazy.portal.bean.customer.approval.ApprovalBean;
 import com.crazy.portal.bean.customer.visitRecord.VisiApproveBean;
 import com.crazy.portal.bean.customer.visitRecord.VisitRecordQueryBean;
 import com.crazy.portal.controller.BaseController;
-import com.crazy.portal.dao.system.InternalUserMapper;
 import com.crazy.portal.entity.cusotmer.CustomerInfo;
 import com.crazy.portal.service.customer.CustomerInfoService;
 import com.crazy.portal.util.ExcelUtils;
@@ -30,8 +29,6 @@ import java.util.Map;
 @RestController
 @RequestMapping("/customer")
 public class CustomerController extends BaseController{
-    @Resource
-    private InternalUserMapper internalUserMapper;
     @Resource
     private CustomerInfoService customerInfoService;
 

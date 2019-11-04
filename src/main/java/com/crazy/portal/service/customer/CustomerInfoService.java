@@ -195,7 +195,7 @@ public class CustomerInfoService {
     public CustomerInfo getDealerInfo(Integer dealerId){
         CustomerInfo dealerInfo = customerInfoMapper.selectByPrimaryKey(dealerId);
         BusinessUtil.notNull(dealerInfo, ErrorCodes.BusinessEnum.CUSTOMER_IS_EMPYT);
-        mappingVO(dealerInfo);
+        //mappingVO(dealerInfo);
 
         dealerInfo.setAssetsInformations(custAssetsInformationService.selectByCustId(dealerId));
         dealerInfo.setBusinessInformations(custBusinessInformationService.selectByCustId(dealerId));

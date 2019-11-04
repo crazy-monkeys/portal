@@ -61,7 +61,7 @@ public class CustCorporateRelationshipService {
             return;
         }
         custCorporateRelationships.forEach(e->{
-            e.setCorporateId(e.getCorporateName());
+            //e.setCorporateId(e.getCorporateId());
             if(null == e.getShipId()){
                 e.setCustId(custId);
                 e.setCreateUser(userId);
