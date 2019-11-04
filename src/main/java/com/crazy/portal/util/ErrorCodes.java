@@ -128,6 +128,7 @@ public class ErrorCodes {
         EXCEL_PARAM_FAIL(21005, "Excel数据类型错误", ""),
         EXCEL_PARAM_DATE_FAIL(21006, "Excel日期格式无效，请核对", ""),
         EXCEL_TEMPLATE_DOWNLOAD_FAIL(21007, "Excel模板下载异常", ""),
+        EXCEL_FILE_IS_NULL(70004, "文件数据不能为空", ""),
         //公告模块
         ANNOUNCEMENT_FILE_LIST_PARAM_EMPTY(30000, "请上传正确文件参数", ""),
         ANNOUNCEMENT_FILE_SIZE_ERROR(30001, "请勿上传多个文件", ""),
