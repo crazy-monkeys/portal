@@ -52,7 +52,9 @@ table td{
         <td th:text="${item.amebaHeader}"></td>
         <td th:text="${item.amebaDepartment}"></td>
         <td th:text="${item.rebateAmount}"></td>
-        <td th:text="${item.executeStyle}"></td>
+        <td th:if="${item.executeStyle == '1'}">抵扣代理商AR</td>
+        <td th:if="${item.executeStyle == '2'}">返货</td>
+        <td th:if="${item.executeStyle == '3'}">返款</td>
         <td th:text="${item.remark}"></td>
     </tr>
 </table>
