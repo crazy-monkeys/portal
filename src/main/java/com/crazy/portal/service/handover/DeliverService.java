@@ -2,6 +2,7 @@ package com.crazy.portal.service.handover;
 
 import com.alibaba.fastjson.JSONObject;
 import com.crazy.portal.bean.BaseResponse;
+import com.crazy.portal.bean.customer.basic.FileVO;
 import com.crazy.portal.bean.handover.DeliverTemplateBean;
 import com.crazy.portal.bean.handover.HandoverUploadVO;
 import com.crazy.portal.bean.system.MailBean;
@@ -188,7 +189,8 @@ public class DeliverService extends AbstractHandover implements IHandover<Delive
         }
         //判断当前用户是否为 代理商
         BusinessUtil.assertFlase(false, HANDOVER_NOT_DEALER);
-        List<DeliverTemplateBean> deliverData =  ExcelUtils.readExcel(excel, DeliverTemplateBean.class , 1);
+        FileVO fileVo = FileUtil.upload(excel, deliverLocalPath);
+        List<DeliverTemplateBean> deliverData =  ExcelUtils.readExcel(fileVo.getFullPath(), DeliverTemplateBean.class);
         Iterator<DeliverTemplateBean> iterator = deliverData.iterator();
         while (iterator.hasNext()) {
             DeliverTemplateBean templateBean = iterator.next();

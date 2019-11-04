@@ -252,7 +252,7 @@ public class ExcelUtils {
         }
     }
 
-    /*private static<T> List<T> readExcel(InputStream in, Class clazz, String fileName, int sheetNo, int headLineNum) {
+    private static<T> List<T> readExcel(InputStream in, Class clazz, String fileName, int sheetNo, int headLineNum) {
         checkExcelType(fileName);
         ExcelListener excelListener = new ExcelListener();
         ExcelReader reader = EasyExcel.read(in).autoTrim(false).build();
@@ -262,18 +262,18 @@ public class ExcelUtils {
         reader.finish();
         BusinessUtil.assertTrue((data != null && data.size() > 0), ErrorCodes.BusinessEnum.BUSINESS_IDR_FILE_IS_REQUIRED);
         return data;
-    }*/
-
-    private static<T> List<T> readExcel(InputStream in, Class clazz, String fileName, int sheetNo, int headLineNum) throws IOException {
-        checkExcelType(fileName);
-        ExcelListener excelListener = new ExcelListener();
-        ExcelReader reader = getReader(in, excelListener);
-        Sheet sheet = new Sheet(sheetNo, headLineNum, clazz);
-        reader.read(sheet);
-        List<T> data = excelListener.getData();
-        BusinessUtil.assertTrue((data != null && data.size() > 0), ErrorCodes.BusinessEnum.EXCEL_FILE_IS_NULL);
-        return data;
     }
+
+//    private static<T> List<T> readExcel(InputStream in, Class clazz, String fileName, int sheetNo, int headLineNum) throws IOException {
+//        checkExcelType(fileName);
+//        ExcelListener excelListener = new ExcelListener();
+//        ExcelReader reader = getReader(in, excelListener);
+//        Sheet sheet = new Sheet(sheetNo, headLineNum, clazz);
+//        reader.read(sheet);
+//        List<T> data = excelListener.getData();
+//        BusinessUtil.assertTrue((data != null && data.size() > 0), ErrorCodes.BusinessEnum.EXCEL_FILE_IS_NULL);
+//        return data;
+//    }
 
     private static ExcelReader getReader(InputStream in, ExcelListener excelListener) throws IOException {
         InputStream inputStream = new BufferedInputStream(in);
