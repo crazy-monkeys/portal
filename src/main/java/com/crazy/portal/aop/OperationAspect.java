@@ -7,6 +7,7 @@ import com.crazy.portal.controller.BaseController;
 import com.crazy.portal.entity.system.OperationLogDO;
 import com.crazy.portal.entity.system.User;
 import com.crazy.portal.util.ErrorCodes.CommonEnum;
+import com.crazy.portal.util.ExcelUtils;
 import com.crazy.portal.util.ExceptionUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -21,7 +22,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.multipart.MultipartFile;
-
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.List;
@@ -129,16 +129,20 @@ public class OperationAspect extends BaseController {
         if(Objects.nonNull(objects)){
             params = Stream.of(objects).map(x->{
                 Object obj = x;
-                //如果是上传文件,普通序列化会报错,需要做一层处理
-                if(x instanceof MultipartFile[]){
-                    MultipartFile[] multipartFiles = (MultipartFile[])x;
-                    obj = Stream.of(multipartFiles)
-                            .collect(Collectors.toMap(
-                                    MultipartFile::getName,
-                                    MultipartFile::getOriginalFilename));
-
-                }
                 try {
+                    //如果是上传文件,普通序列化会报错,需要做一层处理
+                    if(x instanceof MultipartFile[]){
+                        MultipartFile[] multipartFiles = (MultipartFile[])x;
+                        obj = Stream.of(multipartFiles)
+                                .collect(Collectors.toMap(
+                                        MultipartFile::getName,
+                                        MultipartFile::getOriginalFilename));
+
+                    }
+                    if(x instanceof MultipartFile){
+                        MultipartFile multipartFile = (MultipartFile)x;
+                        obj = ExcelUtils.readExcel(multipartFile, Object.class);
+                    }
                     return JSON.toJSONString(obj);
                 } catch (Exception e) {
                     log.error("",e);

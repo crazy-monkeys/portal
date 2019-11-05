@@ -328,7 +328,7 @@ public class OrderApproveService extends CommonOrderService{
 
         //封装申请的物料号对应的物料信息,方便下面使用
         Map<String,OrderLine> applyLineMap = applyLines.stream().collect(
-                Collectors.toMap(OrderLine::getProductId, Function.identity()));
+                Collectors.toMap(OrderLine::getProductIDAndPlatform, Function.identity()));
 
         //里面会校验是否调用成功
         ZrfcsdsalesorderchangeResponse response = this.invokeEccModifyOrder(order,orderApply,applyLineMap,"I");
@@ -355,7 +355,7 @@ public class OrderApproveService extends CommonOrderService{
             orderLines.forEach(line->{
                 String productId = line.getProductId();
                 //目前订单行只能修改数量
-                OrderLine orderLine = applyLineMap.get(productId);
+                OrderLine orderLine = applyLineMap.get(productId+line.getPlatform());
                 line.setNum(orderLine==null?eccLine.getSapquantity().intValue():orderLine.getNum());
                 line.setUpdateId(userId);
                 line.setUpdateTime(DateUtil.getCurrentTS());
@@ -517,7 +517,7 @@ public class OrderApproveService extends CommonOrderService{
             if(applyLineMap == null){
                 item.setOrderquantity(line.getNum().toString());
             }else{
-                item.setOrderquantity(applyLineMap.get(line.getProductId()).getNum().toString());
+                item.setOrderquantity(applyLineMap.get(line.getProductId()+line.getPlatform()).getNum().toString());
             }
             String customerCode = super.getInCodeByAbbreviation(line.getCustAbbreviation());
             if(StringUtils.isNotEmpty(customerCode)){

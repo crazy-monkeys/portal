@@ -113,6 +113,7 @@ public class OrderApplyController extends BaseController {
      * @return
      */
     @PostMapping("/upload")
+    @OperationLog
     public BaseResponse upload(@Valid OrderApply orderApply) throws Exception{
         return successResult(orderApplyService.parsingLineTmplFile(orderApply,super.getCurrentUser()));
     }

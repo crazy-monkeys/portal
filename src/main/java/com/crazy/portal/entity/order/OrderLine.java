@@ -169,4 +169,8 @@ public class OrderLine {
     private String product;
     private String bu;
     private String pdt;
+
+    public String getProductIDAndPlatform(){
+        return this.productId + this.platform;
+    }
 }

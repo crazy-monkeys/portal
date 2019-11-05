@@ -1,15 +1,19 @@
 package com.crazy.portal.service.order;
 
+import com.crazy.portal.config.exception.BusinessException;
 import com.crazy.portal.dao.cusotmer.CustomerInfoMapper;
 import com.crazy.portal.dao.product.ProductInfoDOMapper;
 import com.crazy.portal.entity.cusotmer.CustomerInfo;
 import com.crazy.portal.entity.order.OrderLine;
 import com.crazy.portal.entity.product.ProductInfoDO;
+import com.crazy.portal.util.ErrorCodes;
 import com.crazy.portal.util.StringUtil;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @Desc:
@@ -57,5 +61,31 @@ public class CommonOrderService {
             }
         }
         return "";
+    }
+
+    /**
+     * 检查行类是否重复-----物料+平台确认唯一
+     * @param lines
+     * @return
+     */
+    protected void processRepeatedLine(List<OrderLine> lines){
+        Map<String, List<OrderLine>> collect =
+                lines.stream().collect(Collectors.groupingBy(line -> this.featchGroupBy(line)));
+
+        collect.forEach((x,y)->{
+            if(y.size() > 1){
+                OrderLine orderLine = y.get(0);
+                String msg = String.format(ErrorCodes.BusinessEnum.ORDER_NO_REPETITION.getZhMsg(),
+                        orderLine.getProductId(),
+                        orderLine.getPlatform());
+
+                throw new BusinessException(ErrorCodes.BusinessEnum.ORDER_NO_REPETITION.getCode(),msg);
+            }
+        });
+    }
+
+
+    private String featchGroupBy(OrderLine orderLine){
+        return orderLine.getProductId() + orderLine.getPlatform();
     }
 }

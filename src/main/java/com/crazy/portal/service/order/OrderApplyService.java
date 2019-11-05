@@ -25,10 +25,8 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.cxf.Bus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.text.ParseException;
@@ -102,13 +100,11 @@ public class OrderApplyService extends CommonOrderService{
         }*/
         //解析excel
         List<OrderLineEO> records = ExcelUtils.readExcel(order.getLineFile(), OrderLineEO.class);
-
-        //检查订单行中数据是否有与之匹配的价格
-        this.checkPriceMapping(user, records);
+        log.info("records -> "+ records.toString());
+        //检查
+        this.checkLines(user, records);
 
         //逻辑只允许出现同一个月份,直接用第一个元素为标准
-        //逻辑只允许出现同一个月份
-        log.info("moth"+ JSON.toJSONString(records));
         String expectedDeliveryMonthStr = records.get(0).getExpectedDeliveryMonth();
         BusinessUtil.notNull(expectedDeliveryMonthStr,ErrorCodes.BusinessEnum.ORDER_EMPTY_EXPECTEDDELIVERYMONTH);
 
@@ -166,7 +162,7 @@ public class OrderApplyService extends CommonOrderService{
      * @param user
      * @param records
      */
-    private void checkPriceMapping(User user, List<OrderLineEO> records) {
+    private void checkLines(User user, List<OrderLineEO> records) {
         //获取当前登录人价格列表
         List<CatalogPrice> currentCatalogPrices = this.getCurrentCatalogPrice(user);
 
@@ -186,9 +182,23 @@ public class OrderApplyService extends CommonOrderService{
             if(!isExists){
                 String hint = String.format(ErrorCodes.BusinessEnum.ORDER_NO_MAPPING_CUST.getZhMsg()
                         ,x.getProductId(),x.getCustAbbreviation());
+
                 throw new BusinessException(ErrorCodes.BusinessEnum.ORDER_NO_MAPPING_CUST.getCode(),hint);
             }
         });
+
+        //转换orderLines
+        List<OrderLine> lines = records.stream().map(lineEO -> {
+            OrderLine orderLine = new OrderLine();
+            orderLine.setProductId(lineEO.getProductId());
+            orderLine.setPlatform(lineEO.getPlatform());
+            return orderLine;
+        }).collect(Collectors.toList());
+
+        //处理重复订单行
+        super.processRepeatedLine(lines);
+
+
     }
 
     /**
@@ -199,14 +209,13 @@ public class OrderApplyService extends CommonOrderService{
      */
     private boolean isExistsCatalogPrice(List<CatalogPrice> currentCatalogPrices, OrderLineEO x) {
         for(CatalogPrice catalogPrice : currentCatalogPrices){
-            log.info("productId"+x.getProductId()+"=======platform"+x.getPlatform()+"========="+x.getCustAbbreviation());
             ProductInfoDO productInfoDO = productInfoDOMapper.selectBySapMidAndPlatForm(x.getProductId(),x.getPlatform());
             if(null == productInfoDO){
                 return false;
             }
-            log.info("product"+JSON.toJSONString(productInfoDO));
             if(catalogPrice.getSapCode().equals(x.getProductId())
                     && catalogPrice.getBu().equals(productInfoDO.getBu())){
+
                 if(StringUtil.isEmpty(catalogPrice.getInCustomer())||catalogPrice.getInCustomer().equals(x.getCustAbbreviation())){
                     return true;
                 }
@@ -268,20 +277,30 @@ public class OrderApplyService extends CommonOrderService{
         orderApplyMapper.insertSelective(order);
     }
 
+    /**
+     * 参数检查
+     * @param order
+     */
     private void checkParameter(OrderApply order) {
         BusinessUtil.notNull(order, ErrorCodes.BusinessEnum.ORDER_INFO_IS_REQUIRED);
-        BusinessUtil.notNull(order.getOrderLines(), ErrorCodes.BusinessEnum.ORDER_LINES_IS_REQUIRED);
-        BusinessUtil.assertFlase(order.getOrderLines().isEmpty(), ErrorCodes.BusinessEnum.ORDER_LINES_IS_REQUIRED);
+        List<OrderLine> lines = order.getOrderLines();
+        BusinessUtil.notNull(lines, ErrorCodes.BusinessEnum.ORDER_LINES_IS_REQUIRED);
+        BusinessUtil.assertFlase(lines.isEmpty(), ErrorCodes.BusinessEnum.ORDER_LINES_IS_REQUIRED);
 
-        order.getOrderLines().stream().forEach(x->{
+        //检查金额是否为0
+        lines.stream().forEach(x->{
             BusinessUtil.assertEmpty(x.getProductId(),ErrorCodes.BusinessEnum.ORDER_EMPTY_PRODUCT);
             boolean priceCheck = Objects.isNull(x.getRPrice()) || BigDecimal.ZERO.equals(x.getRPrice()) ||
                                  Objects.isNull(x.getRNetPrice()) || BigDecimal.ZERO.equals(x.getRNetPrice());
+
             if(priceCheck && !order.getUnderOrderType().equals("ZFD")){
                 throw new BusinessException(ErrorCodes.BusinessEnum.ORDER_INVALID_PRODUCT.getCode(),
                         String.format(ErrorCodes.BusinessEnum.ORDER_INVALID_PRODUCT.getZhMsg(),x.getProductId()));
             }
         });
+
+        //处理重复的订单行
+        super.processRepeatedLine(lines);
     }
 
     /**
