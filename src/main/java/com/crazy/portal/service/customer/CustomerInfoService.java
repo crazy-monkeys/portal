@@ -32,6 +32,7 @@ import com.crazy.portal.service.system.SysParamService;
 import com.crazy.portal.util.*;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.cxf.Bus;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -864,20 +865,20 @@ public class CustomerInfoService {
     }
     /**
      * 下载客户拜访模板
-     * @param userId
+     * @param dealerId
      * @return
      */
-    public Map<String, List> downloadTemplate(Integer userId){
+    public Map<String, List> downloadTemplate(Integer dealerId){
         Map<String, List> resultMap = new HashMap<>();
-        List<CustomerInfo> custList = customerInfoMapper.selectNameAndCodeByUserId(userId);
+        List<CustCorporateRelationship> ships =  custCorporateRelationshipService.selectZShip(dealerId);
         List<CustomerCodeEO> custCodeList = new ArrayList<>();
-        if(custList.isEmpty()){
+        if(ships.isEmpty()){
             custCodeList.add(new CustomerCodeEO());
         }else{
-            custList.forEach(cust -> {
+            ships.forEach(cust -> {
                 CustomerCodeEO eo = new CustomerCodeEO();
-                eo.setCustomerName(cust.getCustName());
-                eo.setCustomerCode(cust.getOutCode());
+                eo.setCustomerName(cust.getCorporateName());
+                eo.setCustomerCode(cust.getCorporateId());
                 custCodeList.add(eo);
             });
         }
@@ -939,6 +940,8 @@ public class CustomerInfoService {
             AppointmentActivityMaintainConfirmationBundleMessageSyncV1 response = CallApiUtils.callC4cVisits(create);
             if(null != response && !response.getAppointmentActivity().isEmpty() && null != response.getAppointmentActivity().get(0).getID()){
                 visitRecordMapper.approve(e, response.getAppointmentActivity().get(0).getID().getValue());
+            }else{
+                throw new BusinessException("代理商或客户Code异常："+JSON.toJSONString(response.getLog()));
             }
         });
     }
