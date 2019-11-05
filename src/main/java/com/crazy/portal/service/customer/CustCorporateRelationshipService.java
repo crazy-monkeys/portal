@@ -35,7 +35,7 @@ public class CustCorporateRelationshipService {
         return custCorporateRelationshipMapper.selectDealerShipByName(custName);
     }
 
-    public CustCorporateRelationship selectZShip(Integer custId){
+    public List<CustCorporateRelationship> selectZShip(Integer custId){
         return custCorporateRelationshipMapper.selectZShip(custId);
     }
 

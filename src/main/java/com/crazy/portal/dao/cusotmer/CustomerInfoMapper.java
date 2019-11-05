@@ -29,7 +29,7 @@ public interface CustomerInfoMapper {
 
     CustomerInfo queryCustomerInfo(@Param("custId") int custId);
 
-    List<CustomerInfo> selectNameAndCodeByUserId(@Param("userId") Integer userId);
+    List<CustomerInfo> selectNameAndCodeByUserId(@Param("dealerId") Integer dealerId);
 
     List<CustomerInfo> selectAllCustomer();
 

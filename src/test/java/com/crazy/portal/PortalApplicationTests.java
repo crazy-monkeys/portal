@@ -5,19 +5,26 @@ import com.crazy.portal.bean.customer.wsdl.orgnation.OrganisationalUnitByElement
 import com.crazy.portal.bean.customer.wsdl.orgnation.OrganisationalUnitByIDResponseMessageSync;
 import com.crazy.portal.bean.customer.wsdl.orgnation.OrganisationalUnitQueryRepsonseNameAndAddress;
 import com.crazy.portal.bean.customer.wsdl.orgnation.OrganisationalUnitQueryResponseEmployeeAssignment;
+import com.crazy.portal.bean.order.wsdl.delivery.update.ZrfcsddeliverychangeResponse;
 import com.crazy.portal.config.email.EmailHelper;
 import com.crazy.portal.dao.system.InternalUserMapper;
 import com.crazy.portal.dao.system.OrganizationalStructureMapper;
+import com.crazy.portal.entity.order.DeliverOrder;
+import com.crazy.portal.entity.order.DeliverOrderLine;
 import com.crazy.portal.entity.system.InternalUser;
 import com.crazy.portal.entity.system.OrganizationalStructure;
+import com.crazy.portal.service.order.OrderService;
 import com.crazy.portal.util.CallApiUtils;
 import com.crazy.portal.util.FTPClientUtil;
+import org.hibernate.validator.constraints.pl.REGON;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @RunWith(SpringRunner.class)
@@ -34,6 +41,8 @@ public class PortalApplicationTests {
 	private OrganizationalStructureMapper organizationalStructureMapper;
 	@Resource
 	private InternalUserMapper internalUserMapper;
+	@Resource
+	private OrderService orderService;
 
 	@Test
 	public void createUser(){
@@ -43,6 +52,17 @@ public class PortalApplicationTests {
 
 	@Test
 	public void test(){
+		DeliverOrder order = new DeliverOrder();
+		order.setDeliverDate(new Date());
+		order.setSapDeliverOrderNo("84632");
+		List<DeliverOrderLine > deliverOrderLineList  = new ArrayList<>();
+		DeliverOrderLine line = new DeliverOrderLine();
+		line.setSapSalesOrderLineNo("10");
+		line.setReceiveQuantity(10);
+
+		String type = "D";
+
+		ZrfcsddeliverychangeResponse response = orderService.eccDeliveryUpdate(order,deliverOrderLineList,type);
 		/*try{
 			OrganisationalUnitByIDResponseMessageSync responseMessageSync = CallApiUtils.queryOrganisation();
 			List<OrganisationalUnitByElementsResponseSync> results = responseMessageSync.getOrganisationalUnit();
