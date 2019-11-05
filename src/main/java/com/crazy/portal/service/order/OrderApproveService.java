@@ -257,8 +257,6 @@ public class OrderApproveService extends CommonOrderService{
     private void insertOrderLine(Integer userId, Order order, OrderLine line, ZsalesordercreateOutItem etItem) {
         line.setOrderId(order.getId());
         line.setExpectedDeliveryDate(order.getPriceDate());
-        line.setRPrice(line.getRPrice());
-        line.setRNetPrice(line.getRNetPrice());
         line.setRCurrency(etItem.getCurrency());
         line.setRProductId(etItem.getProductid().replaceAll("^(0+)", ""));
         line.setRItemCategory(etItem.getItemcategory());
