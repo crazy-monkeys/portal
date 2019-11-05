@@ -51,7 +51,8 @@ import javax.xml.bind.annotation.XmlType;
     "currency",
     "itemcategory",
     "refitemno",
-    "refitemproductid"
+    "refitemproductid",
+    "platform"
 })
 public class ZsalesordercreateOutItem {
 
@@ -79,6 +80,8 @@ public class ZsalesordercreateOutItem {
     protected String refitemno;
     @XmlElement(name = "Refitemproductid", required = true)
     protected String refitemproductid;
+    @XmlElement(name = "Platform", required = true)
+    protected String platform;
 
     /**
      * 获取saporderid属性的值。
@@ -368,4 +371,11 @@ public class ZsalesordercreateOutItem {
         this.refitemproductid = value;
     }
 
+    public String getPlatform() {
+        return platform;
+    }
+
+    public void setPlatform(String platform) {
+        this.platform = platform;
+    }
 }

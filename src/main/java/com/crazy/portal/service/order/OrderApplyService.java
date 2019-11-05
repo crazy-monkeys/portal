@@ -3,6 +3,7 @@ package com.crazy.portal.service.order;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.crazy.portal.bean.order.*;
+import com.crazy.portal.bean.order.wsdl.create.ZsalesordercreateOutItem;
 import com.crazy.portal.bean.order.wsdl.price.*;
 import com.crazy.portal.bean.price.CatalogPriceVO;
 import com.crazy.portal.config.exception.BusinessException;
@@ -123,25 +124,24 @@ public class OrderApplyService extends CommonOrderService{
         List<ZpricessimulateItemOut> items = response.getEtItems().getItem();
 
         for(OrderLineEO orderLineEO : records){
-            BigDecimal price = BigDecimal.ZERO;
-            BigDecimal netprice = BigDecimal.ZERO;
 
-            for(ZpricessimulateItemOut item : items){
-                String refitemProductID = item.getRefitemproductid().replaceAll("^(0+)", "");
-                String productId = item.getProductid().replaceAll("^(0+)", "");
+            String portalProductId = orderLineEO.getProductId();
+            //过滤出主物料对应的组合物料信息
+            List<ZpricessimulateItemOut> currProductItems = items.stream().filter(f -> {
+                        String eccRefProductId = f.getRefitemproductid().replaceAll("^(0+)", "");
+                        String eccProductId = f.getProductid().replaceAll("^(0+)", "");
+                        return eccRefProductId.equals(portalProductId) || eccProductId.equals(portalProductId);
+                    }).collect(Collectors.toList());
 
-                if(refitemProductID.equals(orderLineEO.getProductId()) &&
-                        !productId.equals(orderLineEO.getProductId())){
+            //主物料计算总价
+            orderLineEO.setRNetPrice(currProductItems.stream().map(ZpricessimulateItemOut::getNetprice)
+                    .reduce(BigDecimal.ZERO,BigDecimal::add));
 
-                    price = price.add(item.getPrice());
-                    netprice = netprice.add(item.getNetprice());
-                }
-            }
-            orderLineEO.setRPrice(price == null ? BigDecimal.ZERO : price);
-            orderLineEO.setRNetPrice(netprice == null ? BigDecimal.ZERO : netprice);
+            orderLineEO.setRPrice(currProductItems.stream().map(ZpricessimulateItemOut::getPrice)
+                    .reduce(BigDecimal.ZERO,BigDecimal::add));
+
             //设置定价
             orderLineEO.setPriceDate(priceDate);
-
             ProductInfoDO productInfo = super.getProductInfo(orderLineEO.getProductId(), orderLineEO.getPlatform());
             if(productInfo != null){
                 orderLineEO.setProduct(productInfo.getProduct());

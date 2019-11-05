@@ -26,6 +26,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
+import javax.validation.constraints.NotEmpty;
 import java.beans.IntrospectionException;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
@@ -139,13 +140,17 @@ public class OrderApproveService extends CommonOrderService{
 
         //返回的实体+虚拟的行
         a:for(ZsalesordercreateOutItem eccLine : outItems){
+            //ecc物料号如果前面有0 直接替换成空字符
+            String eccProductID = eccLine.getProductid().replaceAll("^(0+)", "");
+            String eccRefProductId = eccLine.getRefitemproductid().replaceAll("^(0+)", "");
+            String eccPlatform = eccLine.getPlatform();
 
             b:for(OrderLine line : lines){
-                //ecc物料号如果前面有0 直接替换成空字符
-                String eccProductID = eccLine.getProductid().replaceAll("^(0+)", "");
                 //主物料信息保存
                 String portalProductId = line.getProductId();
-                if(eccProductID.equals(portalProductId)){
+                String portalPlatform = line.getPlatform();
+                //如果是同物料号
+                if(eccProductID.equals(portalProductId) && eccPlatform.equals(portalPlatform) && StringUtil.isEmpty(eccRefProductId)){
                     //设置剩余数量
                     line.setRemainingNum(line.getNum());
                     //计算组合物料价格
@@ -154,7 +159,6 @@ public class OrderApproveService extends CommonOrderService{
                     this.setProduct(line, portalProductId);
                     //保存虚拟订单行
                     this.insertOrderLine(userId,order,line,eccLine);
-                    //虚拟物料计算价格并成功保存,跳至外层循环处理其他组合物料
                     continue a;
                 }
             }
@@ -176,8 +180,11 @@ public class OrderApproveService extends CommonOrderService{
     private void calculatePrice(List<ZsalesordercreateOutItem> outItems, OrderLine line, String portalProductId) {
         //过滤出主物料对应的组合物料信息
         List<ZsalesordercreateOutItem> currProductItems = outItems.stream()
-                .filter(f -> f.getRefitemproductid().replaceAll("^(0+)", "").equals(portalProductId)
-                        || f.getProductid().replaceAll("^(0+)", "").equals(portalProductId))
+                .filter(f -> {
+                    String eccRefProductId = f.getRefitemproductid().replaceAll("^(0+)", "");
+                    String eccProductId = f.getProductid().replaceAll("^(0+)", "");
+                    return eccRefProductId.equals(portalProductId) || eccProductId.equals(portalProductId);
+                })
                 .collect(Collectors.toList());
 
         //主物料计算总价
@@ -265,6 +272,7 @@ public class OrderApproveService extends CommonOrderService{
         line.setProductId(etItem.getProductid().replaceAll("^(0+)", ""));
         line.setRItemNo(etItem.getItemno().replaceAll("^(0+)", ""));
         line.setRSapQty(etItem.getSapquantity().intValue());
+        line.setRSapOrderId(etItem.getSaporderid().replaceAll("^(0+)", ""));
         line.setNum(etItem.getSapquantity().intValue());
         line.setCreateId(userId);
         line.setCreateTime(DateUtil.getCurrentTS());
