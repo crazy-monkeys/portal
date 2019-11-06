@@ -592,16 +592,22 @@ public class SaleForecastService {
      * @param forecastIds
      * @param rejectMsg
      */
+    @Transactional
     public void rejectApprovalForecastData(Integer[] forecastIds, String rejectMsg) {
         //如果选择驳回，则不管数据选择多少，都将待提交的数据全部驳回
         forecastMapper.rejectDataByIds(forecastIds, rejectMsg);
-        /*for(Integer id : forecastIds) {
+        for(Integer id : forecastIds) {
             Forecast forecast = forecastMapper.selectByPrimaryKey(id);
-            if(forecast.getStatus() == 2){
-                throw new BusinessException(FORECAST_ALREADY_COMMIT_NOT_REJECT);
+            BusinessUtil.notNull(forecast, FORECAST_BI_DELETE_FAIL);
+            if(forecast.getStatus() == 1){
+                continue;
+            }
+            if(forecast.getStatus() == 3 || forecast.getStatus() == 4){
+                forecast.setStatus(-1);
+                forecast.setOperationRemark(rejectMsg);
+                forecastMapper.updateByPrimaryKeySelective(forecast);
             }
         }
-        forecastMapper.updateStatusByIds(forecastIds, -1, rejectMsg);*/
     }
 
     /**

@@ -379,6 +379,9 @@
       <if test="operationUserId != null">
         operation_user_id = #{operationUserId,jdbcType=INTEGER},
       </if>
+      <if test="operationRemark != null" >
+        operation_remark = #{operationRemark,jdbcType=VARCHAR},
+      </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
