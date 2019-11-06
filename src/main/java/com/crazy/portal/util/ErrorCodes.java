@@ -137,6 +137,9 @@ public class ErrorCodes {
         ANNOUNCEMENT_FILE_ERROR_BY_ID(30004, "公告文件数据异常", ""),
         ANNOUNCEMENT_ROLE_EMPTY(30005, "未选择角色信息，请重新选择", ""),
         NOT_DELETE(30005, "该类型下已有公告，不允许删除", ""),
+        ANNOUNCEMENT_DB_RECORD_NOT_FOUND(30006, "未找到相关记录，请重新输入", ""),
+        ANNOUNCEMENT_USER_NOT_MATCH(30007, "请勿操作其它用户记录", ""),
+        ANNOUNCEMENT_STATUS_ERROR(30008, "公告已撤销或发布", ""),
 
         //交付模块
         //交付模块 - 出货管理 & 收货管理

@@ -69,7 +69,7 @@ public class AnnouncementService {
     @Deprecated
     public Announcement previewById(Integer id) {
         Announcement announcement = announcementDOMapper.selectByPrimaryKey(id);
-        Assert.notNull(announcement, "No relevant record information was found by id");
+        BusinessUtil.notNull(announcement, ANNOUNCEMENT_DB_RECORD_NOT_FOUND);
         announcement.setFileList(announcementFileMapper.selectByAnnouncementId(announcement.getId()));
         return announcement;
     }
@@ -105,9 +105,9 @@ public class AnnouncementService {
     @Transactional
     public void releaseById(Integer id, Integer userId) {
         Announcement dbRecord = announcementDOMapper.selectByPrimaryKey(id);
-        Assert.notNull(dbRecord, "No relevant record information was found by id");
-        Assert.isTrue((dbRecord.getCreateUserId() == userId), "Do not operate other announcement information");
-        Assert.isTrue((0 == dbRecord.getStatus()), "Announcement has been revoked or issued");
+        BusinessUtil.notNull(dbRecord, ANNOUNCEMENT_DB_RECORD_NOT_FOUND);
+        BusinessUtil.assertFlase((dbRecord.getCreateUserId() != userId), ANNOUNCEMENT_USER_NOT_MATCH);
+        BusinessUtil.assertFlase((0 != dbRecord.getStatus()), ANNOUNCEMENT_STATUS_ERROR);
         dbRecord.setStatus(1);
         dbRecord.setReleaseTime(DateUtil.getCurrentTS());
         announcementDOMapper.updateByPrimaryKeySelective(dbRecord);
@@ -121,9 +121,9 @@ public class AnnouncementService {
     @Transactional
     public void revokeById(Integer id, Integer userId) {
         Announcement dbRecord = announcementDOMapper.selectByPrimaryKey(id);
-        Assert.notNull(dbRecord, "No relevant record information was found by id");
-        Assert.isTrue((dbRecord.getCreateUserId() == userId), "Do not operate other announcement information");
-        Assert.isTrue((1 == dbRecord.getStatus()), "Announcement has been revoked or not issued");
+        BusinessUtil.notNull(dbRecord, ANNOUNCEMENT_DB_RECORD_NOT_FOUND);
+        BusinessUtil.assertFlase((dbRecord.getCreateUserId() != userId), ANNOUNCEMENT_USER_NOT_MATCH);
+        BusinessUtil.assertFlase((1 != dbRecord.getStatus()), ANNOUNCEMENT_STATUS_ERROR);
         dbRecord.setStatus(-1);
         announcementDOMapper.updateByPrimaryKeySelective(dbRecord);
     }
