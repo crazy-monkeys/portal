@@ -205,7 +205,7 @@
   <select id="selectStatusByIds" resultType="java.lang.Integer" >
     select t.status from t_deliver_receive_record t
     where 1 = 1
-    <foreach collection="ids" item="item" index="index" open=" and t.id in (" separator="," close="" >
+    <foreach collection="ids" item="item" index="index" open=" and t.id in (" separator="," close=")" >
       #{item,jdbcType=INTEGER}
     </foreach>
     group by t.status
