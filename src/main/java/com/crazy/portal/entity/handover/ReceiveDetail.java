@@ -76,6 +76,4 @@ public class ReceiveDetail {
     @ExcelIgnore
     private Integer recordId;
 
-
-
 }

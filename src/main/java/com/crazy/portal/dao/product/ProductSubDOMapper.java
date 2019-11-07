@@ -7,6 +7,8 @@ import java.util.List;
 public interface ProductSubDOMapper {
     int deleteByPrimaryKey(Integer id);
 
+    int deleteByProductId(Integer productId);
+
     int insert(ProductSubDO record);
 
     int insertSelective(ProductSubDO record);

@@ -77,14 +77,14 @@ public class ReceiveService extends AbstractHandover implements IHandover<Receiv
             String importFile = ExcelUtils.writeExcel(receivePushPath, importData, ReceiveDetail.class);
             BiCheckResult importResult = callBiServerByFtp(SAVE_INVENTORY_IMPORT_FILE, receivePushPath, importFile, receivePullPath);
             List<ReceiveDetail> importResData = ExcelUtils.readExcel(importResult.getFilePath(), ReceiveDetail.class);
-            if(importResult.isSuccess()){
-                handoverService.updateStatus(record.getId(), 2);
-                return true;
-            }
             receiveDetailMapper.deleteByRecordId(record.getId());
             for(ReceiveDetail detail : importResData){
                 detail.setRecordId(record.getId());
                 receiveDetailMapper.insertSelective(detail);
+            }
+            if(importResult.isSuccess()){
+                handoverService.updateStatus(record.getId(), 2);
+                return true;
             }
             handoverService.updateStatus(record.getId(), -2);
             return false;

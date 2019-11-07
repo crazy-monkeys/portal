@@ -267,9 +267,8 @@
     pro.manager,
     pro.sap_mid,
     pro.mpq
-    from t_product_batch batch
-    left join t_product_info pro on batch.id = pro.batch_id
-    where batch.batch_status=1 and pro.life_cycle = 1
+    from t_product_info pro
+    where pro.life_cycle = 1
     <if test="product != null and product != ''">
         and pro.product like concat('%',#{product,jdbcType=VARCHAR},'%')
     </if>
@@ -300,19 +299,20 @@
 
   <select id="selectBySapMid" resultMap="BaseResultMap">
     select * from t_product_info t
-    inner join t_product_batch b on t.batch_id = b.id
-    where b.batch_status = 1 and t.sap_mid = #{sapMid,jdbcType=VARCHAR}
+    where  t.sap_mid = #{sapMid,jdbcType=VARCHAR}
   </select>
 
   <select id="selectBySapMidAndPlatForm" resultMap="BaseResultMap">
     select * from t_product_info t
-    inner join t_product_batch b on t.batch_id = b.id
-    where b.batch_status = 1 and t.sap_mid = #{sapMid,jdbcType=VARCHAR} and t.platform = #{platForm,jdbcType=VARCHAR}
+    where t.sap_mid = #{sapMid,jdbcType=VARCHAR} and t.platform = #{platForm,jdbcType=VARCHAR}
   </select>
 
   <select id="selectByProductModelAndPlatForm" resultMap="BaseResultMap">
     select * from t_product_info t
-    inner join t_product_batch b on t.batch_id = b.id
-    where b.batch_status = 1 and t.product = #{productModel,jdbcType=VARCHAR} and t.platform = #{platForm,jdbcType=VARCHAR}
+    where t.product = #{productModel,jdbcType=VARCHAR} and t.platform = #{platForm,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectBySN" resultMap="BaseResultMap">
+    select * from t_product_info where active =1 and sn=#{sn,jdbcType=INTEGER}
   </select>
 </mapper>

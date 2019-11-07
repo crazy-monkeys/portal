@@ -24,4 +24,6 @@ public interface DeliverOrderLineMapper {
     DeliverOrderLine selectBySapDeliveryOrderLineNo(String sapDeliveryOrderLineNo);
 
     int updateReciveQty(@Param("deliverOrderId") Integer deliverOrderId, @Param("qty")BigDecimal qty);
+
+    int cancelRecive(@Param("deliverOrderId") Integer deliverOrderId, @Param("qty")Integer qty);
 }

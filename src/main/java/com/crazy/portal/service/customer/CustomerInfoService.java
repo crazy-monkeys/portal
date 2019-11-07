@@ -125,8 +125,6 @@ public class CustomerInfoService {
                     customerQueryBean.setBusinessType("A03");
                 }else if(null != org&&org.getSeq().equals(1001011)){
                     customerQueryBean.setBusinessType("A02");
-                }else{
-                    throw new BusinessException(ErrorCodes.BusinessEnum.CUSTOMER_ORG_ERROR);
                 }
             }
         }else{
@@ -473,10 +471,10 @@ public class CustomerInfoService {
 
         BlockingReasons blockingReasons = new BlockingReasons();
         //创建时默认都是否
-        blockingReasons.setOrderBlockingReasonCode("01");
+       /* blockingReasons.setOrderBlockingReasonCode("01");
         blockingReasons.setDeliveryBlockingReasonCode("01");
         blockingReasons.setBillingBlockingReasonCode("02");
-        blockingReasons.setSalesSupportBlockingIndicator("true");
+        blockingReasons.setSalesSupportBlockingIndicator("true");*/
         customer.setBlockingReasons(blockingReasons);
 
         customer.setRegistrationDate(customerInfo.getRegistTime());
@@ -621,7 +619,7 @@ public class CustomerInfoService {
         relationships.forEach(e->{
             Relationship relationship = new Relationship();
             relationship.setRelationshipBusinessPartnerInternalID(e.getCorporateId().toString());
-            relationship.setRoleCode(e.getCorporateType());
+            relationship.setRoleCode(String.format("%s%s",e.getCorporateType(),"-1"));
             relationshipList.add(relationship);
         });
         customer.setRelationship(relationshipList);
@@ -747,12 +745,7 @@ public class CustomerInfoService {
         List<CustomerAddress> addresses = new ArrayList<>();
         for(CustomerAddress address : customerInfo.getAddresses()){
             if(StringUtil.isNotEmpty(address.getCountry())){
-                List<String> st = JSON.parseArray(address.getCountry(),String.class);
-                String contact = "";
-                for(String s : st){
-                    contact += s+",";
-                }
-                address.setCountry(contact.substring(0,contact.lastIndexOf(",")));
+                address.setCountry(address.getCountry().substring(0,address.getCountry().lastIndexOf(",")));
                 addresses.add(address);
             }
         }
@@ -955,7 +948,7 @@ public class CustomerInfoService {
         visitBean.setAddress(visitRecord.getCustomerLocation());
 
         //客户 c4c id
-        CustomerInfo customerInfo = customerInfoMapper.selectByOutCode(visitRecord.getCustomerCode());
+        CustomerInfo customerInfo = customerInfoMapper.selectByInCode(visitRecord.getCustomerCode());
         MainActivityPartyBean mainActivityPartyBean = new MainActivityPartyBean();
         mainActivityPartyBean.setBusinessPartnerInternalID(customerInfo.getInCode());
         visitBean.setMainActivityPartyBean(mainActivityPartyBean);

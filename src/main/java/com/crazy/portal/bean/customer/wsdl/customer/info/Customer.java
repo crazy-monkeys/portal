@@ -76,7 +76,7 @@ public class Customer {
 
     /*状态 1- 2- */
     @XmlElement(name = "LifeCycleStatusCode")
-    private String lifeCycleStatusCode;
+    private String lifeCycleStatusCode="2";
 
     @XmlElement(name = "Organisation")
     private Organisation organisation;

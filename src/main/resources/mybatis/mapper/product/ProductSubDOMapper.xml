@@ -118,4 +118,8 @@
   <select id="selectBySub" resultMap="BaseResultMap">
     select * from t_product_sub where product_id = #{subId,jdbcType=INTEGER}
   </select>
+
+  <delete id="deleteByProductId">
+    delete from t_product_sub where product_id =#{productId,jdbcType=INTEGER}
+  </delete>
 </mapper>

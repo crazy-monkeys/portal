@@ -81,8 +81,8 @@ public class ProductService {
     /**
      * 同步MDM的产品信息
      */
-    @Transactional
-    public void syncProduct(){
+   /*  @Transactional
+   public void syncProduct(){
         try {
             BaseProResponseVO responseVO = CallApiUtils.callProductApi();
             List<ProductBean> productVOS = responseVO.getContents();
@@ -101,9 +101,37 @@ public class ProductService {
             log.error("产品每日同步异常，MSG：",e);
             throw new BusinessException(ErrorCodes.BusinessEnum.PRODUCT_SYNC_ERROR);
         }
+    }*/
+
+    @Transactional
+    public void syncProduct(){
+        try {
+            BaseProResponseVO responseVO = CallApiUtils.callProductApi();
+            List<ProductBean> productVOS = responseVO.getContents();
+            for(ProductBean vo : productVOS){
+                log.info("product:"+ JSON.toJSONString(vo));
+                ProductInfoDO productInfoDO = productInfoDOMapper.selectBySN(vo.getSN());
+                if(null != productInfoDO){
+                    mappingVO(productInfoDO,vo);
+                    productInfoDO.setLifeCycle(vo.getPriceFlag());
+                    productInfoDOMapper.updateByPrimaryKeySelective(productInfoDO);
+                }else{
+                    productInfoDO = new ProductInfoDO();
+                    mappingVO(productInfoDO,vo);
+                    productInfoDO.setLifeCycle(vo.getPriceFlag());
+                    productInfoDOMapper.insertSelective(productInfoDO);
+                }
+                saveProductSub(productInfoDO, vo);
+            }
+            productInfoDOMapper.updateProductMpq();
+        }catch (Exception e){
+            log.error("产品每日同步异常，MSG：",e);
+            throw new BusinessException(ErrorCodes.BusinessEnum.PRODUCT_SYNC_ERROR);
+        }
     }
 
     private void saveProductSub(ProductInfoDO infoDO, ProductBean vo){
+        productSubDOMapper.deleteByProductId(infoDO.getId());
         if(vo.getBOMCode().length>0){
             for(String bom : vo.getBOMCode()){
                 ProductSubDO productSubDO = new ProductSubDO();
@@ -117,6 +145,21 @@ public class ProductService {
             }
         }
     }
+
+    /*private void saveProductSub(ProductInfoDO infoDO, ProductBean vo){
+        if(vo.getBOMCode().length>0){
+            for(String bom : vo.getBOMCode()){
+                ProductSubDO productSubDO = new ProductSubDO();
+                productSubDO.setProductId(infoDO.getId());
+                productSubDO.setSubMid(bom.substring(0,bom.indexOf("-")));
+                productSubDO.setSubNumber(bom.substring(bom.indexOf("-")+1));
+                productSubDO.setActive(1);
+                productSubDO.setCreateTime(new Date());
+                productSubDO.setUpdateTime(new Date());
+                productSubDOMapper.insertSelective(productSubDO);
+            }
+        }
+    }*/
 
     private ProductBatchDO saveBatch(){
         productBatchDOMapper.updateStatus();

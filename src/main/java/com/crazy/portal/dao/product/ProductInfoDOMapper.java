@@ -22,6 +22,8 @@ public interface ProductInfoDOMapper {
 
     int updateProductMpq();
 
+    ProductInfoDO selectBySN(Integer sn);
+
     ProductInfoDO selectBySapMid(String sapMid);
 
     ProductInfoDO selectBySapMidAndPlatForm(@Param("sapMid") String sapMid, @Param("platForm") String platForm);

@@ -233,4 +233,8 @@
   <update id="updateReciveQty">
     UPDATE t_deliver_order_line set receive_quantity = receive_quantity+#{qty,jdbcType=DECIMAL} where deliver_order_line_id = #{deliverOrderId,jdbcType=INTEGER}
   </update>
+
+  <update id="cancelRecive">
+    UPDATE t_deliver_order_line set receive_quantity = #{qty,jdbcType=DECIMAL} where deliver_order_line_id = #{deliverOrderId,jdbcType=INTEGER}
+  </update>
 </mapper>

@@ -571,27 +571,29 @@ public class OrderApplyService extends CommonOrderService{
         List<DeliverOrderLine> lines = new ArrayList<>();
         orderLine.forEach(o->{
             bean.getOrderLine().forEach(e->{
-                if(o.getId().equals(e.getId())){
-                    BusinessUtil.assertFlase(o.getRemainingNum() < e.getDeliveryQuantity(),ErrorCodes.BusinessEnum.ORDER_QTY_IS_ENOUGH);
-                    DeliverOrderLine deliverOrderLine = new DeliverOrderLine();
-                    deliverOrderLine.setSalesOrderId(order.getId());
-                    deliverOrderLine.setSapSalesOrderLineNo(order.getRSapOrderId());
-                    deliverOrderLine.setSalesOrderLineId(o.getId());
-                    deliverOrderLine.setSapSalesOrderLineNo(o.getRItemNo());
-                    deliverOrderLine.setSapDeliverOrderLineNo(o.getRItemNo());
-                    deliverOrderLine.setProductId(o.getProductId());
-                    deliverOrderLine.setDeliveryQuantity(e.getDeliveryQuantity());
-                    deliverOrderLine.setActive(1);
-                    deliverOrderLine.setCreateUserId(userId);
+                if(e.getDeliveryQuantity()>0){
+                    if(o.getId().equals(e.getId())){
+                        BusinessUtil.assertFlase(o.getRemainingNum() < e.getDeliveryQuantity(),ErrorCodes.BusinessEnum.ORDER_QTY_IS_ENOUGH);
+                        DeliverOrderLine deliverOrderLine = new DeliverOrderLine();
+                        deliverOrderLine.setSalesOrderId(order.getId());
+                        deliverOrderLine.setSapSalesOrderLineNo(order.getRSapOrderId());
+                        deliverOrderLine.setSalesOrderLineId(o.getId());
+                        deliverOrderLine.setSapSalesOrderLineNo(o.getRItemNo());
+                        deliverOrderLine.setSapDeliverOrderLineNo(o.getRItemNo());
+                        deliverOrderLine.setProductId(o.getProductId());
+                        deliverOrderLine.setDeliveryQuantity(e.getDeliveryQuantity());
+                        deliverOrderLine.setActive(1);
+                        deliverOrderLine.setCreateUserId(userId);
 
-                    ProductInfoDO productInfo = productInfoDOMapper.selectBySapMidAndPlatForm(o.getProductId(),o.getPlatform());
-                    if(null != productInfo){
-                        deliverOrderLine.setProduct(productInfo.getProduct());
-                        deliverOrderLine.setBu(productInfo.getBu());
-                        deliverOrderLine.setPdt(productInfo.getPdt());
-                        deliverOrderLine.setPlatform(productInfo.getPlatform());
+                        ProductInfoDO productInfo = productInfoDOMapper.selectBySapMidAndPlatForm(o.getProductId(),o.getPlatform());
+                        if(null != productInfo){
+                            deliverOrderLine.setProduct(productInfo.getProduct());
+                            deliverOrderLine.setBu(productInfo.getBu());
+                            deliverOrderLine.setPdt(productInfo.getPdt());
+                            deliverOrderLine.setPlatform(productInfo.getPlatform());
+                        }
+                        lines.add(deliverOrderLine);
                     }
-                    lines.add(deliverOrderLine);
                 }
             });
         });
@@ -746,7 +748,7 @@ public class OrderApplyService extends CommonOrderService{
         detail.setInventoryCategory(category);
         detail.setInventoryUnitPrice(orderLine.getRPrice());
         detail.setSalesOrganization("3000");
-        detail.setDeliveryTime(DateUtil.format(new Date(),DateUtil.WEB_FORMAT));
+        detail.setDeliveryTime(DateUtil.format(deliverOrder.getDeliverDate(),DateUtil.WEB_FORMAT));
         detail.setDeliveryCompany(deliverOrder.getShippingPoint());
         detail.setPurchaseNumber(order.getPurchaseNo());
         return detail;
