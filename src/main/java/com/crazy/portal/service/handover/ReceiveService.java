@@ -148,7 +148,7 @@ public class ReceiveService extends AbstractHandover implements IHandover<Receiv
         List<ReceiveDetail> responseData = ExcelUtils.readExcel(checkResult.getFilePath(), ReceiveDetail.class);
         if(checkResult.isSuccess()){
             handoverService.updateStatus(recordId, 2);
-            return null;
+//            return null;
         }
         receiveDetailMapper.deleteByRecordId(recordId);
         for(ReceiveDetail detail : responseData){

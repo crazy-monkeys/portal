@@ -130,7 +130,7 @@ public class DeliverService extends AbstractHandover implements IHandover<Delive
         BiCheckResult checkResult = callBiServerByFtp(SAVE_SALES_IMPORT_FILE, deliverPushPath, thirdFileName, deliverPullPath);
         if(checkResult.isSuccess()){
             handoverService.updateStatus(recordId, 2);
-            return null;
+//            return null;
         }
         List<DeliverDetail> responseData = ExcelUtils.readExcel(checkResult.getFilePath(), DeliverDetail.class);
         deliverDetailMapper.deleteByRecordId(recordId);
