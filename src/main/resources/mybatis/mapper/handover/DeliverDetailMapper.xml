@@ -398,7 +398,7 @@
   <select id="selectUpdateDataById" resultMap="BaseResultMap" >
     select b.* from t_deliver_detail a
     inner join t_deliver_detail_update b on a.third_id = b.third_id
-    where a.id = #{recordId,jdbcType=INTEGER}
+    where a.record_id = #{recordId,jdbcType=INTEGER}
   </select>
 
   <select id="updateErrorInfoByBiId" >
