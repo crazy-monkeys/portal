@@ -19,5 +19,5 @@ public interface OrderLineMapper {
 
     List<OrderLine> selectByOrderId(Integer orderId);
 
-    List<OrderLine> selectByProduct(@Param("orderId") Integer orderId, @Param("product") String product);
+    List<OrderLine> selectByProduct(@Param("orderId") Integer orderId, @Param("product") String product, @Param("rRefItemNo") String rRefItemNo);
 }

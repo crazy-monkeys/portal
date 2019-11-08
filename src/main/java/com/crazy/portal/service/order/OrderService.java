@@ -274,18 +274,27 @@ public class OrderService extends CommonOrderService {
         com.crazy.portal.bean.order.wsdl.delivery.create.TItem tItem = new com.crazy.portal.bean.order.wsdl.delivery.create.TItem();
         List<com.crazy.portal.bean.order.wsdl.delivery.create.Item> items = new ArrayList<>();
         deliverOrderLineList.forEach(e->{
-            List<OrderLine> liens = orderLineMapper.selectByProduct(e.getSalesOrderId(), e.getProductId());
+            //找出对应订单行的信息
+            OrderLine orderLine = orderLineMapper.selectByPrimaryKey(e.getSalesOrderLineId());
+            items.add(mappingItem(orderLine, e.getDeliveryQuantity()));
+
+            //找出订单行对应的实体料行信息
+            List<OrderLine> liens = orderLineMapper.selectByProduct(e.getSalesOrderId(), e.getProductId(), orderLine.getRItemNo());
             liens.forEach(o->{
-                com.crazy.portal.bean.order.wsdl.delivery.create.Item item = new com.crazy.portal.bean.order.wsdl.delivery.create.Item();
-                item.setDeliveryQuantity(String.valueOf(e.getDeliveryQuantity()));
-                item.setDeliveryItemNo("");
-                item.setItemNo(o.getRItemNo().replaceAll("^(0+)", ""));
-                item.setProductId(o.getProductId());
-                items.add(item);
+                items.add(mappingItem(o, e.getDeliveryQuantity()));
             });
         });
         tItem.setItems(items);
         return tItem;
+    }
+
+    private com.crazy.portal.bean.order.wsdl.delivery.create.Item mappingItem(OrderLine orderLine, Integer delivery){
+        com.crazy.portal.bean.order.wsdl.delivery.create.Item item = new com.crazy.portal.bean.order.wsdl.delivery.create.Item();
+        item.setDeliveryQuantity(String.valueOf(delivery));
+        item.setDeliveryItemNo("");
+        item.setItemNo(orderLine.getRItemNo().replaceAll("^(0+)", ""));
+        item.setProductId(orderLine.getProductId());
+        return item;
     }
 
     public ZrfcsddeliverychangeResponse eccDeliveryUpdate(DeliverOrder order, List<DeliverOrderLine> deliverOrderLineList,String type){
