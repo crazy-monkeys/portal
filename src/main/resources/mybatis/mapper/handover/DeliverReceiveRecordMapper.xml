@@ -162,8 +162,7 @@
     when status = 1 then '已确认'
     when status = 2 then '已提交'
     when status = 3 then '已驳回'
-    when status = 4 then '修改待确认'
-    else '未知' end status_desc,
+    when status = 4 then '修改待确认' else '未知' end status_desc,
     DATE_FORMAT(upload_time,'%Y-%m-%d %H:%i:%s') upload_time_str,
     DATE_FORMAT(approval_time,'%Y-%m-%d %H:%i:%s') approval_time_str
     from t_deliver_receive_record
