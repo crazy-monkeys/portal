@@ -292,7 +292,7 @@ public class DeliverService extends AbstractHandover implements IHandover<Delive
         for(DeliverDetailUpdate detail : deliverDetails){
             biIds.add(String.valueOf(detail.getThirdId()));
             DeliverDetail dbRecord = deliverDetailMapper.selectByThirdId(detail.getThirdId());
-            recordIds.add(dbRecord.getRecordId());
+            recordIds.add(null == dbRecord ? null : dbRecord.getRecordId());
         }
         //
         List<Integer> statusList = handoverService.getStatusByIds(recordIds);
