@@ -274,7 +274,7 @@ public class OrderApproveService extends CommonOrderService{
         line.setRSapQty(etItem.getSapquantity().intValue());
         line.setRSapOrderId(etItem.getSaporderid().replaceAll("^(0+)", ""));
         line.setRPlatform(etItem.getPlatform());
-        line.setPlatform(etItem.getPlatform());
+        line.setPlatform(line.getPlatform() == null ? etItem.getPlatform() : line.getPlatform());
         line.setNum(etItem.getSapquantity().intValue());
         line.setCreateId(userId);
         line.setCreateTime(DateUtil.getCurrentTS());
