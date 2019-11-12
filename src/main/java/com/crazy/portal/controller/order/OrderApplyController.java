@@ -71,12 +71,10 @@ public class OrderApplyController extends BaseController {
      * @return
      */
     @OperationLog
-    @PostMapping("/modify/{orderId}")
-    public BaseResponse modify(@PathVariable Integer orderId,
-                               @RequestBody @Valid OrderApply orderApply) throws Exception{
+    @PostMapping("/modify")
+    public BaseResponse modify(@RequestBody @Valid OrderApply orderApply) throws Exception{
 
-
-        orderApplyService.modifyOrderApply(orderId,orderApply,super.getCurrentUserId());
+        orderApplyService.modifyOrderApply(orderApply,super.getCurrentUserId());
         return successResult();
     }
 

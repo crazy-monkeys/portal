@@ -352,28 +352,35 @@ public class OrderApplyService extends CommonOrderService{
     }
 
     /**
-     * 审批通过-订单修改申请
+     * 修改订单 申请
      * @param userId
      */
     @Transactional
-    public void modifyOrderApply(Integer orderId,OrderApply orderApply, Integer userId){
-        Order order = orderMapper.selectByPrimaryKey(orderId);
-        BusinessUtil.notNull(order, ErrorCodes.BusinessEnum.ORDER_NOT_FOUND);
-        String rSapOrderId = order.getRSapOrderId();
-        boolean result = this.hasApprovalPendingOrder(rSapOrderId);
-        BusinessUtil.assertFlase(result, ErrorCodes.BusinessEnum.ORDER_PENDING_ORDER);
-
-        orderApply.setId(null);
+    public void modifyOrderApply(OrderApply orderApply, Integer userId) throws Exception{
+        Integer applyId = orderApply.getId();
         orderApply.setActive(1);
         orderApply.setCreateId(userId);
         orderApply.setCreateTime(DateUtil.getCurrentTS());
-        orderApply.setAppalyType(2);
         orderApply.setApprovalStatus(Enums.OrderApprovalStatus.WAIT_APPROVAL.getValue());
         orderApply.setJsonLines(orderApply.objToLineJson(orderApply.getOrderLines()));
-        orderApply.setGrossValue(order.getRGrossValue());
-        orderApply.setNetValue(order.getRNetValue());
-        orderApply.setRSapOrderId(rSapOrderId);
-        orderApplyMapper.insertSelective(orderApply);
+        Integer orderId = orderApply.getOrderId();
+        if(Objects.nonNull(orderId)){
+            Order order = orderMapper.selectByPrimaryKey(orderId);
+            BusinessUtil.notNull(order, ErrorCodes.BusinessEnum.ORDER_NOT_FOUND);
+            String rSapOrderId = order.getRSapOrderId();
+            boolean result = this.hasApprovalPendingOrder(rSapOrderId);
+            BusinessUtil.assertFlase(result, ErrorCodes.BusinessEnum.ORDER_PENDING_ORDER);
+            orderApply.setAppalyType(2);
+            orderApply.setGrossValue(order.getRGrossValue());
+            orderApply.setNetValue(order.getRNetValue());
+            orderApply.setRSapOrderId(rSapOrderId);
+            orderApplyMapper.insertSelective(orderApply);
+        }else{
+            //如果有传id过来，说明是申请单修改非新建
+            OrderApply applyInDB = orderApplyMapper.selectByPrimaryKey(applyId);
+            BeanUtils.copyNotNullFields(orderApply,applyInDB);
+            orderApplyMapper.updateByPrimaryKeySelective(applyInDB);
+        }
     }
 
     /**
