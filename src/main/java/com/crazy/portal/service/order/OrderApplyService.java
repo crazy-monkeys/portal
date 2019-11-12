@@ -325,7 +325,6 @@ public class OrderApplyService extends CommonOrderService{
 
         BeanUtils.copyNotNullFields(order,orderApply);
         order.setDealerId(dealerByUser.getId());
-        order.setApprovalStatus(Enums.OrderApprovalStatus.WAIT_APPROVAL.getValue());
         order.setUpdateId(userId);
         order.setUpdateTime(DateUtil.getCurrentTS());
         order.setApprovalStatus(Enums.OrderApprovalStatus.WAIT_APPROVAL.getValue());
