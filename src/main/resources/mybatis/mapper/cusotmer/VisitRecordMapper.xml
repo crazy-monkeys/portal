@@ -300,7 +300,10 @@
       a.*,b.cust_name as customer_name
       from t_visit_record a
       left join t_customer_info b on a.customer_code = b.out_code
-      where a.create_user_id = #{userId,jdbcType=INTEGER} and a.active = 1
+      where a.active = 1
+      <if test="userId != null and userId != ''">
+        and a.create_user_id = #{userId,jdbcType=INTEGER}
+      </if>
       <if test="customerCode != null and customerCode != ''">
         and a.customer_code like concat('%', #{customerCode,jdbcType=VARCHAR}, '%')
       </if>

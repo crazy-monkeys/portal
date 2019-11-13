@@ -70,7 +70,6 @@ public class PriceSyncHandler extends AbstractHandler implements IHandler<PriceS
             }
             catalogPriceService.insertCatalogPrice(this.buildCatalogPrice(x, new JSONArray(), now));
         });
-        long end = System.currentTimeMillis();
         return response;
     }
 

@@ -122,7 +122,7 @@ public class AnnouncementService {
     public void revokeById(Integer id, Integer userId) {
         Announcement dbRecord = announcementDOMapper.selectByPrimaryKey(id);
         BusinessUtil.notNull(dbRecord, ANNOUNCEMENT_DB_RECORD_NOT_FOUND);
-        BusinessUtil.assertFlase((dbRecord.getCreateUserId() != userId), ANNOUNCEMENT_USER_NOT_MATCH);
+        BusinessUtil.assertTrue((dbRecord.getCreateUserId().equals(userId)), ANNOUNCEMENT_USER_NOT_MATCH);
         BusinessUtil.assertFlase((1 != dbRecord.getStatus()), ANNOUNCEMENT_STATUS_ERROR);
         dbRecord.setStatus(-1);
         announcementDOMapper.updateByPrimaryKeySelective(dbRecord);

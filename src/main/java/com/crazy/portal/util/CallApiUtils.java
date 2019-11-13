@@ -3,23 +3,23 @@ package com.crazy.portal.util;
 import com.alibaba.fastjson.JSON;
 import com.crazy.portal.bean.customer.wsdl.credit.ZrfcsdcustomercreditResponse;
 import com.crazy.portal.bean.customer.wsdl.credit.Zsdscredit;
-import com.crazy.portal.bean.customer.wsdl.customer.detail.CustomerDetail;
 import com.crazy.portal.bean.customer.wsdl.customer.detail.CustomerDetailCreate;
 import com.crazy.portal.bean.customer.wsdl.customer.info.CustomerInfoCreate;
-import com.crazy.portal.bean.customer.wsdl.customer.ws.CustomerBundleMaintainConfirmationMessageSyncV1;
-import com.crazy.portal.bean.customer.wsdl.customer.ws.detail.BOExtendCustomerCreateConfirmationMessageSync;
 import com.crazy.portal.bean.customer.wsdl.customer.ws.detail.BOExtendCustomerUpdateConfirmationMessageSync;
 import com.crazy.portal.bean.customer.wsdl.employee.EmployeeBasicDataResponseMessageSync;
 import com.crazy.portal.bean.customer.wsdl.orgnation.OrganisationalUnitByIDResponseMessageSync;
-import com.crazy.portal.bean.customer.wsdl.visits1.AppointmentActivityMaintainConfirmationBundleMessageSyncV1;
 import com.crazy.portal.bean.customer.wsdl.visits.VisitCreate;
+import com.crazy.portal.bean.customer.wsdl.visits1.AppointmentActivityMaintainConfirmationBundleMessageSyncV1;
 import com.crazy.portal.bean.product.BaseProResponseVO;
 import com.crazy.portal.config.exception.BusinessException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @ClassName: CallApiUtils
@@ -94,6 +94,8 @@ public class CallApiUtils {
         String url;
         if (StringUtils.isNotEmpty(baseMapping)) {
             url = ECC_API_URL + BI_URL + baseMapping + function_code + "?sFromUrl=" + fromUrl + "&sToUrl=" + toUrl;
+        } else if (function_code.toString().equals(Enums.BI_FUNCTION_CODE.UPDATE_SALES_IMPORT_FILE.toString())){
+            url = ECC_API_URL + BI_URL+"PORTAL/BI/"+ function_code + "?sFromUrl=" + fromUrl + "&sToUrl=" + toUrl;
         } else {
             url = ECC_API_URL + BI_URL + function_code + "?sFromUrl=" + fromUrl + "&sToUrl=" + toUrl;
         }
@@ -202,26 +204,23 @@ public class CallApiUtils {
         }
     }
 
-    private static String C4C_CUSTOMER_INFO = "/cxf/PORTAL/C4C/CUSTOMERMASTER";
+    private static String C4C_CUSTOMER_INFO = "/cxf/PORTAL/C4C/CREATECUSTOMERMASTER";
 
-    public static String callC4cCustomerInfo(CustomerInfoCreate create) {
+    public static Map<String,String> callC4cCustomerInfo(CustomerInfoCreate create) {
         String url = String.format("%s%s", ECC_API_URL, C4C_CUSTOMER_INFO);
         try {
             String requestXml = JaxbXmlUtil.convertToXml(create).replace("</y4r:CorporateAssets currencyCode=\"CNY\">", "</y4r:CorporateAssets>");
             log.info(requestXml);
             String response = HttpClientUtils.post(url, requestXml);
             log.info(response);
-            CustomerBundleMaintainConfirmationMessageSyncV1 v1 = JaxbXmlUtil.convertSoapXmlToJavaBean2(response, CustomerBundleMaintainConfirmationMessageSyncV1.class);
-            if (!v1.getCustomer().isEmpty() && null != v1.getCustomer().get(0)) {
-                if (v1.getCustomer().get(0).getReferenceObjectNodeSenderTechnicalID().equals("03")) {
-                    log.error("customer sync c4c log :" + JSON.toJSONString(v1));
-                    throw new BusinessException("客户信息同步C4C失败");
-                }
+            Map<String,String> responseMap = new HashMap<>();
+            if(response.indexOf("<InternalID>")>0 && response.indexOf("<ExternalID>")>0){
+                responseMap.put("inCode",response.substring(response.indexOf("<InternalID>")+12,response.indexOf("</InternalID>")));
+                responseMap.put("outCode",response.substring(response.indexOf("<ExternalID>")+12,response.indexOf("</ExternalID>")));
             }else{
-                log.error("customer sync c4c log :" + JSON.toJSONString(v1));
-                 throw new BusinessException("客户信息同步C4C异常");
+                throw new BusinessException(ErrorCodes.BusinessEnum.CUSTOMER_IS_SYNC_ERROR);
             }
-            return v1.getCustomer().get(0).getInternalID();
+            return responseMap;
         } catch (Exception e) {
             log.error("", e);
             throw new BusinessException("客户信息同步C4C异常");
@@ -246,4 +245,105 @@ public class CallApiUtils {
             throw new BusinessException("C4C扩展信息修改异常");
         }
     }
+
+    public static void main(String[] args) {
+        String str = "<soap:Envelope xmlns:soap=\"http://www.w3.org/2003/05/soap-envelope\">\n" +
+                "    <soap:Header/>\n" +
+                "    <soap:Body>\n" +
+                "        <ns1:CustomerByElementsResponse_sync xmlns:ns1=\"http://sap.com/xi/SAPGlobal20/Global\">\n" +
+                "            <Customer>\n" +
+                "                <ChangeStateID>                 20191111094554.5544210</ChangeStateID>\n" +
+                "                <UUID>00163e73-29d9-1eea-818d-01b63ea4f2a1</UUID>\n" +
+                "                <SystemAdministrativeData>\n" +
+                "                    <CreationDateTime>2019-11-11T09:45:54.554421Z</CreationDateTime>\n" +
+                "                    <CreationIdentityUUID>00163e73-2961-1ee9-abbb-75417d4c7631</CreationIdentityUUID>\n" +
+                "                    <LastChangeDateTime>2019-11-11T09:45:54.554421Z</LastChangeDateTime>\n" +
+                "                    <LastChangeIdentityUUID>00163e73-2961-1ee9-abbb-75417d4c7631</LastChangeIdentityUUID>\n" +
+                "                </SystemAdministrativeData>\n" +
+                "                <CategoryCode>2</CategoryCode>\n" +
+                "                <CustomerIndicator>true</CustomerIndicator>\n" +
+                "                <LifeCycleStatusCode>2</LifeCycleStatusCode>\n" +
+                "                <Organisation>\n" +
+                "                    <FirstLineName>test201911110002</FirstLineName>\n" +
+                "                </Organisation>\n" +
+                "                <LegalCompetenceIndicator>true</LegalCompetenceIndicator>\n" +
+                "                <AddressInformation>\n" +
+                "                    <UUID>00163e73-29d9-1eea-818d-01b63ea5f2a1</UUID>\n" +
+                "                    <CurrentAddressSnapshotUUID>00163e73-29d9-1eea-818d-01b63eb892a1</CurrentAddressSnapshotUUID>\n" +
+                "                    <AddressUsage>\n" +
+                "                        <AddressUsageCode>XXDEFAULT</AddressUsageCode>\n" +
+                "                    </AddressUsage>\n" +
+                "                    <Address>\n" +
+                "                        <PostalAddress>\n" +
+                "                            <CountryCode>CN</CountryCode>\n" +
+                "                            <CityName>10</CityName>\n" +
+                "                            <StreetName>1</StreetName>\n" +
+                "                            <TimeZoneCode>UTC+8</TimeZoneCode>\n" +
+                "                        </PostalAddress>\n" +
+                "                        <Telephone>\n" +
+                "                            <FormattedNumberDescription>+86 15200000000</FormattedNumberDescription>\n" +
+                "                        </Telephone>\n" +
+                "                        <FormattedAddress>\n" +
+                "                            <FormattedAddressDescription>test201911110002 / 1 / 10 / CN</FormattedAddressDescription>\n" +
+                "                            <FormattedPostalAddressDescription>1 / 10 / CN</FormattedPostalAddressDescription>\n" +
+                "                            <FormattedAddress>\n" +
+                "                                <FirstLineDescription>test201911110002</FirstLineDescription>\n" +
+                "                                <SecondLineDescription>1</SecondLineDescription>\n" +
+                "                                <ThirdLineDescription>10</ThirdLineDescription>\n" +
+                "                                <FourthLineDescription>China</FourthLineDescription>\n" +
+                "                            </FormattedAddress>\n" +
+                "                            <FormattedPostalAddress>\n" +
+                "                                <FirstLineDescription>1</FirstLineDescription>\n" +
+                "                                <SecondLineDescription>10</SecondLineDescription>\n" +
+                "                                <ThirdLineDescription>China</ThirdLineDescription>\n" +
+                "                            </FormattedPostalAddress>\n" +
+                "                        </FormattedAddress>\n" +
+                "                    </Address>\n" +
+                "                </AddressInformation>\n" +
+                "                <Relationship>\n" +
+                "                    <RelationshipBusinessPartnerUUID>00163e73-29a9-1ed9-bb99-0ddddb9a7690</RelationshipBusinessPartnerUUID>\n" +
+                "                    <RelationshipBusinessPartnerInternalID>300137</RelationshipBusinessPartnerInternalID>\n" +
+                "                    <RoleCode>Z004-1</RoleCode>\n" +
+                "                    <DefaultIndicator>true</DefaultIndicator>\n" +
+                "                    <BusinessPartnerRelationshipRootUUID>00163e73-29d9-1eea-818d-01b63ea6f2a1</BusinessPartnerRelationshipRootUUID>\n" +
+                "                </Relationship>\n" +
+                "                <Role>\n" +
+                "                    <RoleCode>CRM000</RoleCode>\n" +
+                "                </Role>\n" +
+                "                <RoleDescription>Customer</RoleDescription>\n" +
+                "                <DirectResponsibility>\n" +
+                "                    <PartyRoleCode>142</PartyRoleCode>\n" +
+                "                    <EmployeeID>20742</EmployeeID>\n" +
+                "                    <EmployeeUUID>00163e73-29d9-1ed9-bd90-ccb56fe6b024</EmployeeUUID>\n" +
+                "                    <ValidityPeriod>\n" +
+                "                        <StartDate>0001-01-01</StartDate>\n" +
+                "                        <EndDate>9999-12-31</EndDate>\n" +
+                "                    </ValidityPeriod>\n" +
+                "                    <DefaultIndicator>true</DefaultIndicator>\n" +
+                "                </DirectResponsibility>\n" +
+                "                <ns2:Z_CITYNAME xmlns:ns2=\"http://0003111061-one-off.sap.com/Y4R4GVT9Y_\">10</ns2:Z_CITYNAME>\n" +
+                "                <ns2:Z_STREETNAME xmlns:ns2=\"http://0003111061-one-off.sap.com/Y4R4GVT9Y_\">1</ns2:Z_STREETNAME>\n" +
+                "                <ns2:Businessintroduction xmlns:ns2=\"http://0003111061-one-off.sap.com/Y4R4GVT9Y_\">11</ns2:Businessintroduction>\n" +
+                "                <ns2:StaffNumber xmlns:ns2=\"http://0003111061-one-off.sap.com/Y4R4GVT9Y_\">1</ns2:StaffNumber>\n" +
+                "                <ns2:DevelopersNumber xmlns:ns2=\"http://0003111061-one-off.sap.com/Y4R4GVT9Y_\">1</ns2:DevelopersNumber>\n" +
+                "                <ns2:CorporateAssets xmlns:ns2=\"http://0003111061-one-off.sap.com/Y4R4GVT9Y_\" currencyCode=\"CNY\">1.0</ns2:CorporateAssets>\n" +
+                "                <ns2:RegistrationDate xmlns:ns2=\"http://0003111061-one-off.sap.com/Y4R4GVT9Y_\">2019-11-05</ns2:RegistrationDate>\n" +
+                "                <ns2:AccountRole xmlns:ns2=\"http://0003111061-one-off.sap.com/Y4R4GVT9Y_\">Z002</ns2:AccountRole>\n" +
+                "                <ns2:Type xmlns:ns2=\"http://0003111061-one-off.sap.com/Y4R4GVT9Y_\">A03</ns2:Type>\n" +
+                "                <ns2:IsLicenseAccount xmlns:ns2=\"http://0003111061-one-off.sap.com/Y4R4GVT9Y_\">Y</ns2:IsLicenseAccount>\n" +
+                "            </Customer>\n" +
+                "            <ProcessingConditions>\n" +
+                "                <ReturnedQueryHitsNumberValue>1</ReturnedQueryHitsNumberValue>\n" +
+                "                <MoreHitsAvailableIndicator>true</MoreHitsAvailableIndicator>\n" +
+                "                <LastReturnedObjectID>00163E7329D91EEA818D01B63EA4F2A1</LastReturnedObjectID>\n" +
+                "            </ProcessingConditions>\n" +
+                "        </ns1:CustomerByElementsResponse_sync>\n" +
+                "    </soap:Body>\n" +
+                "</soap:Envelope>";
+
+        System.out.println(str.indexOf("<InternalID>"));
+        System.out.println(str.substring(str.indexOf("<InternalID>")+12,str.indexOf("</InternalID>")));
+        System.out.println(str.substring(str.indexOf("<ExternalID>")+12,str.indexOf("</ExternalID>")));
+    }
+
 }

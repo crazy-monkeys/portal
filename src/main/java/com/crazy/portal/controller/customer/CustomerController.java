@@ -9,6 +9,7 @@ import com.crazy.portal.bean.customer.visitRecord.VisitRecordQueryBean;
 import com.crazy.portal.controller.BaseController;
 import com.crazy.portal.entity.cusotmer.CustomerInfo;
 import com.crazy.portal.service.customer.CustomerInfoService;
+import com.crazy.portal.util.Enums;
 import com.crazy.portal.util.ExcelUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -113,7 +114,9 @@ public class CustomerController extends BaseController{
 
     @GetMapping("/visitRecord/list")
     public BaseResponse visitRecordList(VisitRecordQueryBean bean){
-        bean.setUserId(this.getCurrentUser().getDealerId());
+        if(!super.getCurrentUser().getUserType().equals(Enums.USER_TYPE.internal.toString())){
+            bean.setUserId(this.getCurrentUser().getDealerId());
+        }
         return successResult(customerInfoService.selectVisitRecordPage(bean));
     }
 

@@ -746,8 +746,8 @@ public class OrderApplyService extends CommonOrderService{
             category = "分销商专货";
         }
         detail.setInventoryCategory(category);
-        detail.setInventoryUnitPrice(orderLine.getRPrice());
-        detail.setSalesOrganization("3000");
+        detail.setInventoryUnitPrice(orderLine.getRPrice().divide(new BigDecimal(orderLine.getRSapQty()),4,BigDecimal.ROUND_UP));
+        detail.setSalesOrganization(deliverOrder.getShippingPoint());
         detail.setDeliveryTime(DateUtil.format(deliverOrder.getDeliverDate(),DateUtil.WEB_FORMAT));
         detail.setDeliveryCompany(deliverOrder.getShippingPoint());
         detail.setPurchaseNumber(order.getPurchaseNo());

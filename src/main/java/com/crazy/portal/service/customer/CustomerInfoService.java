@@ -32,7 +32,6 @@ import com.crazy.portal.service.system.SysParamService;
 import com.crazy.portal.util.*;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.cxf.Bus;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -111,7 +110,7 @@ public class CustomerInfoService {
         if(customerQueryBean.getQueryType()==3){
             if(user.getUserType().equals(Enums.USER_TYPE.internal.toString())){
                 InternalUser internalUser = internalUserMapper.selectUserByName(user.getLoginName());
-                BusinessUtil.assertFlase(null == user,ErrorCodes.SystemManagerEnum.USER_NOT_EXISTS);
+                BusinessUtil.assertFlase(null == internalUser||null==internalUser.getUserNo(),ErrorCodes.SystemManagerEnum.SYS_IN_USER_ERROR);
                 customerQueryBean.setReportSales(internalUser.getUserNo());
             }else{
                 CustomerInfo dealer = customerInfoMapper.selectByPrimaryKey(user.getDealerId());
@@ -408,11 +407,11 @@ public class CustomerInfoService {
 
     private void customerInfoSync(CustomerInfo customerInfo, String type){
         CustomerInfoCreate create = syncCustomerInfo(customerInfo, type);
-        String c4cId = CallApiUtils.callC4cCustomerInfo(create);
+        Map<String,String> responseMap = CallApiUtils.callC4cCustomerInfo(create);
       //  CustomerDetailCreate detail = syncCustomerDetail(customerInfo, c4cId);
         //CallApiUtils.callC4cCustomerDetail(detail);
         //查询eccid
-        customerInfoMapper.updateC4CId(customerInfo.getId(), c4cId);
+        customerInfoMapper.updateC4CId(customerInfo.getId(), responseMap.get("inCode"), responseMap.get("outCode"));
     }
 
     /**

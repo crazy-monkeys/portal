@@ -222,6 +222,8 @@ public class OrderService extends CommonOrderService {
                     deliverOrderLine.setDeliveryQuantity(e.getDeliveryQuantity());
                     deliverOrderLineMapper.updateByPrimaryKeySelective(deliverOrderLine);
                 });
+            }else{
+                throw new BusinessException(response.getResultmessage());
             }
         }
     }
@@ -238,11 +240,16 @@ public class OrderService extends CommonOrderService {
         if(vo.getApprovalStatus().equals(Enums.OrderApprovalStatus.ADOPT.getValue())){
             DeliverOrder deliverOrder = deliverOrderMapper.selectByPrimaryKey(approval.getSerializelDeliveryOrderLine().get(0).getDeliverOrderId());
             BusinessUtil.assertFlase(null == deliverOrder,ErrorCodes.BusinessEnum.ORDER_NOT_FOUND);
+            List<DeliverOrderLine> deliverOrderLines = deliverOrderLineMapper.selectByDeliveryOrderId(deliverOrder.getDeliverOrderId());
 
-            ZrfcsddeliverychangeResponse response = eccDeliveryUpdate(deliverOrder, approval.getSerializelDeliveryOrderLine(),"D");
+            String type = "U";
+            if(approval.getDeliveryOrderLine().size() == deliverOrderLines.size()){
+                type = "D";
+            }
+
+            ZrfcsddeliverychangeResponse response = eccDeliveryUpdate(deliverOrder, approval.getSerializelDeliveryOrderLine(),type);
             if(response.getResulttype().equals("0")){
-                List<DeliverOrderLine> deliverOrderLines = deliverOrderLineMapper.selectByDeliveryOrderId(deliverOrder.getDeliverOrderId());
-                if(approval.getDeliveryOrderLine().size() == deliverOrderLines.size()){
+                if(type.equals("D")){
                     deliverOrder.setActive(0);
                     deliverOrderMapper.updateByPrimaryKeySelective(deliverOrder);
                 }
@@ -254,6 +261,8 @@ public class OrderService extends CommonOrderService {
                     deliverOrderLine.setActive(0);
                     deliverOrderLineMapper.updateByPrimaryKeySelective(deliverOrderLine);
                 });
+            }else{
+                throw new BusinessException(response.getResultmessage());
             }
         }
     }
@@ -302,23 +311,34 @@ public class OrderService extends CommonOrderService {
         content.setDeliverydate(DateUtil.format(order.getDeliverDate(),DateUtil.WEB_FORMAT));
         content.setSapDeliveryId(order.getSapDeliverOrderNo());
         content.setIType(type);
-        content.setTItem(gettItem(deliverOrderLineList,type));
+        content.setTItem(gettItem(deliverOrderLineList));
         ZrfcsdDeliveryUpdateBody body = new ZrfcsdDeliveryUpdateBody(content);
         ZrfcsdDeliveryUpdate update = new ZrfcsdDeliveryUpdate(body);
         return orderApiService.deliveryUpdate(update);
     }
 
-    private TItem gettItem(List<DeliverOrderLine> deliverOrderLineList,String type){
+    private TItem gettItem(List<DeliverOrderLine> deliverOrderLineList){
         TItem tItem = new TItem();
         List<Item> items = new ArrayList<>();
         deliverOrderLineList.forEach(e->{
-            Item item = new Item();
-            item.setOperationType(type);
-            item.setDeliveryItemNo(e.getSapSalesOrderLineNo());
-            item.setDeliveryQuantity(String.valueOf(e.getDeliveryQuantity()));
-            items.add(item);
+            OrderLine orderLine = orderLineMapper.selectByPrimaryKey(e.getSalesOrderLineId());
+            items.add(mappingUpdateItem(e.getSapSalesOrderLineNo(),String.valueOf(e.getDeliveryQuantity())));
+
+            //找出订单行对应的实体料行信息
+            List<OrderLine> liens = orderLineMapper.selectByProduct(e.getSalesOrderId(), e.getProductId(), orderLine.getRItemNo());
+            liens.forEach(o->{
+                items.add(mappingUpdateItem(o.getRItemNo(),String.valueOf(e.getDeliveryQuantity())));
+            });
         });
         tItem.setItems(items);
         return tItem;
+    }
+
+    private Item mappingUpdateItem(String orderLineNo, String qty){
+        Item item = new Item();
+        item.setOperationType("D");
+        item.setDeliveryItemNo(orderLineNo);
+        item.setDeliveryQuantity(qty);
+        return item;
     }
 }

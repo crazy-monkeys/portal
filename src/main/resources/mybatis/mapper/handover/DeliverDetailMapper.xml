@@ -396,8 +396,9 @@
   </select>
 
   <select id="selectUpdateDataById" resultMap="BaseResultMap" >
-    select b.* from t_deliver_detail a
+    select b.*,c.dealer_name from t_deliver_detail a
     inner join t_deliver_detail_update b on a.third_id = b.third_id
+    inner join t_deliver_receive_record c on a.record_id = c.id
     where a.record_id = #{recordId,jdbcType=INTEGER}
   </select>
 

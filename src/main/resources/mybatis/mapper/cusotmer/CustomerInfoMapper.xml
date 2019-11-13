@@ -814,7 +814,7 @@
   </select>
 
   <update id="updateC4CId">
-    update t_customer_info set in_code = #{inCode,jdbcType=VARCHAR} where active =1 and id = #{custId,jdbcType=INTEGER}
+    update t_customer_info set in_code = #{inCode,jdbcType=VARCHAR},out_code = #{outCode,jdbcType=VARCHAR} where active =1 and id = #{custId,jdbcType=INTEGER}
   </update>
 
   <select id="selectDealerShip" resultMap="BaseResultMap">
