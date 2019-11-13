@@ -256,7 +256,7 @@ public class DeliverService extends AbstractHandover implements IHandover<Delive
         try {
             //请求了第三方，并拿到了结果
             BiCheckResult checkResult = callBiServerByFtp(UPDATE_SALES_IMPORT_FILE, deliverPushPath , thirdFileName, ftpPullPath);
-            responseData = ExcelUtils.readExcel(checkResult.getFilePath(), DeliverDetail.class);
+            /*responseData = ExcelUtils.readExcel(checkResult.getFilePath(), DeliverDetail.class);
             if(!checkResult.isSuccess()){
                 for(DeliverDetail resData : responseData){
                     deliverDetailMapper.updateErrorInfoByBiId(resData.getThirdId(), resData.getErrorMsg());
@@ -276,7 +276,7 @@ public class DeliverService extends AbstractHandover implements IHandover<Delive
                     deliverDetailMapper.updateByPrimaryKeySelective(dbRecord);
                     deliverDetailUpdateMapper.batchDeleteByBiId(detail.getThirdId());
                 }
-            }
+            }*/
         }catch (Exception ex) {
             throw new BusinessException(HANDOVER_BI_SERVER_EXCEPTION);
         }
