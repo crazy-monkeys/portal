@@ -21,7 +21,6 @@ import static com.crazy.portal.util.ErrorCodes.BusinessEnum.*;
 
 @Slf4j
 @Service
-@Transactional
 public class HandoverService {
 
     @Resource
@@ -104,7 +103,7 @@ public class HandoverService {
         deliverReceiveRecordMapper.updateByPrimaryKeySelective(record);
     }
 
-
+    @Transactional
     public DeliverReceiveRecord genRecord(String dealerName, Integer userId, Integer type) {
         DeliverReceiveRecord record = new DeliverReceiveRecord();
         record.setUploadTime(new Date());
@@ -117,10 +116,12 @@ public class HandoverService {
         return record;
     }
 
+    @Transactional
     public void updateStatus(Integer recordId, Integer status){
         deliverReceiveRecordMapper.updateStatusById(Arrays.asList(recordId), status);
     }
 
+    @Transactional
     public void updateStatus(List<Integer> ids, Integer status){
         deliverReceiveRecordMapper.updateStatusById(ids, status);
     }

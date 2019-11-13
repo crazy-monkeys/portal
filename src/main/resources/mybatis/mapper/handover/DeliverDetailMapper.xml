@@ -402,10 +402,10 @@
     where a.record_id = #{recordId,jdbcType=INTEGER}
   </select>
 
-  <select id="updateErrorInfoByBiId" >
+  <update id="updateErrorInfoByBiId" >
     update t_deliver_detail set error_msg = #{errorMsg,jdbcType=VARCHAR}
     where third_id = #{thirdId,jdbcType=VARCHAR}
-  </select>
+  </update>
 
   <select id="selectEmailInfoByRecordId" resultMap="BaseResultMap" >
     select a.customer_full_name,group_concat(a.id) id_str

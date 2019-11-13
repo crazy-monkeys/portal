@@ -1,7 +1,6 @@
 package com.crazy.portal.service.handover;
 
 import com.alibaba.fastjson.JSONObject;
-import com.crazy.portal.bean.BaseResponse;
 import com.crazy.portal.bean.customer.basic.FileVO;
 import com.crazy.portal.bean.handover.DeliverTemplateBean;
 import com.crazy.portal.bean.handover.HandoverUploadVO;
@@ -14,7 +13,6 @@ import com.crazy.portal.entity.cusotmer.CustomerContact;
 import com.crazy.portal.entity.handover.DeliverDetail;
 import com.crazy.portal.entity.handover.DeliverDetailUpdate;
 import com.crazy.portal.entity.handover.DeliverReceiveRecord;
-import com.crazy.portal.service.customer.CustCorporateRelationshipService;
 import com.crazy.portal.service.customer.CustomerContactService;
 import com.crazy.portal.service.customer.CustomerInfoService;
 import com.crazy.portal.util.*;
@@ -38,7 +36,7 @@ import static com.crazy.portal.util.ErrorCodes.BusinessEnum.*;
 
 @Slf4j
 @Service("deliver")
-@Transactional
+//@Transactional
 public class DeliverService extends AbstractHandover implements IHandover<DeliverDetail> {
 
     @Resource
@@ -70,7 +68,7 @@ public class DeliverService extends AbstractHandover implements IHandover<Delive
     @Value("${portal.view-url}")
     private String portalViewUrl;
 
-
+    @Transactional
     @Override
     public HandoverUploadVO verificationData(List<DeliverDetail> deliverData, Integer userId) {
         if(null == deliverData || deliverData.isEmpty()){
@@ -90,6 +88,7 @@ public class DeliverService extends AbstractHandover implements IHandover<Delive
         return genThirdResult(checkResult, responseData, record.getId());
     }
 
+    @Transactional
     @Override
     public HandoverUploadVO verificationDataByErrorData(List<?> data, Integer userId, Integer recordId) {
         if(null == data || data.isEmpty()){
@@ -121,6 +120,7 @@ public class DeliverService extends AbstractHandover implements IHandover<Delive
         return genThirdResult(checkResult, responseData, recordId);
     }
 
+    @Transactional
     @Override
     public HandoverUploadVO saveData(Integer recordId, Integer userId) {
         int errorCnt = deliverDetailMapper.countErrorData(recordId);
@@ -182,6 +182,7 @@ public class DeliverService extends AbstractHandover implements IHandover<Delive
         FileUtil.download(response, deliverTemplatePath, "deliver_template.xlsx");
     }
 
+    @Transactional
     @Override
     public List<DeliverTemplateBean> uploadTemplateData(MultipartFile excel, Integer userId) {
         if(log.isDebugEnabled()){
@@ -203,6 +204,7 @@ public class DeliverService extends AbstractHandover implements IHandover<Delive
         return deliverData;
     }
 
+    @Transactional
     @Override
     public void batchDeleteData(Integer[] ids, Integer userId) {
         StringBuilder sb = new StringBuilder();
