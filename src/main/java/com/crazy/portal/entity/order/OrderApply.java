@@ -262,4 +262,7 @@ public class OrderApply {
      */
     private List<OrderLine> orderLines;
 
+    //EXT
+    private Integer orderId;
+
 }
