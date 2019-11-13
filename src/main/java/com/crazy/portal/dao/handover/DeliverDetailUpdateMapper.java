@@ -13,4 +13,6 @@ public interface DeliverDetailUpdateMapper {
     int batchInsertByBiId(@Param(value = "biIds") List<String> biIds);
 
     int batchDeleteByBiId(@Param(value = "biId") String biId);
+
+    int deleteByRecordId(@Param(value = "recordId") Integer recordId);
 }

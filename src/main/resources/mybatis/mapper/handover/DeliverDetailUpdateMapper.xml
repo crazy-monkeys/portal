@@ -204,4 +204,9 @@
     where third_id = #{biId,jdbcType=INTEGER}
   </delete>
 
+  <delete id="deleteByRecordId" >
+    delete from t_deliver_detail_update
+    where record_id = #{recordId}
+  </delete>
+
 </mapper>
