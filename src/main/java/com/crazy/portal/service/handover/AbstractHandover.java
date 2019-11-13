@@ -47,17 +47,12 @@ public abstract class AbstractHandover {
             //获取文件的地址信息
             String biFileName = result.getFilePath().substring(result.getFilePath().lastIndexOf("/") + 1,result.getFilePath().lastIndexOf("\\") );
             String pullLocalFile = String.format("%s%s", pullPath, biFileName);
-
-            log.info("BI to Portal info >> Ftp file path:{} , Local file path:{}", result.getFilePath(), pullLocalFile);
-            result.setFilePath(pullLocalFile);
-            return result;
-            /*
             if(log.isDebugEnabled()) {
                 log.debug("BI to Portal info >> Ftp file path:{} , Local file path:{}", result.getFilePath(), pullLocalFile);
             }
             ftpClientUtil.get(pullLocalPath() + biFileName, pullLocalFile);
             result.setFilePath(pullLocalFile);
-            return result;*/
+            return result;
         }catch (Exception ex) {
             throw new RuntimeException("Ftp exception or bi server exception", ex);
         }
