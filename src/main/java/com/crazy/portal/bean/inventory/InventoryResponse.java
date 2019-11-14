@@ -113,7 +113,7 @@ public class InventoryResponse {
     /**
      * 期末库存周期
      */
-    private BigDecimal monthly_end_inventory_period;
+    private String monthly_end_inventory_period;
 
     /**
      * 金额（期末金额）

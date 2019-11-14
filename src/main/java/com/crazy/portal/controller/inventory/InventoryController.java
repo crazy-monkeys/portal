@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  * @Desc:
@@ -46,12 +47,15 @@ public class InventoryController extends BaseController {
     }
 
     private BaseResponse getBaseResponse(String url) {
-        log.info("access url : " + url);
+        log.info("inventory access url : " + url);
         try {
             String response = HttpClientUtils.get(url);
-            InventoryResponse summaryResponse = JSON.parseObject(response, InventoryResponse.class);
-            return super.successResult(summaryResponse);
-        } catch (IOException e) {
+            log.info("inventory response: " + response);
+            response = response.replace("\\","");
+            List<InventoryResponse> inventoryResponses =
+                    JSON.parseArray(response.substring(1,response.length()-1), InventoryResponse.class);
+            return super.successResult(inventoryResponses);
+        } catch (Exception e) {
             log.error("", e);
             return super.failResult("第三方接口访问失败");
         }

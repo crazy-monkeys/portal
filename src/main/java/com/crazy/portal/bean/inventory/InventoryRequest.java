@@ -1,5 +1,6 @@
 package com.crazy.portal.bean.inventory;
 
+import com.crazy.portal.util.StringUtil;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -61,18 +62,40 @@ public class InventoryRequest {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("?sYearMonth='").append(sYearMonth);
-        sb.append("&sAgencyShortName='").append(sAgencyShortName);
-        sb.append("&sBU='").append(sBU);
-        sb.append("&sPDT='").append(sPDT);
-        sb.append("&sProductType='").append(sProductType);
-        sb.append("&sPlatform='").append(sPlatform);
-        sb.append("&sProduct='").append(sProduct);
-        sb.append("&sCustomerType='").append(sCustomerType);
-        sb.append("&sInventoryType='").append(sInventoryType);
-        sb.append("&sCompany='").append(sCompany);
-        sb.append("&sMonthEndInventoryPeriod='").append(sMonthEndInventoryPeriod);
+        StringBuilder sb = new StringBuilder("?1");
+        if(StringUtil.isNotEmpty(sYearMonth)){
+            sb.append("?sYearMonth=").append(sYearMonth);
+        }
+        if(StringUtil.isNotEmpty(sAgencyShortName)){
+            sb.append("&sAgencyShortName=").append(sAgencyShortName);
+        }
+        if(StringUtil.isNotEmpty(sBU)){
+            sb.append("&sBU=").append(sBU);
+        }
+        if(StringUtil.isNotEmpty(sPDT)){
+            sb.append("&sPDT=").append(sPDT);
+        }
+        if(StringUtil.isNotEmpty(sProductType)){
+            sb.append("&sProductType=").append(sProductType);
+        }
+        if(StringUtil.isNotEmpty(sPlatform)){
+            sb.append("&sPlatform=").append(sPlatform);
+        }
+        if(StringUtil.isNotEmpty(sProduct)){
+            sb.append("&sProduct=").append(sProduct);
+        }
+        if(StringUtil.isNotEmpty(sCustomerType)){
+            sb.append("&sCustomerType=").append(sCustomerType);
+        }
+        if(StringUtil.isNotEmpty(sInventoryType)){
+            sb.append("&sInventoryType=").append(sInventoryType);
+        }
+        if(StringUtil.isNotEmpty(sCompany)){
+            sb.append("&sCompany=").append(sCompany);
+        }
+        if(StringUtil.isNotEmpty(sMonthEndInventoryPeriod)){
+            sb.append("&sMonthEndInventoryPeriod=").append(sMonthEndInventoryPeriod);
+        }
         return sb.toString();
     }
 }
