@@ -10,7 +10,6 @@ import com.crazy.portal.dao.business.rebate.*;
 import com.crazy.portal.dao.cusotmer.CustomerInfoMapper;
 import com.crazy.portal.entity.business.rebate.*;
 import com.crazy.portal.entity.cusotmer.CustomerInfo;
-import com.crazy.portal.service.customer.CustomerContactService;
 import com.crazy.portal.util.*;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.ImmutableMap;
@@ -54,8 +53,6 @@ public class RebateService {
     private CustomerInfoMapper customerInfoMapper;
     @Resource
     private RebateApiService rebateApiService;
-    @Resource
-    private CustomerContactService customerContactService;
     @Value("${file.path.root}")
     private String filePath;
     private static final String REBATE_FILE_PATH = "rebate";
@@ -336,6 +333,10 @@ public class RebateService {
 
     /**
      * Rebate数据同步
+     * <describe>
+     * 每次同步起始月到下一个月的数据，起始月缺省值为当前月
+     * </describe>
+     * @param param 起始年月(yyyyMM)
      */
     @Transactional(rollbackFor = Exception.class)
     public void rebateDataSync(String param) throws Exception {
