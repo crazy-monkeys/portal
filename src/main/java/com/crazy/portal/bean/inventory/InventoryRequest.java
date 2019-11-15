@@ -64,7 +64,7 @@ public class InventoryRequest {
     public String toString() {
         StringBuilder sb = new StringBuilder("?1");
         if(StringUtil.isNotEmpty(sYearMonth)){
-            sb.append("?sYearMonth=").append(sYearMonth);
+            sb.append("&sYearMonth=").append(sYearMonth);
         }
         if(StringUtil.isNotEmpty(sAgencyShortName)){
             sb.append("&sAgencyShortName=").append(sAgencyShortName);
