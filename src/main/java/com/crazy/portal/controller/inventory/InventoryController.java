@@ -47,6 +47,7 @@ public class InventoryController extends BaseController {
     }
 
     private BaseResponse getBaseResponse(String url) {
+        url = url.replaceAll(" ", "%20");
         log.info("inventory access url : " + url);
         try {
             String response = HttpClientUtils.get(url);
