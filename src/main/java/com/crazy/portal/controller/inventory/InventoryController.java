@@ -50,7 +50,6 @@ public class InventoryController extends BaseController {
         log.info("inventory access url : " + url);
         try {
             String response = HttpClientUtils.get(url);
-            log.info("inventory response: " + response);
             response = response.replace("\\","");
             List<InventoryResponse> inventoryResponses =
                     JSON.parseArray(response.substring(1,response.length()-1), InventoryResponse.class);
