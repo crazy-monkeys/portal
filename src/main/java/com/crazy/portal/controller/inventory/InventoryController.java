@@ -60,22 +60,22 @@ public class InventoryController extends BaseController {
 
     /**
      * 转移
-     * @param inventoryTransferDO
+     * @param inventoryTransfers
      * @return
      */
     @PostMapping("/transfer")
-    public BaseResponse transfer(@RequestBody InventoryTransferDO inventoryTransferDO){
-        return super.successResult(inventoryService.transfer(super.getCurrentUserId(),inventoryTransferDO));
+    public BaseResponse transfer(@RequestBody List<InventoryTransferDO> inventoryTransfers){
+        return super.successResult(inventoryService.transfer(super.getCurrentUserId(),inventoryTransfers));
     }
 
     /**
      * 转换
-     * @param conversionDO
+     * @param conversionDOS
      * @return
      */
     @PostMapping("/conversion")
-    public BaseResponse conversion(@RequestBody InventoryConversionDO conversionDO){
-        return super.successResult(inventoryService.conversion(super.getCurrentUserId(),conversionDO));
+    public BaseResponse conversion(@RequestBody List<InventoryConversionDO> conversionDOS){
+        return super.successResult(inventoryService.conversion(super.getCurrentUserId(),conversionDOS));
     }
 
     private BaseResponse getBaseResponse(String url) {

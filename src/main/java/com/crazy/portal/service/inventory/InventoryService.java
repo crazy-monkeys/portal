@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @Desc:
@@ -27,26 +28,32 @@ public class InventoryService {
     /**
      * 转移
      * @param userId
-     * @param inventoryDO
+     * @param transferDOS
      * @return
      */
-    public boolean transfer(Integer userId, InventoryTransferDO inventoryDO){
-        inventoryDO.setCreateId(userId);
-        inventoryDO.setCreateTime(new Date());
-        transferDOMapper.insertSelective(inventoryDO);
+    public boolean transfer(Integer userId, List<InventoryTransferDO> transferDOS){
+        transferDOS.forEach(x->{
+            x.setId(null);
+            x.setCreateId(userId);
+            x.setCreateTime(new Date());
+            transferDOMapper.insertSelective(x);
+        });
         return true;
     }
 
     /**
      * 转换
      * @param userId
-     * @param conversionDO
+     * @param conversionDOS
      * @return
      */
-    public boolean conversion(Integer userId, InventoryConversionDO conversionDO){
-        conversionDO.setCreateId(userId);
-        conversionDO.setCreateTime(new Date());
-        conversionDOMapper.insertSelective(conversionDO);
+    public boolean conversion(Integer userId, List<InventoryConversionDO> conversionDOS){
+        conversionDOS.forEach(x->{
+            x.setId(null);
+            x.setCreateId(userId);
+            x.setCreateTime(new Date());
+            conversionDOMapper.insertSelective(x);
+        });
         return true;
     }
 }

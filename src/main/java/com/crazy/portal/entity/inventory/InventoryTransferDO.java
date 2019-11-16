@@ -110,10 +110,18 @@ public class InventoryTransferDO {
     private BigDecimal inventoryTotalAmount;
 
     /**
-     * 转移-转入客户
+     * 转移-转出客户
      */
     private String transferOutCustomer;
+    /**
+     * 转移-转入客户
+     */
+    private String transferIntoCustomer;
 
+    /**
+     * 转移-年月
+     */
+    private String transferYearMonth;
     /**
      * 
      */
@@ -134,15 +142,6 @@ public class InventoryTransferDO {
      */
     private Integer updateId;
 
-    /**
-     * 转移-转出客户
-     */
-    private String transferIntoCustomer;
-
-    /**
-     * 转移-年月
-     */
-    private String transferYearMonth;
 
     public Integer getId() {
         return id;
