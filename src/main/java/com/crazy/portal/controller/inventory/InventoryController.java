@@ -5,6 +5,9 @@ import com.crazy.portal.bean.BaseResponse;
 import com.crazy.portal.bean.inventory.InventoryRequest;
 import com.crazy.portal.bean.inventory.InventoryResponse;
 import com.crazy.portal.controller.BaseController;
+import com.crazy.portal.entity.inventory.InventoryConversionDO;
+import com.crazy.portal.entity.inventory.InventoryTransferDO;
+import com.crazy.portal.service.inventory.InventoryService;
 import com.crazy.portal.util.HttpClientUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.IOException;
+import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -30,8 +33,13 @@ public class InventoryController extends BaseController {
     @Value("${ecc.api.url}")
     private String ECC_API_URL;
 
+    @Resource
+    private InventoryService inventoryService;
+
+
     /**
-     * 获取汇总数据
+     * 详情数据
+     * @param summaryRequest
      * @return
      */
     @PostMapping("/detail")
@@ -40,10 +48,34 @@ public class InventoryController extends BaseController {
         return getBaseResponse(url);
     }
 
+    /**
+     * 获取汇总数据
+     * @return
+     */
     @PostMapping("/summary")
     public BaseResponse summary(@RequestBody InventoryRequest summaryRequest){
         String url = String.format("%s%s%s",ECC_API_URL,"/http/BI/PORTAL/GETINVENTORYSUMMARY",summaryRequest.toString());
         return getBaseResponse(url);
+    }
+
+    /**
+     * 转移
+     * @param inventoryTransferDO
+     * @return
+     */
+    @PostMapping("/transfer")
+    public BaseResponse transfer(@RequestBody InventoryTransferDO inventoryTransferDO){
+        return super.successResult(inventoryService.transfer(super.getCurrentUserId(),inventoryTransferDO));
+    }
+
+    /**
+     * 转换
+     * @param conversionDO
+     * @return
+     */
+    @PostMapping("/conversion")
+    public BaseResponse conversion(@RequestBody InventoryConversionDO conversionDO){
+        return super.successResult(inventoryService.conversion(super.getCurrentUserId(),conversionDO));
     }
 
     private BaseResponse getBaseResponse(String url) {
