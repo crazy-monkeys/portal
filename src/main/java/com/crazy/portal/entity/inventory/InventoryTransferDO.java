@@ -1,5 +1,6 @@
 package com.crazy.portal.entity.inventory;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.crazy.portal.bean.common.PageBean;
 import lombok.Data;
 
@@ -132,6 +133,7 @@ public class InventoryTransferDO extends PageBean {
     /**
      * 
      */
+    @JSONField(format = "yyyy-MM-dd hh:mm:ss")
     private Date createTime;
 
     /**
@@ -144,6 +146,7 @@ public class InventoryTransferDO extends PageBean {
     /**
      * 
      */
+    @JSONField(format = "yyyy-MM-dd hh:mm:ss")
     private Date updateTime;
 
     /**

@@ -139,7 +139,7 @@
         transfer_year_month,
       </if>
       <if test="approvalStatus != null">
-        approvalStatus,
+        approval_status,
       </if>
       <if test="createTime != null">
         create_time,

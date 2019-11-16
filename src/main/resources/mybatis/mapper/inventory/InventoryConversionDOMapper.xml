@@ -146,7 +146,7 @@
         create_id,
       </if>
       <if test="createUserName != null">
-        createUserName,
+        create_user_name,
       </if>
       <if test="updateTime != null">
         update_time,
