@@ -47,28 +47,6 @@
     delete from t_inventory_conversion
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.crazy.portal.entity.inventory.InventoryConversionDO">
-    insert into t_inventory_conversion (id, year_month, agency_short_name, 
-      product_line, sub_product_line, class2, 
-      class3, product, customer_type, 
-      inventory_type, inventory_price, company, 
-      sales_org, monthly_init_qty, agency_pick_up_date, 
-      agency_pick_up_qty, sales_qty, monthly_end_qty, 
-      monthly_end_inventory_period, inventory_total_amount, 
-      conversion_customer_type, conversion_inventory_type, 
-      conversion_year_month, create_time, create_id, 
-      update_time, update_id)
-    values (#{id,jdbcType=INTEGER}, #{yearMonth,jdbcType=VARCHAR}, #{agencyShortName,jdbcType=VARCHAR}, 
-      #{productLine,jdbcType=VARCHAR}, #{subProductLine,jdbcType=VARCHAR}, #{class2,jdbcType=VARCHAR}, 
-      #{class3,jdbcType=VARCHAR}, #{product,jdbcType=VARCHAR}, #{customerType,jdbcType=VARCHAR}, 
-      #{inventoryType,jdbcType=VARCHAR}, #{inventoryPrice,jdbcType=DECIMAL}, #{company,jdbcType=VARCHAR}, 
-      #{salesOrg,jdbcType=VARCHAR}, #{monthlyInitQty,jdbcType=INTEGER}, #{agencyPickUpDate,jdbcType=VARCHAR}, 
-      #{agencyPickUpQty,jdbcType=INTEGER}, #{salesQty,jdbcType=INTEGER}, #{monthlyEndQty,jdbcType=INTEGER}, 
-      #{monthlyEndInventoryPeriod,jdbcType=VARCHAR}, #{inventoryTotalAmount,jdbcType=DECIMAL}, 
-      #{conversionCustomerType,jdbcType=VARCHAR}, #{conversionInventoryType,jdbcType=VARCHAR}, 
-      #{conversionYearMonth,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{createId,jdbcType=INTEGER}, 
-      #{updateTime,jdbcType=TIMESTAMP}, #{updateId,jdbcType=INTEGER})
-  </insert>
   <insert id="insertSelective" parameterType="com.crazy.portal.entity.inventory.InventoryConversionDO">
     insert into t_inventory_conversion
     <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -76,7 +54,7 @@
         id,
       </if>
       <if test="yearMonth != null">
-        year_month,
+        `year_month`,
       </if>
       <if test="agencyShortName != null">
         agency_short_name,
@@ -320,36 +298,6 @@
         update_id = #{updateId,jdbcType=INTEGER},
       </if>
     </set>
-    where id = #{id,jdbcType=INTEGER}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.crazy.portal.entity.inventory.InventoryConversionDO">
-    update t_inventory_conversion
-    set year_month = #{yearMonth,jdbcType=VARCHAR},
-      agency_short_name = #{agencyShortName,jdbcType=VARCHAR},
-      product_line = #{productLine,jdbcType=VARCHAR},
-      sub_product_line = #{subProductLine,jdbcType=VARCHAR},
-      class2 = #{class2,jdbcType=VARCHAR},
-      class3 = #{class3,jdbcType=VARCHAR},
-      product = #{product,jdbcType=VARCHAR},
-      customer_type = #{customerType,jdbcType=VARCHAR},
-      inventory_type = #{inventoryType,jdbcType=VARCHAR},
-      inventory_price = #{inventoryPrice,jdbcType=DECIMAL},
-      company = #{company,jdbcType=VARCHAR},
-      sales_org = #{salesOrg,jdbcType=VARCHAR},
-      monthly_init_qty = #{monthlyInitQty,jdbcType=INTEGER},
-      agency_pick_up_date = #{agencyPickUpDate,jdbcType=VARCHAR},
-      agency_pick_up_qty = #{agencyPickUpQty,jdbcType=INTEGER},
-      sales_qty = #{salesQty,jdbcType=INTEGER},
-      monthly_end_qty = #{monthlyEndQty,jdbcType=INTEGER},
-      monthly_end_inventory_period = #{monthlyEndInventoryPeriod,jdbcType=VARCHAR},
-      inventory_total_amount = #{inventoryTotalAmount,jdbcType=DECIMAL},
-      conversion_customer_type = #{conversionCustomerType,jdbcType=VARCHAR},
-      conversion_inventory_type = #{conversionInventoryType,jdbcType=VARCHAR},
-      conversion_year_month = #{conversionYearMonth,jdbcType=VARCHAR},
-      create_time = #{createTime,jdbcType=TIMESTAMP},
-      create_id = #{createId,jdbcType=INTEGER},
-      update_time = #{updateTime,jdbcType=TIMESTAMP},
-      update_id = #{updateId,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>

@@ -2,8 +2,8 @@ package com.crazy.portal.service.inventory;
 
 import com.crazy.portal.dao.inventory.InventoryConversionDOMapper;
 import com.crazy.portal.dao.inventory.InventoryTransferDOMapper;
-import com.crazy.portal.entity.inventory.InventoryTransferDO;
 import com.crazy.portal.entity.inventory.InventoryConversionDO;
+import com.crazy.portal.entity.inventory.InventoryTransferDO;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;

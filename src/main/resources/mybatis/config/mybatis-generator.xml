@@ -32,7 +32,7 @@
             <property name="enableSubPackages" value="true"/>
         </javaClientGenerator>
 
-        <table tableName="t_inventory_conversion" domainObjectName="inventoryConversionDO"
+        <table tableName="t_inventory_transfer" domainObjectName="inventoryTransferDO"
                enableCountByExample="false"
                enableUpdateByExample="false"
                enableDeleteByExample="false"
