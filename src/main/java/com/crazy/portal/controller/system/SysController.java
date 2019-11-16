@@ -75,6 +75,15 @@ public class SysController extends BaseController {
         return successResult(customerInfoService.getDealerList());
     }
 
+    /**
+     * 获取代理商报备的内部客户
+     * @return
+     */
+    @GetMapping("/dealer/incustomer")
+    public BaseResponse getDealerInCustomer(){
+        return successResult(customerInfoService.getDealerInCustomer(super.getCurrentUser().getDealerId()));
+    }
+
     @GetMapping("/dealer/getCredit/{dealerId}")
     public BaseResponse getDealerCredit(@PathVariable("dealerId") Integer dealerId){
         return successResult(customerInfoService.getDealerCredit(dealerId));

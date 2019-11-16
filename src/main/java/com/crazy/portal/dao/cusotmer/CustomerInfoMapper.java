@@ -59,4 +59,6 @@ public interface CustomerInfoMapper {
     String selectCustAbbreviationByCustName(@Param("custName") String custName);
 
     CustomerInfo selectInCustomerByAbb(String custAbbreviation);
+
+    List<CustomerInfo> getDealerInCustomer(Integer dealerId);
 }

@@ -150,6 +150,14 @@ public class UserController extends BaseController {
         return successResult(userService.getUserShips(getCurrentUser().getDealerId()));
     }
 
+    /**
+     * 获取代理商报备的客户的内部客户
+     * @return
+     */
+    public BaseResponse getDealerInCustomer(){
+        return successResult(userService.getUserShips(getCurrentUser().getDealerId()));
+    }
+
     @GetMapping("/dealer/getShip")
     public BaseResponse getShip(){
         return successResult(customerInfoService.getDealerShip(this.getCurrentUser().getDealerId()));

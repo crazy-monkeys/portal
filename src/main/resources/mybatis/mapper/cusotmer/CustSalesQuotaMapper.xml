@@ -162,9 +162,9 @@
     where quoat_id = #{quoatId,jdbcType=INTEGER}
   </update>
 
-  <update id="deleteByCustId">
-    update t_cust_sales_quota set active =0 where active =1 and cust_id = #{custId,jdbcType=INTEGER}
-  </update>
+  <delete id="deleteByCustId">
+    DELETE t_cust_sales_quota where cust_id = #{custId,jdbcType=INTEGER}
+  </delete>
 
   <select id="selectByCustId" resultMap="BaseResultMap">
     select * from t_cust_sales_quota where active =1 and cust_id = #{custId,jdbcType=INTEGER}

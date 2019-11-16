@@ -687,7 +687,7 @@
     cust.create_time
     from t_customer_info cust
     left join cust_zr_account_team team on team.cust_id = cust.id and team.active=1
-    left join t_internal_user ins on ins.user_no = team.employee_id and team.active=1 and team.role_type = '142'
+    left join t_internal_user ins on ins.user_no = team.employee_id and ins.active=1 and team.role_type = '142'
     left join t_cust_corporate_relationship ship on ship.cust_id = cust.id and ship.active=1 and ship.corporate_type = 'Z004'
     where cust.business_type != 'A04'
     and cust.active =1
@@ -832,5 +832,11 @@
   
   <select id="selectInCustomerByAbb" resultMap="BaseResultMap">
     select * from t_customer_info where active =1 and cust_role = 'Z010' and cust_name =#{custAbbreviation,jdbcType=VARCHAR} limit 1
+  </select>
+
+  <select id="getDealerInCustomer" resultMap="BaseResultMap">
+    select b.* from t_cust_corporate_relationship a
+    INNER join t_customer_info b on a.corporate_id = b.in_code
+    where cust_id = #{dealerId,jdbcType=INTEGER} and b.cust_role = 'Z010'
   </select>
 </mapper>

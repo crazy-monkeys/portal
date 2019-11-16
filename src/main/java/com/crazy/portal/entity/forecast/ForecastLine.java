@@ -764,7 +764,7 @@ public class ForecastLine {
             if(a.compareTo(BigDecimal.ZERO)==1){
 
                 BigDecimal percent = (b.subtract(a)).divide(a, 4, BigDecimal.ROUND_DOWN).multiply(new BigDecimal(100));
-                return String.format("%s%s", percent.setScale(0,BigDecimal.ROUND_UP),"%");
+                return String.format("%s%s", percent.setScale(0,BigDecimal.ROUND_HALF_UP),"%");
             }
         }catch (Exception ex) {
             log.error("【销售预测】计算Gap值异常，lastWriteOne : " + a + ", currentWriteOne : " + b, ex);

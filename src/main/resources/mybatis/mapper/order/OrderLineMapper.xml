@@ -327,4 +327,14 @@
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
+  
+  <update id="updateOrderNum">
+    update t_order_line a
+    inner join (
+    select sales_order_line_id,sum(delivery_quantity) as qty from t_deliver_order_line where active =1 and sales_order_id= #{orderId,jdbcType=VARCHAR}
+    group by sales_order_line_id
+    ) b on a.id = b.sales_order_line_id
+    set a.remaining_num = a.r_sap_qty - b.qty
+    where a.order_id = #{orderId,jdbcType=VARCHAR} and a.actice=1 and a.remaining_num is not null
+  </update>
 </mapper>

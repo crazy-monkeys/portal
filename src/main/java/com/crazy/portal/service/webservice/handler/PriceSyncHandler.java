@@ -12,6 +12,7 @@ import com.crazy.portal.entity.cusotmer.CustomerInfo;
 import com.crazy.portal.entity.price.CatalogBomsPrice;
 import com.crazy.portal.entity.price.CatalogPrice;
 import com.crazy.portal.service.price.CatalogPriceService;
+import com.crazy.portal.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
@@ -20,6 +21,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.StringTokenizer;
 import java.util.stream.Collectors;
 
 /**
@@ -70,6 +72,7 @@ public class PriceSyncHandler extends AbstractHandler implements IHandler<PriceS
             }
             catalogPriceService.insertCatalogPrice(this.buildCatalogPrice(x, new JSONArray(), now));
         });
+        response.success();
         return response;
     }
 
@@ -85,7 +88,7 @@ public class PriceSyncHandler extends AbstractHandler implements IHandler<PriceS
 
         for(CatalogBomsPrice bomsPrice : bomsPrices){
             BigDecimal totalBomPrice = bomsPrice.getPrice()
-                    .multiply(new BigDecimal(bomsPrice.getQty()))
+                    .multiply(null == bomsPrice.getQty()?BigDecimal.ZERO:new BigDecimal(bomsPrice.getQty()))
                     .setScale(5,BigDecimal.ROUND_HALF_DOWN);
 
             totalPrice = totalPrice.add(totalBomPrice);
@@ -172,12 +175,15 @@ public class PriceSyncHandler extends AbstractHandler implements IHandler<PriceS
      * @return
      */
     private CatalogBomsPrice buildBom(BICatalogPrice x) {
+        System.out.println(JSON.toJSONString(x));
         CatalogBomsPrice bom = new CatalogBomsPrice();
         bom.setBomId(x.getBom_id());
         bom.setBomName(x.getBom_name());
         bom.setInCustomer(x.getCustomer_incode());
         bom.setPrice(new BigDecimal(x.getPrice()));
-        bom.setQty(Integer.parseInt(x.getQty()));
+        if(StringUtil.isNotEmpty(x.getQty())){
+            bom.setQty(Integer.parseInt(x.getQty()));
+        }
         return bom;
     }
 }

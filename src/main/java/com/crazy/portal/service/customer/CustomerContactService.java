@@ -86,6 +86,6 @@ public class CustomerContactService {
         if(StringUtil.isNotEmpty(record.getEmail())){
             String mailRegex = "^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+(\\.[a-zA-Z0-9-]+)*\\.[a-zA-Z0-9]{2,6}$";
             BusinessUtil.assertTrue(record.getEmail().matches(mailRegex),ErrorCodes.BusinessEnum.CUSTOMER_EMAIL_IS_INACTIVE);
-        }
+    }
     }
 }

@@ -19,7 +19,6 @@ import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Date;
@@ -31,7 +30,6 @@ import java.util.List;
 @Slf4j
 @Service
 public class OrderService extends CommonOrderService {
-
     @Resource
     private OrderMapper orderMapper;
     @Resource
@@ -105,7 +103,6 @@ public class OrderService extends CommonOrderService {
         return order;
     }
 
-
     /**
      * 订单明细
      * @param id
@@ -178,8 +175,6 @@ public class OrderService extends CommonOrderService {
                     deliverOrderMapper.insertSelective(deliverOrder);
                     for(DeliverOrderLine line: approval.getSerializelDeliveryOrderLine()){
                         OrderLine orderLine = orderLineMapper.selectByPrimaryKey(line.getSalesOrderLineId());
-                        minusOrderLineNumber(orderLine, line.getDeliveryQuantity());
-
                         DeliverOrderLine deliverOrderLine = new DeliverOrderLine();
                         BeanUtils.copyNotNullFields(line, deliverOrderLine);
                         deliverOrderLine.setDeliverOrderId(deliverOrder.getDeliverOrderId());
@@ -187,6 +182,7 @@ public class OrderService extends CommonOrderService {
                         deliverOrderLine.setReceiveQuantity(0);
                         deliverOrderLineMapper.insertSelective(deliverOrderLine);
                     }
+                    orderLineMapper.updateOrderNum(deliverOrder.getSalesOrderId());
                 }else{
                     throw new BusinessException(response.getResultmessage());
                 }
@@ -197,7 +193,6 @@ public class OrderService extends CommonOrderService {
         }
     }
 
-    //TODO 取消逻辑
     private void approvalUpdate(DeliveryApproveVO vo, DeliverOrderApproval approval){
         //如果是通过，调用ECC修改接口
         if(vo.getApprovalStatus().equals(Enums.OrderApprovalStatus.ADOPT.getValue())){
@@ -213,26 +208,14 @@ public class OrderService extends CommonOrderService {
 
                 approval.getSerializelDeliveryOrderLine().forEach(e->{
                     DeliverOrderLine deliverOrderLine = deliverOrderLineMapper.selectByPrimaryKey(e.getDeliverOrderLineId());
-                    OrderLine orderLine = orderLineMapper.selectByPrimaryKey(e.getSalesOrderLineId());
-                    Integer deliveryQuantity = e.getDeliveryQuantity() - deliverOrderLine.getDeliveryQuantity();
-                    if(e.getDeliveryQuantity() > deliverOrderLine.getDeliveryQuantity()){
-                        deliveryQuantity = 0-deliveryQuantity;
-                    }
-                    minusOrderLineNumber(orderLine, deliveryQuantity);
                     deliverOrderLine.setDeliveryQuantity(e.getDeliveryQuantity());
                     deliverOrderLineMapper.updateByPrimaryKeySelective(deliverOrderLine);
                 });
+                orderLineMapper.updateOrderNum(deliverOrder.getSalesOrderId());
             }else{
                 throw new BusinessException(response.getResultmessage());
             }
         }
-    }
-
-    private void minusOrderLineNumber(OrderLine o, Integer deliveryQuantity){
-        BusinessUtil.assertFlase(o.getActice() == 0, ErrorCodes.BusinessEnum.ORDER_IS_INACTIVE);
-        BusinessUtil.assertFlase(deliveryQuantity > 0 && o.getRemainingNum() < deliveryQuantity, ErrorCodes.BusinessEnum.ORDER_QTY_IS_ENOUGH);
-        o.setRemainingNum(o.getRemainingNum()-deliveryQuantity);
-        orderLineMapper.updateByPrimaryKeySelective(o);
     }
 
     private void approvalCancel(DeliveryApproveVO vo, DeliverOrderApproval approval){
@@ -255,12 +238,10 @@ public class OrderService extends CommonOrderService {
                 }
                 approval.getSerializelDeliveryOrderLine().forEach(e->{
                     DeliverOrderLine deliverOrderLine = deliverOrderLineMapper.selectByPrimaryKey(e.getDeliverOrderLineId());
-                    OrderLine orderLine = orderLineMapper.selectByPrimaryKey(deliverOrderLine.getSalesOrderLineId());
-                    orderLine.setRemainingNum(orderLine.getRemainingNum()+deliverOrderLine.getDeliveryQuantity());
-                    orderLineMapper.updateByPrimaryKeySelective(orderLine);
                     deliverOrderLine.setActive(0);
                     deliverOrderLineMapper.updateByPrimaryKeySelective(deliverOrderLine);
                 });
+                orderLineMapper.updateOrderNum(deliverOrder.getSalesOrderId());
             }else{
                 throw new BusinessException(response.getResultmessage());
             }

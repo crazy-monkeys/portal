@@ -140,9 +140,9 @@
     where id = #{id,jdbcType=INTEGER}
   </update>
 
-  <update id="deleteByCustId">
-    update cust_zr_account_team set active =0 where active =1 and cust_id = #{custId,jdbcType=INTEGER}
-  </update>
+  <delete id="deleteByCustId">
+    DELETE cust_zr_account_team where cust_id = #{custId,jdbcType=INTEGER}
+  </delete>
 
   <select id="selectByCustId" resultMap="BaseResultMap">
     select * from cust_zr_account_team where active =1 and cust_id = #{custId,jdbcType=INTEGER}

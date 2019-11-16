@@ -408,8 +408,8 @@ public class CustomerInfoService {
     private void customerInfoSync(CustomerInfo customerInfo, String type){
         CustomerInfoCreate create = syncCustomerInfo(customerInfo, type);
         Map<String,String> responseMap = CallApiUtils.callC4cCustomerInfo(create);
-      //  CustomerDetailCreate detail = syncCustomerDetail(customerInfo, c4cId);
-        //CallApiUtils.callC4cCustomerDetail(detail);
+        CustomerDetailCreate detail = syncCustomerDetail(customerInfo, responseMap.get("inCode"));
+        CallApiUtils.callC4cCustomerDetail(detail);
         //查询eccid
         customerInfoMapper.updateC4CId(customerInfo.getId(), responseMap.get("inCode"), responseMap.get("outCode"));
     }
@@ -946,6 +946,10 @@ public class CustomerInfoService {
         visitBean.setVisitTypeCode("Z01");
         visitBean.setAddress(visitRecord.getCustomerLocation());
 
+        visitBean.setProjectStatus(visitRecord.getProjectStatus());
+        visitBean.setProjectBU(visitRecord.getProjectDepartment());
+        visitBean.setVisitCount(String.valueOf(visitRecord.getVisitNumber()));
+
         //客户 c4c id
         CustomerInfo customerInfo = customerInfoMapper.selectByInCode(visitRecord.getCustomerCode());
         MainActivityPartyBean mainActivityPartyBean = new MainActivityPartyBean();
@@ -1003,6 +1007,15 @@ public class CustomerInfoService {
         SysParameter sysParameter = sysParamService.selectParam("2","1",inCustomer.getBusinessType());
         customerOrgBean.setCustType(sysParameter.getZhName());
         return customerOrgBean;
+    }
+
+    /**
+     * 获取代理商报备的内部客户
+     * @param dealerId
+     * @return
+     */
+    public List<CustomerInfo> getDealerInCustomer(Integer dealerId){
+        return customerInfoMapper.getDealerInCustomer(dealerId);
     }
 
     public CustomerInfo selectCustomerByAbbreviation(String custAbbreviation){

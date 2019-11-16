@@ -20,4 +20,6 @@ public interface OrderLineMapper {
     List<OrderLine> selectByOrderId(Integer orderId);
 
     List<OrderLine> selectByProduct(@Param("orderId") Integer orderId, @Param("product") String product, @Param("rRefItemNo") String rRefItemNo);
+
+    int updateOrderNum(@Param("orderId") Integer orderId);
 }

@@ -155,7 +155,11 @@
     select * from t_cust_assets_information where active =1 and cust_id = #{custId,jdbcType=INTEGER}
   </select>
 
-  <update id="deleteByCustId">
+<!--  <update id="deleteByCustId">
     update t_cust_assets_information set active = 0 where active =1 and cust_id = #{custId,jdbcType=INTEGER}
-  </update>
+  </update>-->
+  
+  <delete id="deleteByCustId">
+    delete t_cust_assets_information where cust_id = #{custId,jdbcType=INTEGER}
+  </delete>
 </mapper>

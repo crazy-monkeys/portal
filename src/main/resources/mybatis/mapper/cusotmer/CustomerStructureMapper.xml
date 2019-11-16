@@ -213,8 +213,8 @@
   <select id="selectByCustId" resultMap="BaseResultMap">
     select * from t_customer_structure where active =1 and cust_id = #{custId,jdbcType=INTEGER}
   </select>
-  
-  <update id="deleteByCustId">
-    update t_customer_structure set active =0 where active =1 and cust_id = #{custId,jdbcType=INTEGER}
-  </update>
+
+  <delete id="deleteByCustId">
+    DELETE t_customer_structure where cust_id = #{custId,jdbcType=INTEGER}
+  </delete>
 </mapper>

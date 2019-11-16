@@ -69,6 +69,8 @@ public class MemberInfoSyncHandler extends AbstractHandler implements IHandler<M
         MemberInfoSyncResponse response = new MemberInfoSyncResponse();
         try{
              saveOrUpdateCustomer(request);
+        }catch (BusinessException be){
+            throw new BusinessException(be.getErrorCode(),be.getMessage());
         }catch (Exception e){
             log.error("接受客户信息异常",e);
             throw new BusinessException(ErrorCodes.BusinessEnum.CUSTOMER_SYNC_ERROR);

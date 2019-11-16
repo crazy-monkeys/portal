@@ -250,7 +250,7 @@
     select * from t_cust_sales where active =1 and cust_id = #{custId,jdbcType=INTEGER}
   </select>
 
-  <update id="deleteByCustId">
-    update t_cust_sales set active = 0 where active =1 and cust_id = #{custId,jdbcType=INTEGER}
-  </update>
+  <delete id="deleteByCustId">
+    DELETE t_cust_sales where cust_id = #{custId,jdbcType=INTEGER}
+  </delete>
 </mapper>

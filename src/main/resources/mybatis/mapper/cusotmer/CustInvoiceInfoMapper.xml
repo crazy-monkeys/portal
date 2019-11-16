@@ -179,7 +179,7 @@
     select * from t_cust_invoice_info where active =1 and cust_id = #{custId,jdbcType=INTEGER}
   </select>
 
-  <update id="deleteByCustId">
-    update t_cust_invoice_info set active = 0 where active =1 and cust_id = #{custId,jdbcType=INTEGER}
-  </update>
+  <delete id="deleteByCustId">
+    delete t_cust_invoice_info where cust_id = #{custId,jdbcType=INTEGER}
+  </delete>
 </mapper>
