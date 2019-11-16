@@ -1,6 +1,7 @@
 package com.crazy.portal.service.inventory;
 
 import com.crazy.portal.entity.inventory.InventoryTransferDO;
+import com.crazy.portal.entity.system.User;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -59,6 +60,6 @@ public class InventoryServiceTest {
         inventoryTransferDO.setTransferIntoCustomer("setTransferIntoCustomer");
         inventoryTransferDO.setTransferYearMonth("setTransferYearMonth");
         transferDOS.add(inventoryTransferDO);
-        inventoryService.transfer(1,transferDOS);
+        inventoryService.transfer(new User(),transferDOS);
     }
 }

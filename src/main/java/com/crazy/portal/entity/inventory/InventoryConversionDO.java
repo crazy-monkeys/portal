@@ -1,5 +1,8 @@
 package com.crazy.portal.entity.inventory;
 
+import com.crazy.portal.bean.common.PageBean;
+import lombok.Data;
+
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -8,7 +11,8 @@ import java.util.Date;
  * @author Bill
  * @date   2019-11-16 15:38::46
  */
-public class InventoryConversionDO {
+@Data
+public class InventoryConversionDO extends PageBean {
     /**
      * 
      */
@@ -124,6 +128,7 @@ public class InventoryConversionDO {
      */
     private String conversionYearMonth;
 
+    private Integer approvalStatus;
     /**
      * 
      */
@@ -133,6 +138,8 @@ public class InventoryConversionDO {
      * 
      */
     private Integer createId;
+
+    private String createUserName;
 
     /**
      * 
@@ -144,219 +151,6 @@ public class InventoryConversionDO {
      */
     private Integer updateId;
 
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getYearMonth() {
-        return yearMonth;
-    }
-
-    public void setYearMonth(String yearMonth) {
-        this.yearMonth = yearMonth == null ? null : yearMonth.trim();
-    }
-
-    public String getAgencyShortName() {
-        return agencyShortName;
-    }
-
-    public void setAgencyShortName(String agencyShortName) {
-        this.agencyShortName = agencyShortName == null ? null : agencyShortName.trim();
-    }
-
-    public String getProductLine() {
-        return productLine;
-    }
-
-    public void setProductLine(String productLine) {
-        this.productLine = productLine == null ? null : productLine.trim();
-    }
-
-    public String getSubProductLine() {
-        return subProductLine;
-    }
-
-    public void setSubProductLine(String subProductLine) {
-        this.subProductLine = subProductLine == null ? null : subProductLine.trim();
-    }
-
-    public String getClass2() {
-        return class2;
-    }
-
-    public void setClass2(String class2) {
-        this.class2 = class2 == null ? null : class2.trim();
-    }
-
-    public String getClass3() {
-        return class3;
-    }
-
-    public void setClass3(String class3) {
-        this.class3 = class3 == null ? null : class3.trim();
-    }
-
-    public String getProduct() {
-        return product;
-    }
-
-    public void setProduct(String product) {
-        this.product = product == null ? null : product.trim();
-    }
-
-    public String getCustomerType() {
-        return customerType;
-    }
-
-    public void setCustomerType(String customerType) {
-        this.customerType = customerType == null ? null : customerType.trim();
-    }
-
-    public String getInventoryType() {
-        return inventoryType;
-    }
-
-    public void setInventoryType(String inventoryType) {
-        this.inventoryType = inventoryType == null ? null : inventoryType.trim();
-    }
-
-    public BigDecimal getInventoryPrice() {
-        return inventoryPrice;
-    }
-
-    public void setInventoryPrice(BigDecimal inventoryPrice) {
-        this.inventoryPrice = inventoryPrice;
-    }
-
-    public String getCompany() {
-        return company;
-    }
-
-    public void setCompany(String company) {
-        this.company = company == null ? null : company.trim();
-    }
-
-    public String getSalesOrg() {
-        return salesOrg;
-    }
-
-    public void setSalesOrg(String salesOrg) {
-        this.salesOrg = salesOrg == null ? null : salesOrg.trim();
-    }
-
-    public Integer getMonthlyInitQty() {
-        return monthlyInitQty;
-    }
-
-    public void setMonthlyInitQty(Integer monthlyInitQty) {
-        this.monthlyInitQty = monthlyInitQty;
-    }
-
-    public String getAgencyPickUpDate() {
-        return agencyPickUpDate;
-    }
-
-    public void setAgencyPickUpDate(String agencyPickUpDate) {
-        this.agencyPickUpDate = agencyPickUpDate == null ? null : agencyPickUpDate.trim();
-    }
-
-    public Integer getAgencyPickUpQty() {
-        return agencyPickUpQty;
-    }
-
-    public void setAgencyPickUpQty(Integer agencyPickUpQty) {
-        this.agencyPickUpQty = agencyPickUpQty;
-    }
-
-    public Integer getSalesQty() {
-        return salesQty;
-    }
-
-    public void setSalesQty(Integer salesQty) {
-        this.salesQty = salesQty;
-    }
-
-    public Integer getMonthlyEndQty() {
-        return monthlyEndQty;
-    }
-
-    public void setMonthlyEndQty(Integer monthlyEndQty) {
-        this.monthlyEndQty = monthlyEndQty;
-    }
-
-    public String getMonthlyEndInventoryPeriod() {
-        return monthlyEndInventoryPeriod;
-    }
-
-    public void setMonthlyEndInventoryPeriod(String monthlyEndInventoryPeriod) {
-        this.monthlyEndInventoryPeriod = monthlyEndInventoryPeriod == null ? null : monthlyEndInventoryPeriod.trim();
-    }
-
-    public BigDecimal getInventoryTotalAmount() {
-        return inventoryTotalAmount;
-    }
-
-    public void setInventoryTotalAmount(BigDecimal inventoryTotalAmount) {
-        this.inventoryTotalAmount = inventoryTotalAmount;
-    }
-
-    public String getConversionCustomerType() {
-        return conversionCustomerType;
-    }
-
-    public void setConversionCustomerType(String conversionCustomerType) {
-        this.conversionCustomerType = conversionCustomerType == null ? null : conversionCustomerType.trim();
-    }
-
-    public String getConversionInventoryType() {
-        return conversionInventoryType;
-    }
-
-    public void setConversionInventoryType(String conversionInventoryType) {
-        this.conversionInventoryType = conversionInventoryType == null ? null : conversionInventoryType.trim();
-    }
-
-    public String getConversionYearMonth() {
-        return conversionYearMonth;
-    }
-
-    public void setConversionYearMonth(String conversionYearMonth) {
-        this.conversionYearMonth = conversionYearMonth == null ? null : conversionYearMonth.trim();
-    }
-
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
-
-    public Integer getCreateId() {
-        return createId;
-    }
-
-    public void setCreateId(Integer createId) {
-        this.createId = createId;
-    }
-
-    public Date getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(Date updateTime) {
-        this.updateTime = updateTime;
-    }
-
-    public Integer getUpdateId() {
-        return updateId;
-    }
-
-    public void setUpdateId(Integer updateId) {
-        this.updateId = updateId;
-    }
+    /** ext **/
+    private String applyType;
 }

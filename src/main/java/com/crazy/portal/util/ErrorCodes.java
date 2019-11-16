@@ -363,4 +363,30 @@ public class ErrorCodes {
             return zhMsg;
         }
     }
+
+    public enum InventoryEnum implements ErrorInfo {
+
+        INVENTORY_TRANSFER_NOT_EXISTS(1501,"库存转移申请不存在"),
+        INVENTORY_CONVERSION_NOT_EXISTS(1502,"库存转换申请不存在"),
+        INVENTORY_BEEN_APPROVAL(1503,"申请单已经被审批")
+        ;
+
+        private final int code;
+        private final String zhMsg;
+
+        InventoryEnum(int code, String zhMsg){
+            this.code = code;
+            this.zhMsg = zhMsg;
+        }
+
+        @Override
+        public int getCode() {
+            return code;
+        }
+
+        @Override
+        public String getZhMsg() {
+            return zhMsg;
+        }
+    }
 }

@@ -25,17 +25,20 @@
     <result column="conversion_customer_type" jdbcType="VARCHAR" property="conversionCustomerType" />
     <result column="conversion_inventory_type" jdbcType="VARCHAR" property="conversionInventoryType" />
     <result column="conversion_year_month" jdbcType="VARCHAR" property="conversionYearMonth" />
+    <result column="approval_status" jdbcType="INTEGER" property="approvalStatus" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="create_id" jdbcType="INTEGER" property="createId" />
+    <result column="create_user_name" jdbcType="VARCHAR" property="createUserName" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="update_id" jdbcType="INTEGER" property="updateId" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, year_month, agency_short_name, product_line, sub_product_line, class2, class3, 
+    id, `year_month`, agency_short_name, product_line, sub_product_line, class2, class3,
     product, customer_type, inventory_type, inventory_price, company, sales_org, monthly_init_qty, 
     agency_pick_up_date, agency_pick_up_qty, sales_qty, monthly_end_qty, monthly_end_inventory_period, 
-    inventory_total_amount, conversion_customer_type, conversion_inventory_type, conversion_year_month, 
-    create_time, create_id, update_time, update_id
+    inventory_total_amount, conversion_customer_type, conversion_inventory_type, conversion_year_month,
+    approval_status,
+    create_time, create_id, create_user_name,update_time, update_id
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -43,6 +46,20 @@
     from t_inventory_conversion
     where id = #{id,jdbcType=INTEGER}
   </select>
+
+  <select id="findConversionWithPage" parameterType="com.crazy.portal.entity.inventory.InventoryConversionDO" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_inventory_conversion
+    where 1=1
+    <if test="approvalStatus != null">
+      and approval_status = #{approvalStatus,jdbcType=INTEGER}
+    </if>
+    <if test="createUserName != null and createUserName != ''">
+      and create_user_name = #{createUserName}
+    </if>
+  </select>
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from t_inventory_conversion
     where id = #{id,jdbcType=INTEGER}
@@ -119,11 +136,17 @@
       <if test="conversionYearMonth != null">
         conversion_year_month,
       </if>
+      <if test="approvalStatus != null">
+        approval_status,
+      </if>
       <if test="createTime != null">
         create_time,
       </if>
       <if test="createId != null">
         create_id,
+      </if>
+      <if test="createUserName != null">
+        createUserName,
       </if>
       <if test="updateTime != null">
         update_time,
@@ -202,11 +225,17 @@
       <if test="conversionYearMonth != null">
         #{conversionYearMonth,jdbcType=VARCHAR},
       </if>
+      <if test="approvalStatus != null">
+        #{approvalStatus,jdbcType=INTEGER},
+      </if>
       <if test="createTime != null">
         #{createTime,jdbcType=TIMESTAMP},
       </if>
       <if test="createId != null">
         #{createId,jdbcType=INTEGER},
+      </if>
+      <if test="createUserName != null">
+        #{createUserName,jdbcType=VARCHAR},
       </if>
       <if test="updateTime != null">
         #{updateTime,jdbcType=TIMESTAMP},
@@ -220,7 +249,7 @@
     update t_inventory_conversion
     <set>
       <if test="yearMonth != null">
-        year_month = #{yearMonth,jdbcType=VARCHAR},
+        `year_month` = #{yearMonth,jdbcType=VARCHAR},
       </if>
       <if test="agencyShortName != null">
         agency_short_name = #{agencyShortName,jdbcType=VARCHAR},
@@ -285,11 +314,17 @@
       <if test="conversionYearMonth != null">
         conversion_year_month = #{conversionYearMonth,jdbcType=VARCHAR},
       </if>
+      <if test="approvalStatus != null">
+        approval_status = #{approvalStatus,jdbcType=INTEGER},
+      </if>
       <if test="createTime != null">
         create_time = #{createTime,jdbcType=TIMESTAMP},
       </if>
       <if test="createId != null">
         create_id = #{createId,jdbcType=INTEGER},
+      </if>
+      <if test="createUserName != null">
+        create_user_name = #{createUserName,jdbcType=VARCHAR},
       </if>
       <if test="updateTime != null">
         update_time = #{updateTime,jdbcType=TIMESTAMP},

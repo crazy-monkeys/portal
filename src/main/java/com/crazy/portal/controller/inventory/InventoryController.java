@@ -1,6 +1,7 @@
 package com.crazy.portal.controller.inventory;
 
 import com.alibaba.fastjson.JSON;
+import com.crazy.portal.annotation.OperationLog;
 import com.crazy.portal.bean.BaseResponse;
 import com.crazy.portal.bean.inventory.InventoryRequest;
 import com.crazy.portal.bean.inventory.InventoryResponse;
@@ -64,8 +65,9 @@ public class InventoryController extends BaseController {
      * @return
      */
     @PostMapping("/transfer")
+    @OperationLog
     public BaseResponse transfer(@RequestBody List<InventoryTransferDO> inventoryTransfers){
-        return super.successResult(inventoryService.transfer(super.getCurrentUserId(),inventoryTransfers));
+        return super.successResult(inventoryService.transfer(super.getCurrentUser(),inventoryTransfers));
     }
 
     /**
@@ -74,8 +76,9 @@ public class InventoryController extends BaseController {
      * @return
      */
     @PostMapping("/conversion")
+    @OperationLog
     public BaseResponse conversion(@RequestBody List<InventoryConversionDO> conversionDOS){
-        return super.successResult(inventoryService.conversion(super.getCurrentUserId(),conversionDOS));
+        return super.successResult(inventoryService.conversion(super.getCurrentUser(),conversionDOS));
     }
 
     private BaseResponse getBaseResponse(String url) {
