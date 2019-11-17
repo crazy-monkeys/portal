@@ -572,7 +572,7 @@ public class SaleForecastService {
             throw new BusinessException(FORECAST_AGENCY_QUERY_ERROR);
         }
         //第三步：判定是否操作的当月全量代理商数据
-        int dataTotalNum = forecastMapper.countDataNumByMonthAndUser(userList, monthList.get(0));
+        int dataTotalNum = forecastMapper.countDataNumByMonthAndUserByInsert(userList, monthList.get(0));
         BusinessUtil.assertTrue(dataTotalNum == forecastIds.length, FORECAST_DATA_TOTAL_CHECK_ERROR);
         //第四步：是否数据都已经被调整过，否则不允许通过
 //        int ambAdjustmentNum = forecastMapper.checkAmbAdjustmentNum(forecastIds);

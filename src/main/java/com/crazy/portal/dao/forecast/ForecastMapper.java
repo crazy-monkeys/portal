@@ -103,6 +103,9 @@ public interface ForecastMapper {
     int countDataNumByMonthAndUser(@Param(value = "userList") List<Integer> userList,
                                    @Param(value = "operationYearMonth") String operationYearMonth);
 
+    int countDataNumByMonthAndUserByInsert(@Param(value = "userList") List<Integer> userList,
+                                   @Param(value = "operationYearMonth") String operationYearMonth);
+
     int checkAmbAdjustmentNum(@Param(value = "ids") Integer[] ids);
 
     List<Integer> selectOperationTypeByIds(@Param(value = "ids") Integer[] ids);
