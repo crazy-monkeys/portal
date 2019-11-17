@@ -119,7 +119,7 @@ public class OrderApplyService extends CommonOrderService{
         BusinessUtil.notNull(expectedDeliveryMonthStr,ErrorCodes.BusinessEnum.ORDER_EMPTY_EXPECTEDDELIVERYMONTH);
 
         Date expectedDeliveryMonth = DateUtil.parseDate(expectedDeliveryMonthStr,DateUtil.MONTH_FORMAT_HLINE);
-        String priceDate = DateUtil.getLastDayOfMonth(DateUtil.getYear(expectedDeliveryMonth),DateUtil.getMonth(expectedDeliveryMonth));
+        String priceDate = DateUtil.getFirstDayOfMonth(DateUtil.getYear(expectedDeliveryMonth),DateUtil.getMonth(expectedDeliveryMonth));
         IsHeader isHeader = this.buildIsHeader(order);
         isHeader.setPricedate(priceDate);
         ItItems itItems = new ItItems();
@@ -272,7 +272,7 @@ public class OrderApplyService extends CommonOrderService{
 
         List<OrderLine> orderLines = order.getOrderLines();
         Date priceDate = this.getPriceDate(orderLines.get(0).getExpectedDeliveryMonth());
-        order.setPriceDate(DateUtil.getLastDayOfMonth(DateUtil.getYear(priceDate),DateUtil.getMonth(priceDate)));
+        order.setPriceDate(DateUtil.getFirstDayOfMonth(DateUtil.getYear(priceDate),DateUtil.getMonth(priceDate)));
 
         orderLines.forEach(x->{
             ProductInfoDO productInfoDO = super.getProductInfo(x.getProductId(),x.getPlatform());
@@ -285,7 +285,7 @@ public class OrderApplyService extends CommonOrderService{
             x.setCreateTime(DateUtil.getCurrentTS());
             x.setActice(1);
             Date expectedDeliveryMonth = this.getPriceDate(x.getExpectedDeliveryMonth());
-            x.setExpectedDeliveryDate(DateUtil.getLastDayOfMonth(DateUtil.getYear(expectedDeliveryMonth),DateUtil.getMonth(expectedDeliveryMonth)));
+            x.setExpectedDeliveryDate(DateUtil.getFirstDayOfMonth(DateUtil.getYear(expectedDeliveryMonth),DateUtil.getMonth(expectedDeliveryMonth)));
         });
 
         order.setJsonLines(order.objToLineJson(orderLines));
@@ -347,7 +347,7 @@ public class OrderApplyService extends CommonOrderService{
         List<OrderLine> orderLines = order.getOrderLines();
         orderLines.forEach(x->{
             Date priceDate = this.getPriceDate(x.getExpectedDeliveryMonth());
-            x.setExpectedDeliveryDate(DateUtil.getLastDayOfMonth(DateUtil.getYear(priceDate),DateUtil.getMonth(priceDate)));
+            x.setExpectedDeliveryDate(DateUtil.getFirstDayOfMonth(DateUtil.getYear(priceDate),DateUtil.getMonth(priceDate)));
             x.setUpdateId(userId);
             x.setUpdateTime(DateUtil.getCurrentTS());
         });

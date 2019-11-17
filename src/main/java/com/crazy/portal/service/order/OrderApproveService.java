@@ -234,9 +234,9 @@ public class OrderApproveService extends CommonOrderService{
         //默认取出第一个订单行的期望交货月份
         String expectedDeliveryMonth = lines.get(0).getExpectedDeliveryMonth();
         if(StringUtil.isEmpty(order.getPriceDate())){
-            //设置月份的最后一天
+            //设置月份的第一天
             Date month = DateUtil.parseDate(expectedDeliveryMonth,DateUtil.MONTH_FORMAT_HLINE);
-            order.setPriceDate(DateUtil.getLastDayOfMonth(DateUtil.getYear(month),DateUtil.getMonth(month)));
+            order.setPriceDate(DateUtil.getFirstDayOfMonth(DateUtil.getYear(month),DateUtil.getMonth(month)));
         }
     }
 

@@ -1041,5 +1041,24 @@ public class DateUtil {
 	}
 
 
-
+	/**
+	 * 获取指定年月的第一天
+	 * @param year
+	 * @param month
+	 * @return
+	 */
+	public static String getFirstDayOfMonth(int year, int month) {
+		Calendar cal = Calendar.getInstance();
+		//设置年份
+		cal.set(Calendar.YEAR, year);
+		//设置月份
+		cal.set(Calendar.MONTH, month-1);
+		//获取某月最大天数
+		int firstDay = cal.getActualMinimum(Calendar.DATE);
+		//设置日历中月份的最大天数
+		cal.set(Calendar.DAY_OF_MONTH, firstDay);
+		//格式化日期
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+		return sdf.format(cal.getTime());
+	}
 }
