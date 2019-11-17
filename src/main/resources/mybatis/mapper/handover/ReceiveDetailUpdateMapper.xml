@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.crazy.portal.dao.handover.ReceiveDetailUpdateMapper">
+  <resultMap id="BaseResultMap" type="com.crazy.portal.entity.handover.ReceiveDetailUpdate">
+    <result column="id" jdbcType="INTEGER" property="id" />
+    <result column="third_id" jdbcType="INTEGER" property="thirdId" />
+    <result column="upload_time" jdbcType="TIMESTAMP" property="uploadTime" />
+    <result column="product_model" jdbcType="VARCHAR" property="productModel" />
+    <result column="inventory_category" jdbcType="VARCHAR" property="inventoryCategory" />
+    <result column="inventory_unit_price" jdbcType="DECIMAL" property="inventoryUnitPrice" />
+    <result column="warehouse" jdbcType="VARCHAR" property="warehouse" />
+    <result column="delivery_time" jdbcType="VARCHAR" property="deliveryTime" />
+    <result column="invoice_number" jdbcType="VARCHAR" property="invoiceNumber" />
+    <result column="delivery_num" jdbcType="INTEGER" property="deliveryNum" />
+    <result column="delivery_company" jdbcType="VARCHAR" property="deliveryCompany" />
+    <result column="purchase_number" jdbcType="VARCHAR" property="purchaseNumber" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="error_msg" jdbcType="VARCHAR" property="errorMsg" />
+    <result column="record_id" jdbcType="INTEGER" property="recordId" />
+    <result column="stock_transfer_year_month" jdbcType="VARCHAR" property="stockTransferYearMonth" />
+    <result column="is_transfer" jdbcType="VARCHAR" property="isTransfer" />
+    <result column="inside_customer_id" jdbcType="VARCHAR" property="insideCustomerId" />
+  </resultMap>
+  <insert id="insert" parameterType="com.crazy.portal.entity.handover.ReceiveDetailUpdate">
+    insert into t_receive_detail_update (id, third_id, upload_time, 
+      product_model, inventory_category, inventory_unit_price, 
+      warehouse, delivery_time, invoice_number, 
+      delivery_num, delivery_company, purchase_number, 
+      remark, error_msg, record_id, 
+      stock_transfer_year_month, is_transfer, inside_customer_id
+      )
+    values (#{id,jdbcType=INTEGER}, #{thirdId,jdbcType=INTEGER}, #{uploadTime,jdbcType=TIMESTAMP}, 
+      #{productModel,jdbcType=VARCHAR}, #{inventoryCategory,jdbcType=VARCHAR}, #{inventoryUnitPrice,jdbcType=DECIMAL}, 
+      #{warehouse,jdbcType=VARCHAR}, #{deliveryTime,jdbcType=VARCHAR}, #{invoiceNumber,jdbcType=VARCHAR}, 
+      #{deliveryNum,jdbcType=INTEGER}, #{deliveryCompany,jdbcType=VARCHAR}, #{purchaseNumber,jdbcType=VARCHAR}, 
+      #{remark,jdbcType=VARCHAR}, #{errorMsg,jdbcType=VARCHAR}, #{recordId,jdbcType=INTEGER}, 
+      #{stockTransferYearMonth,jdbcType=VARCHAR}, #{isTransfer,jdbcType=VARCHAR}, #{insideCustomerId,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.crazy.portal.entity.handover.ReceiveDetailUpdate">
+    insert into t_receive_detail_update
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="thirdId != null">
+        third_id,
+      </if>
+      <if test="uploadTime != null">
+        upload_time,
+      </if>
+      <if test="productModel != null">
+        product_model,
+      </if>
+      <if test="inventoryCategory != null">
+        inventory_category,
+      </if>
+      <if test="inventoryUnitPrice != null">
+        inventory_unit_price,
+      </if>
+      <if test="warehouse != null">
+        warehouse,
+      </if>
+      <if test="deliveryTime != null">
+        delivery_time,
+      </if>
+      <if test="invoiceNumber != null">
+        invoice_number,
+      </if>
+      <if test="deliveryNum != null">
+        delivery_num,
+      </if>
+      <if test="deliveryCompany != null">
+        delivery_company,
+      </if>
+      <if test="purchaseNumber != null">
+        purchase_number,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+      <if test="errorMsg != null">
+        error_msg,
+      </if>
+      <if test="recordId != null">
+        record_id,
+      </if>
+      <if test="stockTransferYearMonth != null">
+        stock_transfer_year_month,
+      </if>
+      <if test="isTransfer != null">
+        is_transfer,
+      </if>
+      <if test="insideCustomerId != null">
+        inside_customer_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="thirdId != null">
+        #{thirdId,jdbcType=INTEGER},
+      </if>
+      <if test="uploadTime != null">
+        #{uploadTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="productModel != null">
+        #{productModel,jdbcType=VARCHAR},
+      </if>
+      <if test="inventoryCategory != null">
+        #{inventoryCategory,jdbcType=VARCHAR},
+      </if>
+      <if test="inventoryUnitPrice != null">
+        #{inventoryUnitPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="warehouse != null">
+        #{warehouse,jdbcType=VARCHAR},
+      </if>
+      <if test="deliveryTime != null">
+        #{deliveryTime,jdbcType=VARCHAR},
+      </if>
+      <if test="invoiceNumber != null">
+        #{invoiceNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="deliveryNum != null">
+        #{deliveryNum,jdbcType=INTEGER},
+      </if>
+      <if test="deliveryCompany != null">
+        #{deliveryCompany,jdbcType=VARCHAR},
+      </if>
+      <if test="purchaseNumber != null">
+        #{purchaseNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="errorMsg != null">
+        #{errorMsg,jdbcType=VARCHAR},
+      </if>
+      <if test="recordId != null">
+        #{recordId,jdbcType=INTEGER},
+      </if>
+      <if test="stockTransferYearMonth != null">
+        #{stockTransferYearMonth,jdbcType=VARCHAR},
+      </if>
+      <if test="isTransfer != null">
+        #{isTransfer,jdbcType=VARCHAR},
+      </if>
+      <if test="insideCustomerId != null">
+        #{insideCustomerId,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+
+  <insert id="batchInsertByBiId" >
+    insert into t_receive_detail_update
+    select * from t_receive_detail t
+    where 1 = 1
+    <foreach collection="biIds" item="item" index="index" open=" and t.third_id in (" separator="," close=")" >
+      #{item,jdbcType=INTEGER}
+    </foreach>
+  </insert>
+
+  <delete id="batchDeleteByBiId" >
+    delete from t_receive_detail_update
+    where third_id = #{biId,jdbcType=INTEGER}
+  </delete>
+
+  <delete id="deleteByRecordId" >
+    delete from t_receive_detail_update
+    where record_id = #{recordId,jdbcType=INTEGER}
+  </delete>
+
+</mapper>
