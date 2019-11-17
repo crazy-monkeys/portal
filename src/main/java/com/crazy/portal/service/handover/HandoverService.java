@@ -28,6 +28,8 @@ public class HandoverService {
     private DeliverReceiveRecordMapper deliverReceiveRecordMapper;
     @Resource(name = "deliver")
     private DeliverService deliverService;
+    @Resource(name = "receive")
+    private ReceiveService receiveService;
     @Resource
     private UserCustomerMappingService userCustomerMappingService;
     @Resource
@@ -89,8 +91,11 @@ public class HandoverService {
         }
         //执行确认
         if(status == 1){
-            if(record.getStatus() == 4){
+            if(record.getStatus() == 4 && deliver_type.equals(type)){
                 deliverService.updateDataToBi(id);
+                status = 2;
+            }else if(record.getStatus() == 4 && receive_type.equals(type)) {
+                receiveService.updateDataToBi(id);
                 status = 2;
             }else{
                 BusinessUtil.assertFlase(record.getStatus() != -1, HANDOVER_NOT_CONFIRM);
