@@ -4,6 +4,7 @@ import com.crazy.portal.dao.cusotmer.CustSalesQuotaMapper;
 import com.crazy.portal.entity.cusotmer.CustSalesQuota;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -23,6 +24,7 @@ public class CustQuotasService {
         return custSalesQuotaMapper.selectByCustId(custId);
     }
 
+    @Transactional
     public void saveOrUpdate(List<CustSalesQuota> custSalesQuotas, Integer custId, Integer userId){
         if(null == custSalesQuotas || custSalesQuotas.isEmpty()){
             return;
@@ -40,6 +42,7 @@ public class CustQuotasService {
         });
     }
 
+    @Transactional
     public void deleteByCustId(List<CustSalesQuota> custSalesQuotas, List<CustSalesQuota> results, Integer custId){
         if(null != results && !results.isEmpty()){
             if(null == custSalesQuotas || custSalesQuotas.isEmpty()){
@@ -61,10 +64,12 @@ public class CustQuotasService {
         }
     }
 
+    @Transactional
     public void deleteByCustId(Integer custId){
         custSalesQuotaMapper.deleteByCustId(custId);
     }
 
+    @Transactional
     public void save(CustSalesQuota record){
         custSalesQuotaMapper.insertSelective(record);
     }

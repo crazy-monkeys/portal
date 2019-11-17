@@ -4,6 +4,8 @@ import com.crazy.portal.dao.cusotmer.CustomerProductMapper;
 import com.crazy.portal.entity.cusotmer.CustomerProduct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import javax.annotation.Resource;
 import java.util.List;
 
@@ -22,6 +24,7 @@ public class CustomerProductService {
         return customerProductMapper.selectByCustId(custId);
     }
 
+    @Transactional
     public void saveOrUpdate(List<CustomerProduct> customerProducts, Integer custId, Integer userId){
         if(null == customerProducts || customerProducts.isEmpty()){
             return;
@@ -39,6 +42,7 @@ public class CustomerProductService {
         });
     }
 
+    @Transactional
     public void deleteByCustId(List<CustomerProduct> customerProducts, List<CustomerProduct> results, Integer custId){
         if(null != results && !results.isEmpty()){
             if(null == customerProducts || customerProducts.isEmpty()){
@@ -60,10 +64,12 @@ public class CustomerProductService {
         }
     }
 
+    @Transactional
     public void deleteByCustId(Integer custId){
         customerProductMapper.deleteByCustId(custId);
     }
 
+    @Transactional
     public void save(CustomerProduct record){
         customerProductMapper.insertSelective(record);
     }

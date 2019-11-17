@@ -4,6 +4,8 @@ import com.crazy.portal.dao.cusotmer.CustBusinessInformationMapper;
 import com.crazy.portal.entity.cusotmer.CustBusinessInformation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import javax.annotation.Resource;
 import java.util.List;
 
@@ -22,6 +24,7 @@ public class CustBusinessInformationService {
         return custBusinessInformationMapper.selectByCustId(custId);
     }
 
+    @Transactional
     public void saveOrUpdate(List<CustBusinessInformation> custBusinessInformations, Integer custId){
         if(null == custBusinessInformations || custBusinessInformations.isEmpty()){
             return;
@@ -37,6 +40,7 @@ public class CustBusinessInformationService {
         });
     }
 
+    @Transactional
     public void deleteByCustId(List<CustBusinessInformation> custBusinessInformations, List<CustBusinessInformation> results, Integer custId){
         if(null != results && !results.isEmpty()){
             if(null == custBusinessInformations || custBusinessInformations.isEmpty()){
@@ -58,10 +62,12 @@ public class CustBusinessInformationService {
         }
     }
 
+    @Transactional
     public void deleteByCustId(Integer custId){
         custBusinessInformationMapper.deleteByCustId(custId);
     }
 
+    @Transactional
     public void save(CustBusinessInformation record){
         custBusinessInformationMapper.insertSelective(record);
     }

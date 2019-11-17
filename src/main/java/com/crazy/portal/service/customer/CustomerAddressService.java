@@ -5,6 +5,7 @@ import com.crazy.portal.entity.cusotmer.CustomerAddress;
 import com.crazy.portal.entity.cusotmer.CustomerContact;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -24,6 +25,7 @@ public class CustomerAddressService {
         return customerAddressMapper.selectByCustId(custId);
     }
 
+    @Transactional
     public void saveOrUpdate(List<CustomerAddress> customerAddresses, Integer custId, Integer userId){
         if(null == customerAddresses || customerAddresses.isEmpty()){
             return;
@@ -41,6 +43,7 @@ public class CustomerAddressService {
         });
     }
 
+    @Transactional
     public void deleteByCustId(List<CustomerAddress> customerAddresses, List<CustomerAddress> results, Integer custId){
         if(null != results && !results.isEmpty()){
             if(null == customerAddresses || customerAddresses.isEmpty()){
@@ -62,10 +65,12 @@ public class CustomerAddressService {
         }
     }
 
+    @Transactional
     public void deleteByCustId(Integer custId){
         customerAddressMapper.deleteByCustId(custId);
     }
 
+    @Transactional
     public void save(CustomerAddress record){
         customerAddressMapper.insertSelective(record);
     }

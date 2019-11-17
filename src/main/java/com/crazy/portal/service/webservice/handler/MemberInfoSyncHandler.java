@@ -18,6 +18,8 @@ import com.crazy.portal.util.ErrorCodes;
 import com.crazy.portal.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+
 import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -64,8 +66,8 @@ public class MemberInfoSyncHandler extends AbstractHandler implements IHandler<M
     @Resource
     private UserService userService;
 
-    @OperationLog
     @Override
+    @Transactional
     public MemberInfoSyncResponse process(MemberInfoSyncRequest request) {
         MemberInfoSyncResponse response = new MemberInfoSyncResponse();
         try{
@@ -111,7 +113,7 @@ public class MemberInfoSyncHandler extends AbstractHandler implements IHandler<M
         //saveAccountTeams(request.getAccountTeams(), customerinfo.getId());
         saveCustStructure(request.getCustStructure(), customerinfo.getId());
         saveQuotas(request.getQuotas(), customerinfo.getId());
-        saveZRAccountTeam(request.getZRaccountTeams() ,customerinfo.getId());
+        this.saveZRAccountTeam(request.getZRaccountTeams() ,customerinfo.getId());
 
         if(dealerCreate){
             //代理商用户 开通账号

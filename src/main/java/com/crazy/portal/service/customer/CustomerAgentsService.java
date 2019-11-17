@@ -4,6 +4,7 @@ import com.crazy.portal.dao.cusotmer.CustomerAgentMapper;
 import com.crazy.portal.entity.cusotmer.CustomerAgent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -23,10 +24,12 @@ public class CustomerAgentsService {
         return customerAgentMapper.selectByCustId(custId);
     }
 
+    @Transactional
     public void deleteByCustId(Integer custId){
         customerAgentMapper.deleteByCustId(custId);
     }
 
+    @Transactional
     public void save(CustomerAgent agent){
         customerAgentMapper.insertSelective(agent);
     }

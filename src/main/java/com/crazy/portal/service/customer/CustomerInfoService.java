@@ -1,7 +1,6 @@
 package com.crazy.portal.service.customer;
 
 import com.alibaba.fastjson.JSON;
-import com.crazy.portal.annotation.OperationLog;
 import com.crazy.portal.bean.common.Constant;
 import com.crazy.portal.bean.customer.CustomerOrgBean;
 import com.crazy.portal.bean.customer.CustomerQueryBean;
@@ -309,7 +308,7 @@ public class CustomerInfoService {
             custZrAccountTeamService.updateTeam(customerInfo.getId(), internalUser.getUserNo());
         }else{
             CustomerInfo dealer = customerInfoMapper.selectByPrimaryKey(user.getDealerId());
-            custCorporateRelationshipService.UpdateCustShip(customerInfo.getId(), user.getId(), dealer);
+            custCorporateRelationshipService.updateCustShip(customerInfo.getId(), user.getId(), dealer);
         }
     }
 
@@ -432,7 +431,7 @@ public class CustomerInfoService {
                 custZrAccountTeamService.updateTeam(customerInfo.getId(), approvalBean.getSalesId());
             }else if (null != approvalBean.getDealerId()){
                 CustomerInfo dealer = customerInfoMapper.selectByPrimaryKey(approvalBean.getCustId());
-                custCorporateRelationshipService.UpdateCustShip(customerInfo.getId(), userId, dealer);
+                custCorporateRelationshipService.updateCustShip(customerInfo.getId(), userId, dealer);
             }
             customerInfo.setApproveUser(userId);
             customerInfo.setApproveRemark(approvalBean.getApprovalRemark());

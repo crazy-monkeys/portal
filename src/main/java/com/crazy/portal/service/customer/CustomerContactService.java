@@ -8,6 +8,8 @@ import com.crazy.portal.util.ErrorCodes;
 import com.crazy.portal.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import javax.annotation.Resource;
 import java.util.List;
 
@@ -30,6 +32,7 @@ public class CustomerContactService {
         return customerContactMapper.selectByCustName(custName);
     }
 
+    @Transactional
     public void saveOrUpdate(List<CustomerContact> customerContacts, Integer custId, Integer userId){
         if(null == customerContacts || customerContacts.isEmpty()){
             return;
@@ -48,6 +51,7 @@ public class CustomerContactService {
         });
     }
 
+    @Transactional
     public void deleteByCustId(List<CustomerContact> customerContacts, List<CustomerContact> results, Integer custId){
         if(null != results && !results.isEmpty()){
             if(null == customerContacts || customerContacts.isEmpty()){
@@ -69,10 +73,12 @@ public class CustomerContactService {
         }
     }
 
+    @Transactional
     public void deleteByCustId(Integer custId){
         customerContactMapper.deleteByCustId(custId);
     }
 
+    @Transactional
     public void save(CustomerContact record){
         checkContact(record);
         customerContactMapper.insertSelective(record);

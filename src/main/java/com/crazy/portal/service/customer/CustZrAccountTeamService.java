@@ -4,6 +4,7 @@ import com.crazy.portal.dao.cusotmer.CustZrAccountTeamMapper;
 import com.crazy.portal.entity.cusotmer.CustZrAccountTeam;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -65,10 +66,12 @@ public class CustZrAccountTeamService {
         }
     }
 
+    @Transactional
     public void deleteByCustId(Integer custId){
         custZrAccountTeamMapper.deleteByCustId(custId);
     }
 
+    @Transactional
     public void save(CustZrAccountTeam record){
         custZrAccountTeamMapper.insertSelective(record);
     }

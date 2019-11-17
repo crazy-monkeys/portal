@@ -1,17 +1,12 @@
 package com.crazy.portal.service.customer;
 
-import com.crazy.portal.bean.customer.wsdl.customer.info.Customer;
 import com.crazy.portal.dao.cusotmer.CustCorporateRelationshipMapper;
 import com.crazy.portal.dao.cusotmer.CustomerInfoMapper;
 import com.crazy.portal.entity.cusotmer.CustCorporateRelationship;
 import com.crazy.portal.entity.cusotmer.CustomerInfo;
-import com.crazy.portal.entity.system.User;
-import com.crazy.portal.util.BusinessUtil;
-import com.crazy.portal.util.Enums;
-import com.crazy.portal.util.ErrorCodes;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
+import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.util.List;
 
@@ -53,6 +48,7 @@ public class CustCorporateRelationshipService {
         return custCorporateRelationshipMapper.selectOutCustomer(inCode);
     }
 
+    @Transactional
     public void saveOrUpdate(List<CustCorporateRelationship> custCorporateRelationships, Integer custId, Integer userId){
         if(null == custCorporateRelationships || custCorporateRelationships.isEmpty()){
             return;
@@ -71,6 +67,7 @@ public class CustCorporateRelationshipService {
         });
     }
 
+    @Transactional
     public void deleteByCustId(List<CustCorporateRelationship> custCorporateRelationships, List<CustCorporateRelationship> results, Integer custId){
         if(null != results && !results.isEmpty()){
             if(null == custCorporateRelationships || custCorporateRelationships.isEmpty()){
@@ -97,7 +94,8 @@ public class CustCorporateRelationshipService {
      * 维护代理商和客户的关系
      * @param custId
      */
-    public void UpdateCustShip(Integer custId, Integer userId, CustomerInfo dealer){
+    @Transactional
+    public void updateCustShip(Integer custId, Integer userId, CustomerInfo dealer){
         if(null != dealer) {
             CustCorporateRelationship ship = new CustCorporateRelationship();
             ship.setCustId(custId);
@@ -111,17 +109,19 @@ public class CustCorporateRelationshipService {
         }
     }
 
+    @Transactional
     public void deleteByCustId(Integer custId){
         deleteShip(custId);
         custCorporateRelationshipMapper.deleteByCustId(custId);
     }
 
+    @Transactional
     public void save(CustCorporateRelationship record){
         custCorporateRelationshipMapper.insertSelective(record);
         saveShip(record);
     }
 
-
+    @Transactional
     public void saveShip(CustCorporateRelationship ship){
         //找到 关系客户
         CustomerInfo oldCt = customerInfoMapper.selectByInCode(ship.getCorporateId());
@@ -152,6 +152,7 @@ public class CustCorporateRelationshipService {
         }
     }
 
+    @Transactional
     public void deleteShip(Integer custId){
         //找到客户的信息
         CustomerInfo customerInfo = customerInfoMapper.selectByPrimaryKey(custId);

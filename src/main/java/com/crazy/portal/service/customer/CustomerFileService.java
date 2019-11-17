@@ -10,6 +10,7 @@ import com.crazy.portal.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
@@ -42,6 +43,8 @@ public class CustomerFileService {
         });
         return files;
     }
+
+    @Transactional
     public void saveOrUpdate(List<CustomerFile> customerFiles, Integer custId){
         if(null == customerFiles || customerFiles.isEmpty()){
             return;
@@ -63,6 +66,7 @@ public class CustomerFileService {
         });
     }
 
+    @Transactional
     public CustomerFile saveOrUpdate(MultipartFile files, Integer custId){
         FileVO fileVO = FileUtil.upload(files, filePath);
         CustomerFile file = new CustomerFile();
@@ -73,6 +77,7 @@ public class CustomerFileService {
         return file;
     }
 
+    @Transactional
     public void deleteByCustId(List<CustomerFile> customerFiles, List<CustomerFile> results, Integer custId){
         if(null != results && !results.isEmpty()){
             if(null == customerFiles || customerFiles.isEmpty()){

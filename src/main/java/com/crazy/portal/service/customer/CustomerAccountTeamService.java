@@ -9,6 +9,7 @@ import com.crazy.portal.entity.system.User;
 import com.crazy.portal.util.Enums;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -30,6 +31,7 @@ public class CustomerAccountTeamService {
         return customerAccountTeamMapper.selectByCustId(custId);
     }
 
+    @Transactional
     public void saveOrUpdate(List<CustomerAccountTeam> customerAccountTeams, Integer custId, Integer userId){
         if(null == customerAccountTeams || customerAccountTeams.isEmpty()){
             return;
@@ -47,6 +49,7 @@ public class CustomerAccountTeamService {
         });
     }
 
+    @Transactional
     public void deleteByCustId(List<CustomerAccountTeam> customerAccountTeams, List<CustomerAccountTeam> results, Integer custId){
         if(null != results && !results.isEmpty()){
             if(null == customerAccountTeams || customerAccountTeams.isEmpty()){
@@ -68,10 +71,12 @@ public class CustomerAccountTeamService {
         }
     }
 
+    @Transactional
     public void deleteByCustId(Integer custId){
         customerAccountTeamMapper.deleteByCustId(custId);
     }
 
+    @Transactional
     public void save(CustomerAccountTeam record){
         customerAccountTeamMapper.insertSelective(record);
     }

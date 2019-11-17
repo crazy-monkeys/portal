@@ -4,6 +4,8 @@ import com.crazy.portal.dao.cusotmer.CustomerStructureMapper;
 import com.crazy.portal.entity.cusotmer.CustomerStructure;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import javax.annotation.Resource;
 import java.util.List;
 
@@ -22,6 +24,7 @@ public class CustomerStructureService {
         return customerStructureMapper.selectByCustId(custId);
     }
 
+    @Transactional
     public void saveOrUpdate(List<CustomerStructure> customerStructures, Integer custId, Integer userId){
         if(null == customerStructures || customerStructures.isEmpty()){
             return;
@@ -39,6 +42,7 @@ public class CustomerStructureService {
         });
     }
 
+    @Transactional
     public void deleteByCustId(List<CustomerStructure> customerStructures, List<CustomerStructure> results, Integer custId){
         if(null != results && !results.isEmpty()){
             if(null == customerStructures || customerStructures.isEmpty()){
@@ -60,10 +64,12 @@ public class CustomerStructureService {
         }
     }
 
+    @Transactional
     public void deleteByCustId(Integer custId){
         customerStructureMapper.deleteByCustId(custId);
     }
 
+    @Transactional
     public void save(CustomerStructure record){
         customerStructureMapper.insertSelective(record);
     }
