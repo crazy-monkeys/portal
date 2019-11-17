@@ -206,7 +206,7 @@
 
   <delete id="deleteByRecordId" >
     delete from t_deliver_detail_update
-    where record_id = #{recordId}
+    where record_id = #{recordId,jdbcType=INTEGER}
   </delete>
 
 </mapper>

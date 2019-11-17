@@ -5,25 +5,24 @@ import com.crazy.portal.bean.handover.HandoverUploadVO;
 import com.crazy.portal.bean.handover.ReceiveTemplateBean;
 import com.crazy.portal.config.exception.BusinessException;
 import com.crazy.portal.dao.handover.ReceiveDetailMapper;
+import com.crazy.portal.dao.handover.ReceiveDetailUpdateMapper;
 import com.crazy.portal.entity.cusotmer.CustomerInfo;
 import com.crazy.portal.entity.handover.DeliverDetail;
 import com.crazy.portal.entity.handover.DeliverReceiveRecord;
 import com.crazy.portal.entity.handover.ReceiveDetail;
+import com.crazy.portal.entity.handover.ReceiveDetailUpdate;
 import com.crazy.portal.service.customer.CustomerInfoService;
 import com.crazy.portal.util.*;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.cxf.BusException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.crazy.portal.util.Enums.BI_FUNCTION_CODE.*;
 import static com.crazy.portal.util.ErrorCodes.BusinessEnum.*;
@@ -43,6 +42,8 @@ public class ReceiveService extends AbstractHandover implements IHandover<Receiv
     private ReceiveDetailMapper receiveDetailMapper;
     @Resource
     private CustomerInfoService customerInfoService;
+    @Resource
+    private ReceiveDetailUpdateMapper receiveDetailUpdateMapper;
 
     @Value("${file.path.receive.template}")
     private String receiveTemplatePath;
@@ -247,11 +248,30 @@ public class ReceiveService extends AbstractHandover implements IHandover<Receiv
 
     @Override
     public void downloadDataByUpdate(HttpServletResponse response, Integer[] ids) {
-
+        BusinessUtil.notNull(ids, HANDOVER_INVALID_PARAM);
+        BusinessUtil.assertFlase(ids.length == 0, HANDOVER_INVALID_PARAM);
+        List<ReceiveDetail> deliverData = receiveDetailMapper.selectByIds(ids);
+        ExcelUtils.writeExcel(response, deliverData, ReceiveDetail.class);
     }
 
     @Override
     public void uploadDataByUpdate(MultipartFile excel, Integer userId) {
+        Set<Integer> recordIds = new HashSet<>();
+        List<String> biIds = new ArrayList<>();
+        //
+        List<ReceiveDetailUpdate> receiveDetails = ExcelUtils.readExcel(excel, ReceiveDetailUpdate.class);
+        for(ReceiveDetailUpdate detail : receiveDetails){
+            biIds.add(String.valueOf(detail.getThirdId()));
+            DeliverDetail dbRecord = receiveDetailMapper.selectByThirdId(detail.getThirdId());
+            recordIds.add(null == dbRecord ? null : dbRecord.getRecordId());
+        }
+        //
+        List<Integer> statusList = handoverService.getStatusByIds(recordIds);
+        if(null == statusList || statusList.contains(4)){
+            throw new BusinessException(HANDOVER_UPDATE_STATUS_ERROR);
+        }
+        receiveDetailUpdateMapper.batchInsertByBiId(biIds);
+        handoverService.updateStatus(new ArrayList<>(recordIds), 4);
     }
 
     private HandoverUploadVO genThirdResult(BiCheckResult checkResult, List<?> responseData, Integer recordId) {

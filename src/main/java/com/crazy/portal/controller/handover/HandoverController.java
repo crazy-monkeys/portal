@@ -190,19 +190,21 @@ public class HandoverController extends BaseController {
 
     @GetMapping(value = "/handover/detail/update/download")
     public BaseResponse downloadDataByUpdate(HttpServletResponse response, String type, Integer[] ids) {
-        if("deliver".equals(type)){
-            handoverServiceContext.getService(type).downloadDataByUpdate(response, ids);
-        }
+//        if("deliver".equals(type)){
+//            handoverServiceContext.getService(type).downloadDataByUpdate(response, ids);
+//        }
+        handoverServiceContext.getService(type).downloadDataByUpdate(response, ids);
         return super.successResult();
     }
 
     @OperationLog
     @PostMapping(value = "/handover/detail/update/upload")
     public BaseResponse uploadDataByUpdate(MultipartFile excel, String type) {
-        if("deliver".equals(type)){
-            handoverServiceContext.getService(type).uploadDataByUpdate(excel, getCurrentUser().getId());
-            return super.successResult();
-        }
+//        if("deliver".equals(type)){
+//            handoverServiceContext.getService(type).uploadDataByUpdate(excel, getCurrentUser().getId());
+//            return super.successResult();
+//        }
+        handoverServiceContext.getService(type).uploadDataByUpdate(excel, getCurrentUser().getId());
         return super.successResult();
     }
 

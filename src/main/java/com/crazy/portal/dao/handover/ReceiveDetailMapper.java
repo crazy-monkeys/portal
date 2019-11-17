@@ -1,6 +1,7 @@
 package com.crazy.portal.dao.handover;
 
 import com.crazy.portal.bean.handover.ReceiveTemplateBean;
+import com.crazy.portal.entity.handover.DeliverDetail;
 import com.crazy.portal.entity.handover.ReceiveDetail;
 import org.apache.ibatis.annotations.Param;
 
@@ -37,5 +38,9 @@ public interface ReceiveDetailMapper {
     int deleteByRecordId(@Param(value = "recordId") Integer recordId);
 
     int batchDeleteByIds(@Param(value = "ids") Integer[] ids);
+
+    List<ReceiveDetail> selectByIds(@Param(value = "ids") Integer[] ids);
+
+    DeliverDetail selectByThirdId(@Param(value = "thirdId") String thirdId);
 
 }

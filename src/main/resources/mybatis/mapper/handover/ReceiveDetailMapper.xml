@@ -299,4 +299,18 @@
     </foreach>
   </delete>
 
+  <select id="selectByIds" resultMap="BaseResultMap" >
+    select * from t_receive_detail
+    where 1 = 1
+    <foreach collection="ids" item="item" index="index" open=" and id in (" separator="," close=")" >
+      #{item,jdbcType=INTEGER}
+    </foreach>
+  </select>
+
+  <select id="selectByThirdId" resultMap="BaseResultMap" >
+    select * from t_receive_detail
+    where third_id = #{thirdId,jdbcType=VARCHAR}
+    limit 1
+  </select>
+
 </mapper>

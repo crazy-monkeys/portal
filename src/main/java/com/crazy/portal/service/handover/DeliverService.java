@@ -284,8 +284,6 @@ public class DeliverService extends AbstractHandover implements IHandover<Delive
                 deliverDetailUpdateMapper.batchDeleteByBiId(detail.getThirdId());
             }
         }
-
-
     }
 
     @Transactional
