@@ -42,4 +42,9 @@ public interface ReceiveDetailMapper {
 
     ReceiveDetail selectByThirdId(@Param(value = "thirdId") String thirdId);
 
+    List<ReceiveDetail> selectUpdateDataById(@Param(value = "recordId") Integer recordId);
+
+    int updateErrorInfoByBiId(@Param(value = "thirdId") String thirdId,
+                              @Param(value = "errorMsg") String errorMsg);
+
 }

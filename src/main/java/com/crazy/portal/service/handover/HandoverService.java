@@ -2,6 +2,7 @@ package com.crazy.portal.service.handover;
 
 import com.crazy.portal.dao.handover.DeliverDetailUpdateMapper;
 import com.crazy.portal.dao.handover.DeliverReceiveRecordMapper;
+import com.crazy.portal.dao.handover.ReceiveDetailUpdateMapper;
 import com.crazy.portal.entity.handover.DeliverReceiveRecord;
 import com.crazy.portal.service.system.UserCustomerMappingService;
 import com.crazy.portal.util.*;
@@ -34,6 +35,8 @@ public class HandoverService {
     private UserCustomerMappingService userCustomerMappingService;
     @Resource
     private DeliverDetailUpdateMapper deliverDetailUpdateMapper;
+    @Resource
+    private ReceiveDetailUpdateMapper receiveDetailUpdateMapper;
 
     private String deliver_type = "deliver";
     private String receive_type = "receive";
@@ -109,8 +112,11 @@ public class HandoverService {
         record.setApprovalUserId(userId);
         record.setApprovalTime(new Date());
         deliverReceiveRecordMapper.updateByPrimaryKeySelective(record);
-        if(status == 3){
+        if(status == 3 && deliver_type.equals(type)){
             deliverDetailUpdateMapper.deleteByRecordId(id);
+        }
+        if(status == 3 && receive_type.equals(type)){
+            receiveDetailUpdateMapper.deleteByRecordId(id);
         }
     }
 

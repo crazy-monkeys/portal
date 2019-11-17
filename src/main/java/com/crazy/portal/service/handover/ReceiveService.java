@@ -7,7 +7,6 @@ import com.crazy.portal.config.exception.BusinessException;
 import com.crazy.portal.dao.handover.ReceiveDetailMapper;
 import com.crazy.portal.dao.handover.ReceiveDetailUpdateMapper;
 import com.crazy.portal.entity.cusotmer.CustomerInfo;
-import com.crazy.portal.entity.handover.DeliverDetail;
 import com.crazy.portal.entity.handover.DeliverReceiveRecord;
 import com.crazy.portal.entity.handover.ReceiveDetail;
 import com.crazy.portal.entity.handover.ReceiveDetailUpdate;
@@ -250,8 +249,8 @@ public class ReceiveService extends AbstractHandover implements IHandover<Receiv
     public void downloadDataByUpdate(HttpServletResponse response, Integer[] ids) {
         BusinessUtil.notNull(ids, HANDOVER_INVALID_PARAM);
         BusinessUtil.assertFlase(ids.length == 0, HANDOVER_INVALID_PARAM);
-        List<ReceiveDetail> deliverData = receiveDetailMapper.selectByIds(ids);
-        ExcelUtils.writeExcel(response, deliverData, ReceiveDetail.class);
+        List<ReceiveDetail> receiveData = receiveDetailMapper.selectByIds(ids);
+        ExcelUtils.writeExcel(response, receiveData, ReceiveDetail.class);
     }
 
     @Override
@@ -275,30 +274,30 @@ public class ReceiveService extends AbstractHandover implements IHandover<Receiv
     }
 
     public void updateDataToBi(Integer recordId) {
-        /*List<DeliverDetail> deliverDetails = deliverDetailMapper.selectUpdateDataById(recordId);
-        if(null == deliverDetails || deliverDetails.isEmpty()){
+        List<ReceiveDetail> receiveDetails = receiveDetailMapper.selectUpdateDataById(recordId);
+        if(null == receiveDetails || receiveDetails.isEmpty()){
             throw new BusinessException(HANDOVER_DATA_NOT_EXISTS);
         }
         //数据包装，生成第三方需要的文件
-        String thirdFileName = ExcelUtils.writeExcel(deliverPushPath, deliverDetails, DeliverDetail.class);
-        List<DeliverDetail> responseData;
+        String thirdFileName = ExcelUtils.writeExcel(receivePushPath, receiveDetails, ReceiveDetail.class);
+        List<ReceiveDetail> responseData;
         BiCheckResult checkResult;
         try {
             //请求了第三方，并拿到了结果
-            checkResult = callBiServerByFtp(UPDATE_SALES_IMPORT_FILE, deliverPushPath , thirdFileName, deliverPullPath);
-            responseData = ExcelUtils.readExcel(checkResult.getFilePath(), DeliverDetail.class);
+            checkResult = callBiServerByFtp(UPDATE_INVENTORY_IMPORT_FILE, receivePushPath , thirdFileName, receivePullPath);
+            responseData = ExcelUtils.readExcel(checkResult.getFilePath(), ReceiveDetail.class);
         }catch (Exception ex) {
             log.error("", ex);
             throw new BusinessException(HANDOVER_BI_SERVER_EXCEPTION);
         }
         if(!checkResult.isSuccess()){
-            for(DeliverDetail resData : responseData){
-                deliverDetailMapper.updateErrorInfoByBiId(resData.getThirdId(), resData.getErrorMsg());
+            for(ReceiveDetail resData : responseData){
+                receiveDetailMapper.updateErrorInfoByBiId(resData.getThirdId(), resData.getErrorMsg());
             }
             throw new BusinessException(HANDOVER_UPDATE_ERROR);
         }else{
-            for(DeliverDetail detail : responseData){
-                DeliverDetail dbRecord = deliverDetailMapper.selectByThirdId(detail.getThirdId());
+            for(ReceiveDetail detail : responseData){
+                ReceiveDetail dbRecord = receiveDetailMapper.selectByThirdId(detail.getThirdId());
                 if(null == dbRecord){
                     continue;
                 }
@@ -307,10 +306,10 @@ public class ReceiveService extends AbstractHandover implements IHandover<Receiv
                 }catch (Exception ex) {
                     throw new BusinessException("对象属性复制异常");
                 }
-                deliverDetailMapper.updateByPrimaryKeySelective(dbRecord);
-                deliverDetailUpdateMapper.batchDeleteByBiId(detail.getThirdId());
+                receiveDetailMapper.updateByPrimaryKeySelective(dbRecord);
+                receiveDetailUpdateMapper.batchDeleteByBiId(detail.getThirdId());
             }
-        }*/
+        }
     }
 
     private HandoverUploadVO genThirdResult(BiCheckResult checkResult, List<?> responseData, Integer recordId) {

@@ -69,7 +69,7 @@ public class ReceiveDetail {
     private String errorMsg;
 
     @ExcelProperty(index = 13, value = "ID")
-    private Integer thirdId;
+    private String thirdId;
 
     @ExcelProperty(index = 14, value = "是否转移转换")
     private String isTransfer;

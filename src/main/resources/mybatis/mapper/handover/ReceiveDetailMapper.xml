@@ -313,4 +313,16 @@
     limit 1
   </select>
 
+  <select id="selectUpdateDataById" resultMap="BaseResultMap" >
+    select b.*,c.dealer_name from t_receive_detail a
+    inner join t_receive_detail_update b on a.third_id = b.third_id
+    inner join t_deliver_receive_record c on a.record_id = c.id
+    where a.record_id = #{recordId,jdbcType=INTEGER}
+  </select>
+
+  <update id="updateErrorInfoByBiId" >
+    update t_receive_detail set error_msg = #{errorMsg,jdbcType=VARCHAR}
+    where third_id = #{thirdId,jdbcType=VARCHAR}
+  </update>
+
 </mapper>
