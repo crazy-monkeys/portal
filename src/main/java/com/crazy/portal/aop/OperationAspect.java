@@ -172,7 +172,7 @@ public class OperationAspect extends BaseController {
     private String getInvoke(String params, Signature signature) {
         String declaringTypeName = signature.getDeclaringTypeName();
         String className = signature.getName();
-        if(!declaringTypeName.equals("Controller")){
+        if(!className.equals("Controller")){
             throw new BusinessException(String.format("%s-%s-%s",
                     "操作日志注解需要加在Controller层",declaringTypeName,className));
         }
