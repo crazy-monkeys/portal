@@ -23,6 +23,7 @@
     <result column="stock_transfer_year_month" jdbcType="VARCHAR" property="stockTransferYearMonth" />
     <result column="customer_type" jdbcType="VARCHAR" property="customerType" />
     <result column="platform" jdbcType="VARCHAR" property="platform" />
+    <result column="sales_organization" jdbcType="VARCHAR" property="salesOrganization" />
   </resultMap>
 
   <resultMap id="errorResultMap" extends="BaseResultMap" type="com.crazy.portal.bean.handover.ReceiveTemplateBean" >
@@ -123,6 +124,9 @@
       <if test="platform != null" >
         platform,
       </if>
+      <if test="salesOrganization != null" >
+        sales_organization,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -184,6 +188,9 @@
       </if>
       <if test="platform != null" >
         #{platform,jdbcType=VARCHAR},
+      </if>
+      <if test="salesOrganization != null" >
+        #{salesOrganization,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
