@@ -282,7 +282,6 @@ public class CustomerInfoService {
      * @param customerInfo
      * @param user
      */
-    @OperationLog
     @Transactional
     public void report(CustomerInfo customerInfo, User user){
         checkCustomer(customerInfo);
@@ -314,7 +313,6 @@ public class CustomerInfoService {
         }
     }
 
-    @OperationLog
     @Transactional
     public void updateCustomerInfo(CustomerInfo cust, User user){
         checkCustomer(cust);
@@ -399,7 +397,6 @@ public class CustomerInfoService {
      * @param approvalBean
      */
     //TODO 邮件通知
-    @OperationLog
     @Transactional
     public void approval(ApprovalBean approvalBean, Integer userId){
         //通过
@@ -704,7 +701,6 @@ public class CustomerInfoService {
         }
     }
 
-    @OperationLog
     @Transactional
     public void updateDealerInfo(CustomerInfo customerInfo, Integer userId){
         saveCustomerInfo(customerInfo, userId);
@@ -906,7 +902,6 @@ public class CustomerInfoService {
      * @param userId
      * @throws Exception
      **/
-    @OperationLog
     public List<VisitRecord> uploadVisitRecord(MultipartFile[] files, Integer userId) throws Exception{
         List<VisitRecord> results = new ArrayList<>();
         for (MultipartFile file : files) {
@@ -996,7 +991,6 @@ public class CustomerInfoService {
      * @param files
      * @return
      **/
-    @OperationLog
     public CustomerFile fileUpload(MultipartFile files, Integer customerId, Integer index){
         CustomerFile file = customerFileService.saveOrUpdate(files, customerId);
         file.setIndex(index);
