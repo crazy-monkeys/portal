@@ -6,6 +6,7 @@ import com.crazy.portal.bean.handover.ReceiveTemplateBean;
 import com.crazy.portal.config.exception.BusinessException;
 import com.crazy.portal.dao.handover.ReceiveDetailMapper;
 import com.crazy.portal.entity.cusotmer.CustomerInfo;
+import com.crazy.portal.entity.handover.DeliverDetail;
 import com.crazy.portal.entity.handover.DeliverReceiveRecord;
 import com.crazy.portal.entity.handover.ReceiveDetail;
 import com.crazy.portal.service.customer.CustomerInfoService;
@@ -217,10 +218,16 @@ public class ReceiveService extends AbstractHandover implements IHandover<Receiv
             ReceiveDetail detail = receiveDetailMapper.selectByPrimaryKey(id);
             if(null == detail){
                 throw new BusinessException(HANDOVER_DATA_NOT_EXISTS);
-            }else{
-                sb.append(detail.getThirdId());
-                sb.append(",");
             }
+            if(null == detail.getThirdId()){
+                receiveDetailMapper.deleteByPrimaryKey(id);
+                continue;
+            }
+            sb.append(detail.getThirdId());
+            sb.append(",");
+        }
+        if(sb.length() == 0){
+            return;
         }
         String custName = customerInfoService.getDealerByUser(userId).getCustName();
         Map<String, String> param = new HashMap<>();
@@ -228,9 +235,10 @@ public class ReceiveService extends AbstractHandover implements IHandover<Receiv
         param.put("UserName", custName);
         try {
             String response = CallApiUtils.callBiPostApi(DELETE_SALES_CASE, "PORTAL/BI/", JSONObject.toJSONString(param));
-            response = response.replace("\"", "");
-            if("删除成功".equals(response)){
+            if(response.contains("删除成功")){
                 receiveDetailMapper.batchDeleteByIds(ids);
+            }else{
+                throw new BusinessException(HANDOVER_DELETE_ERROR);
             }
         }catch (Exception ex) {
             throw new BusinessException(HANDOVER_BI_SERVER_EXCEPTION);
