@@ -623,7 +623,7 @@ public class SaleForecastService {
             agencyTemplate.setPoPrice(getPriceByProduct(forecast.getProductModel(), forecast.getPlatform(), forecast.getCompany()));
             copyDbFields(forecast, agencyTemplate);
             agencyTemplate.setId(String.valueOf(forecast.getId()));
-            agencyTemplate.setTotalForecastSalesVolume(sumValue(agencyTemplate));
+            agencyTemplate.setTotalForecastNum(sumValue(agencyTemplate));
             templateList.add(agencyTemplate);
         }
         ExcelUtils.writeExcel(response, templateList, AmbUpdateTemplate.class);
