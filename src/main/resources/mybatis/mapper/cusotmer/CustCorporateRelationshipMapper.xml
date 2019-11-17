@@ -166,9 +166,13 @@
   <select id="selectZShip" resultMap="BaseResultMap">
     select * from t_cust_corporate_relationship where corporate_type = 'Z004' and active=1 and cust_id= #{custId,jdbcType=INTEGER}
   </select>
+
+  <select id="selectByCustId" resultMap="BaseResultMap">
+     select * from t_cust_corporate_relationship where active=1 and cust_id= #{custId,jdbcType=INTEGER}
+  </select>
   
   <delete id="deleteByCustId">
-    delete t_cust_corporate_relationship where cust_id = #{custId,jdbcType=INTEGER}
+    delete from t_cust_corporate_relationship where cust_id = #{custId,jdbcType=INTEGER}
   </delete>
   
   <select id="selectInCustomer" resultMap="BaseResultMap">
@@ -187,5 +191,11 @@
     select corporate_id from t_cust_corporate_relationship
     where cust_id=#{dealerId,jdbcType=INTEGER} and corporate_type='Z004'
     ) and cust_abbreviation=#{custAbb,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectByShipCus" resultMap="BaseResultMap">
+    select * from t_cust_corporate_relationship
+    where cust_id = #{custId,jdbcType=INTEGER} and corporate_type= #{type,jdbcType=VARCHAR} and corporate_id= #{inCode,jdbcType=VARCHAR}
+    limit 1
   </select>
 </mapper>

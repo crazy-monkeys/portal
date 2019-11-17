@@ -32,7 +32,7 @@ public class OrderApprovalController extends BaseController {
      */
     @PostMapping("/list")
     public BaseResponse list(@RequestBody OrderQueryBean bean){
-        return successResult(orderApplyService.list(bean));
+        return successResult(orderApplyService.list(bean,super.getCurrentUser()));
     }
 
 

@@ -4,6 +4,7 @@ import com.crazy.portal.bean.common.PageBean;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.List;
 
 @Data
 public class OrderQueryBean extends PageBean {
@@ -31,4 +32,6 @@ public class OrderQueryBean extends PageBean {
     private Integer approvalStatus;
     /**是否有效**/
     private Integer active;
+
+    private List<Integer> userIds;
 }

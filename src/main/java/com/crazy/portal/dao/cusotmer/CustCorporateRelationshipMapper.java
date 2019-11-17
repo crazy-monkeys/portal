@@ -34,4 +34,6 @@ public interface CustCorporateRelationshipMapper {
     List<CustCorporateRelationship> selectOutCustomer(String inCode);
 
     List<CustCorporateRelationship> selectDealerCustomer(@Param("dealerId")Integer dealerId, @Param("custAbb")String custAbb);
+
+    CustCorporateRelationship selectByShipCus(@Param("custId") Integer custId, @Param("type") String type, @Param("inCode") String inCode);
 }

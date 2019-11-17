@@ -32,7 +32,7 @@ public class OrderApplyController extends BaseController {
         if(super.getCurrentUser().getUserType().equals(Enums.USER_TYPE.agent.toString())){
             orderQueryBean.setCreateId(super.getCurrentUserId());
         }
-        return successResult(orderApplyService.list(orderQueryBean));
+        return successResult(orderApplyService.list(orderQueryBean,super.getCurrentUser()));
     }
 
     @GetMapping("/detail/{id}")

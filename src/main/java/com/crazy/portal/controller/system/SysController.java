@@ -49,6 +49,15 @@ public class SysController extends BaseController {
     }
 
     /**
+     * 获取销售
+     * @return
+     */
+    @GetMapping("/inuser/list")
+    public BaseResponse getinUserList(){
+        return successResult(internalUserMapper.selectInUser());
+    }
+
+    /**
      * 获取cs
      * @return
      */

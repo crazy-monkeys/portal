@@ -13,6 +13,8 @@ import com.crazy.portal.dao.order.*;
 import com.crazy.portal.dao.product.ProductInfoDOMapper;
 import com.crazy.portal.entity.order.*;
 import com.crazy.portal.entity.product.ProductInfoDO;
+import com.crazy.portal.entity.system.User;
+import com.crazy.portal.service.system.UserCustomerMappingService;
 import com.crazy.portal.util.*;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -46,6 +48,8 @@ public class OrderService extends CommonOrderService {
     private OrderApiService orderApiService;
     @Resource
     private ProductInfoDOMapper productInfoDOMapper;
+    @Resource
+    private UserCustomerMappingService userCustomerMappingService;
 
     /**
      * 订单列表查询
@@ -74,11 +78,19 @@ public class OrderService extends CommonOrderService {
      * @param vo
      * @return
      */
-    public PageInfo<DeliverOrderApproval> deliveryOrderApprovalList(DeliveryOrderQueryVO vo, Integer userId){
-        PageHelper.startPage(vo.getPageIndex(), vo.getPageSize());
-        if(vo.getQueryType()==2){
-            vo.setCreateUserId(userId);
+    public PageInfo<DeliverOrderApproval> deliveryOrderApprovalList(DeliveryOrderQueryVO vo, User user){
+        List<Integer> userList = new ArrayList<>();
+        if(user.getUserType().equals(Enums.USER_TYPE.internal.toString())){
+            userList = userCustomerMappingService.selectUserMapping(user.getId(), Enums.CustomerMappingModel.Forecast.getValue());
+            Integer[] userIds = new Integer[userList.size()];
+            userList.toArray(userIds);
         }
+        vo.setUserIds(userList);
+
+        if(vo.getQueryType()==2){
+            vo.setCreateUserId(user.getDealerId());
+        }
+        PageHelper.startPage(vo.getPageIndex(), vo.getPageSize());
         List<DeliverOrderApproval> list = deliverOrderApprovalMapper.selectList(vo);
         return new PageInfo<>(list);
     }

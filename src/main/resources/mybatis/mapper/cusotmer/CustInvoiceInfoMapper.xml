@@ -180,6 +180,6 @@
   </select>
 
   <delete id="deleteByCustId">
-    delete t_cust_invoice_info where cust_id = #{custId,jdbcType=INTEGER}
+    delete from t_cust_invoice_info where cust_id = #{custId,jdbcType=INTEGER}
   </delete>
 </mapper>

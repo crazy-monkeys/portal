@@ -3,6 +3,8 @@ package com.crazy.portal.bean.order;
 import com.crazy.portal.bean.common.PageBean;
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * @ClassName: DeliveryOrderQueryVO
  * @Author: God Man Qiu~
@@ -26,4 +28,6 @@ public class DeliveryOrderQueryVO extends PageBean {
     private Integer dealerId;
     /**1-审批查询 2-申请查询**/
     private Integer queryType;
+
+    private List<Integer> userIds;
 }

@@ -141,7 +141,7 @@
   </update>
 
   <delete id="deleteByCustId">
-    DELETE cust_zr_account_team where cust_id = #{custId,jdbcType=INTEGER}
+    DELETE from cust_zr_account_team where cust_id = #{custId,jdbcType=INTEGER}
   </delete>
 
   <select id="selectByCustId" resultMap="BaseResultMap">

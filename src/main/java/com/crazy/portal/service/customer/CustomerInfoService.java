@@ -286,16 +286,24 @@ public class CustomerInfoService {
     @Transactional
     public void report(CustomerInfo customerInfo, User user){
         checkCustomer(customerInfo);
-        if(user.getUserType().equals(Enums.USER_TYPE.internal.toString())){
-            customerInfo.setBusinessType(Enums.CUSTOMER_BUSINESS_TYPE.account_market.getCode());
-        }else{
-            customerInfo.setBusinessType(Enums.CUSTOMER_BUSINESS_TYPE.mass_market.getCode());
-        }
+
         customerInfo.setCustType(Enums.CUSTOMER_TYPE.WAIT_REPORT.getCode());
         customerInfo.setApproveStatus(Enums.CUSTOMER_APPROVE_STATUS.WAIT_APPROVAL.getCode());
-        customerInfo.setActive(1);
-        customerInfo.setCreateUser(user.getId());
-        customerInfoMapper.insertSelective(customerInfo);
+
+        CustomerInfo temp = checkCustomerReport(customerInfo.getCustName(),user);
+        if(null != temp.getId()){
+            customerInfoMapper.updateByPrimaryKeySelective(customerInfo);
+        }else{
+            if(user.getUserType().equals(Enums.USER_TYPE.internal.toString())){
+                customerInfo.setBusinessType(Enums.CUSTOMER_BUSINESS_TYPE.account_market.getCode());
+            }else{
+                customerInfo.setBusinessType(Enums.CUSTOMER_BUSINESS_TYPE.mass_market.getCode());
+            }
+            customerInfo.setActive(1);
+            customerInfo.setCreateUser(user.getId());
+            customerInfoMapper.insertSelective(customerInfo);
+        }
+
         saveCustomerDetail(customerInfo, user.getId());
         if(user.getUserType().equals(Enums.USER_TYPE.internal.toString())){
             InternalUser internalUser = internalUserMapper.selectUserByName(user.getLoginName());
@@ -317,7 +325,7 @@ public class CustomerInfoService {
         customerinfo.setUpdateUser(user.getId());
         customerInfoMapper.updateByPrimaryKeySelective(customerinfo);
         saveCustomerDetail(cust, user.getId());
-        //customerInfoSync(cust, "02");
+        customerInfoSync(cust, "02");
     }
 
     private void mappingCustomerInfo(CustomerInfo cust, CustomerInfo customerInfo){
@@ -617,7 +625,7 @@ public class CustomerInfoService {
         List<Relationship> relationshipList = new ArrayList<>();
         relationships.forEach(e->{
             Relationship relationship = new Relationship();
-            relationship.setRelationshipBusinessPartnerInternalID(e.getCorporateId().toString());
+            relationship.setRelationshipBusinessPartnerInternalID(null==e.getCorporateId()?e.getCorporateName():e.getCorporateId().toString());
             relationship.setRoleCode(String.format("%s%s",e.getCorporateType(),"-1"));
             relationshipList.add(relationship);
         });

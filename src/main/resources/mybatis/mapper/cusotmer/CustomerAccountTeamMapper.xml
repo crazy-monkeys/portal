@@ -156,6 +156,6 @@
   </select>
 
   <delete id="deleteByCustId">
-    delete t_customer_account_team where cust_id = #{custId,jdbcType=INTEGER}
+    delete from t_customer_account_team where cust_id = #{custId,jdbcType=INTEGER}
   </delete>
 </mapper>

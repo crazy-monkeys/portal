@@ -163,7 +163,7 @@
   </update>
 
   <delete id="deleteByCustId">
-    DELETE t_cust_sales_quota where cust_id = #{custId,jdbcType=INTEGER}
+    DELETE from t_cust_sales_quota where cust_id = #{custId,jdbcType=INTEGER}
   </delete>
 
   <select id="selectByCustId" resultMap="BaseResultMap">

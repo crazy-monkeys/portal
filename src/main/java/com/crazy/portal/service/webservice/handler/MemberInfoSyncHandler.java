@@ -12,6 +12,7 @@ import com.crazy.portal.dao.cusotmer.CustomerInfoMapper;
 import com.crazy.portal.entity.cusotmer.*;
 import com.crazy.portal.service.customer.*;
 import com.crazy.portal.service.system.UserService;
+import com.crazy.portal.util.BusinessUtil;
 import com.crazy.portal.util.Enums;
 import com.crazy.portal.util.ErrorCodes;
 import com.crazy.portal.util.StringUtil;
@@ -122,12 +123,8 @@ public class MemberInfoSyncHandler extends AbstractHandler implements IHandler<M
         customerInfo.setInCode(request.getInCode());
         customerInfo.setOutCode(request.getOutCode());
         customerInfo.setCustName(request.getCustName());
-        if(StringUtil.isNotEmpty(request.getCustEName())){
-            customerInfo.setCustEnName(request.getCustEName());
-        }
-        if(StringUtil.isNotEmpty(request.getAbbreviation())){
-            customerInfo.setCustAbbreviation(request.getAbbreviation());
-        }
+        customerInfo.setCustEnName(request.getCustEName());
+        customerInfo.setCustAbbreviation(request.getAbbreviation());
         if(StringUtil.isNotEmpty(request.getCustType())){
             customerInfo.setBusinessType(request.getCustType());
         }
@@ -137,15 +134,9 @@ public class MemberInfoSyncHandler extends AbstractHandler implements IHandler<M
         if(StringUtil.isNotEmpty(request.getCustRole())){
             customerInfo.setCustRole(request.getCustRole());
         }
-        if(StringUtil.isNotEmpty(request.getMobile())){
-            customerInfo.setCustMobile(request.getMobile());
-        }
-        if(StringUtil.isNotEmpty(request.getEmail())){
-            customerInfo.setCustEmail(request.getEmail());
-        }
-        if(StringUtil.isNotEmpty(request.getCustWeb())){
-            customerInfo.setCustWeb(request.getCustWeb());
-        }
+        customerInfo.setCustMobile(request.getMobile());
+        customerInfo.setCustEmail(request.getEmail());
+        customerInfo.setCustWeb(request.getCustWeb());
         if(StringUtil.isNotEmpty(request.getIsWhite())){
             customerInfo.setIsWhite(Integer.valueOf(request.getIsWhite()));
         }else{
@@ -183,12 +174,8 @@ public class MemberInfoSyncHandler extends AbstractHandler implements IHandler<M
         if(StringUtil.isNotEmpty(request.getDevelopersNumber())){
             customerInfo.setDevelopersNumber(Integer.valueOf(request.getDevelopersNumber()));
         }
-        if(StringUtil.isNotEmpty(request.getBusinessIntroduction())){
-            customerInfo.setBusinessIntroduction(request.getBusinessIntroduction());
-        }
-        if(StringUtil.isNotEmpty(request.getAdvantagesIntroduction())){
-            customerInfo.setAdvantagesIntroduction(request.getAdvantagesIntroduction());
-        }
+        customerInfo.setBusinessIntroduction(request.getBusinessIntroduction());
+        customerInfo.setAdvantagesIntroduction(request.getAdvantagesIntroduction());
     }
 
     private void saveCustomerAgents(String agents, Integer custId){
@@ -271,6 +258,7 @@ public class MemberInfoSyncHandler extends AbstractHandler implements IHandler<M
         custCorporateRelationshipService.deleteByCustId(custId);
         results.forEach(e->{
             CustomerInfo customerInfo = customerInfoMapper.selectByInCode(e.getCorporateName());
+            BusinessUtil.assertFlase(null == customerInfo,ErrorCodes.BusinessEnum.CUSTOMER_IS_EMPYT);
             e.setCustId(custId);
             e.setCorporateType(null == e.getCorporateType()?null:e.getCorporateType().substring(0,4));
             e.setCorporateId(customerInfo.getInCode());

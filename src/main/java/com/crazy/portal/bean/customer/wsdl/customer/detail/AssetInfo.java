@@ -23,13 +23,13 @@ public class AssetInfo {
     @XmlElement(name = "Season")
     private String season;
 
-    @XmlElement(name = "TotalAssets currencyCode=\"?\"")
+    @XmlElement(name = "TotalAssets currencyCode=\"USD\"")
     private String totalAssets;
 
-    @XmlElement(name = "NetAssets currencyCode=\"?\"")
+    @XmlElement(name = "NetAssets currencyCode=\"USD\"")
     private String netAssets;
 
-    @XmlElement(name = "Revenue currencyCode=\"?\"")
+    @XmlElement(name = "Revenue currencyCode=\"USD\"")
     private String revenue;
 
     @XmlElement(name = "TotalStaff")

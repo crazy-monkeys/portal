@@ -35,4 +35,6 @@ public interface InternalUserMapper {
 
     InternalUser selectSD(String department);
 
+    List<InternalUser> selectInUser();
+
 }

@@ -215,6 +215,6 @@
   </select>
 
   <delete id="deleteByCustId">
-    DELETE t_customer_structure where cust_id = #{custId,jdbcType=INTEGER}
+    DELETE from t_customer_structure where cust_id = #{custId,jdbcType=INTEGER}
   </delete>
 </mapper>

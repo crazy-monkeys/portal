@@ -1,5 +1,6 @@
 package com.crazy.portal.service.customer;
 
+import com.crazy.portal.bean.customer.wsdl.customer.info.Customer;
 import com.crazy.portal.dao.cusotmer.CustCorporateRelationshipMapper;
 import com.crazy.portal.dao.cusotmer.CustomerInfoMapper;
 import com.crazy.portal.entity.cusotmer.CustCorporateRelationship;
@@ -31,10 +32,6 @@ public class CustCorporateRelationshipService {
         return custCorporateRelationshipMapper.selectDealerShip(custId);
     }
 
-    public List<CustCorporateRelationship> selectByCustName(String custName){
-        return custCorporateRelationshipMapper.selectDealerShipByName(custName);
-    }
-
     public List<CustCorporateRelationship> selectZShip(Integer custId){
         return custCorporateRelationshipMapper.selectZShip(custId);
     }
@@ -61,12 +58,12 @@ public class CustCorporateRelationshipService {
             return;
         }
         custCorporateRelationships.forEach(e->{
-            //e.setCorporateId(e.getCorporateId());
             if(null == e.getShipId()){
                 e.setCustId(custId);
                 e.setCreateUser(userId);
                 e.setActive(1);
                 custCorporateRelationshipMapper.insertSelective(e);
+                saveShip(e);
             }else{
                 e.setUpdateUser(userId);
                 custCorporateRelationshipMapper.updateByPrimaryKeySelective(e);
@@ -77,6 +74,7 @@ public class CustCorporateRelationshipService {
     public void deleteByCustId(List<CustCorporateRelationship> custCorporateRelationships, List<CustCorporateRelationship> results, Integer custId){
         if(null != results && !results.isEmpty()){
             if(null == custCorporateRelationships || custCorporateRelationships.isEmpty()){
+                deleteShip(custId);
                 custCorporateRelationshipMapper.deleteByCustId(custId);
             }else{
                 for(CustCorporateRelationship r : results){
@@ -109,15 +107,67 @@ public class CustCorporateRelationshipService {
             ship.setCreateUser(userId);
             ship.setActive(1);
             custCorporateRelationshipMapper.insertSelective(ship);
+            saveShip(ship);
         }
     }
 
     public void deleteByCustId(Integer custId){
+        deleteShip(custId);
         custCorporateRelationshipMapper.deleteByCustId(custId);
     }
 
     public void save(CustCorporateRelationship record){
         custCorporateRelationshipMapper.insertSelective(record);
+        saveShip(record);
     }
 
+
+    public void saveShip(CustCorporateRelationship ship){
+        //找到 关系客户
+        CustomerInfo oldCt = customerInfoMapper.selectByInCode(ship.getCorporateId());
+        //找到客户
+        CustomerInfo ct = customerInfoMapper.selectByPrimaryKey(ship.getCustId());
+        if(null != oldCt){
+            //找到关系客户的 所有关系
+            List<CustCorporateRelationship> oldShips = custCorporateRelationshipMapper.selectByCustId(oldCt.getId());
+            //遍历关系客户的关系 看是否有和客户的关系
+            Boolean flg = true;
+            for (CustCorporateRelationship e : oldShips){
+                if(e.getCorporateId().equals(ct.getInCode())){
+                    flg = false;
+                    break;
+                }
+            }
+
+            if(flg){
+                CustCorporateRelationship newShip = new CustCorporateRelationship();
+                newShip.setCustId(oldCt.getId());
+                newShip.setCorporateType(ship.getCorporateType());
+                newShip.setCorporateId(ct.getInCode());
+                newShip.setCorporateName(ct.getCustName());
+                newShip.setCreateUser(ct.getId());
+                newShip.setActive(1);
+                custCorporateRelationshipMapper.insertSelective(newShip);
+            }
+        }
+    }
+
+    public void deleteShip(Integer custId){
+        //找到客户的信息
+        CustomerInfo customerInfo = customerInfoMapper.selectByPrimaryKey(custId);
+        //找到客户的所有关系
+        List<CustCorporateRelationship> oldShips = custCorporateRelationshipMapper.selectByCustId(custId);
+        //遍历关系
+        oldShips.forEach(e->{
+            //找到每条关系对应的客户
+            CustomerInfo shipCus = customerInfoMapper.selectByInCode(e.getCorporateId());
+            //找到对应客户的关系是关联该客户的关系
+            CustCorporateRelationship ship = custCorporateRelationshipMapper.selectByShipCus(shipCus.getId(), e.getCorporateType(), customerInfo.getInCode());
+            //删除
+            if(null != ship){
+                custCorporateRelationshipMapper.deleteByPrimaryKey(ship.getShipId());
+            }
+        });
+
+    }
 }

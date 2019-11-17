@@ -192,9 +192,13 @@
   </select>
 
   <select id="selectSales" resultMap="BaseResultMap">
-    select * from t_internal_user where user_department_code in (
-      select seq from t_organizational_structure where parent_org in ('1001013','1001014')
-      )
+  select * from t_internal_user where user_department_code in (
+  select seq from t_organizational_structure where parent_org in ('1001013','1001014') or seq in ('1001013','1001014')
+  )
+</select>
+
+  <select id="selectInUser" resultMap="BaseResultMap">
+    select * from t_internal_user
   </select>
 
   <select id="selectDS" resultMap="BaseResultMap">

@@ -61,7 +61,7 @@ public class OrderQueryController extends BaseController {
      */
     @PostMapping("/list/delivery/approval")
     public BaseResponse deliveryApprovalList(@RequestBody DeliveryOrderQueryVO vo){
-        return successResult(orderService.deliveryOrderApprovalList(vo,getCurrentUser().getDealerId()));
+        return successResult(orderService.deliveryOrderApprovalList(vo,getCurrentUser()));
     }
 
     /**

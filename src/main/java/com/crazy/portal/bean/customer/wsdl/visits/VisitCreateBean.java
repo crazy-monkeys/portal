@@ -88,14 +88,14 @@ public class VisitCreateBean {
     private OtherPartyBean otherPartyBean;
 
     //项目状态
-    @XmlElement(name = "ProjectStatus")
+    @XmlElement(name = "y4r:Z_PROJECT_STATUS")
     private String ProjectStatus;
 
     //项目状态
-    @XmlElement(name = "ProjectBU")
+    @XmlElement(name = "y4r:Z_PROJECT_BU")
     private String ProjectBU;
 
     //项目状态
-    @XmlElement(name = "VisitCount")
+    @XmlElement(name = "y4r:Z_VISIT_COUNT")
     private String VisitCount;
 }

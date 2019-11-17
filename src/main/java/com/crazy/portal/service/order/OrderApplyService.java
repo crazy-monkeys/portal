@@ -17,10 +17,12 @@ import com.crazy.portal.entity.price.CatalogPrice;
 import com.crazy.portal.entity.product.ProductInfoDO;
 import com.crazy.portal.entity.system.SysParameter;
 import com.crazy.portal.entity.system.User;
+import com.crazy.portal.entity.system.UserCustomerMapping;
 import com.crazy.portal.service.customer.CustomerInfoService;
 import com.crazy.portal.service.handover.ReceiveService;
 import com.crazy.portal.service.price.CatalogPriceService;
 import com.crazy.portal.service.system.SysParamService;
+import com.crazy.portal.service.system.UserCustomerMappingService;
 import com.crazy.portal.util.*;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -70,13 +72,23 @@ public class OrderApplyService extends CommonOrderService{
     private SysParamService sysParamService;
     @Resource
     private CatalogPriceService catalogPriceService;
+    @Resource
+    private UserCustomerMappingService userCustomerMappingService;
 
     /**
      * 分页查询
      * @param bean
      * @return
      */
-    public PageInfo<OrderApply> list(OrderQueryBean bean){
+    public PageInfo<OrderApply> list(OrderQueryBean bean, User user){
+        List<Integer> userList = new ArrayList<>();
+        if(user.getUserType().equals(Enums.USER_TYPE.internal.toString())){
+            userList = userCustomerMappingService.selectUserMapping(user.getId(), Enums.CustomerMappingModel.Forecast.getValue());
+            Integer[] userIds = new Integer[userList.size()];
+            userList.toArray(userIds);
+        }
+        bean.setUserIds(userList);
+
         PageHelper.startPage(bean.getPageIndex(), bean.getPageSize());
         List<OrderApply> list = orderApplyMapper.selectByPage(bean);
         return new PageInfo<>(list);
@@ -96,9 +108,6 @@ public class OrderApplyService extends CommonOrderService{
      */
     public Map<String,Object> parsingLineTmplFile(OrderApply order, User user) throws Exception{
         Map<String,Object> map = new HashMap<>();
-       /* if(order.getSalesOrg().equals("3000")){
-            order.setPaymentTerms("9994");
-        }*/
         //解析excel
         List<OrderLineEO> records = ExcelUtils.readExcel(order.getLineFile(), OrderLineEO.class);
         log.info("records -> "+ records.toString());

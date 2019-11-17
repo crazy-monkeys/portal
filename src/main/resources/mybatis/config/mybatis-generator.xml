@@ -19,25 +19,35 @@
             <property name="forceBigDecimals" value="false"/>  
         </javaTypeResolver>
 
-        <javaModelGenerator targetPackage="com.crazy.portal.entity.inventory" targetProject="src/main/java">
+        <javaModelGenerator targetPackage="com.crazy.portal.entity.test" targetProject="src/main/java">
             <property name="enableSubPackages" value="true"/>  
             <property name="trimStrings" value="true"/>  
         </javaModelGenerator>
 
-        <sqlMapGenerator targetPackage="mybatis/mapper/inventory" targetProject="src/main/resources">
+        <sqlMapGenerator targetPackage="mybatis/mapper/test" targetProject="src/main/resources">
             <property name="enableSubPackages" value="true"/>  
         </sqlMapGenerator>  
 
-        <javaClientGenerator type="XMLMAPPER" targetPackage="com.crazy.portal.dao.inventory" targetProject="src/main/java">
+        <javaClientGenerator type="XMLMAPPER" targetPackage="com.crazy.portal.dao.test" targetProject="src/main/java">
             <property name="enableSubPackages" value="true"/>
         </javaClientGenerator>
 
-        <table tableName="t_inventory_transfer" domainObjectName="inventoryTransferDO"
+        <table tableName="t_deliver_order_approval" domainObjectName="DeliverOrderApproval"
                enableCountByExample="false"
                enableUpdateByExample="false"
                enableDeleteByExample="false"
                enableSelectByExample="false"
                selectByExampleQueryId="false"></table>
+
+        <table tableName="t_deliver_order" domainObjectName="DeliverOrder"
+               enableCountByExample="false"
+               enableUpdateByExample="false"
+               enableDeleteByExample="false"
+               enableSelectByExample="false"
+               selectByExampleQueryId="false"></table>
+
+
+
 
     </context>
 
