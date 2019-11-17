@@ -78,6 +78,7 @@
     <result column="gap_six" jdbcType="VARCHAR" property="gapSix" />
     <result column="sd_adjustment_six" jdbcType="VARCHAR" property="sdAdjustmentSix" />
     <result column="sd_remark_six" jdbcType="VARCHAR" property="sdRemarkSix" />
+    <result column="delay_stock" jdbcType="VARCHAR" property="delayStock" />
   </resultMap>
 
   <sql id="Base_Column_List">
@@ -417,28 +418,29 @@
     select a.operation_year_month,a.company,a.bu,a.pdt,a.product_type,a.platform,a.product_model,a.vm_number,
     b.forecast_month_one,
     round(sum(b.last_write_one),4) last_write_one,
-    round(sum(b.current_write_one),4) current_write_one,
+    round(ifnull(sum(b.current_write_one),0) + ifnull(sum(b.amb_adjustment_one),0),4) current_write_one,
     round(sum(b.gap_one),4) gap_one,
     b.forecast_month_two,
     round(sum(b.last_write_two),4) last_write_two,
-    round(sum(b.current_write_two),4) current_write_two,
+    round(ifnull(sum(b.current_write_two),0) + ifnull(sum(b.amb_adjustment_one),0),4) current_write_two,
     round(sum(b.gap_two),4) gap_two,
     b.forecast_month_three,
     round(sum(b.last_write_three),4) last_write_three,
-    round(sum(b.current_write_three),4) current_write_three,
+    round(ifnull(sum(b.current_write_three),0) + ifnull(sum(b.amb_adjustment_one),0),4) current_write_three,
     round(sum(b.gap_three),4) gap_three,
     b.forecast_month_four,
     round(sum(b.last_write_four),4) last_write_four,
-    round(sum(b.current_write_four),4) current_write_four,
+    round(ifnull(sum(b.current_write_four),0) + ifnull(sum(b.amb_adjustment_one),0),4) current_write_four,
     round(sum(b.gap_four),4) gap_four,
     b.forecast_month_five,
     round(sum(b.last_write_five),4) last_write_five,
-    round(sum(b.current_write_five),4) current_write_five,
+    round(ifnull(sum(b.current_write_five),0) + ifnull(sum(b.amb_adjustment_one),0),4) current_write_five,
     round(sum(b.gap_five),4) gap_five,
     b.forecast_month_six,
     round(sum(b.last_write_six),4) last_write_six,
-    round(sum(b.current_write_six),4) current_write_six,
-    round(sum(b.gap_six),4) gap_six
+    round(ifnull(sum(b.current_write_six),0) + ifnull(sum(b.amb_adjustment_one),0),4) current_write_six,
+    round(sum(b.gap_six),4) gap_six,
+    round(ifnull(sum(a.delay_stock),0),4) delay_stock
     from t_forecast a
     inner join t_forecast_line b on a.id = b.f_id
     where 1 = 1
