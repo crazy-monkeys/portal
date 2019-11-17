@@ -73,6 +73,15 @@ public class ReceiveDetail {
     @ExcelProperty(index = 13, value = "ID")
     private Integer thirdId;
 
+    @ExcelProperty(index = 14, value = "是否转移转换")
+    private String stockTransferYearMonth;
+
+    @ExcelProperty(index = 15, value = "客户内部号")
+    private String isTransfer;
+
+    @ExcelProperty(index = 16, value = "库存转移年月")
+    private String insideCustomerId;
+
     @ExcelIgnore
     private Integer recordId;
 
