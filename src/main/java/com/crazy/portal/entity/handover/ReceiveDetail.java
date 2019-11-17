@@ -10,8 +10,6 @@ import java.math.BigDecimal;
 public class ReceiveDetail {
     @ExcelIgnore
     private Integer id;
-    @ExcelIgnore
-    private Integer deliveryOrderId;
 
     @ExcelProperty(index = 0, value = "代理全称")
     private String dealerName;
@@ -81,6 +79,9 @@ public class ReceiveDetail {
 
     @ExcelProperty(index = 16, value = "库存转移年月")
     private String insideCustomerId;
+
+    @ExcelProperty(index = 17, value = "Portal ID")
+    private Integer deliveryOrderId;
 
     @ExcelIgnore
     private Integer recordId;
