@@ -17,7 +17,12 @@
     <result column="error_msg" jdbcType="VARCHAR" property="errorMsg" />
     <result column="record_id" jdbcType="INTEGER" property="recordId" />
     <result column="dealer_name" jdbcType="VARCHAR" property="dealerName" />
-    <result column="delivery_order_id" jdbcType="INTEGER" property="deliveryOrderId" />
+    <result column="delivery_order_id" jdbcType="VARCHAR" property="deliveryOrderId" />
+    <result column="is_transfer" jdbcType="VARCHAR" property="isTransfer" />
+    <result column="inside_customer_id" jdbcType="VARCHAR" property="insideCustomerId" />
+    <result column="stock_transfer_year_month" jdbcType="VARCHAR" property="stockTransferYearMonth" />
+    <result column="customer_type" jdbcType="VARCHAR" property="customerType" />
+    <result column="platform" jdbcType="VARCHAR" property="platform" />
   </resultMap>
 
   <resultMap id="errorResultMap" extends="BaseResultMap" type="com.crazy.portal.bean.handover.ReceiveTemplateBean" >
@@ -112,6 +117,12 @@
       <if test="insideCustomerId != null" >
         inside_customer_id,
       </if>
+      <if test="customerType != null" >
+        customer_type,
+      </if>
+      <if test="platform != null" >
+        platform,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -167,6 +178,12 @@
       </if>
       <if test="insideCustomerId != null" >
         #{insideCustomerId,jdbcType=VARCHAR},
+      </if>
+      <if test="customerType != null" >
+        #{customerType,jdbcType=VARCHAR},
+      </if>
+      <if test="platform != null" >
+        #{platform,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>

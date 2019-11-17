@@ -731,7 +731,7 @@ public class OrderApplyService extends CommonOrderService{
         boolean flg = receiveService.pushReceiveDataToBi(receiveData, userId);
         if(flg){
             receiveData.forEach(e->{
-                deliverOrderLineMapper.updateReciveQty(e.getDeliveryOrderId(),new BigDecimal(e.getDeliveryNum()));
+                deliverOrderLineMapper.updateReciveQty(Integer.parseInt(e.getDeliveryOrderId()),new BigDecimal(e.getDeliveryNum()));
             });
         }
     }
@@ -740,7 +740,7 @@ public class OrderApplyService extends CommonOrderService{
         OrderLine orderLine = orderLineMapper.selectByPrimaryKey(deliverOrderLine.getSalesOrderLineId());
         ProductInfoDO productInfoDO = productInfoDOMapper.selectBySapMidAndPlatForm(orderLine.getProductId(), orderLine.getPlatform());
         ReceiveDetail detail = new ReceiveDetail();
-        detail.setDeliveryOrderId(deliverOrderLine.getDeliverOrderLineId());
+        detail.setDeliveryOrderId(String.valueOf(deliverOrderLine.getDeliverOrderLineId()));
         detail.setDealerName(customerInfo.getCustName());
         detail.setCustomerType(order.getCustomerAttr().equals("B2")?"Mass Market":"Account Market");
         detail.setDeliveryNum(String.valueOf(qty));

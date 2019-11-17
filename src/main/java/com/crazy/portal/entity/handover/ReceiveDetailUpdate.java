@@ -1,5 +1,7 @@
 package com.crazy.portal.entity.handover;
 
+import com.alibaba.excel.annotation.ExcelIgnore;
+import com.alibaba.excel.annotation.ExcelProperty;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -13,94 +15,83 @@ import java.util.Date;
 
 @Data
 public class ReceiveDetailUpdate {
-    /**
-     * 
-     */
+
+    @ExcelIgnore
     private Integer id;
 
-    /**
-     * 
-     */
-    private String thirdId;
+    @ExcelProperty(index = 0, value = "代理全称")
+    private String dealerName;
 
-    /**
-     * 上传时间
-     */
-    private Date uploadTime;
+    @ExcelProperty(index = 1, value = "客户分类")
+    private String customerType;
 
-    /**
-     * 产品型号
-     */
+    @ExcelProperty(index = 2, value = "平台")
+    private String platform;
+
+    /** 产品型号 */
+    @ExcelProperty(index = 3, value = "产品型号")
     private String productModel;
 
-    /**
-     * 库存类别
-     */
+    /** 库存类别 */
+    @ExcelProperty(index = 4, value = "库存类别")
     private String inventoryCategory;
 
-    /**
-     * 库存单价
-     */
+    /** 库存单价 */
+    @ExcelProperty(index = 5, value = "库存单价")
     private BigDecimal inventoryUnitPrice;
 
-    /**
-     * 仓储地
-     */
+    @ExcelProperty(index = 6, value = "销售组织")
+    private String salesOrganization;
+
+    /** 仓储地 */
+//    @ExcelProperty(index = 4, value = "仓储地")
+    @ExcelIgnore
     private String warehouse;
 
-    /**
-     * 提货时间
-     */
+    /** 提货时间  == 代理商点击收货时间 */
+    @ExcelProperty(index = 7, value = "代理提货时间")
     private String deliveryTime;
 
-    /**
-     * 提货发票号
-     */
+    /** 提货发票号 */
+//    @ExcelProperty(index = 6, value = "提货发票号")
+    @ExcelIgnore
     private String invoiceNumber;
 
-    /**
-     * 提货数量
-     */
-    private Integer deliveryNum;
+    /** 提货数量 */
+    @ExcelProperty(index = 8, value = "代理提货数量")
+    private String deliveryNum;
 
-    /**
-     * 发货公司
-     */
+    /** 发货公司 */
+    @ExcelProperty(index = 9, value = "发货公司")
     private String deliveryCompany;
 
-    /**
-     * 采购单号
-     */
-    private String purchaseNumber;
-
-    /**
-     * 备注
-     */
+    /** 备注 */
+    @ExcelProperty(index = 10, value = "备注")
     private String remark;
 
-    /**
-     * 
-     */
+    /** 采购单号 */
+    @ExcelProperty(index = 11, value = "采购单号")
+    private String purchaseNumber;
+
+    @ExcelProperty(index = 12, value = "错误信息")
     private String errorMsg;
 
-    /**
-     * 
-     */
-    private Integer recordId;
+    @ExcelProperty(index = 13, value = "ID")
+    private String thirdId;
 
-    /**
-     * 
-     */
-    private String stockTransferYearMonth;
-
-    /**
-     * 
-     */
+    @ExcelProperty(index = 14, value = "是否转移转换")
     private String isTransfer;
 
-    /**
-     * 
-     */
+    @ExcelProperty(index = 15, value = "客户内部号")
     private String insideCustomerId;
+
+    @ExcelProperty(index = 16, value = "库存转移年月")
+    private String stockTransferYearMonth;
+
+    @ExcelProperty(index = 17, value = "Portal ID")
+    private String deliveryOrderId;
+
+    @ExcelIgnore
+    private Integer recordId;
 
 }

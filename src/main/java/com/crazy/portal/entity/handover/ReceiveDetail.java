@@ -81,7 +81,7 @@ public class ReceiveDetail {
     private String stockTransferYearMonth;
 
     @ExcelProperty(index = 17, value = "Portal ID")
-    private Integer deliveryOrderId;
+    private String deliveryOrderId;
 
     @ExcelIgnore
     private Integer recordId;
