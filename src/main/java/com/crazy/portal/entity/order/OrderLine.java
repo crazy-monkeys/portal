@@ -5,6 +5,7 @@ import lombok.Data;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.xml.bind.annotation.XmlElement;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -169,6 +170,17 @@ public class OrderLine {
     private String product;
     private String bu;
     private String pdt;
+
+
+    /**
+     * 1117 新加接口价格相关字段
+     */
+    private BigDecimal kbetr;
+    private String waers;
+    private BigDecimal kpein;
+    private BigDecimal netpr;
+    private BigDecimal unitPrice;
+
 
     public String getProductIDAndPlatform(){
         return this.productId + this.platform;

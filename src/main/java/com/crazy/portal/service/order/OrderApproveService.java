@@ -30,6 +30,7 @@ import javax.validation.constraints.NotEmpty;
 import java.beans.IntrospectionException;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -162,11 +163,16 @@ public class OrderApproveService extends CommonOrderService{
                     continue a;
                 }
             }
-            //保存其余物料,需要构建新订单行
+            //保存其余物料扩展字段,需要构建新订单行
             OrderLine orderLine = new OrderLine();
             orderLine.setRPrice(eccLine.getPrice());
             orderLine.setRNetPrice(eccLine.getNetprice());
             orderLine.setProduct(eccLine.getProductid());
+            if(eccLine.getNetpr().equals(BigDecimal.ZERO) || eccLine.getKpein().equals(BigDecimal.ZERO)){
+                orderLine.setUnitPrice(BigDecimal.ZERO);
+            }else{
+                orderLine.setUnitPrice(eccLine.getNetpr().divide(eccLine.getKpein()).setScale(6, BigDecimal.ROUND_HALF_UP));
+            }
             this.insertOrderLine(userId,order,orderLine,eccLine);
         }
     }
@@ -195,6 +201,15 @@ public class OrderApproveService extends CommonOrderService{
         line.setRPrice(currProductItems.stream()
                 .map(ZsalesordercreateOutItem::getPrice)
                 .reduce(BigDecimal.ZERO,BigDecimal::add));
+
+        line.setUnitPrice(currProductItems.stream().map(x->{
+            BigDecimal netpr = x.getNetpr();
+            BigDecimal kpein = x.getKpein();
+            if(netpr.equals(BigDecimal.ZERO) || kpein.equals(BigDecimal.ZERO)){
+                return BigDecimal.ZERO;
+            }
+            return netpr.divide(kpein).setScale(6, BigDecimal.ROUND_HALF_UP);
+        }).reduce(BigDecimal.ZERO,BigDecimal::add));
     }
 
     /**
@@ -276,6 +291,11 @@ public class OrderApproveService extends CommonOrderService{
         line.setRPlatform(etItem.getPlatform());
         line.setPlatform(line.getPlatform() == null ? etItem.getPlatform() : line.getPlatform());
         line.setNum(etItem.getSapquantity().intValue());
+
+        line.setKbetr(etItem.getKbetr());
+        line.setWaers(etItem.getWaers());
+        line.setKpein(etItem.getKpein());
+        line.setNetpr(etItem.getNetpr());
         line.setCreateId(userId);
         line.setCreateTime(DateUtil.getCurrentTS());
         line.setActice(1);

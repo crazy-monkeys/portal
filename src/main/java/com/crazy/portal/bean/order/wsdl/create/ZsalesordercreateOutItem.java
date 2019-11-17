@@ -52,7 +52,11 @@ import javax.xml.bind.annotation.XmlType;
     "itemcategory",
     "refitemno",
     "refitemproductid",
-    "platform"
+    "platform",
+    "kbetr",
+    "waers",
+    "kpein",
+    "netpr",
 })
 public class ZsalesordercreateOutItem {
 
@@ -82,6 +86,15 @@ public class ZsalesordercreateOutItem {
     protected String refitemproductid;
     @XmlElement(name = "Platform", required = true)
     protected String platform;
+    //新调整字段
+    @XmlElement(name = "Kbetr", required = true)
+    protected BigDecimal kbetr;
+    @XmlElement(name = "Waers", required = true)
+    protected String waers;
+    @XmlElement(name = "Kpein", required = true)
+    protected BigDecimal kpein;
+    @XmlElement(name = "Netpr", required = true)
+    protected BigDecimal netpr;
 
     /**
      * 获取saporderid属性的值。
@@ -377,5 +390,37 @@ public class ZsalesordercreateOutItem {
 
     public void setPlatform(String platform) {
         this.platform = platform;
+    }
+
+    public String getWaers() {
+        return waers;
+    }
+
+    public void setWaers(String waers) {
+        this.waers = waers;
+    }
+
+    public BigDecimal getKpein() {
+        return kpein;
+    }
+
+    public void setKpein(BigDecimal kpein) {
+        this.kpein = kpein;
+    }
+
+    public BigDecimal getKbetr() {
+        return kbetr;
+    }
+
+    public void setKbetr(BigDecimal kbetr) {
+        this.kbetr = kbetr;
+    }
+
+    public BigDecimal getNetpr() {
+        return netpr;
+    }
+
+    public void setNetpr(BigDecimal netpr) {
+        this.netpr = netpr;
     }
 }

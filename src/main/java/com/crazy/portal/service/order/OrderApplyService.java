@@ -149,6 +149,13 @@ public class OrderApplyService extends CommonOrderService{
             orderLineEO.setRPrice(currProductItems.stream().map(ZpricessimulateItemOut::getPrice)
                     .reduce(BigDecimal.ZERO,BigDecimal::add));
 
+            orderLineEO.setUnitPrice(currProductItems.stream().map(x->{
+                if(x.getNetpr().equals(BigDecimal.ZERO) || x.getKpein().equals(BigDecimal.ZERO)){
+                    return BigDecimal.ZERO;
+                }
+                return x.getNetpr().divide(x.getKpein()).setScale(6, BigDecimal.ROUND_HALF_UP);
+            }).reduce(BigDecimal.ZERO,BigDecimal::add));
+
             //设置定价
             orderLineEO.setPriceDate(priceDate);
             ProductInfoDO productInfo = super.getProductInfo(orderLineEO.getProductId(), orderLineEO.getPlatform());
@@ -164,7 +171,6 @@ public class OrderApplyService extends CommonOrderService{
         map.put("netValue",esHeader.getNetvalue());
         return map;
     }
-
 
     /**
      * 检查订单行中数据是否有与之匹配的价格

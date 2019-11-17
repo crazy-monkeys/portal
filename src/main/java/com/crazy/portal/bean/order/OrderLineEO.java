@@ -66,5 +66,11 @@ public class OrderLineEO {
     @ExcelIgnore
     private String pdt;
 
+    /**
+     * 单价
+     */
+    @ExcelIgnore
+    private BigDecimal unitPrice;
+
 
 }

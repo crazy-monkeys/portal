@@ -30,12 +30,19 @@
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_id" jdbcType="INTEGER" property="updateId" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+
+    <result column="kbetr" jdbcType="DECIMAL" property="kbetr" />
+    <result column="waers" jdbcType="VARCHAR" property="waers" />
+    <result column="kpein" jdbcType="DECIMAL" property="kpein" />
+    <result column="netpr" jdbcType="DECIMAL" property="netpr" />
+    <result column="unit_price" jdbcType="DECIMAL" property="unitPrice" />
   </resultMap>
   <sql id="Base_Column_List">
     id, order_id, product_id, unit, num,remaining_num, platform, expected_delivery_month, expected_delivery_date,
     r_sap_order_id, r_sequence_no, r_item_no, r_product_id, r_price, r_net_price, r_sap_qty, 
-    r_cond_unit, r_currency,r_item_category, r_ref_item_no, r_ref_item_product_id, r_platform, cust_abbreviation,actice,
-    create_id, create_time, update_id, update_time
+    r_cond_unit, r_currency,r_item_category, r_ref_item_no, r_ref_item_product_id, r_platform, cust_abbreviation,
+    kbetr,waers,kpein,netpr,unit_price
+    actice,create_id, create_time, update_id, update_time
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -137,6 +144,21 @@
       <if test="custAbbreviation != null">
         cust_abbreviation,
       </if>
+      <if test="kbetr != null">
+        kbetr,
+      </if>
+      <if test="waers != null">
+        waers,
+      </if>
+      <if test="kpein != null">
+        kpein,
+      </if>
+      <if test="netpr != null">
+        netpr,
+      </if>
+      <if test="unitPrice != null">
+        unit_price,
+      </if>
       <if test="actice != null">
         actice,
       </if>
@@ -223,6 +245,21 @@
       <if test="custAbbreviation != null">
         #{custAbbreviation,jdbcType=VARCHAR},
       </if>
+      <if test="kbetr != null">
+        #{kbetr,jdbcType=DECIMAL},
+      </if>
+      <if test="waers != null">
+        #{waers,jdbcType=VARCHAR},
+      </if>
+      <if test="kpein != null">
+        #{kpein,jdbcType=DECIMAL},
+      </if>
+      <if test="netpr != null">
+        #{netpr,jdbcType=DECIMAL},
+      </if>
+      <if test="unitPrice != null">
+        #{unitPrice,jdbcType=DECIMAL},
+      </if>
       <if test="actice != null">
         #{actice,jdbcType=INTEGER},
       </if>
@@ -308,6 +345,21 @@
       </if>
       <if test="custAbbreviation != null">
         cust_abbreviation = #{custAbbreviation,jdbcType=VARCHAR},
+      </if>
+      <if test="kbetr != null">
+        kbetr = #{kbetr,jdbcType=DECIMAL},
+      </if>
+      <if test="waers != null">
+        waers = #{waers,jdbcType=VARCHAR},
+      </if>
+      <if test="kpein != null">
+        kpein = #{kpein,jdbcType=DECIMAL},
+      </if>
+      <if test="netpr != null">
+        netpr = #{netpr,jdbcType=DECIMAL},
+      </if>
+      <if test="unitPrice != null">
+        unit_price = #{unitPrice,jdbcType=DECIMAL},
       </if>
       <if test="actice != null">
         actice = #{actice,jdbcType=INTEGER},
