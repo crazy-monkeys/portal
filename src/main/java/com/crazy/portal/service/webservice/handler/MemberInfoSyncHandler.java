@@ -113,7 +113,7 @@ public class MemberInfoSyncHandler extends AbstractHandler implements IHandler<M
         //saveAccountTeams(request.getAccountTeams(), customerinfo.getId());
         saveCustStructure(request.getCustStructure(), customerinfo.getId());
         saveQuotas(request.getQuotas(), customerinfo.getId());
-        this.saveZRAccountTeam(request.getZRaccountTeams() ,customerinfo.getId());
+        saveZRAccountTeam(request.getZRaccountTeams() ,customerinfo.getId());
 
         if(dealerCreate){
             //代理商用户 开通账号
@@ -166,6 +166,8 @@ public class MemberInfoSyncHandler extends AbstractHandler implements IHandler<M
         }
         if(StringUtil.isNotEmpty(request.getRegistTime())){
             customerInfo.setRegistTime(request.getRegistTime());
+        }else{
+            customerInfo.setRegistTime(null);
         }
         if(StringUtil.isNotEmpty(request.getCorportaeAssets())){
             customerInfo.setCorportaeAssets(new BigDecimal(request.getCorportaeAssets()));

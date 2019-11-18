@@ -4,6 +4,11 @@ import com.crazy.portal.dao.cusotmer.CustCorporateRelationshipMapper;
 import com.crazy.portal.dao.cusotmer.CustomerInfoMapper;
 import com.crazy.portal.entity.cusotmer.CustCorporateRelationship;
 import com.crazy.portal.entity.cusotmer.CustomerInfo;
+import com.crazy.portal.entity.system.User;
+import com.crazy.portal.util.BusinessUtil;
+import com.crazy.portal.util.Enums;
+import com.crazy.portal.util.ErrorCodes;
+import com.crazy.portal.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -133,7 +138,7 @@ public class CustCorporateRelationshipService {
             //遍历关系客户的关系 看是否有和客户的关系
             Boolean flg = true;
             for (CustCorporateRelationship e : oldShips){
-                if(e.getCorporateId().equals(ct.getInCode())){
+                if(null != e.getCorporateId() && null != ct.getInCode() && e.getCorporateId().equals(ct.getInCode())){
                     flg = false;
                     break;
                 }
@@ -162,6 +167,7 @@ public class CustCorporateRelationshipService {
         oldShips.forEach(e->{
             //找到每条关系对应的客户
             CustomerInfo shipCus = customerInfoMapper.selectByInCode(e.getCorporateId());
+            BusinessUtil.assertFlase(null == shipCus,ErrorCodes.BusinessEnum.CUSTOMER_IS_EMPYT);
             //找到对应客户的关系是关联该客户的关系
             CustCorporateRelationship ship = custCorporateRelationshipMapper.selectByShipCus(shipCus.getId(), e.getCorporateType(), customerInfo.getInCode());
             //删除
@@ -170,5 +176,19 @@ public class CustCorporateRelationshipService {
             }
         });
 
+    }
+
+    public void updateShip(Integer dealerId){
+        //找到代理商的所有关系
+        List<CustCorporateRelationship> oldShips = custCorporateRelationshipMapper.selectByCustId(dealerId);
+        oldShips.forEach(e->{
+            if(StringUtil.isEmpty(e.getCorporateId())){
+                CustomerInfo customerInfo = customerInfoMapper.selectApproveCustomer(e.getCorporateName());
+                if(null != customerInfo){
+                    e.setCorporateId(customerInfo.getInCode());
+                    custCorporateRelationshipMapper.updateByPrimaryKey(e);
+                }
+            }
+        });
     }
 }

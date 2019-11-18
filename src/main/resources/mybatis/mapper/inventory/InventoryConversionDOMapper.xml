@@ -31,6 +31,8 @@
     <result column="create_user_name" jdbcType="VARCHAR" property="createUserName" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="update_id" jdbcType="INTEGER" property="updateId" />
+
+    <result column="cust_code" jdbcType="VARCHAR" property="custCode" />
   </resultMap>
   <sql id="Base_Column_List">
     id, `year_month`, agency_short_name, product_line, sub_product_line, class2, class3,
@@ -38,7 +40,7 @@
     agency_pick_up_date, agency_pick_up_qty, sales_qty, monthly_end_qty, monthly_end_inventory_period, 
     inventory_total_amount, conversion_customer_type, conversion_inventory_type, conversion_year_month,
     approval_status,
-    create_time, create_id, create_user_name,update_time, update_id
+    create_time, create_id, create_user_name,update_time, update_id,cust_code
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -154,6 +156,9 @@
       <if test="updateId != null">
         update_id,
       </if>
+      <if test="custCode != null">
+        cust_code,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -242,6 +247,9 @@
       </if>
       <if test="updateId != null">
         #{updateId,jdbcType=INTEGER},
+      </if>
+      <if test="custCode != null">
+        #{custCode,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>

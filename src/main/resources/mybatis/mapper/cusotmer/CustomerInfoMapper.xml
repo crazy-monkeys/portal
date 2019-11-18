@@ -784,6 +784,11 @@
       order by business_type desc
   </select>
 
+  <select id="selectAllINCustomer" resultMap="BaseResultMap">
+    select * from t_customer_info where active = 1
+    order by business_type desc
+  </select>
+
   <update id="updateCustomerInfo">
       update t_customer_info set active =0 where id = #{custId,jdbcType=INTEGER}
   </update>
@@ -845,5 +850,11 @@
     select b.* from t_cust_corporate_relationship a
     INNER join t_customer_info b on a.corporate_id = b.in_code
     where cust_id = #{dealerId,jdbcType=INTEGER} and b.cust_role = 'Z010'
+  </select>
+
+  <select id="selectApproveCustomer" resultMap="BaseResultMap">
+    select * from t_customer_info where
+    approve_status =3 and active=1 and out_code is not null and cust_name = #{custName,jdbcType=VARCHAR}
+    limit 1
   </select>
 </mapper>

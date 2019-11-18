@@ -103,10 +103,9 @@ public class HttpClientUtils {
             result = IOUtils.toString(res.getEntity().getContent(), charset);
 
         } catch (GeneralSecurityException | IOException e) {
-            log.error("",e);
+            log.error("接口调用异常",e);
         } finally {
             post.releaseConnection();
-
             if (isHttps &&
                     client != null && client instanceof CloseableHttpClient) {
                 ((CloseableHttpClient) client).close();

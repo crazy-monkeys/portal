@@ -27,6 +27,8 @@ public interface CustomerInfoMapper {
 
     List<CustomerInfo> selectByCustName(@Param("custName") String custName);
 
+    CustomerInfo selectApproveCustomer(@Param("custName") String custName);
+
     CustomerInfo queryCustomerInfo(@Param("custId") int custId);
 
     List<CustomerInfo> selectNameAndCodeByUserId(@Param("dealerId") Integer dealerId);
@@ -61,4 +63,6 @@ public interface CustomerInfoMapper {
     CustomerInfo selectInCustomerByAbb(String custAbbreviation);
 
     List<CustomerInfo> getDealerInCustomer(Integer dealerId);
+
+    List<CustomerInfo> selectAllINCustomer();
 }

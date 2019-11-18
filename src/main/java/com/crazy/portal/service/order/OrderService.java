@@ -158,13 +158,13 @@ public class OrderService extends CommonOrderService {
         BusinessUtil.assertFlase(null == approval, ErrorCodes.BusinessEnum.ORDER_NOT_FOUND);
         if(approval.getApprovalType().equals(Enums.OrderApprovalType.CREATE.getValue())){
             //新建审批
-            approvalCreate(vo, approval);
+            approvalCreate(vo, approval,Enums.OrderApprovalType.CREATE.getValue());
         }else if(approval.getApprovalType().equals(Enums.OrderApprovalType.UPDATE.getValue())){
             //修改审批
-            approvalUpdate(vo, approval);
+            approvalUpdate(vo, approval,Enums.OrderApprovalType.UPDATE.getValue());
         }else if(approval.getApprovalType().equals(Enums.OrderApprovalType.CANCEL.getValue())){
             //取消审批
-            approvalCancel(vo, approval);
+            approvalCancel(vo, approval,Enums.OrderApprovalType.CANCEL.getValue());
         }else{
             throw new BusinessException("单据类型错误");
         }
@@ -175,11 +175,11 @@ public class OrderService extends CommonOrderService {
         deliverOrderApprovalMapper.updateByPrimaryKeySelective(approval);
     }
 
-    private void approvalCreate(DeliveryApproveVO vo, DeliverOrderApproval approval){
+    private void approvalCreate(DeliveryApproveVO vo, DeliverOrderApproval approval,String ope){
         //如果是通过，调用ECC创单接口
         try{
             if(vo.getApprovalStatus().equals(Enums.OrderApprovalStatus.ADOPT.getValue())){
-                ZrfcsddeliverycreateResponse response = eccDeliveryCreate(approval, approval.getSerializelDeliveryOrderLine());
+                ZrfcsddeliverycreateResponse response = eccDeliveryCreate(approval, approval.getSerializelDeliveryOrderLine(),ope);
                 if(response.getResulttype().equals("0")){
                     DeliverOrder deliverOrder = new DeliverOrder();
                     BeanUtils.copyNotNullFields(approval, deliverOrder);
@@ -205,7 +205,7 @@ public class OrderService extends CommonOrderService {
         }
     }
 
-    private void approvalUpdate(DeliveryApproveVO vo, DeliverOrderApproval approval){
+    private void approvalUpdate(DeliveryApproveVO vo, DeliverOrderApproval approval,String ope){
         //如果是通过，调用ECC修改接口
         if(vo.getApprovalStatus().equals(Enums.OrderApprovalStatus.ADOPT.getValue())){
             DeliverOrder deliverOrder = deliverOrderMapper.selectByPrimaryKey(approval.getSerializelDeliveryOrderLine().get(0).getDeliverOrderId());
@@ -213,7 +213,7 @@ public class OrderService extends CommonOrderService {
             deliverOrder.setDeliverDate(approval.getDeliverDate());
             deliverOrder.setShippingPoint(approval.getShippingPoint());
 
-            ZrfcsddeliverychangeResponse response = eccDeliveryUpdate(deliverOrder, approval.getSerializelDeliveryOrderLine(),"U");
+            ZrfcsddeliverychangeResponse response = eccDeliveryUpdate(deliverOrder, approval.getSerializelDeliveryOrderLine(),"U",ope);
             if(response.getResulttype().equals("0")){
                 deliverOrder.setActualDeliveryDate("");
                 deliverOrderMapper.updateByPrimaryKeySelective(deliverOrder);
@@ -230,7 +230,7 @@ public class OrderService extends CommonOrderService {
         }
     }
 
-    private void approvalCancel(DeliveryApproveVO vo, DeliverOrderApproval approval){
+    private void approvalCancel(DeliveryApproveVO vo, DeliverOrderApproval approval,String ope){
         //如果是通过，调用ECC修改接口
         if(vo.getApprovalStatus().equals(Enums.OrderApprovalStatus.ADOPT.getValue())){
             DeliverOrder deliverOrder = deliverOrderMapper.selectByPrimaryKey(approval.getSerializelDeliveryOrderLine().get(0).getDeliverOrderId());
@@ -242,7 +242,7 @@ public class OrderService extends CommonOrderService {
                 type = "D";
             }
 
-            ZrfcsddeliverychangeResponse response = eccDeliveryUpdate(deliverOrder, approval.getSerializelDeliveryOrderLine(),type);
+            ZrfcsddeliverychangeResponse response = eccDeliveryUpdate(deliverOrder, approval.getSerializelDeliveryOrderLine(),type,ope);
             if(response.getResulttype().equals("0")){
                 if(type.equals("D")){
                     deliverOrder.setActive(0);
@@ -260,7 +260,7 @@ public class OrderService extends CommonOrderService {
         }
     }
 
-    private ZrfcsddeliverycreateResponse eccDeliveryCreate(DeliverOrderApproval deliverOrder, List<DeliverOrderLine> deliverOrderLines) throws Exception{
+    private ZrfcsddeliverycreateResponse eccDeliveryCreate(DeliverOrderApproval deliverOrder, List<DeliverOrderLine> deliverOrderLines,String ope) throws Exception{
         ZrfcsdDeliveryCreateContent content = new ZrfcsdDeliveryCreateContent();
         content.setDeliverydate(DateUtil.format(deliverOrder.getDeliverDate(),DateUtil.WEB_FORMAT));
         content.setDeliveryIoc(deliverOrder.getShippingPoint());
@@ -299,37 +299,42 @@ public class OrderService extends CommonOrderService {
         return item;
     }
 
-    public ZrfcsddeliverychangeResponse eccDeliveryUpdate(DeliverOrder order, List<DeliverOrderLine> deliverOrderLineList,String type){
+    public ZrfcsddeliverychangeResponse eccDeliveryUpdate(DeliverOrder order, List<DeliverOrderLine> deliverOrderLineList,String type,String ope){
         ZrfcsdDeliveryUpdateContent content = new ZrfcsdDeliveryUpdateContent();
         content.setDeliverydate(DateUtil.format(order.getDeliverDate(),DateUtil.WEB_FORMAT));
         content.setSapDeliveryId(order.getSapDeliverOrderNo());
         content.setIType(type);
-        content.setTItem(gettItem(deliverOrderLineList));
+        content.setTItem(gettItem(deliverOrderLineList,ope));
         ZrfcsdDeliveryUpdateBody body = new ZrfcsdDeliveryUpdateBody(content);
         ZrfcsdDeliveryUpdate update = new ZrfcsdDeliveryUpdate(body);
         return orderApiService.deliveryUpdate(update);
     }
 
-    private TItem gettItem(List<DeliverOrderLine> deliverOrderLineList){
+    private TItem gettItem(List<DeliverOrderLine> deliverOrderLineList,String ope){
         TItem tItem = new TItem();
         List<Item> items = new ArrayList<>();
         deliverOrderLineList.forEach(e->{
             OrderLine orderLine = orderLineMapper.selectByPrimaryKey(e.getSalesOrderLineId());
-            items.add(mappingUpdateItem(e.getSapSalesOrderLineNo(),String.valueOf(e.getDeliveryQuantity())));
+            items.add(mappingUpdateItem(e.getSapSalesOrderLineNo(),String.valueOf(e.getDeliveryQuantity()),ope));
 
             //找出订单行对应的实体料行信息
             List<OrderLine> liens = orderLineMapper.selectByProduct(e.getSalesOrderId(), e.getProductId(), orderLine.getRItemNo());
             liens.forEach(o->{
-                items.add(mappingUpdateItem(o.getRItemNo(),String.valueOf(e.getDeliveryQuantity())));
+                items.add(mappingUpdateItem(o.getRItemNo(),String.valueOf(e.getDeliveryQuantity()),ope));
             });
         });
         tItem.setItems(items);
         return tItem;
     }
 
-    private Item mappingUpdateItem(String orderLineNo, String qty){
+    private Item mappingUpdateItem(String orderLineNo, String qty, String ope){
         Item item = new Item();
-        item.setOperationType("D");
+        if(ope.equals("UPDATE")){
+            item.setOperationType("U");
+        }else{
+            item.setOperationType("D");
+        }
+
         item.setDeliveryItemNo(orderLineNo);
         item.setDeliveryQuantity(qty);
         return item;

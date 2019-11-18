@@ -40,6 +40,15 @@ public class SysController extends BaseController {
     }
 
     /**
+     * 获取所有内部客户
+     * @return
+     */
+    @GetMapping("/incustomer/all")
+    public BaseResponse getAllINCustomer(){
+        return successResult(customerInfoService.selectAllInCustomer());
+    }
+
+    /**
      * 获取销售
      * @return
      */

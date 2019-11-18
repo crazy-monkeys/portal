@@ -129,6 +129,11 @@ public class InventoryConversionDO extends PageBean {
      */
     private String conversionYearMonth;
 
+    /**
+     * 专货对应的code
+     */
+    private String custCode;
+
     private Integer approvalStatus;
     /**
      * 

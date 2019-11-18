@@ -31,6 +31,7 @@ import com.crazy.portal.service.system.SysParamService;
 import com.crazy.portal.util.*;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.cxf.Bus;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -401,21 +402,32 @@ public class CustomerInfoService {
         //通过
         if(Enums.YES_NO.YES.getCode() == approvalBean.getApprovalType()){
             CustomerInfo customerInfo = queryInfo(approvalBean.getCustId());
+            Map<String,String> response = customerInfoSync(customerInfo, "01");
+            BusinessUtil.assertFlase(null == response,ErrorCodes.BusinessEnum.CUSTOMER_IS_SYNC_ERROR);
+            customerInfo.setInCode(response.get("inCode"));
+            customerInfo.setOutCode(response.get("outCode"));
             approvalYes(approvalBean, userId, customerInfo);
-            customerInfo = queryInfo(approvalBean.getCustId());
-            customerInfoSync(customerInfo, "01");
+
+            //因为维护关系用的是 C4C内部id，报备维护关系时没有C4C内部id，所以审批通过时，校验是否有C4C内部Id为空的关系
+            if(StringUtil.isNotEmpty(approvalBean.getSalesId())){
+                custCorporateRelationshipService.updateShip(Integer.valueOf(approvalBean.getSalesId()));
+            }
         }else{
             approvalNo(approvalBean, userId);
         }
     }
 
-    private void customerInfoSync(CustomerInfo customerInfo, String type){
+    private Map<String,String> customerInfoSync(CustomerInfo customerInfo, String type){
         CustomerInfoCreate create = syncCustomerInfo(customerInfo, type);
         Map<String,String> responseMap = CallApiUtils.callC4cCustomerInfo(create);
         CustomerDetailCreate detail = syncCustomerDetail(customerInfo, responseMap.get("inCode"));
         CallApiUtils.callC4cCustomerDetail(detail);
         //查询eccid
-        customerInfoMapper.updateC4CId(customerInfo.getId(), responseMap.get("inCode"), responseMap.get("outCode"));
+        //customerInfoMapper.updateC4CId(customerInfo.getId(), responseMap.get("inCode"), responseMap.get("outCode"));
+        if(StringUtil.isNotEmpty(responseMap.get("inCode")) && StringUtil.isNotEmpty(responseMap.get("outCode"))){
+            return responseMap;
+        }
+        return null;
     }
 
     /**
@@ -1060,5 +1072,9 @@ public class CustomerInfoService {
         BusinessUtil.assertFlase(null == customerInfo,ErrorCodes.BusinessEnum.CUSTOMER_IS_EMPYT);
 
         return customerFileService.selectByCustId(customerInfo.getId());
+    }
+
+    public List<CustomerInfo> selectAllInCustomer(){
+        return customerInfoMapper.selectAllINCustomer();
     }
 }
