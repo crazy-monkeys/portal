@@ -189,9 +189,9 @@ public class DeliverService extends AbstractHandover implements IHandover<Delive
             log.debug("Current user identity as [{}]", userId);
         }
         //判断当前用户是否为 代理商
-        BusinessUtil.assertFlase(false, HANDOVER_NOT_DEALER);
-        FileVO fileVo = FileUtil.upload(excel, deliverLocalPath);
-        List<DeliverTemplateBean> deliverData =  ExcelUtils.readExcel(fileVo.getFullPath(), DeliverTemplateBean.class);
+//        BusinessUtil.assertFlase(false, HANDOVER_NOT_DEALER);
+//        FileVO fileVo = FileUtil.upload(excel, deliverLocalPath);
+        List<DeliverTemplateBean> deliverData =  ExcelUtils.readExcel(excel, DeliverTemplateBean.class);
         Iterator<DeliverTemplateBean> iterator = deliverData.iterator();
         while (iterator.hasNext()) {
             DeliverTemplateBean templateBean = iterator.next();
