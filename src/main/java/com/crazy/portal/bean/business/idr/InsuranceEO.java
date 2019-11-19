@@ -2,8 +2,11 @@ package com.crazy.portal.bean.business.idr;
 
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.crazy.portal.util.DateUtil;
+import com.crazy.portal.util.StringUtil;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+
+import java.text.NumberFormat;
 
 /**
  * 保价模板
@@ -61,5 +64,21 @@ public class InsuranceEO {
 
     public void setReceiveGoodsDate(String receiveGoodsDate) {
         this.receiveGoodsDate = DateUtil.getFlexDate(receiveGoodsDate);
+    }
+
+    public void setAgencyRate(String agencyRate){
+        try{
+            if(StringUtil.isBlank(agencyRate)){
+                return;
+            }
+            if(agencyRate.indexOf(".")!=-1){
+                agencyRate = agencyRate.substring(0, agencyRate.indexOf(".") + 6);
+                NumberFormat nf = NumberFormat.getInstance();
+                agencyRate = nf.parse(agencyRate).toString();
+            }
+            this.agencyRate = agencyRate;
+        }catch (Exception e){
+            log.error("", e);
+        }
     }
 }
