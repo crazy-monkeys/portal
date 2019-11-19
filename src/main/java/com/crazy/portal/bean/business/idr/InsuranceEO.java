@@ -72,13 +72,16 @@ public class InsuranceEO {
                 return;
             }
             if(agencyRate.indexOf(".")!=-1){
-                agencyRate = agencyRate.substring(0, agencyRate.indexOf(".") + 6);
+                String sufix = agencyRate.substring(agencyRate.indexOf(".") + 1, agencyRate.length());
+                int sufixLength = sufix.length() > 5 ? 5 : sufix.length();
+                agencyRate = agencyRate.substring(0, agencyRate.indexOf(".") + sufixLength + 1);
                 NumberFormat nf = NumberFormat.getInstance();
                 agencyRate = nf.parse(agencyRate).toString();
             }
             this.agencyRate = agencyRate;
         }catch (Exception e){
             log.error("", e);
+            this.agencyRate = agencyRate;
         }
     }
 }
