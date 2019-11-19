@@ -62,7 +62,7 @@ public class PortalApplicationTests {
 
 		String type = "D";
 
-		ZrfcsddeliverychangeResponse response = orderService.eccDeliveryUpdate(order,deliverOrderLineList,type);
+//		ZrfcsddeliverychangeResponse response = orderService.eccDeliveryUpdate(order,deliverOrderLineList,type);
 		/*try{
 			OrganisationalUnitByIDResponseMessageSync responseMessageSync = CallApiUtils.queryOrganisation();
 			List<OrganisationalUnitByElementsResponseSync> results = responseMessageSync.getOrganisationalUnit();
