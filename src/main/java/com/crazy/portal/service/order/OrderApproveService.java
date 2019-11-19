@@ -151,7 +151,7 @@ public class OrderApproveService extends CommonOrderService{
                     //设置剩余数量
                     line.setRemainingNum(line.getNum());
                     //计算组合物料价格
-                    this.calculatePrice(outItems, line, portalProductId,portalPlatform);
+                    this.calculatePrice(outItems, line);
                     //设置product
                     this.setProduct(line, portalProductId);
                     //保存虚拟订单行
@@ -177,9 +177,10 @@ public class OrderApproveService extends CommonOrderService{
      * 计算组合物料价格
      * @param outItems
      * @param line
-     * @param portalProductId
      */
-    private void calculatePrice(List<ZsalesordercreateOutItem> outItems, OrderLine line, String portalProductId,String portalPlatform) {
+    private void calculatePrice(List<ZsalesordercreateOutItem> outItems, OrderLine line) {
+        final String portalProductId = line.getProductId();
+        final String portalPlatform = line.getPlatform();
         //过滤出主物料对应的组合物料信息
         List<ZsalesordercreateOutItem> currProductItems = outItems.stream()
                 .filter(f -> {
