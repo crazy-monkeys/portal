@@ -141,7 +141,12 @@ public class OrderApplyService extends CommonOrderService{
                         String eccRefProductId = f.getRefitemproductid().replaceAll("^(0+)", "");
                         String eccProductId = f.getProductid().replaceAll("^(0+)", "");
 
-                return (eccRefProductId.equals(portalProductId) || eccProductId.equals(portalProductId)) && f.getPlatform().equals(portalPlatform);
+                String platform = f.getPlatform();
+                boolean isSameProduct = eccRefProductId.equals(portalProductId) || eccProductId.equals(portalProductId);
+                if(StringUtil.isEmpty(platform)){
+                   return isSameProduct;
+                }
+                return isSameProduct && platform.equals(portalPlatform);
             }).collect(Collectors.toList());
 
             //主物料计算总价
