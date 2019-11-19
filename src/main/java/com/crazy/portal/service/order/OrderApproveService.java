@@ -143,10 +143,9 @@ public class OrderApproveService extends CommonOrderService{
             String eccPlatform = eccLine.getPlatform();
 
             b:for(OrderLine line : lines){
-                //主物料信息保存
                 String portalProductId = line.getProductId();
                 String portalPlatform = line.getPlatform();
-                //如果是同物料号
+                //虚拟料信息保存
                 if(eccProductID.equals(portalProductId) && eccPlatform.equals(portalPlatform) && StringUtil.isEmpty(eccRefProductId)){
                     //设置剩余数量
                     line.setRemainingNum(line.getNum());
@@ -159,7 +158,7 @@ public class OrderApproveService extends CommonOrderService{
                     continue a;
                 }
             }
-            //保存其余物料扩展字段,需要构建新订单行
+            //实体料信息保存,需要构建新订单行
             OrderLine orderLine = new OrderLine();
             orderLine.setRPrice(eccLine.getPrice());
             orderLine.setRNetPrice(eccLine.getNetprice());
