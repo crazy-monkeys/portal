@@ -378,21 +378,25 @@ public class OrderApproveService extends CommonOrderService{
             String eccProduct = eccLine.getProductid().replaceAll("^(0+)", "");
             //遍历portal 订单行
             orderLines.forEach(line->{
-                String productId = line.getProductId();
+                final String portalProductId = line.getProductId();
+                final String portalPlatform = line.getPlatform();
                 //目前订单行只能修改数量
-                OrderLine orderLine = applyLineMap.get(productId+line.getPlatform());
-                line.setNum(orderLine==null?eccLine.getSapquantity().intValue():orderLine.getNum());
+                OrderLine orderLine = applyLineMap.get(portalProductId + portalPlatform);
+                line.setNum(orderLine == null ? eccLine.getSapquantity().intValue():orderLine.getNum());
                 line.setUpdateId(userId);
                 line.setUpdateTime(DateUtil.getCurrentTS());
 
-                if(productId.equals(eccProduct)){
-                    //虚拟物料需要统计价格
+                if(portalProductId.equals(eccProduct)){
+                    //refItemProductId的为虚拟物料
                     if(StringUtils.isEmpty(line.getRRefItemProductId())){
-                        line.setRPrice(items.stream()
+                        //提取虚拟物料和实体物料信息
+                        List<ZsalesorderchangeOutItem> currProductItems = getZsalesorderchangeOutItems(items, portalProductId, portalPlatform);
+
+                        line.setRPrice(currProductItems.stream()
                                 .map(ZsalesorderchangeOutItem::getPrice)
                                 .reduce(BigDecimal.ZERO,BigDecimal::add));
 
-                        line.setRNetPrice(items.stream()
+                        line.setRNetPrice(currProductItems.stream()
                                 .map(ZsalesorderchangeOutItem::getNetprice)
                                 .reduce(BigDecimal.ZERO,BigDecimal::add));
                     }else{
@@ -403,6 +407,28 @@ public class OrderApproveService extends CommonOrderService{
                 }
             });
         });
+    }
+
+    /**
+     * 提取虚拟物料和实体物料信息
+     * @param items
+     * @param portalProductId
+     * @param portalPlatform
+     * @return
+     */
+    private List<ZsalesorderchangeOutItem> getZsalesorderchangeOutItems(List<ZsalesorderchangeOutItem> items,
+                                                                        String portalProductId, String portalPlatform) {
+
+        return items.stream().filter(f -> {
+                    String eccRefProductId = f.getRefitemproductid().replaceAll("^(0+)", "");
+                    String eccProductId = f.getProductid().replaceAll("^(0+)", "");
+                    boolean isSameProduct = eccRefProductId.equals(portalProductId) || eccProductId.equals(portalProductId);
+                    if(StringUtil.isEmpty(f.getPlatform())){
+                        log.error("修改订单返回的平台为空");
+                        return isSameProduct;
+                    }
+                    return isSameProduct && f.getPlatform().equals(portalPlatform);
+                }).collect(Collectors.toList());
     }
 
     /**
