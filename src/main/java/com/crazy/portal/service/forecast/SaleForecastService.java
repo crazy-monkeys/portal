@@ -1030,7 +1030,7 @@ public class SaleForecastService {
                 return new BiResponse(true, forecastPullPath+biDetailFileName, forecastPullPath+biTotalFileName);
             }
             if(response.contains(ERROR_CODE)){
-                return new BiResponse(true, forecastPullPath+biDetailFileName, forecastPullPath+biTotalFileName);
+                return new BiResponse(false, forecastPullPath+biDetailFileName, forecastPullPath+biTotalFileName);
             }
             log.error(FORECAST_BI_RESPONSE_EXCEPTION.getZhMsg(), response);
             throw new BusinessException(FORECAST_BI_RESPONSE_EXCEPTION);
@@ -1081,7 +1081,7 @@ public class SaleForecastService {
                 return new BiResponse(true, forecastPullPath+biDetailFileName, forecastPullPath+biTotalFileName);
             }
             if(response.contains(ERROR_CODE)){
-                return new BiResponse(true, forecastPullPath+biDetailFileName, forecastPullPath+biTotalFileName);
+                return new BiResponse(false, forecastPullPath+biDetailFileName, forecastPullPath+biTotalFileName);
             }
             log.error(FORECAST_BI_RESPONSE_EXCEPTION.getZhMsg(), response);
             throw new BusinessException(FORECAST_BI_RESPONSE_EXCEPTION);
