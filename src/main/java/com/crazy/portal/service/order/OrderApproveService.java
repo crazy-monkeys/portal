@@ -26,11 +26,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
-import javax.validation.constraints.NotEmpty;
 import java.beans.IntrospectionException;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -57,8 +55,6 @@ public class OrderApproveService extends CommonOrderService{
     private OrderLineMapper orderLineMapper;
     @Resource
     private OrderApplyMapper orderApplyMapper;
-    @Resource
-    private OrderApplyService orderApplyService;
     @Resource
     private ProductInfoDOMapper productInfoDOMapper;
     @Resource
@@ -155,7 +151,7 @@ public class OrderApproveService extends CommonOrderService{
                     //设置剩余数量
                     line.setRemainingNum(line.getNum());
                     //计算组合物料价格
-                    this.calculatePrice(outItems, line, portalProductId);
+                    this.calculatePrice(outItems, line, portalProductId,portalPlatform);
                     //设置product
                     this.setProduct(line, portalProductId);
                     //保存虚拟订单行
@@ -183,13 +179,14 @@ public class OrderApproveService extends CommonOrderService{
      * @param line
      * @param portalProductId
      */
-    private void calculatePrice(List<ZsalesordercreateOutItem> outItems, OrderLine line, String portalProductId) {
+    private void calculatePrice(List<ZsalesordercreateOutItem> outItems, OrderLine line, String portalProductId,String portalPlatform) {
         //过滤出主物料对应的组合物料信息
         List<ZsalesordercreateOutItem> currProductItems = outItems.stream()
                 .filter(f -> {
                     String eccRefProductId = f.getRefitemproductid().replaceAll("^(0+)", "");
                     String eccProductId = f.getProductid().replaceAll("^(0+)", "");
-                    return eccRefProductId.equals(portalProductId) || eccProductId.equals(portalProductId);
+                    String eccPlatform = f.getPlatform();
+                    return (eccRefProductId.equals(portalProductId) || eccProductId.equals(portalProductId)) && eccPlatform.equals(portalPlatform);
                 })
                 .collect(Collectors.toList());
 
