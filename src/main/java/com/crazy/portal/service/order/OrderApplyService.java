@@ -379,7 +379,6 @@ public class OrderApplyService extends CommonOrderService{
      */
     @Transactional
     public void modifyOrderApply(OrderApply orderApply, Integer userId) throws Exception{
-        Integer applyId = orderApply.getId();
         orderApply.setActive(1);
         orderApply.setCreateId(userId);
         orderApply.setCreateTime(DateUtil.getCurrentTS());
@@ -396,9 +395,11 @@ public class OrderApplyService extends CommonOrderService{
             orderApply.setGrossValue(order.getRGrossValue());
             orderApply.setNetValue(order.getRNetValue());
             orderApply.setRSapOrderId(rSapOrderId);
+            orderApply.setId(null);
             orderApplyMapper.insertSelective(orderApply);
         }else{
             //如果有传id过来，说明是申请单修改非新建
+            Integer applyId = orderApply.getId();
             OrderApply applyInDB = orderApplyMapper.selectByPrimaryKey(applyId);
             BeanUtils.copyNotNullFields(orderApply,applyInDB);
             orderApplyMapper.updateByPrimaryKeySelective(applyInDB);
