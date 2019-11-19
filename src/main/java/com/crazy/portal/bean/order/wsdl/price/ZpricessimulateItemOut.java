@@ -48,6 +48,7 @@ import javax.xml.bind.annotation.XmlType;
     "refitemno",
     "refitemproductid",
     "condUnit",
+    "platform",
     "kbetr",
     "waers",
     "kpein",
@@ -75,7 +76,8 @@ public class ZpricessimulateItemOut {
     protected String refitemproductid;
     @XmlElement(name = "CondUnit", required = true)
     protected String condUnit;
-
+    @XmlElement(name = "Platform", required = true)
+    protected String platform;
     //新调整字段
     @XmlElement(name = "Kbetr", required = true)
     protected BigDecimal kbetr;
@@ -326,6 +328,13 @@ public class ZpricessimulateItemOut {
         this.condUnit = value;
     }
 
+    public String getPlatform() {
+        return platform;
+    }
+
+    public void setPlatform(String platform) {
+        this.platform = platform;
+    }
     public String getWaers() {
         return waers;
     }

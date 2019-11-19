@@ -135,12 +135,14 @@ public class OrderApplyService extends CommonOrderService{
         for(OrderLineEO orderLineEO : records){
 
             String portalProductId = orderLineEO.getProductId();
+            String portalPlatform = orderLineEO.getPlatform();
             //过滤出主物料对应的组合物料信息
             List<ZpricessimulateItemOut> currProductItems = items.stream().filter(f -> {
                         String eccRefProductId = f.getRefitemproductid().replaceAll("^(0+)", "");
                         String eccProductId = f.getProductid().replaceAll("^(0+)", "");
-                        return eccRefProductId.equals(portalProductId) || eccProductId.equals(portalProductId);
-                    }).collect(Collectors.toList());
+
+                return (eccRefProductId.equals(portalProductId) || eccProductId.equals(portalProductId)) && f.getPlatform().equals(portalPlatform);
+            }).collect(Collectors.toList());
 
             //主物料计算总价
             orderLineEO.setRNetPrice(currProductItems.stream().map(ZpricessimulateItemOut::getNetprice)
@@ -158,7 +160,7 @@ public class OrderApplyService extends CommonOrderService{
 
             //设置定价
             orderLineEO.setPriceDate(priceDate);
-            ProductInfoDO productInfo = super.getProductInfo(orderLineEO.getProductId(), orderLineEO.getPlatform());
+            ProductInfoDO productInfo = super.getProductInfo(orderLineEO.getProductId(), portalPlatform);
             if(productInfo != null){
                 orderLineEO.setProduct(productInfo.getProduct());
                 orderLineEO.setBu(productInfo.getBu());
