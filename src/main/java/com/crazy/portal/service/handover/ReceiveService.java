@@ -260,9 +260,15 @@ public class ReceiveService extends AbstractHandover implements IHandover<Receiv
         //
         List<ReceiveDetailUpdate> receiveDetails = ExcelUtils.readExcel(excel, ReceiveDetailUpdate.class);
         for(ReceiveDetailUpdate detail : receiveDetails){
-            biIds.add(String.valueOf(detail.getThirdId()));
+            if(StringUtils.isEmpty(detail.getThirdId())){
+                throw new BusinessException(HANDOVER_EXCEL_BI_ID_NOT_EMPTY);
+            }else{
+                biIds.add(String.valueOf(detail.getThirdId()));
+            }
             ReceiveDetail dbRecord = receiveDetailMapper.selectByThirdId(detail.getThirdId());
-            recordIds.add(null == dbRecord ? null : dbRecord.getRecordId());
+            if(null != dbRecord){
+                recordIds.add(dbRecord.getRecordId());
+            }
         }
         //
         List<Integer> statusList = handoverService.getStatusByIds(recordIds);
