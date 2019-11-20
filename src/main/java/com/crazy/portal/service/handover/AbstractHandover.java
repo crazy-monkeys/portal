@@ -52,6 +52,7 @@ public abstract class AbstractHandover {
             }
             ftpClientUtil.get(pullLocalPath() + biFileName, pullLocalFile);
             result.setFilePath(pullLocalFile);
+
             return result;
         }catch (Exception ex) {
             throw new RuntimeException("Ftp exception or bi server exception", ex);

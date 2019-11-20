@@ -747,6 +747,8 @@ public class OrderApplyService extends CommonOrderService{
             receiveData.forEach(e->{
                 deliverOrderLineMapper.updateReciveQty(Integer.parseInt(e.getDeliveryOrderId()),new BigDecimal(e.getDeliveryNum()));
             });
+        }else{
+            throw new BusinessException(ErrorCodes.BusinessEnum.HANDOVER_EXISTS_DATA_IS_ERROR);
         }
     }
 
