@@ -376,7 +376,7 @@
   <delete id="batchDeleteByIds" >
     delete from t_deliver_detail
     where 1 = 1
-    <foreach collection="ids" item="item" index="index" open="id in (" separator="," close=")" >
+    <foreach collection="ids" item="item" index="index" open=" and id in (" separator="," close=")" >
       #{item,jdbcType=INTEGER}
     </foreach>
   </delete>
