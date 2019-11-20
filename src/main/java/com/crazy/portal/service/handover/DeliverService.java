@@ -295,6 +295,7 @@ public class DeliverService extends AbstractHandover implements IHandover<Delive
         List<String> biIds = new ArrayList<>();
         //
         List<DeliverDetailUpdate> deliverDetails = ExcelUtils.readExcel(excel, DeliverDetailUpdate.class);
+        List<DeliverDetailUpdate> oldReocrd = new ArrayList<>();
         for(DeliverDetailUpdate detail : deliverDetails){
             if(StringUtils.isEmpty(detail.getThirdId())){
                 throw new BusinessException(HANDOVER_EXCEL_BI_ID_NOT_EMPTY);
@@ -304,6 +305,10 @@ public class DeliverService extends AbstractHandover implements IHandover<Delive
             DeliverDetail dbRecord = deliverDetailMapper.selectByThirdId(detail.getThirdId());
             if(null != dbRecord){
                 recordIds.add(dbRecord.getRecordId());
+                detail.setDealerName(dbRecord.getDealerName());
+                detail.setId(dbRecord.getId());
+                detail.setRecordId(dbRecord.getRecordId());
+                oldReocrd.add(detail);
             }
         }
         //
@@ -311,7 +316,10 @@ public class DeliverService extends AbstractHandover implements IHandover<Delive
         if(null == statusList || statusList.contains(4)){
             throw new BusinessException(HANDOVER_UPDATE_STATUS_ERROR);
         }
-        deliverDetailUpdateMapper.batchInsertByBiId(biIds);
+        for(DeliverDetailUpdate detail : oldReocrd) {
+            deliverDetailUpdateMapper.insertSelective(detail);
+        }
+//        deliverDetailUpdateMapper.batchInsertByBiId(biIds);
         handoverService.updateStatus(new ArrayList<>(recordIds), 4);
     }
 
