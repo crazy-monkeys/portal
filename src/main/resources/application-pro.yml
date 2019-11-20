@@ -57,6 +57,9 @@ portal:
 ecc:
   api:
     url: https://l600204-iflmap.hcisbp.cn1.hana.ondemand.com
+    price-simulate-url: /cxf/ECC/PORTAL/GETPRICESIMULATION
+    order-change-url: /cxf/PORTAL/ECC/CHANGE_SALES_ORDER
+    order-create-url: /cxf/PORTAL/ECC/CREATESALESORDER
   auth:
     username: ENC(VAu6waPK+JIWbDN6Cfdwo5iHv3ePbw2B)
     password: ENC(zHAmhTGuifaMYH01fPSoPhJbhglwRXlS)

@@ -38,6 +38,15 @@ public class OrderApiService {
     @Value("${ecc.api.url}")
     private String ECC_API_URL;
 
+    @Value("${ecc.api.price-simulate-url}")
+    private String PRICE_SIMULATE_URL;
+
+    @Value("${ecc.api.order-change-url}")
+    private String ORDER_CHANGE_URL;
+
+    @Value("${ecc.api.order-create-url}")
+    private String ORDER_CREATE_URL;
+
     /**
      * 获取代理费率
      * @param ikunnr
@@ -77,9 +86,7 @@ public class OrderApiService {
      * @return
      */
     public ZrfcsdsalesordercreateResponse createSalesOrder(Zrfcsdsalesordercreate order) throws Exception{
-        //TODO
-        String url = String.format("%s%s",ECC_API_URL,"/cxf/PORTAL/ECC/CREATESALESORDER_QAS");
-//        String url = String.format("%s%s",ECC_API_URL,"/cxf/PORTAL/ECC/CREATESALESORDER");
+        String url = String.format("%s%s",ECC_API_URL,ORDER_CREATE_URL);
         String requestXml = JaxbXmlUtil.convertToXml(order);
         log.info("request - >" + requestXml);
         String response = HttpClientUtils.post(url,requestXml);
@@ -128,10 +135,7 @@ public class OrderApiService {
      * @return
      */
     public ZrfcsdsalesorderchangeResponse changeSalesOrder(Zrfcsdsalesorderchange order) throws Exception{
-        //TODO
-        String url = String.format("%s%s",ECC_API_URL,"/cxf/PORTAL/ECC/CHANGE_SALES_ORDER_QAS");
-//        String url = String.format("%s%s",ECC_API_URL,"/cxf/PORTAL/ECC/CHANGE_SALES_ORDER");
-
+        String url = String.format("%s%s",ECC_API_URL,ORDER_CHANGE_URL);
         String requestXml = JaxbXmlUtil.convertToXml(order);
         log.info("request - >" + requestXml);
         String response = HttpClientUtils.post(url,requestXml);
@@ -152,9 +156,7 @@ public class OrderApiService {
      * @return
      */
     public ZrfcsdpricesimulateResponse priceSimulate(Zrfcsdpricesimulate priceSimulate) throws Exception{
-        //TODO
-        String url = String.format("%s%s",ECC_API_URL,"/cxf/ECC/PORTAL/GETPRICESIMULATION_QAS");
-//        String url = String.format("%s%s",ECC_API_URL,"/cxf/ECC/PORTAL/GETPRICESIMULATION");
+        String url = String.format("%s%s",ECC_API_URL,PRICE_SIMULATE_URL);
         String requestXml = JaxbXmlUtil.convertToXml(priceSimulate);
         log.info("url->"+url+"request - >" + requestXml);
         String response = HttpClientUtils.post(url,requestXml);
