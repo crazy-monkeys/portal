@@ -166,6 +166,7 @@ public class ErrorCodes {
         HANDOVER_FILE_DATA_IS_NULL(40020, "数据不能为空，请重新输入", ""),
         HANDOVER_BI_ID_NOT_EMPTY(40021, "提交失败，BI未正确返回ID", ""),
         HANDOVER_USER_INFO_EMPTY(40022, "用户信息获取失败，请联系管理员", ""),
+        HANDOVER_EXCEL_BI_ID_NOT_EMPTY(40023, "请输入正确的ID值", ""),
 
         //客户模块
         CUSTOMER_IS_EMPYT(50000, "没有对应的客户信息", ""),
