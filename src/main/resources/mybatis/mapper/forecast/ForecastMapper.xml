@@ -189,6 +189,9 @@
       <if test="representative != null" >
         representative,
       </if>
+      <if test="poPrice != null" >
+        po_price,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -276,22 +279,25 @@
         #{operationUserId,jdbcType=INTEGER},
       </if>
       <if test="errorMsg != null" >
-        #{errorMsg},
+        #{errorMsg,jdbcType=VARCHAR},
       </if>
       <if test="biId != null" >
-        #{biId},
+        #{biId,jdbcType=VARCHAR},
       </if>
       <if test="batchNo != null" >
-        #{batchNo},
+        #{batchNo,jdbcType=VARCHAR},
       </if>
       <if test="agencyAbbreviation != null" >
-        #{agencyAbbreviation},
+        #{agencyAbbreviation,jdbcType=VARCHAR},
       </if>
       <if test="operationRemark != null" >
-        #{operationRemark},
+        #{operationRemark,jdbcType=VARCHAR},
       </if>
       <if test="representative != null" >
-        #{representative},
+        #{representative,jdbcType=VARCHAR},
+      </if>
+      <if test="poPrice != null" >
+        #{poPrice,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>

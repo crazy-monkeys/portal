@@ -287,6 +287,7 @@ public class SaleForecastService {
      * @param batchNo
      * @param userId
      */
+    @Transactional
     public void commitAgencyForecastData(String batchNo, Integer userId) {
         //提交前检测是否存在错误数据
         int num = forecastMapper.countErrorDataByBatch(batchNo, userId);
@@ -629,14 +630,45 @@ public class SaleForecastService {
         ExcelUtils.writeExcel(response, templateList, AmbUpdateTemplate.class);
     }
 
+    @Transactional
     public void uploadDataByAmb(MultipartFile excel, Integer userId) {
         List<AmbUpdateTemplate> ambList = ExcelUtils.readExcel(excel, AmbUpdateTemplate.class);
+        List<AmbUpdateTemplate> newList = new ArrayList<>();
         for(AmbUpdateTemplate ambUpdateTemplate : ambList){
+            if(StringUtils.isEmpty(ambUpdateTemplate.getId())){
+                newList.add(ambUpdateTemplate);
+                continue;
+            }
             ForecastLine forecastLine = new ForecastLine();
             copyTemplateFields(ambUpdateTemplate, forecastLine);
             forecastLine.setfId(Integer.parseInt(ambUpdateTemplate.getId()));
             forecastMapper.updatePoPriceById(Integer.parseInt(ambUpdateTemplate.getId()), ambUpdateTemplate.getPoPrice());
             forecastLineMapper.updateByForecastId(forecastLine);
+        }
+        //处理AMB队长新增进来的数据，不走之前任何流程，直接新增入库
+        handleAmdNewData(newList, userId);
+    }
+
+    private void handleAmdNewData(List<AmbUpdateTemplate> newList, Integer userId) {
+        //TODO userId 需要变更为对应代理商ID
+        String batchNo = generateBathNo();
+        for(AmbUpdateTemplate ambUpdateTemplate : newList) {
+            Forecast forecast = new Forecast(userId);
+            copyTemplateFields(ambUpdateTemplate, forecast);
+            forecast.setBatchNo(batchNo);
+            forecast.setStatus(1);
+            forecast.setAgencyStatusType(1);
+            forecast.setCreateUserId(userId);
+            forecast.setCreateTime(new Date());
+            forecast.setPoPrice(getPriceByProduct(forecast.getProductModel(), forecast.getPlatform(), forecast.getCompany()));
+            forecastMapper.insertSelective(forecast);
+
+            ForecastLine line = new ForecastLine();
+            copyTemplateFields(ambUpdateTemplate, line);
+            line.setfId(forecast.getId());
+            //重新获取上一次的填写值
+            setLastValue(forecast, line);
+            forecastLineMapper.insertSelective(line);
         }
     }
 

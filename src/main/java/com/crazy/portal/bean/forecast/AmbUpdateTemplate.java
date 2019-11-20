@@ -248,4 +248,6 @@ public class AmbUpdateTemplate {
     @ExcelProperty(index = 70, value = "PO价格")
     private String poPrice;
 
+    @ExcelProperty(index = 71, value = "虚拟料号")
+    private String vmNumber;
 }
