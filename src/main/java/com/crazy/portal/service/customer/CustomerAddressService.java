@@ -1,8 +1,10 @@
 package com.crazy.portal.service.customer;
 
+import com.crazy.portal.config.exception.BusinessException;
 import com.crazy.portal.dao.cusotmer.CustomerAddressMapper;
 import com.crazy.portal.entity.cusotmer.CustomerAddress;
 import com.crazy.portal.entity.cusotmer.CustomerContact;
+import com.crazy.portal.util.ErrorCodes;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,7 +30,7 @@ public class CustomerAddressService {
     @Transactional
     public void saveOrUpdate(List<CustomerAddress> customerAddresses, Integer custId, Integer userId){
         if(null == customerAddresses || customerAddresses.isEmpty()){
-            return;
+            throw new BusinessException(ErrorCodes.BusinessEnum.CUSTOMER_ADDRESS_IS_NOT_ENPTY);
         }
         customerAddresses.forEach(e->{
             if(null == e.getAddressId()){

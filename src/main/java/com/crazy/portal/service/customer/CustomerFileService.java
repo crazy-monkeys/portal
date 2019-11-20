@@ -49,10 +49,10 @@ public class CustomerFileService {
         if(null == customerFiles || customerFiles.isEmpty()){
             return;
         }
-        customerFiles.forEach(e->{
+        for (CustomerFile e : customerFiles) {
+            FileVO fileVO = FileUtil.upload(e.getFile(), filePath);
+            BusinessUtil.assertFlase(StringUtil.isEmpty(e.getType()), ErrorCodes.BusinessEnum.CUSTOMER_FILE_TYPE_IS_NOT_NULL);
             if(null == e.getFileId()){
-                FileVO fileVO = FileUtil.upload(e.getFile(), filePath);
-                BusinessUtil.assertFlase(StringUtil.isEmpty(e.getType()), ErrorCodes.BusinessEnum.CUSTOMER_FILE_TYPE_IS_NOT_NULL);
                 e.setType(e.getType());
                 e.setFileName(fileVO.getFileName());
                 e.setFilePath(fileVO.getFullPath());
@@ -63,7 +63,7 @@ public class CustomerFileService {
                 e.setCustId(custId);
                 customerFileMapper.updateByPrimaryKeySelective(e);
             }
-        });
+        }
     }
 
     @Transactional

@@ -21,6 +21,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.crazy.portal.util.Enums.BI_FUNCTION_CODE.DELETE_INVENTORY_CASE;
+
 /**
  * @ClassName: CallApiUtils
  * @Author: God Man Qiu~
@@ -116,7 +118,9 @@ public class CallApiUtils {
     }
 
     public static String callBiPostApi(Enums.BI_FUNCTION_CODE function_code, String baseMapping, String body) throws IOException {
+        log.info("call bi url:=======================" + String.format("%s?%s", getBiUrl(function_code, baseMapping), body));
         String response = HttpClientUtils.post(getBiUrl(function_code, baseMapping), body);
+        log.info("bi response:======================" + response);
         return response;
     }
 

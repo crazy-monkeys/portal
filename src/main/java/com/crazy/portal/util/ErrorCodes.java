@@ -188,6 +188,7 @@ public class ErrorCodes {
         OUT_CUSTOMER_IS_NULL(50015,"该客户没有维护外部客户，请先维护外部客户",""),
         CUSTOMER_IS_NOT_BB(50016,"该产品没有对应的通用价格或客户特殊价为非报备客户",""),
         CUSTOMER_IS_SYNC_ERROR(50017,"客户报备创建内部Code异常",""),
+        CUSTOMER_ADDRESS_IS_NOT_ENPTY(50018,"最少维护一条地址信息",""),
 
         RATE_BATCH_IS_NOT_NULL(60001,"批次号已存在",""),
         //代理费率

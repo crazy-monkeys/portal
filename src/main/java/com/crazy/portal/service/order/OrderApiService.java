@@ -16,10 +16,14 @@ import com.crazy.portal.bean.order.wsdl.rate.ZrfcsdcustomercrrateResponse;
 import com.crazy.portal.config.exception.BusinessException;
 import com.crazy.portal.util.*;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Method;
+import java.math.BigDecimal;
+
+import static com.crazy.portal.util.Enums.BI_FUNCTION_CODE.DELETE_INVENTORY_CASE;
 
 /**
  * @Desc:
@@ -39,7 +43,7 @@ public class OrderApiService {
      * @param ikunnr
      * @return
      */
-    public ZrfcsdcustomercrrateResponse getCustomerRate(String ikunnr) throws Exception{
+    public BigDecimal getCustomerRate(String ikunnr) throws Exception{
         String url = String.format("%s%s",ECC_API_URL,"/cxf/CUSTOMERRATE");
 
         String requestXML = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" " +
@@ -55,11 +59,16 @@ public class OrderApiService {
         String response = HttpClientUtils.post(url,requestXML);
         log.info("CUSTOMERRATE Interface return {}",response);
 
-        ZrfcsdcustomercrrateResponse zrfcsdcustomercrrateResponse = JaxbXmlUtil.convertSoapXmlToJavaBean(response, ZrfcsdcustomercrrateResponse.class);
+         /*ZrfcsdsalesordercreateResponse zrfcsdsalesordercreateResponse =
+                JaxbXmlUtil.convertSoapXmlToJavaBean(response, ZrfcsdsalesordercreateResponse.class);
 
-        this.checkResultMessage(zrfcsdcustomercrrateResponse);
-
-        return zrfcsdcustomercrrateResponse;
+        this.checkResultMessage(zrfcsdsalesordercreateResponse);*/
+        String orate = response.substring(response.indexOf("<Orate>")+7,response.indexOf("</InternalID>"));
+        if(StringUtil.isNotEmpty(orate)){
+            return new BigDecimal(orate);
+        }else{
+            return BigDecimal.ZERO;
+        }
     }
 
     /**
@@ -68,7 +77,9 @@ public class OrderApiService {
      * @return
      */
     public ZrfcsdsalesordercreateResponse createSalesOrder(Zrfcsdsalesordercreate order) throws Exception{
-        String url = String.format("%s%s",ECC_API_URL,"/cxf/PORTAL/ECC/CREATESALESORDER");
+        //TODO
+        String url = String.format("%s%s",ECC_API_URL,"/cxf/PORTAL/ECC/CREATESALESORDER_QAS");
+//        String url = String.format("%s%s",ECC_API_URL,"/cxf/PORTAL/ECC/CREATESALESORDER");
         String requestXml = JaxbXmlUtil.convertToXml(order);
         log.info("request - >" + requestXml);
         String response = HttpClientUtils.post(url,requestXml);
@@ -111,14 +122,15 @@ public class OrderApiService {
         throw new BusinessException(ErrorCodes.CommonEnum.SYSTEM_EXCEPTION.getCode(), resultMessage);
     }
 
-
     /**
      * 修改销售单
      * @param order
      * @return
      */
     public ZrfcsdsalesorderchangeResponse changeSalesOrder(Zrfcsdsalesorderchange order) throws Exception{
-        String url = String.format("%s%s",ECC_API_URL,"/cxf/PORTAL/ECC/CHANGE_SALES_ORDER");
+        //TODO
+        String url = String.format("%s%s",ECC_API_URL,"/cxf/PORTAL/ECC/CHANGE_SALES_ORDER_QAS");
+//        String url = String.format("%s%s",ECC_API_URL,"/cxf/PORTAL/ECC/CHANGE_SALES_ORDER");
 
         String requestXml = JaxbXmlUtil.convertToXml(order);
         log.info("request - >" + requestXml);
@@ -140,7 +152,9 @@ public class OrderApiService {
      * @return
      */
     public ZrfcsdpricesimulateResponse priceSimulate(Zrfcsdpricesimulate priceSimulate) throws Exception{
-        String url = String.format("%s%s",ECC_API_URL,"/cxf/ECC/PORTAL/GETPRICESIMULATION");
+        //TODO
+        String url = String.format("%s%s",ECC_API_URL,"/cxf/ECC/PORTAL/GETPRICESIMULATION_QAS");
+//        String url = String.format("%s%s",ECC_API_URL,"/cxf/ECC/PORTAL/GETPRICESIMULATION");
         String requestXml = JaxbXmlUtil.convertToXml(priceSimulate);
         log.info("url->"+url+"request - >" + requestXml);
         String response = HttpClientUtils.post(url,requestXml);

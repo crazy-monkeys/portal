@@ -144,23 +144,23 @@ public class MemberInfoSyncHandler extends AbstractHandler implements IHandler<M
         }else{
             customerInfo.setIsWhite(Enums.YES_NO.YES.getCode());
         }
-        if(StringUtil.isNotEmpty(request.getFrozenSales())){
-            customerInfo.setFrozenSales(Integer.valueOf(request.getFrozenSales()));
+        if(StringUtil.isNotEmpty(request.getFrozenSales()) && request.getFrozenSales().equals("Y")){
+            customerInfo.setFrozenSales(Enums.YES_NO.YES.getCode());
         }else{
             customerInfo.setFrozenSales(Enums.YES_NO.NO.getCode());
         }
         if(StringUtil.isNotEmpty(request.getFrozenDelivery())){
-            customerInfo.setFrozenDelivery(Integer.valueOf(request.getFrozenDelivery()));
+            customerInfo.setFrozenDelivery(Enums.YES_NO.YES.getCode());
         }else {
             customerInfo.setFrozenDelivery(Enums.YES_NO.NO.getCode());
         }
         if(StringUtil.isNotEmpty(request.getFrozenOrder())){
-            customerInfo.setFrozenOrder(Integer.valueOf(request.getFrozenOrder()));
+            customerInfo.setFrozenOrder(Enums.YES_NO.YES.getCode());
         }else{
             customerInfo.setFrozenOrder(Enums.YES_NO.NO.getCode());
         }
         if(StringUtil.isNotEmpty(request.getFrozenInvoice())){
-            customerInfo.setFrozenInvoice(Integer.valueOf(request.getFrozenInvoice()));
+            customerInfo.setFrozenInvoice(Enums.YES_NO.YES.getCode());
         }else{
             customerInfo.setFrozenInvoice(Enums.YES_NO.NO.getCode());
         }

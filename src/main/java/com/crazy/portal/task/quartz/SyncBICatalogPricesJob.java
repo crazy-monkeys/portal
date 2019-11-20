@@ -10,6 +10,7 @@ import com.crazy.portal.entity.price.CatalogBomsPrice;
 import com.crazy.portal.entity.price.CatalogPrice;
 import com.crazy.portal.service.price.CatalogPriceService;
 import com.crazy.portal.util.DateUtil;
+import com.crazy.portal.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.quartz.DisallowConcurrentExecution;
@@ -49,18 +50,20 @@ public class SyncBICatalogPricesJob implements Job {
 
         biActualPrices.forEach(x->{
             //查询出客户简称
-            CustomerInfo customerInfo = customerInfoMapper.selectByOutCode(x.getCustomer_incode());
-            String inCustomer = customerInfo == null ? x.getCustomer_incode() : customerInfo.getCustAbbreviation();
+            log.info("======================inCustomer:{}",x.getCustomer_incode());
+            String inCustomer = x.getCustomer_incode();
+            if(StringUtil.isNotEmpty(x.getCustomer_incode())){
+                CustomerInfo customerInfo = customerInfoMapper.selectByOutCode(x.getCustomer_incode());
+                if(null != customerInfo){
+                    inCustomer =customerInfo.getCustAbbreviation();
+                }
+            }
 
             //将客户编码重置为简称
             x.setCustomer_incode(inCustomer);
 
             String product = x.getProduct();
             String bu = x.getBU();
-
-            if(x.getProduct().equals("RTM7916-31+RPM6743-12")){
-                System.out.println(1);
-            }
             //查询当前记录是否已经存在
             CatalogPrice catalogPrice = catalogPriceService.findCatalogPrice(product, bu,inCustomer,x.getPDT());
 

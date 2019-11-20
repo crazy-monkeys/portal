@@ -101,6 +101,7 @@ public class CatalogPriceService {
     public List<BICatalogPrice> getBIActualPrices(){
         String url = String.format("%s%s", CallApiUtils.ECC_API_URL,"/http/BI/PORTAL/GET_PRODUCT_PRICE_BOM_PRICE");
         try {
+            log.info("BI Price URL:"+url);
             String responce = StringEscapeUtils.unescapeEcmaScript(HttpClientUtils.get(url));
             responce = responce.replaceAll("^\"*|\"*$", "");
             return JSON.parseArray(responce, BICatalogPrice.class);

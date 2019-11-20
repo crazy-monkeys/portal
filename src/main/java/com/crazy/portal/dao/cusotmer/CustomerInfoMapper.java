@@ -47,7 +47,7 @@ public interface CustomerInfoMapper {
 
     int updateC4CId(@Param("custId") Integer custId, @Param("inCode") String inCode, @Param("outCode") String outCode);
 
-    CustomerInfo selectByOutCode(String outCode);
+    CustomerInfo selectByOutCode(@Param("outCode") String outCode);
 
     CustomerInfo selectByInCode(String inCode);
 

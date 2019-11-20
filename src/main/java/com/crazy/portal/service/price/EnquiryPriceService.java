@@ -137,8 +137,10 @@ public class EnquiryPriceService {
                 enquiryPrice.setStatus(catalogPrice.getStatus());
 
                 String inCustomerCode = catalogPrice.getInCustomer();
-                CustomerInfo customerInfo = customerInfoMapper.selectByOutCode(inCustomerCode);
-                enquiryPrice.setInCustomer(customerInfo == null?inCustomerCode:customerInfo.getCustAbbreviation());
+                if(StringUtil.isNotEmpty(inCustomerCode)){
+                    CustomerInfo customerInfo = customerInfoMapper.selectByOutCode(inCustomerCode);
+                    enquiryPrice.setInCustomer(customerInfo == null?inCustomerCode:customerInfo.getCustAbbreviation());
+                }
                 enquiryPrice.setRemark(catalogPrice.getRemark());
                 enquiryPrice.setProductType(catalogPrice.getProductType());
                 enquiryPrice.setPriceType(catalogPrice.getPriceType());

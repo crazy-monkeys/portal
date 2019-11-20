@@ -325,7 +325,7 @@ public class RebateService {
         BusinessRebate record = businessRebateMapper.selectByPrimaryKey(bean.getId());
         BusinessUtil.notNull(record, ErrorCodes.BusinessEnum.REBATE_RECORD_NOT_FOUND);
         record.setId(bean.getId());
-        record.setRemark(bean.getRemark());
+        record.setRemark(record.getRemark()+bean.getRemark());
         record.setUpdateId(userId);
         record.setUpdateTime(DateUtil.getCurrentTS());
         businessRebateMapper.updateByPrimaryKeySelective(record);
