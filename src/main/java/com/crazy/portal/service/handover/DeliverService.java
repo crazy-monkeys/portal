@@ -294,9 +294,15 @@ public class DeliverService extends AbstractHandover implements IHandover<Delive
         //
         List<DeliverDetailUpdate> deliverDetails = ExcelUtils.readExcel(excel, DeliverDetailUpdate.class);
         for(DeliverDetailUpdate detail : deliverDetails){
-            biIds.add(String.valueOf(detail.getThirdId()));
+            if(StringUtils.isEmpty(detail.getThirdId())){
+                throw new BusinessException(HANDOVER_EXCEL_BI_ID_NOT_EMPTY);
+            }else{
+                biIds.add(String.valueOf(detail.getThirdId()));
+            }
             DeliverDetail dbRecord = deliverDetailMapper.selectByThirdId(detail.getThirdId());
-            recordIds.add(null == dbRecord ? null : dbRecord.getRecordId());
+            if(null != dbRecord){
+                recordIds.add(dbRecord.getRecordId());
+            }
         }
         //
         List<Integer> statusList = handoverService.getStatusByIds(recordIds);
