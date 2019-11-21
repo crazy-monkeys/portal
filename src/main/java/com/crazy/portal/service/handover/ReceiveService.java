@@ -234,7 +234,7 @@ public class ReceiveService extends AbstractHandover implements IHandover<Receiv
         param.put("ID", sb.replace(sb.length() - 1, sb.length(), "").toString());
         param.put("UserName", custName);
         try {
-            String response = CallApiUtils.callBiPostApi(DELETE_SALES_CASE, "PORTAL/BI/", JSONObject.toJSONString(param));
+            String response = CallApiUtils.callBiPostApi(DELETE_INVENTORY_CASE, "PORTAL/BI/", JSONObject.toJSONString(param));
             if(response.contains("删除成功")){
                 receiveDetailMapper.batchDeleteByIds(ids);
             }else{

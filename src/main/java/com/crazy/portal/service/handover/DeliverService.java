@@ -228,7 +228,7 @@ public class DeliverService extends AbstractHandover implements IHandover<Delive
         param.put("ID", sb.replace(sb.length() - 1, sb.length(), "").toString());
         param.put("UserName", custName);
         try {
-            String response = CallApiUtils.callBiPostApi(DELETE_INVENTORY_CASE, "PORTAL/BI/", JSONObject.toJSONString(param));
+            String response = CallApiUtils.callBiPostApi(DELETE_SALES_CASE, "PORTAL/BI/", JSONObject.toJSONString(param));
             log.info("BI Delete Response "+response);
             if(response.contains("删除成功")){
                 deliverDetailMapper.batchDeleteByIds(ids);
