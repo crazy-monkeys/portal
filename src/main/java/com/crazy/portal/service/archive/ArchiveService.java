@@ -100,7 +100,7 @@ public class ArchiveService {
     public void revokeById(Integer id, Integer userId) {
         Archive dbRecord = archiveMapper.selectByPrimaryKey(id);
         BusinessUtil.notNull(dbRecord, ARCHIVE_DB_RECORD_NOT_FOUND);
-        BusinessUtil.assertFlase((dbRecord.getStatus() == 1), ARCHIVE_DB_RECORD_STATUS_ERROR);
+        BusinessUtil.assertTrue((dbRecord.getStatus() == 1), ARCHIVE_DB_RECORD_STATUS_ERROR);
         dbRecord.setStatus(-1);
         archiveMapper.updateByPrimaryKeySelective(dbRecord);
     }
