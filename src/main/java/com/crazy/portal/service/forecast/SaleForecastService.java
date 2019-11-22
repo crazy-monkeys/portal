@@ -103,28 +103,29 @@ public class SaleForecastService {
             AgencyTemplate agencyTemplate = new AgencyTemplate();
             copyDbFields(forecast, agencyTemplate);
 
+            ForecastLine line = forecast.getLine();
             agencyTemplate.setOperationYearMonth("");
             agencyTemplate.setCloseDate("");
             agencyTemplate.setDelayStock("");
 
-            agencyTemplate.setForecastMonthOne(forecast.getLine().getForecastMonthTwo());
-            agencyTemplate.setLastWriteOne(forecast.getLine().getCurrentWriteTwo());
+            agencyTemplate.setForecastMonthOne(line.getForecastMonthTwo());
+            agencyTemplate.setLastWriteOne(sumValue(line.getCurrentWriteTwo(), line.getAmbAdjustmentTwo()));
             agencyTemplate.setCurrentWriteOne("");
 
-            agencyTemplate.setForecastMonthTwo(forecast.getLine().getForecastMonthThree());
-            agencyTemplate.setLastWriteTwo(forecast.getLine().getCurrentWriteThree());
+            agencyTemplate.setForecastMonthTwo(line.getForecastMonthThree());
+            agencyTemplate.setLastWriteTwo(sumValue(line.getCurrentWriteThree(), line.getAmbAdjustmentThree()));
             agencyTemplate.setCurrentWriteTwo("");
 
-            agencyTemplate.setForecastMonthThree(forecast.getLine().getForecastMonthFour());
-            agencyTemplate.setLastWriteThree(forecast.getLine().getCurrentWriteFour());
+            agencyTemplate.setForecastMonthThree(line.getForecastMonthFour());
+            agencyTemplate.setLastWriteThree(sumValue(line.getCurrentWriteFour(), line.getAmbAdjustmentFour()));
             agencyTemplate.setCurrentWriteThree("");
 
-            agencyTemplate.setForecastMonthFour(forecast.getLine().getForecastMonthFive());
-            agencyTemplate.setLastWriteFour(forecast.getLine().getCurrentWriteFive());
+            agencyTemplate.setForecastMonthFour(line.getForecastMonthFive());
+            agencyTemplate.setLastWriteFour(sumValue(line.getCurrentWriteFive(), line.getAmbAdjustmentFive()));
             agencyTemplate.setCurrentWriteFour("");
 
-            agencyTemplate.setForecastMonthFive(forecast.getLine().getForecastMonthSix());
-            agencyTemplate.setLastWriteFive(forecast.getLine().getCurrentWriteSix());
+            agencyTemplate.setForecastMonthFive(line.getForecastMonthSix());
+            agencyTemplate.setLastWriteFive(sumValue(line.getCurrentWriteSix(), line.getAmbAdjustmentSix()));
             agencyTemplate.setCurrentWriteFive("");
 
             agencyTemplate.setForecastMonthSix("");
@@ -1266,14 +1267,26 @@ public class SaleForecastService {
             if(null == lastLineValue){
                 return;
             }
-            line.setLastWriteOne(lastLineValue.getCurrentWriteTwo());
-            line.setLastWriteTwo(lastLineValue.getCurrentWriteThree());
-            line.setLastWriteThree(lastLineValue.getCurrentWriteFour());
-            line.setLastWriteFour(lastLineValue.getCurrentWriteFive());
-            line.setLastWriteFive(lastLineValue.getCurrentWriteSix());
+            line.setLastWriteOne(sumValue(lastLineValue.getCurrentWriteTwo(), lastLineValue.getAmbAdjustmentTwo()));
+            line.setLastWriteTwo(sumValue(lastLineValue.getCurrentWriteThree(), lastLineValue.getAmbAdjustmentThree()));
+            line.setLastWriteThree(sumValue(lastLineValue.getCurrentWriteFour(), lastLineValue.getAmbAdjustmentFour()));
+            line.setLastWriteFour(sumValue(lastLineValue.getCurrentWriteFive(), lastLineValue.getAmbAdjustmentFive()));
+            line.setLastWriteFive(sumValue(lastLineValue.getCurrentWriteSix(), lastLineValue.getAmbAdjustmentSix()));
             line.setLastWriteSix(null);
         }catch (Exception ex) {
             throw new BusinessException(FORECAST_GET_LAST_VALUE_ERROR);
+        }
+    }
+
+    private String sumValue(String value1, String value2) {
+        try {
+            BigDecimal v1 = StringUtils.isEmpty(value1) ? BigDecimal.ZERO : new BigDecimal(value1);
+            BigDecimal v2 = StringUtils.isEmpty(value2) ? BigDecimal.ZERO : new BigDecimal(value2);
+            return String.valueOf(v1.add(v2));
+        }catch (Exception ex) {
+            log.error("数据汇总异常，value1 : {}, value2 : {}", value1, value2);
+            log.error("", ex);
+            return "0";
         }
     }
 
