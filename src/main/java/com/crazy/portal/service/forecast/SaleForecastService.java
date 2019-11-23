@@ -726,6 +726,12 @@ public class SaleForecastService {
                 forecastSdMapper.updateByPrimaryKeySelective(forecastSd);
             }
             template.setId(String.valueOf(forecastSd.getId()));
+            template.setSdTotalValueOne(sumValue(template.getCurrentWriteOne(), template.getSdBufferOne()));
+            template.setSdTotalValueTwo(sumValue(template.getCurrentWriteTwo(), template.getSdBufferTwo()));
+            template.setSdTotalValueThree(sumValue(template.getCurrentWriteThree(), template.getSdBufferThree()));
+            template.setSdTotalValueFour(sumValue(template.getCurrentWriteFour(), template.getSdBufferFour()));
+            template.setSdTotalValueFive(sumValue(template.getCurrentWriteFive(), template.getSdBufferFive()));
+            template.setSdTotalValueSix(sumValue(template.getCurrentWriteSix(), template.getSdBufferSix()));
         }
         ExcelUtils.writeExcel(response, templateList, SdUpdateTemplate.class);
     }
