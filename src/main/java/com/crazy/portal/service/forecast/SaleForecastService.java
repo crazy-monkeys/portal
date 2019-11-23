@@ -743,12 +743,18 @@ public class SaleForecastService {
                 forecastSd.setSdAdjustmentSix(template.getSdBufferSix());
                 forecastSdMapper.insertSelective(forecastSd);
             }else{
-                forecastSd.setSdAdjustmentOne(template.getSdBufferOne());
+                template.setSdBufferOne(forecastSd.getSdAdjustmentOne());
+                template.setSdBufferTwo(forecastSd.getSdAdjustmentTwo());
+                template.setSdBufferThree(forecastSd.getSdAdjustmentThree());
+                template.setSdBufferFour(forecastSd.getSdAdjustmentFour());
+                template.setSdBufferFive(forecastSd.getSdAdjustmentFive());
+                template.setSdBufferSix(forecastSd.getSdAdjustmentSix());
+                /*forecastSd.setSdAdjustmentOne(template.getSdBufferOne());
                 forecastSd.setSdAdjustmentTwo(template.getSdBufferTwo());
                 forecastSd.setSdAdjustmentThree(template.getSdBufferThree());
                 forecastSd.setSdAdjustmentFour(template.getSdBufferFour());
                 forecastSd.setSdAdjustmentFive(template.getSdBufferFive());
-                forecastSd.setSdAdjustmentSix(template.getSdBufferSix());
+                forecastSd.setSdAdjustmentSix(template.getSdBufferSix());*/
                 forecastSdMapper.updateByPrimaryKeySelective(forecastSd);
             }
             template.setId(String.valueOf(forecastSd.getId()));
