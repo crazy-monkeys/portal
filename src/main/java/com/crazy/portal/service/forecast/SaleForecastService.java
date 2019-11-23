@@ -615,7 +615,11 @@ public class SaleForecastService {
     public void downloadMonthDataByAmb(HttpServletResponse response, String yearMonth, Integer userId) {
         BusinessUtil.assertEmpty(yearMonth, FORECAST_REQ_PARAM_NOT_EMPTY);
         List<Integer> userList = userCustomerMappingService.selectUserMapping(userId, Enums.CustomerMappingModel.Forecast.getValue());
-        userList = userList == null || userList.isEmpty() ? null : userList;
+        if(userList == null || userList.isEmpty()){
+            List<Forecast> forecastList = new ArrayList<>();
+            downloadDataByAmb(response, forecastList);
+            return;
+        }
         List<Forecast> forecastList = forecastMapper.selectByIdsAndMonth(yearMonth, userList);
         downloadDataByAmb(response, forecastList);
     }
@@ -626,6 +630,9 @@ public class SaleForecastService {
      * @param forecastIds
      */
     public void downloadDataByAmb(HttpServletResponse response, Integer[] forecastIds) {
+        if(null == forecastIds || forecastIds.length == 0){
+            throw new BusinessException(FORECAST_REQ_PARAM_NOT_EMPTY);
+        }
         List<Forecast> forecastList = forecastMapper.selectByIds(forecastIds);
         downloadDataByAmb(response, forecastList);
     }
