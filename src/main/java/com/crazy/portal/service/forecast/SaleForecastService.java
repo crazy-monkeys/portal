@@ -626,6 +626,32 @@ public class SaleForecastService {
             copyDbFields(forecast, agencyTemplate);
             agencyTemplate.setId(String.valueOf(forecast.getId()));
             agencyTemplate.setTotalForecastNum(sumValue(agencyTemplate));
+            //本次销售预测
+            agencyTemplate.setAmbForecastSaleOne(sumValue(agencyTemplate.getCurrentWriteOne(), agencyTemplate.getAmbAdjustmentOne()));
+            agencyTemplate.setAmbForecastSaleTwo(sumValue(agencyTemplate.getCurrentWriteTwo(), agencyTemplate.getAmbAdjustmentTwo()));
+            agencyTemplate.setAmbForecastSaleThree(sumValue(agencyTemplate.getCurrentWriteThree(), agencyTemplate.getAmbAdjustmentThree()));
+            agencyTemplate.setAmbForecastSaleFour(sumValue(agencyTemplate.getCurrentWriteFour(), agencyTemplate.getAmbAdjustmentFour()));
+            agencyTemplate.setAmbForecastSaleFive(sumValue(agencyTemplate.getCurrentWriteFive(), agencyTemplate.getAmbAdjustmentFive()));
+            agencyTemplate.setAmbForecastSaleSix(sumValue(agencyTemplate.getCurrentWriteSix(), agencyTemplate.getAmbAdjustmentSix()));
+            //
+            String ambGapOne = ForecastLine.calculateGap(agencyTemplate.getLastWriteOne(),
+                    agencyTemplate.getAmbForecastSaleOne(), agencyTemplate.getAmbGapOne());
+            agencyTemplate.setAmbGapOne(ambGapOne);
+            String ambGapTwo = ForecastLine.calculateGap(agencyTemplate.getLastWriteTwo(),
+                    agencyTemplate.getAmbForecastSaleTwo(), agencyTemplate.getAmbGapTwo());
+            agencyTemplate.setAmbGapTwo(ambGapTwo);
+            String ambGapThree = ForecastLine.calculateGap(agencyTemplate.getLastWriteThree(),
+                    agencyTemplate.getAmbForecastSaleThree(), agencyTemplate.getAmbGapThree());
+            agencyTemplate.setAmbGapThree(ambGapThree);
+            String ambGapFour = ForecastLine.calculateGap(agencyTemplate.getLastWriteFour(),
+                    agencyTemplate.getAmbForecastSaleFour(), agencyTemplate.getAmbGapFour());
+            agencyTemplate.setAmbGapFour(ambGapFour);
+            String ambGapFive = ForecastLine.calculateGap(agencyTemplate.getLastWriteFive(),
+                    agencyTemplate.getAmbForecastSaleFive(), agencyTemplate.getAmbGapFive());
+            agencyTemplate.setAmbGapFive(ambGapFive);
+            String ambGapSix = ForecastLine.calculateGap(agencyTemplate.getLastWriteSix(),
+                    agencyTemplate.getAmbForecastSaleSix(), agencyTemplate.getAmbGapSix());
+            agencyTemplate.setAmbGapSix(ambGapSix);
             templateList.add(agencyTemplate);
         }
         ExcelUtils.writeExcel(response, templateList, AmbUpdateTemplate.class);
@@ -1294,6 +1320,30 @@ public class SaleForecastService {
             log.error("", ex);
             return "0";
         }
+    }
+
+    private String calculateGap(String lastWriteValue, String currentWriteValue, String gapValue) {
+        //上次填写值
+        BigDecimal a = StringUtils.isEmpty(lastWriteValue) ? BigDecimal.ZERO : new BigDecimal(lastWriteValue);
+        //本次填写值
+        BigDecimal b = StringUtils.isEmpty(currentWriteValue) ? BigDecimal.ZERO : new BigDecimal(currentWriteValue);
+        try {
+            if(a.equals(BigDecimal.ZERO) && b.equals(BigDecimal.ZERO)){
+                return "0%";
+            }
+            if(a.equals(BigDecimal.ZERO)){
+                return "100%";
+            }
+            if(a.compareTo(BigDecimal.ZERO)==1){
+
+                BigDecimal percent = (b.subtract(a)).divide(a, 4, BigDecimal.ROUND_DOWN);
+                return String.format("%s%s", percent.setScale(0,BigDecimal.ROUND_HALF_UP),"%");
+            }
+        }catch (Exception ex) {
+            log.error("【销售预测】计算Gap值异常，lastWriteOne : " + a + ", currentWriteOne : " + b, ex);
+            return gapValue;
+        }
+        return gapValue;
     }
 
     class BiResponse {

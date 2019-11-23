@@ -1,6 +1,5 @@
 package com.crazy.portal.bean.forecast;
 
-import com.alibaba.excel.annotation.ExcelIgnore;
 import com.alibaba.excel.annotation.ExcelProperty;
 import lombok.Data;
 
@@ -86,8 +85,7 @@ public class AmbUpdateTemplate {
     @ExcelProperty(index = 24, value = "本次代理填写值1")
     private String currentWriteOne;
 
-//    @ExcelProperty(index = 25, value = "GAP1")
-    @ExcelIgnore
+    @ExcelProperty(index = 25, value = "代理上报GAP1")
     private String gapOne;
 
     @ExcelProperty(index = 25, value = "备注1")
@@ -114,8 +112,7 @@ public class AmbUpdateTemplate {
     @ExcelProperty(index = 32, value = "本次代理填写值2")
     private String currentWriteTwo;
 
-//    @ExcelProperty(index = 34, value = "GAP2")
-    @ExcelIgnore
+    @ExcelProperty(index = 34, value = "代理上报GAP2")
     private String gapTwo;
 
     @ExcelProperty(index = 33, value = "备注2")
@@ -142,8 +139,7 @@ public class AmbUpdateTemplate {
     @ExcelProperty(index = 40, value = "本次代理填写值3")
     private String currentWriteThree;
 
-//    @ExcelProperty(index = 43, value = "GAP3")
-    @ExcelIgnore
+    @ExcelProperty(index = 43, value = "代理上报GAP3")
     private String gapThree;
 
     @ExcelProperty(index = 41, value = "备注3")
@@ -170,8 +166,7 @@ public class AmbUpdateTemplate {
     @ExcelProperty(index = 48, value = "本次代理填写值4")
     private String currentWriteFour;
 
-//    @ExcelProperty(index = 52, value = "GAP4")
-    @ExcelIgnore
+    @ExcelProperty(index = 52, value = "代理上报GAP4")
     private String gapFour;
 
     @ExcelProperty(index = 49, value = "备注4")
@@ -198,8 +193,7 @@ public class AmbUpdateTemplate {
     @ExcelProperty(index = 56, value = "本次代理填写值5")
     private String currentWriteFive;
 
-//    @ExcelProperty(index = 61, value = "GAP5")
-    @ExcelIgnore
+    @ExcelProperty(index = 61, value = "代理上报GAP5")
     private String gapFive;
 
     @ExcelProperty(index = 57, value = "备注5")
@@ -226,8 +220,7 @@ public class AmbUpdateTemplate {
     @ExcelProperty(index = 64, value = "本次代理填写值6")
     private String currentWriteSix;
 
-//    @ExcelProperty(index = 70, value = "GAP6")
-    @ExcelIgnore
+    @ExcelProperty(index = 70, value = "代理上报GAP6")
     private String gapSix;
 
     @ExcelProperty(index = 65, value = "备注6")

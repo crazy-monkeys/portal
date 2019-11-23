@@ -749,7 +749,7 @@ public class ForecastLine {
      * @param gapValue
      * @return
      */
-    private static String calculateGap(String lastWriteValue, String currentWriteValue, String gapValue) {
+    public static String calculateGap(String lastWriteValue, String currentWriteValue, String gapValue) {
         //上次填写值
         BigDecimal a = StringUtils.isEmpty(lastWriteValue) ? BigDecimal.ZERO : new BigDecimal(lastWriteValue);
         //本次填写值
