@@ -612,6 +612,14 @@ public class SaleForecastService {
         }
     }
 
+    public void downloadMonthDataByAmb(HttpServletResponse response, String yearMonth, Integer userId) {
+        BusinessUtil.assertEmpty(yearMonth, FORECAST_REQ_PARAM_NOT_EMPTY);
+        List<Integer> userList = userCustomerMappingService.selectUserMapping(userId, Enums.CustomerMappingModel.Forecast.getValue());
+        userList = userList == null || userList.isEmpty() ? null : userList;
+        List<Forecast> forecastList = forecastMapper.selectByIdsAndMonth(yearMonth, userList);
+        downloadDataByAmb(response, forecastList);
+    }
+
     /**
      *
      * @param response
@@ -619,6 +627,10 @@ public class SaleForecastService {
      */
     public void downloadDataByAmb(HttpServletResponse response, Integer[] forecastIds) {
         List<Forecast> forecastList = forecastMapper.selectByIds(forecastIds);
+        downloadDataByAmb(response, forecastList);
+    }
+
+    private void downloadDataByAmb(HttpServletResponse response, List<Forecast> forecastList) {
         List<AmbUpdateTemplate> templateList = new ArrayList<>();
         for(Forecast forecast : forecastList) {
             AmbUpdateTemplate agencyTemplate = new AmbUpdateTemplate();
@@ -671,6 +683,34 @@ public class SaleForecastService {
             forecastLine.setfId(Integer.parseInt(ambUpdateTemplate.getId()));
             forecastMapper.updatePoPriceById(Integer.parseInt(ambUpdateTemplate.getId()), ambUpdateTemplate.getPoPrice());
             forecastLineMapper.updateByForecastId(forecastLine);
+        }
+        //处理AMB队长新增进来的数据，不走之前任何流程，直接新增入库
+        handleAmdNewData(newList, userId);
+    }
+
+    @Transactional
+    public void uploadMonthDataByAmb(MultipartFile excel, Integer userId) {
+        List<AmbUpdateTemplate> ambList = ExcelUtils.readExcel(excel, AmbUpdateTemplate.class);
+        List<AmbUpdateTemplate> newList = new ArrayList<>();
+        for(AmbUpdateTemplate ambUpdateTemplate : ambList){
+            if(StringUtils.isEmpty(ambUpdateTemplate.getId())){
+                newList.add(ambUpdateTemplate);
+                continue;
+            }
+            ForecastLine forecastLine = new ForecastLine();
+            copyTemplateFields(ambUpdateTemplate, forecastLine);
+            forecastLine.setfId(Integer.parseInt(ambUpdateTemplate.getId()));
+            Forecast forecast = forecastMapper.selectByPrimaryKey(Integer.parseInt(ambUpdateTemplate.getId()));
+            //如果发现数据已经提交给BI，则重新变更为待提交状态
+            if(null != forecast && forecast.getStatus() == 2){
+                forecast.setStatus(4);
+                forecast.setPoPrice(ambUpdateTemplate.getPoPrice());
+                forecastMapper.updateByPrimaryKeySelective(forecast);
+            }else{
+                forecastMapper.updatePoPriceById(Integer.parseInt(ambUpdateTemplate.getId()), ambUpdateTemplate.getPoPrice());
+            }
+            forecastLineMapper.updateByForecastId(forecastLine);
+
         }
         //处理AMB队长新增进来的数据，不走之前任何流程，直接新增入库
         handleAmdNewData(newList, userId);

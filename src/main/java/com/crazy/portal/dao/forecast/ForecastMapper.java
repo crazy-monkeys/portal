@@ -83,6 +83,9 @@ public interface ForecastMapper {
 
     List<Forecast> selectByIds(@Param(value = "ids") Integer[] ids);
 
+    List<Forecast> selectByIdsAndMonth(@Param(value = "yearMonth") String yearMonth,
+                                       @Param(value = "userList") List<Integer> userList);
+
     int clearErrorMsgByBatch(@Param(value = "batchNo") String batchNo);
 
     Forecast selectRelationByKey(Integer id);

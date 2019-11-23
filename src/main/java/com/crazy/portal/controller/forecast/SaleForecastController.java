@@ -186,6 +186,12 @@ public class SaleForecastController extends BaseController {
         return super.successResult();
     }
 
+    @GetMapping(value = "/forecast/amb/month/data/download")
+    public BaseResponse downloadMonthDataByAmb(HttpServletResponse response, String yearMonth) {
+        saleForecastService.downloadMonthDataByAmb(response, yearMonth, getCurrentUser().getId());
+        return super.successResult();
+    }
+
     /**
      * 阿米巴数据
      * @param excel
@@ -194,6 +200,12 @@ public class SaleForecastController extends BaseController {
     @PostMapping(value = "/forecast/amb/data/upload")
     public BaseResponse uploadDataByAmb(MultipartFile excel) {
         saleForecastService.uploadDataByAmb(excel, getCurrentUser().getId());
+        return super.successResult();
+    }
+
+    @PostMapping(value = "/forecast/amb/month/data/upload")
+    public BaseResponse uploadMonthDataByAmb(MultipartFile excel) {
+        saleForecastService.uploadMonthDataByAmb(excel, getCurrentUser().getId());
         return super.successResult();
     }
 
