@@ -31,7 +31,6 @@ import com.crazy.portal.service.system.SysParamService;
 import com.crazy.portal.util.*;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.cxf.Bus;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -241,7 +240,7 @@ public class CustomerInfoService {
         DealerCreditVO vo = new DealerCreditVO();
         vo.setCredit(null == zsdscredit.getDmbtr()? BigDecimal.ZERO:zsdscredit.getDmbtr());
         vo.setCreditUSE(null == zsdscredit.getZoccupy()? BigDecimal.ZERO:zsdscredit.getZoccupy());
-        vo.setCreditUnUSE(null == zsdscredit.getZremain()?BigDecimal.ZERO:zsdscredit.getZoccupy());
+        vo.setCreditUnUSE(null == zsdscredit.getZremain()?BigDecimal.ZERO:zsdscredit.getZremain());
         return vo;
     }
 
@@ -940,6 +939,7 @@ public class CustomerInfoService {
 
     public void approve(List<Integer> ids, Integer dealerId){
         CustomerInfo dealerInfo = customerInfoMapper.selectByPrimaryKey(dealerId);
+        BusinessUtil.assertFlase(null == dealerInfo,ErrorCodes.BusinessEnum.CUSTOMER_NO_DEALER);
         ids.forEach(e->{
             VisitRecord visitRecord = visitRecordMapper.selectByPrimaryKey(e);
             VisitCreate create = getVisitsRequest(visitRecord, dealerInfo.getInCode());
@@ -952,9 +952,20 @@ public class CustomerInfoService {
         });
     }
 
+    public void test(){
+        List<VisitRecord> records = visitRecordMapper.selectAll();
+        records.forEach(e->{
+            CustomerInfo customerInfo = customerInfoMapper.selectByPrimaryKey(e.getCreateUserId());
+            VisitCreate create = getVisitsRequest(e, customerInfo.getInCode());
+            log.info("手动同步拜访记录,Request"+JSON.toJSONString(create));
+            AppointmentActivityMaintainConfirmationBundleMessageSyncV1 response = CallApiUtils.callC4cVisits(create);
+            log.info("手动同步拜访记录"+JSON.toJSONString(response));
+        });
+    }
+
     private VisitCreate getVisitsRequest(VisitRecord visitRecord, String c4cId){
         VisitCreateBean visitBean = new VisitCreateBean();
-        visitBean.setObjectNodeSenderTechnicalID("001");
+        visitBean.setObjectNodeSenderTechnicalID(null==visitRecord.getC4cId()?"001":visitRecord.getC4cId());
         visitBean.setName(visitRecord.getProjectName());
         visitBean.setLifeCycleStatusCode("1");
         visitBean.setVisitTypeCode("Z01");
@@ -966,6 +977,7 @@ public class CustomerInfoService {
 
         //客户 c4c id
         CustomerInfo customerInfo = customerInfoMapper.selectByInCode(visitRecord.getCustomerCode());
+        BusinessUtil.assertFlase(null == customerInfo,ErrorCodes.BusinessEnum.CUSTOMER_IS_EMPYT);
         MainActivityPartyBean mainActivityPartyBean = new MainActivityPartyBean();
         mainActivityPartyBean.setBusinessPartnerInternalID(customerInfo.getInCode());
         visitBean.setMainActivityPartyBean(mainActivityPartyBean);
@@ -1040,10 +1052,10 @@ public class CustomerInfoService {
     }
 
     private void checkCustomer(CustomerInfo customerInfo) {
-        if (StringUtil.isNotEmpty(customerInfo.getCustMobile())) {
+       /* if (StringUtil.isNotEmpty(customerInfo.getCustMobile())) {
             String telRegex = "[1][345678]\\d{9}";
             BusinessUtil.assertTrue(customerInfo.getCustMobile().matches(telRegex), ErrorCodes.BusinessEnum.CUSTOMER_MOBILE_IS_INACTIVE);
-        }
+        }*/
         if (StringUtil.isNotEmpty(customerInfo.getCustEmail())) {
             String mailRegex = "^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+(\\.[a-zA-Z0-9-]+)*\\.[a-zA-Z0-9]{2,6}$";
             BusinessUtil.assertTrue(customerInfo.getCustEmail().matches(mailRegex), ErrorCodes.BusinessEnum.CUSTOMER_EMAIL_IS_INACTIVE);

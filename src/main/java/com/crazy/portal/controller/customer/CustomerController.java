@@ -141,6 +141,12 @@ public class CustomerController extends BaseController{
         return successResult();
     }
 
+    @PostMapping("/visitRecord/approve/test")
+    public BaseResponse approveTest(@RequestBody VisiApproveBean ids){
+        customerInfoService.test();
+        return successResult();
+    }
+
     @GetMapping("/all")
     public BaseResponse queryAllCustomer(){
         return successResult(customerInfoService.selecAllCustomer());

@@ -22,4 +22,7 @@ public interface VisitRecordMapper {
     List<VisitRecord> selectByPage(VisitRecordQueryBean visitRecordQueryBean);
 
     int approve(@Param("id") Integer id, @Param("c4cId") String c4cId);
+
+    List<VisitRecord> selectAll();
+
 }

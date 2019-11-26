@@ -59,6 +59,10 @@ public class CustCorporateRelationshipService {
             return;
         }
         custCorporateRelationships.forEach(e->{
+            if(StringUtil.isNotEmpty(e.getCorporateId()) && e.getCorporateId().equals(e.getCorporateName())){
+                CustomerInfo oldCt = customerInfoMapper.selectByInCode(e.getCorporateId());
+                e.setCorporateName(oldCt.getCustName());
+            }
             if(null == e.getShipId()){
                 e.setCustId(custId);
                 e.setCreateUser(userId);

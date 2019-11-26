@@ -81,6 +81,7 @@ public class ArchiveService {
         dbRecord.setReleaseUserId(releaseUserId);
         dbRecord.setReleaseTime(new Date());
         dbRecord.setTypeId(param.getTypeId());
+        dbRecord.setStatus(1);
         archiveMapper.updateByPrimaryKeySelective(dbRecord);
         //防止重复记录及不必要的关联关系，维护前先物理清理掉之前的记录
         archiveUserRelationMapper.deleteByArchiveId(param.getId());
