@@ -237,4 +237,18 @@
   <update id="cancelRecive">
     UPDATE t_deliver_order_line set receive_quantity = #{qty,jdbcType=DECIMAL} where deliver_order_line_id = #{deliverOrderId,jdbcType=INTEGER}
   </update>
+
+  <update id="updateReciverNumber">
+    update t_receive_detail a
+    inner join t_deliver_order_line b on a.delivery_order_id = b.deliver_order_line_id
+    set b.receive_quantity = a.delivery_num
+    where a.third_id is not null
+  </update>
+  
+  <update id="deleteReciveryNumber">
+    update t_deliver_order_line set receive_quantity = 0
+    where deliver_order_line_id not in (
+    select delivery_order_id from t_receive_detail a where third_id is not null and delivery_order_id is not null
+    )
+  </update>
 </mapper>

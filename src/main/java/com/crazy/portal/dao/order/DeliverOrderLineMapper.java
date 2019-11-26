@@ -26,4 +26,8 @@ public interface DeliverOrderLineMapper {
     int updateReciveQty(@Param("deliverOrderId") Integer deliverOrderId, @Param("qty")BigDecimal qty);
 
     int cancelRecive(@Param("deliverOrderId") Integer deliverOrderId, @Param("qty")Integer qty);
+
+    int updateReciverNumber();
+
+    int deleteReciveryNumber();
 }

@@ -25,4 +25,6 @@ public interface DeliverOrderMapper {
     DeliverOrder selectBySapDeliveryNo(String sapDeliveryNo);
 
     DeliverOrder checkOrderStatus(Integer deliverOrderId);
+
+    List<DeliverOrder> selectDeliveryByDealer(Integer dealerId);
 }

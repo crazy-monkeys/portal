@@ -326,4 +326,8 @@
       </foreach>-->
     </update>
 
+   <select id="selectAll" resultMap="BaseResultMap">
+     SELECT * FROM t_visit_record where active = 1 and c4c_id is not null
+   </select>
+
 </mapper>

@@ -1,5 +1,6 @@
 package com.crazy.portal.service.forecast;
 
+import com.alibaba.druid.wall.violation.ErrorCode;
 import com.alibaba.fastjson.JSONObject;
 import com.crazy.portal.bean.customer.CustomerOrgBean;
 import com.crazy.portal.bean.forecast.*;
@@ -163,6 +164,7 @@ public class SaleForecastService {
         }
         String batchNo = generateBathNo();
         for(AgencyTemplate template : agencyForecastList){
+            BusinessUtil.assertFlase(null == template.getCloseDate(), FORECAST_DATE_FORMAT_IS_NOT_EMP);
             boolean isDate = BusinessUtil.isDateTime(template.getCloseDate());
             BusinessUtil.assertTrue(isDate, FORECAST_DATE_FORMAT_ERROR);
 
@@ -1341,6 +1343,9 @@ public class SaleForecastService {
 
     private void setLastValue(Forecast forecast, ForecastLine line) {
         try {
+            if(null == forecast || null == forecast.getOperationYearMonth()){
+                return;
+            }
             Date currentDate = DateUtil.parseDate(forecast.getOperationYearMonth(), DateUtil.MONTH_FORMAT);
             Date lastDate = DateUtil.computeWithMonth(currentDate, -1);
             forecast.setLastMonth(DateUtil.format(lastDate, DateUtil.MONTH_FORMAT));
@@ -1359,6 +1364,7 @@ public class SaleForecastService {
             line.setLastWriteFive(sumValue(lastLineValue.getCurrentWriteSix(), lastLineValue.getAmbAdjustmentSix()));
             line.setLastWriteSix(null);
         }catch (Exception ex) {
+            log.error("获取上次预测值异常",ex);
             throw new BusinessException(FORECAST_GET_LAST_VALUE_ERROR);
         }
     }

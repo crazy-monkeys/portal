@@ -13,6 +13,7 @@ import com.crazy.portal.dao.order.OrderLineMapper;
 import com.crazy.portal.dao.order.OrderMapper;
 import com.crazy.portal.dao.product.ProductInfoDOMapper;
 import com.crazy.portal.entity.cusotmer.CustomerInfo;
+import com.crazy.portal.entity.order.DeliverOrder;
 import com.crazy.portal.entity.order.Order;
 import com.crazy.portal.entity.order.OrderApply;
 import com.crazy.portal.entity.order.OrderLine;
@@ -643,5 +644,4 @@ public class OrderApproveService extends CommonOrderService{
         }
         return isHeader;
     }
-
 }

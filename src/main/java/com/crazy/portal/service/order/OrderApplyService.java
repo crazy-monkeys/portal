@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.crazy.portal.bean.order.*;
 import com.crazy.portal.bean.order.wsdl.create.ZsalesordercreateOutItem;
+import com.crazy.portal.bean.order.wsdl.delivery.update.ZrfcsddeliverychangeResponse;
 import com.crazy.portal.bean.order.wsdl.price.*;
 import com.crazy.portal.bean.price.CatalogPriceVO;
 import com.crazy.portal.config.exception.BusinessException;
@@ -74,6 +75,8 @@ public class OrderApplyService extends CommonOrderService{
     private CatalogPriceService catalogPriceService;
     @Resource
     private UserCustomerMappingService userCustomerMappingService;
+    @Resource
+    private OrderService orderService;
 
     /**
      * 分页查询
@@ -665,11 +668,16 @@ public class OrderApplyService extends CommonOrderService{
         saveDeliverOrderCancelApproval(deliverOrder, vo.getDeliveryOrderLineIds(), userId);
     }
 
+    //
     private void saveDeliverOrderUpdateApproval(DeliverOrder order, DeliverOrder oldOrder, String approvalType, Integer userId){
         DeliverOrderApproval approval = getDeliverOrderApproval(oldOrder, approvalType, userId);
         order.getDeliverOrderLineList().forEach(e->{
             OrderLine orderLine = orderLineMapper.selectByPrimaryKey(e.getSalesOrderLineId());
-            BusinessUtil.assertFlase(orderLine.getRemainingNum() < e.getDeliveryQuantity(), ErrorCodes.BusinessEnum.ORDER_QTY_IS_ENOUGH);
+            DeliverOrderLine oldLine = deliverOrderLineMapper.selectByPrimaryKey(e.getDeliverOrderLineId());
+
+            BusinessUtil.assertFlase(null == orderLine || null == oldLine,ErrorCodes.BusinessEnum.ORDER_APPLY_ORDER_NOT_FOUND);
+
+            BusinessUtil.assertFlase(e.getDeliveryQuantity() > oldLine.getDeliveryQuantity() && orderLine.getRemainingNum() < e.getDeliveryQuantity()-oldLine.getDeliveryQuantity(), ErrorCodes.BusinessEnum.ORDER_QTY_IS_ENOUGH);
             BusinessUtil.assertFlase(e.getActive()==0, ErrorCodes.BusinessEnum.ORDER_IS_INACTIVE);
         });
         approval.setDeliveryOrderLine(approval.setSerializelDeliveryOrderLine(order.getDeliverOrderLineList()));
@@ -784,5 +792,21 @@ public class OrderApplyService extends CommonOrderService{
         detail.setPurchaseNumber(order.getPurchaseNo());
         detail.setIsTransfer("0");
         return detail;
+    }
+
+    public void updateEccDelivery(Integer id){
+        List<DeliverOrder> result = new ArrayList<>();
+        if(id.equals(1)){
+            result = deliverOrderMapper.selectDeliveryByDealer(1161);
+        }else{
+            result = deliverOrderMapper.selectDeliveryByDealer(id);
+        }
+
+        result.forEach(e->{
+            List<DeliverOrderLine> lines = deliverOrderLineMapper.selectByDeliveryOrderId(e.getDeliverOrderId());
+            ZrfcsddeliverychangeResponse response = orderService.eccDeliveryUpdate(e, lines,"U",Enums.OrderApprovalType.UPDATE.getValue());
+            log.info("同步修改ECC提货单信息"+JSON.toJSONString(response));
+        });
+
     }
 }

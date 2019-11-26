@@ -59,4 +59,10 @@ public class OrderApprovalController extends BaseController {
         orderService.deliveryApprove(deliveryApproveVO, getCurrentUserId());
         return successResult();
     }
+
+    @GetMapping("/update/delivery/{id}")
+    public BaseResponse updateDelivery(@PathVariable Integer id){
+        orderApplyService.updateEccDelivery(id);
+        return successResult();
+    }
 }

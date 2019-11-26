@@ -189,6 +189,7 @@ public class OrderApiService {
         String url = String.format("%s%s",ECC_API_URL,"/cxf/PORTAL/ECC/CHANGEDELIVERY");
         try {
             String requestXml = JaxbXmlUtil.convertToXml(update);
+            log.info("request URL- >" + url);
             log.info("request - >" + requestXml);
             String response = HttpClientUtils.post(url,requestXml);
             log.info("response - >" + response);

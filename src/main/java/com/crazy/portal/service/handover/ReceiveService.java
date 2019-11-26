@@ -6,11 +6,13 @@ import com.crazy.portal.bean.handover.ReceiveTemplateBean;
 import com.crazy.portal.config.exception.BusinessException;
 import com.crazy.portal.dao.handover.ReceiveDetailMapper;
 import com.crazy.portal.dao.handover.ReceiveDetailUpdateMapper;
+import com.crazy.portal.dao.order.DeliverOrderLineMapper;
 import com.crazy.portal.entity.cusotmer.CustomerInfo;
 import com.crazy.portal.entity.handover.DeliverReceiveRecord;
 import com.crazy.portal.entity.handover.ReceiveDetail;
 import com.crazy.portal.entity.handover.ReceiveDetailUpdate;
 import com.crazy.portal.service.customer.CustomerInfoService;
+import com.crazy.portal.service.order.OrderApplyService;
 import com.crazy.portal.util.*;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
@@ -43,6 +45,8 @@ public class ReceiveService extends AbstractHandover implements IHandover<Receiv
     private CustomerInfoService customerInfoService;
     @Resource
     private ReceiveDetailUpdateMapper receiveDetailUpdateMapper;
+    @Resource
+    private DeliverOrderLineMapper deliverOrderLineMapper;
 
     @Value("${file.path.receive.template}")
     private String receiveTemplatePath;
@@ -237,6 +241,7 @@ public class ReceiveService extends AbstractHandover implements IHandover<Receiv
             String response = CallApiUtils.callBiPostApi(DELETE_INVENTORY_CASE, "PORTAL/BI/", JSONObject.toJSONString(param));
             if(response.contains("删除成功")){
                 receiveDetailMapper.batchDeleteByIds(ids);
+                deliverOrderLineMapper.deleteReciveryNumber();
             }else{
                 throw new BusinessException(HANDOVER_DELETE_ERROR);
             }
@@ -317,6 +322,7 @@ public class ReceiveService extends AbstractHandover implements IHandover<Receiv
                 }
                 try {
                     BeanUtils.copyNotNullFields(detail, dbRecord);
+                    deliverOrderLineMapper.updateReciverNumber();
                 }catch (Exception ex) {
                     throw new BusinessException("对象属性复制异常");
                 }

@@ -238,5 +238,9 @@
       and deliver_date > #{deliveryStartDate,jdbcType=VARCHAR}
     </if>
   </select>
+  
+  <select id="selectDeliveryByDealer" resultMap="BaseResultMap">
+    select * from t_deliver_order where create_user_id = #{dealerId,jdbcType=INTEGER}
+  </select>
 
 </mapper>

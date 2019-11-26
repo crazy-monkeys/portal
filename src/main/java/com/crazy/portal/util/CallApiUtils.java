@@ -199,7 +199,6 @@ public class CallApiUtils {
     public static AppointmentActivityMaintainConfirmationBundleMessageSyncV1 callC4cVisits(VisitCreate create) {
         String url = String.format("%s%s", ECC_API_URL, C4C_Visits);
         try {
-            log.info("========"+JSON.toJSONString(create));
             String requestXml = JaxbXmlUtil.convertToXml(create).replace("</StartDateTime timeZoneCode=\"CET\">", "</StartDateTime>").replace("</EndDateTime timeZoneCode=\"CET\">", "</EndDateTime>");
             String response = HttpClientUtils.post(url, requestXml);
             return JaxbXmlUtil.convertSoapXmlToJavaBean2(response, AppointmentActivityMaintainConfirmationBundleMessageSyncV1.class);

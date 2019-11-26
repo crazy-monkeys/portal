@@ -269,6 +269,7 @@ public class ErrorCodes {
         FORECAST_DATE_FORMAT_ERROR(80030, "时间格式不符合要求，请重新输入", ""),
         FORECAST_GET_LAST_VALUE_ERROR(80031, "获取上次填写值失败，请联系管理员", ""),
         FORECAST_BI_ID_EMPTY(80032, "检测BI_ID为空，请检查数据", ""),
+        FORECAST_DATE_FORMAT_IS_NOT_EMP(80033, "客户专货库存截止日期不能为空", ""),
 
         //订单管理
         ORDER_NOT_FOUND(90001, "订单信息不存在", ""),

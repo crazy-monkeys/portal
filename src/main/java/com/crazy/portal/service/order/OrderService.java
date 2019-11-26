@@ -183,6 +183,7 @@ public class OrderService extends CommonOrderService {
                 if(response.getResulttype().equals("0")){
                     DeliverOrder deliverOrder = new DeliverOrder();
                     BeanUtils.copyNotNullFields(approval, deliverOrder);
+                    deliverOrder.setDeliverOrderId(null);
                     deliverOrder.setSapDeliverOrderNo(response.getSapdeliveryid());
                     deliverOrderMapper.insertSelective(deliverOrder);
                     for(DeliverOrderLine line: approval.getSerializelDeliveryOrderLine()){
@@ -190,7 +191,13 @@ public class OrderService extends CommonOrderService {
                         DeliverOrderLine deliverOrderLine = new DeliverOrderLine();
                         BeanUtils.copyNotNullFields(line, deliverOrderLine);
                         deliverOrderLine.setDeliverOrderId(deliverOrder.getDeliverOrderId());
-                        deliverOrderLine.setSapDeliverOrderLineNo(orderLine.getRRefItemNo());
+                        if(null != response.getTitem().getItem()){
+                            response.getTitem().getItem().forEach(e->{
+                                if(e.getItemno().replaceAll("^(0+)", "").equals(orderLine.getRItemNo())){
+                                    deliverOrderLine.setSapDeliverOrderLineNo(e.getDeliveryitemno().replaceAll("^(0+)", ""));
+                                }
+                            });
+                        }
                         deliverOrderLine.setReceiveQuantity(0);
                         deliverOrderLineMapper.insertSelective(deliverOrderLine);
                     }
@@ -315,13 +322,15 @@ public class OrderService extends CommonOrderService {
         List<Item> items = new ArrayList<>();
         deliverOrderLineList.forEach(e->{
             OrderLine orderLine = orderLineMapper.selectByPrimaryKey(e.getSalesOrderLineId());
-            items.add(mappingUpdateItem(e.getSapSalesOrderLineNo(),String.valueOf(e.getDeliveryQuantity()),ope));
+            items.add(mappingUpdateItem(e.getSapDeliverOrderLineNo(),String.valueOf(e.getDeliveryQuantity()),ope));
 
             //找出订单行对应的实体料行信息
             List<OrderLine> liens = orderLineMapper.selectByProduct(e.getSalesOrderId(), e.getProductId(), orderLine.getRItemNo());
-            liens.forEach(o->{
-                items.add(mappingUpdateItem(o.getRItemNo(),String.valueOf(e.getDeliveryQuantity()),ope));
-            });
+            Integer no = Integer.valueOf(e.getSapDeliverOrderLineNo());
+            for(OrderLine o : liens){
+                no = no+10;
+                items.add(mappingUpdateItem(String.valueOf(no),String.valueOf(e.getDeliveryQuantity()),ope));
+            }
         });
         tItem.setItems(items);
         return tItem;
