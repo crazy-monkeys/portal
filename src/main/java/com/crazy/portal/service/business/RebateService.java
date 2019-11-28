@@ -87,7 +87,6 @@ public class RebateService {
             //内部客户
             bean.setUserType(Enums.USER_TYPE.internal.toString());
             List<CustomerInfo> salesCustomer = internalUserService.getSalesCustomer(user.getId());
-            salesCustomer = new ArrayList<>();
             if(null != salesCustomer){
                 //销售
                 bean.setUserType(Enums.USER_TYPE.sales.toString());
