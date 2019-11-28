@@ -2,17 +2,12 @@ package com.crazy.portal.entity.cusotmer;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
-import lombok.NonNull;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
-import static sun.jvm.hotspot.oops.CellTypeState.value;
 
 /**
  * 客户主信息表

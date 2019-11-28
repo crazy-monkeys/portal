@@ -9,7 +9,6 @@ import com.crazy.portal.bean.business.rebate.RebateUploadBean;
 import com.crazy.portal.controller.BaseController;
 import com.crazy.portal.entity.system.User;
 import com.crazy.portal.service.business.RebateService;
-import com.crazy.portal.util.Enums;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
@@ -46,10 +45,7 @@ public class RebateController extends BaseController {
      */
     @GetMapping("/items")
     public BaseResponse item(RebateQueryBean bean){
-        if(super.getCurrentUser().getUserType().equals(Enums.USER_TYPE.agent.toString())){
-            bean.setDealerId(getCurrentUser().getDealerId());
-        }
-        return successResult(rebateService.items(bean));
+        return successResult(rebateService.items(bean, getCurrentUser()));
     }
 
     /**

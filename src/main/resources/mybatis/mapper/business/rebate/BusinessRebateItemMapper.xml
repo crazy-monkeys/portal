@@ -279,10 +279,15 @@
     dl_file_id
     from t_business_rebate_item
     where active = 1
-    <if test="dealerId != null">
+    <if test="dealerId != null and userType != 'internal' and userType != 'sales'">
       and executor = (
         select cust_name from t_customer_info where id = #{dealerId,jdbcType=INTEGER}
       )
+    </if>
+    <if test="userType == 'sales' and customerInfos != null">
+      <foreach collection="customerInfos" item="item" index="index" open="and executor in (" separator="," close=")">
+        #{item.custName,jdbcType=VARCHAR}
+      </foreach>
     </if>
     <if test="customerName != null and customerName != ''">
       and customer_short_name like concat('%',#{customerName,jdbcType=VARCHAR},'%')

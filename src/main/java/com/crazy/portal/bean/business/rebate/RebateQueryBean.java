@@ -1,7 +1,10 @@
 package com.crazy.portal.bean.business.rebate;
 
 import com.crazy.portal.bean.common.PageBean;
+import com.crazy.portal.entity.cusotmer.CustomerInfo;
 import lombok.Data;
+
+import java.util.List;
 
 /**
  * 列表查询筛选
@@ -26,4 +29,9 @@ public class RebateQueryBean extends PageBean {
     private String noticeEndDate;
     //代理商ID
     private Integer dealerId;
+
+    //当前登录用户类型
+    private String userType;
+    //当前登录用户所拥有的客户
+    private List<CustomerInfo> customerInfos;
 }

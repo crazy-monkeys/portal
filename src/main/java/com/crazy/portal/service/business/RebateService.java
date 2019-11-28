@@ -10,6 +10,8 @@ import com.crazy.portal.dao.business.rebate.*;
 import com.crazy.portal.dao.cusotmer.CustomerInfoMapper;
 import com.crazy.portal.entity.business.rebate.*;
 import com.crazy.portal.entity.cusotmer.CustomerInfo;
+import com.crazy.portal.entity.system.User;
+import com.crazy.portal.service.system.InternalUserService;
 import com.crazy.portal.util.*;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.ImmutableMap;
@@ -53,6 +55,8 @@ public class RebateService {
     private CustomerInfoMapper customerInfoMapper;
     @Resource
     private RebateApiService rebateApiService;
+    @Resource
+    private InternalUserService internalUserService;
     @Value("${file.path.root}")
     private String filePath;
     private static final String REBATE_FILE_PATH = "rebate";
@@ -77,7 +81,17 @@ public class RebateService {
      * @param bean
      * @return
      */
-    public PageInfo<BusinessRebateItem> items(RebateQueryBean bean){
+    public PageInfo<BusinessRebateItem> items(RebateQueryBean bean, User user){
+        if(user.getUserType().equals(Enums.USER_TYPE.internal.toString())){
+            bean.setUserType(Enums.USER_TYPE.internal.toString());
+            List<CustomerInfo> salesCustomer = internalUserService.getSalesCustomer(user.getId());
+            if(null != salesCustomer){
+                bean.setUserType(Enums.USER_TYPE.sales.toString());
+                bean.setCustomerInfos(salesCustomer);
+            }
+        } else {
+            bean.setDealerId(user.getDealerId());
+        }
         PortalUtil.defaultStartPage(bean.getPageIndex(), bean.getPageSize());
         List<BusinessRebateItem> list = businessRebateItemMapper.selectByPage(bean);
         return new PageInfo<>(list);
