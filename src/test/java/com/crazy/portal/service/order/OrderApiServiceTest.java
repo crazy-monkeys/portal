@@ -25,6 +25,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.annotation.Resource;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -45,8 +46,8 @@ public class OrderApiServiceTest {
 
     @Test
     public void getCustomerRate() throws Exception{
-        ZrfcsdcustomercrrateResponse response = eccApiService.getCustomerRate("100217");
-        Assert.assertNotNull(response);
+        BigDecimal customerRate = eccApiService.getCustomerRate("100217");
+        Assert.assertNotNull(customerRate);
     }
 
     @Test

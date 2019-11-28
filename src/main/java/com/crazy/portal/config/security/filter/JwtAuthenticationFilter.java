@@ -93,7 +93,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
         try {
             Authentication authResult = null;
             String token = this.getToken(request);
-            if(StringUtils.isNotEmpty(token)){
+            if(StringUtils.isNotEmpty(token) && !StringUtils.equalsIgnoreCase("null",token)){
                 authResult = this.getAuthentication(token);
             }
             //可以忽略Token权限的url
