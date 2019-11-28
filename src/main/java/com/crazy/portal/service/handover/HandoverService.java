@@ -1,9 +1,12 @@
 package com.crazy.portal.service.handover;
 
+import com.crazy.portal.config.exception.BusinessException;
 import com.crazy.portal.dao.handover.DeliverDetailUpdateMapper;
 import com.crazy.portal.dao.handover.DeliverReceiveRecordMapper;
 import com.crazy.portal.dao.handover.ReceiveDetailUpdateMapper;
+import com.crazy.portal.entity.cusotmer.CustomerInfo;
 import com.crazy.portal.entity.handover.DeliverReceiveRecord;
+import com.crazy.portal.service.system.InternalUserService;
 import com.crazy.portal.service.system.UserCustomerMappingService;
 import com.crazy.portal.util.*;
 import com.github.pagehelper.PageInfo;
@@ -15,6 +18,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static com.crazy.portal.util.ErrorCodes.BusinessEnum.*;
 /**
@@ -37,6 +41,8 @@ public class HandoverService {
     private DeliverDetailUpdateMapper deliverDetailUpdateMapper;
     @Resource
     private ReceiveDetailUpdateMapper receiveDetailUpdateMapper;
+    @Resource
+    private InternalUserService internalUserService;
 
     private String deliver_type = "deliver";
     private String receive_type = "receive";
@@ -54,7 +60,7 @@ public class HandoverService {
     public PageInfo<DeliverReceiveRecord> getPageList(String dealerName, Integer status,
                                                       String uploadStartTime, String uploadEndTime,
                                                       Integer pageNum, Integer pageSize, Integer userId) {
-        List<Integer> userList = userCustomerMappingService.selectUserMapping(userId, Enums.CustomerMappingModel.Forecast.getValue());
+        List<Integer> userList = getAuthUsers(userId);
         Integer[] userIds = new Integer[userList.size()];
         PortalUtil.defaultStartPage(pageNum,pageSize);
 
@@ -157,6 +163,22 @@ public class HandoverService {
             deliverReceiveRecordMapper.updateByPrimaryKeySelective(record);
             throw new BusinessException(HANDOVER_WAITING_CONFIRM);
         }*/
+    }
+
+    private List<Integer> getAuthUsers(Integer userId) {
+        try {
+            List<CustomerInfo> customerInfos = internalUserService.getSalesCustomer(userId);
+            List<Integer> userList;
+            if(null == customerInfos){
+                userList = userCustomerMappingService.selectUserMapping(userId, Enums.CustomerMappingModel.Forecast.getValue());
+            }else {
+                userList = customerInfos.stream().map(CustomerInfo::getId).collect(Collectors.toList());
+            }
+            return userList;
+        }catch (Exception ex) {
+            log.error(FORECAST_AGENCY_QUERY_ERROR.getZhMsg(), ex);
+            throw new BusinessException(FORECAST_AGENCY_QUERY_ERROR);
+        }
     }
 
     public List<Integer> getStatusByIds(Set<Integer> ids) {

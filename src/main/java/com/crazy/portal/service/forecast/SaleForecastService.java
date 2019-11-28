@@ -1,6 +1,5 @@
 package com.crazy.portal.service.forecast;
 
-import com.alibaba.druid.wall.violation.ErrorCode;
 import com.alibaba.fastjson.JSONObject;
 import com.crazy.portal.bean.customer.CustomerOrgBean;
 import com.crazy.portal.bean.forecast.*;
@@ -18,6 +17,7 @@ import com.crazy.portal.entity.system.User;
 import com.crazy.portal.service.customer.CustomerInfoService;
 import com.crazy.portal.service.price.CatalogPriceService;
 import com.crazy.portal.service.product.ProductService;
+import com.crazy.portal.service.system.InternalUserService;
 import com.crazy.portal.service.system.UserCustomerMappingService;
 import com.crazy.portal.util.*;
 import com.github.pagehelper.PageInfo;
@@ -31,6 +31,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.crazy.portal.util.Enums.BI_FUNCTION_CODE.*;
 import static com.crazy.portal.util.ErrorCodes.BusinessEnum.*;
@@ -59,6 +60,8 @@ public class SaleForecastService {
     private ProductService productService;
     @Resource
     private CatalogPriceService catalogPriceService;
+    @Resource
+    private InternalUserService internalUserService;
 
     //Portal 本地文件交互地址
     @Value("${file.path.forecast.push}")
@@ -452,18 +455,12 @@ public class SaleForecastService {
                                                         String uploadStartTime, String uploadEndTime,
                                                         String ambPeople, String sdPeople, String agencyAbbreviation,
                                                         String channel) {
-        List<Integer> userList;
+        List<Integer> userList = getAuthUsers(userId);
         PortalUtil.defaultStartPage(pageNum,pageSize);
-        try {
-            userList = userCustomerMappingService.selectUserMapping(userId, Enums.CustomerMappingModel.Forecast.getValue());
-            Integer[] userIds = new Integer[userList.size()];
-            List<Forecast> result = forecastMapper.selectByLeader(userList.toArray(userIds), customerAbbreviation,
-                    salePeople, uploadStartTime, uploadEndTime, ambPeople, sdPeople, agencyAbbreviation, channel);
-            return new PageInfo<>(result);
-        }catch (Exception ex) {
-            log.error(FORECAST_AGENCY_QUERY_ERROR.getZhMsg(), ex);
-            throw new BusinessException(FORECAST_AGENCY_QUERY_ERROR);
-        }
+        Integer[] userIds = new Integer[userList.size()];
+        List<Forecast> result = forecastMapper.selectByLeader(userList.toArray(userIds), customerAbbreviation,
+                salePeople, uploadStartTime, uploadEndTime, ambPeople, sdPeople, agencyAbbreviation, channel);
+        return new PageInfo<>(result);
     }
 
     public PageInfo<Forecast> queryBiForecastData(Integer pageNum, Integer pageSize, Integer userId,
@@ -471,7 +468,7 @@ public class SaleForecastService {
                                                         String uploadStartTime, String uploadEndTime,
                                                         String agencyAbbreviation, String channel) {
         try {
-            List<Integer> userList = userCustomerMappingService.selectUserMapping(userId, Enums.CustomerMappingModel.Forecast.getValue());
+            List<Integer> userList = getAuthUsers(userId);
             Integer[] userIds = new Integer[userList.size()];
             PortalUtil.defaultStartPage(pageNum,pageSize);
             List<Forecast> result = forecastMapper.selectBiDataByLeader(userList.toArray(userIds), customerAbbreviation,
@@ -568,13 +565,7 @@ public class SaleForecastService {
             return;
         }
         //第二步：获取当前用户下的代理商
-        List<Integer> userList;
-        try {
-            userList = userCustomerMappingService.selectUserMapping(userId, Enums.CustomerMappingModel.Forecast.getValue());
-        }catch (Exception ex) {
-            log.error(FORECAST_AGENCY_QUERY_ERROR.getZhMsg(), ex);
-            throw new BusinessException(FORECAST_AGENCY_QUERY_ERROR);
-        }
+        List<Integer> userList = getAuthUsers(userId);
         //第三步：判定是否操作的当月全量代理商数据
         int dataTotalNum = forecastMapper.countDataNumByMonthAndUserByInsert(userList, monthList.get(0));
         BusinessUtil.assertTrue(dataTotalNum == forecastIds.length, FORECAST_DATA_TOTAL_CHECK_ERROR);
@@ -616,7 +607,7 @@ public class SaleForecastService {
 
     public void downloadMonthDataByAmb(HttpServletResponse response, String yearMonth, Integer userId) {
         BusinessUtil.assertEmpty(yearMonth, FORECAST_REQ_PARAM_NOT_EMPTY);
-        List<Integer> userList = userCustomerMappingService.selectUserMapping(userId, Enums.CustomerMappingModel.Forecast.getValue());
+        List<Integer> userList = getAuthUsers(userId);
         if(userList == null || userList.isEmpty()){
             List<Forecast> forecastList = new ArrayList<>();
             downloadDataByAmb(response, forecastList);
@@ -761,13 +752,7 @@ public class SaleForecastService {
             throw new BusinessException(FORECAST_CHECK_IDENTICAL_MONTH_ERROR);
         }
         //第二步：获取当前用户下的代理商
-        List<Integer> userList;
-        try {
-            userList = userCustomerMappingService.selectUserMapping(userId, Enums.CustomerMappingModel.Forecast.getValue());
-        }catch (Exception ex) {
-            log.error(FORECAST_AGENCY_QUERY_ERROR.getZhMsg(), ex);
-            throw new BusinessException(FORECAST_AGENCY_QUERY_ERROR);
-        }
+        List<Integer> userList = getAuthUsers(userId);
         //第三步：判定是否操作的当月全量代理商数据
         int dataTotalNum = forecastMapper.countDataNumByMonthAndUser(userList, monthList.get(0));
         BusinessUtil.assertTrue(dataTotalNum == forecastIds.length, FORECAST_DATA_TOTAL_CHECK_ERROR);
@@ -1403,6 +1388,22 @@ public class SaleForecastService {
             return gapValue;
         }
         return gapValue;
+    }
+
+    private List<Integer> getAuthUsers(Integer userId) {
+        try {
+            List<CustomerInfo> customerInfos = internalUserService.getSalesCustomer(userId);
+            List<Integer> userList;
+            if(null == customerInfos){
+                userList = userCustomerMappingService.selectUserMapping(userId, Enums.CustomerMappingModel.Forecast.getValue());
+            }else {
+                userList = customerInfos.stream().map(CustomerInfo::getId).collect(Collectors.toList());
+            }
+            return userList;
+        }catch (Exception ex) {
+            log.error(FORECAST_AGENCY_QUERY_ERROR.getZhMsg(), ex);
+            throw new BusinessException(FORECAST_AGENCY_QUERY_ERROR);
+        }
     }
 
     class BiResponse {
