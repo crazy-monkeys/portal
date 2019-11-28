@@ -81,15 +81,20 @@ public class RebateService {
      * @param bean
      * @return
      */
+    @SuppressWarnings("all")
     public PageInfo<BusinessRebateItem> items(RebateQueryBean bean, User user){
-        if(user.getUserType().equals(Enums.USER_TYPE.internal.toString())){
+        if (user.getUserType().equals(Enums.USER_TYPE.internal.toString())){
+            //内部客户
             bean.setUserType(Enums.USER_TYPE.internal.toString());
             List<CustomerInfo> salesCustomer = internalUserService.getSalesCustomer(user.getId());
+            salesCustomer = new ArrayList<>();
             if(null != salesCustomer){
+                //销售
                 bean.setUserType(Enums.USER_TYPE.sales.toString());
                 bean.setCustomerInfos(salesCustomer);
             }
         } else {
+            //代理商 | 子代理商
             bean.setDealerId(user.getDealerId());
         }
         PortalUtil.defaultStartPage(bean.getPageIndex(), bean.getPageSize());

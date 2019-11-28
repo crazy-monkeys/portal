@@ -285,9 +285,14 @@
       )
     </if>
     <if test="userType == 'sales' and customerInfos != null">
-      <foreach collection="customerInfos" item="item" index="index" open="and executor in (" separator="," close=")">
-        #{item.custName,jdbcType=VARCHAR}
-      </foreach>
+      <if test="customerInfos.size() > 0">
+        <foreach collection="customerInfos" item="item" index="index" open="and customer_short_name in (" separator="," close=")">
+          #{item.custAbbreviation,jdbcType=VARCHAR}
+        </foreach>
+      </if>
+      <if test="customerInfos.size() == 0">
+        and customer_short_name = 'NOT_FOUND'
+      </if>
     </if>
     <if test="customerName != null and customerName != ''">
       and customer_short_name like concat('%',#{customerName,jdbcType=VARCHAR},'%')
