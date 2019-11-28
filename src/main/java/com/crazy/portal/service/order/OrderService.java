@@ -67,7 +67,13 @@ public class OrderService extends CommonOrderService {
      * @param vo
      * @return
      */
-    public PageInfo<DeliverOrder> deliveryOrderList(DeliveryOrderQueryVO vo){
+    public PageInfo<DeliverOrder> deliveryOrderList(DeliveryOrderQueryVO vo, User user){
+        if(user.getUserType().equals(Enums.USER_TYPE.agent.toString())){
+            vo.setDealerId(user.getDealerId());
+        }else{
+            //内部人员查询 限制销售只能查询自己管理的客户的提货单
+
+        }
         PageHelper.startPage(vo.getPageIndex(), vo.getPageSize());
         List<DeliverOrder> list = deliverOrderMapper.selectList(vo);
         return new PageInfo<>(list);

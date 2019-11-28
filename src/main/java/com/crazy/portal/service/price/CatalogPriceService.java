@@ -4,8 +4,10 @@ import com.alibaba.fastjson.JSON;
 import com.crazy.portal.bean.price.BICatalogPrice;
 import com.crazy.portal.bean.price.CatalogPriceVO;
 import com.crazy.portal.dao.price.CatalogPriceMapper;
+import com.crazy.portal.entity.cusotmer.CustomerInfo;
 import com.crazy.portal.entity.price.CatalogPrice;
 import com.crazy.portal.entity.system.User;
+import com.crazy.portal.service.system.InternalUserService;
 import com.crazy.portal.util.CallApiUtils;
 import com.crazy.portal.util.Enums;
 import com.crazy.portal.util.HttpClientUtils;
@@ -35,6 +37,8 @@ public class CatalogPriceService {
 
     @Resource
     private CatalogPriceMapper catalogPriceMapper;
+    @Resource
+    private InternalUserService internalUserService;
 
     /**
      * 分页查询目录价
@@ -42,14 +46,19 @@ public class CatalogPriceService {
      * @return
      */
     public PageInfo<CatalogPrice> findCatalogPricesWithPage(CatalogPriceVO catalogPriceVO, User user){
-        PortalUtil.defaultStartPage(catalogPriceVO.getPageIndex(), catalogPriceVO.getPageSize());
         catalogPriceVO.setCreateId(user.getId());
         catalogPriceVO.setProposer(user.getLoginName());
         if(user.getUserType().equals(Enums.USER_TYPE.internal.toString())){
             catalogPriceVO.setUserType(Enums.USER_TYPE.internal.toString());
+            List<CustomerInfo> salesCustomer = internalUserService.getSalesCustomer(user.getId());
+            if(null != salesCustomer){
+                catalogPriceVO.setUserType(Enums.USER_TYPE.sales.toString());
+                catalogPriceVO.setCustomerInfos(salesCustomer);
+            }
         }else{
             catalogPriceVO.setDealerId(user.getDealerId());
         }
+        PortalUtil.defaultStartPage(catalogPriceVO.getPageIndex(), catalogPriceVO.getPageSize());
         Page<CatalogPrice> catalogPrices = catalogPriceMapper.selectByParamsWithPage(catalogPriceVO);
         return new PageInfo<>(catalogPrices);
     }

@@ -51,31 +51,31 @@ public class VisitCreateBean {
     private String endDateTime;
 
     //会谈内容简介
-    @XmlElement(name = "y4r:Z_MEETING_CONTENT")
+    @XmlElement(name = "yor:Z_MEETING_CONTENT")
     private String zMeetingContent;
 
     //后续行动计划
-    @XmlElement(name = "y4r:Z_FOLLOW_UP_PLANS")
+    @XmlElement(name = "yor:Z_FOLLOW_UP_PLANS")
     private String zFollowUpPlans;
 
     //诉求描述
-    @XmlElement(name = "y4r:Z_REQUIREMENT_DESCRIPTION")
+    @XmlElement(name = "yor:Z_REQUIREMENT_DESCRIPTION")
     private String zRequirementDescription;
 
     //zr  参与人
-    @XmlElement(name = "y4r:Z_ATTENDEES")
+    @XmlElement(name = "yor:Z_ATTENDEES")
     private String attendees;
 
     //代理参与人
-    @XmlElement(name = "y4r:Z_AGENT_ATTENDEE")
+    @XmlElement(name = "yor:Z_AGENT_ATTENDEE")
     private String dAttendees;
 
     //客户参与人
-    @XmlElement(name = "y4r:Z_ACCOUNT_ATTENDEE")
+    @XmlElement(name = "yor:Z_ACCOUNT_ATTENDEE")
     private String kAttendees;
 
     //地址
-    @XmlElement(name = "y4r:Z_ADDRESS")
+    @XmlElement(name = "yor:Z_ADDRESS")
     private String address;
 
     @XmlElement(name = "OrganizerParty")
@@ -88,14 +88,14 @@ public class VisitCreateBean {
     private OtherPartyBean otherPartyBean;
 
     //项目状态
-    @XmlElement(name = "y4r:Z_PROJECT_STATUS")
+    @XmlElement(name = "yor:Z_PROJECT_STATUS")
     private String ProjectStatus;
 
     //项目状态
-    @XmlElement(name = "y4r:Z_PROJECT_BU")
+    @XmlElement(name = "yor:Z_PROJECT_BU")
     private String ProjectBU;
 
     //项目状态
-    @XmlElement(name = "y4r:Z_VISIT_COUNT")
+    @XmlElement(name = "yor:Z_VISIT_COUNT")
     private String VisitCount;
 }

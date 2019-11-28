@@ -116,7 +116,7 @@ public class Enums {
      * internal.内部用户(展锐)
      */
     public enum USER_TYPE{
-        agent,subAgent,internal
+        agent,subAgent,internal,sales
     }
 
     /**

@@ -64,7 +64,7 @@ public class CommonOrderService {
     }
 
     /**
-     * 检查行类是否重复-----物料+平台确认唯一
+     * 检查行类是否重复-----物料+平台+客户确认唯一
      * @param lines
      * @return
      */
@@ -77,7 +77,8 @@ public class CommonOrderService {
                 OrderLine orderLine = y.get(0);
                 String msg = String.format(ErrorCodes.BusinessEnum.ORDER_NO_REPETITION.getZhMsg(),
                         orderLine.getProductId(),
-                        orderLine.getPlatform());
+                        orderLine.getPlatform(),
+                        orderLine.getCustAbbreviation());
 
                 throw new BusinessException(ErrorCodes.BusinessEnum.ORDER_NO_REPETITION.getCode(),msg);
             }
@@ -86,6 +87,6 @@ public class CommonOrderService {
 
 
     private String featchGroupBy(OrderLine orderLine){
-        return orderLine.getProductId() + orderLine.getPlatform();
+        return orderLine.getProductId() + orderLine.getPlatform()+orderLine.getCustAbbreviation();
     }
 }

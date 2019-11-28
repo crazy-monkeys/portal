@@ -954,13 +954,12 @@ public class CustomerInfoService {
 
     public void test(){
         List<VisitRecord> records = visitRecordMapper.selectAll();
-        records.forEach(e->{
+        for(VisitRecord e : records){
             CustomerInfo customerInfo = customerInfoMapper.selectByPrimaryKey(e.getCreateUserId());
             VisitCreate create = getVisitsRequest(e, customerInfo.getInCode());
-            log.info("手动同步拜访记录,Request"+JSON.toJSONString(create));
             AppointmentActivityMaintainConfirmationBundleMessageSyncV1 response = CallApiUtils.callC4cVisits(create);
             log.info("手动同步拜访记录"+JSON.toJSONString(response));
-        });
+        }
     }
 
     private VisitCreate getVisitsRequest(VisitRecord visitRecord, String c4cId){

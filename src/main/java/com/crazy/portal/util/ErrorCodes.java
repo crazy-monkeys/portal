@@ -76,7 +76,7 @@ public class ErrorCodes {
 
         SYS_PARAM_VALUE(10048,"该选项下Code已存在",""),
         SYS_BEAN_ERROR(10049,"对象映射异常",""),
-        SYS_IN_USER_ERROR(10050,"没有对应的内部员工信息",""),
+        SYS_IN_USER_ERROR(10050,"员工信息缺失，请联系管理员维护",""),
 
         VERIFY_CODE_ERROR(10051, "验证码错误", "")
         ;
@@ -303,7 +303,7 @@ public class ErrorCodes {
         ORDER_INVALID_CUSTABBREVIATION(900027,"附件行: 客户不存在",""),
         ORDER_NO_MAPPING_CUST(900028,"附件行: 物料[%s]、客户[%s]未匹配出价格信息",""),
         DELIVERY_ORDER_IS_RECEVE(900029,"已收货的提货单不允许做变更",""),
-        ORDER_NO_REPETITION(900030,"附件行: 物料[%s]、平台[%s]已经存在,不允许重复导入",""),
+        ORDER_NO_REPETITION(900030,"附件行: 物料[%s]、平台[%s]、客户[%s]已经存在,不允许重复导入",""),
 
         //文档管理
         ARCHIVE_FILE_NOT_EMPTY(100001, "请选择需要上传的文件", ""),

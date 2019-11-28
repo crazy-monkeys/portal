@@ -181,10 +181,9 @@
   </update>
 
   <select id="selectByUserId" resultMap="InUserResultMap">
-    select * from t_internal_user  iu
-    inner join t_user u on iu.user_mail = u.customer_name
-    inner join t_organizational_structure os on os.seq = iu.user_department_code
-    where iu.active =1 and u.active =1 and os.active=1 and u.id=#{userId,jdbcType=INTEGER}
+    select * from t_internal_user where user_mail = (
+      select CONCAt(login_name,'@unisoc.com') from t_user where id=#{userId,jdbcType=INTEGER}
+    )
   </select>
 
   <select id="selectByUserNo" resultMap="BaseResultMap">

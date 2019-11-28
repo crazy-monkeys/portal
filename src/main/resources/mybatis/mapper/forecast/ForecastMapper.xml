@@ -764,7 +764,7 @@
     and platform = #{platform,jdbcType=VARCHAR}
     and product_model = #{productModel,jdbcType=VARCHAR}
     and status in (1,2,3,4)
-    and create_user_id = #{createUserId,jdbcType=INTEGER}
+
   </select>
 
   <select id="selectLastValue" parameterType="com.crazy.portal.entity.forecast.Forecast" resultMap="fullFieldMap" >

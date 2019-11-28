@@ -1,7 +1,10 @@
 package com.crazy.portal.bean.price;
 
 import com.crazy.portal.bean.common.PageBean;
+import com.crazy.portal.entity.cusotmer.CustomerInfo;
 import lombok.Data;
+
+import java.util.List;
 
 /**
  * @Desc:
@@ -39,5 +42,9 @@ public class CatalogPriceVO extends PageBean {
     private String userType;
     private String proposer;
     private Integer dealerId;
+    /**
+     * 销售负责的客户
+     */
+    private List<CustomerInfo> customerInfos;
 
 }

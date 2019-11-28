@@ -857,4 +857,10 @@
     approve_status =3 and active=1 and out_code is not null and cust_name = #{custName,jdbcType=VARCHAR}
     limit 1
   </select>
+
+  <select id="selectByEmp" resultMap="BaseResultMap">
+    select a.* from t_customer_info a
+    inner join cust_zr_account_team b on a.id = b.cust_id
+    where b.role_type='142' and b.employee_id=#{employeeId,jdbcType=VARCHAR}
+  </select>
 </mapper>

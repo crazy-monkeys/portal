@@ -25,8 +25,8 @@ public class VisitCreate {
     @XmlAttribute(name="xmlns:glob")
     private String glob = "http://sap.com/xi/SAPGlobal20/Global";
 
-    @XmlAttribute(name="xmlns:y4r")
-    private String y4r = "http://0003111061-one-off.sap.com/Y4R4GVT9Y_";
+    @XmlAttribute(name="xmlns:yor")
+    private String y4r = "http://0003111061-one-off.sap.com/YOR53ZA0Y_";
 
     @XmlElement(name="soap:Body")
     private VisitCreateBody body;

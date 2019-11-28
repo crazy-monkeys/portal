@@ -200,6 +200,7 @@ public class CallApiUtils {
         String url = String.format("%s%s", ECC_API_URL, C4C_Visits);
         try {
             String requestXml = JaxbXmlUtil.convertToXml(create).replace("</StartDateTime timeZoneCode=\"CET\">", "</StartDateTime>").replace("</EndDateTime timeZoneCode=\"CET\">", "</EndDateTime>");
+            log.info("拜访记录上传 Request"+requestXml);
             String response = HttpClientUtils.post(url, requestXml);
             return JaxbXmlUtil.convertSoapXmlToJavaBean2(response, AppointmentActivityMaintainConfirmationBundleMessageSyncV1.class);
         } catch (Exception e) {

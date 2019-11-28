@@ -1,6 +1,7 @@
 package com.crazy.portal.dao.cusotmer;
 
 import com.crazy.portal.bean.customer.CustomerQueryBean;
+import com.crazy.portal.entity.cusotmer.CustZrAccountTeam;
 import com.crazy.portal.entity.cusotmer.CustomerInfo;
 import org.apache.ibatis.annotations.Param;
 
@@ -65,4 +66,6 @@ public interface CustomerInfoMapper {
     List<CustomerInfo> getDealerInCustomer(Integer dealerId);
 
     List<CustomerInfo> selectAllINCustomer();
+
+    List<CustomerInfo> selectByEmp(@Param("employeeId") String employeeId);
 }
