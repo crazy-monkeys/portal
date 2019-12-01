@@ -167,14 +167,15 @@ public class HandoverService {
 
     private List<Integer> getAuthUsers(Integer userId) {
         try {
-            List<CustomerInfo> customerInfos = internalUserService.getSalesCustomer(userId);
+            /*List<CustomerInfo> customerInfos = internalUserService.getSalesCustomer(userId);
             List<Integer> userList;
             if(null == customerInfos){
                 userList = userCustomerMappingService.selectUserMapping(userId, Enums.CustomerMappingModel.Forecast.getValue());
             }else {
                 userList = customerInfos.stream().map(CustomerInfo::getId).collect(Collectors.toList());
             }
-            return userList;
+            return userList;*/
+            return userCustomerMappingService.selectUserMapping(userId, Enums.CustomerMappingModel.Forecast.getValue());
         }catch (Exception ex) {
             log.error(FORECAST_AGENCY_QUERY_ERROR.getZhMsg(), ex);
             throw new BusinessException(FORECAST_AGENCY_QUERY_ERROR);
