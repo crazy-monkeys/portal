@@ -1,5 +1,6 @@
 package com.crazy.portal.bean.business.idr;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,6 +17,7 @@ import java.math.BigDecimal;
 @Setter
 public class IdrUploadBean {
 
+    @JSONField(serialize = false)
     private MultipartFile file;
     /** 保差退ID **/
     private Integer id;
