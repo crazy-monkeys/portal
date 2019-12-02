@@ -212,6 +212,9 @@
       <if test="type != null">
         type = #{type,jdbcType=VARCHAR},
       </if>
+      <if test="lifeCycle != null">
+        life_cycle = #{lifeCycle,jdbcType=VARCHAR},
+      </if>
       <if test="proStatus != null">
         pro_status = #{proStatus,jdbcType=INTEGER},
       </if>

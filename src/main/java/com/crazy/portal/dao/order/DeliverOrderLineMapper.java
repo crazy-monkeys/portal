@@ -30,4 +30,6 @@ public interface DeliverOrderLineMapper {
     int updateReciverNumber();
 
     int deleteReciveryNumber();
+
+    List<DeliverOrderLine> selectAll();
 }

@@ -6,6 +6,7 @@ import com.crazy.portal.bean.customer.basic.CustFileUploadVO;
 import com.crazy.portal.bean.customer.basic.UploadFileVO;
 import com.crazy.portal.controller.BaseController;
 import com.crazy.portal.dao.system.InternalUserMapper;
+import com.crazy.portal.dao.system.UserMapper;
 import com.crazy.portal.service.customer.CustomerInfoService;
 import com.crazy.portal.service.group.SalesGroupService;
 import com.crazy.portal.service.system.SysParamService;
@@ -33,6 +34,8 @@ public class SysController extends BaseController {
     private SalesGroupService salesGroupService;
     @Resource
     private InternalUserMapper internalUserMapper;
+    @Resource
+    private UserMapper userMapper;
 
     @GetMapping("/customer/all")
     public BaseResponse getAllCustomer(){
@@ -85,12 +88,12 @@ public class SysController extends BaseController {
     }
 
     /**
-     * 获取代理商
+     * 获取所有登陆账号信息
      * @return
      */
-    @GetMapping("/dealer/list")
+    @GetMapping("/user/list")
     public BaseResponse getDealerList(){
-        return successResult(customerInfoService.getDealerList());
+        return successResult(userMapper.selectAll());
     }
 
     /**

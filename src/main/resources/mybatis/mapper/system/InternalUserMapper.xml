@@ -181,8 +181,8 @@
   </update>
 
   <select id="selectByUserId" resultMap="InUserResultMap">
-    select * from t_internal_user where user_mail = (
-      select CONCAt(login_name,'@unisoc.com') from t_user where id=#{userId,jdbcType=INTEGER}
+    select * from t_internal_user where LOWER(user_mail) = (
+      select LOWER(CONCAt(login_name,'@unisoc.com')) from t_user where id=#{userId,jdbcType=INTEGER}
     )
   </select>
 

@@ -279,7 +279,7 @@
     <if test="createStartDate!=null and createEndDate!='' and (createStartDate == null or createEndDate == '')">
       and create_time > #{createStartDate,jdbcType=VARCHAR}
     </if>
-    <foreach collection="userIds" item="item" index="index" open="and a.create_user_id in (" separator="," close=")" >
+    <foreach collection="userIds" item="item" index="index" open="and create_user_id in (" separator="," close=")" >
       #{item,jdbcType=INTEGER}
     </foreach>
   </select>

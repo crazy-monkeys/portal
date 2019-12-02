@@ -247,4 +247,8 @@
     </where>
     order by reg_time
   </select>
+
+  <select id="selectAll" resultMap="BaseResultMap">
+    select * from t_user
+  </select>
 </mapper>

@@ -809,4 +809,16 @@ public class OrderApplyService extends CommonOrderService{
         });
 
     }
+
+    public void receiveServiceTest(){
+        List<ReceiveDetail> receiveData = new ArrayList<>();
+        List<DeliverOrderLine> lines = deliverOrderLineMapper.selectAll();
+        lines.forEach(e->{
+            DeliverOrder deliverOrder = deliverOrderMapper.selectByPrimaryKey(e.getDeliverOrderId());
+            Order order = orderMapper.selectByPrimaryKey(deliverOrder.getSalesOrderId());
+            CustomerInfo customerInfo = customerInfoMapper.selectByPrimaryKey(order.getDealerId());
+            receiveData.add(mappingRecive(e, e.getReceiveQuantity(), order, deliverOrder,customerInfo));
+        });
+        boolean flg = receiveService.pushReceiveDataToBi(receiveData, 228);
+    }
 }

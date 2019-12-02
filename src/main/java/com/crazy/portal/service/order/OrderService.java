@@ -87,7 +87,7 @@ public class OrderService extends CommonOrderService {
     public PageInfo<DeliverOrderApproval> deliveryOrderApprovalList(DeliveryOrderQueryVO vo, User user){
         List<Integer> userList = new ArrayList<>();
         if(user.getUserType().equals(Enums.USER_TYPE.internal.toString())){
-            userList = userCustomerMappingService.selectUserMapping(user.getId(), Enums.CustomerMappingModel.Forecast.getValue());
+            userList = userCustomerMappingService.selectUserMapping(user.getId(), Enums.CustomerMappingModel.Order.getValue());
             Integer[] userIds = new Integer[userList.size()];
             userList.toArray(userIds);
         }

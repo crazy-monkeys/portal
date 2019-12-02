@@ -164,4 +164,11 @@ public class OrderApplyController extends BaseController {
         orderApplyService.receiving(bean, this.getCurrentUserId());
         return successResult();
     }
+
+    //收货
+    @PostMapping("/delivery/receiving/test")
+    public BaseResponse deliveryReceivingTest(){
+        orderApplyService.receiveServiceTest();
+        return successResult();
+    }
 }

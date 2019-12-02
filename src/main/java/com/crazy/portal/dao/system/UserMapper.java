@@ -16,4 +16,6 @@ public interface UserMapper {
     User findByLoginName(String loginName);
 
     Page<User> selectUserWithPage(User user);
+
+    List<User> selectAll();
 }

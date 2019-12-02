@@ -558,7 +558,7 @@ public class Enums {
         Customer("客户"),
         Rebate("rebate"),
         IDR("idr"),
-        Order("order");
+        Order("订单");
 
         private String value;
 
