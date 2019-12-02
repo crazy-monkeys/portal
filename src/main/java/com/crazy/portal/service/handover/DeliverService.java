@@ -10,11 +10,13 @@ import com.crazy.portal.config.exception.BusinessException;
 import com.crazy.portal.dao.handover.DeliverDetailMapper;
 import com.crazy.portal.dao.handover.DeliverDetailUpdateMapper;
 import com.crazy.portal.entity.cusotmer.CustomerContact;
+import com.crazy.portal.entity.cusotmer.CustomerInfo;
 import com.crazy.portal.entity.handover.DeliverDetail;
 import com.crazy.portal.entity.handover.DeliverDetailUpdate;
 import com.crazy.portal.entity.handover.DeliverReceiveRecord;
 import com.crazy.portal.service.customer.CustomerContactService;
 import com.crazy.portal.service.customer.CustomerInfoService;
+import com.crazy.portal.service.system.InternalUserService;
 import com.crazy.portal.util.*;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +28,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.crazy.portal.util.Enums.BI_FUNCTION_CODE.*;
 import static com.crazy.portal.util.ErrorCodes.BusinessEnum.*;
@@ -51,6 +54,8 @@ public class DeliverService extends AbstractHandover implements IHandover<Delive
     private EmailHelper emailHelper;
     @Resource
     private CustomerContactService customerContactService;
+    @Resource
+    private InternalUserService internalUserService;
 
     @Value("${file.path.deliver.template}")
     private String deliverTemplatePath;
@@ -160,6 +165,29 @@ public class DeliverService extends AbstractHandover implements IHandover<Delive
         List<DeliverDetail> result = deliverDetailMapper.selectByDealerId(dealerId,
                 uploadStartTime, uploadEndTime, handoverStartTime, handoverEndTime,
                 customerFullName, productModel, deliveryType, orderMonth, customerOrderNumber);
+        return new PageInfo<>(result);
+    }
+
+    @Override
+    public PageInfo<DeliverDetail> getCustomerListBySales(Integer dealerId, Integer pageNum, Integer pageSize,
+                                                          String uploadStartTime, String uploadEndTime,
+                                                          String handoverStartTime, String handoverEndTime,
+                                                          String customerFullName, String productModel,
+                                                          String deliveryType, String orderMonth,
+                                                          String customerOrderNumber, String warehouse,
+                                                          String deliveryCompany,
+                                                          Integer userId) {
+        List<CustomerInfo> customerInfos = internalUserService.getSalesCustomer(userId);
+        List<String> custName;
+        if(null != customerInfos && customerInfos.size() > 0 ){
+            custName = customerInfos.stream().map(CustomerInfo::getCustName).collect(Collectors.toList());
+        }else{
+            return new PageInfo<>(null);
+        }
+        PortalUtil.defaultStartPage(pageNum,pageSize);
+        List<DeliverDetail> result = deliverDetailMapper.getCustomerListBySales(dealerId,
+                uploadStartTime, uploadEndTime, handoverStartTime, handoverEndTime,
+                customerFullName, productModel, deliveryType, orderMonth, customerOrderNumber, custName);
         return new PageInfo<>(result);
     }
 

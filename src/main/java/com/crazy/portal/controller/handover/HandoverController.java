@@ -75,6 +75,19 @@ public class HandoverController extends BaseController {
                 warehouse, deliveryCompany));
     }
 
+    @GetMapping(value = "/handover/sales/customer/data")
+    public BaseResponse getCustomerListBySales(Integer dealerId, String type, Integer pageNum, Integer pageSize,
+                                      String uploadStartTime, String uploadEndTime,
+                                      String handoverStartTime, String handoverEndTime,
+                                      String customerFullName, String productModel, String deliveryType,
+                                      String orderMonth, String customerOrderNumber,
+                                      String warehouse, String deliveryCompany) {
+        return super.successResult(handoverServiceContext.getService(type).getCustomerListBySales(dealerId, pageNum, pageSize,
+                uploadStartTime, uploadEndTime, handoverStartTime, handoverEndTime,
+                customerFullName, productModel, deliveryType, orderMonth, customerOrderNumber,
+                warehouse, deliveryCompany, getCurrentUser().getId()));
+    }
+
     @GetMapping(value = "/handover/dealer/reject/download")
     public void downloadRejectData(Integer recordId, String type, HttpServletResponse response) {
         handoverServiceContext.getService(type).downloadRejectData(recordId, response);

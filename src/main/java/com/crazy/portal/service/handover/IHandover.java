@@ -28,6 +28,14 @@ public interface IHandover<T> {
                               String orderMonth, String customerOrderNumber,
                               String warehouse, String deliveryCompany);
 
+    PageInfo<T> getCustomerListBySales(Integer dealerId, Integer pageNum, Integer pageSize,
+                              String uploadStartTime, String uploadEndTime,
+                              String handoverStartTime, String handoverEndTime,
+                              String customerFullName, String productModel, String deliveryType,
+                              String orderMonth, String customerOrderNumber,
+                              String warehouse, String deliveryCompany,
+                                       Integer userId);
+
     void downloadRejectData(Integer recordId, HttpServletResponse response);
 
     PageInfo<T> getDetailInfo(Integer recordId, Integer pageNum, Integer pageSize);

@@ -258,4 +258,24 @@ public class SaleForecastController extends BaseController {
         return super.successResult(saleForecastService.queryForecastDataBySd(pageNum, pageSize));
     }
 
+    /**
+     * 销售查询客户预测数据
+     * @param pageNum
+     * @param pageSize
+     * @param customerAbbreviation
+     * @param agencyAbbreviation
+     * @param salePeople
+     * @param uploadStartTime
+     * @param uploadEndTime
+     * @param channel
+     * @return
+     */
+    @GetMapping(value = "/forecast/sales/customer/data")
+    public BaseResponse queryCustomerForecastDataBySales(Integer pageNum, Integer pageSize,
+                                          String customerAbbreviation, String agencyAbbreviation, String salePeople,
+                                          String uploadStartTime, String uploadEndTime, String channel) {
+        return super.successResult(saleForecastService.queryCustomerForecastDataBySales(pageNum, pageSize, getCurrentUser().getId(),
+                customerAbbreviation, salePeople, uploadStartTime, uploadEndTime, agencyAbbreviation, channel));
+    }
+
 }

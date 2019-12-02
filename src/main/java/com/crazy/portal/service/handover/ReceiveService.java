@@ -183,6 +183,11 @@ public class ReceiveService extends AbstractHandover implements IHandover<Receiv
     }
 
     @Override
+    public PageInfo<ReceiveDetail> getCustomerListBySales(Integer dealerId, Integer pageNum, Integer pageSize, String uploadStartTime, String uploadEndTime, String handoverStartTime, String handoverEndTime, String customerFullName, String productModel, String deliveryType, String orderMonth, String customerOrderNumber, String warehouse, String deliveryCompany, Integer userId) {
+        return new PageInfo<>(null);
+    }
+
+    @Override
     public void downloadRejectData(Integer recordId, HttpServletResponse response) {
         List<ReceiveDetail> result = receiveDetailMapper.selectByRecordId(recordId);
         String fileName = ExcelUtils.writeExcel(receiveLocalPath, result, ReceiveDetail.class);
