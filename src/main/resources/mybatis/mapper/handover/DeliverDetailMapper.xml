@@ -376,8 +376,10 @@
   <select id="getCustomerListBySales" resultMap="BaseResultMap" >
     select b.* from t_deliver_receive_record a
     inner join t_deliver_detail b on a.id = b.record_id
-    where a.dealer_id = #{dealerId,jdbcType=INTEGER}
-    and a.status != 0 and customer_full_name is not null
+    where a.status != 0 and customer_full_name is not null
+    <if test="dealerId != null">
+        and a.dealer_id = #{dealerId,jdbcType=INTEGER}
+    </if>
     <if test="uploadStartTime != null and uploadStartTime != '' and uploadEndTime != null and uploadEndTime != ''" >
       and a.upload_time between #{uploadStartTime,jdbcType=VARCHAR} and #{uploadEndTime,jdbcType=VARCHAR}
     </if>
