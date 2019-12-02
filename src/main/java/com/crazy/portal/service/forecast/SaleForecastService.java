@@ -480,6 +480,33 @@ public class SaleForecastService {
         }
     }
 
+    public PageInfo<Forecast> queryCustomerForecastDataBySales(Integer pageNum, Integer pageSize, Integer userId,
+                                                  String customerAbbreviation, String salePeople,
+                                                  String uploadStartTime, String uploadEndTime,
+                                                  String agencyAbbreviation, String channel) {
+        List<String> custNameList;
+        try {
+            List<CustomerInfo> customerInfos = internalUserService.getSalesCustomer(userId);
+            if(null != customerInfos && customerInfos.size() > 0){
+                custNameList = customerInfos.stream().map(CustomerInfo::getCustAbbreviation).collect(Collectors.toList());
+            }else{
+                return new PageInfo<>(null);
+            }
+        }catch (Exception ex) {
+            log.error(FORECAST_AGENCY_QUERY_ERROR.getZhMsg(), ex);
+            throw new BusinessException(FORECAST_AGENCY_QUERY_ERROR);
+        }
+        try {
+            PortalUtil.defaultStartPage(pageNum,pageSize);
+            List<Forecast> result = forecastMapper.selectBiDataBySales(custNameList, customerAbbreviation,
+                    salePeople, uploadStartTime, uploadEndTime, agencyAbbreviation, channel);
+            return new PageInfo<>(result);
+        }catch (Exception ex) {
+            log.error(FORECAST_AGENCY_QUERY_ERROR.getZhMsg(), ex);
+            throw new BusinessException(FORECAST_AGENCY_QUERY_ERROR);
+        }
+    }
+
     /**
      * 首代的展示方式查询代理商预测数据
      * @param pageNum
