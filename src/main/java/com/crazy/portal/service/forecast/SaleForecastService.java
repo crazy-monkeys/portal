@@ -1,5 +1,6 @@
 package com.crazy.portal.service.forecast;
 
+import com.alibaba.druid.wall.violation.ErrorCode;
 import com.alibaba.fastjson.JSONObject;
 import com.crazy.portal.bean.customer.CustomerOrgBean;
 import com.crazy.portal.bean.forecast.*;
@@ -911,6 +912,8 @@ public class SaleForecastService {
         }
         if(result.isSuccess()){
             forecastMapper.updateStatusByIds(forecastIds, 2, passMsg);
+        }else{
+            BusinessUtil.assertFlase(!result.isSuccess(), ErrorCodes.BusinessEnum.FORECAST_SD_DATA_COMMIT_ERROR);
         }
     }
 
