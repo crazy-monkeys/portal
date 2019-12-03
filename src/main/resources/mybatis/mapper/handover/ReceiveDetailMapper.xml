@@ -307,6 +307,44 @@
     order by a.create_time desc
   </select>
 
+  <select id="selectCustomerListBySales" resultMap="BaseResultMap" >
+    select b.* from t_deliver_receive_record a
+    inner join t_receive_detail b on a.id = b.record_id
+    where a.dealer_id = #{dealerId,jdbcType=INTEGER}
+    <if test="uploadStartTime != null and uploadStartTime != '' and uploadEndTime != null and uploadEndTime != ''" >
+      and a.upload_time between #{uploadStartTime,jdbcType=VARCHAR} and #{uploadEndTime,jdbcType=VARCHAR}
+    </if>
+    <if test="uploadStartTime != null and uploadStartTime != '' and (uploadEndTime == null or uploadEndTime == '')" >
+      and a.upload_time >= #{uploadStartTime,jdbcType=VARCHAR}
+    </if>
+    <if test="(uploadStartTime == null or uploadStartTime == '') and uploadEndTime != null and uploadEndTime != ''" >
+      <![CDATA[ and a.upload_time <= #{uploadEndTime,jdbcType=VARCHAR} ]]>
+    </if>
+    <!-- 配送时间条件 -->
+    <if test="handoverStartTime != null and handoverStartTime != '' and handoverEndTime != null and handoverEndTime != ''" >
+      and b.delivery_time between #{handoverStartTime,jdbcType=VARCHAR} and #{handoverEndTime,jdbcType=VARCHAR}
+    </if>
+    <if test="handoverStartTime != null and handoverStartTime != '' and (handoverEndTime == null or handoverEndTime == '')" >
+      and b.delivery_time >= #{handoverStartTime,jdbcType=VARCHAR}
+    </if>
+    <if test="(handoverStartTime == null or handoverStartTime == '') and handoverEndTime != null and handoverEndTime != ''" >
+      <![CDATA[ and b.delivery_time <= #{handoverEndTime,jdbcType=VARCHAR} ]]>
+    </if>
+    <if test="productModel != null and productModel != ''" >
+      and b.product_model like concat('%', #{productModel,jdbcType=VARCHAR}, '%')
+    </if>
+    <if test="warehouse != null and warehouse != ''" >
+      and b.warehouse like concat('%', #{warehouse,jdbcType=VARCHAR}, '%')
+    </if>
+    <if test="deliveryCompany != null and deliveryCompany != ''" >
+      and b.delivery_company like concat('%', #{deliveryCompany,jdbcType=VARCHAR}, '%')
+    </if>
+<!--    <foreach collection="custName" item="item" index="index" open=" and b.customer_full_name in (" separator="," close=")" >-->
+<!--      #{item, jdbcType=VARCHAR}-->
+<!--    </foreach>-->
+    order by a.create_time desc
+  </select>
+
   <select id="countErrorData" resultType="java.lang.Integer" >
     select count(1) from t_receive_detail
     where record_id = #{recordId,jdbcType=INTEGER} and error_msg is not null

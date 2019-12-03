@@ -30,6 +30,16 @@ public interface ReceiveDetailMapper {
                                          @Param(value = "warehouse") String warehouse,
                                          @Param(value = "deliveryCompany") String deliveryCompany);
 
+    List<ReceiveDetail> selectCustomerListBySales(@Param(value = "dealerId") Integer dealerId,
+                                         @Param(value = "uploadStartTime") String uploadStartTime,
+                                         @Param(value = "uploadEndTime") String uploadEndTime,
+                                         @Param(value = "handoverStartTime") String handoverStartTime,
+                                         @Param(value = "handoverEndTime") String handoverEndTime,
+                                         @Param(value = "productModel") String productModel,
+                                         @Param(value = "warehouse") String warehouse,
+                                         @Param(value = "deliveryCompany") String deliveryCompany,
+                                                  @Param(value = "custName") List<String> custName);
+
     List<ReceiveTemplateBean> selectErrorDataByRecord(@Param(value = "recordId") Integer recordId);
 
     int countErrorData(@Param(value = "recordId") Integer recordId);
