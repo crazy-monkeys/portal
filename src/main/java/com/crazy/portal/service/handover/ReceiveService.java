@@ -206,7 +206,7 @@ public class ReceiveService extends AbstractHandover implements IHandover<Receiv
                 uploadStartTime, uploadEndTime, handoverStartTime, handoverEndTime,
                 productModel, warehouse, deliveryCompany, custName);
         return new PageInfo<>(result);*/
-        return new PageInfo<>(null);
+        return new PageInfo<>(Collections.emptyList());
     }
 
     @Override

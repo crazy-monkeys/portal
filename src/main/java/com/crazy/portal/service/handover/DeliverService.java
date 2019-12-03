@@ -182,7 +182,7 @@ public class DeliverService extends AbstractHandover implements IHandover<Delive
         if(null != customerInfos && customerInfos.size() > 0 ){
             custName = customerInfos.stream().map(CustomerInfo::getCustName).collect(Collectors.toList());
         }else{
-            return new PageInfo<>(null);
+            return new PageInfo<>(Collections.emptyList());
         }
         PortalUtil.defaultStartPage(pageNum,pageSize);
         List<DeliverDetail> result = deliverDetailMapper.getCustomerListBySales(dealerId,
