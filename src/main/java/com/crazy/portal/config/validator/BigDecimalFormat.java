@@ -11,7 +11,7 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
 /**
- * @Description: TODO
+ * @Description: BigDecimal格式转换
  * @Author Shawn
  * @Date 2019-12-03 16:10
  * @Modify by
@@ -30,10 +30,10 @@ public class BigDecimalFormat extends BigDecimalCodec {
                 return;
             }
             DecimalFormat decimalFormat = new DecimalFormat("#0.00000");
-            NumberFormat nf = NumberFormat.getInstance();
-            out.write(nf.parse(decimalFormat.format(object)).toString());
+            NumberFormat numberFormat = NumberFormat.getInstance();
+            out.write(numberFormat.parse(decimalFormat.format(object)).toString());
         }catch (Exception e){
-            log.error("数字转换异常", e);
+            log.error("BigDecimal转换异常", e);
         }
     }
 }
