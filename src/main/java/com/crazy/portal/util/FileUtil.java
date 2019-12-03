@@ -140,12 +140,18 @@ public class FileUtil {
         if(StringUtils.isEmpty(fileName)){
             return null;
         }
-        String[] array = fileName.split("\\.");
+        int index = fileName.lastIndexOf(".");
+        String perfix = fileName;
+        String subfix = null;
+        if(index != -1){
+            perfix = fileName.substring(0, index);
+            subfix = fileName.substring(index + 1, fileName.length());
+        }
         long currentTime = System.currentTimeMillis();
-        if(array.length == 1){
-            return String.format("%s_%s", array[0], currentTime);
+        if(subfix == null){
+            return String.format("%s_%s", perfix, currentTime);
         }else{
-            return String.format("%s_%s.%s", array[0], currentTime, array[1]);
+            return String.format("%s_%s.%s", perfix, currentTime, subfix);
         }
     }
 
@@ -156,5 +162,4 @@ public class FileUtil {
         fileVO.setFullPath(fullPath);
         result.add(fileVO);
     }
-
 }
