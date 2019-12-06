@@ -31,9 +31,9 @@ public class AddressInformation {
     @XmlElement(name = "Address")
     private Address address;
 
-    @XmlElement(name = "y4r:AddressType")
+    @XmlElement(name = "yor:AddressType")
     private String addressType;
 
-    @XmlElement(name = "y4r:AddressContact")
+    @XmlElement(name = "yor:AddressContact")
     private String addressContact;
 }

@@ -86,7 +86,7 @@ public class OrderApplyService extends CommonOrderService{
     public PageInfo<OrderApply> list(OrderQueryBean bean, User user){
         List<Integer> userList = new ArrayList<>();
         if(user.getUserType().equals(Enums.USER_TYPE.internal.toString())){
-            userList = userCustomerMappingService.selectUserMapping(user.getId(), Enums.CustomerMappingModel.Forecast.getValue());
+            userList = userCustomerMappingService.selectUserMapping(user.getId(), Enums.CustomerMappingModel.Order.getValue());
             Integer[] userIds = new Integer[userList.size()];
             userList.toArray(userIds);
         }
@@ -579,6 +579,9 @@ public class OrderApplyService extends CommonOrderService{
         }
         boolean result = this.hasApprovalPendingOrder(order.getRSapOrderId());
         BusinessUtil.assertFlase(result, ErrorCodes.BusinessEnum.ORDER_PENDING_ORDER);
+
+        List str = Arrays.asList("7100","4800","3000","3001");
+        BusinessUtil.assertFlase(null == bean.getShippingPoint() || !str.contains(bean.getShippingPoint()), ErrorCodes.BusinessEnum.ORDER_NO_SHIPPING_ERROR);
 
         saveDeliverOrderApproval(bean, order, userId);
     }

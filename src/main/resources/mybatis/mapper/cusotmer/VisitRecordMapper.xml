@@ -313,8 +313,14 @@
       <if test="visitPurpose != null and visitPurpose != ''">
         and a.visit_purpose like concat('%', #{visitPurpose,jdbcType=VARCHAR}, '%')
       </if>
-      <if test="visitStartDate != null and visitEndDate != null and visitStartDate != '' and visitEndDate != ''">
-        and a.visit_date BETWEEN  str_to_date(#{visitStartDate,jdbcType=VARCHAR}, '%m-%d-%Y %h:%i:%s') and str_to_date(#{visitEndDate,jdbcType=VARCHAR}, '%m-%d-%Y %h:%i:%s')
+      <if test="visitStartDate != null and visitStartDate != '' and visitEndDate != null and visitEndDate != ''">
+        and date_format( a.visit_date, '%Y-%m-%d' ) BETWEEN #{visitStartDate,jdbcType=VARCHAR} and #{visitEndDate,jdbcType=VARCHAR}
+      </if>
+      <if test="visitStartDate != null and visitStartDate != '' and (visitEndDate == null or visitEndDate == '')">
+        and date_format( a.visit_date, '%Y-%m-%d' )>= #{visitStartDate,jdbcType=VARCHAR}
+      </if>
+      <if test="(visitStartDate == null or visitStartDate == '') and visitEndDate != null and visitEndDate != ''">
+        and date_format( a.visit_date, '%Y-%m-%d' ) &lt;= #{visitStartDate,jdbcType=VARCHAR}
       </if>
       order by a.create_time desc
     </select>

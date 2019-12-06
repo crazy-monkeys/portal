@@ -72,10 +72,7 @@ public class UserCustomerMappingService {
             strs.forEach(e->{
                 User user = userMapper.selectById(Integer.valueOf(e));
                 if(null!=user && null != user.getDealerId()){
-                    CustomerInfo customerInfo = customerInfoMapper.selectByPrimaryKey(user.getDealerId());
-                    if(null != customerInfo){
-                        results.add(Integer.valueOf(e));
-                    }
+                    results.add(Integer.valueOf(user.getDealerId()));
                 }
             });
         }

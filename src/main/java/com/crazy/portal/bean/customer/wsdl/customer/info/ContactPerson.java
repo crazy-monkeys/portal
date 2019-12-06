@@ -54,9 +54,9 @@ public class ContactPerson {
     @XmlElement(name = "LifeCycleStatusCode")
     private String lifeCycleStatusCode;
 
-    @XmlElement(name = "y4r:Z_CONTACT_TYPE")
+    @XmlElement(name = "yor:Z_CONTACT_TYPE")
     private String contactType;
 
-    @XmlElement(name = "y4r:Z_SECONDARY_DEPT")
+    @XmlElement(name = "yor:Z_SECONDARY_DEPT")
     private String secondaryDept;
 }

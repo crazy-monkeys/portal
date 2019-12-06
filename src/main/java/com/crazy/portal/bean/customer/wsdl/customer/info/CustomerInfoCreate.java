@@ -25,11 +25,14 @@ public class CustomerInfoCreate {
     @XmlAttribute(name="xmlns:glob")
     private String glob = "http://sap.com/xi/SAPGlobal20/Global";
 
-    @XmlAttribute(name="xmlns:y4r")
-    private String y4r = "http://0003111061-one-off.sap.com/Y4R4GVT9Y_";
+    @XmlAttribute(name="xmlns:yor")
+    private String y4r = "http://0003111061-one-off.sap.com/YOR53ZA0Y_";
 
     @XmlAttribute(name="xmlns:glob1")
     private String glob1 = "http://sap.com/xi/AP/Globalization";
+
+    @XmlAttribute(name="xmlns:a3p")
+    private String a3p = "http://sap.com/xi/AP/CustomerExtension/BYD/A3PQP";
 
     @XmlElement(name="soap:Body")
     private CustomerInfoBody body;

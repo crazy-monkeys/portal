@@ -457,7 +457,6 @@ public class SaleForecastService {
                                                         String ambPeople, String sdPeople, String agencyAbbreviation,
                                                         String channel) {
         List<Integer> userList = getAuthUsers(userId);
-        PortalUtil.defaultStartPage(pageNum,pageSize);
         Integer[] userIds = new Integer[userList.size()];
         List<Forecast> result = forecastMapper.selectByLeader(userList.toArray(userIds), customerAbbreviation,
                 salePeople, uploadStartTime, uploadEndTime, ambPeople, sdPeople, agencyAbbreviation, channel);

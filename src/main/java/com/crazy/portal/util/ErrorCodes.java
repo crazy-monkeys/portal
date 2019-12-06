@@ -304,6 +304,7 @@ public class ErrorCodes {
         ORDER_NO_MAPPING_CUST(900028,"附件行: 物料[%s]、客户[%s]未匹配出价格信息",""),
         DELIVERY_ORDER_IS_RECEVE(900029,"已收货的提货单不允许做变更",""),
         ORDER_NO_REPETITION(900030,"附件行: 物料[%s]、平台[%s]、客户[%s]已经存在,不允许重复导入",""),
+        ORDER_NO_SHIPPING_ERROR(900031,"下单公司错误，下单公司范围【3000、3001、4800、7100】",""),
 
         //文档管理
         ARCHIVE_FILE_NOT_EMPTY(100001, "请选择需要上传的文件", ""),

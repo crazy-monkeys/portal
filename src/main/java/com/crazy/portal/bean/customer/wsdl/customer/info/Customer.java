@@ -97,70 +97,76 @@ public class Customer {
     private List<Relationship> relationship;
 
     /*客户简称*/
-    @XmlElement(name = "y4r:Abbreviation")
+    @XmlElement(name = "yor:Abbreviation")
     private String abbreviation;
 
     /*客户类型 A01 - Account Market（直供）；A02 - Account Market（非直供）；A03 - Mass Market；A04 - 代理商*/
-    @XmlElement(name = "y4r:Type")
+    @XmlElement(name = "yor:Type")
     private String type;
 
     /*是否license Y/N*/
-    @XmlElement(name = "y4r:IsLicenseAccount")
+    @XmlElement(name = "yor:IsLicenseAccount")
     private String isLicenseAccount;
 
     /*用户角色 Z001 - 中国客户(Chinese Account); Z002 - 亚太客户(Asia-Pacific Account); Z003 - 北美客户(North American Account); Z010 - 内部客户(Customer);*/
-    @XmlElement(name = "y4r:AccountRole")
+    @XmlElement(name = "yor:AccountRole")
     private String accountRole;
 
-    @XmlElement(name = "y4r:RegistrationDate")
+    @XmlElement(name = "yor:RegistrationDate")
     private String registrationDate;
 
-    @XmlElement(name = "y4r:AdvantagesIntroduction")
+    @XmlElement(name = "yor:AdvantagesIntroduction")
     private String advantagesIntroduction;
 
-    @XmlElement(name = "y4r:Businessintroduction")
+    @XmlElement(name = "yor:Businessintroduction")
     private String businessintroduction;
 
-    @XmlElement(name = "y4r:StaffNumber")
+    @XmlElement(name = "yor:StaffNumber")
     private String staffNumber;
 
-    @XmlElement(name = "y4r:DevelopersNumber")
+    @XmlElement(name = "yor:DevelopersNumber")
     private String developersNumber;
 
-    @XmlElement(name = "y4r:CorporateAssets currencyCode=\"CNY\"")
+    @XmlElement(name = "yor:CorporateAssets currencyCode=\"CNY\"")
     private String corporateAssets;
 
-    @XmlElement(name = "y4r:BankName")
+    @XmlElement(name = "yor:BankName")
     private String bankName;
 
-    @XmlElement(name = "y4r:BankAddress")
+    @XmlElement(name = "yor:BankAddress")
     private String bankAddress;
 
-    @XmlElement(name = "y4r:Account")
+    @XmlElement(name = "yor:Account")
     private String account;
 
-    @XmlElement(name = "y4r:BIC")
+    @XmlElement(name = "yor:BIC")
     private String bIC;
 
-    @XmlElement(name = "y4r:PurchasingUnit")
+    @XmlElement(name = "yor:PurchasingUnit")
     private String purchasingUnit;
 
-    @XmlElement(name = "y4r:ShippingAddress")
+    @XmlElement(name = "yor:ShippingAddress")
     private String shippingAddress;
 
-    @XmlElement(name = "y4r:Phone")
+    @XmlElement(name = "yor:Phone")
     private String phone;
 
-    @XmlElement(name = "y4r:TaxpayerRegistrationNumber")
+    @XmlElement(name = "yor:TaxpayerRegistrationNumber")
     private String taxpayerRegistrationNumber;
 
-    @XmlElement(name = "y4r:Currency")
+    @XmlElement(name = "yor:Currency")
     private String currency;
 
     /*白名单*/
-    @XmlElement(name = "y4r:IsInWhiteList")
+    @XmlElement(name = "yor:IsInWhiteList")
     private String isInWhiteList;
 
-    @XmlElement(name = "y4r:Z_PARENT_ACCOUNT")
+    @XmlElement(name = "yor:Z_PARENT_ACCOUNT")
     private String z_PARENT_ACCOUNT;
+
+    @XmlElement(name = "a3p:FromPortal")
+    private String fromportal="";
+
+    @XmlElement(name = "a3p:IntegrationCheck")
+    private String integrationcheck="";
 }

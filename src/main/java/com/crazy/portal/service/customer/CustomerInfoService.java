@@ -400,12 +400,7 @@ public class CustomerInfoService {
     public void approval(ApprovalBean approvalBean, Integer userId){
         //通过
         if(Enums.YES_NO.YES.getCode() == approvalBean.getApprovalType()){
-            CustomerInfo customerInfo = queryInfo(approvalBean.getCustId());
-            Map<String,String> response = customerInfoSync(customerInfo, "01");
-            BusinessUtil.assertFlase(null == response,ErrorCodes.BusinessEnum.CUSTOMER_IS_SYNC_ERROR);
-            customerInfo.setInCode(response.get("inCode"));
-            customerInfo.setOutCode(response.get("outCode"));
-            approvalYes(approvalBean, userId, customerInfo);
+            approvalYes(approvalBean, userId);
 
             //因为维护关系用的是 C4C内部id，报备维护关系时没有C4C内部id，所以审批通过时，校验是否有C4C内部Id为空的关系
             if(StringUtil.isNotEmpty(approvalBean.getSalesId())){
@@ -434,16 +429,25 @@ public class CustomerInfoService {
      * 自动驳回取消  逻辑无法实现
      * @param approvalBean
      */
-    private void approvalYes(ApprovalBean approvalBean, Integer userId, CustomerInfo customerInfo){
-        if(null != customerInfo && customerInfo.getApproveStatus()!=Enums.CUSTOMER_APPROVE_STATUS.APPROVAL.getCode() && customerInfo.getCustType()!=Enums.CUSTOMER_TYPE.WAIT_APPROVAL.getCode()){
-            customerInfo.setCustType(Enums.CUSTOMER_TYPE.WAIT_APPROVAL.getCode());
-            customerInfo.setApproveStatus(Enums.CUSTOMER_APPROVE_STATUS.APPROVAL.getCode());
+    private void approvalYes(ApprovalBean approvalBean, Integer userId){
+        CustomerInfo temp = customerInfoMapper.selectByPrimaryKey(approvalBean.getCustId());
+        if(null != temp && temp.getApproveStatus()!=Enums.CUSTOMER_APPROVE_STATUS.APPROVAL.getCode() && temp.getCustType()!=Enums.CUSTOMER_TYPE.WAIT_APPROVAL.getCode()){
             if(null != approvalBean.getSalesId()){
-                custZrAccountTeamService.updateTeam(customerInfo.getId(), approvalBean.getSalesId());
+                custZrAccountTeamService.updateTeam(temp.getId(), approvalBean.getSalesId());
             }else if (null != approvalBean.getDealerId()){
                 CustomerInfo dealer = customerInfoMapper.selectByPrimaryKey(approvalBean.getCustId());
-                custCorporateRelationshipService.updateCustShip(customerInfo.getId(), userId, dealer);
+                custCorporateRelationshipService.updateCustShip(temp.getId(), userId, dealer);
             }
+
+            CustomerInfo customerInfo = queryInfo(temp.getId());
+            Map<String,String> response = customerInfoSync(customerInfo, "01");
+            BusinessUtil.assertFlase(null == response,ErrorCodes.BusinessEnum.CUSTOMER_IS_SYNC_ERROR);
+            customerInfo.setInCode(response.get("inCode"));
+            customerInfo.setOutCode(response.get("outCode"));
+
+
+            customerInfo.setCustType(Enums.CUSTOMER_TYPE.WAIT_APPROVAL.getCode());
+            customerInfo.setApproveStatus(Enums.CUSTOMER_APPROVE_STATUS.APPROVAL.getCode());
             customerInfo.setApproveUser(userId);
             customerInfo.setApproveRemark(approvalBean.getApprovalRemark());
             customerInfoMapper.updateByPrimaryKeySelective(customerInfo);
@@ -609,11 +613,13 @@ public class CustomerInfoService {
     private void zrAccountTeamMapping(Customer customer, List<CustZrAccountTeam> zrAccountTeams){
         List<DirectResponsibility> durects = new ArrayList<>();
         zrAccountTeams.forEach(e->{
-            DirectResponsibility directResponsibility = new DirectResponsibility();
-            directResponsibility.setEmployeeID(e.getEmployeeId());
-            directResponsibility.setPartyRoleCode(e.getRoleType());
+           if(StringUtil.isNotEmpty(e.getEmployeeId())){
+               DirectResponsibility directResponsibility = new DirectResponsibility();
+               directResponsibility.setEmployeeID(e.getEmployeeId());
+               directResponsibility.setPartyRoleCode(e.getRoleType());
 
-            durects.add(directResponsibility);
+               durects.add(directResponsibility);
+           }
         });
         customer.setDirectResponsibility(durects);
     }
@@ -631,10 +637,12 @@ public class CustomerInfoService {
     private void shipMapping(Customer customer, List<CustCorporateRelationship> relationships){
         List<Relationship> relationshipList = new ArrayList<>();
         relationships.forEach(e->{
-            Relationship relationship = new Relationship();
-            relationship.setRelationshipBusinessPartnerInternalID(null==e.getCorporateId()?e.getCorporateName():e.getCorporateId().toString());
-            relationship.setRoleCode(String.format("%s%s",e.getCorporateType(),"-1"));
-            relationshipList.add(relationship);
+            if(StringUtil.isNotEmpty(e.getCorporateId())){
+                Relationship relationship = new Relationship();
+                relationship.setRelationshipBusinessPartnerInternalID(null==e.getCorporateId()?e.getCorporateName():e.getCorporateId().toString());
+                relationship.setRoleCode(String.format("%s%s",e.getCorporateType(),"-1"));
+                relationshipList.add(relationship);
+            }
         });
         customer.setRelationship(relationshipList);
     }
@@ -648,7 +656,8 @@ public class CustomerInfoService {
             Address address = new Address();
             PostalAddress postalAddress = new PostalAddress();
             postalAddress.setCountryCode(e.getCountry().substring(0,e.getCountry().indexOf(",")));
-            postalAddress.setCityName(e.getCountry().substring(e.getCountry().indexOf(",")+1));
+            //postalAddress.setCityName(e.getCountry().substring(e.getCountry().indexOf(",")+1));
+            postalAddress.setRegionDescription(e.getCountry().substring(e.getCountry().indexOf(",")+1));
             postalAddress.setStreetName(e.getDistrict());
             address.setPostalAddress(postalAddress);
 

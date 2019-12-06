@@ -92,8 +92,17 @@ public class SysController extends BaseController {
      * @return
      */
     @GetMapping("/user/list")
-    public BaseResponse getDealerList(){
+    public BaseResponse getUserList(){
         return successResult(userMapper.selectAll());
+    }
+
+    /**
+     * 获取所有登陆账号信息
+     * @return
+     */
+    @GetMapping("/dealer/list")
+    public BaseResponse getDealerList(){
+        return successResult(customerInfoService.getDealerList());
     }
 
     /**
