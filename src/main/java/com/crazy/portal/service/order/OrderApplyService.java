@@ -315,10 +315,10 @@ public class OrderApplyService extends CommonOrderService{
         //检查金额是否为0
         lines.stream().forEach(x->{
             BusinessUtil.assertEmpty(x.getProductId(),ErrorCodes.BusinessEnum.ORDER_EMPTY_PRODUCT);
-            boolean priceCheck = Objects.isNull(x.getRPrice()) || BigDecimal.ZERO.equals(x.getRPrice()) ||
+            boolean hasZeroPrice = Objects.isNull(x.getRPrice()) || BigDecimal.ZERO.equals(x.getRPrice()) ||
                                  Objects.isNull(x.getRNetPrice()) || BigDecimal.ZERO.equals(x.getRNetPrice());
 
-            if(priceCheck && !order.getUnderOrderType().equals("ZFD")){
+            if(hasZeroPrice && !order.getUnderOrderType().equals("ZFD")){
                 throw new BusinessException(ErrorCodes.BusinessEnum.ORDER_INVALID_PRODUCT.getCode(),
                         String.format(ErrorCodes.BusinessEnum.ORDER_INVALID_PRODUCT.getZhMsg(),x.getProductId()));
             }

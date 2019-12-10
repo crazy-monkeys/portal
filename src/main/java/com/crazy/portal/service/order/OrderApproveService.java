@@ -7,13 +7,13 @@ import com.crazy.portal.bean.order.wsdl.create.IsHeader;
 import com.crazy.portal.bean.order.wsdl.create.ItItem;
 import com.crazy.portal.bean.order.wsdl.create.ItItems;
 import com.crazy.portal.bean.order.wsdl.create.*;
+import com.crazy.portal.config.exception.BusinessException;
 import com.crazy.portal.dao.cusotmer.CustomerInfoMapper;
 import com.crazy.portal.dao.order.OrderApplyMapper;
 import com.crazy.portal.dao.order.OrderLineMapper;
 import com.crazy.portal.dao.order.OrderMapper;
 import com.crazy.portal.dao.product.ProductInfoDOMapper;
 import com.crazy.portal.entity.cusotmer.CustomerInfo;
-import com.crazy.portal.entity.order.DeliverOrder;
 import com.crazy.portal.entity.order.Order;
 import com.crazy.portal.entity.order.OrderApply;
 import com.crazy.portal.entity.order.OrderLine;
@@ -31,10 +31,7 @@ import java.beans.IntrospectionException;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -123,18 +120,20 @@ public class OrderApproveService extends CommonOrderService{
     private void createOrder(String expectedDeliveryDate,OrderApply orderApply,Integer userId) throws Exception {
 
         ZrfcsdsalesordercreateResponse response = this.invokeEccCreateOrder(expectedDeliveryDate,orderApply);
-        //第三方接口调用成功,将审批信息同步到结果表
-        Order order = this.buildOrder(expectedDeliveryDate, orderApply, userId, response);
+
+        List<ZsalesordercreateOutItem> outItems = response.getEtItems().getItem();
+
         //获取申请单行对象
         List<OrderLine> lines = orderApply.lineJsonToObj(orderApply.getJsonLines());
+
+        //第三方接口调用成功,将审批信息同步到结果表
+        Order order = this.buildOrder(expectedDeliveryDate, orderApply, userId, response);
 
         //计算定价日期
         this.calculatePriceDate(order, lines);
 
         //保存订单头
         this.orderMapper.insertSelective(order);
-
-        List<ZsalesordercreateOutItem> outItems = response.getEtItems().getItem();
 
         //返回的实体+虚拟的行
         a:for(ZsalesordercreateOutItem eccLine : outItems){
@@ -143,11 +142,22 @@ public class OrderApproveService extends CommonOrderService{
             String eccRefProductId = eccLine.getRefitemproductid().replaceAll("^(0+)", "");
             String eccPlatform = eccLine.getPlatform();
 
+            BigDecimal netprice = eccLine.getNetprice();
+            BigDecimal price = eccLine.getPrice();
+
             b:for(OrderLine line : lines){
                 String portalProductId = line.getProductId();
                 String portalPlatform = line.getPlatform();
                 //虚拟料信息保存
                 if(eccProductID.equals(portalProductId) && eccPlatform.equals(portalPlatform) && StringUtil.isEmpty(eccRefProductId)){
+
+                    boolean hasZeroPrice = Objects.isNull(price) || BigDecimal.ZERO.equals(price) ||
+                            Objects.isNull(netprice) || BigDecimal.ZERO.equals(netprice);
+
+                    if(hasZeroPrice){
+                        throw new BusinessException(ErrorCodes.BusinessEnum.ORDER_INVALID_PRODUCT.getCode(),
+                                String.format(ErrorCodes.BusinessEnum.ORDER_INVALID_PRODUCT.getZhMsg(),eccProductID));
+                    }
                     //设置剩余数量
                     line.setRemainingNum(line.getNum());
                     //计算组合物料价格
@@ -161,8 +171,8 @@ public class OrderApproveService extends CommonOrderService{
             }
             //实体料信息保存,需要构建新订单行
             OrderLine orderLine = new OrderLine();
-            orderLine.setRPrice(eccLine.getPrice());
-            orderLine.setRNetPrice(eccLine.getNetprice());
+            orderLine.setRPrice(price);
+            orderLine.setRNetPrice(netprice);
             orderLine.setProduct(eccLine.getProductid());
             if(eccLine.getNetpr().equals(BigDecimal.ZERO) || eccLine.getKpein().equals(BigDecimal.ZERO)){
                 orderLine.setUnitPrice(BigDecimal.ZERO);
