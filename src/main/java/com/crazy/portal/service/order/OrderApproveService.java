@@ -150,13 +150,8 @@ public class OrderApproveService extends CommonOrderService{
                 String portalPlatform = line.getPlatform();
                 //虚拟料信息保存
                 if(eccProductID.equals(portalProductId) && eccPlatform.equals(portalPlatform) && StringUtil.isEmpty(eccRefProductId)){
-
-                    boolean hasZeroPrice = Objects.isNull(price) || BigDecimal.ZERO.equals(price) ||
-                            Objects.isNull(netprice) || BigDecimal.ZERO.equals(netprice);
-
-                    if(hasZeroPrice){
-                        throw new BusinessException(ErrorCodes.BusinessEnum.ORDER_INVALID_PRODUCT.getCode(),
-                                String.format(ErrorCodes.BusinessEnum.ORDER_INVALID_PRODUCT.getZhMsg(),eccProductID));
+                    if(!order.getUnderOrderType().equals("ZFD")){
+                        super.checkPrice(eccProductID, netprice, price);
                     }
                     //设置剩余数量
                     line.setRemainingNum(line.getNum());
@@ -386,7 +381,7 @@ public class OrderApproveService extends CommonOrderService{
         List<ZsalesorderchangeOutItem> items = response.getEtItems().getItem();
 
         items.forEach(eccLine->{
-            String eccProduct = eccLine.getProductid().replaceAll("^(0+)", "");
+            String eccProductId = eccLine.getProductid().replaceAll("^(0+)", "");
             //遍历portal 订单行
             orderLines.forEach(line->{
                 final String portalProductId = line.getProductId();
@@ -397,7 +392,10 @@ public class OrderApproveService extends CommonOrderService{
                 line.setUpdateId(userId);
                 line.setUpdateTime(DateUtil.getCurrentTS());
 
-                if(portalProductId.equals(eccProduct)){
+                if(portalProductId.equals(eccProductId)){
+                    if(!order.getUnderOrderType().equals("ZFD")){
+                        super.checkPrice(eccProductId,eccLine.getNetprice(),eccLine.getPrice());
+                    }
                     //refItemProductId的为虚拟物料
                     if(StringUtils.isEmpty(line.getRRefItemProductId())){
                         //提取虚拟物料和实体物料信息

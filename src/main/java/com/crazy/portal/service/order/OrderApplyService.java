@@ -3,7 +3,6 @@ package com.crazy.portal.service.order;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.crazy.portal.bean.order.*;
-import com.crazy.portal.bean.order.wsdl.create.ZsalesordercreateOutItem;
 import com.crazy.portal.bean.order.wsdl.delivery.update.ZrfcsddeliverychangeResponse;
 import com.crazy.portal.bean.order.wsdl.price.*;
 import com.crazy.portal.bean.price.CatalogPriceVO;
@@ -18,7 +17,6 @@ import com.crazy.portal.entity.price.CatalogPrice;
 import com.crazy.portal.entity.product.ProductInfoDO;
 import com.crazy.portal.entity.system.SysParameter;
 import com.crazy.portal.entity.system.User;
-import com.crazy.portal.entity.system.UserCustomerMapping;
 import com.crazy.portal.service.customer.CustomerInfoService;
 import com.crazy.portal.service.handover.ReceiveService;
 import com.crazy.portal.service.price.CatalogPriceService;
@@ -314,13 +312,10 @@ public class OrderApplyService extends CommonOrderService{
 
         //检查金额是否为0
         lines.stream().forEach(x->{
-            BusinessUtil.assertEmpty(x.getProductId(),ErrorCodes.BusinessEnum.ORDER_EMPTY_PRODUCT);
-            boolean hasZeroPrice = Objects.isNull(x.getRPrice()) || BigDecimal.ZERO.equals(x.getRPrice()) ||
-                                 Objects.isNull(x.getRNetPrice()) || BigDecimal.ZERO.equals(x.getRNetPrice());
-
-            if(hasZeroPrice && !order.getUnderOrderType().equals("ZFD")){
-                throw new BusinessException(ErrorCodes.BusinessEnum.ORDER_INVALID_PRODUCT.getCode(),
-                        String.format(ErrorCodes.BusinessEnum.ORDER_INVALID_PRODUCT.getZhMsg(),x.getProductId()));
+            String eccProductId = x.getProductId();
+            BusinessUtil.assertEmpty(eccProductId,ErrorCodes.BusinessEnum.ORDER_EMPTY_PRODUCT);
+            if(!order.getUnderOrderType().equals("ZFD")){
+                super.checkPrice(eccProductId,x.getRNetPrice(),x.getRNetPrice());
             }
         });
 
