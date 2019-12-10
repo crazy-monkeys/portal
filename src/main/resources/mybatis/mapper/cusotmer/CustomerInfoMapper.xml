@@ -732,7 +732,7 @@
         and ship.corporate_type = 'Z004' and ship.corporate_id = #{reportDealer,jdbcType=INTEGER}
       </if>
       <if test="reportSales != null">
-        and team.role_type = '142' and team.employee_id = #{reportSales,jdbcType=INTEGER}
+         and team.employee_id = #{reportSales,jdbcType=INTEGER}
       </if>
       <if test="customerStatus != '' and customerStatus != null">
         and cust.approve_status = #{customerStatus,jdbcType=INTEGER}
