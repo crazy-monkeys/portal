@@ -1,16 +1,16 @@
 package com.crazy.portal.service.inventory;
 
+import com.crazy.portal.dao.cusotmer.CustomerInfoMapper;
 import com.crazy.portal.dao.inventory.InventoryConversionDOMapper;
 import com.crazy.portal.dao.inventory.InventoryTransferDOMapper;
+import com.crazy.portal.entity.cusotmer.CustomerInfo;
 import com.crazy.portal.entity.handover.ReceiveDetail;
 import com.crazy.portal.entity.inventory.InventoryConversionDO;
 import com.crazy.portal.entity.inventory.InventoryTransferDO;
 import com.crazy.portal.entity.system.User;
 import com.crazy.portal.service.handover.ReceiveService;
-import com.crazy.portal.util.BusinessUtil;
-import com.crazy.portal.util.DateUtil;
-import com.crazy.portal.util.ErrorCodes;
-import com.crazy.portal.util.PortalUtil;
+import com.crazy.portal.service.system.UserCustomerMappingService;
+import com.crazy.portal.util.*;
 import com.github.pagehelper.PageInfo;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.stereotype.Service;
@@ -35,6 +35,7 @@ public class InventoryService {
     private InventoryConversionDOMapper conversionDOMapper;
     @Resource
     private ReceiveService receiveService;
+
 
     /**
      * 转移

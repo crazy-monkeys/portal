@@ -58,6 +58,12 @@
     <if test="createUserName != null and createUserName != ''">
       and create_user_name = #{createUserName}
     </if>
+    <if test="agencyShortName !=null and agencyShortName != ''">
+      and agency_short_name = #{agencyShortName}
+    </if>
+    <foreach collection="userIds" item="item" index="index" open="and create_id in (" separator="," close=")" >
+      #{item,jdbcType=INTEGER}
+    </foreach>
   </select>
 
 

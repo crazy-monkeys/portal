@@ -267,8 +267,8 @@
     <if test="approvalStartDate!=null and approvalStartDate!='' and (approvalEndDate == null or approvalEndDate=='')">
       and approval_date > #{approvalStartDate,jdbcType=VARCHAR}
     </if>
-    <if test="salesOrderNo!=null and salesOrderNo!=''">
-      and sap_order_no = #{salesOrderNo,jdbcType=VARCHAR}
+    <if test="salesOrderId!=null and salesOrderId!=''">
+      and sap_order_no = #{salesOrderId,jdbcType=VARCHAR}
     </if>
     <if test="createStartDate!=null and createEndDate!='' and createStartDate != null and createEndDate != ''">
       and create_time BETWEEN #{createStartDate,jdbcType=VARCHAR} and #{createEndDate,jdbcType=VARCHAR}

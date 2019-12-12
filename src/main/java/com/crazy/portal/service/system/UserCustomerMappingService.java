@@ -62,7 +62,7 @@ public class UserCustomerMappingService {
         List<Integer> results = new ArrayList<>();
 
         //预测 收货出货 需要 代理商登陆账号id
-        if(mappingModel.equals(Enums.CustomerMappingModel.Forecast.getValue())){
+        if(mappingModel.equals(Enums.CustomerMappingModel.Forecast.getValue()) || mappingModel.equals(Enums.CustomerMappingModel.Inventory.getValue())){
             List<String> strs = Arrays.asList(mapping.getCustId().split(","));
             strs.forEach(e->{
                 results.add(Integer.valueOf(e));

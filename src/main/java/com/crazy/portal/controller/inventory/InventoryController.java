@@ -6,9 +6,12 @@ import com.crazy.portal.bean.BaseResponse;
 import com.crazy.portal.bean.inventory.InventoryRequest;
 import com.crazy.portal.bean.inventory.InventoryResponse;
 import com.crazy.portal.controller.BaseController;
+import com.crazy.portal.dao.cusotmer.CustomerInfoMapper;
+import com.crazy.portal.entity.cusotmer.CustomerInfo;
 import com.crazy.portal.entity.inventory.InventoryConversionDO;
 import com.crazy.portal.entity.inventory.InventoryTransferDO;
 import com.crazy.portal.service.inventory.InventoryService;
+import com.crazy.portal.util.Enums;
 import com.crazy.portal.util.HttpClientUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -36,6 +39,8 @@ public class InventoryController extends BaseController {
 
     @Resource
     private InventoryService inventoryService;
+    @Resource
+    private CustomerInfoMapper customerInfoMapper;
 
 
     /**
@@ -45,6 +50,10 @@ public class InventoryController extends BaseController {
      */
     @PostMapping("/detail")
     public BaseResponse detail(@RequestBody InventoryRequest summaryRequest){
+        if(!super.getCurrentUser().getUserType().equals(Enums.USER_TYPE.internal.toString())){
+            CustomerInfo customerInfo = customerInfoMapper.selectByPrimaryKey(super.getCurrentUser().getDealerId());
+            summaryRequest.setSAgencyShortName(customerInfo.getCustAbbreviation());
+        }
         String url = String.format("%s%s%s",ECC_API_URL,"/http/BI/PORTAL/GETINVENTORYDETAIL",summaryRequest.toString());
         return getBaseResponse(url);
     }
@@ -55,6 +64,10 @@ public class InventoryController extends BaseController {
      */
     @PostMapping("/summary")
     public BaseResponse summary(@RequestBody InventoryRequest summaryRequest){
+        if(!super.getCurrentUser().getUserType().equals(Enums.USER_TYPE.internal.toString())){
+            CustomerInfo customerInfo = customerInfoMapper.selectByPrimaryKey(super.getCurrentUser().getDealerId());
+            summaryRequest.setSAgencyShortName(customerInfo.getCustAbbreviation());
+        }
         String url = String.format("%s%s%s",ECC_API_URL,"/http/BI/PORTAL/GETINVENTORYSUMMARY",summaryRequest.toString());
         return getBaseResponse(url);
     }

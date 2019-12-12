@@ -17,7 +17,7 @@ public class DeliveryOrderQueryVO extends PageBean {
     private String approvalStartDate;
     private String approvalEndDate;
     private String deliveryOrderNo;
-    private String salesOrderNo;
+    private String salesOrderId;
     private String actualDeliveryStartDate;
     private String actualDeliveryEndDate;
     private String deliveryStartDate;

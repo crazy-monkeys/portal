@@ -656,7 +656,7 @@ public class CustomerInfoService {
             Address address = new Address();
             PostalAddress postalAddress = new PostalAddress();
             postalAddress.setCountryCode(e.getCountry().substring(0,e.getCountry().indexOf(",")));
-            //postalAddress.setCityName(e.getCountry().substring(e.getCountry().indexOf(",")+1));
+            postalAddress.setCityName(e.getCity());
             postalAddress.setRegionDescription(e.getCountry().substring(e.getCountry().indexOf(",")+1));
             postalAddress.setStreetName(e.getDistrict());
             address.setPostalAddress(postalAddress);

@@ -6,6 +6,7 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 库存转换表
@@ -161,4 +162,6 @@ public class InventoryConversionDO extends PageBean {
 
     /** ext **/
     private String applyType;
+
+    private List<Integer> userIds;
 }

@@ -554,6 +554,7 @@ public class Enums {
 
     public enum CustomerMappingModel{
         Forecast("forecast"),
+        Inventory("inventory"),
         HH("换货"),
         Customer("客户"),
         Rebate("rebate"),

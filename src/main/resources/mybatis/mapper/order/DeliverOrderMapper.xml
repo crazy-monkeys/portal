@@ -215,8 +215,8 @@
     <if test="deliveryOrderNo!=null and deliveryOrderNo!=''">
       and sap_deliver_order_no = #{deliveryOrderNo,jdbcType=VARCHAR}
     </if>
-    <if test="salesOrderNo!=null and salesOrderNo!=''">
-      and sap_order_no = #{salesOrderNo,jdbcType=VARCHAR}
+    <if test="salesOrderId!=null and salesOrderId!=''">
+      and sap_order_no = #{salesOrderId,jdbcType=VARCHAR}
     </if>
     <if test="actualDeliveryStartDate!=null and actualDeliveryStartDate!='' and actualDeliveryEndDate != null and actualDeliveryEndDate != ''">
       and actual_delivery_date BETWEEN #{actualDeliveryStartDate,jdbcType=VARCHAR} and #{actualDeliveryEndDate,jdbcType=VARCHAR}
