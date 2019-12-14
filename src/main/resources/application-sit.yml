@@ -67,6 +67,9 @@ ecc:
     price-simulate-url: /cxf/ECC/PORTAL/GETPRICESIMULATION_QAS
     order-change-url: /cxf/PORTAL/ECC/CHANGE_SALES_ORDER_QAS
     order-create-url: /cxf/PORTAL/ECC/CREATESALESORDER_QAS
+    get-customer-inventory:
+    save-additional-order:
+    delete-additional-order:
   auth:
     username: ENC(VAu6waPK+JIWbDN6Cfdwo5iHv3ePbw2B)
     password: ENC(zHAmhTGuifaMYH01fPSoPhJbhglwRXlS)
