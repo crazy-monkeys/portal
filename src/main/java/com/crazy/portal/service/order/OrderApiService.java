@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
+import java.util.List;
 
 import static com.crazy.portal.util.Enums.BI_FUNCTION_CODE.DELETE_INVENTORY_CASE;
 
@@ -230,18 +231,16 @@ public class OrderApiService {
 
     /**
      *
-     * @param poAdditionalOrderReq
+     * @param reqs
      * @return
      */
-    public boolean savePOAdditionalOrderFromCRM(PoAdditionalOrderReq poAdditionalOrderReq){
-        String url = String.format("%s%s",ECC_API_URL,SAVE_ADDITIONAL_ORDER_URL);
-
+    public boolean savePOAdditionalOrderFromCRM(List<PoAdditionalOrderReq> reqs){
         try {
-            String body = JSON.toJSONString(poAdditionalOrderReq);
+            String url = String.format("%s%s",ECC_API_URL,SAVE_ADDITIONAL_ORDER_URL);
+            String body = JSON.toJSONString(reqs);
             log.info("url -> {}, request -> {}",url,body);
             String response = HttpClientUtils.post(url, body);
             log.info("response - >" + response);
-
             return response.contains("OK");
         } catch (IOException e) {
             log.error("",e);
@@ -255,8 +254,8 @@ public class OrderApiService {
      * @return
      */
     public boolean deletePOAdditionalOrder(String ids){
-        String url = String.format("%s%s",ECC_API_URL,DELETE_ADDITIONAL_ORDER_URL);
         try {
+            String url = String.format("%s%s",ECC_API_URL,DELETE_ADDITIONAL_ORDER_URL);
             url = url + "?sIDList=" + ids;
             log.info("url -> {}",url);
             String response = HttpClientUtils.get(url);

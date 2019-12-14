@@ -6,6 +6,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.multipart.MultipartFile;
 import javax.validation.constraints.NotEmpty;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -214,5 +215,5 @@ public class Order {
     /**
      * 订单行集合
      */
-    private List<OrderLine> lines;
+    private List<OrderLine> lines = new ArrayList<>();
 }

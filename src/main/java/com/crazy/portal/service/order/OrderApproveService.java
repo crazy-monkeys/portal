@@ -17,6 +17,7 @@ import com.crazy.portal.entity.cusotmer.CustomerInfo;
 import com.crazy.portal.entity.order.Order;
 import com.crazy.portal.entity.order.OrderApply;
 import com.crazy.portal.entity.order.OrderLine;
+import com.crazy.portal.entity.order.PoAdditionalOrderReq;
 import com.crazy.portal.entity.product.ProductInfoDO;
 import com.crazy.portal.entity.system.SysParameter;
 import com.crazy.portal.entity.system.User;
@@ -80,16 +81,18 @@ public class OrderApproveService extends CommonOrderService{
         if(approvalStatus.equals(Enums.OrderApprovalStatus.ADOPT.getValue())){
             //如果是创单申请
             Integer appalyType = orderApply.getAppalyType();
-
             switch (appalyType){
                 case 1:
-                    this.createOrder(bean.getExpectedDeliveryDate(),orderApply, userId);
+                    Order createOrder = this.createOrder(bean.getExpectedDeliveryDate(), orderApply, userId);
+                    this.savePoAdditionalOrder(createOrder);
                     break;
                 case 2:
-                    this.modifyOrder(orderApply, userId);
+                    Order modifyOrder = this.modifyOrder(orderApply, userId);
+                    this.savePoAdditionalOrder(modifyOrder);
                     break;
                 case 3:
-                    this.cancelOrder(orderApply.getRSapOrderId(),userId);
+                    Order cancelOrder = this.cancelOrder(orderApply.getRSapOrderId(),userId);
+                    this.deletePoOrder(cancelOrder);
                     break;
                 case 4:
                     this.modifyDeliveryDate(orderApply, userId);
@@ -108,6 +111,72 @@ public class OrderApproveService extends CommonOrderService{
     }
 
     /**
+     * 删除po订单
+     * @param cancelOrder
+     */
+    private void deletePoOrder(Order cancelOrder) {
+        try {
+            List<OrderLine> lines = this.getPoOrderLines(cancelOrder);
+
+            if (lines == null) return;
+
+            String portalIds = lines.stream().map(x->x.getProductId()).collect(Collectors.joining(","));
+            orderApiService.deletePOAdditionalOrder(portalIds);
+        } catch (Exception e) {
+            log.error("deletePoOrder error",e);
+        }
+    }
+
+    /**
+     * 获取po订单行
+     * @param order
+     * @return
+     */
+    private List<OrderLine> getPoOrderLines(Order order) {
+        //只有订单类型为客户专货订单才进行po订单删除
+        if (!order.getOrderType().equals("A01")) {
+            return null;
+        }
+        List<OrderLine> lines = order.getLines();
+        if (lines.isEmpty()) {
+            log.error("The order is empty");
+            return null;
+        }
+        return lines;
+    }
+
+    /**
+     * 同步Po加单数据
+     * @param order
+     */
+    private void savePoAdditionalOrder(Order order){
+        try {
+            //只有订单类型为客户专货订单才进行po加单同步
+            List<OrderLine> lines = this.getPoOrderLines(order);
+
+            if (lines == null) return;
+
+            List<PoAdditionalOrderReq> poReqs = lines.stream().map(x -> {
+                PoAdditionalOrderReq poAdditionalOrderReq = new PoAdditionalOrderReq();
+                poAdditionalOrderReq.setSapCode(x.getRSapOrderId());
+                poAdditionalOrderReq.setPoPrice(x.getRPrice().toString());
+                poAdditionalOrderReq.setQty(x.getNum().toString());
+                poAdditionalOrderReq.setClass3(x.getPlatform());
+                poAdditionalOrderReq.setCustomerIncode(order.getSendTo());
+    //            poAdditionalOrderReq.setAgencyIncode();
+                poAdditionalOrderReq.setCompany(order.getSalesOrg());
+                poAdditionalOrderReq.setYearMonth(order.getPriceDate());
+                poAdditionalOrderReq.setPortalId(x.getProductId());
+                return poAdditionalOrderReq;
+            }).collect(Collectors.toList());
+
+            orderApiService.savePOAdditionalOrderFromCRM(poReqs);
+        } catch (Exception e) {
+            log.error("savePoAdditionalOrder error",e);
+        }
+    }
+
+    /**
      * 审批通过-创单
      * @param expectedDeliveryDate 需求交货日期，如果审批人填写则以此为交货日期，否则以月份最后一天为交货日期
      * @param userId
@@ -117,7 +186,7 @@ public class OrderApproveService extends CommonOrderService{
      * @throws IllegalAccessException
      * @throws InvocationTargetException
      */
-    private void createOrder(String expectedDeliveryDate,OrderApply orderApply,Integer userId) throws Exception {
+    private Order createOrder(String expectedDeliveryDate,OrderApply orderApply,Integer userId) throws Exception {
 
         ZrfcsdsalesordercreateResponse response = this.invokeEccCreateOrder(expectedDeliveryDate,orderApply);
 
@@ -161,6 +230,7 @@ public class OrderApproveService extends CommonOrderService{
                     this.setProduct(line, portalProductId);
                     //保存虚拟订单行
                     this.insertOrderLine(userId,order,line,eccLine);
+                    order.getLines().add(line);
                     continue a;
                 }
             }
@@ -175,7 +245,9 @@ public class OrderApproveService extends CommonOrderService{
                 orderLine.setUnitPrice(eccLine.getNetpr().divide(eccLine.getKpein()).setScale(6, BigDecimal.ROUND_HALF_UP));
             }
             this.insertOrderLine(userId,order,orderLine,eccLine);
+            order.getLines().add(orderLine);
         }
+        return order;
     }
 
     /**
@@ -310,7 +382,7 @@ public class OrderApproveService extends CommonOrderService{
      * @param sapOrderId
      * @param userId
      */
-    private void cancelOrder(String sapOrderId,Integer userId) throws Exception{
+    private Order cancelOrder(String sapOrderId,Integer userId) throws Exception{
 
         Order order = this.getOrderBySapOrderId(sapOrderId);
         List<OrderLine> orderLines = orderLineMapper.selectByOrderIdForVirtual(order.getId());
@@ -329,6 +401,7 @@ public class OrderApproveService extends CommonOrderService{
                             line.setUpdateId(userId);
                             line.setUpdateTime(DateUtil.getCurrentTS());
                             orderLineMapper.updateByPrimaryKeySelective(line);
+                            order.getLines().add(line);
                         }
                     });
                 });
@@ -343,13 +416,14 @@ public class OrderApproveService extends CommonOrderService{
                 }
             }
         }
+        return order;
     }
 
     /**
      * 执行修改订单
      * @param userId
      */
-    private void modifyOrder(OrderApply orderApply,Integer userId) throws Exception{
+    private Order modifyOrder(OrderApply orderApply,Integer userId) throws Exception{
 
         String sapOrderId = orderApply.getRSapOrderId();
         Order order = this.getOrderBySapOrderId(sapOrderId);
@@ -413,9 +487,11 @@ public class OrderApproveService extends CommonOrderService{
                         line.setRNetPrice(eccLine.getNetprice());
                     }
                     orderLineMapper.updateByPrimaryKeySelective(line);
+                    order.getLines().add(line);
                 }
             });
         });
+        return order;
     }
 
     /**
