@@ -1,5 +1,6 @@
 package com.crazy.portal.service.order;
 
+import com.alibaba.fastjson.JSON;
 import com.crazy.portal.bean.order.wsdl.change.Zrfcsdsalesorderchange;
 import com.crazy.portal.bean.order.wsdl.change.ZrfcsdsalesorderchangeResponse;
 import com.crazy.portal.bean.order.wsdl.create.Zrfcsdsalesordercreate;
@@ -14,12 +15,14 @@ import com.crazy.portal.bean.order.wsdl.price.Zrfcsdpricesimulate;
 import com.crazy.portal.bean.order.wsdl.price.ZrfcsdpricesimulateResponse;
 import com.crazy.portal.bean.order.wsdl.rate.ZrfcsdcustomercrrateResponse;
 import com.crazy.portal.config.exception.BusinessException;
+import com.crazy.portal.entity.order.PoAdditionalOrderReq;
 import com.crazy.portal.util.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 
@@ -46,6 +49,12 @@ public class OrderApiService {
 
     @Value("${ecc.api.order-create-url}")
     private String ORDER_CREATE_URL;
+
+    @Value("${ecc.api.save-additional-order}")
+    private String SAVE_ADDITIONAL_ORDER_URL;
+
+    @Value("${ecc.api.delete-additional-order}")
+    private String DELETE_ADDITIONAL_ORDER_URL;
 
     /**
      * 获取代理费率
@@ -217,6 +226,46 @@ public class OrderApiService {
             log.error("",e);
         }
         return null;
+    }
+
+    /**
+     *
+     * @param poAdditionalOrderReq
+     * @return
+     */
+    public boolean savePOAdditionalOrderFromCRM(PoAdditionalOrderReq poAdditionalOrderReq){
+        String url = String.format("%s%s",ECC_API_URL,SAVE_ADDITIONAL_ORDER_URL);
+
+        try {
+            String body = JSON.toJSONString(poAdditionalOrderReq);
+            log.info("url -> {}, request -> {}",url,body);
+            String response = HttpClientUtils.post(url, body);
+            log.info("response - >" + response);
+
+            return response.contains("OK");
+        } catch (IOException e) {
+            log.error("",e);
+        }
+        return false;
+    }
+
+    /**
+     * 删除
+     * @param ids
+     * @return
+     */
+    public boolean deletePOAdditionalOrder(String ids){
+        String url = String.format("%s%s",ECC_API_URL,DELETE_ADDITIONAL_ORDER_URL);
+        try {
+            url = url + "?sIDList=" + ids;
+            log.info("url -> {}",url);
+            String response = HttpClientUtils.get(url);
+            log.info("response - >" + response);
+            return response.contains("删除成功");
+        } catch (IOException e) {
+            log.error("",e);
+        }
+        return false;
     }
 
 

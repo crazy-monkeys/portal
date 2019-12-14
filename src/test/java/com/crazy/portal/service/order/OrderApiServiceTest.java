@@ -16,6 +16,7 @@ import com.crazy.portal.bean.order.wsdl.price.ZrfcsdpricesimulateBody;
 import com.crazy.portal.bean.order.wsdl.price.ZrfcsdpricesimulateContent;
 import com.crazy.portal.bean.order.wsdl.price.ZrfcsdpricesimulateResponse;
 import com.crazy.portal.bean.order.wsdl.rate.ZrfcsdcustomercrrateResponse;
+import com.crazy.portal.entity.order.PoAdditionalOrderReq;
 import com.crazy.portal.util.JaxbXmlUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Assert;
@@ -23,6 +24,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+import sun.jvm.hotspot.oops.Oop;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
@@ -227,5 +229,27 @@ public class OrderApiServiceTest {
         ZrfcsdDeliveryUpdateBody body = new ZrfcsdDeliveryUpdateBody(content);
         ZrfcsdDeliveryUpdate create = new ZrfcsdDeliveryUpdate(body);
 
+    }
+
+    @Test
+    public void savePOAdditionalOrderFromCRM() {
+        PoAdditionalOrderReq poAdditionalOrderReq = new PoAdditionalOrderReq();
+        poAdditionalOrderReq.setPortalId("3");
+        poAdditionalOrderReq.setYearMonth("201910");
+        poAdditionalOrderReq.setCompany("3000");
+        poAdditionalOrderReq.setAgencyIncode("200418");
+        poAdditionalOrderReq.setCustomerIncode("200546");
+        poAdditionalOrderReq.setSapCode("18000000639");
+        poAdditionalOrderReq.setClass3("RSW5108T");
+        poAdditionalOrderReq.setPoPrice("3.5");
+        poAdditionalOrderReq.setQty("50");
+        boolean b = eccApiService.savePOAdditionalOrderFromCRM(poAdditionalOrderReq);
+        Assert.assertTrue(b);
+    }
+
+    @Test
+    public void deletePOAdditionalOrderFromCRM() {
+        boolean b = eccApiService.deletePOAdditionalOrder("1,2");
+        Assert.assertTrue(b);
     }
 }
