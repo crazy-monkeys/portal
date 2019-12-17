@@ -150,7 +150,7 @@ public class OrderApproveService extends CommonOrderService{
         if (!order.getOrderType().equals("A01")) {
             return null;
         }
-        List<OrderLine> lines = order.getLines();
+        List<OrderLine> lines = orderLineMapper.selectByOrderIdForVirtual(order.getId());
         if (lines.isEmpty()) {
             log.error("The order is empty");
             return null;
@@ -175,18 +175,20 @@ public class OrderApproveService extends CommonOrderService{
             for(OrderLine line : lines){
                 PoAdditionalOrderReq req = new PoAdditionalOrderReq();
                 req.setPortalId(String.valueOf(line.getId()));
-                req.setYearMonth(String.valueOf(DateUtil.parseDate(order.getPriceDate(),DateUtil.MONTH_FORMAT)));
+                req.setYearMonth(order.getPriceDate().substring(0,6));
                 req.setCompany(order.getSalesOrg());
 
                 List<CustomerInfo> dealerInfo = customerInfoMapper.getDealerInCustomer(order.getDealerId());
                 BusinessUtil.assertFlase(dealerInfo.size()==0 || StringUtil.isEmpty(dealerInfo.get(0).getOutCode()),ErrorCodes.BusinessEnum.IN_CUSTOMER_IS_NULL);
                 req.setAgencyIncode(dealerInfo.get(0).getOutCode());
 
+                String inCustomerCode = "";
                 if(StringUtil.isNotEmpty(line.getCustAbbreviation())){
                     CustomerInfo customerInfo = customerInfoMapper.selectInCustomerByAbb(line.getCustAbbreviation());
                     BusinessUtil.assertFlase(null == customerInfo,ErrorCodes.BusinessEnum.IN_CUSTOMER_IS_NULL);
-                    req.setCustomerIncode(customerInfo.getOutCode());
+                    inCustomerCode = customerInfo.getOutCode();
                 }
+                req.setCustomerIncode(inCustomerCode);
 
                 req.setSapCode(line.getRSapOrderId());
                 req.setPoPrice(line.getUnitPrice().toString());

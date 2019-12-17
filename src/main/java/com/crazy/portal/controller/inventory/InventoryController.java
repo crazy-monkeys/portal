@@ -121,7 +121,7 @@ public class InventoryController extends BaseController {
     }
 
     private BaseResponse getBaseResponse(String url) {
-        url = url.replaceAll(" ", "%20");
+        url = url.replaceAll(" ", "%20").replace("+", "%2B").replace("/\\","%22").replace("/'", "%27").replace("/\\/","%2F");
         log.info("inventory access url : " + url);
         try {
             String response = HttpClientUtils.get(url);
@@ -136,7 +136,7 @@ public class InventoryController extends BaseController {
     }
 
     private BaseResponse getCustResponse(String url) {
-        url = url.replaceAll(" ", "%20");
+        url = url.replaceAll(" ", "%20").replace("+", "%2B").replace("/\\","%22").replace("/'", "%27").replace("/\\/","%2F");
         log.info("inventory access url : " + url);
         Map<String, Object> rMap = new HashMap<>();
         try {

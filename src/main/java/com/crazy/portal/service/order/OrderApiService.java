@@ -25,7 +25,9 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.crazy.portal.util.Enums.BI_FUNCTION_CODE.DELETE_INVENTORY_CASE;
 
@@ -236,7 +238,9 @@ public class OrderApiService {
      */
     public String savePOAdditionalOrderFromCRM(List<PoAdditionalOrderReq> reqs)throws Exception{
         String url = String.format("%s%s",ECC_API_URL,SAVE_ADDITIONAL_ORDER_URL);
-        String body = JSON.toJSONString(reqs);
+        Map<String,String> map = new HashMap<>();
+        map.put("sJson",JSON.toJSONString(reqs));
+        String body = JSON.toJSONString(map);
         log.info("url -> {}, request -> {}",url,body);
         String response = HttpClientUtils.post(url, body);
         log.info("response - >" + response);
