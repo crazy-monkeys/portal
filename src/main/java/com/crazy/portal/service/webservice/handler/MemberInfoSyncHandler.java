@@ -10,6 +10,7 @@ import com.crazy.portal.config.exception.BusinessException;
 import com.crazy.portal.dao.cusotmer.CustBankInfoMapper;
 import com.crazy.portal.dao.cusotmer.CustomerInfoMapper;
 import com.crazy.portal.entity.cusotmer.*;
+import com.crazy.portal.entity.system.User;
 import com.crazy.portal.service.customer.*;
 import com.crazy.portal.service.system.UserService;
 import com.crazy.portal.util.BusinessUtil;
@@ -117,7 +118,10 @@ public class MemberInfoSyncHandler extends AbstractHandler implements IHandler<M
 
         if(dealerCreate){
             //代理商用户 开通账号
-            userService.createUser(customerinfo.getCustName(), customerinfo.getCustName(), customerinfo.getCustEmail(), customerinfo.getId());
+            User user = userService.findUser(customerinfo.getCustName());
+            if(null == user){
+                userService.createUser(customerinfo.getCustName(), customerinfo.getCustName(), customerinfo.getCustEmail(), customerinfo.getId());
+            }
         }
     }
 

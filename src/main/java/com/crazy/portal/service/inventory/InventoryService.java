@@ -79,16 +79,25 @@ public class InventoryService {
         BusinessUtil.notNull(inventoryTransferDO, ErrorCodes.InventoryEnum.INVENTORY_TRANSFER_NOT_EXISTS);
 
         BusinessUtil.assertTrue(inventoryTransferDO.getApprovalStatus().equals(0),ErrorCodes.InventoryEnum.INVENTORY_BEEN_APPROVAL);
+        if(approvalStatus.equals(-1)){
+            saveInventory(inventoryTransferDO, userid, approvalStatus);
+            return true;
+        }
         boolean flg = receiveService.pushReceiveDataToBi(mappingInventoryReceive(inventoryTransferDO), inventoryTransferDO.getCreateId());
         if(flg){
-            inventoryTransferDO.setApprovalStatus(approvalStatus);
-            inventoryTransferDO.setUpdateId(userid);
-            inventoryTransferDO.setUpdateTime(new Date());
-            transferDOMapper.updateByPrimaryKeySelective(inventoryTransferDO);
+            saveInventory(inventoryTransferDO, userid, approvalStatus);
             return true;
         }
         return false;
     }
+
+    private void saveInventory(InventoryTransferDO inventoryTransferDO,Integer userid, Integer approvalStatus){
+        inventoryTransferDO.setApprovalStatus(approvalStatus);
+        inventoryTransferDO.setUpdateId(userid);
+        inventoryTransferDO.setUpdateTime(new Date());
+        transferDOMapper.updateByPrimaryKeySelective(inventoryTransferDO);
+    }
+
 
     //封装转移数据
     private List<ReceiveDetail> mappingInventoryReceive(InventoryTransferDO inventoryTransferDO){
@@ -165,16 +174,23 @@ public class InventoryService {
     public boolean conversionApproval(Integer userid, Integer id, Integer approvalStatus){
         InventoryConversionDO inventoryConversionDO = conversionDOMapper.selectByPrimaryKey(id);
         BusinessUtil.notNull(inventoryConversionDO, ErrorCodes.InventoryEnum.INVENTORY_CONVERSION_NOT_EXISTS);
-
+        if(approvalStatus.equals(-1)){
+            saveInventoryConversion(inventoryConversionDO, userid, approvalStatus);
+            return true;
+        }
         boolean flg = receiveService.pushReceiveDataToBi(mappingConversionReceive(inventoryConversionDO), inventoryConversionDO.getCreateId());
         if(flg){
-            inventoryConversionDO.setApprovalStatus(approvalStatus);
-            inventoryConversionDO.setUpdateId(userid);
-            inventoryConversionDO.setUpdateTime(new Date());
-            conversionDOMapper.updateByPrimaryKeySelective(inventoryConversionDO);
+            saveInventoryConversion(inventoryConversionDO, userid, approvalStatus);
             return true;
         }
         return false;
+    }
+
+    private void saveInventoryConversion(InventoryConversionDO inventoryConversionDO, Integer userid, Integer approvalStatus){
+        inventoryConversionDO.setApprovalStatus(approvalStatus);
+        inventoryConversionDO.setUpdateId(userid);
+        inventoryConversionDO.setUpdateTime(new Date());
+        conversionDOMapper.updateByPrimaryKeySelective(inventoryConversionDO);
     }
 
     //封装转换数据
