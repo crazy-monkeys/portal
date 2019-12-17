@@ -1,5 +1,6 @@
 package com.crazy.portal.service.order;
 
+import com.alibaba.fastjson.JSON;
 import com.crazy.portal.bean.order.OrderApprovalBean;
 import com.crazy.portal.bean.order.wsdl.change.*;
 import com.crazy.portal.bean.order.wsdl.create.EtItems;
@@ -7,7 +8,6 @@ import com.crazy.portal.bean.order.wsdl.create.IsHeader;
 import com.crazy.portal.bean.order.wsdl.create.ItItem;
 import com.crazy.portal.bean.order.wsdl.create.ItItems;
 import com.crazy.portal.bean.order.wsdl.create.*;
-import com.crazy.portal.config.exception.BusinessException;
 import com.crazy.portal.dao.cusotmer.CustomerInfoMapper;
 import com.crazy.portal.dao.order.OrderApplyMapper;
 import com.crazy.portal.dao.order.OrderLineMapper;
@@ -22,17 +22,22 @@ import com.crazy.portal.entity.product.ProductInfoDO;
 import com.crazy.portal.entity.system.SysParameter;
 import com.crazy.portal.entity.system.User;
 import com.crazy.portal.service.system.SysParamService;
+import com.crazy.portal.service.webservice.ApiUsersService;
 import com.crazy.portal.util.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import javax.annotation.Resource;
 import java.beans.IntrospectionException;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.text.ParseException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -60,6 +65,8 @@ public class OrderApproveService extends CommonOrderService{
     private CustomerInfoMapper customerInfoMapper;
     @Resource
     private SysParamService sysParamService;
+    @Resource
+    private ApiUsersService apiUsersService;
 
     /**
      * 订单审批
@@ -115,15 +122,21 @@ public class OrderApproveService extends CommonOrderService{
      * @param cancelOrder
      */
     private void deletePoOrder(Order cancelOrder) {
+        String response = "";
+        String message = "";
+        List<OrderLine> lines = new ArrayList<>();
         try {
-            List<OrderLine> lines = this.getPoOrderLines(cancelOrder);
+            lines = this.getPoOrderLines(cancelOrder);
 
             if (lines == null) return;
 
-            String portalIds = lines.stream().map(x->x.getProductId()).collect(Collectors.joining(","));
+            String portalIds = lines.stream().map(x->x.getId().toString()).collect(Collectors.joining(","));
             orderApiService.deletePOAdditionalOrder(portalIds);
         } catch (Exception e) {
+            message = e.getMessage();
             log.error("deletePoOrder error",e);
+        }finally {
+            apiUsersService.saveLog(String.valueOf(cancelOrder.getDealerId()), JSON.toJSONString(lines),response,new Date().getTime(),"Po 加单",message);
         }
     }
 
@@ -150,29 +163,44 @@ public class OrderApproveService extends CommonOrderService{
      * @param order
      */
     private void savePoAdditionalOrder(Order order){
+        String response = "";
+        String message = "";
+        List<PoAdditionalOrderReq> poReqs = new ArrayList<>();
         try {
             //只有订单类型为客户专货订单才进行po加单同步
             List<OrderLine> lines = this.getPoOrderLines(order);
 
             if (lines == null) return;
 
-            List<PoAdditionalOrderReq> poReqs = lines.stream().map(x -> {
-                PoAdditionalOrderReq poAdditionalOrderReq = new PoAdditionalOrderReq();
-                poAdditionalOrderReq.setSapCode(x.getRSapOrderId());
-                poAdditionalOrderReq.setPoPrice(x.getRPrice().toString());
-                poAdditionalOrderReq.setQty(x.getNum().toString());
-                poAdditionalOrderReq.setClass3(x.getPlatform());
-                poAdditionalOrderReq.setCustomerIncode(order.getSendTo());
-    //            poAdditionalOrderReq.setAgencyIncode();
-                poAdditionalOrderReq.setCompany(order.getSalesOrg());
-                poAdditionalOrderReq.setYearMonth(order.getPriceDate());
-                poAdditionalOrderReq.setPortalId(x.getProductId());
-                return poAdditionalOrderReq;
-            }).collect(Collectors.toList());
+            for(OrderLine line : lines){
+                PoAdditionalOrderReq req = new PoAdditionalOrderReq();
+                req.setPortalId(String.valueOf(line.getId()));
+                req.setYearMonth(String.valueOf(DateUtil.parseDate(order.getPriceDate(),DateUtil.MONTH_FORMAT)));
+                req.setCompany(order.getSalesOrg());
 
-            orderApiService.savePOAdditionalOrderFromCRM(poReqs);
+                List<CustomerInfo> dealerInfo = customerInfoMapper.getDealerInCustomer(order.getDealerId());
+                BusinessUtil.assertFlase(dealerInfo.size()==0 || StringUtil.isEmpty(dealerInfo.get(0).getOutCode()),ErrorCodes.BusinessEnum.IN_CUSTOMER_IS_NULL);
+                req.setAgencyIncode(dealerInfo.get(0).getOutCode());
+
+                if(StringUtil.isNotEmpty(line.getCustAbbreviation())){
+                    CustomerInfo customerInfo = customerInfoMapper.selectInCustomerByAbb(line.getCustAbbreviation());
+                    BusinessUtil.assertFlase(null == customerInfo,ErrorCodes.BusinessEnum.IN_CUSTOMER_IS_NULL);
+                    req.setCustomerIncode(customerInfo.getOutCode());
+                }
+
+                req.setSapCode(line.getRSapOrderId());
+                req.setPoPrice(line.getUnitPrice().toString());
+                req.setQty(line.getNum().toString());
+                req.setClass3(line.getPlatform());
+
+                poReqs.add(req);
+            }
+            response = orderApiService.savePOAdditionalOrderFromCRM(poReqs);
         } catch (Exception e) {
+            message = e.getMessage();
             log.error("savePoAdditionalOrder error",e);
+        }finally {
+            apiUsersService.saveLog(String.valueOf(order.getDealerId()), JSON.toJSONString(poReqs),response,new Date().getTime(),"Po 加单",message);
         }
     }
 

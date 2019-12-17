@@ -234,18 +234,14 @@ public class OrderApiService {
      * @param reqs
      * @return
      */
-    public boolean savePOAdditionalOrderFromCRM(List<PoAdditionalOrderReq> reqs){
-        try {
-            String url = String.format("%s%s",ECC_API_URL,SAVE_ADDITIONAL_ORDER_URL);
-            String body = JSON.toJSONString(reqs);
-            log.info("url -> {}, request -> {}",url,body);
-            String response = HttpClientUtils.post(url, body);
-            log.info("response - >" + response);
-            return response.contains("OK");
-        } catch (IOException e) {
-            log.error("",e);
-        }
-        return false;
+    public String savePOAdditionalOrderFromCRM(List<PoAdditionalOrderReq> reqs)throws Exception{
+        String url = String.format("%s%s",ECC_API_URL,SAVE_ADDITIONAL_ORDER_URL);
+        String body = JSON.toJSONString(reqs);
+        log.info("url -> {}, request -> {}",url,body);
+        String response = HttpClientUtils.post(url, body);
+        log.info("response - >" + response);
+        return response;
+
     }
 
     /**
@@ -253,18 +249,13 @@ public class OrderApiService {
      * @param ids
      * @return
      */
-    public boolean deletePOAdditionalOrder(String ids){
-        try {
-            String url = String.format("%s%s",ECC_API_URL,DELETE_ADDITIONAL_ORDER_URL);
-            url = url + "?sIDList=" + ids;
-            log.info("url -> {}",url);
-            String response = HttpClientUtils.get(url);
-            log.info("response - >" + response);
-            return response.contains("删除成功");
-        } catch (IOException e) {
-            log.error("",e);
-        }
-        return false;
+    public String deletePOAdditionalOrder(String ids)throws Exception{
+        String url = String.format("%s%s",ECC_API_URL,DELETE_ADDITIONAL_ORDER_URL);
+        url = url + "?sIDList=" + ids;
+        log.info("url -> {}",url);
+        String response = HttpClientUtils.get(url);
+        log.info("response - >" + response);
+        return response;
     }
 
 
