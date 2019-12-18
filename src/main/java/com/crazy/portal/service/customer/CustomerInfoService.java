@@ -628,7 +628,11 @@ public class CustomerInfoService {
         invoiceInfos.forEach(e->{
             customer.setPurchasingUnit(e.getPurchasingUnit());
             customer.setShippingAddress(e.getShippingAddress());
-            customer.setPhone(e.getShippingMobile());
+            String address = e.getShippingAddress();
+            if(StringUtil.isNotEmpty(e.getShippingAddress()) && e.getShippingAddress().length()>15){
+                address = e.getShippingAddress().substring(0,15);
+            }
+            customer.setPhone(address);
             customer.setTaxpayerRegistrationNumber(e.getTaxpayerRegistrationNumber());
             customer.setCurrency(e.getCurrency());
         });
@@ -649,16 +653,28 @@ public class CustomerInfoService {
 
     private void addressMapping(Customer customer, List<CustomerAddress> customerAddress){
         List<AddressInformation> addressInformation = new ArrayList<>();
-        customerAddress.forEach(e->{
+        boolean main = false;
+        for(CustomerAddress e: customerAddress){
             AddressInformation information  = new AddressInformation();
             information.setAddressType(e.getAddressType());
+
+            if(main == false){
+                AddressUsage usage = new AddressUsage();
+                usage.setAddressUsageCode("XXDEFAULT");
+                information.setAddressUsage(usage);
+                main = true;
+            }
 
             Address address = new Address();
             PostalAddress postalAddress = new PostalAddress();
             postalAddress.setCountryCode(e.getCountry().substring(0,e.getCountry().indexOf(",")));
             postalAddress.setCityName(e.getCity());
             postalAddress.setRegionDescription(e.getCountry().substring(e.getCountry().indexOf(",")+1));
-            postalAddress.setStreetName(e.getDistrict());
+            String streetName = e.getDistrict();
+            if(StringUtil.isNotEmpty(e.getAddressDetail()) && e.getDistrict().length()>15){
+                streetName = e.getDistrict().substring(0,15);
+            }
+            postalAddress.setStreetName(streetName);
             address.setPostalAddress(postalAddress);
 
             if(StringUtil.isNotEmpty(e.getMobile())){
@@ -672,7 +688,7 @@ public class CustomerInfoService {
             address.setEmail(email);
             information.setAddress(address);
             addressInformation.add(information);
-        });
+        }
         customer.setAddressInformation(addressInformation);
     }
 
