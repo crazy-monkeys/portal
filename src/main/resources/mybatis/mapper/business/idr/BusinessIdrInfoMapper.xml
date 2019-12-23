@@ -21,6 +21,8 @@
     <result column="company" jdbcType="VARCHAR" property="company" />
     <result column="reviewed_people" jdbcType="VARCHAR" property="reviewedPeople"></result>
     <result column="current_reviewer" jdbcType="VARCHAR" property="currentReviewer"></result>
+    <result column="order_no" jdbcType="VARCHAR" property="orderNo"/>
+    <result column="customer_name" jdbcType="VARCHAR" property="applyPeople"/>
   </resultMap>
   <sql id="Base_Column_List">
     id, shipper_code, apply_time, currency, cr_amount, in_customer_name, out_customer_name,
@@ -206,12 +208,13 @@
     select
     a.id, a.shipper_code, a.apply_time, a.currency, a.cr_amount, a.in_customer_name, a.out_customer_name, a.dealer_id, a.reson,
     a.remark, a.type, a.create_id, a.create_time, a.update_id, a.update_time, a.status, a.company, b.reviewed_people,
-    b.current_reviewer
+    b.current_reviewer, b.order_no, d.customer_name
     from t_business_idr_info a
     inner join (
-        select b.idr_info_id, b.reviewed_people, b.current_reviewer from t_business_idr_approval b
+        select b.idr_info_id, b.reviewed_people, b.current_reviewer, b.order_no from t_business_idr_approval b
         where b.id = (select max(c.id) from t_business_idr_approval c where c.idr_info_id = b.idr_info_id group by c.idr_info_id)
     ) b on b.idr_info_id = a.id
+    inner join t_user d on d.id = a.create_id
     <where>
       <if test="dealerId != null and dealerId !=''">
         and create_id = #{dealerId,jdbcType=INTEGER}
@@ -242,6 +245,9 @@
       </if>
       <if test="outCustomerName != null and outCustomerName != ''">
         and out_customer_name like concat('%',#{outCustomerName,jdbcType=VARCHAR},'%')
+      </if>
+      <if test="orderNo != null and orderNo != ''">
+        and b.order_no like concat('%',#{orderNo,jdbcType=VARCHAR},'%')
       </if>
     </where>
     order by create_time desc

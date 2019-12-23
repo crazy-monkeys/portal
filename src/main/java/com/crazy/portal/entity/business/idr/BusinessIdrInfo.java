@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
@@ -52,6 +51,10 @@ public class BusinessIdrInfo {
     private String reviewedPeople;
     //下一位审批人
     private String currentReviewer;
+    //订单号
+    private String orderNo;
+    //申请人
+    private String applyPeople;
 
     @JsonIgnore
     @JSONField(serialize = false)

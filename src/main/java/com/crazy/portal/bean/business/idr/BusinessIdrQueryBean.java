@@ -4,7 +4,6 @@ import com.crazy.portal.bean.common.PageBean;
 import lombok.Data;
 
 import java.math.BigDecimal;
-import java.util.Date;
 
 /**
  * 列表查询筛选
@@ -33,4 +32,6 @@ public class BusinessIdrQueryBean extends PageBean {
 
     //代理商ID
     private Integer dealerId;
+    //订单号
+    private String orderNo;
 }
