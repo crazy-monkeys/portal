@@ -641,12 +641,10 @@ public class CustomerInfoService {
     private void shipMapping(Customer customer, List<CustCorporateRelationship> relationships){
         List<Relationship> relationshipList = new ArrayList<>();
         relationships.forEach(e->{
-            if(StringUtil.isNotEmpty(e.getCorporateId())){
-                Relationship relationship = new Relationship();
-                relationship.setRelationshipBusinessPartnerInternalID(null==e.getCorporateId()?e.getCorporateName():e.getCorporateId().toString());
-                relationship.setRoleCode(String.format("%s%s",e.getCorporateType(),"-1"));
-                relationshipList.add(relationship);
-            }
+            Relationship relationship = new Relationship();
+            relationship.setRelationshipBusinessPartnerInternalID(null==e.getCorporateId()?e.getCorporateName():e.getCorporateId().toString());
+            relationship.setRoleCode(String.format("%s%s",e.getCorporateType(),"-1"));
+            relationshipList.add(relationship);
         });
         customer.setRelationship(relationshipList);
     }
@@ -671,7 +669,7 @@ public class CustomerInfoService {
             postalAddress.setCityName(e.getCity());
             postalAddress.setRegionDescription(e.getCountry().substring(e.getCountry().indexOf(",")+1));
             String streetName = e.getDistrict();
-            if(StringUtil.isNotEmpty(e.getAddressDetail()) && e.getDistrict().length()>15){
+            if(StringUtil.isNotEmpty(e.getDistrict()) && e.getDistrict().length()>15){
                 streetName = e.getDistrict().substring(0,15);
             }
             postalAddress.setStreetName(streetName);
@@ -1076,18 +1074,11 @@ public class CustomerInfoService {
     }
 
     private void checkCustomer(CustomerInfo customerInfo) {
-       /* if (StringUtil.isNotEmpty(customerInfo.getCustMobile())) {
-            String telRegex = "[1][345678]\\d{9}";
-            BusinessUtil.assertTrue(customerInfo.getCustMobile().matches(telRegex), ErrorCodes.BusinessEnum.CUSTOMER_MOBILE_IS_INACTIVE);
-        }*/
         if (StringUtil.isNotEmpty(customerInfo.getCustEmail())) {
             String mailRegex = "^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+(\\.[a-zA-Z0-9-]+)*\\.[a-zA-Z0-9]{2,6}$";
             BusinessUtil.assertTrue(customerInfo.getCustEmail().matches(mailRegex), ErrorCodes.BusinessEnum.CUSTOMER_EMAIL_IS_INACTIVE);
         }
-        /*if (StringUtil.isNotEmpty(customerInfo.getCustWeb())) {
-            String webRegex = "^([hH][tT]{2}[pP]://|[hH][tT]{2}[pP][sS]://)(([A-Za-z0-9-~]+).)+([A-Za-z0-9-~\\/])+$";
-            BusinessUtil.assertTrue(customerInfo.getCustWeb().matches(webRegex), ErrorCodes.BusinessEnum.CUSTOMER_WEB_IS_INACTIVE);
-        }*/
+        BusinessUtil.assertFlase(StringUtil.isEmpty(customerInfo.getCustAbbreviation()),ErrorCodes.BusinessEnum.CUSTOMER_ABB_IS_NOT_ENPTY);
     }
     /**
      *

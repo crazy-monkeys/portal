@@ -686,9 +686,9 @@
     cust.approve_time,
     cust.create_time
     from t_customer_info cust
-    left join cust_zr_account_team team on team.cust_id = cust.id and team.active=1
+    left join cust_zr_account_team team on team.cust_id = cust.id and team.active=1 and team.role_type = '142'
     left join t_internal_user ins on ins.user_no = team.employee_id and ins.active=1
-    left join t_cust_corporate_relationship ship on ship.cust_id = cust.id and ship.active=1
+    left join t_cust_corporate_relationship ship on ship.cust_id = cust.id and ship.active=1 and ship.corporate_type = 'Z004'
     where cust.business_type != 'A04'
     and cust.active =1
     <if test="customerName != null and customerName != ''">
@@ -729,7 +729,7 @@
     </if>
     <if test="queryType == 3 ">
       <if test="reportDealer!=null">
-        and ship.corporate_type = 'Z004' and ship.corporate_id = #{reportDealer,jdbcType=INTEGER}
+         and ship.corporate_id = #{reportDealer,jdbcType=INTEGER}
       </if>
       <if test="reportSales != null">
          and team.employee_id = #{reportSales,jdbcType=INTEGER}
@@ -750,7 +750,7 @@
       </if>
     </if>
     <if test="queryType == 1 ">
-      and cust.approve_status != 4 and team.role_type = '142' and ship.corporate_type = 'Z004'
+      and cust.approve_status != 4 and (team.role_type = '142' or ship.corporate_type = 'Z004')
       <if test="custType != '' and custType != null">
         and cust.cust_type = #{custType,jdbcType=INTEGER}
       </if>

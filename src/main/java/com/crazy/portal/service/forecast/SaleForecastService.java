@@ -153,6 +153,7 @@ public class SaleForecastService {
      */
     @Transactional
     public ForecastResult uploadAgencyTemplate(MultipartFile excel, User user) {
+        checkForcast(25);
         BusinessUtil.notNull(excel, FORECAST_EXCEL_CHECK_ERROR);
         //获取代理商信息
         CustomerInfo customerInfo = new CustomerInfo();
@@ -349,6 +350,7 @@ public class SaleForecastService {
      */
     @Transactional
     public void deleteAgencyForecastData(Integer[] forecastIds) {
+        checkForcast(25);
         for(Integer id : forecastIds){
             Forecast forecast = forecastMapper.selectByPrimaryKey(id);
             BusinessUtil.notNull(forecast, FORECAST_DB_DATA_MISMATCH);
@@ -381,6 +383,7 @@ public class SaleForecastService {
      */
     @Transactional
     public void updateAgencyForecastData(List<ForecastParam> list, Integer userId) {
+        checkForcast(25);
         BusinessUtil.notNull(list, FORECAST_REQ_PARAM_NOT_EMPTY);
         for(ForecastParam data : list){
             Forecast forecast = forecastMapper.selectByPrimaryKey(data.getForecastId());
@@ -1478,6 +1481,13 @@ public class SaleForecastService {
         public void setTotalFilePath(String totalFilePath) {
             this.totalFilePath = totalFilePath;
         }
+    }
+
+    /**
+     * 每月25号后预测数据不允许操作
+     */
+    public void checkForcast(Integer day){
+        BusinessUtil.assertFlase(DateUtil.getDay(new Date())>day,ErrorCodes.BusinessEnum.FORECAST_DATE_IS_BEFOR);
     }
 
 }

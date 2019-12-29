@@ -18,6 +18,7 @@ import com.crazy.portal.config.exception.BusinessException;
 import com.crazy.portal.entity.order.PoAdditionalOrderReq;
 import com.crazy.portal.util.*;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.map.LinkedMap;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -25,6 +26,7 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -239,7 +241,7 @@ public class OrderApiService {
     public String savePOAdditionalOrderFromCRM(List<PoAdditionalOrderReq> reqs)throws Exception{
         String url = String.format("%s%s",ECC_API_URL,SAVE_ADDITIONAL_ORDER_URL);
         Map<String,String> map = new HashMap<>();
-        map.put("sJson",JSON.toJSONString(reqs));
+        map.put("sJson",JSON.toJSONString(initReqs(reqs)));
         String body = JSON.toJSONString(map);
         log.info("url -> {}, request -> {}",url,body);
         String response = HttpClientUtils.post(url, body);
@@ -248,6 +250,23 @@ public class OrderApiService {
 
     }
 
+    private List<Map<String,String>> initReqs(List<PoAdditionalOrderReq> reqs){
+        List<Map<String,String>> reqList = new ArrayList<>();
+        Map<String,String> map = new LinkedMap<>();
+        for(PoAdditionalOrderReq req : reqs){
+            map.put("portal_id",req.getPortalId());
+            map.put("year_month",req.getYearMonth());
+            map.put("company",req.getCompany());
+            map.put("agency_incode",req.getAgencyIncode());
+            map.put("customer_incode",req.getCustomerIncode());
+            map.put("sap_code",req.getSapCode());
+            map.put("class3",req.getClass3());
+            map.put("po_price",req.getPoPrice());
+            map.put("qty",req.getQty());
+            reqList.add(map);
+        }
+        return reqList;
+    }
     /**
      * 删除
      * @param ids

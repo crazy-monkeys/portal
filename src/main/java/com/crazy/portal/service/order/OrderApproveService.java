@@ -190,7 +190,7 @@ public class OrderApproveService extends CommonOrderService{
                 }
                 req.setCustomerIncode(inCustomerCode);
 
-                req.setSapCode(line.getRSapOrderId());
+                req.setSapCode(line.getProductId());
                 req.setPoPrice(line.getUnitPrice().toString());
                 req.setQty(line.getNum().toString());
                 req.setClass3(line.getPlatform());

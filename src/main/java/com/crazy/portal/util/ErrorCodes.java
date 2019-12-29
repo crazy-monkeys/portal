@@ -190,6 +190,7 @@ public class ErrorCodes {
         CUSTOMER_IS_NOT_BB(50016,"该产品没有对应的通用价格或客户特殊价为非报备客户",""),
         CUSTOMER_IS_SYNC_ERROR(50017,"客户报备创建内部Code异常",""),
         CUSTOMER_ADDRESS_IS_NOT_ENPTY(50018,"最少维护一条地址信息",""),
+        CUSTOMER_ABB_IS_NOT_ENPTY(50019,"客户简称不能为空",""),
 
         RATE_BATCH_IS_NOT_NULL(60001,"批次号已存在",""),
         //代理费率
@@ -270,6 +271,7 @@ public class ErrorCodes {
         FORECAST_GET_LAST_VALUE_ERROR(80031, "获取上次填写值失败，请联系管理员", ""),
         FORECAST_BI_ID_EMPTY(80032, "检测BI_ID为空，请检查数据", ""),
         FORECAST_DATE_FORMAT_IS_NOT_EMP(80033, "客户专货库存截止日期不能为空", ""),
+        FORECAST_DATE_IS_BEFOR(80034, "销售预测数据已封存，如需修改或上传，请联系CS", ""),
 
         //订单管理
         ORDER_NOT_FOUND(90001, "订单信息不存在", ""),
