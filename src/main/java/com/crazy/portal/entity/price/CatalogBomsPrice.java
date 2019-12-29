@@ -23,4 +23,6 @@ public class CatalogBomsPrice {
     private BigDecimal price;
     //数量
     private Integer qty;
+    //货币
+    private String currency;
 }

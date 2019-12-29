@@ -69,6 +69,11 @@ public class CatalogPrice {
     private String inCustomer;
 
     /**
+     * 货币
+     */
+    private String currency;
+
+    /**
      * 生效时间
      */
     private String effectTime;
