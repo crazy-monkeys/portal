@@ -232,7 +232,7 @@ public class OrderApiServiceTest {
     }
 
     @Test
-    public void savePOAdditionalOrderFromCRM() {
+    public void savePOAdditionalOrderFromCRM() throws Exception{
         PoAdditionalOrderReq poAdditionalOrderReq = new PoAdditionalOrderReq();
         poAdditionalOrderReq.setPortalId("3");
         poAdditionalOrderReq.setYearMonth("201910");
@@ -243,13 +243,13 @@ public class OrderApiServiceTest {
         poAdditionalOrderReq.setClass3("RSW5108T");
         poAdditionalOrderReq.setPoPrice("3.5");
         poAdditionalOrderReq.setQty("50");
-        boolean b = eccApiService.savePOAdditionalOrderFromCRM(Arrays.asList(poAdditionalOrderReq));
-        Assert.assertTrue(b);
+        String b = eccApiService.savePOAdditionalOrderFromCRM(Arrays.asList(poAdditionalOrderReq));
+        Assert.assertNotNull(b);
     }
 
     @Test
-    public void deletePOAdditionalOrderFromCRM() {
-        boolean b = eccApiService.deletePOAdditionalOrder("1,2");
-        Assert.assertTrue(b);
+    public void deletePOAdditionalOrderFromCRM() throws Exception{
+        String b = eccApiService.deletePOAdditionalOrder("1,2");
+        Assert.assertNotNull(b);
     }
 }

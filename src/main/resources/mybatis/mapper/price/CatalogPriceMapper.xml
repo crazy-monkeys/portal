@@ -13,6 +13,7 @@
     <result column="product_type" jdbcType="VARCHAR" property="productType" />
     <result column="catalog_price" jdbcType="DECIMAL" property="catalogPrice" />
     <result column="in_customer" jdbcType="VARCHAR" property="inCustomer" />
+    <result column="currency" jdbcType="VARCHAR" property="currency" />
     <result column="effect_time" jdbcType="VARCHAR" property="effectTime" />
     <result column="dead_time" jdbcType="TIMESTAMP" property="deadTime" />
     <result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime" />
@@ -22,7 +23,7 @@
   </resultMap>
   <sql id="Base_Column_List">
     id, status, bu, pdt, sap_code, platform, product_model,price_type, product_type,catalog_price, in_customer,
-    effect_time, dead_time, modify_time, boms,remark, create_time
+    currency,effect_time, dead_time, modify_time, boms,remark, create_time
   </sql>
 
   <select id="selectBySapCode" parameterType="java.lang.String" resultMap="BaseResultMap">
@@ -59,6 +60,7 @@
     from t_catalog_price
     where product_model = #{productModel,jdbcType=VARCHAR}
     and platform = #{platform,jdbcType=VARCHAR} and platform !='' and price_type = #{priceType, jdbcType=VARCHAR}
+    and currency = 'USD'
   </select>
 
   <select id="selectByParamsWithPage" parameterType="com.crazy.portal.bean.price.CatalogPriceVO" resultMap="BaseResultMap">
@@ -167,6 +169,9 @@
       <if test="inCustomer != null">
         in_customer,
       </if>
+      <if test="currency != null">
+        currency,
+      </if>
       <if test="effectTime != null">
         effect_time,
       </if>
@@ -219,6 +224,9 @@
       </if>
       <if test="inCustomer != null">
         #{inCustomer,jdbcType=VARCHAR},
+      </if>
+      <if test="currency != null">
+        #{currency,jdbcType=VARCHAR},
       </if>
       <if test="effectTime != null">
         #{effectTime,jdbcType=VARCHAR},
@@ -274,6 +282,9 @@
       <if test="inCustomer != null">
         in_customer = #{inCustomer,jdbcType=VARCHAR},
       </if>
+      <if test="currency != null">
+        currency = #{currency,jdbcType=VARCHAR},
+      </if>
       <if test="effectTime != null">
         effect_time = #{effectTime,jdbcType=VARCHAR},
       </if>
@@ -292,5 +303,4 @@
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-
 </mapper>

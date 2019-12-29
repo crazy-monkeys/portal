@@ -120,6 +120,7 @@ public class SyncBICatalogPricesJob implements Job {
 
         //price.getCustomer_incode() 已经被重置为客户简称
         catalogPrice.setInCustomer(price.getCustomer_incode());
+        catalogPrice.setCurrency(price.getCurrency());
         catalogPrice.setProductModel(price.getProduct());
         catalogPrice.setPriceType(price.getPrice_type());
         catalogPrice.setProductType(price.getClass2());
@@ -190,6 +191,7 @@ public class SyncBICatalogPricesJob implements Job {
         bom.setInCustomer(x.getCustomer_incode());
         bom.setPrice(new BigDecimal(x.getPrice()));
         bom.setQty(Integer.parseInt(x.getQty()));
+        bom.setCurrency(x.getCurrency());
         return bom;
     }
 }

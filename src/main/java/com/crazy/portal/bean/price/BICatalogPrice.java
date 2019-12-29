@@ -20,6 +20,7 @@ public class BICatalogPrice {
     private String comments;
     private String active;
     private String price_type;
+    private String currency;
 
     //boms
     private String bom_id;
@@ -28,7 +29,4 @@ public class BICatalogPrice {
     private String price;
     private String qty;
     private String customer_incode;
-
-
-
 }
