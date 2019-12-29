@@ -65,6 +65,13 @@ public class EnquiryPriceService {
                 if(dealerCustomers.size()>0){
                     flg = true;
                     save(bu,x,vo,currentUser.getLoginName());
+                }else{
+                    //内部客户是代理商的内部简称
+                    CustomerInfo dealerInCustomer = customerInfoMapper.selectByPrimaryKey(currentUser.getDealerId());
+                    if(dealerInCustomer.getCustAbbreviation().equals(x.getInCustomer())){
+                        flg = true;
+                        save(bu,x,vo,currentUser.getLoginName());
+                    }
                 }
             }else{
                 flg = true;
