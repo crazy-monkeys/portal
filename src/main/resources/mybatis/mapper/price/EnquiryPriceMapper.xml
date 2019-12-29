@@ -16,6 +16,7 @@
     <result column="platform" jdbcType="VARCHAR" property="platform" />
     <result column="catalog_price" jdbcType="DECIMAL" property="catalogPrice" />
     <result column="in_customer" jdbcType="VARCHAR" property="inCustomer" />
+    <result column="currency" jdbcType="VARCHAR" property="currency" />
     <result column="effect_time" jdbcType="VARCHAR" property="effectTime" />
     <result column="dead_time" jdbcType="VARCHAR" property="deadTime" />
     <result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime" />
@@ -28,7 +29,7 @@
   </resultMap>
   <sql id="Base_Column_List">
     id, apply_remark, apply_time, sap_code,bu, pdt,status, product_model,product_type,price_type,
-    platform, catalog_price, in_customer, effect_time, dead_time, modify_time, approval_status, 
+    platform, catalog_price, in_customer,currency, effect_time, dead_time, modify_time, approval_status,
     approval_remark, approver, proposer,remark,boms
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
@@ -114,6 +115,9 @@
       <if test="inCustomer != null">
         in_customer,
       </if>
+      <if test="currency != null">
+        currency,
+      </if>
       <if test="effectTime != null">
         effect_time,
       </if>
@@ -182,6 +186,9 @@
       <if test="inCustomer != null">
         #{inCustomer,jdbcType=VARCHAR},
       </if>
+      <if test="currency != null">
+        #{currency,jdbcType=VARCHAR},
+      </if>
       <if test="effectTime != null">
         #{effectTime,jdbcType=VARCHAR},
       </if>
@@ -249,6 +256,9 @@
       </if>
       <if test="inCustomer != null">
         in_customer = #{inCustomer,jdbcType=VARCHAR},
+      </if>
+      <if test="currency != null">
+        currency = #{currency,jdbcType=VARCHAR},
       </if>
       <if test="effectTime != null">
         effect_time = #{effectTime,jdbcType=VARCHAR},

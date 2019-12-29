@@ -141,6 +141,7 @@ public class EnquiryPriceService {
                     CustomerInfo customerInfo = customerInfoMapper.selectByOutCode(inCustomerCode);
                     enquiryPrice.setInCustomer(customerInfo == null?inCustomerCode:customerInfo.getCustAbbreviation());
                 }
+                enquiryPrice.setCurrency(catalogPrice.getCurrency());
                 enquiryPrice.setRemark(catalogPrice.getRemark());
                 enquiryPrice.setProductType(catalogPrice.getProductType());
                 enquiryPrice.setPriceType(catalogPrice.getPriceType());
