@@ -307,6 +307,9 @@ public class ErrorCodes {
         DELIVERY_ORDER_IS_RECEVE(900029,"已收货的提货单不允许做变更",""),
         ORDER_NO_REPETITION(900030,"附件行: 物料[%s]、平台[%s]、客户[%s]已经存在,不允许重复导入",""),
         ORDER_NO_SHIPPING_ERROR(900031,"下单公司错误，下单公司范围【3000、3001、4800、7100】",""),
+        ORDER_AGENT_NOT_ALLOW_CANCEL(900032,"代理商只可以取消没有提货单的销售单行",""),
+        ORDER_AGENT_ILLEGAL_QUANTITY(900033,"订单行未发生提货,订单行数量必须大于0",""),
+
 
         //文档管理
         ARCHIVE_FILE_NOT_EMPTY(100001, "请选择需要上传的文件", ""),

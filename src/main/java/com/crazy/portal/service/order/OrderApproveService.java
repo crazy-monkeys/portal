@@ -9,15 +9,14 @@ import com.crazy.portal.bean.order.wsdl.create.ItItem;
 import com.crazy.portal.bean.order.wsdl.create.ItItems;
 import com.crazy.portal.bean.order.wsdl.create.*;
 import com.crazy.portal.dao.cusotmer.CustomerInfoMapper;
+import com.crazy.portal.dao.order.DeliverOrderMapper;
 import com.crazy.portal.dao.order.OrderApplyMapper;
 import com.crazy.portal.dao.order.OrderLineMapper;
 import com.crazy.portal.dao.order.OrderMapper;
 import com.crazy.portal.dao.product.ProductInfoDOMapper;
+import com.crazy.portal.dao.system.UserMapper;
 import com.crazy.portal.entity.cusotmer.CustomerInfo;
-import com.crazy.portal.entity.order.Order;
-import com.crazy.portal.entity.order.OrderApply;
-import com.crazy.portal.entity.order.OrderLine;
-import com.crazy.portal.entity.order.PoAdditionalOrderReq;
+import com.crazy.portal.entity.order.*;
 import com.crazy.portal.entity.product.ProductInfoDO;
 import com.crazy.portal.entity.system.SysParameter;
 import com.crazy.portal.entity.system.User;
@@ -60,6 +59,8 @@ public class OrderApproveService extends CommonOrderService{
     @Resource
     private OrderApplyMapper orderApplyMapper;
     @Resource
+    private UserMapper userMapper;
+    @Resource
     private ProductInfoDOMapper productInfoDOMapper;
     @Resource
     private CustomerInfoMapper customerInfoMapper;
@@ -98,6 +99,7 @@ public class OrderApproveService extends CommonOrderService{
                     this.savePoAdditionalOrder(modifyOrder);
                     break;
                 case 3:
+                    this.checkCancel(orderApply);
                     Order cancelOrder = this.cancelOrder(orderApply.getRSapOrderId(),userId);
                     this.deletePoOrder(cancelOrder);
                     break;
@@ -115,6 +117,16 @@ public class OrderApproveService extends CommonOrderService{
         orderApply.setApprovalTime(DateUtil.getCurrentTS());
         orderApply.setApprovalOpinions(bean.getReason());
         orderApplyMapper.updateByPrimaryKeySelective(orderApply);
+    }
+
+    private void checkCancel(OrderApply orderApply) {
+        User applyUser = userMapper.selectById(orderApply.getId());
+        //代理商只可以取消没有提货单的销售单行
+        List<Integer> ids = orderApply.lineJsonToObj(orderApply.getJsonLines())
+                .stream().map(x -> x.getId())
+                .collect(Collectors.toList());
+
+        super.cancelCheck(applyUser.getUserType(),ids);
     }
 
     /**

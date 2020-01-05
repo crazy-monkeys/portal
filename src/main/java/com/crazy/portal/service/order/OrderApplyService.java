@@ -1,5 +1,6 @@
 package com.crazy.portal.service.order;
 
+import com.alibaba.druid.wall.violation.ErrorCode;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.crazy.portal.bean.order.*;
@@ -30,6 +31,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.util.*;
@@ -373,18 +375,51 @@ public class OrderApplyService extends CommonOrderService{
 
     /**
      * 修改订单 申请
-     * @param userId
      */
     @Transactional
-    public void modifyOrderApply(OrderApply orderApply, Integer userId) throws Exception{
+    public void modifyOrderApply(OrderApply orderApply, User user) throws Exception{
+        Integer orderId = orderApply.getOrderId();
+        BusinessUtil.notNull(orderId,ErrorCodes.BusinessEnum.ORDER_APPLY_ORDER_NOT_FOUND);
+
+        Order order = orderMapper.selectByPrimaryKey(orderId);
+        BusinessUtil.notNull(order,ErrorCodes.BusinessEnum.ORDER_APPLY_ORDER_NOT_FOUND);
+
+        //获取原订单行信息
+        List<OrderLine> orderLines = orderLineMapper.selectByOrderId(order.getId());
+
+        //组装原订单行map数据
+        Map<Integer,Integer> orderLineMap = orderLines.stream()
+                .collect(Collectors.toMap(OrderLine::getId, OrderLine::getNum));
+
+        List<OrderLine> applyLines = orderApply.getOrderLines();
+        if(user.getUserType().equals(Enums.USER_TYPE.agent.toString())){
+            if(applyLines != null && !applyLines.isEmpty()){
+                Map<Integer,Integer> applyLineMap = applyLines.stream().collect(Collectors.toMap(OrderLine::getId, OrderLine::getNum));
+                List<Integer> ids = applyLines.stream().map(x -> x.getId()).collect(Collectors.toList());
+                ids.forEach(x->{
+                    List<DeliverOrderLine> deliverOrderLines = deliverOrderLineMapper.selectBySalesOrderLineId(x);
+                    if(deliverOrderLines.isEmpty()){
+                        //当订单行没有对应的提货单时，代理商可以将订单行数量修改为>0的数字
+                        BusinessUtil.assertTrue(applyLineMap.get(x) > 0,ErrorCodes.BusinessEnum.ORDER_AGENT_ILLEGAL_QUANTITY);
+                    }else{
+                        //当订单行有对应的提货单并且修改数量是减少时，减少数量不能小于该订单行的已提货数量
+                        Integer sourceNum = orderLineMap.get(x);
+                        Integer applyNum = applyLineMap.get(x);
+                        if(applyNum < sourceNum){
+                            //TODO 获取已提货数量
+                        }
+                    }
+                });
+            }
+        }
         orderApply.setActive(1);
-        orderApply.setCreateId(userId);
+        orderApply.setCreateId(user.getId());
         orderApply.setCreateTime(DateUtil.getCurrentTS());
         orderApply.setApprovalStatus(Enums.OrderApprovalStatus.WAIT_APPROVAL.getValue());
-        orderApply.setJsonLines(orderApply.objToLineJson(orderApply.getOrderLines()));
-        Integer orderId = orderApply.getOrderId();
-        if(Objects.nonNull(orderId)){
-            Order order = orderMapper.selectByPrimaryKey(orderId);
+        orderApply.setJsonLines(orderApply.objToLineJson(applyLines));
+
+        Integer applyId = orderApply.getId();
+        if(applyId == null){
             BusinessUtil.notNull(order, ErrorCodes.BusinessEnum.ORDER_NOT_FOUND);
             String rSapOrderId = order.getRSapOrderId();
             boolean result = this.hasApprovalPendingOrder(rSapOrderId);
@@ -397,7 +432,6 @@ public class OrderApplyService extends CommonOrderService{
             orderApplyMapper.insertSelective(orderApply);
         }else{
             //如果有传id过来，说明是申请单修改非新建
-            Integer applyId = orderApply.getId();
             OrderApply applyInDB = orderApplyMapper.selectByPrimaryKey(applyId);
             BeanUtils.copyNotNullFields(orderApply,applyInDB);
             orderApplyMapper.updateByPrimaryKeySelective(applyInDB);
@@ -420,16 +454,21 @@ public class OrderApplyService extends CommonOrderService{
     /**
      * 审批通过-取消订单申请
      * @param itemIds
-     * @param userId
+     * @param user
      */
     @Transactional
-    public void cancelOrderApply(Integer orderId,Set<Integer> itemIds, Integer userId) throws Exception {
+    public void cancelOrderApply(Integer orderId,Set<Integer> itemIds, User user) throws Exception {
 
         Order order = orderMapper.selectByPrimaryKey(orderId);
         BusinessUtil.notNull(order, ErrorCodes.BusinessEnum.ORDER_NOT_FOUND);
         String rSapOrderId = order.getRSapOrderId();
         boolean result = this.hasApprovalPendingOrder(rSapOrderId);
         BusinessUtil.assertFlase(result, ErrorCodes.BusinessEnum.ORDER_PENDING_ORDER);
+
+        //代理商只可以取消没有提货单的销售单行
+        List<OrderLine> orderLines = orderLineMapper.selectByOrderId(order.getId());
+        List<Integer> ids = orderLines.stream().map(x -> x.getId()).collect(Collectors.toList());
+        super.cancelCheck(user.getUserType(),ids);
 
         OrderApply orderApply = new OrderApply();
         List<OrderLine> lines = itemIds.stream()
@@ -447,7 +486,7 @@ public class OrderApplyService extends CommonOrderService{
         BeanUtils.copyNotNullFields(order,orderApply);
         orderApply.setId(null);
         orderApply.setActive(1);
-        orderApply.setCreateId(userId);
+        orderApply.setCreateId(user.getId());
         orderApply.setCreateTime(DateUtil.getCurrentTS());
         orderApply.setGrossValue(order.getRGrossValue());
         orderApply.setNetValue(order.getRNetValue());

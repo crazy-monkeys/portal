@@ -21,6 +21,8 @@ public interface DeliverOrderLineMapper {
 
     List<DeliverOrderLine> selectByDeliveryOrderId(@Param("deliveryOrderId") Integer deliveryOrderId);
 
+    List<DeliverOrderLine> selectBySalesOrderLineId(Integer orderLineId);
+
     DeliverOrderLine selectBySapDeliveryOrderLineNo(String sapDeliveryOrderLineNo);
 
     int updateReciveQty(@Param("deliverOrderId") Integer deliverOrderId, @Param("qty")BigDecimal qty);

@@ -2,10 +2,14 @@ package com.crazy.portal.service.order;
 
 import com.crazy.portal.config.exception.BusinessException;
 import com.crazy.portal.dao.cusotmer.CustomerInfoMapper;
+import com.crazy.portal.dao.order.DeliverOrderLineMapper;
 import com.crazy.portal.dao.product.ProductInfoDOMapper;
 import com.crazy.portal.entity.cusotmer.CustomerInfo;
+import com.crazy.portal.entity.order.DeliverOrderLine;
 import com.crazy.portal.entity.order.OrderLine;
 import com.crazy.portal.entity.product.ProductInfoDO;
+import com.crazy.portal.util.BusinessUtil;
+import com.crazy.portal.util.Enums;
 import com.crazy.portal.util.ErrorCodes;
 import com.crazy.portal.util.StringUtil;
 import org.springframework.stereotype.Service;
@@ -31,6 +35,9 @@ public class CommonOrderService {
 
     @Resource
     private CustomerInfoMapper customerInfoMapper;
+
+    @Resource
+    private DeliverOrderLineMapper deliverOrderLineMapper;
 
     public void resetLines(List<OrderLine> lines) {
         lines.stream().forEach(x->{
@@ -106,5 +113,19 @@ public class CommonOrderService {
 
     private String featchGroupBy(OrderLine orderLine){
         return orderLine.getProductId() + orderLine.getPlatform()+orderLine.getCustAbbreviation();
+    }
+
+    /**
+     * 代理商只可以取消没有提货单的销售单行
+     * @param userType
+     * @param lineIds 订单行id
+     */
+    protected void cancelCheck(String userType,List<Integer> lineIds){
+        if(userType.equals(Enums.USER_TYPE.agent.toString())){
+            lineIds.forEach(x->{
+                List<DeliverOrderLine> deliverOrderLines = deliverOrderLineMapper.selectBySalesOrderLineId(x);
+                BusinessUtil.assertTrue(deliverOrderLines.isEmpty(), ErrorCodes.BusinessEnum.ORDER_AGENT_NOT_ALLOW_CANCEL);
+            });
+        }
     }
 }

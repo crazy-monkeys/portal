@@ -74,7 +74,7 @@ public class OrderApplyController extends BaseController {
     @PostMapping("/modify")
     public BaseResponse modify(@RequestBody @Valid OrderApply orderApply) throws Exception{
 
-        orderApplyService.modifyOrderApply(orderApply,super.getCurrentUserId());
+        orderApplyService.modifyOrderApply(orderApply,super.getCurrentUser());
         return successResult();
     }
 
@@ -88,7 +88,7 @@ public class OrderApplyController extends BaseController {
     public BaseResponse cancel(@PathVariable Integer orderId,
                                @RequestParam Set<Integer> itemIds) throws Exception{
 
-        orderApplyService.cancelOrderApply(orderId,itemIds, getCurrentUserId());
+        orderApplyService.cancelOrderApply(orderId,itemIds, getCurrentUser());
         return successResult();
     }
 
