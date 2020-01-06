@@ -143,28 +143,30 @@ public class CommonOrderService {
         Map<Integer,Integer> orderLineMap = orderLines.stream()
                 .collect(Collectors.toMap(OrderLine::getId, OrderLine::getNum));
 
-        if(user.getUserType().equals(Enums.USER_TYPE.agent.toString())){
-            if(applyLines != null && !applyLines.isEmpty()){
-                Map<Integer,Integer> applyLineMap = applyLines.stream().collect(Collectors.toMap(OrderLine::getId, OrderLine::getNum));
-                List<Integer> ids = applyLines.stream().map(x -> x.getId()).collect(Collectors.toList());
-                ids.forEach(x->{
-                    List<DeliverOrderLine> deliverOrderLines = deliverOrderLineMapper.selectBySalesOrderLineId(x);
-                    if(deliverOrderLines.isEmpty()){
-                        //当订单行没有对应的提货单时，代理商可以将订单行数量修改为>0的数字
-                        BusinessUtil.assertTrue(applyLineMap.get(x) > 0, ErrorCodes.BusinessEnum.ORDER_AGENT_ILLEGAL_QUANTITY);
-                    }else{
-                        //当订单行有对应的提货单并且修改数量是减少时，减少数量不能小于该订单行的已提货数量
-                        Integer sourceNum = orderLineMap.get(x);
-                        Integer applyNum = applyLineMap.get(x);
-                        //申请数量比原数量少,则是减少
-                        if(applyNum < sourceNum){
-                            //获取已提货数量
-                            int deliveryQuantity = deliverOrderLines.stream().mapToInt(dol -> dol.getDeliveryQuantity()).sum();
-                            BusinessUtil.assertFlase(applyNum < deliveryQuantity,ErrorCodes.BusinessEnum.ORDER_AGENT_ILLEGAL_QUANTITY);
-                        }
+        if(!user.getUserType().equals(Enums.USER_TYPE.agent.toString())) return;
+
+        if(applyLines != null && !applyLines.isEmpty()){
+            Map<Integer,Integer> applyLineMap = applyLines.stream()
+                    .collect(Collectors.toMap(OrderLine::getId, OrderLine::getNum));
+
+            List<Integer> ids = applyLines.stream().map(x -> x.getId()).collect(Collectors.toList());
+            ids.forEach(x->{
+                List<DeliverOrderLine> deliverOrderLines = deliverOrderLineMapper.selectBySalesOrderLineId(x);
+                if(deliverOrderLines.isEmpty()){
+                    //当订单行没有对应的提货单时，代理商可以将订单行数量修改为>0的数字
+                    BusinessUtil.assertTrue(applyLineMap.get(x) > 0, ErrorCodes.BusinessEnum.ORDER_AGENT_ILLEGAL_QUANTITY);
+                }else{
+                    //当订单行有对应的提货单并且修改数量是减少时，减少数量不能小于该订单行的已提货数量
+                    Integer sourceNum = orderLineMap.get(x);
+                    Integer applyNum = applyLineMap.get(x);
+                    //申请数量比原数量少,则是减少
+                    if(applyNum < sourceNum){
+                        //获取已提货数量
+                        int deliveryQuantity = deliverOrderLines.stream().mapToInt(dol -> dol.getDeliveryQuantity()).sum();
+                        BusinessUtil.assertFlase(applyNum < deliveryQuantity,ErrorCodes.BusinessEnum.ORDER_AGENT_ILLEGAL_QUANTITY);
                     }
-                });
-            }
+                }
+            });
         }
     }
 }
