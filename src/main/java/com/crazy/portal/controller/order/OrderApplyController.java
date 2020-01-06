@@ -56,9 +56,11 @@ public class OrderApplyController extends BaseController {
      * 审批驳回-订单修改申请
      * @param orderApply
      * @return
+     * @Desc 好像没有地方调用
      */
     @OperationLog
     @PostMapping("/update")
+    @Deprecated
     public BaseResponse update(@RequestBody @Valid OrderApply orderApply) throws Exception{
 
         orderApplyService.update(orderApply, getCurrentUserId());

@@ -308,7 +308,8 @@ public class ErrorCodes {
         ORDER_NO_REPETITION(900030,"附件行: 物料[%s]、平台[%s]、客户[%s]已经存在,不允许重复导入",""),
         ORDER_NO_SHIPPING_ERROR(900031,"下单公司错误，下单公司范围【3000、3001、4800、7100】",""),
         ORDER_AGENT_NOT_ALLOW_CANCEL(900032,"代理商只可以取消没有提货单的销售单行",""),
-        ORDER_AGENT_ILLEGAL_QUANTITY(900033,"订单行未发生提货,订单行数量必须大于0",""),
+        ORDER_AGENT_ZERO_QUANTITY(900033,"订单行数量必须大于0",""),
+        ORDER_AGENT_ILLEGAL_QUANTITY(900034,"订单提货后减少数量,减少数量不能小于该订单行的已提货数量",""),
 
 
         //文档管理

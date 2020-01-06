@@ -9,7 +9,6 @@ import com.crazy.portal.bean.order.wsdl.create.ItItem;
 import com.crazy.portal.bean.order.wsdl.create.ItItems;
 import com.crazy.portal.bean.order.wsdl.create.*;
 import com.crazy.portal.dao.cusotmer.CustomerInfoMapper;
-import com.crazy.portal.dao.order.DeliverOrderMapper;
 import com.crazy.portal.dao.order.OrderApplyMapper;
 import com.crazy.portal.dao.order.OrderLineMapper;
 import com.crazy.portal.dao.order.OrderMapper;
@@ -95,11 +94,11 @@ public class OrderApproveService extends CommonOrderService{
                     this.savePoAdditionalOrder(createOrder);
                     break;
                 case 2:
-                    Order modifyOrder = this.modifyOrder(orderApply, userId);
+                    Order modifyOrder = this.modifyOrder(orderApply, user);
                     this.savePoAdditionalOrder(modifyOrder);
                     break;
                 case 3:
-                    this.checkCancel(orderApply);
+                    this.checkCancelOrder(orderApply);
                     Order cancelOrder = this.cancelOrder(orderApply.getRSapOrderId(),userId);
                     this.deletePoOrder(cancelOrder);
                     break;
@@ -119,14 +118,18 @@ public class OrderApproveService extends CommonOrderService{
         orderApplyMapper.updateByPrimaryKeySelective(orderApply);
     }
 
-    private void checkCancel(OrderApply orderApply) {
+    /**
+     * 检查取消订单
+     * @param orderApply
+     */
+    private void checkCancelOrder(OrderApply orderApply) {
         User applyUser = userMapper.selectById(orderApply.getId());
         //代理商只可以取消没有提货单的销售单行
         List<Integer> ids = orderApply.lineJsonToObj(orderApply.getJsonLines())
                 .stream().map(x -> x.getId())
                 .collect(Collectors.toList());
 
-        super.cancelCheck(applyUser.getUserType(),ids);
+        super.checkCancelOrder(applyUser.getUserType(),ids);
     }
 
     /**
@@ -463,15 +466,19 @@ public class OrderApproveService extends CommonOrderService{
 
     /**
      * 执行修改订单
-     * @param userId
+     * @param user
      */
-    private Order modifyOrder(OrderApply orderApply,Integer userId) throws Exception{
-
+    private Order modifyOrder(OrderApply orderApply,User user) throws Exception{
+        Integer userId = user.getId();
         String sapOrderId = orderApply.getRSapOrderId();
         Order order = this.getOrderBySapOrderId(sapOrderId);
 
         //获取申请的行信息
         List<OrderLine> applyLines = orderApply.lineJsonToObj(orderApply.getJsonLines());
+        //获取原订单行信息
+        List<OrderLine> orderLines = orderLineMapper.selectByOrderId(order.getId());
+        //检查订单数量
+        super.checkApplyQuantity(user,applyLines,orderLines);
 
         //封装申请的物料号对应的物料信息,方便下面使用
         Map<String,OrderLine> applyLineMap = applyLines.stream().collect(
@@ -480,22 +487,24 @@ public class OrderApproveService extends CommonOrderService{
         //里面会校验是否调用成功
         ZrfcsdsalesorderchangeResponse response = this.invokeEccModifyOrder(order,orderApply,applyLineMap,"I");
 
-        List<OrderLine> orderLines = orderLineMapper.selectByOrderId(order.getId());
-
         //修改订单头
-        order.setSendTo(orderApply.getSendTo());
-        order.setSalesOrg(orderApply.getSalesOrg());
-        order.setPurchaseNo(orderApply.getPurchaseNo());
-        order.setRGrossValue(response.getEsHeader().getGrossvalue());
-        order.setRNetValue(response.getEsHeader().getNetvalue());
-        order.setPurchaseDate(orderApply.getPurchaseDate());
-        order.setCustomerAttr(orderApply.getCustomerAttr());
-        order.setUpdateId(userId);
-        order.setUpdateTime(DateUtil.getCurrentTS());
-        orderMapper.updateByPrimaryKeySelective(order);
+        this.modifyOrderHead(orderApply, userId, order, response);
         //修改订单行
         List<ZsalesorderchangeOutItem> items = response.getEtItems().getItem();
+        this.modifyOrderLines(userId, order, orderLines, applyLineMap, items);
 
+        return order;
+    }
+
+    /**
+     * 修改订单行信息
+     * @param userId
+     * @param order
+     * @param orderLines
+     * @param applyLineMap
+     * @param items
+     */
+    private void modifyOrderLines(Integer userId, Order order, List<OrderLine> orderLines, Map<String, OrderLine> applyLineMap, List<ZsalesorderchangeOutItem> items) {
         items.forEach(eccLine->{
             String eccProductId = eccLine.getProductid().replaceAll("^(0+)", "");
             //遍历portal 订单行
@@ -512,19 +521,11 @@ public class OrderApproveService extends CommonOrderService{
                     if(!order.getUnderOrderType().equals("ZFD")){
                         super.checkPrice(eccProductId,eccLine.getNetprice(),eccLine.getPrice());
                     }
-                    //refItemProductId的为虚拟物料
                     if(StringUtils.isEmpty(line.getRRefItemProductId())){
-                        //提取虚拟物料和实体物料信息
-                        List<ZsalesorderchangeOutItem> currProductItems = getZsalesorderchangeOutItems(items, portalProductId, portalPlatform);
-
-                        line.setRPrice(currProductItems.stream()
-                                .map(ZsalesorderchangeOutItem::getPrice)
-                                .reduce(BigDecimal.ZERO,BigDecimal::add));
-
-                        line.setRNetPrice(currProductItems.stream()
-                                .map(ZsalesorderchangeOutItem::getNetprice)
-                                .reduce(BigDecimal.ZERO,BigDecimal::add));
+                        //虚拟料需要计算价格
+                        this.calVirtualMaterialPrice(items, line, portalProductId, portalPlatform);
                     }else{
+                        //实体料取自己的价格
                         line.setRPrice(eccLine.getPrice());
                         line.setRNetPrice(eccLine.getNetprice());
                     }
@@ -533,7 +534,39 @@ public class OrderApproveService extends CommonOrderService{
                 }
             });
         });
-        return order;
+    }
+
+    /**
+     * 计算虚拟物料的价格=(实体料价格+虚拟料价格),这里去实体料就行了,虚拟料价格是0
+     * @param items
+     * @param line
+     * @param portalProductId
+     * @param portalPlatform
+     */
+    private void calVirtualMaterialPrice(List<ZsalesorderchangeOutItem> items, OrderLine line, String portalProductId, String portalPlatform) {
+        //提取虚拟物料和实体物料信息
+        List<ZsalesorderchangeOutItem> currProductItems = this.getZsalesorderchangeOutItems(items, portalProductId, portalPlatform);
+
+        line.setRPrice(currProductItems.stream()
+                .map(ZsalesorderchangeOutItem::getPrice)
+                .reduce(BigDecimal.ZERO,BigDecimal::add));
+
+        line.setRNetPrice(currProductItems.stream()
+                .map(ZsalesorderchangeOutItem::getNetprice)
+                .reduce(BigDecimal.ZERO,BigDecimal::add));
+    }
+
+    private void modifyOrderHead(OrderApply orderApply, Integer userId, Order order, ZrfcsdsalesorderchangeResponse response) {
+        order.setSendTo(orderApply.getSendTo());
+        order.setSalesOrg(orderApply.getSalesOrg());
+        order.setPurchaseNo(orderApply.getPurchaseNo());
+        order.setRGrossValue(response.getEsHeader().getGrossvalue());
+        order.setRNetValue(response.getEsHeader().getNetvalue());
+        order.setPurchaseDate(orderApply.getPurchaseDate());
+        order.setCustomerAttr(orderApply.getCustomerAttr());
+        order.setUpdateId(userId);
+        order.setUpdateTime(DateUtil.getCurrentTS());
+        orderMapper.updateByPrimaryKeySelective(order);
     }
 
     /**
