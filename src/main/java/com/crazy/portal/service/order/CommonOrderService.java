@@ -143,7 +143,6 @@ public class CommonOrderService {
         Map<Integer,Integer> orderLineMap = orderLines.stream()
                 .collect(Collectors.toMap(OrderLine::getId, OrderLine::getNum));
 
-
         if(user.getUserType().equals(Enums.USER_TYPE.agent.toString())){
             if(applyLines != null && !applyLines.isEmpty()){
                 Map<Integer,Integer> applyLineMap = applyLines.stream().collect(Collectors.toMap(OrderLine::getId, OrderLine::getNum));
