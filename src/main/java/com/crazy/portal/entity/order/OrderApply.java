@@ -189,6 +189,11 @@ public class OrderApply {
     private String rSapOrderId;
 
     /**
+     *  客户编码
+     */
+    private String outCode;
+
+    /**
      * 订单行信息
      */
     private JSONArray jsonLines;

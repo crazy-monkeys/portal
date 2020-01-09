@@ -91,11 +91,11 @@ public class OrderApproveService extends CommonOrderService{
             switch (appalyType){
                 case 1:
                     Order createOrder = this.createOrder(bean.getExpectedDeliveryDate(), orderApply, userId);
-                    this.savePoAdditionalOrder(createOrder);
+                    this.savePoAdditionalOrder(createOrder,orderApply);
                     break;
                 case 2:
                     Order modifyOrder = this.modifyOrder(orderApply, user);
-                    this.savePoAdditionalOrder(modifyOrder);
+                    this.savePoAdditionalOrder(modifyOrder,orderApply);
                     break;
                 case 3:
                     this.checkCancelOrder(orderApply);
@@ -177,14 +177,13 @@ public class OrderApproveService extends CommonOrderService{
      * 同步Po加单数据
      * @param order
      */
-    private void savePoAdditionalOrder(Order order){
+    private void savePoAdditionalOrder(Order order,OrderApply orderApply){
         String response = "";
         String message = "";
         List<PoAdditionalOrderReq> poReqs = new ArrayList<>();
         try {
             //只有订单类型为客户专货订单才进行po加单同步
             List<OrderLine> lines = this.getPoOrderLines(order);
-
             if (lines == null) return;
 
             for(OrderLine line : lines){
@@ -196,20 +195,11 @@ public class OrderApproveService extends CommonOrderService{
                 List<CustomerInfo> dealerInfo = customerInfoMapper.getDealerInCustomer(order.getDealerId());
                 BusinessUtil.assertFlase(dealerInfo.size()==0 || StringUtil.isEmpty(dealerInfo.get(0).getOutCode()),ErrorCodes.BusinessEnum.IN_CUSTOMER_IS_NULL);
                 req.setAgencyIncode(dealerInfo.get(0).getOutCode());
-
-                String inCustomerCode = "";
-                if(StringUtil.isNotEmpty(line.getCustAbbreviation())){
-                    CustomerInfo customerInfo = customerInfoMapper.selectInCustomerByAbb(line.getCustAbbreviation());
-                    BusinessUtil.assertFlase(null == customerInfo,ErrorCodes.BusinessEnum.IN_CUSTOMER_IS_NULL);
-                    inCustomerCode = customerInfo.getOutCode();
-                }
-                req.setCustomerIncode(inCustomerCode);
-
+                req.setCustomerIncode(orderApply.getOutCode());
                 req.setSapCode(line.getProductId());
                 req.setPoPrice(line.getUnitPrice().toString());
                 req.setQty(line.getNum().toString());
                 req.setClass3(line.getPlatform());
-
                 poReqs.add(req);
             }
             response = orderApiService.savePOAdditionalOrderFromCRM(poReqs);
