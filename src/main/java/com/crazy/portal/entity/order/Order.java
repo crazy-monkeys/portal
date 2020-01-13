@@ -216,4 +216,6 @@ public class Order {
      * 订单行集合
      */
     private List<OrderLine> lines = new ArrayList<>();
+
+    private String outCode;
 }

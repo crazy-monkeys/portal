@@ -10,6 +10,7 @@ import com.crazy.portal.dao.system.UserMapper;
 import com.crazy.portal.service.customer.CustomerInfoService;
 import com.crazy.portal.service.group.SalesGroupService;
 import com.crazy.portal.service.system.SysParamService;
+import com.crazy.portal.util.Enums;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
@@ -111,6 +112,9 @@ public class SysController extends BaseController {
      */
     @GetMapping("/dealer/incustomer")
     public BaseResponse getDealerInCustomer(){
+        if(super.getCurrentUser().getUserType().equals(Enums.USER_TYPE.internal.toString())){
+            return successResult(customerInfoService.getAllInCustomer());
+        }
         return successResult(customerInfoService.getDealerInCustomer(super.getCurrentUser().getDealerId()));
     }
 

@@ -47,7 +47,7 @@
     sold_to, send_to, purchase_no, purchase_date, incoterms1, incoterms2, price_date, 
     payment_terms, customer_attr, ref_sap_order_id, order_reason, invoice_type, invoice_delivery_type, 
     invoice_delivery_address, is_agreed, dealer_id,appaly_type,r_sap_order_id,json_lines, approval_status, approver, approval_opinions,
-    approval_time, active, create_id, create_time, update_id, update_time,gross_value,net_value
+    approval_time, active, create_id, create_time, update_id, update_time,gross_value,net_value,out_code
   </sql>
 
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">

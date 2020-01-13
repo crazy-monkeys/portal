@@ -375,7 +375,7 @@ public class CustomerInfoService {
     }
 
     private void saveCustomerDetail(CustomerInfo customerInfo, Integer userId){
-        saveRelationship(customerInfo.getRelationships(), customerInfo.getId(), userId);
+        //saveRelationship(customerInfo.getRelationships(), customerInfo.getId(), userId);
         saveContact(customerInfo.getCustomerContacts(), customerInfo.getId(), userId);
         saveProduct(customerInfo.getCustomerProducts(), customerInfo.getId(), userId);
         saveFile(customerInfo.getFiles(), customerInfo.getId());
@@ -386,7 +386,7 @@ public class CustomerInfoService {
         //saveAccountTeam(customerInfo.getAccountTeams(), customerInfo.getId(), userId);
         saveCustomerStructure(customerInfo.getCustStructure(), customerInfo.getId(), userId);
         saveQuotas(customerInfo.getQuotas(), customerInfo.getId(), userId);
-        saveZrAccountTeams(customerInfo.getZrAccountTeams(), customerInfo.getId(), userId);
+        //saveZrAccountTeams(customerInfo.getZrAccountTeams(), customerInfo.getId(), userId);
     }
 
     /**
@@ -1067,6 +1067,10 @@ public class CustomerInfoService {
      */
     public List<CustomerInfo> getDealerInCustomer(Integer dealerId){
         return customerInfoMapper.getDealerInCustomer(dealerId);
+    }
+
+    public List<CustomerInfo> getAllInCustomer(){
+        return customerInfoMapper.selectAllINCustomer();
     }
 
     public CustomerInfo selectCustomerByAbbreviation(String custAbbreviation){

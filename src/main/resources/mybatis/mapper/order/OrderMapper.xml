@@ -35,6 +35,7 @@
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_id" jdbcType="INTEGER" property="updateId" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="out_code" jdbcType="VARCHAR" property="outCode" />
   </resultMap>
 
   <sql id="Base_Column_List">
@@ -42,7 +43,7 @@
     sold_to, send_to, purchase_no, incoterms1, incoterms2, price_date, payment_terms, 
     customer_attr, purchase_date, ref_sap_order_id, r_sap_order_id, r_sap_currency, r_gross_value, 
     r_net_value, order_reason, invoice_type,invoice_delivery_type,invoice_delivery_address,is_agreed, active,
-    dealer_id,create_id, create_time, update_id,update_time
+    dealer_id,create_id, create_time, update_id,update_time,out_code
   </sql>
 
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
@@ -202,6 +203,9 @@
       <if test="updateTime != null">
         update_time,
       </if>
+      <if test="outCode != null">
+        out_code,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -302,6 +306,9 @@
       </if>
       <if test="updateTime != null">
         #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="outCode != null">
+        #{outCode,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
