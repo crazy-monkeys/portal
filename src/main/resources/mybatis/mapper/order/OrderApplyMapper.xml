@@ -318,6 +318,9 @@
       <if test="rSapOrderId != null">
         #{rSapOrderId,jdbcType=VARCHAR},
       </if>
+      <if test="outCode != null">
+        #{outCode,jdbcType=VARCHAR},
+      </if>
       <if test="jsonLines != null">
         #{jsonLines,jdbcType=OTHER,typeHandler=com.crazy.portal.config.mybatis.handler.ArrayJsonHandler},
       </if>

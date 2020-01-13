@@ -414,8 +414,12 @@ public class CustomerInfoService {
     private Map<String,String> customerInfoSync(CustomerInfo customerInfo, String type){
         CustomerInfoCreate create = syncCustomerInfo(customerInfo, type);
         Map<String,String> responseMap = CallApiUtils.callC4cCustomerInfo(create);
-        CustomerDetailCreate detail = syncCustomerDetail(customerInfo, responseMap.get("inCode"));
-        CallApiUtils.callC4cCustomerDetail(detail);
+        try{
+            CustomerDetailCreate detail = syncCustomerDetail(customerInfo, responseMap.get("inCode"));
+            CallApiUtils.callC4cCustomerDetail(detail);
+        }catch (Exception e){
+            log.error("C4C 扩展信息同步失败",e);
+        }
         //查询eccid
         //customerInfoMapper.updateC4CId(customerInfo.getId(), responseMap.get("inCode"), responseMap.get("outCode"));
         if(StringUtil.isNotEmpty(responseMap.get("inCode")) && StringUtil.isNotEmpty(responseMap.get("outCode"))){
