@@ -8,12 +8,14 @@ import com.crazy.portal.bean.order.wsdl.create.IsHeader;
 import com.crazy.portal.bean.order.wsdl.create.ItItem;
 import com.crazy.portal.bean.order.wsdl.create.ItItems;
 import com.crazy.portal.bean.order.wsdl.create.*;
+import com.crazy.portal.dao.cusotmer.CustCorporateRelationshipMapper;
 import com.crazy.portal.dao.cusotmer.CustomerInfoMapper;
 import com.crazy.portal.dao.order.OrderApplyMapper;
 import com.crazy.portal.dao.order.OrderLineMapper;
 import com.crazy.portal.dao.order.OrderMapper;
 import com.crazy.portal.dao.product.ProductInfoDOMapper;
 import com.crazy.portal.dao.system.UserMapper;
+import com.crazy.portal.entity.cusotmer.CustCorporateRelationship;
 import com.crazy.portal.entity.cusotmer.CustomerInfo;
 import com.crazy.portal.entity.order.*;
 import com.crazy.portal.entity.product.ProductInfoDO;
@@ -67,7 +69,8 @@ public class OrderApproveService extends CommonOrderService{
     private SysParamService sysParamService;
     @Resource
     private ApiUsersService apiUsersService;
-
+    @Resource
+    private CustCorporateRelationshipMapper custCorporateRelationshipMapper;
     /**
      * 订单审批
      * @param bean
@@ -192,9 +195,12 @@ public class OrderApproveService extends CommonOrderService{
                 req.setYearMonth(order.getPriceDate().substring(0,6));
                 req.setCompany(order.getSalesOrg());
 
-                List<CustomerInfo> dealerInfo = customerInfoMapper.getDealerInCustomer(order.getDealerId());
-                BusinessUtil.assertFlase(dealerInfo.size()==0 || StringUtil.isEmpty(dealerInfo.get(0).getOutCode()),ErrorCodes.BusinessEnum.IN_CUSTOMER_IS_NULL);
-                req.setAgencyIncode(dealerInfo.get(0).getOutCode());
+                CustCorporateRelationship rs = custCorporateRelationshipMapper.selectInCustomer(order.getDealerId());
+                BusinessUtil.assertFlase(null == rs ,ErrorCodes.BusinessEnum.IN_CUSTOMER_IS_NULL);
+                CustomerInfo inCustomerInfo = customerInfoMapper.selectByInCode(rs.getCorporateId());
+                BusinessUtil.assertFlase(null == inCustomerInfo ,ErrorCodes.BusinessEnum.IN_CUSTOMER_IS_NULL);
+
+                req.setAgencyIncode(inCustomerInfo.getOutCode());
                 req.setCustomerIncode(orderApply.getOutCode());
                 req.setSapCode(line.getProductId());
                 req.setPoPrice(line.getUnitPrice().toString());

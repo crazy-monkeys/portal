@@ -376,28 +376,24 @@ public class OrderApplyService extends CommonOrderService{
      */
     @Transactional
     public void modifyOrderApply(OrderApply orderApply, User user) throws Exception{
-        Integer orderId = orderApply.getOrderId();
-        BusinessUtil.notNull(orderId,ErrorCodes.BusinessEnum.ORDER_APPLY_ORDER_NOT_FOUND);
+        if(null != orderApply.getOrderId()){
+            Order order = orderMapper.selectByPrimaryKey(orderApply.getOrderId());
+            BusinessUtil.notNull(order,ErrorCodes.BusinessEnum.ORDER_APPLY_ORDER_NOT_FOUND);
 
-        Order order = orderMapper.selectByPrimaryKey(orderId);
-        BusinessUtil.notNull(order,ErrorCodes.BusinessEnum.ORDER_APPLY_ORDER_NOT_FOUND);
+            //获取申请的订单行信息
+            List<OrderLine> applyLines = orderApply.getOrderLines();
 
-        //获取申请的订单行信息
-        List<OrderLine> applyLines = orderApply.getOrderLines();
+            //获取原订单行信息
+            List<OrderLine> orderLines = orderLineMapper.selectByOrderId(order.getId());
+            //订单数量检查
+            super.checkApplyQuantity(user, applyLines, orderLines);
 
-        //获取原订单行信息
-        List<OrderLine> orderLines = orderLineMapper.selectByOrderId(order.getId());
-        //订单数量检查
-        super.checkApplyQuantity(user, applyLines, orderLines);
+            orderApply.setActive(1);
+            orderApply.setCreateId(user.getId());
+            orderApply.setCreateTime(DateUtil.getCurrentTS());
+            orderApply.setApprovalStatus(Enums.OrderApprovalStatus.WAIT_APPROVAL.getValue());
+            orderApply.setJsonLines(orderApply.objToLineJson(applyLines));
 
-        orderApply.setActive(1);
-        orderApply.setCreateId(user.getId());
-        orderApply.setCreateTime(DateUtil.getCurrentTS());
-        orderApply.setApprovalStatus(Enums.OrderApprovalStatus.WAIT_APPROVAL.getValue());
-        orderApply.setJsonLines(orderApply.objToLineJson(applyLines));
-
-        Integer applyId = orderApply.getId();
-        if(applyId == null){
             BusinessUtil.notNull(order, ErrorCodes.BusinessEnum.ORDER_NOT_FOUND);
             String rSapOrderId = order.getRSapOrderId();
 
@@ -408,11 +404,13 @@ public class OrderApplyService extends CommonOrderService{
             orderApply.setGrossValue(order.getRGrossValue());
             orderApply.setNetValue(order.getRNetValue());
             orderApply.setRSapOrderId(rSapOrderId);
+            orderApply.setId(null);
             orderApplyMapper.insertSelective(orderApply);
         }else{
             //如果有传id过来，说明是申请单修改非新建
-            OrderApply applyInDB = orderApplyMapper.selectByPrimaryKey(applyId);
+            OrderApply applyInDB = orderApplyMapper.selectByPrimaryKey(orderApply.getId());
             BeanUtils.copyNotNullFields(orderApply,applyInDB);
+            applyInDB.setApprovalStatus(Enums.OrderApprovalStatus.WAIT_APPROVAL.getValue());
             orderApplyMapper.updateByPrimaryKeySelective(applyInDB);
         }
     }
