@@ -95,7 +95,7 @@
     <if test="userType == 'sales' and customerInfos !=null">
       and (a.in_customer = ''
       <if test=" customerInfos.size()!=0 ">
-       <foreach collection="customerInfos" item="item" index="index" open=" or a.in_customer in (" separator="," close="))" >
+       <foreach collection="customerInfos" item="item" index="index" open=" or a.in_customer in (" separator="," close=")" >
          #{item.custAbbreviation,jdbcType=VARCHAR}
        </foreach>
      </if>
