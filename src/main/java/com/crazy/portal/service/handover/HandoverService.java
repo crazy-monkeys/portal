@@ -61,11 +61,10 @@ public class HandoverService {
                                                       String uploadStartTime, String uploadEndTime,
                                                       Integer pageNum, Integer pageSize, Integer userId) {
         List<Integer> userList = getAuthUsers(userId);
-        Integer[] userIds = new Integer[userList.size()];
-        PortalUtil.defaultStartPage(pageNum,pageSize);
 
+        PortalUtil.defaultStartPage(pageNum,pageSize);
         List<DeliverReceiveRecord> result = deliverReceiveRecordMapper.selectPageInfo(dealerName, status,
-                uploadStartTime, uploadEndTime, null, null, Arrays.asList(userIds));
+                uploadStartTime, uploadEndTime, null, null, userList);
         return new PageInfo<>(result);
     }
 
@@ -167,14 +166,6 @@ public class HandoverService {
 
     private List<Integer> getAuthUsers(Integer userId) {
         try {
-            /*List<CustomerInfo> customerInfos = internalUserService.getSalesCustomer(userId);
-            List<Integer> userList;
-            if(null == customerInfos){
-                userList = userCustomerMappingService.selectUserMapping(userId, Enums.CustomerMappingModel.Forecast.getValue());
-            }else {
-                userList = customerInfos.stream().map(CustomerInfo::getId).collect(Collectors.toList());
-            }
-            return userList;*/
             return userCustomerMappingService.selectUserMapping(userId, Enums.CustomerMappingModel.Forecast.getValue());
         }catch (Exception ex) {
             log.error(FORECAST_AGENCY_QUERY_ERROR.getZhMsg(), ex);

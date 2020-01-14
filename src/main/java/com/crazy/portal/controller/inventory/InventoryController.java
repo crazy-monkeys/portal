@@ -16,8 +16,7 @@ import com.crazy.portal.entity.cusotmer.CustomerInfo;
 import com.crazy.portal.entity.inventory.InventoryConversionDO;
 import com.crazy.portal.entity.inventory.InventoryTransferDO;
 import com.crazy.portal.service.inventory.InventoryService;
-import com.crazy.portal.util.Enums;
-import com.crazy.portal.util.HttpClientUtils;
+import com.crazy.portal.util.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -90,9 +89,11 @@ public class InventoryController extends BaseController {
     @PostMapping("/customer")
     public BaseResponse customer(@RequestBody CustomerRequest customerRequest){
         if(!super.getCurrentUser().getUserType().equals(Enums.USER_TYPE.internal.toString())){
-            CustomerInfo customerInfo = customerInfoMapper.selectByPrimaryKey(super.getCurrentUser().getDealerId());
-            CustCorporateRelationship rs = custCorporateRelationshipMapper.selectInCustomer(customerInfo.getId());
-            customerRequest.setSAgencyIncode(rs.getCorporateId());
+            CustCorporateRelationship rs = custCorporateRelationshipMapper.selectInCustomer(super.getCurrentUser().getDealerId());
+            BusinessUtil.assertFlase(null == rs ,ErrorCodes.BusinessEnum.IN_CUSTOMER_IS_NULL);
+            CustomerInfo inCustomerInfo = customerInfoMapper.selectByInCode(rs.getCorporateId());
+            BusinessUtil.assertFlase(null == inCustomerInfo ,ErrorCodes.BusinessEnum.IN_CUSTOMER_IS_NULL);
+            customerRequest.setSAgencyIncode(inCustomerInfo.getOutCode());
         }
         String url = String.format("%s%s%s",ECC_API_URL,"/http/BI/PORTAL/GET_CUSTOMER_INVENTORY_DATA",customerRequest.toString());
         return getCustResponse(url);
