@@ -489,6 +489,8 @@ public class OrderApproveService extends CommonOrderService{
         List<ZsalesorderchangeOutItem> items = response.getEtItems().getItem();
         this.modifyOrderLines(userId, order, orderLines, applyLineMap, items);
 
+        //重新计算订单行的剩余数量
+        orderLineMapper.updateOrderNum(order.getId());
         return order;
     }
 
