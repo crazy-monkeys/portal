@@ -40,7 +40,9 @@ public interface ForecastMapper {
                                 @Param(value = "status") Integer status,
                                 @Param(value = "salePeople") String salePeople,
                                 @Param(value = "uploadStartTime") String uploadStartTime,
-                                @Param(value = "uploadEndTime") String uploadEndTime);
+                                @Param(value = "uploadEndTime") String uploadEndTime,
+                                @Param(value = "amb") String amb,
+                                @Param(value = "sd") String sd);
 
     int selectCntByBatchAndId(@Param(value = "batchNo") String batchNo,
                               @Param(value = "list") List<AgencyErrorTemplate> list,
