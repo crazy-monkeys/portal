@@ -483,6 +483,12 @@
     <if test="salePeople != null and salePeople != ''" >
       and a.sale_people like concat('%', #{salePeople,jdbcType=VARCHAR}, '%')
     </if>
+    <if test="amb != null and amb != ''" >
+      and a.amb_leader like concat('%', #{amb,jdbcType=VARCHAR}, '%')
+    </if>
+    <if test="sd != null and sd != ''" >
+      and a.sd_people like concat('%', #{sd,jdbcType=VARCHAR}, '%')
+    </if>
     <if test="uploadStartTime != null and uploadStartTime != '' and uploadEndTime != null and uploadEndTime != ''" >
       and a.create_time between #{uploadStartTime,jdbcType=VARCHAR} and #{uploadEndTime,jdbcType=VARCHAR}
     </if>

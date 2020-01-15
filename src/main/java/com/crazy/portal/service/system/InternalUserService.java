@@ -16,9 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /**
  * @ClassName: InternalUserService
@@ -69,13 +67,9 @@ public class InternalUserService {
             //非销售
             return null;
         }
-        //OrganizationalStructure userOrg = organizationalStructureMapper.selectByOrgNo(Integer.valueOf(user.getUserDepartmentCode()));
     }
 
-    public InternalUser selectByUserNo(String userNo){
-        return internalUserMapper.selectByUserNo(userNo);
-    }
-
+    //获取销售组织
     public CustomerOrgBean getSalesInfo(Integer custId){
         CustomerOrgBean customerOrgBean = new CustomerOrgBean();
 
@@ -131,5 +125,29 @@ public class InternalUserService {
         });
 
         return customerInfos;
+    }
+
+    //获取销售信息
+    public Map<String,String> getSales(Integer userId){
+        Map<String,String> salesMap = new HashMap<>();
+
+        InternalUser internalUser = internalUserMapper.selectByUserId(userId);
+        BusinessUtil.assertFlase(null == internalUser,ErrorCodes.SystemManagerEnum.SYS_IN_USER_ERROR);
+
+        OrganizationalStructure salesOrg = organizationalStructureMapper.selectSalesOrg(internalUser.getUserDepartmentCode());
+        if(null != salesOrg && salesOrg.getPm().equals(internalUser.getUserNo())){
+            if(salesOrg.getSeq()==1001013 || salesOrg.getSeq()==1001014){
+                salesMap.put("sd",internalUser.getUserName());
+            }else{
+                salesMap.put("amb",internalUser.getUserName());
+            }
+        }else if(null != salesOrg){
+            //普通销售 只能看自己的客户
+            salesMap.put("sales",internalUser.getUserName());
+        }else{
+            //非销售
+            return null;
+        }
+        return salesMap;
     }
 }

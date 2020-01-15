@@ -82,7 +82,7 @@ public class SaleForecastController extends BaseController {
     public BaseResponse queryAgencyForecastData(Integer pageNum, Integer pageSize,
                                                 String customerAbbreviation, Integer status, String salePeople,
                                                 String uploadStartTime, String uploadEndTime) {
-        return super.successResult(saleForecastService.queryAgencyForecastData(pageNum, pageSize, getCurrentUser().getId(),
+        return super.successResult(saleForecastService.queryAgencyForecastData(pageNum, pageSize, getCurrentUser(),
                 customerAbbreviation, status, salePeople, uploadStartTime, uploadEndTime));
     }
 

@@ -1,6 +1,5 @@
 package com.crazy.portal.service.forecast;
 
-import com.alibaba.druid.wall.violation.ErrorCode;
 import com.alibaba.fastjson.JSONObject;
 import com.crazy.portal.bean.customer.CustomerOrgBean;
 import com.crazy.portal.bean.forecast.*;
@@ -316,7 +315,7 @@ public class SaleForecastService {
      */
     public PageInfo<Forecast> queryAgencyRejectForecastData(Integer pageNum, Integer pageSize, Integer userId) {
         PortalUtil.defaultStartPage(pageNum,pageSize);
-        List<Forecast> result = forecastMapper.selectPageByUser(userId, null, -1, null, null, null);
+        List<Forecast> result = forecastMapper.selectPageByUser(userId, null, -1, null, null, null, null, null);
         return new PageInfo<>(result);
 
     }
@@ -325,7 +324,7 @@ public class SaleForecastService {
      * 代理商查询数据（不包含驳回数据及未走完流程的数据）
      * @param pageNum
      * @param pageSize
-     * @param userId
+     * @param user
      * @param customerAbbreviation
      * @param status
      * @param salePeople
@@ -333,14 +332,28 @@ public class SaleForecastService {
      * @param uploadEndTime
      * @return
      */
-    public PageInfo<Forecast> queryAgencyForecastData(Integer pageNum, Integer pageSize, Integer userId,
+    public PageInfo<Forecast> queryAgencyForecastData(Integer pageNum, Integer pageSize, User user,
                                                       String customerAbbreviation, Integer status, String salePeople,
                                                       String uploadStartTime, String uploadEndTime) {
         if(null != status && status == -1){
             return new PageInfo<>(null);
         }
+        String sd = "";
+        String amb = "";
+        if(user.getUserType().equals(Enums.USER_TYPE.internal.toString())){
+            Map<String,String> sales = internalUserService.getSales(user.getId());
+            if(null != sales){
+                if(StringUtil.isNotEmpty(sales.get("sales"))){
+                    salePeople = sales.get("sales");
+                }else if (StringUtil.isNotEmpty(sales.get("amb"))){
+                    amb = sales.get("amb");
+                }else if (StringUtil.isNotEmpty(sales.get("sd"))){
+                    sd = sales.get("sd");
+                }
+            }
+        }
         PortalUtil.defaultStartPage(pageNum,pageSize);
-        List<Forecast> result = forecastMapper.selectPageByUser(userId, customerAbbreviation, status, salePeople, uploadStartTime, uploadEndTime);
+        List<Forecast> result = forecastMapper.selectPageByUser(user.getId(), customerAbbreviation, status, salePeople, uploadStartTime, uploadEndTime, amb, sd);
         return new PageInfo<>(result);
     }
 
