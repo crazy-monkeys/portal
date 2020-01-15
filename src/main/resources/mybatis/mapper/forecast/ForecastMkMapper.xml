@@ -132,10 +132,10 @@
       and dealer_id = #{dealerId,jdbcType=INTEGER}
     </if>
     <if test="insertS != null">
-      and insert_s = #{insertS,jdbcType=INTEGER},
+      and insert_s = #{insertS,jdbcType=INTEGER}
     </if>
     <if test="updateS != null">
-      and update_s = #{updateS,jdbcType=INTEGER},
+      and update_s = #{updateS,jdbcType=INTEGER}
     </if>
   </select>
 
