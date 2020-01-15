@@ -316,6 +316,9 @@ public class ErrorCodes {
         ARCHIVE_FILE_NOT_EMPTY(100001, "请选择需要上传的文件", ""),
         ARCHIVE_DB_RECORD_NOT_FOUND(100002, "未找到对应数据记录，请重新操作", ""),
         ARCHIVE_DB_RECORD_STATUS_ERROR(100003, "记录未发布或已经撤销，请重新操作", ""),
+
+        //代理商预测权限
+        MK_IS_NULL(110001,"没有对应的权限记录","");
         ;
         private final int code;
         private final String zhMsg;
