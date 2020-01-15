@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.crazy.portal.dao.forecast.ForecastMkMapper">
+  <resultMap id="BaseResultMap" type="com.crazy.portal.entity.forecast.ForecastMk">
+    <id column="mk_id" jdbcType="INTEGER" property="mkId" />
+    <result column="dealer_name" jdbcType="VARCHAR" property="dealerName" />
+    <result column="dealer_id" jdbcType="INTEGER" property="dealerId" />
+    <result column="update_m" jdbcType="VARCHAR" property="updateM" />
+    <result column="insert_m" jdbcType="VARCHAR" property="insertM" />
+    <result column="update_s" jdbcType="INTEGER" property="updateS" />
+    <result column="insert_s" jdbcType="INTEGER" property="insertS" />
+    <result column="active" jdbcType="INTEGER" property="active" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    mk_id, dealer_name, dealer_id, update_m, insert_m, update_s, insert_s, active
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_forecast_mk
+    where mk_id = #{mkId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_forecast_mk
+    where mk_id = #{mkId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.crazy.portal.entity.forecast.ForecastMk">
+    insert into t_forecast_mk (mk_id, dealer_name, dealer_id, 
+      update_m, insert_m, update_s, 
+      insert_s, active)
+    values (#{mkId,jdbcType=INTEGER}, #{dealerName,jdbcType=VARCHAR}, #{dealerId,jdbcType=INTEGER}, 
+      #{updateM,jdbcType=VARCHAR}, #{insertM,jdbcType=VARCHAR}, #{updateS,jdbcType=INTEGER}, 
+      #{insertS,jdbcType=INTEGER}, #{active,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.crazy.portal.entity.forecast.ForecastMk">
+    insert into t_forecast_mk
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="mkId != null">
+        mk_id,
+      </if>
+      <if test="dealerName != null">
+        dealer_name,
+      </if>
+      <if test="dealerId != null">
+        dealer_id,
+      </if>
+      <if test="updateM != null">
+        update_m,
+      </if>
+      <if test="insertM != null">
+        insert_m,
+      </if>
+      <if test="updateS != null">
+        update_s,
+      </if>
+      <if test="insertS != null">
+        insert_s,
+      </if>
+      <if test="active != null">
+        active,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="mkId != null">
+        #{mkId,jdbcType=INTEGER},
+      </if>
+      <if test="dealerName != null">
+        #{dealerName,jdbcType=VARCHAR},
+      </if>
+      <if test="dealerId != null">
+        #{dealerId,jdbcType=INTEGER},
+      </if>
+      <if test="updateM != null">
+        #{updateM,jdbcType=VARCHAR},
+      </if>
+      <if test="insertM != null">
+        #{insertM,jdbcType=VARCHAR},
+      </if>
+      <if test="updateS != null">
+        #{updateS,jdbcType=INTEGER},
+      </if>
+      <if test="insertS != null">
+        #{insertS,jdbcType=INTEGER},
+      </if>
+      <if test="active != null">
+        #{active,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.crazy.portal.entity.forecast.ForecastMk">
+    update t_forecast_mk
+    <set>
+      <if test="dealerName != null">
+        dealer_name = #{dealerName,jdbcType=VARCHAR},
+      </if>
+      <if test="dealerId != null">
+        dealer_id = #{dealerId,jdbcType=INTEGER},
+      </if>
+      <if test="updateM != null">
+        update_m = #{updateM,jdbcType=VARCHAR},
+      </if>
+      <if test="insertM != null">
+        insert_m = #{insertM,jdbcType=VARCHAR},
+      </if>
+      <if test="updateS != null">
+        update_s = #{updateS,jdbcType=INTEGER},
+      </if>
+      <if test="insertS != null">
+        insert_s = #{insertS,jdbcType=INTEGER},
+      </if>
+      <if test="active != null">
+        active = #{active,jdbcType=INTEGER},
+      </if>
+    </set>
+    where mk_id = #{mkId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.crazy.portal.entity.forecast.ForecastMk">
+    update t_forecast_mk
+    set dealer_name = #{dealerName,jdbcType=VARCHAR},
+      dealer_id = #{dealerId,jdbcType=INTEGER},
+      update_m = #{updateM,jdbcType=VARCHAR},
+      insert_m = #{insertM,jdbcType=VARCHAR},
+      update_s = #{updateS,jdbcType=INTEGER},
+      insert_s = #{insertS,jdbcType=INTEGER},
+      active = #{active,jdbcType=INTEGER}
+    where mk_id = #{mkId,jdbcType=INTEGER}
+  </update>
+
+  <select id="selectByPage" resultMap="BaseResultMap">
+    select * from t_forecast_mk where active=1
+    <if test="dealerId !=null and dealerId!='' ">
+      and dealer_id = #{dealerId,jdbcType=INTEGER}
+    </if>
+    <if test="insertS != null">
+      and insert_s = #{insertS,jdbcType=INTEGER},
+    </if>
+    <if test="updateS != null">
+      and update_s = #{updateS,jdbcType=INTEGER},
+    </if>
+  </select>
+
+  <select id="selectByDealerId" resultMap="BaseResultMap">
+    select * from t_forecast_mk where active=1 and  dealer_id = #{dealerId,jdbcType=INTEGER}
+  </select>
+</mapper>
