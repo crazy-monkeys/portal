@@ -128,8 +128,8 @@
 
   <select id="selectByPage" resultMap="BaseResultMap">
     select * from t_forecast_mk where active=1
-    <if test="dealerId !=null and dealerId!='' ">
-      and dealer_name concat('%', #{dealerName,jdbcType=VARCHAR}, '%')
+    <if test="dealerName !=null and dealerName!='' ">
+      and dealer_name LIKE concat('%', #{dealerName,jdbcType=VARCHAR}, '%')
     </if>
     <if test="insertS != null">
       and insert_s = #{insertS,jdbcType=INTEGER}
