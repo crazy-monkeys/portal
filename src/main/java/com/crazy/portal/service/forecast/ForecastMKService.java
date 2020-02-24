@@ -40,6 +40,8 @@ public class ForecastMKService {
      * @param dealerName
      */
     public void save(Integer dealerId, String dealerName){
+        ForecastMk forecastMk = forecastMkMapper.selectByDealerId(dealerId);
+        BusinessUtil.assertTrue(null == forecastMk,ErrorCodes.BusinessEnum.MK_IS_NO_EMTY);
         ForecastMk mk = new ForecastMk();
         mk.setDealerId(dealerId);
         mk.setDealerName(dealerName);

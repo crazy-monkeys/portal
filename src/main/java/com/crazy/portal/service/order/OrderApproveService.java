@@ -101,7 +101,7 @@ public class OrderApproveService extends CommonOrderService{
                     this.savePoAdditionalOrder(modifyOrder,orderApply);
                     break;
                 case 3:
-                    this.checkCancelOrder(orderApply);
+                    this.checkCancelOrder(orderApply, user);
                     Order cancelOrder = this.cancelOrder(orderApply.getRSapOrderId(),userId);
                     this.deletePoOrder(cancelOrder);
                     break;
@@ -125,14 +125,13 @@ public class OrderApproveService extends CommonOrderService{
      * 检查取消订单
      * @param orderApply
      */
-    private void checkCancelOrder(OrderApply orderApply) {
-        User applyUser = userMapper.selectById(orderApply.getId());
+    private void checkCancelOrder(OrderApply orderApply, User user) {
         //代理商只可以取消没有提货单的销售单行
         List<Integer> ids = orderApply.lineJsonToObj(orderApply.getJsonLines())
                 .stream().map(x -> x.getId())
                 .collect(Collectors.toList());
 
-        super.checkCancelOrder(applyUser.getUserType(),ids);
+        super.checkCancelOrder(user.getUserType(),ids);
     }
 
     /**
@@ -164,16 +163,16 @@ public class OrderApproveService extends CommonOrderService{
      * @return
      */
     private List<OrderLine> getPoOrderLines(Order order) {
-        //只有订单类型为客户专货订单才进行po订单删除
-        if (!order.getOrderType().equals("A01")) {
-            return null;
+        //只有订单类型为客户专货订单 并且 选择了客户的订单 才进行po加单
+        if(order.getOrderType().equals("A01") && StringUtil.isNotEmpty(order.getOutCode())){
+            List<OrderLine> lines = orderLineMapper.selectByOrderIdForVirtual(order.getId());
+            if (lines.isEmpty()) {
+                log.error("The order is empty");
+                return null;
+            }
+            return lines;
         }
-        List<OrderLine> lines = orderLineMapper.selectByOrderIdForVirtual(order.getId());
-        if (lines.isEmpty()) {
-            log.error("The order is empty");
-            return null;
-        }
-        return lines;
+        return null;
     }
 
     /**

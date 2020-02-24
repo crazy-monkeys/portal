@@ -271,7 +271,8 @@ public class ErrorCodes {
         FORECAST_GET_LAST_VALUE_ERROR(80031, "获取上次填写值失败，请联系管理员", ""),
         FORECAST_BI_ID_EMPTY(80032, "检测BI_ID为空，请检查数据", ""),
         FORECAST_DATE_FORMAT_IS_NOT_EMP(80033, "客户专货库存截止日期不能为空", ""),
-        FORECAST_DATE_IS_BEFOR(80034, "销售预测数据已封存，如需修改或上传，请联系CS", ""),
+        FORECAST_Status_IS_BEFOR(80034, "销售预测数据已封存，如需修改或上传，请联系CS", ""),
+        FORECAST_Month_IS_BEFOR(80035, "操作数据月份不被允许，请联系CS开放权限", ""),
 
         //订单管理
         ORDER_NOT_FOUND(90001, "订单信息不存在", ""),
@@ -318,7 +319,8 @@ public class ErrorCodes {
         ARCHIVE_DB_RECORD_STATUS_ERROR(100003, "记录未发布或已经撤销，请重新操作", ""),
 
         //代理商预测权限
-        MK_IS_NULL(110001,"没有对应的权限记录","");
+        MK_IS_NULL(110001,"没有对应的权限记录",""),
+        MK_IS_NO_EMTY(110002,"已有对应的代理商账号",""),
         ;
         private final int code;
         private final String zhMsg;

@@ -3,7 +3,6 @@ import com.crazy.portal.annotation.OperationLog;
 import com.crazy.portal.bean.BaseResponse;
 import com.crazy.portal.bean.forecast.ForecastParam;
 import com.crazy.portal.controller.BaseController;
-import com.crazy.portal.entity.forecast.ForecastLine;
 import com.crazy.portal.service.forecast.SaleForecastService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -93,7 +92,7 @@ public class SaleForecastController extends BaseController {
     @OperationLog
     @GetMapping(value = "/forecast/agency/data/delete")
     public BaseResponse deleteAgencyForecastData(Integer[] forecastIds) {
-        saleForecastService.deleteAgencyForecastData(forecastIds);
+        saleForecastService.deleteAgencyForecastData(forecastIds, getCurrentUser());
         return super.successResult();
     }
 
@@ -104,7 +103,7 @@ public class SaleForecastController extends BaseController {
     @OperationLog
     @PostMapping(value = "/forecast/agency/data/update")
     public BaseResponse updateAgencyForecastData(@RequestBody List<ForecastParam> list) {
-        saleForecastService.updateAgencyForecastData(list, getCurrentUser().getId());
+        saleForecastService.updateAgencyForecastData(list, getCurrentUser());
         return super.successResult();
     }
 

@@ -6,10 +6,12 @@ import com.crazy.portal.bean.forecast.*;
 import com.crazy.portal.config.exception.BusinessException;
 import com.crazy.portal.dao.forecast.ForecastLineMapper;
 import com.crazy.portal.dao.forecast.ForecastMapper;
+import com.crazy.portal.dao.forecast.ForecastMkMapper;
 import com.crazy.portal.dao.forecast.ForecastSdMapper;
 import com.crazy.portal.entity.cusotmer.CustomerInfo;
 import com.crazy.portal.entity.forecast.Forecast;
 import com.crazy.portal.entity.forecast.ForecastLine;
+import com.crazy.portal.entity.forecast.ForecastMk;
 import com.crazy.portal.entity.forecast.ForecastSd;
 import com.crazy.portal.entity.price.CatalogPrice;
 import com.crazy.portal.entity.product.ProductInfoDO;
@@ -62,6 +64,8 @@ public class SaleForecastService {
     private CatalogPriceService catalogPriceService;
     @Resource
     private InternalUserService internalUserService;
+    @Resource
+    private ForecastMkMapper forecastMkMapper;
 
     //Portal 本地文件交互地址
     @Value("${file.path.forecast.push}")
@@ -152,7 +156,6 @@ public class SaleForecastService {
      */
     @Transactional
     public ForecastResult uploadAgencyTemplate(MultipartFile excel, User user) {
-        checkForcast(25);
         BusinessUtil.notNull(excel, FORECAST_EXCEL_CHECK_ERROR);
         //获取代理商信息
         CustomerInfo customerInfo = new CustomerInfo();
@@ -166,6 +169,10 @@ public class SaleForecastService {
             log.warn(FORECAST_DATA_NOT_EMPTY.getZhMsg());
             throw new BusinessException(FORECAST_DATA_NOT_EMPTY);
         }
+
+        //校验是否可以上传
+        checkForcast(1,user.getId(),agencyForecastList.get(0).getOperationYearMonth());
+
         String batchNo = generateBathNo();
         for(AgencyTemplate template : agencyForecastList){
             BusinessUtil.assertFlase(null == template.getCloseDate(), FORECAST_DATE_FORMAT_IS_NOT_EMP);
@@ -362,8 +369,8 @@ public class SaleForecastService {
      * @param forecastIds
      */
     @Transactional
-    public void deleteAgencyForecastData(Integer[] forecastIds) {
-        checkForcast(25);
+    public void deleteAgencyForecastData(Integer[] forecastIds, User user) {
+
         for(Integer id : forecastIds){
             Forecast forecast = forecastMapper.selectByPrimaryKey(id);
             BusinessUtil.notNull(forecast, FORECAST_DB_DATA_MISMATCH);
@@ -381,6 +388,9 @@ public class SaleForecastService {
             }
             //数据已经提交，则需要提交给审批人员进行删除
             if(forecast.getStatus() == 2){
+                //校验是否可以删除
+                checkForcast(2,user.getId(),forecast.getOperationYearMonth());
+
                 forecast.setAgencyStatusType(-1);
                 forecast.setStatus(3);
                 forecastMapper.updateByPrimaryKeySelective(forecast);
@@ -392,11 +402,9 @@ public class SaleForecastService {
     /**
      * 代理商预测数据修改
      * @param list
-     * @param userId
      */
     @Transactional
-    public void updateAgencyForecastData(List<ForecastParam> list, Integer userId) {
-        checkForcast(25);
+    public void updateAgencyForecastData(List<ForecastParam> list, User user) {
         BusinessUtil.notNull(list, FORECAST_REQ_PARAM_NOT_EMPTY);
         for(ForecastParam data : list){
             Forecast forecast = forecastMapper.selectByPrimaryKey(data.getForecastId());
@@ -411,6 +419,10 @@ public class SaleForecastService {
             if(forecast.getStatus() == -1){
                 throw new BusinessException(FORECAST_REJECT_DATA_NOT_DELETE);
             }
+
+            //校验是否可以删除
+            checkForcast(2,user.getId(),forecast.getOperationYearMonth());
+
             ForecastLine line = data.getLine();
             ForecastLine dbLine = forecastLineMapper.selectByPrimaryKey(line.getLineId());
             BusinessUtil.notNull(list, FORECAST_DB_DATA_MISMATCH);
@@ -439,7 +451,7 @@ public class SaleForecastService {
             }
             forecastLineMapper.updateByPrimaryKeySelective(dbLine);
             forecast.setUpdateTime(new Date());
-            forecast.setUpdateUserId(userId);
+            forecast.setUpdateUserId(user.getId());
             forecastMapper.updateByPrimaryKey(forecast);
         }
     }
@@ -1498,9 +1510,17 @@ public class SaleForecastService {
 
     /**
      * 每月25号后预测数据不允许操作
+     * type 1:上传  2：修改
      */
-    public void checkForcast(Integer day){
-        BusinessUtil.assertFlase(DateUtil.getDay(new Date())>day,ErrorCodes.BusinessEnum.FORECAST_DATE_IS_BEFOR);
+    public void checkForcast(Integer type,Integer userId,String oMonth){
+        ForecastMk forecastMk = forecastMkMapper.selectByDealerId(userId);
+        if(null != forecastMk && type.equals(1)){
+            BusinessUtil.assertFlase(forecastMk.getInsertS().equals(0),ErrorCodes.BusinessEnum.FORECAST_Status_IS_BEFOR);
+            BusinessUtil.assertFlase(StringUtil.isNotEmpty(forecastMk.getInsertM()) && !oMonth.equals(forecastMk.getInsertM()),ErrorCodes.BusinessEnum.FORECAST_Month_IS_BEFOR);
+        }else if(null != forecastMk && type.equals(2)){
+            BusinessUtil.assertFlase(forecastMk.getUpdateS().equals(0),ErrorCodes.BusinessEnum.FORECAST_Status_IS_BEFOR);
+            BusinessUtil.assertFlase(StringUtil.isNotEmpty(forecastMk.getUpdateM()) && !oMonth.equals(forecastMk.getUpdateM()),ErrorCodes.BusinessEnum.FORECAST_Month_IS_BEFOR);
+        }
     }
 
 }

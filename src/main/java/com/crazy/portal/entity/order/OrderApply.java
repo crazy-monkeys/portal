@@ -270,4 +270,6 @@ public class OrderApply {
     //EXT
     private Integer orderId;
 
+    private String isAdd="否";
+
 }

@@ -98,7 +98,7 @@ public class SysController extends BaseController {
     }
 
     /**
-     * 获取所有登陆账号信息
+     * 获取所有代理商的登陆账号信息
      * @return
      */
     @GetMapping("/dealer/list")

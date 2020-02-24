@@ -97,6 +97,9 @@ public class OrderApplyService extends CommonOrderService{
 
     public OrderApply detail(Integer id){
         OrderApply orderApply = orderApplyMapper.selectByPrimaryKey(id);
+        if(StringUtil.isNotEmpty(orderApply.getOutCode())){
+            orderApply.setIsAdd("是");
+        }
         List<OrderLine> lines = orderApply.lineJsonToObj(orderApply.getJsonLines());
         super.resetLines(lines);
         orderApply.setJsonLines(JSONArray.parseArray(JSON.toJSONString(lines)));

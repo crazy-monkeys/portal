@@ -115,6 +115,9 @@ public class OrderService extends CommonOrderService {
         Order order = orderMapper.selectByPrimaryKey(id);
         BusinessUtil.notNull(order, ErrorCodes.BusinessEnum.ORDER_NOT_FOUND);
 
+        if(StringUtil.isNotEmpty(order.getOutCode())){
+            order.setIsAdd("是");
+        }
         List<OrderLine> lines = orderLineMapper.selectByOrderIdForVirtual(id);
         super.resetLines(lines);
         order.setLines(lines);

@@ -218,4 +218,6 @@ public class Order {
     private List<OrderLine> lines = new ArrayList<>();
 
     private String outCode;
+
+    private String isAdd="否";
 }
