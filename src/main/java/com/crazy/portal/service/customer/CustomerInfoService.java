@@ -1118,7 +1118,6 @@ public class CustomerInfoService {
 
     public Map<String, List> downloadTemplatesAndData(VisitRecordQueryBean bean){
         Map<String, List> resultMap = new HashMap<>();
-        PortalUtil.defaultStartPage(bean.getPageIndex(), bean.getPageSize());
         List<VisitRecord> records = visitRecordMapper.selectByPage(bean);
         List<VisitRecordEO> visitRecordList = new ArrayList<>();
         visitRecordList.add(new VisitRecordEO());
@@ -1146,37 +1145,15 @@ public class CustomerInfoService {
     public Map<String, List> downloadCustomerData(CustomerQueryBean bean,User user){
         Map<String, List> resultMap = new HashMap<>();
         PortalUtil.defaultStartPage(bean.getPageIndex(), bean.getPageSize());
-        if(bean.getQueryType()==3){
-            if(user.getUserType().equals(Enums.USER_TYPE.internal.toString())){
-                InternalUser internalUser = internalUserMapper.selectUserByName(user.getLoginName());
-                BusinessUtil.assertFlase(null == user,ErrorCodes.SystemManagerEnum.USER_NOT_EXISTS);
-                bean.setReportSales(internalUser.getUserNo());
-            }else{
-                CustomerInfo dealer = customerInfoMapper.selectByPrimaryKey(user.getDealerId());
-                bean.setReportDealer(dealer.getInCode());
-            }
-        }else if(bean.getQueryType()==2){
-            if(user.getUserType().equals(Enums.USER_TYPE.internal.toString())){
-                OrganizationalStructure org = internalUserService.getUserOrg(user.getLoginName());
-                if(null != org&&org.getSeq().equals(1001012)){
-                    bean.setBusinessType("A03");
-                }else if(null != org&&org.getSeq().equals(1001011)){
-                    bean.setBusinessType("A02");
-                }else{
-                    throw new BusinessException(ErrorCodes.BusinessEnum.CUSTOMER_ORG_ERROR);
-                }
+        if(user.getUserType().equals(Enums.USER_TYPE.internal.toString())){
+            InternalUser internalUser = internalUserMapper.selectUserByName(user.getLoginName());
+            if(null != internalUser){
+                List<String> sales = internalUserService.getSalesTeam(internalUser);
+                bean.setSalesTeam(sales);
             }
         }else{
-            if(user.getUserType().equals(Enums.USER_TYPE.internal.toString())){
-                InternalUser internalUser = internalUserMapper.selectUserByName(user.getLoginName());
-                if(null != internalUser){
-                    List<String> sales = internalUserService.getSalesTeam(internalUser);
-                    bean.setSalesTeam(sales);
-                }
-            }else{
-                CustomerInfo dealer = customerInfoMapper.selectByPrimaryKey(user.getDealerId());
-                bean.setReportDealer(dealer.getInCode());
-            }
+            CustomerInfo dealer = customerInfoMapper.selectByPrimaryKey(user.getDealerId());
+            bean.setReportDealer(dealer.getInCode());
         }
         List<CustomerInfo> customerInfos = customerInfoMapper.selectCustomer(bean);
         List<CustomerInfoEO> CustomerInfoList = new ArrayList<>();
