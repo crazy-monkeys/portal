@@ -1,5 +1,6 @@
 package com.crazy.portal.service.customer;
 
+import com.alibaba.excel.metadata.BaseRowModel;
 import com.alibaba.fastjson.JSON;
 import com.crazy.portal.bean.common.Constant;
 import com.crazy.portal.bean.customer.CustomerOrgBean;
@@ -8,6 +9,7 @@ import com.crazy.portal.bean.customer.CustomerShipBean;
 import com.crazy.portal.bean.customer.approval.ApprovalBean;
 import com.crazy.portal.bean.customer.basic.CustFileUploadVO;
 import com.crazy.portal.bean.customer.basic.DealerCreditVO;
+import com.crazy.portal.bean.customer.info.CustomerInfoEO;
 import com.crazy.portal.bean.customer.visitRecord.CustomerCodeEO;
 import com.crazy.portal.bean.customer.visitRecord.VisitRecordEO;
 import com.crazy.portal.bean.customer.visitRecord.VisitRecordQueryBean;
@@ -1111,5 +1113,86 @@ public class CustomerInfoService {
 
     public List<CustomerInfo> selectAllInCustomer(){
         return customerInfoMapper.selectAllINCustomer();
+    }
+
+
+    public Map<String, List> downloadTemplatesAndData(VisitRecordQueryBean bean){
+        Map<String, List> resultMap = new HashMap<>();
+        PortalUtil.defaultStartPage(bean.getPageIndex(), bean.getPageSize());
+        List<VisitRecord> records = visitRecordMapper.selectByPage(bean);
+        List<VisitRecordEO> visitRecordList = new ArrayList<>();
+        visitRecordList.add(new VisitRecordEO());
+        for (VisitRecord vRecordEO : records) {
+            VisitRecordEO visitRecordEO=new VisitRecordEO();
+            visitRecordEO.setVisitDate(vRecordEO.getVisitDate());
+            visitRecordEO.setCustomerLocation(vRecordEO.getCustomerLocation());
+            visitRecordEO.setCustomerCode(vRecordEO.getCustomerCode());
+            visitRecordEO.setVisitNumber(vRecordEO.getVisitNumber());
+            visitRecordEO.setVisitPurpose(vRecordEO.getVisitPurpose());
+            visitRecordEO.setProjectName(vRecordEO.getProjectName());
+            visitRecordEO.setProjectStatus(vRecordEO.getProjectStatus());
+            visitRecordEO.setProjectDepartment(vRecordEO.getProjectDepartment());
+            visitRecordEO.setTalkContent(vRecordEO.getTalkContent());
+            visitRecordEO.setFollowPlan(vRecordEO.getFollowPlan());
+            visitRecordEO.setClaimDescription(vRecordEO.getClaimDescription());
+            visitRecordEO.setParticipantsZr(vRecordEO.getParticipantsZr());
+            visitRecordEO.setParticipantsCt(vRecordEO.getParticipantsCt());
+            visitRecordEO.setParticipantsDl(vRecordEO.getParticipantsDl());
+            visitRecordList.add(visitRecordEO);
+        }
+        resultMap.put("拜访数据", visitRecordList);
+        return resultMap;
+    }
+    public Map<String, List> downloadCustomerData(CustomerQueryBean bean,User user){
+        Map<String, List> resultMap = new HashMap<>();
+        PortalUtil.defaultStartPage(bean.getPageIndex(), bean.getPageSize());
+        if(bean.getQueryType()==3){
+            if(user.getUserType().equals(Enums.USER_TYPE.internal.toString())){
+                InternalUser internalUser = internalUserMapper.selectUserByName(user.getLoginName());
+                BusinessUtil.assertFlase(null == user,ErrorCodes.SystemManagerEnum.USER_NOT_EXISTS);
+                bean.setReportSales(internalUser.getUserNo());
+            }else{
+                CustomerInfo dealer = customerInfoMapper.selectByPrimaryKey(user.getDealerId());
+                bean.setReportDealer(dealer.getInCode());
+            }
+        }else if(bean.getQueryType()==2){
+            if(user.getUserType().equals(Enums.USER_TYPE.internal.toString())){
+                OrganizationalStructure org = internalUserService.getUserOrg(user.getLoginName());
+                if(null != org&&org.getSeq().equals(1001012)){
+                    bean.setBusinessType("A03");
+                }else if(null != org&&org.getSeq().equals(1001011)){
+                    bean.setBusinessType("A02");
+                }else{
+                    throw new BusinessException(ErrorCodes.BusinessEnum.CUSTOMER_ORG_ERROR);
+                }
+            }
+        }else{
+            if(user.getUserType().equals(Enums.USER_TYPE.internal.toString())){
+                InternalUser internalUser = internalUserMapper.selectUserByName(user.getLoginName());
+                if(null != internalUser){
+                    List<String> sales = internalUserService.getSalesTeam(internalUser);
+                    bean.setSalesTeam(sales);
+                }
+            }else{
+                CustomerInfo dealer = customerInfoMapper.selectByPrimaryKey(user.getDealerId());
+                bean.setReportDealer(dealer.getInCode());
+            }
+        }
+        List<CustomerInfo> customerInfos = customerInfoMapper.selectCustomer(bean);
+        List<CustomerInfoEO> CustomerInfoList = new ArrayList<>();
+        for (CustomerInfo CusInfoEO : customerInfos) {
+            CustomerInfoEO CustomerInfoEO=new CustomerInfoEO();
+            CustomerInfoEO.setCustName(CusInfoEO.getCustName());
+            CustomerInfoEO.setOutCode(CusInfoEO.getOutCode());
+            CustomerInfoEO.setIsLicense(CusInfoEO.getIsLicense());
+            CustomerInfoEO.setBusinessType(CusInfoEO.getBusinessType());
+            CustomerInfoEO.setReportDealerName(CusInfoEO.getReportDealerName());
+            CustomerInfoEO.setReportSalesName(CusInfoEO.getReportSalesName());
+            CustomerInfoEO.setCustType(CusInfoEO.getCustType());
+            CustomerInfoEO.setUpdateTime(CusInfoEO.getUpdateTime());
+            CustomerInfoList.add(CustomerInfoEO);
+        }
+        resultMap.put("客户数据", CustomerInfoList);
+        return resultMap;
     }
 }

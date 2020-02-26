@@ -1,5 +1,6 @@
 package com.crazy.portal.controller.customer;
 
+import com.alibaba.excel.metadata.BaseRowModel;
 import com.alibaba.excel.support.ExcelTypeEnum;
 import com.crazy.portal.bean.BaseResponse;
 import com.crazy.portal.bean.customer.CustomerQueryBean;
@@ -155,5 +156,33 @@ public class CustomerController extends BaseController{
     @GetMapping("/getShipp")
     public BaseResponse getShip(){
         return successResult();
+    }
+
+    /**  代理商拜访记录搜索导出
+     *  @Author jingang.yuan
+     *  @Date 2020-02-13 export
+     */
+    @ResponseBody
+    @RequestMapping("/visitRecord/export")
+    public void visitRecordExport(VisitRecordQueryBean bean,HttpServletResponse response) throws Exception{
+        try {
+            bean.setUserId(this.getCurrentUser().getId());
+            Map<String, List> resultMap = customerInfoService.downloadTemplatesAndData(bean);
+            ExcelUtils.createExcelStreamMutilByEaysExcel(response, resultMap, "搜索导出拜访记录", ExcelTypeEnum.XLSX);
+        }catch (Exception ex){
+            log.error("导出异常", ex);
+        }
+
+    }
+    @ResponseBody
+    @RequestMapping("/info/export")
+    public void listExport(CustomerQueryBean bean,HttpServletResponse response) throws Exception{
+        try {
+            Map<String, List> resultMap = customerInfoService.downloadCustomerData(bean,getCurrentUser());
+            ExcelUtils.createExcelStreamMutilByEaysExcel(response, resultMap, "客户信息", ExcelTypeEnum.XLSX);
+        }catch (Exception ex){
+            log.error("客户信息导出异常", ex);
+        }
+
     }
 }
