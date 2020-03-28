@@ -958,12 +958,12 @@ public class SaleForecastService {
             BusinessUtil.assertEmpty(detailData.getId(), FORECAST_BI_CHECK_RESPONSE_ID_NOT_EXISTS);
             forecastMapper.updateBiInfoByKey(Integer.parseInt(detailData.getId()), detailData.getBiId(), detailData.getErrorMsg());
         }
-        //更新汇总数据的处理结果
-        List<BiTotalInsertTemplate> totalResList = ExcelUtils.readExcel(result.getTotalFilePath(), BiTotalInsertTemplate.class);
+        //更新汇总数据的处理结果  暂不处理汇总数据
+        /*List<BiTotalInsertTemplate> totalResList = ExcelUtils.readExcel(result.getTotalFilePath(), BiTotalInsertTemplate.class);
         for(BiTotalInsertTemplate totalData : totalResList){
             BusinessUtil.assertEmpty(totalData.getId(), FORECAST_BI_CHECK_RESPONSE_ID_NOT_EXISTS);
             forecastSdMapper.updateBiInfoByKey(Integer.parseInt(totalData.getId()), totalData.getBiId(), totalData.getErrorMsg());
-        }
+        }*/
         if(result.isSuccess()){
             forecastMapper.updateStatusByIds(forecastIds, 2, passMsg);
         }else{
