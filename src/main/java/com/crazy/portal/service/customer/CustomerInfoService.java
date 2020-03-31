@@ -304,7 +304,7 @@ public class CustomerInfoService {
             customerInfoMapper.insertSelective(customerInfo);
         }
 
-        saveCustomerDetail(customerInfo, user.getId());
+        saveCustomerDetail(customerInfo, user.getId(), 1);
         if(user.getUserType().equals(Enums.USER_TYPE.internal.toString())){
             InternalUser internalUser = internalUserMapper.selectUserByName(user.getLoginName());
             custZrAccountTeamService.updateTeam(customerInfo.getId(), internalUser.getUserNo());
@@ -323,7 +323,7 @@ public class CustomerInfoService {
         mappingCustomerInfo(cust, customerinfo);
         customerinfo.setUpdateUser(user.getId());
         customerInfoMapper.updateByPrimaryKeySelective(customerinfo);
-        saveCustomerDetail(cust, user.getId());
+        saveCustomerDetail(cust, user.getId(), 0);
         customerInfoSync(cust, "02");
     }
 
@@ -376,8 +376,14 @@ public class CustomerInfoService {
         }
     }
 
-    private void saveCustomerDetail(CustomerInfo customerInfo, Integer userId){
-        //saveRelationship(customerInfo.getRelationships(), customerInfo.getId(), userId);
+    /**
+     *
+     * @param customerInfo
+     * @param userId
+     * @param type 1 新增 0 修改
+     */
+    private void saveCustomerDetail(CustomerInfo customerInfo, Integer userId, int type){
+
         saveContact(customerInfo.getCustomerContacts(), customerInfo.getId(), userId);
         saveProduct(customerInfo.getCustomerProducts(), customerInfo.getId(), userId);
         saveFile(customerInfo.getFiles(), customerInfo.getId());
@@ -385,10 +391,12 @@ public class CustomerInfoService {
         saveInvoice(customerInfo.getInvoiceInfos(), customerInfo.getId(), userId);
         saveSales(customerInfo.getSales(), customerInfo.getId(), userId);
         saveAddress(customerInfo.getAddresses(), customerInfo.getId(), userId);
-        //saveAccountTeam(customerInfo.getAccountTeams(), customerInfo.getId(), userId);
         saveCustomerStructure(customerInfo.getCustStructure(), customerInfo.getId(), userId);
         saveQuotas(customerInfo.getQuotas(), customerInfo.getId(), userId);
-        //saveZrAccountTeams(customerInfo.getZrAccountTeams(), customerInfo.getId(), userId);
+        if(type==0){
+            saveRelationship(customerInfo.getRelationships(), customerInfo.getId(), userId);
+            saveZrAccountTeams(customerInfo.getZrAccountTeams(), customerInfo.getId(), userId);
+        }
     }
 
     /**
