@@ -1,6 +1,7 @@
 package com.crazy.portal.service.customer;
 
 import com.crazy.portal.bean.customer.basic.FileVO;
+import com.crazy.portal.config.exception.BusinessException;
 import com.crazy.portal.dao.cusotmer.CustomerFileMapper;
 import com.crazy.portal.entity.cusotmer.CustomerFile;
 import com.crazy.portal.util.BusinessUtil;
@@ -47,7 +48,7 @@ public class CustomerFileService {
     @Transactional
     public void saveOrUpdate(List<CustomerFile> customerFiles, Integer custId){
         if(null == customerFiles || customerFiles.isEmpty()){
-            return;
+            throw new BusinessException(ErrorCodes.BusinessEnum.CUSTOMER_FILE_IS_NOT_ENPTY);
         }
         for (CustomerFile e : customerFiles) {
             FileVO fileVO = FileUtil.upload(e.getFile(), filePath);

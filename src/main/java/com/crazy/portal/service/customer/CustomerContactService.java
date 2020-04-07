@@ -1,5 +1,6 @@
 package com.crazy.portal.service.customer;
 
+import com.crazy.portal.config.exception.BusinessException;
 import com.crazy.portal.dao.cusotmer.CustomerContactMapper;
 import com.crazy.portal.entity.cusotmer.CustomerContact;
 import com.crazy.portal.entity.cusotmer.CustomerInfo;
@@ -35,7 +36,7 @@ public class CustomerContactService {
     @Transactional
     public void saveOrUpdate(List<CustomerContact> customerContacts, Integer custId, Integer userId){
         if(null == customerContacts || customerContacts.isEmpty()){
-            return;
+            throw new BusinessException(ErrorCodes.BusinessEnum.CUSTOMER_CONTACT_IS_NOT_ENPTY);
         }
         customerContacts.forEach(e->{
             checkContact(e);

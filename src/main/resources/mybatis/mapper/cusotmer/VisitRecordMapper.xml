@@ -27,6 +27,40 @@
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="c4c_id" jdbcType="VARCHAR" property="c4cId" />
   </resultMap>
+  <resultMap id="AgeManBaseResultMap" type="com.crazy.portal.entity.cusotmer.AgentManExportVisitRecord">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="cust_id" jdbcType="INTEGER" property="custId" />
+    <result column="visit_date" jdbcType="VARCHAR" property="visitDate" />
+    <result column="customer_location" jdbcType="VARCHAR" property="customerLocation" />
+    <result column="customer_code" jdbcType="VARCHAR" property="customerCode" />
+    <result column="customer_name" jdbcType="VARCHAR" property="customerName" />
+    <result column="visit_number" jdbcType="INTEGER" property="visitNumber" />
+    <result column="visit_purpose" jdbcType="VARCHAR" property="visitPurpose" />
+    <result column="project_name" jdbcType="VARCHAR" property="projectName" />
+    <result column="project_status" jdbcType="VARCHAR" property="projectStatus" />
+    <result column="project_department" jdbcType="VARCHAR" property="projectDepartment" />
+    <result column="talk_content" jdbcType="VARCHAR" property="talkContent" />
+    <result column="follow_plan" jdbcType="VARCHAR" property="followPlan" />
+    <result column="claim_description" jdbcType="VARCHAR" property="claimDescription" />
+    <result column="participants_zr" jdbcType="VARCHAR" property="participantsZr" />
+    <result column="participants_ct" jdbcType="VARCHAR" property="participantsCt" />
+    <result column="participants_dl" jdbcType="VARCHAR" property="participantsDl" />
+    <result column="error_message" jdbcType="VARCHAR" property="errorMessage" />
+    <result column="active" jdbcType="INTEGER" property="active" />
+    <result column="create_user_id" jdbcType="INTEGER" property="createUserId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_user_id" jdbcType="INTEGER" property="updateUserId" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="c4c_id" jdbcType="VARCHAR" property="c4cId" />
+    <result column="agent_name" jdbcType="VARCHAR" property="agentName" />
+    <result column="agent_abbreviate" jdbcType="VARCHAR" property="agentAbbreviate" />
+    <result column="business_type" jdbcType="VARCHAR" property="businessType" />
+    <result column="sales_id" jdbcType="VARCHAR" property="salesId" />
+    <result column="sales_name" jdbcType="VARCHAR" property="salesName" />
+    <result column="amb_team_name" jdbcType="VARCHAR" property="ambTeamName" />
+    <result column="amb_team_leader_sn" jdbcType="VARCHAR" property="ambTeamLeaderSn" />
+    <result column="amb_team_leader_name" jdbcType="VARCHAR" property="ambTeamLeaderName" />
+  </resultMap>
   <sql id="Base_Column_List">
     id, cust_id, visit_date, customer_location, customer_code, visit_number, visit_purpose,
     project_name, project_status, project_department, talk_content, follow_plan, claim_description, 
@@ -294,8 +328,7 @@
       update_time = #{updateTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
-
-    <select id="selectByPage" parameterType="com.crazy.portal.bean.customer.visitRecord.VisitRecordQueryBean" resultMap="BaseResultMap">
+  <select id="selectByPage" parameterType="com.crazy.portal.bean.customer.visitRecord.VisitRecordQueryBean" resultMap="BaseResultMap">
       select
       a.*,b.cust_name as customer_name
       from t_visit_record a
@@ -324,15 +357,45 @@
       </if>
       order by a.create_time desc
     </select>
-
-    <update id="approve">
+  <select id="agentManSelectByPage" parameterType="com.crazy.portal.bean.customer.visitRecord.VisitRecordQueryBean" resultMap="AgeManBaseResultMap">
+    select
+    a.*,b.cust_name as customer_name,b.business_type,c.employee_id as sales_id,d.user_name as sales_name,e.org_name as amb_team_name,e.pm as amb_team_leader_sn,f.user_name as amb_team_leader_name,g.corporate_name as agent_name,h.cust_abbreviation as agent_abbreviate
+    from t_visit_record a
+    left join t_customer_info b on a.customer_code = b.out_code
+    left join cust_zr_account_team c on b.id=c.cust_id
+    left join t_internal_user d on d.user_no=c.employee_id
+    left join t_organizational_structure e on e.seq=d.user_department_code
+    left join t_internal_user f on f.user_no=e.pm
+    left join t_cust_corporate_relationship g on g.cust_id=b.id and g.corporate_type='Z004'
+    inner join t_customer_info h on h.out_code=g.corporate_id
+    where a.active = 1
+    <if test="customerCode != null and customerCode != ''">
+      and a.customer_code like concat('%', #{customerCode,jdbcType=VARCHAR}, '%')
+    </if>
+    <if test="projectName != null and projectName != ''">
+      and a.project_name like concat('%', #{projectName,jdbcType=VARCHAR}, '%')
+    </if>
+    <if test="visitPurpose != null and visitPurpose != ''">
+      and a.visit_purpose like concat('%', #{visitPurpose,jdbcType=VARCHAR}, '%')
+    </if>
+    <if test="visitStartDate != null and visitStartDate != '' and visitEndDate != null and visitEndDate != ''">
+      and date_format( a.visit_date, '%Y-%m-%d' ) BETWEEN #{visitStartDate,jdbcType=VARCHAR} and #{visitEndDate,jdbcType=VARCHAR}
+    </if>
+    <if test="visitStartDate != null and visitStartDate != '' and (visitEndDate == null or visitEndDate == '')">
+      and date_format( a.visit_date, '%Y-%m-%d' )>= #{visitStartDate,jdbcType=VARCHAR}
+    </if>
+    <if test="(visitStartDate == null or visitStartDate == '') and visitEndDate != null and visitEndDate != ''">
+      and date_format( a.visit_date, '%Y-%m-%d' ) &lt;= #{visitStartDate,jdbcType=VARCHAR}
+    </if>
+    order by a.create_time desc
+  </select>
+  <update id="approve">
       update t_visit_record set active = 1,c4c_id = #{c4cId,jdbcType=VARCHAR} where id = #{id,jdbcType=INTEGER}
     <!--  <foreach collection="ids" item="item" index="index" open="(" separator="," close=")" >
         #{item}
       </foreach>-->
     </update>
-
-   <select id="selectAll" resultMap="BaseResultMap">
+  <select id="selectAll" resultMap="BaseResultMap">
      SELECT * FROM t_visit_record where active = 1 and c4c_id is not null
    </select>
 

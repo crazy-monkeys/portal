@@ -1,6 +1,7 @@
 package com.crazy.portal.dao.cusotmer;
 
 import com.crazy.portal.bean.customer.visitRecord.VisitRecordQueryBean;
+import com.crazy.portal.entity.cusotmer.AgentManExportVisitRecord;
 import com.crazy.portal.entity.cusotmer.VisitRecord;
 import org.apache.ibatis.annotations.Param;
 
@@ -24,5 +25,7 @@ public interface VisitRecordMapper {
     int approve(@Param("id") Integer id, @Param("c4cId") String c4cId);
 
     List<VisitRecord> selectAll();
+
+    List<AgentManExportVisitRecord> agentManSelectByPage(VisitRecordQueryBean visitRecordQueryBean);
 
 }

@@ -1,7 +1,9 @@
 package com.crazy.portal.service.customer;
 
+import com.crazy.portal.config.exception.BusinessException;
 import com.crazy.portal.dao.cusotmer.CustInvoiceInfoMapper;
 import com.crazy.portal.entity.cusotmer.CustInvoiceInfo;
+import com.crazy.portal.util.ErrorCodes;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,7 +29,7 @@ public class CustInvoiceInfoService {
     @Transactional
     public void saveOrUpdate(List<CustInvoiceInfo> custInvoiceInfos, Integer custId, Integer userId){
         if(null == custInvoiceInfos || custInvoiceInfos.isEmpty()){
-            return;
+            throw new BusinessException(ErrorCodes.BusinessEnum.CUSTOMER_INVOICE_IS_NOT_ENPTY);
         }
         custInvoiceInfos.forEach(e->{
             if(null == e.getInvoiceId()){

@@ -191,6 +191,10 @@ public class ErrorCodes {
         CUSTOMER_IS_SYNC_ERROR(50017,"客户报备创建内部Code异常",""),
         CUSTOMER_ADDRESS_IS_NOT_ENPTY(50018,"最少维护一条地址信息",""),
         CUSTOMER_ABB_IS_NOT_ENPTY(50019,"客户简称不能为空",""),
+        CUSTOMER_CONTACT_IS_NOT_ENPTY(50020,"至少维护一条联系人信息",""),
+        CUSTOMER_FILE_IS_NOT_ENPTY(50021,"至少维护一条附件信息",""),
+        CUSTOMER_INVOICE_IS_NOT_ENPTY(50021,"至少维护一条开票信息",""),
+        CUSTOMER_Structure_IS_NOT_ENPTY(50022,"至少维护一条股权结构信息",""),
 
         RATE_BATCH_IS_NOT_NULL(60001,"批次号已存在",""),
         //代理费率

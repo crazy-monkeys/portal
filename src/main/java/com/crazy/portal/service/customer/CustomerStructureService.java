@@ -1,7 +1,9 @@
 package com.crazy.portal.service.customer;
 
+import com.crazy.portal.config.exception.BusinessException;
 import com.crazy.portal.dao.cusotmer.CustomerStructureMapper;
 import com.crazy.portal.entity.cusotmer.CustomerStructure;
+import com.crazy.portal.util.ErrorCodes;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,7 +29,7 @@ public class CustomerStructureService {
     @Transactional
     public void saveOrUpdate(List<CustomerStructure> customerStructures, Integer custId, Integer userId){
         if(null == customerStructures || customerStructures.isEmpty()){
-            return;
+            throw new BusinessException(ErrorCodes.BusinessEnum.CUSTOMER_Structure_IS_NOT_ENPTY);
         }
         customerStructures.forEach(e->{
             if(null == e.getStructureId()){

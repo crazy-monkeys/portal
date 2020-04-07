@@ -1,13 +1,12 @@
 package com.crazy.portal.dao.cusotmer;
 
 import com.crazy.portal.bean.customer.CustomerQueryBean;
-import com.crazy.portal.entity.cusotmer.CustZrAccountTeam;
+import com.crazy.portal.entity.cusotmer.AgentManExportCustInfo;
 import com.crazy.portal.entity.cusotmer.CustomerInfo;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 public interface CustomerInfoMapper {
     int deleteByPrimaryKey(Integer id);
@@ -39,6 +38,9 @@ public interface CustomerInfoMapper {
     CustomerInfo selectEmailByCustName(@Param("custName")String custName);
 
     List<CustomerInfo> selectCustomer(CustomerQueryBean record);
+
+    //增加代理商经营部导出客户信息功能 20200404
+    List<AgentManExportCustInfo> agentManExportSelectCustomer(CustomerQueryBean record);
 
     LinkedList<CustomerInfo> selectDealerShip(Integer custId);
 

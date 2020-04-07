@@ -174,12 +174,40 @@ public class CustomerController extends BaseController{
         }
 
     }
+
     @ResponseBody
     @RequestMapping("/info/export")
     public void listExport(CustomerQueryBean bean,HttpServletResponse response) throws Exception{
         try {
             Map<String, List> resultMap = customerInfoService.downloadCustomerData(bean,getCurrentUser());
             ExcelUtils.createExcelStreamMutilByEaysExcel(response, resultMap, "客户信息", ExcelTypeEnum.XLSX);
+        }catch (Exception ex){
+            log.error("客户信息导出异常", ex);
+        }
+    }
+    /**  代理商经营部客户信息，拜访记录搜索导出，Add 20200404
+     *  @Author jingang.yuan
+     *  @Date 2020-03-13 export
+     */
+    @ResponseBody
+    @RequestMapping("/visitRecord/agentBusinessExport")
+    public void visitAddRecord(VisitRecordQueryBean bean,HttpServletResponse response) throws Exception{
+        try {
+            bean.setUserId(this.getCurrentUser().getId());
+            //Map<String, List<? extends BaseRowModel>> resultMap = customerInfoService.agentOperaDownTemplateAndData(bean);
+            Map<String, List> resultMap = customerInfoService.agentOperaDownTemplateAndData(bean);
+            ExcelUtils.createExcelStreamMutilByEaysExcel(response, resultMap, "搜索导出拜访记录", ExcelTypeEnum.XLSX);
+        }catch (Exception ex){
+            log.error("导出异常", ex);
+        }
+
+    }
+    @ResponseBody
+    @RequestMapping("/custList/agentBusinessExport")
+    public void custlistExport(CustomerQueryBean bean,HttpServletResponse response) throws Exception{
+        try {
+            Map<String, List> resultMap = customerInfoService.agentOperaDownCustomerData(bean,getCurrentUser());
+            ExcelUtils.createExcelStreamMutilByEaysExcel(response, resultMap, "搜索导出客户信息", ExcelTypeEnum.XLSX);
         }catch (Exception ex){
             log.error("客户信息导出异常", ex);
         }

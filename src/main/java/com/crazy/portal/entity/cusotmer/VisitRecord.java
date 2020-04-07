@@ -56,6 +56,11 @@ public class VisitRecord {
     private String projectName;
 
     /**
+     * 产品线
+     */
+    private String productTypeLine;
+
+    /**
      * 项目状态
      */
     private String projectStatus;

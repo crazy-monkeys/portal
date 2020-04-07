@@ -38,6 +38,46 @@
     <result column="report_dealer_name" jdbcType="VARCHAR" property="reportDealerName" />
     <result column="report_sales_name" jdbcType="VARCHAR" property="reportSalesName" />
   </resultMap>
+  <resultMap id="AgentManBaseResultMap" type="com.crazy.portal.entity.cusotmer.AgentManExportCustInfo">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="cust_type" jdbcType="INTEGER" property="custType" />
+    <result column="in_code" jdbcType="VARCHAR" property="inCode" />
+    <result column="out_code" jdbcType="VARCHAR" property="outCode" />
+    <result column="cust_name" jdbcType="VARCHAR" property="custName" />
+    <result column="cust_en_name" jdbcType="VARCHAR" property="custEnName" />
+    <result column="cust_abbreviation" jdbcType="VARCHAR" property="custAbbreviation" />
+    <result column="frozen_sales" jdbcType="INTEGER" property="frozenSales" />
+    <result column="frozen_delivery" jdbcType="INTEGER" property="frozenDelivery" />
+    <result column="frozen_order" jdbcType="INTEGER" property="frozenOrder" />
+    <result column="frozen_Invoice" jdbcType="INTEGER" property="frozenInvoice" />
+    <result column="business_type" jdbcType="VARCHAR" property="businessType" />
+    <result column="is_license" jdbcType="INTEGER" property="isLicense" />
+    <result column="cust_role" jdbcType="VARCHAR" property="custRole" />
+    <result column="cust_mobile" jdbcType="VARCHAR" property="custMobile" />
+    <result column="cust_email" jdbcType="VARCHAR" property="custEmail" />
+    <result column="cust_web" jdbcType="VARCHAR" property="custWeb" />
+    <result column="is_white" jdbcType="INTEGER" property="isWhite" />
+    <result column="regist_time" jdbcType="VARCHAR" property="registTime" />
+    <result column="corportae_assets" jdbcType="DECIMAL" property="corportaeAssets" />
+    <result column="staff_number" jdbcType="INTEGER" property="staffNumber" />
+    <result column="developers_number" jdbcType="INTEGER" property="developersNumber" />
+    <result column="business_introduction" jdbcType="VARCHAR" property="businessIntroduction" />
+    <result column="advantages_introduction" jdbcType="VARCHAR" property="advantagesIntroduction" />
+    <result column="approve_user" jdbcType="INTEGER" property="approveUser" />
+    <result column="approve_status" jdbcType="INTEGER" property="approveStatus" />
+    <result column="approve_time" jdbcType="TIMESTAMP" property="approveTime" />
+    <result column="approve_remark" jdbcType="VARCHAR" property="approveRemark" />
+    <result column="active" jdbcType="INTEGER" property="active" />
+    <result column="create_user" jdbcType="INTEGER" property="createUser" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_user" jdbcType="INTEGER" property="updateUser" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="report_dealer_name" jdbcType="VARCHAR" property="reportDealerName" />
+    <result column="report_sales_name" jdbcType="VARCHAR" property="reportSalesName" />
+    <result column="corporate_id" jdbcType="VARCHAR" property="corporateId" />
+    <result column="parent_org_name" jdbcType="VARCHAR" property="parentOrgName" />
+    <result column="pm" jdbcType="VARCHAR" property="pm" />
+  </resultMap>
 
   <!--代理商result-->
   <resultMap id="DealerResultMap" type="com.crazy.portal.entity.cusotmer.CustomerInfo" extends="BaseResultMap">
@@ -733,6 +773,117 @@
       </if>
       <if test="reportSales != null">
          and team.employee_id = #{reportSales,jdbcType=INTEGER}
+      </if>
+      <if test="customerStatus != '' and customerStatus != null">
+        and cust.approve_status = #{customerStatus,jdbcType=INTEGER}
+      </if>
+    </if>
+    <if test="queryType == 2 ">
+      <if test="customerStatus != '' and customerStatus != null">
+        and cust.approve_status = #{customerStatus,jdbcType=INTEGER}
+      </if>
+      <if test="businessType != null and businessType != '' and businessType == 'A02'">
+        and team.role_type = '142'
+      </if>
+      <if test="businessType != null and businessType != '' and businessType == 'A03'">
+        and ship.corporate_type = 'Z004'
+      </if>
+    </if>
+    <if test="queryType == 1 ">
+      and cust.approve_status != 4 and (team.role_type = '142' or ship.corporate_type = 'Z004')
+      <if test="custType != '' and custType != null">
+        and cust.cust_type = #{custType,jdbcType=INTEGER}
+      </if>
+      <if test="salesTeam != null">
+        <foreach collection="salesTeam" item="item" index="index" open="and team.employee_id in (" separator="," close=")" >
+          #{item}
+        </foreach>
+      </if>
+      <if test="reportDealer!=null">
+        and ship.corporate_id = #{reportDealer,jdbcType=INTEGER}
+      </if>
+    </if>
+    order by cust.id
+  </select>
+  <select id="agentManExportSelectCustomer" resultMap="AgentManBaseResultMap">
+    select
+    cust.id,
+    cust_type,
+    case cust.business_type when 'A01' then 'Account Market（直供）'
+    when 'A02' then 'Account Market（非直供）'
+    when 'A03' then 'Mass Market'
+    when 'A04' then '代理商'
+    else '未知' end business_type,
+    cust.approve_status,
+    out_code,
+    cust.is_license,
+    cust_name,
+    cust_en_name,
+    cust_abbreviation,
+    case cust_role when 'Z001' then '中国客户(Chinese Account)'
+    when 'Z002' then '亚太客户(Asia-Pacific Account)'
+    when 'Z003' then '北美客户(North American Account)'
+    when 'Z010' then '内部客户(Customer)'
+    else '未知' end cust_role,
+    ins.user_name report_sales_name,
+    team.employee_id,
+    ship.corporate_name report_dealer_name,
+    ship.corporate_id,
+    cust.approve_user,
+    cust.approve_remark,
+    cust.approve_time,
+    cust.create_time,
+    orgastr.parent_org_name,
+    orgastr.pm
+    from t_customer_info cust
+    left join cust_zr_account_team team on team.cust_id = cust.id and team.active=1 and team.role_type = '142'
+    left join t_internal_user ins on ins.user_no = team.employee_id and ins.active=1
+    left join t_cust_corporate_relationship ship on ship.cust_id = cust.id and ship.active=1 and ship.corporate_type = 'Z004'
+    left join t_organizational_structure orgastr on orgastr.seq=ins.user_department_code
+    where cust.business_type != 'A04'
+    and cust.active =1
+    <if test="customerName != null and customerName != ''">
+      and cust.cust_name like concat('%',#{customerName,jdbcType=VARCHAR},'%')
+    </if>
+    <if test="custAbbreviation != null and custAbbreviation != ''">
+      and cust_abbreviation like concat('%',#{custAbbreviation,jdbcType=VARCHAR},'%')
+    </if>
+    <if test="customerOutCode != null and customerOutCode!=''">
+      and cust.out_code = #{customerOutCode,jdbcType=VARCHAR}
+    </if>
+    <if test="isLicense != null">
+      and cust.is_license = #{isLicense,jdbcType=INTEGER}
+    </if>
+    <if test="businessType != null and businessType != ''">
+      and cust.business_type = #{businessType,jdbcType=VARCHAR}
+    </if>
+    <if test=" custRole != null and custRole !=''">
+      and cust_role = #{custRole,jdbcType=VARCHAR}
+    </if>
+    <if test="reportStartDate != null and reportStartDate != '' and reportEndDate != null and reportEndDate != ''">
+      and date_format( cust.approve_time, '%Y-%m-%d' ) BETWEEN  #{reportStartDate,jdbcType=VARCHAR} and #{reportEndDate,jdbcType=VARCHAR}
+    </if>
+    <if test="reportStartDate != null and reportStartDate != '' and (reportEndDate == null or reportEndDate == '')">
+      and date_format( cust.approve_time, '%Y-%m-%d' ) >=  #{reportStartDate,jdbcType=VARCHAR}
+    </if>
+    <if test="(reportStartDate == null or reportStartDate == '') and reportEndDate != null and reportEndDate != ''">
+      and date_format( cust.approve_time, '%Y-%m-%d' ) &lt;= #{reportEndDate,jdbcType=VARCHAR}
+    </if>
+    <if test="createStartDate != null and createStartDate != '' and createEndDate != null and createEndDate != ''">
+      and date_format( cust.create_time, '%Y-%m-%d' ) BETWEEN #{createStartDate,jdbcType=VARCHAR} and #{createEndDate,jdbcType=VARCHAR}
+    </if>
+    <if test="createStartDate != null and createStartDate != '' and (createEndDate == null or createEndDate == '')">
+      and date_format( cust.create_time, '%Y-%m-%d' )>= #{createStartDate,jdbcType=VARCHAR}
+    </if>
+    <if test="(createStartDate == null or createStartDate == '') and createEndDate != null and createEndDate != ''">
+      and date_format( cust.create_time, '%Y-%m-%d' ) &lt;= #{createEndDate,jdbcType=VARCHAR}
+    </if>
+    <if test="queryType == 3 ">
+      <if test="reportDealer!=null">
+        and ship.corporate_id = #{reportDealer,jdbcType=INTEGER}
+      </if>
+      <if test="reportSales != null">
+        and team.employee_id = #{reportSales,jdbcType=INTEGER}
       </if>
       <if test="customerStatus != '' and customerStatus != null">
         and cust.approve_status = #{customerStatus,jdbcType=INTEGER}

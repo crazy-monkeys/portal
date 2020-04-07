@@ -9,7 +9,9 @@ import com.crazy.portal.bean.customer.CustomerShipBean;
 import com.crazy.portal.bean.customer.approval.ApprovalBean;
 import com.crazy.portal.bean.customer.basic.CustFileUploadVO;
 import com.crazy.portal.bean.customer.basic.DealerCreditVO;
+import com.crazy.portal.bean.customer.info.AgentManExportCustInfoEO;
 import com.crazy.portal.bean.customer.info.CustomerInfoEO;
+import com.crazy.portal.bean.customer.visitRecord.AgentManExportVisitRecordEO;
 import com.crazy.portal.bean.customer.visitRecord.CustomerCodeEO;
 import com.crazy.portal.bean.customer.visitRecord.VisitRecordEO;
 import com.crazy.portal.bean.customer.visitRecord.VisitRecordQueryBean;
@@ -383,7 +385,6 @@ public class CustomerInfoService {
      * @param type 1 新增 0 修改
      */
     private void saveCustomerDetail(CustomerInfo customerInfo, Integer userId, int type){
-
         saveContact(customerInfo.getCustomerContacts(), customerInfo.getId(), userId);
         saveProduct(customerInfo.getCustomerProducts(), customerInfo.getId(), userId);
         saveFile(customerInfo.getFiles(), customerInfo.getId());
@@ -1180,4 +1181,199 @@ public class CustomerInfoService {
         resultMap.put("客户数据", CustomerInfoList);
         return resultMap;
     }
+    //Add 20200404， 代理商经营部导出拜访记录
+    public Map<String, List> agentOperaDownTemplateAndData(VisitRecordQueryBean bean){
+        Map<String, List> resultMap = new HashMap<>();
+        List<AgentManExportVisitRecord> records = visitRecordMapper.agentManSelectByPage(bean);
+        List<AgentManExportVisitRecordEO> agentManExportVisitRecordList = new ArrayList<>();
+        //agentManExportVisitRecordList.add(new AgentManExportVisitRecordEO());
+        for (AgentManExportVisitRecord vRecordEO : records) {
+            AgentManExportVisitRecordEO agentManExportVisitRecordEO=new AgentManExportVisitRecordEO();
+            //SimpleDateFormat format = new SimpleDateFormat("yyyy-MM");
+            agentManExportVisitRecordEO.setAgentAbbreviate(vRecordEO.getAgentAbbreviate());
+            agentManExportVisitRecordEO.setYearWeek(vRecordEO.getVisitDate().toString().substring(0,vRecordEO.getVisitDate().toString().length()-3));
+            agentManExportVisitRecordEO.setVisitDate(vRecordEO.getVisitDate());
+            agentManExportVisitRecordEO.setCustomerLocation(vRecordEO.getCustomerLocation());
+            agentManExportVisitRecordEO.setCustomerType(vRecordEO.getBusinessType());
+            agentManExportVisitRecordEO.setCustomerName(vRecordEO.getCustomerName());
+            agentManExportVisitRecordEO.setAmbLeaderName(vRecordEO.getAmbTeamLeaderName());
+//            agentManExportVisitRecordEO.setCustomerCode(vRecordEO.getCustomerCode());
+//            agentManExportVisitRecordEO.setVisitNumber(vRecordEO.getVisitNumber());
+            agentManExportVisitRecordEO.setVisitPurpose(vRecordEO.getVisitPurpose());
+            agentManExportVisitRecordEO.setProjectName(vRecordEO.getProjectName());
+            agentManExportVisitRecordEO.setProjectStatus(vRecordEO.getProjectStatus());
+            agentManExportVisitRecordEO.setBackInformation("NA");
+            agentManExportVisitRecordEO.setProjectDepartment(vRecordEO.getProjectDepartment());
+            agentManExportVisitRecordEO.setTalkContent(vRecordEO.getTalkContent());
+            agentManExportVisitRecordEO.setFollowPlan(vRecordEO.getFollowPlan());
+            agentManExportVisitRecordEO.setClaimDescription(vRecordEO.getClaimDescription());
+            agentManExportVisitRecordEO.setInterfaceRecovery("NA");
+            agentManExportVisitRecordEO.setParticipantsZr(vRecordEO.getParticipantsZr());
+            agentManExportVisitRecordEO.setParticipantsCt(vRecordEO.getParticipantsCt());
+            agentManExportVisitRecordEO.setParticipantsDl(vRecordEO.getParticipantsDl());
+            agentManExportVisitRecordList.add(agentManExportVisitRecordEO);
+        }
+        resultMap.put("代理商经营部导出拜访数据",agentManExportVisitRecordList);
+        return resultMap;
+    }
+    //Add 20200404， 代理商经营部导出客户信息记录
+    public Map<String, List> agentOperaDownCustomerData(CustomerQueryBean bean,User user){
+        Map<String, List> resultMap = new HashMap<>();
+        PortalUtil.defaultStartPage(bean.getPageIndex(), bean.getPageSize());
+        if(user.getUserType().equals(Enums.USER_TYPE.internal.toString())){
+            InternalUser internalUser = internalUserMapper.selectUserByName(user.getLoginName());
+            if(null != internalUser){
+                List<String> sales = internalUserService.getSalesTeam(internalUser);
+                bean.setSalesTeam(sales);
+            }
+        }else{
+            CustomerInfo dealer = customerInfoMapper.selectByPrimaryKey(user.getDealerId());
+            bean.setReportDealer(dealer.getInCode());
+        }
+        List<AgentManExportCustInfo> customerInfos = customerInfoMapper.agentManExportSelectCustomer(bean);
+        List<AgentManExportCustInfoEO> CustomerInfoList = new ArrayList<>();
+        int count=0;
+        for (AgentManExportCustInfo CusInfoEO : customerInfos) {
+            count++;
+            AgentManExportCustInfoEO agentManExportCustInfoEO=new AgentManExportCustInfoEO();
+            agentManExportCustInfoEO.setSerial(count);
+            agentManExportCustInfoEO.setChannel("NA");
+            agentManExportCustInfoEO.setAgencyName(CusInfoEO.getReportDealerName());
+            agentManExportCustInfoEO.setDealerId(CusInfoEO.getCorporateId());
+            agentManExportCustInfoEO.setCustAbbreviation(CusInfoEO.getCustAbbreviation());
+            agentManExportCustInfoEO.setInCode(CusInfoEO.getInCode());
+            agentManExportCustInfoEO.setCustName(CusInfoEO.getCustName());
+            agentManExportCustInfoEO.setOutCode(CusInfoEO.getOutCode());
+            //CustomerInfoEO.setIsLicense(CusInfoEO.getIsLicense());
+            agentManExportCustInfoEO.setBusinessType(CusInfoEO.getBusinessType());
+            agentManExportCustInfoEO.setCustType(CusInfoEO.getCustType());
+            agentManExportCustInfoEO.setRepresentative(CusInfoEO.getParentOrgName());
+            agentManExportCustInfoEO.setAmbName(CusInfoEO.getPm());
+            //CustomerInfoEO.setReportDealerName(CusInfoEO.getReportDealerName());
+            agentManExportCustInfoEO.setReportSalesName(CusInfoEO.getReportSalesName());
+            //CustomerInfoEO.setUpdateTime(CusInfoEO.getUpdateTime());
+            CustomerInfoList.add(agentManExportCustInfoEO);
+        }
+        resultMap.put("代理商经营部导出客户数据", CustomerInfoList);
+        return resultMap;
+    }
+    /////////////////////////////用于数据转换////////////////////////////////////////////////////
+
+    //这两个方法用于数据的类型转换
+//    private void copyDbFieldss(CustomerInfoII customerInfoII, Object object) {
+//        try {
+//            BeanUtils.copyNotNullFields(customerInfoII, object);
+//        }catch (Exception ex) {
+//            log.error("BeanUtils copyNotNullFields exception", ex);
+//            throw new BusinessException("BeanUtils copyNotNullFields exception");
+//        }
+//    }
+//
+//    private void copyDbFieldss(VisitRecordII visitRecordII, Object object) {
+//        try {
+//            BeanUtils.copyNotNullFields(visitRecordII, object);
+//        }catch (Exception ex) {
+//            log.error("BeanUtils copyNotNullFields exception", ex);
+//            throw new BusinessException("BeanUtils copyNotNullFields exception");
+//        }
+//    }
+
+    /**
+     * 代理商拜访记录导出
+     * @Author jingang.yuan
+     * @param VisitRecordQueryBean
+     * @return resultMap
+     */
+    //-------------------------------------------------------------------------------------------------------------------
+//    public Map<String, List<? extends BaseRowModel>> agentOperaDownTemplateAndData(VisitRecordQueryBean bean){
+//        Map<String, List<? extends BaseRowModel>> resultMap = new HashMap<>();
+//        List<VisitRecordII> records = visitRecordMapper.selectVisitRecordII(bean);
+//        List<VisitRecordIIEO> visitRecordList = new ArrayList<>();
+//        for(VisitRecordII VisitRecord : records) {
+//            VisitRecordIIEO visitRecordIIEO = new VisitRecordIIEO();
+//            copyDbFieldss(VisitRecord, visitRecordIIEO);
+//
+//            String time = VisitRecord.getVisitDate();
+//            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+//            Date date = null;
+//            try {
+//                date = format.parse(time);
+//            } catch (ParseException e) {
+//                e.printStackTrace();
+//            }
+//            Calendar calendar = Calendar.getInstance();
+//            calendar.setFirstDayOfWeek(Calendar.MONDAY);
+//            calendar.setTime(date);
+//            int week = calendar.get(Calendar.WEEK_OF_YEAR);
+//            visitRecordIIEO.setYearWeek("第"+week+"周");
+//            visitRecordList.add(visitRecordIIEO);
+//        }
+//        resultMap.put("拜访数据", visitRecordList);
+//        return resultMap;
+//    }
+    //-------------------------------------------------------------------------------------------------------------------
+
+
+
+    /**
+     * 搜索导出客户信息
+     * @Author jingang.yuan
+     * @param CustomerQueryBean
+     * @return resultMap
+     */
+
+    //-------------------------------------------------------------------------------------------------------------------
+//    public Map<String, List<? extends BaseRowModel>> agentOperaDownCustomerDataII(CustomerQueryBean bean,User user){
+//        int count=0;
+//        Map<String, List<? extends BaseRowModel>> resultMap = new HashMap<>();
+//        PortalUtil.defaultStartPage(bean.getPageIndex(), bean.getPageSize());
+//        if(bean.getQueryType()==3){
+//            if(user.getUserType().equals(Enums.USER_TYPE.internal.toString())){
+//                InternalUser internalUser = internalUserMapper.selectUserByName(user.getLoginName());
+//                BusinessUtil.assertFlase(null == user,ErrorCodes.SystemManagerEnum.USER_NOT_EXISTS);
+//                bean.setReportSales(internalUser.getUserNo());
+//            }else{
+//                CustomerInfo dealer = customerInfoMapper.selectByPrimaryKey(user.getDealerId());
+//                bean.setReportDealer(dealer.getInCode());
+//            }
+//        }else if(bean.getQueryType()==2){
+//            if(user.getUserType().equals(Enums.USER_TYPE.internal.toString())){
+//                OrganizationalStructure org = internalUserService.getUserOrg(user.getLoginName());
+//                if(null != org&&org.getSeq().equals(1001012)){
+//                    bean.setBusinessType("A03");
+//                }else if(null != org&&org.getSeq().equals(1001011)){
+//                    bean.setBusinessType("A02");
+//                }else{
+//                    throw new BusinessException(ErrorCodes.BusinessEnum.CUSTOMER_ORG_ERROR);
+//                }
+//            }
+//        }else{
+//            if(user.getUserType().equals(Enums.USER_TYPE.internal.toString())){
+//                InternalUser internalUser = internalUserMapper.selectUserByName(user.getLoginName());
+//                if(null != internalUser){
+//                    List<String> sales = internalUserService.getSalesTeam(internalUser);
+//                    bean.setSalesTeam(sales);
+//                }
+//            }else{
+//                CustomerInfo dealer = customerInfoMapper.selectByPrimaryKey(user.getDealerId());
+//                bean.setReportDealer(dealer.getInCode());
+//            }
+//        }
+//        List<CustomerInfoII> customerInfos = customerInfoMapper.selectCustomerTest(bean);
+//        List<CustInfoEO> CustomerInfoList = new ArrayList<>();
+//
+//        for(CustomerInfoII customer : customerInfos) {
+//            count++;
+//            CustInfoEO customerInfoEO = new CustInfoEO();
+//            customerInfoEO.setSerial(count);
+//            copyDbFieldss(customer, customerInfoEO);
+//            CustomerInfoList.add(customerInfoEO);
+//        }
+//
+//        resultMap.put("客户数据", CustomerInfoList);
+//        return resultMap;
+//    }
+
+    //-------------------------------------------------------------------------------------------------------------------
+
 }
