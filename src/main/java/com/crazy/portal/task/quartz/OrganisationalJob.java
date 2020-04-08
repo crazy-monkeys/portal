@@ -1,5 +1,6 @@
 package com.crazy.portal.task.quartz;
 
+import com.alibaba.fastjson.JSON;
 import com.crazy.portal.bean.customer.wsdl.orgnation.*;
 import com.crazy.portal.annotation.Task;
 import com.crazy.portal.dao.system.InternalUserMapper;
@@ -34,6 +35,7 @@ public class OrganisationalJob implements Job {
         try{
             OrganisationalUnitByIDResponseMessageSync responseMessageSync = CallApiUtils.queryOrganisation();
             List<OrganisationalUnitByElementsResponseSync> results = responseMessageSync.getOrganisationalUnit();
+            log.info("======="+ JSON.toJSONString(results));
             for(OrganisationalUnitByElementsResponseSync org : results){
                 OrganizationalStructure organizational = organizationalStructureMapper.selectByOrgNo(Integer.valueOf(org.getID()));
                 if(null == organizational){
@@ -57,11 +59,11 @@ public class OrganisationalJob implements Job {
                         organizational.setParentOrg(Integer.valueOf(parent.getParentOrganisationalUnitID()));
                     }
                 }
-                List<OrganisationalUnitQueryResponseEmployeeAssignment> emps = org.getEmployeeAssignment();
-                for(OrganisationalUnitQueryResponseEmployeeAssignment emp : emps){
-                    if(null != emp.getEmployeeInternalID()){
-                        InternalUser internalUser = internalUserMapper.selectByUserNo(emp.getEmployeeInternalID());
-                        organizational.setPm(internalUser==null?emp.getEmployeeInternalID():internalUser.getUserName());
+
+                List<OrganisationalUnitQueryResponseManager> managers = org.getManager();
+                for (OrganisationalUnitQueryResponseManager manager : managers){
+                    if(null != manager.getEmployeeID()){
+                          organizational.setPm(manager.getEmployeeID().getValue());
                     }
                 }
                 if(null != organizational.getId()){
