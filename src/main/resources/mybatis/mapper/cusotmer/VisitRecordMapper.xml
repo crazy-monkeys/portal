@@ -355,7 +355,7 @@
       <if test="(visitStartDate == null or visitStartDate == '') and visitEndDate != null and visitEndDate != ''">
         and date_format( a.visit_date, '%Y-%m-%d' ) &lt;= #{visitStartDate,jdbcType=VARCHAR}
       </if>
-      order by a.create_time desc
+      order by a.visitDate desc
     </select>
   <select id="agentManSelectByPage" parameterType="com.crazy.portal.bean.customer.visitRecord.VisitRecordQueryBean" resultMap="AgeManBaseResultMap">
     select
