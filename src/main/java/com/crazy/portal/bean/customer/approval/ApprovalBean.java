@@ -23,4 +23,9 @@ public class ApprovalBean {
     private String salesId;
     //分配销售
     private Integer dealerId;
+
+    //内部客户编号
+    private String inCode;
+    //内部客户名
+    private String inName;
 }

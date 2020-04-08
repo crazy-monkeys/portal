@@ -1,6 +1,5 @@
 package com.crazy.portal.service.customer;
 
-import com.alibaba.excel.metadata.BaseRowModel;
 import com.alibaba.fastjson.JSON;
 import com.crazy.portal.bean.common.Constant;
 import com.crazy.portal.bean.customer.CustomerOrgBean;
@@ -447,12 +446,15 @@ public class CustomerInfoService {
     private void approvalYes(ApprovalBean approvalBean, Integer userId){
         CustomerInfo temp = customerInfoMapper.selectByPrimaryKey(approvalBean.getCustId());
         if(null != temp && temp.getApproveStatus()!=Enums.CUSTOMER_APPROVE_STATUS.APPROVAL.getCode() && temp.getCustType()!=Enums.CUSTOMER_TYPE.WAIT_APPROVAL.getCode()){
+            //根据审批信息修改 销售或代理商
             if(null != approvalBean.getSalesId()){
                 custZrAccountTeamService.updateTeam(temp.getId(), approvalBean.getSalesId());
             }else if (null != approvalBean.getDealerId()){
                 CustomerInfo dealer = customerInfoMapper.selectByPrimaryKey(approvalBean.getCustId());
                 custCorporateRelationshipService.updateCustShip(temp.getId(), userId, dealer);
             }
+            //审批时维护内部客户信息
+            custCorporateRelationshipService.save(mappingRelationShip(approvalBean));
 
             CustomerInfo customerInfo = queryInfo(temp.getId());
             Map<String,String> response = customerInfoSync(customerInfo, "01");
@@ -460,13 +462,21 @@ public class CustomerInfoService {
             customerInfo.setInCode(response.get("inCode"));
             customerInfo.setOutCode(response.get("outCode"));
 
-
             customerInfo.setCustType(Enums.CUSTOMER_TYPE.WAIT_APPROVAL.getCode());
             customerInfo.setApproveStatus(Enums.CUSTOMER_APPROVE_STATUS.APPROVAL.getCode());
             customerInfo.setApproveUser(userId);
             customerInfo.setApproveRemark(approvalBean.getApprovalRemark());
             customerInfoMapper.updateByPrimaryKeySelective(customerInfo);
         }
+    }
+
+    private CustCorporateRelationship mappingRelationShip(ApprovalBean approvalBean){
+        CustCorporateRelationship record = new CustCorporateRelationship();
+        record.setCorporateName(approvalBean.getInName());
+        record.setCorporateId(approvalBean.getInCode());
+        record.setCorporateType("Z002");
+        record.setActive(1);
+        return record;
     }
 
     private CustomerDetailCreate syncCustomerDetail(CustomerInfo customerinfo, String c4cId){
@@ -1257,123 +1267,4 @@ public class CustomerInfoService {
         resultMap.put("代理商经营部导出客户数据", CustomerInfoList);
         return resultMap;
     }
-    /////////////////////////////用于数据转换////////////////////////////////////////////////////
-
-    //这两个方法用于数据的类型转换
-//    private void copyDbFieldss(CustomerInfoII customerInfoII, Object object) {
-//        try {
-//            BeanUtils.copyNotNullFields(customerInfoII, object);
-//        }catch (Exception ex) {
-//            log.error("BeanUtils copyNotNullFields exception", ex);
-//            throw new BusinessException("BeanUtils copyNotNullFields exception");
-//        }
-//    }
-//
-//    private void copyDbFieldss(VisitRecordII visitRecordII, Object object) {
-//        try {
-//            BeanUtils.copyNotNullFields(visitRecordII, object);
-//        }catch (Exception ex) {
-//            log.error("BeanUtils copyNotNullFields exception", ex);
-//            throw new BusinessException("BeanUtils copyNotNullFields exception");
-//        }
-//    }
-
-    /**
-     * 代理商拜访记录导出
-     * @Author jingang.yuan
-     * @param VisitRecordQueryBean
-     * @return resultMap
-     */
-    //-------------------------------------------------------------------------------------------------------------------
-//    public Map<String, List<? extends BaseRowModel>> agentOperaDownTemplateAndData(VisitRecordQueryBean bean){
-//        Map<String, List<? extends BaseRowModel>> resultMap = new HashMap<>();
-//        List<VisitRecordII> records = visitRecordMapper.selectVisitRecordII(bean);
-//        List<VisitRecordIIEO> visitRecordList = new ArrayList<>();
-//        for(VisitRecordII VisitRecord : records) {
-//            VisitRecordIIEO visitRecordIIEO = new VisitRecordIIEO();
-//            copyDbFieldss(VisitRecord, visitRecordIIEO);
-//
-//            String time = VisitRecord.getVisitDate();
-//            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-//            Date date = null;
-//            try {
-//                date = format.parse(time);
-//            } catch (ParseException e) {
-//                e.printStackTrace();
-//            }
-//            Calendar calendar = Calendar.getInstance();
-//            calendar.setFirstDayOfWeek(Calendar.MONDAY);
-//            calendar.setTime(date);
-//            int week = calendar.get(Calendar.WEEK_OF_YEAR);
-//            visitRecordIIEO.setYearWeek("第"+week+"周");
-//            visitRecordList.add(visitRecordIIEO);
-//        }
-//        resultMap.put("拜访数据", visitRecordList);
-//        return resultMap;
-//    }
-    //-------------------------------------------------------------------------------------------------------------------
-
-
-
-    /**
-     * 搜索导出客户信息
-     * @Author jingang.yuan
-     * @param CustomerQueryBean
-     * @return resultMap
-     */
-
-    //-------------------------------------------------------------------------------------------------------------------
-//    public Map<String, List<? extends BaseRowModel>> agentOperaDownCustomerDataII(CustomerQueryBean bean,User user){
-//        int count=0;
-//        Map<String, List<? extends BaseRowModel>> resultMap = new HashMap<>();
-//        PortalUtil.defaultStartPage(bean.getPageIndex(), bean.getPageSize());
-//        if(bean.getQueryType()==3){
-//            if(user.getUserType().equals(Enums.USER_TYPE.internal.toString())){
-//                InternalUser internalUser = internalUserMapper.selectUserByName(user.getLoginName());
-//                BusinessUtil.assertFlase(null == user,ErrorCodes.SystemManagerEnum.USER_NOT_EXISTS);
-//                bean.setReportSales(internalUser.getUserNo());
-//            }else{
-//                CustomerInfo dealer = customerInfoMapper.selectByPrimaryKey(user.getDealerId());
-//                bean.setReportDealer(dealer.getInCode());
-//            }
-//        }else if(bean.getQueryType()==2){
-//            if(user.getUserType().equals(Enums.USER_TYPE.internal.toString())){
-//                OrganizationalStructure org = internalUserService.getUserOrg(user.getLoginName());
-//                if(null != org&&org.getSeq().equals(1001012)){
-//                    bean.setBusinessType("A03");
-//                }else if(null != org&&org.getSeq().equals(1001011)){
-//                    bean.setBusinessType("A02");
-//                }else{
-//                    throw new BusinessException(ErrorCodes.BusinessEnum.CUSTOMER_ORG_ERROR);
-//                }
-//            }
-//        }else{
-//            if(user.getUserType().equals(Enums.USER_TYPE.internal.toString())){
-//                InternalUser internalUser = internalUserMapper.selectUserByName(user.getLoginName());
-//                if(null != internalUser){
-//                    List<String> sales = internalUserService.getSalesTeam(internalUser);
-//                    bean.setSalesTeam(sales);
-//                }
-//            }else{
-//                CustomerInfo dealer = customerInfoMapper.selectByPrimaryKey(user.getDealerId());
-//                bean.setReportDealer(dealer.getInCode());
-//            }
-//        }
-//        List<CustomerInfoII> customerInfos = customerInfoMapper.selectCustomerTest(bean);
-//        List<CustInfoEO> CustomerInfoList = new ArrayList<>();
-//
-//        for(CustomerInfoII customer : customerInfos) {
-//            count++;
-//            CustInfoEO customerInfoEO = new CustInfoEO();
-//            customerInfoEO.setSerial(count);
-//            copyDbFieldss(customer, customerInfoEO);
-//            CustomerInfoList.add(customerInfoEO);
-//        }
-//
-//        resultMap.put("客户数据", CustomerInfoList);
-//        return resultMap;
-//    }
-
-    //-------------------------------------------------------------------------------------------------------------------
-
 }
