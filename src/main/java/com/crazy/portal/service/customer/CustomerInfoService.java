@@ -1192,42 +1192,22 @@ public class CustomerInfoService {
         return resultMap;
     }
     //Add 20200404， 代理商经营部导出拜访记录
-    public Map<String, List> agentOperaDownTemplateAndData(VisitRecordQueryBean bean){
-        Map<String, List> resultMap = new HashMap<>();
+    public List<AgentManExportVisitRecordEO> agentOperaDownTemplateAndData(VisitRecordQueryBean bean)throws Exception{
         List<AgentManExportVisitRecord> records = visitRecordMapper.agentManSelectByPage(bean);
         List<AgentManExportVisitRecordEO> agentManExportVisitRecordList = new ArrayList<>();
-        //agentManExportVisitRecordList.add(new AgentManExportVisitRecordEO());
         for (AgentManExportVisitRecord vRecordEO : records) {
             AgentManExportVisitRecordEO agentManExportVisitRecordEO=new AgentManExportVisitRecordEO();
-            //SimpleDateFormat format = new SimpleDateFormat("yyyy-MM");
-            agentManExportVisitRecordEO.setAgentAbbreviate(vRecordEO.getAgentAbbreviate());
-            agentManExportVisitRecordEO.setYearWeek(vRecordEO.getVisitDate().toString().substring(0,vRecordEO.getVisitDate().toString().length()-3));
-            agentManExportVisitRecordEO.setVisitDate(vRecordEO.getVisitDate());
-            agentManExportVisitRecordEO.setCustomerLocation(vRecordEO.getCustomerLocation());
-            agentManExportVisitRecordEO.setCustomerType(vRecordEO.getBusinessType());
-            agentManExportVisitRecordEO.setCustomerName(vRecordEO.getCustomerName());
-            agentManExportVisitRecordEO.setAmbLeaderName(vRecordEO.getAmbTeamLeaderName());
-//            agentManExportVisitRecordEO.setCustomerCode(vRecordEO.getCustomerCode());
-//            agentManExportVisitRecordEO.setVisitNumber(vRecordEO.getVisitNumber());
-            agentManExportVisitRecordEO.setVisitPurpose(vRecordEO.getVisitPurpose());
-            agentManExportVisitRecordEO.setProjectName(vRecordEO.getProjectName());
-            agentManExportVisitRecordEO.setProjectStatus(vRecordEO.getProjectStatus());
+            BeanUtils.copyNotNullFields(vRecordEO,agentManExportVisitRecordEO);
+            agentManExportVisitRecordEO.setYearWeek(vRecordEO.getVisitDate().substring(0,vRecordEO.getVisitDate().length()-3));
+            agentManExportVisitRecordEO.setProductLine("NA");
             agentManExportVisitRecordEO.setBackInformation("NA");
-            agentManExportVisitRecordEO.setProjectDepartment(vRecordEO.getProjectDepartment());
-            agentManExportVisitRecordEO.setTalkContent(vRecordEO.getTalkContent());
-            agentManExportVisitRecordEO.setFollowPlan(vRecordEO.getFollowPlan());
-            agentManExportVisitRecordEO.setClaimDescription(vRecordEO.getClaimDescription());
             agentManExportVisitRecordEO.setInterfaceRecovery("NA");
-            agentManExportVisitRecordEO.setParticipantsZr(vRecordEO.getParticipantsZr());
-            agentManExportVisitRecordEO.setParticipantsCt(vRecordEO.getParticipantsCt());
-            agentManExportVisitRecordEO.setParticipantsDl(vRecordEO.getParticipantsDl());
             agentManExportVisitRecordList.add(agentManExportVisitRecordEO);
         }
-        resultMap.put("代理商经营部导出拜访数据",agentManExportVisitRecordList);
-        return resultMap;
+        return agentManExportVisitRecordList;
     }
     //Add 20200404， 代理商经营部导出客户信息记录
-    public Map<String, List> agentOperaDownCustomerData(CustomerQueryBean bean,User user){
+    public Map<String, List> agentOperaDownCustomerData(CustomerQueryBean bean,User user) throws Exception{
         Map<String, List> resultMap = new HashMap<>();
         PortalUtil.defaultStartPage(bean.getPageIndex(), bean.getPageSize());
         if(user.getUserType().equals(Enums.USER_TYPE.internal.toString())){
@@ -1246,23 +1226,24 @@ public class CustomerInfoService {
         for (AgentManExportCustInfo CusInfoEO : customerInfos) {
             count++;
             AgentManExportCustInfoEO agentManExportCustInfoEO=new AgentManExportCustInfoEO();
+            BeanUtils.copyNotNullFields(CusInfoEO,agentManExportCustInfoEO);
             agentManExportCustInfoEO.setSerial(count);
             agentManExportCustInfoEO.setChannel("NA");
             agentManExportCustInfoEO.setAgencyName(CusInfoEO.getReportDealerName());
-            agentManExportCustInfoEO.setDealerId(CusInfoEO.getCorporateId());
-            agentManExportCustInfoEO.setCustAbbreviation(CusInfoEO.getCustAbbreviation());
+//            agentManExportCustInfoEO.setDealerId(CusInfoEO.getCorporateId());
+//            agentManExportCustInfoEO.setCustAbbreviation(CusInfoEO.getCustAbbreviation());
             agentManExportCustInfoEO.setInCode(CusInfoEO.getInCode());
-            agentManExportCustInfoEO.setCustName(CusInfoEO.getCustName());
-            agentManExportCustInfoEO.setOutCode(CusInfoEO.getOutCode());
-            //CustomerInfoEO.setIsLicense(CusInfoEO.getIsLicense());
-            agentManExportCustInfoEO.setBusinessType(CusInfoEO.getBusinessType());
-            agentManExportCustInfoEO.setCustType(CusInfoEO.getCustType());
+//            agentManExportCustInfoEO.setCustName(CusInfoEO.getCustName());
+//            agentManExportCustInfoEO.setOutCode(CusInfoEO.getOutCode());
+//            //CustomerInfoEO.setIsLicense(CusInfoEO.getIsLicense());
+//            agentManExportCustInfoEO.setBusinessType(CusInfoEO.getBusinessType());
+//            agentManExportCustInfoEO.setCustType(CusInfoEO.getCustType());
             agentManExportCustInfoEO.setRepresentative(CusInfoEO.getParentOrgName());
             agentManExportCustInfoEO.setAmbName(CusInfoEO.getPm());
-            //CustomerInfoEO.setReportDealerName(CusInfoEO.getReportDealerName());
-            agentManExportCustInfoEO.setReportSalesName(CusInfoEO.getReportSalesName());
-            //CustomerInfoEO.setUpdateTime(CusInfoEO.getUpdateTime());
-            CustomerInfoList.add(agentManExportCustInfoEO);
+//            //CustomerInfoEO.setReportDealerName(CusInfoEO.getReportDealerName());
+//            agentManExportCustInfoEO.setReportSalesName(CusInfoEO.getReportSalesName());
+//            //CustomerInfoEO.setUpdateTime(CusInfoEO.getUpdateTime());
+             CustomerInfoList.add(agentManExportCustInfoEO);
         }
         resultMap.put("代理商经营部导出客户数据", CustomerInfoList);
         return resultMap;

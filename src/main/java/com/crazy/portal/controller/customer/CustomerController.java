@@ -5,6 +5,7 @@ import com.alibaba.excel.support.ExcelTypeEnum;
 import com.crazy.portal.bean.BaseResponse;
 import com.crazy.portal.bean.customer.CustomerQueryBean;
 import com.crazy.portal.bean.customer.approval.ApprovalBean;
+import com.crazy.portal.bean.customer.visitRecord.AgentManExportVisitRecordEO;
 import com.crazy.portal.bean.customer.visitRecord.VisiApproveBean;
 import com.crazy.portal.bean.customer.visitRecord.VisitRecordQueryBean;
 import com.crazy.portal.controller.BaseController;
@@ -194,9 +195,8 @@ public class CustomerController extends BaseController{
     public void visitAddRecord(VisitRecordQueryBean bean,HttpServletResponse response) throws Exception{
         try {
             bean.setUserId(this.getCurrentUser().getId());
-            //Map<String, List<? extends BaseRowModel>> resultMap = customerInfoService.agentOperaDownTemplateAndData(bean);
-            Map<String, List> resultMap = customerInfoService.agentOperaDownTemplateAndData(bean);
-            ExcelUtils.createExcelStreamMutilByEaysExcel(response, resultMap, "搜索导出拜访记录", ExcelTypeEnum.XLSX);
+            List<AgentManExportVisitRecordEO> resultList = customerInfoService.agentOperaDownTemplateAndData(bean);
+            ExcelUtils.writeExcel(response, resultList, AgentManExportVisitRecordEO.class);
         }catch (Exception ex){
             log.error("导出异常", ex);
         }
