@@ -164,7 +164,7 @@ public class CustomerController extends BaseController{
      *  @Date 2020-02-13 export
      */
     @ResponseBody
-    @RequestMapping("/visitRecord/export")
+    @RequestMapping("/visitRecord/export")//@GetMapping("/visitRecord/export")
     public void visitRecordExport(VisitRecordQueryBean bean,HttpServletResponse response) throws Exception{
         try {
             bean.setUserId(this.getCurrentUser().getId());
@@ -173,7 +173,6 @@ public class CustomerController extends BaseController{
         }catch (Exception ex){
             log.error("导出异常", ex);
         }
-
     }
 
     @ResponseBody
@@ -191,7 +190,7 @@ public class CustomerController extends BaseController{
      *  @Date 2020-03-13 export
      */
     @ResponseBody
-    @RequestMapping("/visitRecord/agentBusinessExport")
+    @RequestMapping("/visitRecord/agentBusinessExport")//@GetMapping("/visitRecord/agentBusinessExport")
     public void visitAddRecord(VisitRecordQueryBean bean,HttpServletResponse response) throws Exception{
         try {
             bean.setUserId(this.getCurrentUser().getId());

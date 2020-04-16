@@ -1449,14 +1449,15 @@ public class SaleForecastService {
 
     private List<Integer> getAuthUsers(Integer userId) {
         try {
-            /*List<CustomerInfo> customerInfos = internalUserService.getSalesCustomer(userId);
-            List<Integer> userList;
-            if(null == customerInfos){
-                userList = userCustomerMappingService.selectUserMapping(userId, Enums.CustomerMappingModel.Forecast.getValue());
-            }else {
-                userList = customerInfos.stream().map(CustomerInfo::getId).collect(Collectors.toList());
+            /*List<Integer> custIds = new ArrayList<>();
+            custIds = userCustomerMappingService.selectUserMapping(userId, Enums.CustomerMappingModel.Forecast.getValue());
+            if(custIds.isEmpty()){
+                List<CustomerInfo> customerInfos = internalUserService.getSalesCustomer(userId);
+                for (CustomerInfo info : customerInfos){
+                    custIds.add(info.getId());
+                }
             }
-            return userList;*/
+            return custIds;*/
             return userCustomerMappingService.selectUserMapping(userId, Enums.CustomerMappingModel.Forecast.getValue());
         }catch (Exception ex) {
             log.error(FORECAST_AGENCY_QUERY_ERROR.getZhMsg(), ex);

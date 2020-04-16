@@ -1,7 +1,9 @@
 package com.crazy.portal.service.customer;
 
+import com.crazy.portal.config.exception.BusinessException;
 import com.crazy.portal.dao.cusotmer.CustomerProductMapper;
 import com.crazy.portal.entity.cusotmer.CustomerProduct;
+import com.crazy.portal.util.ErrorCodes;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,7 +29,7 @@ public class CustomerProductService {
     @Transactional
     public void saveOrUpdate(List<CustomerProduct> customerProducts, Integer custId, Integer userId){
         if(null == customerProducts || customerProducts.isEmpty()){
-            return;
+            throw new BusinessException(ErrorCodes.BusinessEnum.CUSTOMER_PRODUCT_IS_NOT_ENPTY);
         }
         customerProducts.forEach(e->{
             if(null == e.getProId()){

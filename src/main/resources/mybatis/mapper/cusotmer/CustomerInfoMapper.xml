@@ -935,7 +935,7 @@
   </select>
 
   <select id="selectAllINCustomer" resultMap="BaseResultMap">
-    select * from t_customer_info where active = 1
+    select * from t_customer_info where active = 1 and cust_role = 'Z010' and in_code is not null
     order by business_type desc
   </select>
 

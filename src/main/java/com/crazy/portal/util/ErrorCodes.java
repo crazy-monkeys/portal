@@ -195,6 +195,9 @@ public class ErrorCodes {
         CUSTOMER_FILE_IS_NOT_ENPTY(50021,"至少维护一条附件信息",""),
         CUSTOMER_INVOICE_IS_NOT_ENPTY(50021,"至少维护一条开票信息",""),
         CUSTOMER_Structure_IS_NOT_ENPTY(50022,"至少维护一条股权结构信息",""),
+        CUSTOMER_ADDRESS_TYPE_IS_NOT_ENPTY(50023,"地址类型不能为空",""),
+        CUSTOMER_ADDRESS_CONTRY_IS_NOT_ENPTY(50024,"国家省市不能为空",""),
+        CUSTOMER_PRODUCT_IS_NOT_ENPTY(50025,"展锐产品型号不能为空",""),
 
         RATE_BATCH_IS_NOT_NULL(60001,"批次号已存在",""),
         //代理费率

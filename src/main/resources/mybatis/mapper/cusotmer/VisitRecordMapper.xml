@@ -335,7 +335,7 @@
       left join t_customer_info b on a.customer_code = b.out_code
       where a.active = 1
       <if test="userId != null and userId != ''">
-        and a.create_user_id = #{userId,jdbcType=INTEGER}
+        and a.create_user_id = #{userId,jdbcType=VARCHAR}
       </if>
       <if test="customerCode != null and customerCode != ''">
         and a.customer_code like concat('%', #{customerCode,jdbcType=VARCHAR}, '%')
@@ -355,11 +355,17 @@
       <if test="(visitStartDate == null or visitStartDate == '') and visitEndDate != null and visitEndDate != ''">
         and date_format( a.visit_date, '%Y-%m-%d' ) &lt;= #{visitStartDate,jdbcType=VARCHAR}
       </if>
-      order by a.visitDate desc
+      order by a.visit_date desc
     </select>
   <select id="agentManSelectByPage" parameterType="com.crazy.portal.bean.customer.visitRecord.VisitRecordQueryBean" resultMap="AgeManBaseResultMap">
     select
-    a.*,b.cust_name as customer_name,b.business_type,c.employee_id as sales_id,d.user_name as sales_name,e.org_name as amb_team_name,e.pm as amb_team_leader_sn,f.user_name as amb_team_leader_name,g.corporate_name as agent_name,h.cust_abbreviation as agent_abbreviate
+    a.*,b.cust_name as customer_name,
+    case b.business_type when 'A01' then 'Account Market（直供）'
+    when 'A02' then 'Account Market（非直供）'
+    when 'A03' then 'Mass Market'
+    when 'A04' then '代理商'
+    else '未知' end business_type,
+    c.employee_id as sales_id,d.user_name as sales_name,e.org_name as amb_team_name,e.pm as amb_team_leader_sn,f.user_name as amb_team_leader_name,g.corporate_name as agent_name,h.cust_abbreviation as agent_abbreviate
     from t_visit_record a
     left join t_customer_info b on a.customer_code = b.out_code
     left join cust_zr_account_team c on b.id=c.cust_id

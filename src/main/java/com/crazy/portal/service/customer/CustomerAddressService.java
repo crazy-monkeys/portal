@@ -5,6 +5,7 @@ import com.crazy.portal.dao.cusotmer.CustomerAddressMapper;
 import com.crazy.portal.entity.cusotmer.CustomerAddress;
 import com.crazy.portal.entity.cusotmer.CustomerContact;
 import com.crazy.portal.util.ErrorCodes;
+import com.crazy.portal.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -77,4 +78,12 @@ public class CustomerAddressService {
         customerAddressMapper.insertSelective(record);
     }
 
+    private void checkAddress(CustomerAddress address){
+        if(StringUtil.isEmpty(address.getAddressType())){
+            throw new BusinessException(ErrorCodes.BusinessEnum.CUSTOMER_ADDRESS_TYPE_IS_NOT_ENPTY);
+        }
+        if(StringUtil.isEmpty(address.getCountry())||StringUtil.isEmpty(address.getCity())){
+            throw new BusinessException(ErrorCodes.BusinessEnum.CUSTOMER_ADDRESS_CONTRY_IS_NOT_ENPTY);
+        }
+    }
 }
