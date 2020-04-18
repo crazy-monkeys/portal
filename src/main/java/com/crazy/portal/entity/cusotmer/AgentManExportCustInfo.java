@@ -1,0 +1,260 @@
+package com.crazy.portal.entity.cusotmer;
+
+import com.alibaba.fastjson.annotation.JSONField;
+import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.List;
+
+/**
+ * 客户主信息表增加字段版
+ * @author jia
+ * @date   2020-04-04
+ */
+@Data
+public class AgentManExportCustInfo {
+    /**
+     * 
+     */
+    private Integer id;
+
+    /**
+     * 用户类型 0-潜在客户 1-未报备 2-已报备
+     */
+    private String custType;
+
+    /**
+     * 内部客户号 C4C
+     */
+    private String inCode;
+
+    /**
+     * 外部客户号  ECC
+     */
+    private String outCode;
+
+    /**
+     * 客户名称
+     */
+    private String custName;
+    /**
+     * 英文名
+     */
+    private String custEnName;
+    /**
+     * 简称
+     */
+    private String custAbbreviation;
+    /**
+     * 销售支持冻结 0 否 1 是
+     */
+    private Integer frozenSales;
+
+    /**
+     * 交货冻结 0 否 1 是
+     */
+    private Integer frozenDelivery;
+
+    /**
+     * 订单冻结 0 否 1 是
+     */
+    private Integer frozenOrder;
+
+    /**
+     * 开票冻结 0 否 1 是
+     */
+    private Integer frozenInvoice;
+    /**
+     * 渠道
+     */
+    //private String channel;
+    /**
+     * A01 - Account Market（直供）；A02 - Account Market（非直供）；A03 - Mass Market；A04 - 代理商
+     */
+    private String businessType;
+
+    /**
+     * 是否License(customer)
+     */
+    private Integer isLicense;
+    /**
+     * Z001 - 中国客户(Chinese Account); Z002 - 亚太客户(Asia-Pacific Account); Z003 - 北美客户(North American Account); Z010 - 内部客户(Customer);
+     */
+    private String custRole;
+
+    /**
+     * 电话
+     */
+    private String custMobile;
+    /**
+     * 邮箱
+     */
+    private String custEmail;
+
+    /**
+     * 网址
+     */
+    private String custWeb;
+
+    /**
+     * 是否白名单(dealer)
+     */
+    private Integer isWhite;
+    /**
+     * 注册时间
+     */
+    private String registTime;
+
+    /**
+     * 公司资产(customer)
+     */
+    private BigDecimal corportaeAssets;
+    /**
+     * 员工人数
+     */
+    private Integer staffNumber;
+
+    /**
+     * 研发人数(customer)
+     */
+    private Integer developersNumber;
+
+    /**
+     * 业务介绍(customer)
+     */
+    private String businessIntroduction;
+
+    /**
+     * 优势介绍(dealer)
+     */
+    private String advantagesIntroduction;
+    /**
+     * 报告代理商名字
+     */
+    private String reportDealerName;
+    /**
+     * 报告销售名字
+     */
+    //销售名字
+    private String reportSalesName;
+    /**
+     * 审批人
+     */
+    private Integer approveUser;
+
+    /**
+     * 审批状态
+     */
+    private Integer approveStatus;
+
+    /**
+     *
+     */
+    @JSONField(format="yyyy-MM-dd HH:mm:ss")
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    private Date approveTime;
+
+    /**
+     * 审批意见
+     */
+    private String approveRemark;
+    /**
+     * 活动状态
+     */
+    private Integer active;
+
+    /**
+     * 创建用户
+     */
+    private Integer createUser;
+    /**
+     *
+     */
+    @JSONField(format="yyyy-MM-dd HH:mm:ss")
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    private Date createTime;
+
+    /**
+     *
+     */
+    private Integer updateUser;
+
+    /**
+     *
+     */
+    @JSONField(format="yyyy-MM-dd HH:mm:ss")
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    private Date updateTime;
+
+    /*资产信息 季度更新 dealer*/
+    private List<CustAssetsInformation> assetsInformations;
+
+    /*业务介绍 年度更新 dealer*/
+    private List<CustBusinessInformation> businessInformations;
+
+    /*分级分类信息 dealer*/
+    private List<CustomerAgent> customerAgents;
+
+    /*联系人信息*/
+    private List<CustomerContact> customerContacts;
+
+    /*产品信息*/
+    private List<CustomerProduct> customerProducts;
+
+    /*客户附件*/
+    private List<CustomerFile> files;
+
+    /*银行账号信息*/
+    private CustBankInfo custBankInfo;
+
+    public CustBankInfo getCustBankInfo() {
+        return custBankInfo==null?new CustBankInfo():custBankInfo;
+    }
+    /**关系**/
+    private List<CustCorporateRelationship> relationships;
+
+    /**开票信息**/
+    private List<CustInvoiceInfo> invoiceInfos;
+
+    /**销售信息**/
+    private List<CustSales> sales;
+
+    /**地址信息**/
+    private List<CustomerAddress> addresses;
+
+    /*客户团队*/
+    private List<CustomerAccountTeam> accountTeams;
+
+    /*展锐销售团队*/
+    private List<CustZrAccountTeam> zrAccountTeams;
+
+    /*股权结构*/
+    private List<CustomerStructure> custStructure;
+
+    /*未来3年销售额*/
+    private List<CustSalesQuota> quotas;
+    //授信额度初始值
+    private BigDecimal credit;
+    //授信额度占用值
+    private BigDecimal creditUSE;
+    //授信额度剩余值
+    private BigDecimal creditUnUSE;
+
+    
+    /**
+     * 阿尔巴队长
+     */
+    private String pm;
+    
+    /**
+     * 代表处
+     */
+    private String parentOrgName;//representative;
+    
+    /**
+     * 代理商外部号
+     */
+    private Integer corporateId;
+}
