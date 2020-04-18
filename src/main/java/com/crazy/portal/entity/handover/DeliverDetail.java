@@ -114,4 +114,8 @@ public class DeliverDetail {
     @ExcelIgnore
     private Integer confirmStatus;
 
+    private String status;
+    private String uploadTimeStr;
+    private String approvalTimeStr;
+
 }

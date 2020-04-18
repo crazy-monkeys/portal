@@ -29,6 +29,10 @@
     <result column="id_str" jdbcType="VARCHAR" property="idStr" />
     <result column="confirm_msg" jdbcType="VARCHAR" property="confirmMsg" />
     <result column="confirm_status" jdbcType="INTEGER" property="confirmStatus" />
+
+    <result column="status_desc" jdbcType="VARCHAR" property="status" />
+    <result column="upload_time_str" jdbcType="VARCHAR" property="uploadTimeStr" />
+    <result column="approval_time_str" jdbcType="VARCHAR" property="approvalTimeStr" />
   </resultMap>
 
   <resultMap id="errorResultMap" extends="BaseResultMap" type="com.crazy.portal.bean.handover.DeliverTemplateBean" >
@@ -374,7 +378,7 @@
   </select>
 
   <select id="getCustomerListBySales" resultMap="BaseResultMap" >
-    select b.* from t_deliver_receive_record a
+    select a.dealer_name,b.* from t_deliver_receive_record a
     inner join t_deliver_detail b on a.id = b.record_id
     where a.status != 0 and customer_full_name is not null
     <if test="dealerId != null">
@@ -414,9 +418,10 @@
     <if test="customerOrderNumber != null and customerOrderNumber != ''" >
       and b.customer_order_number like concat('%', #{customerOrderNumber,jdbcType=VARCHAR}, '%')
     </if>
-    <foreach collection="custName" item="item" index="index" open=" and b.customer_full_name in (" separator="," close=")" >
-      #{item, jdbcType=VARCHAR}
-    </foreach>
+    <if test="salesName != null and salesName != ''" >
+      and b.sales =#{salesName,jdbcType=VARCHAR}
+    </if>
+
     order by a.create_time desc
   </select>
 

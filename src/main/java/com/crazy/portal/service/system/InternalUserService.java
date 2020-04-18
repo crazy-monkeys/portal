@@ -35,6 +35,10 @@ public class InternalUserService {
     @Resource
     private InternalUserMapper internalUserMapper;
 
+    public InternalUser getUser(Integer userId){
+        return internalUserMapper.selectByUserId(userId);
+    }
+
     /**
      * 获取用户的权限职位信息
      * @param userName

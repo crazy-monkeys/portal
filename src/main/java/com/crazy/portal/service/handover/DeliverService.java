@@ -14,6 +14,7 @@ import com.crazy.portal.entity.cusotmer.CustomerInfo;
 import com.crazy.portal.entity.handover.DeliverDetail;
 import com.crazy.portal.entity.handover.DeliverDetailUpdate;
 import com.crazy.portal.entity.handover.DeliverReceiveRecord;
+import com.crazy.portal.entity.system.InternalUser;
 import com.crazy.portal.service.customer.CustomerContactService;
 import com.crazy.portal.service.customer.CustomerInfoService;
 import com.crazy.portal.service.system.InternalUserService;
@@ -177,17 +178,11 @@ public class DeliverService extends AbstractHandover implements IHandover<Delive
                                                           String customerOrderNumber, String warehouse,
                                                           String deliveryCompany,
                                                           Integer userId) {
-        List<CustomerInfo> customerInfos = internalUserService.getSalesCustomer(userId);
-        List<String> custName;
-        if(null != customerInfos && customerInfos.size() > 0 ){
-            custName = customerInfos.stream().map(CustomerInfo::getCustName).collect(Collectors.toList());
-        }else{
-            return new PageInfo<>(Collections.emptyList());
-        }
+        InternalUser user = internalUserService.getUser(userId);
         PortalUtil.defaultStartPage(pageNum,pageSize);
         List<DeliverDetail> result = deliverDetailMapper.getCustomerListBySales(dealerId,
                 uploadStartTime, uploadEndTime, handoverStartTime, handoverEndTime,
-                customerFullName, productModel, deliveryType, orderMonth, customerOrderNumber, custName);
+                customerFullName, productModel, deliveryType, orderMonth, customerOrderNumber, user.getUserName().substring(0,user.getUserName().lastIndexOf("(")));
         return new PageInfo<>(result);
     }
 

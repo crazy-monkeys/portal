@@ -127,7 +127,6 @@ public class CustCorporateRelationshipService {
     @Transactional
     public void save(CustCorporateRelationship record){
         custCorporateRelationshipMapper.insertSelective(record);
-        saveShip(record);
     }
 
     @Transactional

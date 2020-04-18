@@ -42,7 +42,7 @@ public interface DeliverDetailMapper {
                                                @Param(value = "deliveryType") String deliveryType,
                                                @Param(value = "orderMonth") String orderMonth,
                                                @Param(value = "customerOrderNumber") String customerOrderNumber,
-                                               @Param(value = "custName") List<String> custName);
+                                               @Param(value = "salesName") String salesName);
 
     int countErrorData(@Param(value = "recordId") Integer recordId);
 

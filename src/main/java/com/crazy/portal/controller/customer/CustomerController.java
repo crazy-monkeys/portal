@@ -1,6 +1,5 @@
 package com.crazy.portal.controller.customer;
 
-import com.alibaba.excel.metadata.BaseRowModel;
 import com.alibaba.excel.support.ExcelTypeEnum;
 import com.crazy.portal.bean.BaseResponse;
 import com.crazy.portal.bean.customer.CustomerQueryBean;

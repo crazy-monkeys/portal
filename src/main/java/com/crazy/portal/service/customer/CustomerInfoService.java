@@ -411,7 +411,6 @@ public class CustomerInfoService {
         //通过
         if(Enums.YES_NO.YES.getCode() == approvalBean.getApprovalType()){
             approvalYes(approvalBean, userId);
-
             //因为维护关系用的是 C4C内部id，报备维护关系时没有C4C内部id，所以审批通过时，校验是否有C4C内部Id为空的关系
             if(StringUtil.isNotEmpty(approvalBean.getSalesId())){
                 custCorporateRelationshipService.updateShip(Integer.valueOf(approvalBean.getSalesId()));

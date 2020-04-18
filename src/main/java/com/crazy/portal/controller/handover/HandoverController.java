@@ -50,6 +50,19 @@ public class HandoverController extends BaseController {
                 pageNum, pageSize, getCurrentUser().getId()));
     }
 
+    @GetMapping(value = "/handover/deliver")
+    public BaseResponse getDeliverList(Integer dealerId, Integer pageNum, Integer pageSize,
+                                       String uploadStartTime, String uploadEndTime,
+                                       String handoverStartTime, String handoverEndTime,
+                                       String customerFullName, String productModel,
+                                       String deliveryType, String orderMonth,
+                                       String customerOrderNumber, String warehouse,
+                                       String deliveryCompany){
+        return successResult(deliverService.getCustomerListBySales(dealerId,pageNum,pageSize,
+                uploadStartTime,uploadEndTime,handoverStartTime,handoverEndTime,customerFullName,productModel,
+                deliveryType,orderMonth,customerOrderNumber,warehouse,deliveryCompany,super.getCurrentUserId()));
+    }
+
     /**
      * 代理商自己查询上传记录
      * @param dealerId
