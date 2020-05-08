@@ -839,5 +839,20 @@
     update t_forecast t set po_price = #{poPrice,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
+  
+  <update id="countDealerPrice">
+    update t_forecast a
+    inner join t_catalog_price b on a.vm_number = b.sap_code and a.bu = b.bu and b.currency='USD' and b.in_customer =''
+    set a.po_price = b.catalog_price
+    where a.status=1
+  </update>
+
+  <update id="countCustomerPrice">
+    update t_forecast a
+    inner join t_catalog_price b on a.vm_number = b.sap_code and a.bu = b.bu and b.currency='USD' and b.in_customer !=''
+    and a.customer_abbreviation = b.in_customer
+    set a.po_price = b.catalog_price
+    where a.status=1
+  </update>
 
 </mapper>

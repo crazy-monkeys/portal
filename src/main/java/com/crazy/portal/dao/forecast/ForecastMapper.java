@@ -132,4 +132,8 @@ public interface ForecastMapper {
                           @Param(value = "poPrice") String poPrice);
 
     Forecast selectLastValue(Forecast record);
+
+    int countDealerPrice();
+
+    int countCustomerPrice();
 }

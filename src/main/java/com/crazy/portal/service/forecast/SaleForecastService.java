@@ -311,6 +311,8 @@ public class SaleForecastService {
         }
         //状态解释  agencyStatusType 1:请求新增   status    1:待审批
         forecastMapper.updateStatus(1,1, batchNo, userId);
+        //代理商提交预测后进行价格计算
+        countPrice();
     }
 
     /**
@@ -778,6 +780,22 @@ public class SaleForecastService {
             Forecast forecast = new Forecast(userId);
             copyTemplateFields(ambUpdateTemplate, forecast);
             forecast.setBatchNo(batchNo);
+
+            ProductInfoDO productInfo = getProductInfo(ambUpdateTemplate.getProductModel(), ambUpdateTemplate.getPlatform());
+            //设置产品字段
+            forecast.setBu(productInfo.getBu());
+            forecast.setPdt(productInfo.getPdt());
+            forecast.setProductType(productInfo.getSubCategory());
+            forecast.setVmNumber(productInfo.getSapMid());
+            //设置客户字段
+            //获取代理商上级客户信息
+            CustomerOrgBean customerOrgBean = getCustomerOrgInfo(ambUpdateTemplate.getCustomerAbbreviation());
+            forecast.setCustomerType(customerOrgBean.getCustType());
+            forecast.setSalePeople(customerOrgBean.getSales());
+            forecast.setAmbLeader(customerOrgBean.getAmb());
+            forecast.setSdPeople(customerOrgBean.getPm());
+            forecast.setRepresentative(customerOrgBean.getOffice());
+
             forecast.setStatus(1);
             forecast.setAgencyStatusType(1);
             forecast.setCreateUserId(userId);
@@ -788,8 +806,13 @@ public class SaleForecastService {
             ForecastLine line = new ForecastLine();
             copyTemplateFields(ambUpdateTemplate, line);
             line.setfId(forecast.getId());
-            //重新获取上一次的填写值
-            setLastValue(forecast, line);
+            //队长新增数据上次值为0
+            line.setLastWriteOne(null);
+            line.setLastWriteTwo(null);
+            line.setLastWriteThree(null);
+            line.setLastWriteFour(null);
+            line.setLastWriteFive(null);
+            line.setLastWriteSix(null);
             forecastLineMapper.insertSelective(line);
         }
     }
@@ -1522,6 +1545,11 @@ public class SaleForecastService {
             BusinessUtil.assertFlase(forecastMk.getUpdateS().equals(0),ErrorCodes.BusinessEnum.FORECAST_Status_IS_BEFOR);
             BusinessUtil.assertFlase(StringUtil.isNotEmpty(forecastMk.getUpdateM()) && !oMonth.equals(forecastMk.getUpdateM()),ErrorCodes.BusinessEnum.FORECAST_Month_IS_BEFOR);
         }
+    }
+
+    public void countPrice(){
+        forecastMapper.countDealerPrice();
+        forecastMapper.countCustomerPrice();
     }
 
 }
