@@ -88,7 +88,10 @@ public class CustomerContactService {
     private void checkContact(CustomerContact record){
         if(StringUtil.isNotEmpty(record.getMobile())){
             String telRegex = "[1][345678]\\d{9}";
-            BusinessUtil.assertTrue(record.getMobile().matches(telRegex), ErrorCodes.BusinessEnum.CUSTOMER_MOBILE_IS_INACTIVE);
+            String reg = "^(0\\d{2}-\\d{8}?)|(0\\d{3}-\\d{8}?)|(4\\d{2}-\\d{8}?)|(8\\d{2}-\\d{8}?)|(0\\d{3}-\\d{6,7}?)|(4\\d{3}-\\d{6,7}?)|(8\\d{3}-\\d{6,7}?)|(4\\d{2}-\\d{4}-\\d{4}?)|(4\\d{3}-\\d{3}-\\d{3,4}?)|(8\\d{2}-\\d{4}-\\d{4}?)|(8\\d{3}-\\d{3}-\\d{3,4}?)|(0\\d{2}-\\d{4}-\\d{4}?)|(0\\d{3}-\\d{4}-\\d{4}?)|(0\\d{3}-\\d{3}-\\d{3,4}?)$";
+            boolean tel = record.getMobile().matches(telRegex);
+            boolean tel2 =record.getMobile().matches(reg);
+            BusinessUtil.assertTrue(tel==true || tel2 == true, ErrorCodes.BusinessEnum.CUSTOMER_MOBILE_IS_INACTIVE);
         }
         if(StringUtil.isNotEmpty(record.getEmail())){
             String mailRegex = "^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+(\\.[a-zA-Z0-9-]+)*\\.[a-zA-Z0-9]{2,6}$";
